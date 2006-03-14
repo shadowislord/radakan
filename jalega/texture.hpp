@@ -12,13 +12,11 @@
 using namespace std;
 
 class Texture:
-	public Object	//	should be changed to GameObject once it's ready
+	public Object
 {
 	public:
-		//	Constructor
-		Texture ();
-		//	Destructor
-		virtual ~Texture ();
+		Texture ();											//	Constructor
+		virtual ~Texture ();								//	Destructor
 		virtual bool is_initialized () const;
 		GLubyte	* imageData;	// Image Data (Up To 32 Bits)
 		GLuint	bpp;			// Image Color Depth In Bits Per Pixel

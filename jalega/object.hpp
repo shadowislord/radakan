@@ -17,10 +17,8 @@ class Object:
 	public string
 {
 	public:
-		//	Constructor
-		Object (string new_name);
-		//	Destructor
-		virtual ~Object ();
+		Object (string new_name);								//	Constructor
+		virtual ~Object ();										//	Destructor
 		template <typename T> T * copy () const;
 		template <typename T> bool is_type () const;
 		template <typename T> T * to_type () const;

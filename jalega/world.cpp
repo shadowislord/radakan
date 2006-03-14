@@ -30,11 +30,11 @@ bool
 	return Object::is_initialized ();
 }
 
-void
+Tile
 	World::
-	set_tile (Tile * new_tile, int x, int y)
+	get_tile (int x, int y)
 {
 	assert (is_initialized ());
 
-//	tiles[x][y] = new_tile;
+	return tiles[x][y];
 }

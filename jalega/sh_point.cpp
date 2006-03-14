@@ -8,33 +8,16 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-SHPoint::SHPoint(float x, float y)
+SH_Point::
+	SH_Point (float new_x, float new_y):
+	Object::
+	Object ("annonymous_sh_point")
 {
-	this->x = x;
-	this->y = y;
+	x = new_x;
+	y = new_y;
 }
 
-SHPoint::~SHPoint()
+SH_Point::~SH_Point()
 {
 
-}
-
-float SHPoint::getX()
-{
-	return x;
-}
-
-float SHPoint::getY()
-{
-	return y;
-}
-
-void SHPoint::setX(float x)
-{
-	this->x = x;
-}
-
-void SHPoint::setY(float y)
-{
-	this->y = y;
 }
