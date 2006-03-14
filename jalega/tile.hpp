@@ -10,6 +10,8 @@ class Tile:
 {
 	public:
 		//	Constructor
+		Tile ();
+		//	Constructor
 		Tile (string new_name);
 		//	Destructor
 		virtual ~Tile ();

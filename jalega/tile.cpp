@@ -4,6 +4,15 @@ using namespace std;
 
 //  Constructor
 Tile::
+	Tile ():
+	Object::
+	Object ("unnamed_tile")
+{
+	assert (is_initialized ());
+}
+
+//  Constructor
+Tile::
 	Tile (string new_name):
 	Object::
 	Object (new_name)

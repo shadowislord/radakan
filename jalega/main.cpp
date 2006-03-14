@@ -1,4 +1,5 @@
 #include "world.hpp"
+#include "shr.hpp"
 
 using namespace std;
 
