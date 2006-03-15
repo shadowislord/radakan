@@ -30,11 +30,11 @@ bool
 	return Object::is_initialized ();
 }
 
-Tile
+Tile *
 	World::
 	get_tile (int x, int y)
 {
 	assert (is_initialized ());
 
-	return tiles[x][y];
+	return & tiles[x][y][0];	//	I've no idea why the [0] naads to be added.
 }

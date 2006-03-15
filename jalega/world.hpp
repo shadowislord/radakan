@@ -14,7 +14,7 @@ class World:
 		World (string new_name, int new_width, int new_height);	//	Constructor
 		virtual ~World ();										//	Destructor
 		virtual bool is_initialized () const;
-		Tile get_tile (int x, int y);							//	zero based
+		Tile * get_tile (int x, int y);							//	zero based
 
 	private:
 		multi_array <Tile, 2>  * tiles;
