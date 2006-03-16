@@ -7,6 +7,11 @@
 using namespace std;
 using namespace boost;
 
+//	tiles are numbered like this:
+//	0: (0, 0)	3: (1, 0)	6: (2, 0)
+//	1: (0, 1)	4: (1, 1)	7: (2, 1)
+//	2: (0, 2)	5: (1, 2)	8: (2, 2)
+
 class World:
 	public Object	//	should be changed to GameObject once it's ready
 {
