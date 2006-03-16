@@ -6,8 +6,19 @@ using namespace std;
 Tile::
 	Tile ():
 	Object::
-	Object ("unnamed_tile")
+	Object ("anonnymous_tile")
 {
+	obstacle = NULL;
+	assert (is_initialized ());
+}
+
+//  Constructor
+Tile::
+	Tile (string new_name):
+	Object::
+	Object (new_name)
+{
+	obstacle = NULL;
 	assert (is_initialized ());
 }
 
@@ -16,7 +27,11 @@ Tile::
 	~Tile ()
 {
 	assert (is_initialized ());
-	
+
+	if (has_obstacle ())
+	{
+		delete obstacle;
+	}
 }
 
 //	virtual
@@ -38,7 +53,7 @@ bool
 {
 	assert (is_initialized ());
 
-	return (obstacle == NULL);
+	return (obstacle != NULL);
 }
 
 void

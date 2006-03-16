@@ -17,7 +17,10 @@ class World:
 		Tile * get_tile (int x, int y);							//	zero based
 
 	private:
-		multi_array <Tile, 2>  * tiles;
+		int width;
+		int height;
+		vector <Tile *> tile_vector;
+//		multi_array_ref <Tile, 2>  * tiles;	//	not working tile_vector wrapper
 };
 
 #endif

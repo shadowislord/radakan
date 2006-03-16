@@ -10,6 +10,7 @@ class Tile:
 {
 	public:
 		Tile ();										//	Constructor
+		Tile (string new_name);							//	Constructor
 		virtual ~Tile ();								//	Destructor
 		virtual bool is_initialized () const;
 		bool has_obstacle ();

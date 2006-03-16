@@ -8,21 +8,32 @@ vector <Object *> objects;
 int
 	main ()
 {
-	World * world = new World ("tsl", 10, 5);
 
-	cout << "World initialised." << endl;
-
-	delete world;
+	World * tsl = new World ("tsl", 10, 5);
+	Obstacle * obstacle = new Obstacle ("abc");
 	
-	cout << "Objects left: " << endl;
+	tsl->get_tile (7, 4)->set_obstacle (obstacle);
+
+	delete tsl;
+	
+	bool objects_left = false;
 	for (unsigned int i = 0; i < objects.size (); i++)
 	{
 		if (objects.at (i) != NULL)
 		{
+			if (! objects_left)
+			{
+				cout << "Objects left: " << endl;
+				objects_left = true;
+			}
 			cout << i << ": " << * objects.at (i) << endl;
 		}
 	}
-	cout << endl;
-	
-	return 0;
+	if (! objects_left)
+	{
+		cout << "tslrpg finished successfully. " << endl;
+		return 0;
+	}
+	cerr << "ERROR: tslrpg finished with orphaned objects. " << endl;
+	return 1;
 }
