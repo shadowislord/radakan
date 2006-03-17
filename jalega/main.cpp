@@ -1,3 +1,4 @@
+#include "tinyxml/tinyxml.h"
 #include "world.hpp"
 #include "shr.hpp"
 
@@ -8,7 +9,14 @@ vector <Object *> objects;
 int
 	main ()
 {
+	TiXmlDocument doc;
+	doc.LoadFile ("data/test_world.xml");
+	TiXmlElement * xml;
 
+	xml = doc.RootElement();
+	assert (xml != NULL);
+	assert (!xml->NoChildren ());
+	
 	World * tsl = new World ("tsl", 10, 5);
 	Obstacle * obstacle = new Obstacle ("abc");
 	

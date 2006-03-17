@@ -90,7 +90,7 @@ Texture SHR::loadTexture (string location)
 	//glTexParameteri (GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
 	Texture texture;
-	LoadTGA (&texture, location);
+//	LoadTGA (&texture, location);						//	gives linking error
 	glGenTextures (1, &texture.texID);
 
 	//GLint saveTextureBind = 0;

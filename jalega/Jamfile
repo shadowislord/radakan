@@ -1,0 +1,17 @@
+C++FLAGS = $(CXXFLAGS) -Wall ;
+LINKFLAGS = -lX11 -lXi -lXmu -lglut -lGL -lGLU -lm ;
+
+Main tslrpg :
+	tinyxml/tinystr.cpp
+	tinyxml/tinyxml.cpp
+	tinyxml/tinyxmlerror.cpp
+	tinyxml/tinyxmlparser.cpp
+	main.cpp
+	object.cpp
+	obstacle.cpp
+	sh_point.cpp
+	shr.cpp
+	texture.cpp
+	tile.cpp
+	world.cpp
+;
