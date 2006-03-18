@@ -1,18 +1,33 @@
 #include "world.hpp"
 
 using namespace std;
-using namespace boost;
+//	using namespace boost;
 
 //  Constructor
 World::
-	World (string new_name, int new_width, int new_height):
+	World (string new_name):
 	Object::
 	Object (new_name)
 {
-	debug () << "Size: " << new_width << " " << new_height << endl;
+	TiXmlDocument doc ("data/" + * this + ".xml");
+	TiXmlHandle docHandle (& doc);
+	TiXmlElement * image =
+				docHandle.FirstChild ("world").FirstChild ("image").Element ();
+	assert (image != NULL);
+	image_path = image->Attribute ("path");
+	assert (image_path != "");
+	
+	debug () << "Image path: " << image_path << endl;
 
-	width = new_width;
-	height = new_height;
+	TiXmlElement * size =
+				docHandle.FirstChild ("world").FirstChild ("size").Element ();
+	assert (size != NULL);
+	string result_width = size->Attribute ("width", & width);
+	assert (result_width != "");
+	string result_height = size->Attribute ("height", & height);
+	assert (result_height != "");
+
+	debug () << "Size: " << width << " " << height << endl;
 
 	for (int i = 0; i < width; i++)
 	{
