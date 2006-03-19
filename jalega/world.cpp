@@ -9,7 +9,8 @@ World::
 	Object::
 	Object (new_name)
 {
-	TiXmlDocument doc ("data/" + * this + ".xml");
+	TiXmlDocument doc;
+	doc.LoadFile ("data/" + * this + ".xml");
 	TiXmlHandle docHandle (& doc);
 	TiXmlElement * image =
 				docHandle.FirstChild ("world").FirstChild ("image").Element ();

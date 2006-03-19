@@ -13,7 +13,7 @@ int
 	World * tsl = new World ("test_world");
 	Obstacle * obstacle = new Obstacle ("abc");
 	
-	tsl->get_tile (7, 4)->set_obstacle (obstacle);
+	tsl->get_tile (6, 4)->set_obstacle (obstacle);
 
 	delete tsl;
 	
