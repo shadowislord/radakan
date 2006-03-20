@@ -51,6 +51,7 @@ distribution.
 	#define TIXML_ISTREAM	std::istream
 	#define TIXML_OSTREAM	std::ostream
 #else
+hqfdhqdfhdfqjgfjsjgjsfjgfkhgdkghghk
 	#include "tinystr.h"
 	#define TIXML_STRING	TiXmlString
 	#define TIXML_OSTREAM	TiXmlOutStream
