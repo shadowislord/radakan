@@ -17,12 +17,13 @@
 
 bool LoadTGA(Texture * texture, char * filename)						// Load a TGA file
 {
+	GLubyte tgaheader[12];
 	FILE * fTGA;														// File pointer to texture file
 	fTGA = fopen(filename, "rb");										// Open file for reading
 
 	assert (fTGA != NULL);												// If it didn't open....
 
-	assert (fread(&tgaheader, sizeof (TGAHeader), 1, fTGA) != 0);		// Attempt to read 12 byte header from file
+	assert (fread(&tgaheader, sizeof (tgaheader), 1, fTGA) != 0);		// Attempt to read 12 byte header from file
 
 	if (memcmp(uTGAcompare, &tgaheader, sizeof (tgaheader)) == 0)		// See if header matches the predefined header of
 	{																	// an Uncompressed TGA image
@@ -70,7 +71,7 @@ bool LoadUncompressedTGA (Texture * texture, char * filename, FILE * fTGA)	// Lo
 	assert (fread(texture->imageData, 1, tga.imageSize, fTGA) == tga.imageSize);	// Attempt to read image data
 
 	// Byte Swapping Optimized By Steve Thomas
-	for(GLuint cswap = 0; cswap < (int)tga.imageSize; cswap += tga.bytesPerPixel)
+	for(GLuint cswap = 0; cswap < tga.imageSize; cswap += tga.bytesPerPixel)
 	{
 		texture->imageData[cswap] ^= texture->imageData[cswap+2] ^=
 		texture->imageData[cswap] ^= texture->imageData[cswap+2];

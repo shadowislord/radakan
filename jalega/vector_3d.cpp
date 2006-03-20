@@ -23,83 +23,57 @@ Vector_3D::~Vector_3D ()
 /// Empty!
 }
 
-int Vector_3D::length () const
+double Vector_3D::length () const
 {
-	return sqrt (x * x + y * y + z * z);
+	return sqrt ( x * x + y * y + z * z);
 }
 
-int Vector_3D::distance (Vector_3D other_vector) const
+double Vector_3D::distance (const Vector_3D &b) const
 {
-    Vector_3D diff = * this - other_vector;
+    Vector_3D diff = * const_cast <Vector_3D *> (this) - b;
 
-	return diff.length();
+	return diff.length ();
 }
 
-string Vector_3D::to_String() const
+void Vector_3D::operator= (const Vector_3D &b)
 {
-	return "(" + int_To_Str(x) + ", " + int_To_Str(y) + ")";
+	x = b.x;
+	y = b.y;
 }
 
-void &Vector_3D::operator=(const Vector_3D &v)
+Vector_3D Vector_3D::operator- () const
 {
-	x = v.x;
-	y = v.y;
+	return Vector_3D (- x , - y, - z);
 }
 
-Vector_3D Vector_3D::half() const
+Vector_3D Vector_3D::operator* (int a) const
 {
-	return Vector_2D(x / 2, y / 2);
+	return Vector_3D (a * x , a * y, a * z);
 }
 
-Vector_3D Vector_3D::absolut() const
+Vector_3D Vector_3D::operator/ (int a) const
 {
-	return Vector_2D(abs(x), abs(y));
+	return Vector_3D (x / a,  y / a, z / a);
 }
 
-Vector_2D operator-(const Vector_3D &v)
+Vector_3D Vector_3D::operator+ (const Vector_3D &b)
 {
-	return Vector_2D(-v.x , -v.y);
+	return Vector_3D (x + b.x , y + b.y, z + b.z);
 }
 
-Vector_2D swap_Coordinates(const Vector_3D &v)
+Vector_3D Vector_3D::operator- (const Vector_3D &b)
 {
-	return Vector_2D(v.y , v.x);
+	return Vector_3D (x - b.x , y - b.y, z - b.z);
 }
 
-Vector_2D operator+(const Vector_2D &a, const Vector_2D &b)
+void Vector_3D::operator+= (const Vector_3D &b)
 {
-	return Vector_2D(a.x + b.x , a.y + b.y);
+	x += b.x;
+	y += b.y;
+	z += b.z;
 }
 
-Vector_2D operator-(const Vector_2D &a, const Vector_2D &b)
+bool Vector_3D::operator== (const Vector_3D &b)
 {
-	return Vector_2D(a.x - b.x , a.y - b.y);
-}
-
-Vector_2D multiply_Coordinates(const Vector_2D &a, const Vector_2D &b)
-{
-	return Vector_2D(a.x * b.x , a.y * b.y);
-}
-
-Vector_2D divide_Coordinates(const Vector_2D &a, const Vector_2D &b)
-{
-	return Vector_2D(a.x / b.x , a.y / b.y);
-}
-
-const Vector_2D &operator+=(Vector_2D &a, const Vector_2D &b)
-{
-	a.x += b.x;
-	a.y += b.y;
-	return a;
-}
-
-bool operator==(const Vector_2D &a, const Vector_2D &b)
-{
-	return (a.x == b.x) && (a.y == b.y);
-}
-
-ostream &operator<<(ostream &os, const Vector_2D &v)
-{
-	os << v.to_String();
-	return os;
+	return (x == b.x) && (y == b.y) && (z == b.z);
 }

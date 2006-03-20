@@ -1,14 +1,14 @@
 #ifndef TGA_LOADER_HPP
 #define TGA_LOADER_HPP
 
-#pragma comment(lib, "Opengl32.lib")					//Link to OpenGL32.lib so we can use OpenGL stuff
+//	#pragma comment(lib, "Opengl32.lib")				//Link to OpenGL32.lib so we can use OpenGL stuff
 
 #include "texture.hpp"
 
-typedef struct
+/*typedef struct
 {
 	GLubyte Header[12];									// TGA File Header
-} TGAHeader;
+} TGAHeader;*/
 
 
 typedef struct
@@ -18,13 +18,13 @@ typedef struct
 	GLuint		imageSize;								// Used To Store The Image Size When Setting Aside Ram
 	GLuint		temp;									// Temporary Variable
 	GLuint		type;	
-	GLuint		Height;									//Height of Image
-	GLuint		Width;									//Width ofImage
+	GLuint		Height;									// Height of Image
+	GLuint		Width;									// Width ofImage
 	GLuint		Bpp;									// Bits Per Pixel
 } TGA;
 
 
-TGAHeader tgaheader;									// TGA header
+//TGAHeader tgaheader;									// TGA header
 TGA tga;												// TGA image data
 
 

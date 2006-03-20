@@ -7,7 +7,7 @@
 #ifndef SHR_HPP
 #define SHR_HPP
 
-#include "sh_point.hpp"
+#include "vector_3d.hpp"
 #include "texture.hpp"
 
 class SHR:

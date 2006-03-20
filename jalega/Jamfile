@@ -9,9 +9,10 @@ Main tslrpg :
 	main.cpp
 	object.cpp
 	obstacle.cpp
-	sh_point.cpp
+	tga_loader.cpp
 	shr.cpp
 	texture.cpp
 	tile.cpp
+	vector_3d.cpp
 	world.cpp
 ;
