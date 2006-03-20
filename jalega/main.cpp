@@ -77,13 +77,13 @@ void keyPressed (unsigned char key, int x, int y)
 	// If escape is pressed, kill everything.
 	if (key == ESCAPE)
 	{
-		// shut down our window
-		glutDestroyWindow (main_window);
-
 		cout << "delete tsl; 0" << endl;
 		delete tsl;
 		cout << "delete tsl; 1" << endl;
-		
+
+		// shut down our window
+		glutDestroyWindow (main_window);
+
 		bool objects_left = false;
 		for (unsigned int i = 0; i < objects.size (); i++)
 		{
@@ -133,7 +133,7 @@ int main (int argc, char **argv)
 	glutDisplayFunc (&DrawGLScene);
 
 	// Go fullscreen.  This is the soonest we could possibly go fullscreen.
-	// glutFullScreen();
+	glutFullScreen();
 
 	// Even if there are no events, redraw our gl scene.
 	glutIdleFunc (&DrawGLScene);
@@ -148,7 +148,7 @@ int main (int argc, char **argv)
 	InitGL (800, 600);
 
 
-	World * tsl = new World ("test_world");
+	tsl = new World ("test_world");
 	Obstacle * obstacle = new Obstacle ("abc");
 	
 	tsl->get_tile (6, 4)->set_obstacle (obstacle);
