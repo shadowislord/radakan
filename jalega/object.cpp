@@ -63,8 +63,8 @@ ostream&
 	debug ()
 	const
 {
-	return debug_cout << "DEBUG: ";
-//	return cout << "DEBUG: ";
+	return debug_cout << "debug: ";
+//	return cout << "debug: ";
 }
 
 //	virtual

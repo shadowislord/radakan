@@ -3,6 +3,7 @@
 
 #include <GL/gl.h>	//	Header for OpenGL32 library
 #include <GL/glu.h>
+#include <GL/glut.h>
 //	#include <GL/glew.h>
 //	#include <GL/wglew.h>
 //	#include <GL/glaux.h>	//	opengl auxilliary library, has some usefull functions

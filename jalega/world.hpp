@@ -14,11 +14,11 @@ using namespace std;
 //	2: (0, 2)	5: (1, 2)	8: (2, 2)
 
 class World:
-	public Object	//	should be changed to GameObject once it's ready
+	public Object
 {
 	public:
-		World (string new_name);								//	Constructor
-		virtual ~World ();										//	Destructor
+		World (string new_name);								//	constructor
+		virtual ~World ();										//	destructor
 		virtual bool is_initialized () const;
 		Tile * get_tile (int x, int y);							//	zero based
 
