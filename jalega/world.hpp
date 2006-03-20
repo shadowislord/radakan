@@ -20,11 +20,11 @@ class World:
 		World (string new_name);								//	constructor
 		virtual ~World ();										//	destructor
 		virtual bool is_initialized () const;
-		Tile * get_tile (int x, int y);							//	zero based
+		Tile * get_tile (unsigned int x, unsigned int y);		//	zero based
 
 	private:
-		int width;
-		int height;
+		unsigned int width;
+		unsigned int height;
 		string image_path;
 		vector <Tile *> tile_vector;
 //		multi_array_ref <Tile, 2>  * tiles;	//	not working tile_vector wrapper

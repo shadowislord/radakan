@@ -23,16 +23,20 @@ World::
 	TiXmlElement * size =
 				docHandle.FirstChild ("world").FirstChild ("size").Element ();
 	assert (size != NULL);
-	string result_width = size->Attribute ("width", & width);
-	assert (result_width != "");
-	string result_height = size->Attribute ("height", & height);
-	assert (result_height != "");
+	int temp_width = - 1;
+	size->Attribute ("width", & temp_width);
+	assert (0 < temp_width );
+	width = (unsigned int) (temp_width);
+	int temp_height = - 1;
+	size->Attribute ("height", & temp_height);
+	assert (0 < temp_height );
+	height = (unsigned int) (temp_height);
 
 	debug () << "Size: " << width << " " << height << endl;
 
-	for (int i = 0; i < width; i++)
+	for (unsigned int i = 0; i < width; i++)
 	{
-		for (int j = 0; j < height; j++)
+		for (unsigned int j = 0; j < height; j++)
 		{
 			tile_vector.push_back
 				(new Tile (* this + "_" + to_string (i) + "_" + to_string (j)));
@@ -67,7 +71,7 @@ bool
 
 Tile *
 	World::
-	get_tile (int x, int y)
+	get_tile (unsigned int x, unsigned int y)
 {
 	assert (is_initialized ());
 

@@ -110,7 +110,7 @@ void keyPressed (unsigned char key, int x, int y)
 
 int main (int argc, char **argv) 
 {
-	// Initialize GLUT - info at http://reality.sgi.com/mjk/spec3/spec3.html
+//	Initialize GLUT - info at http://reality.sgi.com/mjk/spec3/spec3.html
 	glutInit (&argc, argv);
 
 //	Select type of Display mode:
@@ -146,7 +146,6 @@ int main (int argc, char **argv)
 
 	// Initialize our window.
 	InitGL (800, 600);
-
 
 	tsl = new World ("test_world");
 	Obstacle * obstacle = new Obstacle ("abc");
