@@ -1,13 +1,11 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-//#include <GL/gl.h>	//	Header for OpenGL32 library
-//#include <GL/glu.h>
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/glut.h>
-//	#include <GL/glew.h>
-//	#include <GL/wglew.h>
-//	#include <GL/glaux.h>	//	opengl auxilliary library, has some usefull functions
-//	#include <gl/glpng.h>	//	using tga instead
+
 #include "object.hpp"
 
 using namespace std;

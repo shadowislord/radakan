@@ -7,6 +7,7 @@
 #define TAB "    "
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <vector>
