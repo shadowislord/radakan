@@ -1,8 +1,8 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-#include <GL/gl.h>	//	Header for OpenGL32 library
-#include <GL/glu.h>
+//#include <GL/gl.h>	//	Header for OpenGL32 library
+//#include <GL/glu.h>
 #include <GL/glut.h>
 //	#include <GL/glew.h>
 //	#include <GL/wglew.h>
