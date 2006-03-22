@@ -1,5 +1,6 @@
-#include "world.hpp"
+#include "freetype.hpp"
 #include "shr.hpp"
+#include "world.hpp"
 
 // ASCII code for the escape key. 
 #define ESCAPE 27
@@ -9,6 +10,7 @@ using namespace std;
 int main_window;	//	The number of our GLUT window
 vector <Object *> objects;
 World * tsl;
+Font * font;
 
 // A general OpenGL initialization function.  Sets all of the initial parameters.
 void InitGL (int width, int height)		// We call this right after our OpenGL window is created.
@@ -57,12 +59,14 @@ void DrawGLScene()
   glTranslatef(3.0f,0.0f,0.0f);		        // Move Right 3 Units
 	
 	// draw a square (quadrilateral)
-	glBegin(GL_QUADS);					// start drawing a polygon (4 sided)
+	glBegin(GL_QUADS);						// start drawing a polygon (4 sided)
 		glVertex3f(-1.0f, 1.0f, 0.0f);		// Top Left
 		glVertex3f( 1.0f, 1.0f, 0.0f);		// Top Right
 		glVertex3f( 1.0f,-1.0f, 0.0f);		// Bottom Right
 		glVertex3f(-1.0f,-1.0f, 0.0f);		// Bottom Left
 	glEnd();								// done with the polygon
+
+	font->print (100, 300, "Tinuswdfnhwdfnjwnjwgfjwgjnwgfwgjfwg");
 
 	// swap buffers to display, since we're double buffered.
 	glutSwapBuffers ();
@@ -77,9 +81,8 @@ void keyPressed (unsigned char key, int x, int y)
 	// If escape is pressed, kill everything.
 	if (key == ESCAPE)
 	{
-		cout << "delete tsl; 0" << endl;
 		delete tsl;
-		cout << "delete tsl; 1" << endl;
+		delete font;
 
 		// shut down our window
 		glutDestroyWindow (main_window);
@@ -108,7 +111,7 @@ void keyPressed (unsigned char key, int x, int y)
     }
 }
 
-int main (int argc, char **argv) 
+int main (int argc, char **argv)
 {
 //	Initialize GLUT - info at http://reality.sgi.com/mjk/spec3/spec3.html
 	glutInit (&argc, argv);
@@ -146,6 +149,8 @@ int main (int argc, char **argv)
 
 	// Initialize our window.
 	InitGL (800, 600);
+
+	font = new Font ("fonts/test.ttf", 30);
 
 	tsl = new World ("test_world");
 	Obstacle * obstacle = new Obstacle ("abc");
