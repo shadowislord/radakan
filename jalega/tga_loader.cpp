@@ -1,46 +1,11 @@
-/********************************************************************************
-/Name:		TGA.cpp																*
-/Header:	tga.h																*
-/Purpose:	Load Compressed and Uncompressed TGA files							*
-/Functions:	LoadTGA(Texture * texture, char * filename)							*
-/			LoadCompressedTGA(Texture * texture, char * filename, FILE * fTGA)	*
-/			LoadUncompressedTGA(Texture * texture, char * filename, FILE * fTGA)*	
-********************************************************************************/
 #include "tga_loader.hpp"
 
-/********************************************************************************
-/name :		LoadTGA(Texture * texture, char * filename)							*
-/function:  Open and test the file to make sure it is a valid TGA file			*	
-/parems:	texture, pointer to a Texture structure								*
-/			filename, string pointing to file to open							*
-********************************************************************************/
+TGA tga;												// TGA image data
 
-bool LoadTGA(Texture * texture, char * filename)						// Load a TGA file
-{
-	GLubyte tgaheader[12];
-	FILE * fTGA;														// File pointer to texture file
-	fTGA = fopen(filename, "rb");										// Open file for reading
+GLubyte uTGAcompare[12] = {0,0,2, 0,0,0,0,0,0,0,0,0};	// Uncompressed TGA Header
+GLubyte cTGAcompare[12] = {0,0,10,0,0,0,0,0,0,0,0,0};	// Compressed TGA Header
 
-	assert (fTGA != NULL);												// If it didn't open....
-
-	assert (fread(&tgaheader, sizeof (tgaheader), 1, fTGA) != 0);		// Attempt to read 12 byte header from file
-
-	if (memcmp(uTGAcompare, &tgaheader, sizeof (tgaheader)) == 0)		// See if header matches the predefined header of
-	{																	// an Uncompressed TGA image
-		LoadUncompressedTGA(texture, filename, fTGA);					// If so, jump to Uncompressed TGA loading code
-	}
-	else if (memcmp (cTGAcompare, &tgaheader, sizeof (tgaheader)) == 0)	// See if header matches the predefined header of
-	{																	// an RLE compressed TGA image
-		LoadCompressedTGA (texture, filename, fTGA);					// If so, jump to Compressed TGA loading code
-	}
-	else																// If header matches neither type
-	{
-		abort ();														// Exit function
-	}
-	return true;														// All went well, continue on
-}
-
-bool LoadUncompressedTGA (Texture * texture, char * filename, FILE * fTGA)	// Load an uncompressed TGA (note, much of this code is based on NeHe's 
+bool LoadUncompressedTGA (Texture * texture, FILE * fTGA)	// Load an uncompressed TGA (note, much of this code is based on NeHe's
 {																		// TGA Loading code nehe.gamedev.net)
 	assert (fread(tga.header, sizeof(tga.header), 1, fTGA) != 0);				// Read TGA header
 
@@ -81,7 +46,7 @@ bool LoadUncompressedTGA (Texture * texture, char * filename, FILE * fTGA)	// Lo
 	return true;															// Return success
 }
 
-bool LoadCompressedTGA(Texture * texture, char * filename, FILE * fTGA)		// Load COMPRESSED TGAs
+bool LoadCompressedTGA(Texture * texture, FILE * fTGA)		// Load COMPRESSED TGAs
 { 
 	assert (fread(tga.header, sizeof(tga.header), 1, fTGA) != 0);			// Attempt to read header
 
@@ -168,4 +133,29 @@ bool LoadCompressedTGA(Texture * texture, char * filename, FILE * fTGA)		// Load
 	while(currentpixel < pixelcount);													// Loop while there are still pixels left
 	fclose(fTGA);																		// Close the file
 	return true;																		// return success
+}
+
+bool LoadTGA(Texture * texture, char * filename)						// Load a TGA file
+{
+	GLubyte tgaheader[12];
+	FILE * fTGA;														// File pointer to texture file
+	fTGA = fopen (filename, "rb");										// Open file for reading
+
+	assert (fTGA != NULL);												// If it didn't open....
+
+	assert (fread(&tgaheader, sizeof (tgaheader), 1, fTGA) != 0);		// Attempt to read 12 byte header from file
+
+	if (memcmp(uTGAcompare, &tgaheader, sizeof (tgaheader)) == 0)		// See if header matches the predefined header of
+	{																	// an Uncompressed TGA image
+		LoadUncompressedTGA (texture, fTGA);					// If so, jump to Uncompressed TGA loading code
+	}
+	else if (memcmp (cTGAcompare, &tgaheader, sizeof (tgaheader)) == 0)	// See if header matches the predefined header of
+	{																	// an RLE compressed TGA image
+		LoadCompressedTGA (texture, fTGA);					// If so, jump to Compressed TGA loading code
+	}
+	else																// If header matches neither type
+	{
+		abort ();														// Exit function
+	}
+	return true;														// All went well, continue on
 }

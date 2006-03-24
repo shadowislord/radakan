@@ -3,9 +3,6 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#define PAUSE {print()<<"pause";getchar();}
-#define TAB "    "
-
 #include <cassert>
 #include <cmath>
 #include <iostream>
@@ -18,8 +15,11 @@ class Object:
 	public string
 {
 	public:
-		Object (string new_name);								//	Constructor
-		virtual ~Object ();										//	Destructor
+#ifdef WIN32
+		Object ();
+#endif
+		Object (string new_name);								//	constructor
+		virtual ~Object ();										//	destructor
 		template <typename T> T * copy () const;
 		template <typename T> bool is_type () const;
 		template <typename T> T * to_type () const;
@@ -33,8 +33,9 @@ extern vector <Object *> objects;
 
 string to_string (int value);
 int to_int (string value);
+//	void pause ();
 
-#include "object.inc"
+#include "object.ipp"
 
 #endif
 

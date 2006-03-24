@@ -90,3 +90,9 @@ int to_int (string value)
 	iss >> result;	//	extract int from stream
 	return result;
 }
+
+//	void pause ()
+//	{
+//		print() << "pause - hit any key to continue" << endl;
+//		getchar();
+//	}

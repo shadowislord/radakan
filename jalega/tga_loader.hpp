@@ -1,15 +1,7 @@
 #ifndef TGA_LOADER_HPP
 #define TGA_LOADER_HPP
 
-//	#pragma comment(lib, "Opengl32.lib")				//Link to OpenGL32.lib so we can use OpenGL stuff
-
 #include "texture.hpp"
-
-/*typedef struct
-{
-	GLubyte Header[12];									// TGA File Header
-} TGAHeader;*/
-
 
 typedef struct
 {
@@ -24,20 +16,6 @@ typedef struct
 } TGA;
 
 
-//TGAHeader tgaheader;									// TGA header
-TGA tga;												// TGA image data
-
-
-
-GLubyte uTGAcompare[12] = {0,0,2, 0,0,0,0,0,0,0,0,0};	// Uncompressed TGA Header
-GLubyte cTGAcompare[12] = {0,0,10,0,0,0,0,0,0,0,0,0};	// Compressed TGA Header
-bool LoadUncompressedTGA(Texture *, char *, FILE *);	// Load an Uncompressed file
-bool LoadCompressedTGA(Texture *, char *, FILE *);		// Load a Compressed file
+bool LoadTGA (Texture * texture, char * filename);						// Load a TGA file
 
 #endif
-
-
-
-
-
-
