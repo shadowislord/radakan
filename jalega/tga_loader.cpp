@@ -195,21 +195,21 @@ bool LoadTGA (Texture * texture,  string filename)			// Loads A TGA File Into Me
 		texture->imageData[i + 2] = temp;					// Set The 3rd Byte To The Value In 'temp' (1st Byte Value)
 	}
 
-	fclose (file);											// Close The File
+	fclose (file);									// Close The File
 
 	// Build A Texture From The Data
-	glGenTextures(1, &texture[0].texID);					// Generate OpenGL texture IDs
+	glGenTextures(1, &texture->texID);			// Generate OpenGL texture IDs
 
-	glBindTexture(GL_TEXTURE_2D, texture[0].texID);			// Bind Our Texture
+	glBindTexture(GL_TEXTURE_2D, texture->texID);	// Bind Our Texture
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtered
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtered
 	
-	if (texture[0].bpp==24)									// Was The TGA 24 Bits
+	if (texture->bpp==24)									// Was The TGA 24 Bits
 	{
 		type=GL_RGBA;										// If So Set The 'type' To GL_RGB
 	}
 
-	glTexImage2D(GL_TEXTURE_2D, 0, type, texture[0].width, texture[0].height, 0, type, GL_UNSIGNED_BYTE, texture[0].imageData);
+	glTexImage2D(GL_TEXTURE_2D, 0, type, texture->width, texture->height, 0, type, GL_UNSIGNED_BYTE, texture->imageData);
 
 	return true;											// Texture Building Went Ok, Return True
 }

@@ -1,25 +1,44 @@
-/*
-Author: Weastmanm
-*/
+//
+//	Author: Weastmanm
+//
 
 #include "input_event.hpp"
 
-input_event::input_event(){
-               
+Input_Event::
+	Input_Event
+	(string key, float new_x, float new_y):
+	Object::
+	Object
+	(key)
+
+{
+	x = new_x;
+	y = new_y;
 }
 
-input_event::~input_event(){
+//	virtual
+Input_Event::
+	~Input_Event
+	()
+{
 
 }
 
-string input_event::getKeyPressed(){
-                            
+//	string
+//		Input_Event::
+//		 getKeyPressed ()
+//	{
+//		return "";
+//	}
+
+float Input_Event::
+	get_x()
+{
+	return x;
 }
 
-float input_event::getMouseX(){
-                        
-}
-
-float input_event::getMouseY(){
-                        
+float Input_Event::
+	get_y()
+{
+	return y;
 }
