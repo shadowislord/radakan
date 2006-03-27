@@ -1,6 +1,6 @@
 #include "texture.hpp"
 
-using namespace std;
+/*using namespace std;
 
 //  Constructor
 Texture::
@@ -26,3 +26,4 @@ bool
 {
 	return Object::is_initialized ();
 }
+*/

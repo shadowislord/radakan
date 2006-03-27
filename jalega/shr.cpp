@@ -10,12 +10,9 @@ Some classes relating to textures may need changing.
 */
 
 #include "shr.hpp"
-
+/*
 bool LoadTGA (Texture * texture, string path);	//	loads tga textures
 
-/*
-Initializes opengl so that transparent textures and alpha blending can be used as well all enableing depth testing.
-*/
 SHR::
 	SHR ():
 	Object::
@@ -41,9 +38,8 @@ SHR::~SHR()
 
 }
 
-/*
-Enables 2D texturing
-*/
+//	Enables 2D texturing
+
 void SHR::texturing2D (bool flag)
 {
 	if (flag)
@@ -51,38 +47,6 @@ void SHR::texturing2D (bool flag)
 	else
 		glDisable (GL_TEXTURE_2D);
 }
-
-/*
-Attempts to load a texture from the file location. If the texture fails to load, or is not of the type png, then -1 is returned as the id of the texture.
-
-*/
-/*//OLDER VERSION, NOW USING TGA
-int shLoadTexture(char* location, int mipmap, int alpha)
-{
-	pngInfo info;
-	GLuint id;
-	glGenTextures(1, &id);
-	glBindTexture(GL_TEXTURE_2D, id);
-	float maximumAnistropy = 2; //just set it to two, anything higher shows little effect
-	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnistropy); //only use when full anisotropy is needed
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maximumAnistropy);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);//nearest mipmap speeds things up but still retains quality at this level
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	pngLoad(location, mipmap, alpha, &info);
-	if(id == 0)
-	{
-		printf("Failed to load texture: %s", location);
-		return -1;
-	}
-	else
-	{
-		printf("Texture=%s Size=%i,%i Depth=%i Alpha=%i\n", location, info.Width, info.Height, info.Depth, info.Alpha);
-		return id;
-	}
-}
-*/
 
 
 Texture SHR::loadTexture (string location)
@@ -131,9 +95,7 @@ Texture SHR::loadTexture (string location)
 }
 
 
-/*
-Binds a texture with opengl. If the id is -1 then no texture is bound.
-*/
+//	Binds a texture with opengl. If the id is -1 then no texture is bound.
 void SHR::bindTexture (int textureid)
 {
 	if(textureid != -1)
@@ -142,14 +104,6 @@ void SHR::bindTexture (int textureid)
 	}
 }
 
-/*
-Renders a textured quad onto the screen.
-This does not rearrange the view of the screen.
-This does not render a vertex buffered object.
-
-NOTE: rotation refers to rotation about the x axis. No other axis rotation is possible.
-The rotation is to left.
-*/
 void SHR::renderQuad (int textureid, float xpos, float ypos, float width, float height, float zdepth, float rotation, float tx, float ty)
 {
 	glPushMatrix ();
@@ -169,23 +123,11 @@ void SHR::renderQuad (int textureid, float xpos, float ypos, float width, float 
 	glPopMatrix();
 }
 
-/*
-Uses GL_POINT_SPRITE_ARB to render a hardware accellerated textured point.
-This method is ideal for particle rendering.
-The point cannot be rotated.
-*/
 void SHR::renderPointSprite (int textureid, float xpos, float ypos, int size)
 {
 	
 }
 
-/*
-Alters the viewport in order to create a bird's eye view of the playing field.
-The origin of the playing field is the bottom left corner of the screen.
-
-WARNING: you can change where the bottom left corner of the screen is located simply by inserting negative values for either input values.
-This is not recommended
-*/
 void SHR::enable2D (int xscale, int yscale)
 {
 	glMatrixMode (GL_PROJECTION);
@@ -197,9 +139,8 @@ void SHR::enable2D (int xscale, int yscale)
 	glLoadIdentity ();
 }
 
-/*
-Returns the view to normal
-*/
+//	Returns the view to normal
+
 void SHR::disable2D ()
 {
 	glMatrixMode (GL_PROJECTION);
@@ -207,4 +148,4 @@ void SHR::disable2D ()
 	glMatrixMode (GL_MODELVIEW);
 	glPopMatrix ();
 }
-
+*/

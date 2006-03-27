@@ -16,6 +16,6 @@ typedef struct
 } TGA;
 
 
-bool LoadTGA (Texture * texture, char * filename);						// Load a TGA file
+bool LoadTGA (Texture * texture, string filename);						// Load a TGA file
 
 #endif

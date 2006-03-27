@@ -13,7 +13,6 @@ Texture * font_texture;
 
 void BuildFont()									// Build Our Font Display List
 {
-	glBindTexture (GL_TEXTURE_2D, font_texture->texID);		// Select Our Font Texture
 	for (int i = 0; i < 256; i++)					// Loop Through All 256 Lists
 	{
 		float cx = float (i % 16) / 16.0f;						// X Position Of Current Character
@@ -33,9 +32,10 @@ void BuildFont()									// Build Our Font Display List
 			glTranslated (14,0,0);							// Move To The Right Of The Character
 		glEndList ();										// Done Building The Display List
 	}														// Loop Until All 256 Are Built
+	glBindTexture(GL_TEXTURE_2D, font_texture->texID);		// Select Our Font Texture
+
 }
 
-///////////////////////////////////////////////
 GLvoid glPrint (GLint x, GLint y, unsigned int set, string fmt)	// Where The Printing Happens
 {
 	if (fmt == "")										// If There's No Text
@@ -45,14 +45,13 @@ GLvoid glPrint (GLint x, GLint y, unsigned int set, string fmt)	// Where The Pri
 
 	glEnable (GL_TEXTURE_2D);								// Enable Texture Mapping
 	glLoadIdentity ();										// Reset The Modelview Matrix
-	glTranslated (x,y,0);									// Position The Text (0,0 - Top Left)
+	glTranslated (x, y, 0);									// Position The Text (0,0 - Top Left)
 	glListBase (128 * set - 31);							// Choose The Font Set (0 or 1)
 	glCallLists (fmt.size (), GL_UNSIGNED_BYTE, fmt.c_str ());	// Write The Text To The Screen
-	glTranslated (-x,-y,0);									// Position The Text (0,0 - Top Left)
+	glTranslated (-x, -y, 0);								// Position The Text (0,0 - Top Left)
 
 	glDisable (GL_TEXTURE_2D);								// Disable Texture Mapping
 }
-/////////////////////////////////
 
 void * * bitmap_fonts[7] =
 {
@@ -76,7 +75,7 @@ void
 }
 
 void
-	reshape
+	resize
 	(int new_width, int new_height)
 {
 	GLdouble size;
@@ -194,7 +193,7 @@ void
 	glPrint (66,80,1,"Version");								// Display Version
 
 	glColor3f (0.5f,0.5f,1.0f);								// Set Color To Bright Blue
-	glPrint (192,432,0,"LazyBumWare Productions");
+	glPrint (192, 432, 0, "LazyBumWare Productions");
 
 	glutSwapBuffers ();
 }
@@ -211,16 +210,16 @@ int
 	main_window = glutCreateWindow ("tslrpg");
 
 	glutDisplayFunc (draw);
-	glutReshapeFunc (reshape);
+	glutReshapeFunc (resize);
 	glutKeyboardFunc (handle_input);
 	
 	glClearDepth (1.0);
 	glDepthFunc (GL_LESS);
 
 	font_texture = new Texture ();
-
 	LoadTGA (font_texture, "fonts/test.tga");
 	BuildFont ();
+	glShadeModel (GL_SMOOTH);								// Enable Smooth Shading
 	
 	tsl = new World ("test_world");
 	Obstacle * obstacle = new Obstacle ("abc");
