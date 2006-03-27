@@ -2,8 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-//	What should be linked to avoind OpenGL linking errors? - Tinus
-
 #ifndef SHR_HPP
 #define SHR_HPP
 
@@ -14,9 +12,9 @@ class SHR:
 	public Object
 {
 	public:
-		SHR();												//	Constructor
-		virtual ~SHR();										//	Destructor
-		void initGL();
+		SHR ();												//	constructor
+		virtual ~SHR ();									//	destructor
+		void initGL ();
 		void texturing2D (bool flag);
 		Texture loadTexture (string location);
 		void bindTexture (int textureid);
