@@ -5,11 +5,9 @@
 #include "input_event.hpp"
 
 Input_Event::
-	Input_Event
-	(string key, float new_x, float new_y):
+	Input_Event (string key, float new_x, float new_y):
 	Object::
-	Object
-	(key)
+	Object (key)
 
 {
 	x = new_x;

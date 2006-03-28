@@ -1,6 +1,6 @@
 #include "shr.hpp"
 #include "world.hpp"
-#include "tga_loader.hpp"
+#include "event_engine.hpp"
 
 using namespace std;
 
@@ -10,6 +10,7 @@ vector <string> text;
 vector <Object *> objects;
 World * tsl;
 Texture * font_texture;
+Event_Engine * event_engine;
 
 void BuildFont()										// Build Our Font Display List
 {
@@ -109,59 +110,45 @@ void
 }
 
 void
+	quit
+	()
+{
+	delete event_engine;
+	delete tsl;
+	delete font_texture;
+
+// shut down our window
+	glutDestroyWindow (main_window);
+			
+	bool objects_left = false;
+	for (unsigned int i = 0; i < objects.size (); i++)
+	{
+		if (objects.at (i) != NULL)
+		{
+			if (! objects_left)
+			{
+				cout << "Objects left: " << endl;
+				objects_left = true;
+			}
+			cout << i << ": " << * objects.at (i) << endl;
+		}
+	}
+	if (! objects_left)
+	{
+		cout << "tslrpg finished successfully. " << endl;
+		exit (0);
+	}
+	cerr << "ERROR: tslrpg finished with orphaned objects. " << endl;
+	exit (1);
+}
+
+void
 	handle_input
 	(GLubyte key, GLint x, GLint y)
 {
-	// avoid thrashing this procedure
-	usleep (100);
-	switch (key)
-	{
-		case 27:	// Esc - Quit
-		{
-			delete tsl;
-			delete font_texture;
-	
-			// shut down our window
-			glutDestroyWindow (main_window);
-
-			bool objects_left = false;
-			for (unsigned int i = 0; i < objects.size (); i++)
-			{
-				if (objects.at (i) != NULL)
-				{
-					if (! objects_left)
-					{
-						cout << "Objects left: " << endl;
-						objects_left = true;
-					}
-					cout << i << ": " << * objects.at (i) << endl;
-				}
-			}
-			if (! objects_left)
-			{
-				cout << "tslrpg finished successfully. " << endl;
-				exit (0);
-			}
-			cerr << "ERROR: tslrpg finished with orphaned objects. " << endl;
-			exit (1);
-		}
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		{
-			font_index = key - '1';
-			glutPostRedisplay();
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
+	string a = "";
+	a.push_back (key);
+	event_engine->process (new Input_Event (a, x, y));
 }
 
 void
@@ -221,7 +208,8 @@ int
 	LoadTGA (font_texture, "fonts/test.tga");
 	BuildFont ();
 	glShadeModel (GL_SMOOTH);				// Enable Smooth Shading
-	
+
+	event_engine = new Event_Engine (quit, glutPostRedisplay);
 	tsl = new World ("test_world");
 	Obstacle * obstacle = new Obstacle ("abc");
 	

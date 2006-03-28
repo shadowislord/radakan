@@ -16,8 +16,8 @@ class Input_Event:
         Input_Event (string key, float new_x, float new_y);
         ~Input_Event ();
 //		string getKeyPressed ();  //returns a string of the key that was pressed. Can add modifiers to it, and so on	-	use ' * input_event ' instead
-        float get_x (); //returns the x position of where the mouse is. It should always be sent with an event.
-        float get_y (); //same as getMouseX()
+        float get_x ();	//	returns the x position of where the mouse is.
+        float get_y ();	//	returns the y position of where the mouse is.
     private:
         float x;
         float y;
