@@ -4,76 +4,12 @@
 
 using namespace std;
 
-int font_index = 0;
 int main_window;	//	GLUT window number
-vector <string> text;
 vector <Object *> objects;
 World * tsl;
-Texture * font_texture;
 Event_Engine * event_engine;
-
-void BuildFont()										// Build Our Font Display List
-{
-	for (int i = 0; i < 256; i++)						// Loop Through All 256 Lists
-	{
-		float cx = float (i % 16) / 16.0f;				// X Position Of Current Character
-		float cy = 1.0f - float (i / 16) / 16.0f;		// Y Position Of Current Character
-		float a = 0.0625f;
-		float b = 0.001f;
-
-		glNewList (1 + i, GL_COMPILE);					// Start Building A List
-			glBegin (GL_QUADS);							// Use A Quad For Each Character
-				glTexCoord2f (cx, cy - a);				// Texture Coord (Bottom Left)
-				glVertex2d (0, 0);						// Vertex Coord (Bottom Left)
-				glTexCoord2f (cx + a, cy - a);			// Texture Coord (Bottom Right)
-				glVertex2i (16, 0);						// Vertex Coord (Bottom Right)
-				glTexCoord2f (cx + a, cy - b);			// Texture Coord (Top Right)
-				glVertex2i (16, 16);					// Vertex Coord (Top Right)
-				glTexCoord2f (cx, cy - b);				// Texture Coord (Top Left)
-				glVertex2i (0, 16);						// Vertex Coord (Top Left)
-			glEnd ();									// Done Building Our Quad (Character)
-			glTranslated (14, 0, 0);					// Move To The Right Of The Character
-		glEndList ();									// Done Building The Display List
-	}													// Loop Until All 256 Are Built
-	glBindTexture (GL_TEXTURE_2D, font_texture->texID);	// Select Our Font Texture
-
-}
-
-GLvoid glPrint (GLint x, GLint y, unsigned int set, string fmt)	// Where The Printing Happens
-{
-	assert (fmt != "");
-	assert (set <= 1);
-
-	glEnable (GL_TEXTURE_2D);									// Enable Texture Mapping
-	glLoadIdentity ();											// Reset The Modelview Matrix
-	glTranslated (-x, -y, 0);									// Position The Text (0,0 - Top Left)
-	glListBase (128 * set - 31);								// Choose The Font Set (0 or 1)
-	glCallLists (fmt.size (), GL_UNSIGNED_BYTE, fmt.c_str ());	// Write The Text To The Screen
-	glTranslated (x, y, 0);										// Position The Text (0,0 - Top Left)
-
-	glDisable (GL_TEXTURE_2D);									// Disable Texture Mapping
-}
-
-void * * bitmap_fonts[7] =
-{
-	GLUT_BITMAP_9_BY_15,
-	GLUT_BITMAP_8_BY_13,
-	GLUT_BITMAP_TIMES_ROMAN_10,
-	GLUT_BITMAP_TIMES_ROMAN_24,
-	GLUT_BITMAP_HELVETICA_10,
-	GLUT_BITMAP_HELVETICA_12,
-	GLUT_BITMAP_HELVETICA_18
-};
-
-void
-	print_bitmap_string
-	(void * * font, string s)
-{
-	for (unsigned int i = 0; i < s.size (); i++)
-	{
-		glutBitmapCharacter (font, s.at (i));
-	}
-}
+SHR * shr;
+Texture * font_texture_a;
 
 void
 	resize
@@ -115,7 +51,7 @@ void
 {
 	delete event_engine;
 	delete tsl;
-	delete font_texture;
+	delete shr;
 
 // shut down our window
 	glutDestroyWindow (main_window);
@@ -155,41 +91,15 @@ void
 	draw
 	()
 {
-	// Clear the window.
-	glClearColor (0.0, 0.0, 0.0, 0.0);
-	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity ();
-
-	glColor4f (0.0, 0.5, 1.0, 0.0);
-	glBegin (GL_POLYGON);					// start drawing a polygon
-		glVertex3f (- 20.0f, - 20.0f, 0.0f);
-		glVertex3f (100.0f, 200.0f, 0.0f);
-		glVertex3f (10.0f, - 50.0f, 0.0f);
-	glEnd ();								// we're done with the polygon
-
-	// Draw the strings, according to the current mode and font.
-	glColor4f (0.0, 1.0, 0.0, 0.0);
-	for (int j = 0; j < 4; j++)
-	{
-		glRasterPos2f (- 225.0, 70.0 - 20.0 * j);
-		print_bitmap_string (bitmap_fonts [font_index], text [j]);
-	}
-		
-	glColor3f (1.0f,0.5f,0.5f);				// Set Color To Bright Red
-	glPrint (60, - 128, 1, "Renderer");		// Display Renderer
-	glPrint (60, - 96, 1, "Vendor");		// Display Vendor Name
-	glPrint (60, - 64, 1, "Version");		// Display Version
-
-	glColor3f (0.5f,0.5f,1.0f);				// Set Color To Bright Blue
-	glPrint (200, 100, 0, "LazyBumWare Productions");
-
-	glutSwapBuffers ();
+	shr->draw ();
 }
 
 int
 	main
 	(int argc, char * * argv)
 {
+	shr = new SHR ();
+	
 	glutInit (&argc, argv);
 	glutInitWindowSize (800, 600);
 
@@ -204,34 +114,16 @@ int
 	glClearDepth (1.0);
 	glDepthFunc (GL_LESS);
 
-	font_texture = new Texture ();
-	LoadTGA (font_texture, "fonts/test.tga");
-	BuildFont ();
+	font_texture_a = new Texture ("fonts/test.tga");
+	shr->build_font (font_texture_a);
 	glShadeModel (GL_SMOOTH);				// Enable Smooth Shading
 
 	event_engine = new Event_Engine (quit, glutPostRedisplay);
-	tsl = new World ("test_world");
-	Obstacle * obstacle = new Obstacle ("abc");
-	
-	tsl->get_tile (6, 4)->set_obstacle (obstacle);
 
-	//	Set up some strings with the characters to draw.
-	for (unsigned int j = 0; j < 4; j++)	//	skip 0, the null terminator
-	{
-		text.push_back (to_string (j) + ": ");
-		for (unsigned int i = 0; i < 32; i++)
-		{
-			if (i + j == 0)	//	Skip zero - it's the null terminator
-			{
-				continue;
-			}
-			text.at (j).push_back (char (i + 32 * j));
-		}
-		text.at (j).push_back ('\0');
-	}
+	tsl = new World ("test_world");
+	tsl->get_tile (6, 4)->set_obstacle (new Obstacle ("tree"));
 
 	glutMainLoop ();
 
-	abort ();
 	return 1;
 }

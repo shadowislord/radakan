@@ -15,7 +15,6 @@ typedef struct
 	GLuint		Bpp;									// Bits Per Pixel
 } TGA;
 
-
-bool LoadTGA (Texture * texture, string filename);						// Load a TGA file
+//bool LoadTGA (Texture * texture, string filename);						// Load a TGA file
 
 #endif

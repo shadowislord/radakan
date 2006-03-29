@@ -15,6 +15,7 @@ class SHR:
 		SHR ();												//	constructor
 		virtual ~SHR ();									//	destructor
 		void initGL ();
+		void draw ();
 		void texturing2D (bool flag);
 		Texture loadTexture (string location);
 		void bindTexture (int textureid);
@@ -24,6 +25,13 @@ class SHR:
 			float ypos, int size);
 		void enable2D (int xscale, int yscale);
 		void disable2D ();
+		void glPrint (int x, int y, unsigned int set, string fmt);
+
+//	temporary public
+		void build_font (Texture * texture);
+		Texture * font_texture;
+	private:
+		vector <string> text;
 };
 
 #endif	//	SHR_HPP

@@ -23,7 +23,7 @@ void Event_Engine::
 	assert (event != NULL);
 
 // avoid thrashing this procedure
-//	usleep (100);
+	usleep (100);
 	
 	switch (event->at (0))
 	{

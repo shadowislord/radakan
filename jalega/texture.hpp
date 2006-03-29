@@ -14,9 +14,10 @@ class Texture:
 	public Object
 {
 	public:
-		Texture ();
+		Texture (string filename);		//	TGA texture filename
 		virtual ~Texture ();
 		virtual bool is_initialized () const;
+		void load_TGA (string filename);
 		GLubyte	* imageData;			// Image Data (Up To 32 Bits)
 		GLuint	bpp;					// Image Color Depth In Bits Per Pixel
 		GLuint	width;					// Image Width

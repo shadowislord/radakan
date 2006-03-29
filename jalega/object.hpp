@@ -30,6 +30,7 @@ class Object:
 };
 
 extern vector <Object *> objects;
+extern int font_index;		//	should be moved to a better place
 
 string to_string (int value);
 int to_int (string value);

@@ -20,6 +20,4 @@ class Event_Engine:
 		void_func quit;
 };
 
-extern int font_index;
-
 #endif
