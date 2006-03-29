@@ -2,15 +2,7 @@
 
 using namespace std;
 
-Vector_3D::Vector_3D ():
-	Object::Object ("Vector_3D")
-{
-	clog << "Warning: vector unexplicitely created! " << endl;
-	x = 0;
-	y = 0;
-}
-
-Vector_3D::Vector_3D (int new_x , int new_y, int new_z):
+Vector_3D::Vector_3D (float new_x , float new_y, float new_z):
 	Object::Object ("Vector_3D")
 {
 	x = new_x;
@@ -20,7 +12,6 @@ Vector_3D::Vector_3D (int new_x , int new_y, int new_z):
 
 Vector_3D::~Vector_3D ()
 {
-/// Empty!
 }
 
 double Vector_3D::length () const
@@ -46,12 +37,12 @@ Vector_3D Vector_3D::operator- () const
 	return Vector_3D (- x , - y, - z);
 }
 
-Vector_3D Vector_3D::operator* (int a) const
+Vector_3D Vector_3D::operator* (float a) const
 {
 	return Vector_3D (a * x , a * y, a * z);
 }
 
-Vector_3D Vector_3D::operator/ (int a) const
+Vector_3D Vector_3D::operator/ (float a) const
 {
 	return Vector_3D (x / a,  y / a, z / a);
 }

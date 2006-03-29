@@ -14,15 +14,19 @@ class Texture:
 	public Object
 {
 	public:
-		Texture (string filename);		//	TGA texture filename
+		Texture (string filename, int new_id);		//	TGA texture filename
 		virtual ~Texture ();
 		virtual bool is_initialized () const;
 		void load_TGA (string filename);
+		void build_font () const;
+		int get_id () const;
+
+	private:
 		GLubyte	* imageData;			// Image Data (Up To 32 Bits)
 		GLuint	bpp;					// Image Color Depth In Bits Per Pixel
 		GLuint	width;					// Image Width
 		GLuint	height;					// Image Height
-		GLuint	texID;					// Texture ID Used To Select A Texture
+		GLuint	id;						// Texture ID Used To Select A Texture
 };
 
 #endif
