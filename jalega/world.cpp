@@ -5,9 +5,11 @@ using namespace std;
 
 //  Constructor
 World::
-	World (string new_name):
+	World
+	(string new_name):
 	Object::
-	Object (new_name)
+	Object
+	(new_name)
 {
 	TiXmlDocument doc;
 	doc.LoadFile ("data/" + * this + ".xml");
@@ -51,7 +53,8 @@ World::
 
 //  Destructor
 World::
-	~World ()
+	~World
+	()
 {
 //	delete tiles;
 	for (unsigned int i = 0; i < tile_vector.size (); i++)
@@ -63,7 +66,8 @@ World::
 //	virtual
 bool
 	World::
-	is_initialized ()
+	is_initialized
+	()
 	const
 {
 	return Object::is_initialized ();
@@ -71,10 +75,34 @@ bool
 
 Tile *
 	World::
-	get_tile (unsigned int x, unsigned int y)
+	get_tile
+	(unsigned int x, unsigned int y)
+	const
 {
 	assert (is_initialized ());
 
 	return tile_vector.at (x * height + y);
 //	return & tiles[x][y][0];	//	I've no idea why the [0] needs to be added.
+}
+
+unsigned int
+	World::
+	get_width
+	()
+	const
+{
+	assert (is_initialized ());
+
+	return width;
+}
+
+unsigned int
+	World::
+	get_height
+	()
+	const
+{
+	assert (is_initialized ());
+
+	return height;
 }

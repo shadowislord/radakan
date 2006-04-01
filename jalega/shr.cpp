@@ -11,9 +11,6 @@ Some classes relating to textures may need changing.
 
 #include "shr.hpp"
 
-//Texture * font_texture_a;
-
-
 int font_index = 0;
 
 void * * bitmap_fonts_a[7] =
@@ -49,8 +46,8 @@ SHR::
 	main_window = glutCreateWindow ("tslrpg");
 	
 	glClearDepth (1.0);
-	glDepthFunc (GL_LESS);	//	glDepthFunc (GL_LEQUAL);
-	glShadeModel (GL_SMOOTH);				// Enable Smooth Shading
+	glDepthFunc (GL_LESS);
+	glShadeModel (GL_SMOOTH);							// Enable Smooth Shading
 	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	//	really nice perspective
 
 	for (unsigned int j = 0; j < 4; j++)
@@ -101,6 +98,14 @@ void SHR::draw () const
 		glRasterPos2f (- 225.0, 70.0 - 20.0 * j);
 		print_bitmap (bitmap_fonts_a [font_index], text [j]);
 	}
+
+	for (unsigned int i = 0; i < tsl->get_width (); i++)
+	{
+		for (unsigned int j = 0; j < tsl->get_height (); j++)
+		{
+			render_quad	(font_texture, 50 + 25 * i, 100 + 25 * j, 20, 20, 0, 0, 0, 0);
+		}
+	}
 		
 	use_color (new Vector_3D (1.0f, 0.5f, 0.5f));	// Set Color To Bright Red
 	glPrint (60, - 120, 1, "Lazy");					// Display Renderer
@@ -143,7 +148,7 @@ void SHR::bind_texture (Texture * texture) const
 
 void
 	SHR::
-	renderQuad
+	render_quad
 	(Texture * texture, float xpos, float ypos, float width, float height,
 	float zdepth, float rotation, float tx, float ty) const
 {
@@ -190,7 +195,8 @@ void
 
 /*void SHR::enable2D (int xscale, int yscale)
 {
-	glMatrixMode (GL_PROJECTION);
+	glMatrixMode (GL_PROJ	glCallLists (fmt.size (), GL_UNSIGNED_BYTE, fmt.c_str ());	// Write The Text To The Screen
+ECTION);
 	glPushMatrix ();
 	glLoadIdentity ();
 	glOrtho (0, xscale, 0, yscale, -1, 0);

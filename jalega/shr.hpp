@@ -7,6 +7,7 @@
 
 #include "tga_loader.hpp"
 #include "vector_3d.hpp"
+#include "world.hpp"
 
 class SHR:
 	public Object
@@ -19,11 +20,13 @@ class SHR:
 		void texturing_2d (bool flag) const;
 		Texture loadTexture (string location) const;
 		void bind_texture (Texture * texture) const;
-		void renderQuad (Texture * texture, float xpos, float ypos, float width,
-			float height, float zdepth, float rotation, float tx, float ty) const;
+		void render_quad (Texture * texture, float xpos, float ypos,
+			float width, float height, float zdepth, float rotation, float tx,
+			float ty) const;
 		void renderPointSprite (Texture * texture, float xpos,
 			float ypos, int size) const;
-		void render_triangle (Vector_3D * a, Vector_3D * b, Vector_3D * c) const;
+		void render_triangle (Vector_3D * a, Vector_3D * b, Vector_3D * c)
+			const;
 		void use_color (Vector_3D * new_color) const;
 //		void enable2D (int xscale, int yscale) const;
 //		void disable2D () const;
@@ -35,5 +38,7 @@ class SHR:
 		vector <string> text;
 		Texture * font_texture;
 };
+
+extern World * tsl;
 
 #endif	//	SHR_HPP

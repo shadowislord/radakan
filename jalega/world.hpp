@@ -20,7 +20,9 @@ class World:
 		World (string new_name);								//	constructor
 		virtual ~World ();										//	destructor
 		virtual bool is_initialized () const;
-		Tile * get_tile (unsigned int x, unsigned int y);		//	zero based
+		unsigned int get_width () const;
+		unsigned int get_height () const;
+		Tile * get_tile (unsigned int x, unsigned int y) const;	//	zero based
 
 	private:
 		unsigned int width;
