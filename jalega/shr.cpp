@@ -13,7 +13,7 @@ Some classes relating to textures may need changing.
 
 int font_index = 0;
 
-void * * bitmap_fonts_a[7] =
+void * bitmap_fonts_a[7] =
 {
 	GLUT_BITMAP_9_BY_15,
 	GLUT_BITMAP_8_BY_13,
@@ -26,7 +26,7 @@ void * * bitmap_fonts_a[7] =
 
 void
 	print_bitmap//_string
-	(void * * font, string s)
+	(void * font, string s)
 {
 	for (unsigned int i = 0; i < s.size (); i++)
 	{
