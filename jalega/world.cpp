@@ -3,7 +3,7 @@
 using namespace std;
 //	using namespace boost;
 
-//  Constructor
+//  constructor
 World::
 	World
 	(string new_name):
@@ -12,7 +12,8 @@ World::
 	(new_name)
 {
 	TiXmlDocument doc;
-	doc.LoadFile ("data/" + * this + ".xml");
+	bool success = doc.LoadFile ("data/" + * this + ".xml");
+	assert (success);
 	TiXmlHandle docHandle (& doc);
 	TiXmlElement * image =
 				docHandle.FirstChild ("world").FirstChild ("image").Element ();
@@ -51,7 +52,7 @@ World::
 	assert (is_initialized ());
 }
 
-//  Destructor
+//  destructor
 World::
 	~World
 	()
