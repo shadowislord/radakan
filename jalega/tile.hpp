@@ -17,6 +17,7 @@ class Tile:
 		void set_obstacle (Obstacle * new_obstacle);	//	has to be empty
 		void remove_obstacle ();						//	has to have one
 		Obstacle * get_obstacle ();						//	has to have one
+		virtual void draw (unsigned int left, unsigned int top) const;
 
 	private:
 		Obstacle * obstacle;

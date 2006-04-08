@@ -4,12 +4,11 @@ using namespace std;
 
 //  Constructor
 Texture::
-	Texture (string filename, int new_id):
+	Texture (string filename):
 	Object::
-	Object ("texture " + to_string (new_id))
+	Object (filename)
 {
 	assert (Object::is_initialized ());
-	id = new_id;
 	load_TGA (filename);
 	assert (is_initialized ());
 }
@@ -47,9 +46,10 @@ void
 	FILE *file = fopen(filename.c_str (), "rb");		// Open The TGA File
 
 	assert (file != NULL);								// Does File Even Exist?
-	assert (fread(TGAcompare,1,sizeof(TGAcompare),file)==sizeof(TGAcompare));	// Are There 12 Bytes To Read?
-	assert (memcmp(TGAheader,TGAcompare,sizeof(TGAheader)) == 0);	// Does The Header Match What We Want?
-	assert (fread(header,1,sizeof(header),file)==sizeof(header));	// If So Read Next 6 Header Bytes
+	assert (fread (TGAcompare, 1, sizeof (TGAcompare), file) == sizeof (TGAcompare));
+													// Are There 12 Bytes To Read?
+	assert (memcmp (TGAheader, TGAcompare, sizeof (TGAheader)) == 0);	// Does The Header Match What We Want?
+	assert (fread(header, 1, sizeof(header), file) == sizeof(header));	// If So Read Next 6 Header Bytes
 
 	width  = header[1] * 256 + header[0];				// Determine The TGA Width	(highbyte*256+lowbyte)
 	height = header[3] * 256 + header[2];				// Determine The TGA Height	(highbyte*256+lowbyte)

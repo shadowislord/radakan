@@ -5,7 +5,7 @@
 #ifndef INPUT_EVENT_HPP
 #define INPUT_EVENT_HPP
 
-#include "object.hpp"
+#include "world.hpp"
 
 using namespace std;
 

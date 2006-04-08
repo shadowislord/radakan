@@ -15,11 +15,14 @@ World::
 	bool success = doc.LoadFile ("data/" + * this + ".xml");
 	assert (success);
 	TiXmlHandle docHandle (& doc);
-	TiXmlElement * image =
+	TiXmlElement * image_xml =
 				docHandle.FirstChild ("world").FirstChild ("image").Element ();
-	assert (image != NULL);
-	image_path = image->Attribute ("path");
+	assert (image_xml != NULL);
+	image_path = image_xml->Attribute ("path");
 	assert (image_path != "");
+
+//	image = new Texture (image_path);
+	image = new Texture ("fonts/test.tga");
 	
 	debug () << "Image path: " << image_path << endl;
 
@@ -62,6 +65,7 @@ World::
 	{
 		delete tile_vector.at (i);
 	}
+	delete image;
 }
 
 //	virtual
@@ -107,3 +111,21 @@ unsigned int
 
 	return height;
 }
+
+//	virtual
+void
+	World::
+	draw
+	(unsigned int left, unsigned int top)
+	const
+{
+	for (unsigned int i = 0; i < get_width (); i++)
+	{
+		for (unsigned int j = 0; j < get_height (); j++)
+		{
+			get_tile (i, j)->draw (left + 25 * i, top + 25 * j);
+			//	render_quad	(font_texture, , 100 + 25 * j, 20, 20, 0, 0, 0, 0);
+		}
+	}
+}
+

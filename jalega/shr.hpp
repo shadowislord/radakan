@@ -5,9 +5,8 @@
 #ifndef SHR_HPP
 #define SHR_HPP
 
-#include "tga_loader.hpp"
+#include "texture.hpp"	//	"tga_loader.hpp"
 #include "vector_3d.hpp"
-#include "world.hpp"
 
 class SHR:
 	public Object
@@ -16,15 +15,14 @@ class SHR:
 		SHR (int argc, char * * argv);						//	constructor
 		virtual ~SHR ();									//	destructor
 		void initGL () const;
-		void draw () const;
+		void draw_start () const;
+		void draw_stop () const;
 		void texturing_2d (bool flag) const;
-		Texture loadTexture (string location) const;
+//		Texture loadTexture (string location) const;
 		void bind_texture (Texture * texture) const;
-		void render_quad (Texture * texture, float xpos, float ypos,
-			float width, float height, float zdepth, float rotation, float tx,
-			float ty) const;
-		void renderPointSprite (Texture * texture, float xpos,
-			float ypos, int size) const;
+		void render_quad (Vector_3D * pos, float width,
+			float height, float rotation, float tx, float ty) const;
+//		void renderPointSprite (float xpos, float ypos, int size) const;
 		void render_triangle (Vector_3D * a, Vector_3D * b, Vector_3D * c)
 			const;
 		void use_color (Vector_3D * new_color) const;
@@ -39,6 +37,7 @@ class SHR:
 		Texture * font_texture;
 };
 
-extern World * tsl;
+extern SHR * shr;
+extern Texture * font_texture;
 
 #endif	//	SHR_HPP

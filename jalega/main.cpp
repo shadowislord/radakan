@@ -1,9 +1,6 @@
-#include "shr.hpp"
-#include "world.hpp"
 #include "event_engine.hpp"
 
 using namespace std;
-
 
 vector <Object *> objects;
 World * tsl;
@@ -60,7 +57,9 @@ void
 	draw
 	()
 {
-	shr->draw ();
+	shr->draw_start ();
+	tsl->draw (50, 100);
+	shr->draw_stop ();
 }
 
 int

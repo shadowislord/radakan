@@ -23,12 +23,14 @@ class World:
 		unsigned int get_width () const;
 		unsigned int get_height () const;
 		Tile * get_tile (unsigned int x, unsigned int y) const;	//	zero based
+		virtual void draw (unsigned int left, unsigned int top) const;
 
 	private:
 		unsigned int width;
 		unsigned int height;
 		string image_path;
 		vector <Tile *> tile_vector;
+		Texture * image;
 //		multi_array_ref <Tile, 2>  * tiles;	//	not working tile_vector wrapper
 };
 

@@ -25,7 +25,7 @@ void * bitmap_fonts_a[7] =
 };
 
 void
-	print_bitmap//_string
+	print_bitmap
 	(void * font, string s)
 {
 	for (unsigned int i = 0; i < s.size (); i++)
@@ -64,7 +64,7 @@ SHR::
 		text.at (j).push_back ('\0');
 	}
 
-	font_texture = new Texture ("fonts/test.tga", 1);
+	font_texture = new Texture ("fonts/test.tga");
 	font_texture->build_font ();
 	bind_texture (font_texture);
 }
@@ -77,10 +77,10 @@ SHR::~SHR()
 	glutDestroyWindow (main_window);
 }
 
-void SHR::draw () const
+void SHR::draw_start () const
 {
 	// Clear the window.
-	glClearColor (0.0, 0.0, 0.0, 0.0);
+	glClearColor (0.03, 0.03, 0.03, 0.0);
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity ();
 
@@ -98,15 +98,10 @@ void SHR::draw () const
 		glRasterPos2f (- 225.0, 70.0 - 20.0 * j);
 		print_bitmap (bitmap_fonts_a [font_index], text [j]);
 	}
+}
 
-	for (unsigned int i = 0; i < tsl->get_width (); i++)
-	{
-		for (unsigned int j = 0; j < tsl->get_height (); j++)
-		{
-			render_quad	(font_texture, 50 + 25 * i, 100 + 25 * j, 20, 20, 0, 0, 0, 0);
-		}
-	}
-		
+void SHR::draw_stop () const
+{
 	use_color (new Vector_3D (1.0f, 0.5f, 0.5f));	// Set Color To Bright Red
 	glPrint (60, - 120, 1, "Lazy");					// Display Renderer
 	glPrint (60, - 100, 1, "Bum");					// Display Vendor Name
@@ -149,22 +144,23 @@ void SHR::bind_texture (Texture * texture) const
 void
 	SHR::
 	render_quad
-	(Texture * texture, float xpos, float ypos, float width, float height,
-	float zdepth, float rotation, float tx, float ty) const
+	(Vector_3D * pos, float width, float height,
+	float rotation, float tx, float ty) const
 {
 	glPushMatrix ();
-	bind_texture (texture);
-	glTranslatef (xpos, ypos, zdepth);
+	glTranslatef (pos->x, pos->y, pos->z);
+	delete pos;
+	
 	if (rotation != 0)
 	{
 		glRotatef (rotation, 0, 0, 1);
 	}
-	glTranslatef (-width/2.0f, -width/2.0f, 0); //makes sure that it rotates around its center
+	glTranslatef (- width / 2.0f, - width / 2.0f, 0); //makes sure that it rotates around its center
 	glBegin (GL_QUADS);
-		glTexCoord2f (tx+0, -ty-1); glVertex2f (0, 0);
-		glTexCoord2f (tx+1, -ty-1); glVertex2f (width, 0);
-		glTexCoord2f (tx+1, -ty-0); glVertex2f (width, height);
-		glTexCoord2f (tx+0, -ty-0); glVertex2f (0, height);
+		/*glTexCoord2f (tx+0, -ty-1);*/ glVertex2f (0, 0);
+		/*glTexCoord2f (tx+1, -ty-1);*/ glVertex2f (width, 0);
+		/*glTexCoord2f (tx+1, -ty-0);*/ glVertex2f (width, height);
+		/*glTexCoord2f (tx+0, -ty-0);*/ glVertex2f (0, height);
 	glEnd();
 	glPopMatrix();
 }
@@ -185,15 +181,15 @@ void
 	delete c;
 }
 
-void
+/*void
 	SHR::
 	renderPointSprite
-	(Texture * texture, float xpos, float ypos, int size) const
+	(float xpos, float ypos, int size) const
 {
 	
 }
 
-/*void SHR::enable2D (int xscale, int yscale)
+void SHR::enable2D (int xscale, int yscale)
 {
 	glMatrixMode (GL_PROJ	glCallLists (fmt.size (), GL_UNSIGNED_BYTE, fmt.c_str ());	// Write The Text To The Screen
 ECTION);

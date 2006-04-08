@@ -26,3 +26,13 @@ bool
 {
 	return Object::is_initialized ();
 }
+
+//	virtual
+void
+	Obstacle::
+	draw
+	(unsigned int left, unsigned int top)
+	const
+{
+}
+

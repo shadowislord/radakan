@@ -82,3 +82,13 @@ Obstacle *
 	
 	return obstacle;
 }
+
+//	virtual
+void
+	Tile::
+	draw
+	(unsigned int left, unsigned int top)
+	const
+{
+	shr->render_quad (new Vector_3D (left, top, 0), 20, 20, 0, 0, 0);
+}
