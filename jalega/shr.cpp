@@ -24,16 +24,6 @@ void * bitmap_fonts_a[7] =
 	GLUT_BITMAP_HELVETICA_18
 };
 
-void
-	print_bitmap
-	(void * font, string s)
-{
-	for (unsigned int i = 0; i < s.size (); i++)
-	{
-		glutBitmapCharacter (font, s.at (i));
-	}
-}
-
 SHR::
 	SHR (int argc, char * * argv):
 	Object::
@@ -77,38 +67,39 @@ SHR::~SHR()
 	glutDestroyWindow (main_window);
 }
 
-void SHR::draw_start () const
+void
+	SHR::
+	draw_start
+	()
+	const
 {
 	// Clear the window.
 	glClearColor (0.03, 0.03, 0.03, 0.0);
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity ();
 
-	glColor4f (0.0, 0.5, 1.0, 0.0);
 	render_triangle (
-		new Vector_3D (- 225.0f, 70.0f, 20.0f),
-		new Vector_3D (100.0f, 200.0f, 0.0f),
-		new Vector_3D (10.0f, - 50.0f, 0.0f)
+		new D3 (0.0, 0.4, 0.7),				//	color
+		new D3 (- 225.0f, 70.0f, 20.0f),	//	a
+		new D3 (100.0f, 200.0f, 0.0f),		//	b
+		new D3 (10.0f, - 50.0f, 0.0f)		//	c
 	);
 
-	// Draw the strings, according to the current mode and font.
-	glColor4f (0.0, 1.0, 0.0, 0.0);
+	//	Draw the strings, according to the current mode and font.
 	for (int j = 0; j < 4; j++)
 	{
-		glRasterPos2f (- 225.0, 70.0 - 20.0 * j);
-		print_bitmap (bitmap_fonts_a [font_index], text [j]);
+		print_bitmap (new D3 (0.0, 1.0, 0.0), - 400.0, 250.0 - 20.0 * j,
+			bitmap_fonts_a [font_index], text [j]);
 	}
 }
 
 void SHR::draw_stop () const
 {
-	use_color (new Vector_3D (1.0f, 0.5f, 0.5f));	// Set Color To Bright Red
-	glPrint (60, - 120, 1, "Lazy");					// Display Renderer
-	glPrint (60, - 100, 1, "Bum");					// Display Vendor Name
-	glPrint (60, - 80, 1, "Ware");					// Display Version
 
-	use_color (new Vector_3D (0.5f, 0.5f, 1.0f));	// Set Color To Bright Blue
-	glPrint (40, 0, 0, "Productions");
+	print_tga (new D3 (1.0f, 0.5f, 0.5f), 60, - 120, false, "Lazy");
+	print_tga (new D3 (0.85f, 0.5f, 0.67f), 60, - 100, false, "Bum");
+	print_tga (new D3 (0.67f, 0.5f, 0.85f), 60, - 80, false, "Ware");
+	print_tga (new D3 (0.5f, 0.5f, 1.0f), 40, 0, 0, "Productions");
 
 	glutSwapBuffers ();
 }
@@ -126,11 +117,13 @@ void SHR::texturing_2d (bool flag) const
 	}
 }
 
-void SHR::use_color (Vector_3D * new_color) const
+void SHR::use_color (D3 * color) const
 {
-	glColor3f (new_color->x, new_color->y, new_color->z);
+	assert (color != NULL);
+	
+	glColor3f (color->x, color->y, color->z);
 
-	delete new_color;
+	delete color;
 }
 
 //	Binds a texture with opengl.
@@ -144,7 +137,7 @@ void SHR::bind_texture (Texture * texture) const
 void
 	SHR::
 	render_quad
-	(Vector_3D * pos, float width, float height,
+	(D3 * pos, float width, float height,
 	float rotation, float tx, float ty) const
 {
 	glPushMatrix ();
@@ -168,13 +161,19 @@ void
 void
 	SHR::
 	render_triangle
-	(Vector_3D * a, Vector_3D * b, Vector_3D * c) const
+	(D3 * color, D3 * a, D3 * b, D3 * c) const
 {
+	glPushMatrix ();
+
+	use_color (color);
+	
 	glBegin (GL_POLYGON);					// start drawing a polygon
 		glVertex3f (a->x, a->y, a->z);
 		glVertex3f (b->x, b->y, b->z);
 		glVertex3f (c->x, c->y, c->z);
 	glEnd ();								// we're done with the polygon
+
+	glPopMatrix ();
 
 	delete a;
 	delete b;
@@ -211,20 +210,49 @@ void SHR::disable2D ()
 	glPopMatrix ();
 }*/
 
-void SHR::
-	glPrint (GLint x, GLint y, unsigned int set, string fmt) const
+void
+	SHR::
+	print_bitmap
+	(D3 * color, float x, float y, void * font, string text)
+	const
 {
-	assert (fmt != "");
-	assert (set <= 1);
+	glPushMatrix ();
+	use_color (color);
+
+	glRasterPos2f (x, y);
+	for (unsigned int i = 0; i < text.size (); i++)
+	{
+		glutBitmapCharacter (font, text.at (i));
+	}
+	glPopMatrix ();
+}
+
+void SHR::
+	print_tga (D3 * color, float x, float y, bool italic, string text) const
+{
+	assert (text != "");
+	
+	glPushMatrix ();
+
+	use_color (color);
 
 	texturing_2d (true);										// Enable Texture Mapping
-	glLoadIdentity ();											// Reset The Modelview Matrix
 	glTranslated (-x, -y, 0);									// Position The Text (0,0 - Top Left)
-	glListBase (128 * set - 31);								// Choose The Font Set (0 or 1)
-	glCallLists (fmt.size (), GL_UNSIGNED_BYTE, fmt.c_str ());	// Write The Text To The Screen
-	glTranslated (x, y, 0);										// Position The Text (0,0 - Top Left)
+	
+	if (italic)
+	{
+		glListBase (- 31);								// Choose The Font Set (0 or 1)
+	}
+	else
+	{
+		glListBase (97);								// Choose The Font Set (0 or 1)
+	}
+	glCallLists (text.size (), GL_UNSIGNED_BYTE, text.c_str ());	// Write The Text To The Screen
+//	glTranslated (x, y, 0);										// Position The Text (0,0 - Top Left)
 
 	texturing_2d (false);										// Disable Texture Mapping
+
+	glPopMatrix ();
 }
 
 void

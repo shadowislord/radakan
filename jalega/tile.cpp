@@ -90,5 +90,5 @@ void
 	(unsigned int left, unsigned int top)
 	const
 {
-	shr->render_quad (new Vector_3D (left, top, 0), 20, 20, 0, 0, 0);
+	shr->render_quad (new D3 (left, top, 0), 20, 20, 0, 0, 0);
 }
