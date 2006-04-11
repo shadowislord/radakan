@@ -34,5 +34,13 @@ void
 	(unsigned int left, unsigned int top)
 	const
 {
+	shr->render_quad (
+		new D3 (0.7, 0.7, 0.7),
+		new D3 (left, top, 0),
+		new D3 (left + 10, top, 0),
+		new D3 (left + 10, top + 10, 0),
+		new D3 (left, top + 10, 0)
+	);
+
 }
 

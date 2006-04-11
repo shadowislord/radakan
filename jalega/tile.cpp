@@ -50,6 +50,7 @@ bool
 bool
 	Tile::
 	has_obstacle ()
+	const
 {
 	assert (is_initialized ());
 
@@ -77,6 +78,7 @@ void
 Obstacle *
 	Tile::
 	get_obstacle ()							//	make sure there is one first
+	const
 {
 	assert (has_obstacle ());
 	
@@ -90,5 +92,16 @@ void
 	(unsigned int left, unsigned int top)
 	const
 {
-	shr->render_quad (new D3 (left, top, 0), 20, 20, 0, 0, 0);
+	shr->render_quad (
+		new D3 (0.4, 0.7, 0.4),
+		new D3 (left, top, 0),
+		new D3 (left + 20, top, 0),
+		new D3 (left + 20, top + 20, 0),
+		new D3 (left, top + 20, 0)
+	);
+
+	if (has_obstacle ())
+	{
+		get_obstacle ()->draw (left + 5, top + 5);
+	}
 }

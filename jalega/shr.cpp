@@ -1,19 +1,20 @@
-/*Comments:
-The graphics renderer
+//	The graphics renderer
+//	
+//	This should force no opengl commands are needed for use anywhere else.
+//	They should all be accessed from this class.
+//	This ensures that there are no graphics related dependancies from the game
+//	logic side.
+//	
+//	I'm a bit worried about the texture id problem.
+//	If the renderer is switched to another rendering system other than Opengl.
+//	Some classes relating to textures may need changing.
 
-This should force no opengl commands are needed for use anywhere else.
-They should all be accessed from this class.
-This ensures that there are no graphics related dependancies from the game logic side.
-
-I'm a bit worried about the texture id problem. If the renderer is switched to another rendering system other than Opengl.
-Some classes relating to textures may need changing.
-*/
 
 #include "shr.hpp"
 
 int font_index = 0;
 
-void * bitmap_fonts_a[7] =
+void * bitmap_fonts[7] =
 {
 	GLUT_BITMAP_9_BY_15,
 	GLUT_BITMAP_8_BY_13,
@@ -89,7 +90,7 @@ void
 	for (int j = 0; j < 4; j++)
 	{
 		print_bitmap (new D3 (0.0, 1.0, 0.0), - 400.0, 250.0 - 20.0 * j,
-			bitmap_fonts_a [font_index], text [j]);
+			font_index, text [j]);
 	}
 }
 
@@ -97,9 +98,9 @@ void SHR::draw_stop () const
 {
 
 	print_tga (new D3 (1.0f, 0.5f, 0.5f), 60, - 120, false, "Lazy");
-	print_tga (new D3 (0.85f, 0.5f, 0.67f), 60, - 100, false, "Bum");
-	print_tga (new D3 (0.67f, 0.5f, 0.85f), 60, - 80, false, "Ware");
-	print_tga (new D3 (0.5f, 0.5f, 1.0f), 40, 0, 0, "Productions");
+	print_tga (new D3 (0.85f, 0.5f, 0.67f), 50, - 80, false, "Bum");
+	print_tga (new D3 (0.67f, 0.5f, 0.85f), 40, - 40, false, "Ware");
+	print_tga (new D3 (0.5f, 0.5f, 1.0f), 30, 0, false, "Productions");
 
 	glutSwapBuffers ();
 }
@@ -137,25 +138,26 @@ void SHR::bind_texture (Texture * texture) const
 void
 	SHR::
 	render_quad
-	(D3 * pos, float width, float height,
-	float rotation, float tx, float ty) const
+	(D3 * color, D3 * a, D3 * b, D3 * c, D3 * d)
+	const
 {
 	glPushMatrix ();
-	glTranslatef (pos->x, pos->y, pos->z);
-	delete pos;
+
+	use_color (color);
 	
-	if (rotation != 0)
-	{
-		glRotatef (rotation, 0, 0, 1);
-	}
-	glTranslatef (- width / 2.0f, - width / 2.0f, 0); //makes sure that it rotates around its center
 	glBegin (GL_QUADS);
-		/*glTexCoord2f (tx+0, -ty-1);*/ glVertex2f (0, 0);
-		/*glTexCoord2f (tx+1, -ty-1);*/ glVertex2f (width, 0);
-		/*glTexCoord2f (tx+1, -ty-0);*/ glVertex2f (width, height);
-		/*glTexCoord2f (tx+0, -ty-0);*/ glVertex2f (0, height);
-	glEnd();
-	glPopMatrix();
+		glVertex3f (a->x, a->y, a->z);
+		glVertex3f (b->x, b->y, b->z);
+		glVertex3f (c->x, c->y, c->z);
+		glVertex3f (d->x, d->y, d->z);
+	glEnd ();
+
+	glPopMatrix ();
+
+	delete a;
+	delete b;
+	delete c;
+	delete d;
 }
 
 void
@@ -213,16 +215,19 @@ void SHR::disable2D ()
 void
 	SHR::
 	print_bitmap
-	(D3 * color, float x, float y, void * font, string text)
+	(D3 * color, float x, float y, int font_number, string text)
 	const
 {
+	assert (0 <= font_number);
+	assert (font_number < 7);
+
 	glPushMatrix ();
 	use_color (color);
 
 	glRasterPos2f (x, y);
 	for (unsigned int i = 0; i < text.size (); i++)
 	{
-		glutBitmapCharacter (font, text.at (i));
+		glutBitmapCharacter (bitmap_fonts [font_number], text.at (i));
 	}
 	glPopMatrix ();
 }
@@ -236,21 +241,20 @@ void SHR::
 
 	use_color (color);
 
-	texturing_2d (true);										// Enable Texture Mapping
-	glTranslated (-x, -y, 0);									// Position The Text (0,0 - Top Left)
+	glTranslated (-x, -y, 0);							// Position The Text (0,0 - Top Left)
+	texturing_2d (true);								// Enable Texture Mapping
 	
 	if (italic)
 	{
-		glListBase (- 31);								// Choose The Font Set (0 or 1)
+		glListBase (0 - 31);							// Choose The Font Set (0 or 1)
 	}
 	else
 	{
 		glListBase (97);								// Choose The Font Set (0 or 1)
 	}
 	glCallLists (text.size (), GL_UNSIGNED_BYTE, text.c_str ());	// Write The Text To The Screen
-//	glTranslated (x, y, 0);										// Position The Text (0,0 - Top Left)
 
-	texturing_2d (false);										// Disable Texture Mapping
+	texturing_2d (false);								// Disable Texture Mapping
 
 	glPopMatrix ();
 }
