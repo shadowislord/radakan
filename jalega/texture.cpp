@@ -99,10 +99,10 @@ void Texture::build_font () const						// Build Our Font Display List
 {
 	for (int i = 0; i < 256; i++)						// Loop Through All 256 Lists
 	{
-		float cx = float (i % 16) / 16.0f;				// X Position Of Current Character
-		float cy = 1.0f - float (i / 16) / 16.0f;		// Y Position Of Current Character
-		float a = 0.0625f;
-		float b = 0.001f;
+		float cx = float (i % 16) / 16;				// X Position Of Current Character
+		float cy = 1 - float (i / 16) / 16;		// Y Position Of Current Character
+		float a = 0.0625;
+		float b = 0.001;
 
 		glNewList (1 + i, GL_COMPILE);					// Start Building A List
 			glBegin (GL_QUADS);							// Use A Quad For Each Character

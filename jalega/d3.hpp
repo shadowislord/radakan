@@ -22,9 +22,8 @@ class D3:
 		D3 operator/ (float a) const;
 		D3 operator+ (const D3 &b);
 		D3 operator- (const D3 &b);
-		void operator= (const D3 &b);
 		void operator+= (const D3 &b);
-		bool operator== (const D3 &b);
+		bool operator== (const D3 &b) const;
 		
 		float x , y, z;
 };

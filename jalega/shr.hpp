@@ -8,12 +8,15 @@
 #include "texture.hpp"	//	"tga_loader.hpp"
 #include "d3.hpp"
 
+typedef void (* void_func) ();
+
 class SHR:
 	public Object
 {
 	public:
 		SHR (int argc, char * * argv);						//	constructor
 		virtual ~SHR ();									//	destructor
+		virtual bool is_initialized () const;
 		void initGL () const;
 		void draw_start () const;
 		void draw_stop () const;
@@ -31,6 +34,8 @@ class SHR:
 		void print_bitmap (D3 * color, float x, float y, int font_number,
 			string text) const;
 		void resize (int new_width, int new_height) const;
+		void post_redisplay () const;
+		int font_index;
 
 	private:
 		void texturing_2d (bool flag) const;
@@ -39,7 +44,5 @@ class SHR:
 		vector <string> text;
 		Texture * font_texture;
 };
-
-extern SHR * shr;
 
 #endif	//	SHR_HPP

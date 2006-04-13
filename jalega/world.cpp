@@ -11,6 +11,8 @@ World::
 	Object
 	(new_name)
 {
+	assert (Object::is_initialized ());
+	
 	TiXmlDocument doc;
 	bool success = doc.LoadFile ("data/" + * this + ".xml");
 	assert (success);
@@ -21,8 +23,8 @@ World::
 	image_path = image_xml->Attribute ("path");
 	assert (image_path != "");
 
-//	image = new Texture (image_path);
-	image = new Texture ("fonts/test.tga");
+	image = new Texture (image_path);
+//	image = new Texture ("fonts/test.tga");
 	
 	debug () << "Image path: " << image_path << endl;
 
@@ -44,7 +46,7 @@ World::
 	{
 		for (unsigned int j = 0; j < height; j++)
 		{
-			tile_vector.push_back
+			tiles.push_back
 				(new Tile (* this + "_" + to_string (i) + "_" + to_string (j)));
 		}
 	}
@@ -60,11 +62,20 @@ World::
 	~World
 	()
 {
-//	delete tiles;
-	for (unsigned int i = 0; i < tile_vector.size (); i++)
+	assert (is_initialized ());
+
+//	delete tiles:
+	for (unsigned int i = 0; i < tiles.size (); i++)
 	{
-		delete tile_vector.at (i);
+		delete tiles.at (i);
 	}
+	
+//	delete obstacles:
+	for (unsigned int i = 0; i < obstacles.size (); i++)
+	{
+		delete obstacles.at (i);
+	}
+	
 	delete image;
 }
 
@@ -75,7 +86,8 @@ bool
 	()
 	const
 {
-	return Object::is_initialized ();
+	return Object::is_initialized () && (image != NULL) &&
+		image->is_initialized ();
 }
 
 Tile *
@@ -86,8 +98,7 @@ Tile *
 {
 	assert (is_initialized ());
 
-	return tile_vector.at (x * height + y);
-//	return & tiles[x][y][0];	//	I've no idea why the [0] needs to be added.
+	return tiles.at (x * height + y);
 }
 
 unsigned int
@@ -116,16 +127,30 @@ unsigned int
 void
 	World::
 	draw
-	(unsigned int left, unsigned int top)
+	(SHR * shr, int left, int bottom)
 	const
 {
+	assert (is_initialized ());
+
 	for (unsigned int i = 0; i < get_width (); i++)
 	{
+//		make sure tiles in the back get draw first:
 		for (unsigned int j = 0; j < get_height (); j++)
 		{
-			get_tile (i, j)->draw (left + 25 * i, top + 25 * j);
-			//	render_quad	(font_texture, , 100 + 25 * j, 20, 20, 0, 0, 0, 0);
+			get_tile (i, j)->draw (shr, left + 25 * i, bottom + 25 * j);
 		}
+	}
+	
+	for (unsigned int i = 0; i < obstacles.size (); i++)
+	{
+		obstacles.at (i)->draw (shr, left, bottom);
 	}
 }
 
+void
+	World::
+	add_obstacle
+	(Obstacle * new_obstacle)
+{
+	obstacles.push_back (new_obstacle);
+}

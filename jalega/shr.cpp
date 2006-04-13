@@ -9,7 +9,6 @@
 //	If the renderer is switched to another rendering system other than Opengl.
 //	Some classes relating to textures may need changing.
 
-
 #include "shr.hpp"
 
 int font_index = 0;
@@ -30,13 +29,15 @@ SHR::
 	Object::
 	Object ("SHR")
 {
+	assert (Object::is_initialized ());
+
 	glutInit (&argc, argv);
 
 	glutInitWindowSize (800, 600);
 	glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
 	main_window = glutCreateWindow ("tslrpg");
 	
-	glClearDepth (1.0);
+	glClearDepth (1);
 	glDepthFunc (GL_LESS);
 	glShadeModel (GL_SMOOTH);							// Enable Smooth Shading
 	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	//	really nice perspective
@@ -58,14 +59,28 @@ SHR::
 	font_texture = new Texture ("fonts/test.tga");
 	font_texture->build_font ();
 	bind_texture (font_texture);
+
+	assert (is_initialized ());
 }
 
 SHR::~SHR()
 {
+	assert (is_initialized ());
 	delete font_texture;
 	
 	// shut down our window
 	glutDestroyWindow (main_window);
+}
+
+//	virtual
+bool
+	SHR::
+	is_initialized
+	()
+	const
+{
+	return Object::is_initialized () && (font_texture != NULL) &&
+		font_texture->is_initialized () ;
 }
 
 void
@@ -74,33 +89,36 @@ void
 	()
 	const
 {
+	assert (is_initialized ());
+	
 	// Clear the window.
 	glClearColor (0.03, 0.03, 0.03, 0.0);
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity ();
 
 	render_triangle (
-		new D3 (0.0, 0.4, 0.7),				//	color
-		new D3 (- 225.0f, 70.0f, 20.0f),	//	a
-		new D3 (100.0f, 200.0f, 0.0f),		//	b
-		new D3 (10.0f, - 50.0f, 0.0f)		//	c
+		new D3 (0, 0.4, 0.7),				//	color
+		new D3 (- 225, 70, 20),	//	a
+		new D3 (100, 200, 0),		//	b
+		new D3 (10, - 50, 0)		//	c
 	);
 
 	//	Draw the strings, according to the current mode and font.
 	for (int j = 0; j < 4; j++)
 	{
-		print_bitmap (new D3 (0.0, 1.0, 0.0), - 400.0, 250.0 - 20.0 * j,
+		print_bitmap (new D3 (0, 1, 0), - 400, 250 - 20 * j,
 			font_index, text [j]);
 	}
 }
 
 void SHR::draw_stop () const
 {
-
-	print_tga (new D3 (1.0f, 0.5f, 0.5f), 60, - 120, false, "Lazy");
-	print_tga (new D3 (0.85f, 0.5f, 0.67f), 50, - 80, false, "Bum");
-	print_tga (new D3 (0.67f, 0.5f, 0.85f), 40, - 40, false, "Ware");
-	print_tga (new D3 (0.5f, 0.5f, 1.0f), 30, 0, false, "Productions");
+	assert (is_initialized ());
+	
+	print_tga (new D3 (1, 0.5, 0.5), 60, - 120, false, "Lazy");
+	print_tga (new D3 (0.85, 0.5, 0.67), 50, - 80, false, "Bum");
+	print_tga (new D3 (0.67, 0.5, 0.85), 40, - 40, false, "Ware");
+	print_tga (new D3 (0.5, 0.5, 1), 30, 0, false, "Productions");
 
 	glutSwapBuffers ();
 }
@@ -108,6 +126,8 @@ void SHR::draw_stop () const
 //	Enables 2D texturing
 void SHR::texturing_2d (bool flag) const
 {
+	assert (is_initialized ());
+	
 	if (flag)
 	{
 		glEnable (GL_TEXTURE_2D);
@@ -120,6 +140,7 @@ void SHR::texturing_2d (bool flag) const
 
 void SHR::use_color (D3 * color) const
 {
+	assert (is_initialized ());
 	assert (color != NULL);
 	
 	glColor3f (color->x, color->y, color->z);
@@ -130,6 +151,7 @@ void SHR::use_color (D3 * color) const
 //	Binds a texture with opengl.
 void SHR::bind_texture (Texture * texture) const
 {
+	assert (is_initialized ());
 	assert (texture != NULL);
 	
 	glBindTexture (GL_TEXTURE_2D, texture->get_id ());
@@ -141,10 +163,11 @@ void
 	(D3 * color, D3 * a, D3 * b, D3 * c, D3 * d)
 	const
 {
+	assert (is_initialized ());
+	
 	glPushMatrix ();
 
 	use_color (color);
-	
 	glBegin (GL_QUADS);
 		glVertex3f (a->x, a->y, a->z);
 		glVertex3f (b->x, b->y, b->z);
@@ -165,10 +188,11 @@ void
 	render_triangle
 	(D3 * color, D3 * a, D3 * b, D3 * c) const
 {
+	assert (is_initialized ());
+	
 	glPushMatrix ();
 
 	use_color (color);
-	
 	glBegin (GL_POLYGON);					// start drawing a polygon
 		glVertex3f (a->x, a->y, a->z);
 		glVertex3f (b->x, b->y, b->z);
@@ -187,11 +211,15 @@ void
 	renderPointSprite
 	(float xpos, float ypos, int size) const
 {
+	assert (is_initialized ());
+	
 	
 }
 
 void SHR::enable2D (int xscale, int yscale)
 {
+	assert (is_initialized ());
+	
 	glMatrixMode (GL_PROJ	glCallLists (fmt.size (), GL_UNSIGNED_BYTE, fmt.c_str ());	// Write The Text To The Screen
 ECTION);
 	glPushMatrix ();
@@ -206,6 +234,8 @@ ECTION);
 
 void SHR::disable2D ()
 {
+	assert (is_initialized ());
+	
 	glMatrixMode (GL_PROJECTION);
 	glPopMatrix ();
 	glMatrixMode (GL_MODELVIEW);
@@ -218,6 +248,7 @@ void
 	(D3 * color, float x, float y, int font_number, string text)
 	const
 {
+	assert (is_initialized ());
 	assert (0 <= font_number);
 	assert (font_number < 7);
 
@@ -235,6 +266,7 @@ void
 void SHR::
 	print_tga (D3 * color, float x, float y, bool italic, string text) const
 {
+	assert (is_initialized ());
 	assert (text != "");
 	
 	glPushMatrix ();
@@ -263,6 +295,8 @@ void
 	SHR::resize
 	(int new_width, int new_height) const
 {
+	assert (is_initialized ());
+	
 	GLdouble size;
 	GLdouble aspect;
 
@@ -272,23 +306,32 @@ void
 	// We are going to do some 2-D orthographic drawing.
 	glMatrixMode (GL_PROJECTION);
 	glLoadIdentity ();
-	size = (GLdouble)((new_width >= new_height) ? new_width : new_height) / 2.0;
+	size = (GLdouble)((new_width >= new_height) ? new_width : new_height) / 2;
 	if (new_width <= new_height)
 	{
 		aspect = (GLdouble) new_height / (GLdouble) new_width;
-		glOrtho (-size, size, -size * aspect, size * aspect, -10000.0, 10000.0);
+		glOrtho (-size, size, -size * aspect, size * aspect, -10000, 10000);
 	}
 	else
 	{
 		aspect = (GLdouble) new_width / (GLdouble) new_height;
-		glOrtho (-size * aspect, size * aspect, -size, size, -10000.0, 10000.0);
+		glOrtho (-size * aspect, size * aspect, -size, size, -10000, 10000);
 	}
 
-	// Make the world and window coordinates coincide so that 1.0 in
+	// Make the world and window coordinates coincide so that 1 in
 	// model space equals one pixel in window space.
-	glScaled (aspect, aspect, 1.0);
+	glScaled (aspect, aspect, 1);
 
 	// Now determine where to draw things.
 	glMatrixMode (GL_MODELVIEW);
 	glLoadIdentity ();
+}
+
+void
+	SHR::
+	post_redisplay
+	()
+	const
+{
+	glutPostRedisplay ();
 }

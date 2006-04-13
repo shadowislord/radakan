@@ -2,11 +2,10 @@
 
 //	constructor
 Event_Engine::
-	Event_Engine (void_func new_quit, void_func new_refresh):
+	Event_Engine (void_func new_quit):
 	Object::
 	Object ("Event Engine")
 {
-	refresh = new_refresh;
 	quit = new_quit;
 }
 
@@ -22,8 +21,13 @@ void Event_Engine::
 {
 	assert (event != NULL);
 
-// avoid thrashing this procedure
-	usleep (100);
+//	avoid thrashing this procedure:
+	#ifdef WIN32
+		Sleep (100);
+	#else
+		usleep (100);
+	#endif
+
 	
 	switch (event->at (0))
 	{
@@ -40,8 +44,8 @@ void Event_Engine::
 		case '6':
 		case '7':
 		{
-			font_index = event->at (0) - '1';
-			refresh ();
+			shr->font_index = event->at (0) - '1';
+			shr->post_redisplay ();
 			break;
 		}
 		default:
