@@ -24,7 +24,7 @@ Tile::
 void
 	Tile::
 	draw
-	(SHR * shr, int left, int bottom)
+	(SHR * shr, float left, float bottom)
 	const
 {
 	shr->render_quad (

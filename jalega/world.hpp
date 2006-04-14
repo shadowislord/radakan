@@ -23,8 +23,8 @@ class World:
 		unsigned int get_width () const;
 		unsigned int get_height () const;
 		Tile * get_tile (unsigned int x, unsigned int y) const;	//	zero based
-		virtual void draw (SHR * shr, int left, int bottom) const;
-		void add_obstacle (Obstacle * new_obstacle);
+		virtual void draw (SHR * shr, float left, float bottom) const;
+		bool add_obstacle (Obstacle * new_obstacle);
 
 	private:
 		unsigned int width;

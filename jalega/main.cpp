@@ -96,8 +96,8 @@ int
 	glutKeyboardFunc (handle_input);
 	
 	tsl = new World ("test_world");
-	tsl->add_obstacle (new Obstacle ("house", new D3 (127, 77, 0)));
-	tsl->add_obstacle (new Character ("hero", new D3 (52, 27, 0)));
+	tsl->add_obstacle (new Obstacle ("house", new D3 (127, 77, 0), 1));
+	tsl->add_obstacle (new Character ("hero", new D3 (52, 27, 0), 1));
 
 	glutMainLoop ();
 

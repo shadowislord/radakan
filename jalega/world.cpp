@@ -127,7 +127,7 @@ unsigned int
 void
 	World::
 	draw
-	(SHR * shr, int left, int bottom)
+	(SHR * shr, float left, float bottom)
 	const
 {
 	assert (is_initialized ());
@@ -147,10 +147,20 @@ void
 	}
 }
 
-void
+bool
 	World::
 	add_obstacle
 	(Obstacle * new_obstacle)
 {
+	for (unsigned int i = 0; i < obstacles.size (); i++)
+	{
+		if (obstacles.at (i)->collides (new_obstacle))
+		{
+			return true;
+		}
+	}
+
 	obstacles.push_back (new_obstacle);
+
+	return false;
 }

@@ -11,7 +11,7 @@ class Tile:
 	public:
 		Tile (string new_name);							//	constructor
 		virtual ~Tile ();								//	destructor
-		virtual void draw (SHR * shr, int left, int bottom) const;
+		virtual void draw (SHR * shr, float left, float bottom) const;
 };
 
 #endif

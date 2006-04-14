@@ -143,7 +143,7 @@ void SHR::use_color (D3 * color) const
 	assert (is_initialized ());
 	assert (color != NULL);
 	
-	glColor3f (color->x, color->y, color->z);
+	glColor3f (color->get_x (), color->get_y (), color->get_z ());
 
 	delete color;
 }
@@ -169,10 +169,10 @@ void
 
 	use_color (color);
 	glBegin (GL_QUADS);
-		glVertex3f (a->x, a->y, a->z);
-		glVertex3f (b->x, b->y, b->z);
-		glVertex3f (c->x, c->y, c->z);
-		glVertex3f (d->x, d->y, d->z);
+		glVertex3f (a->get_x (), a->get_y (), a->get_z ());
+		glVertex3f (b->get_x (), b->get_y (), b->get_z ());
+		glVertex3f (c->get_x (), c->get_y (), c->get_z ());
+		glVertex3f (d->get_x (), d->get_y (), d->get_z ());
 	glEnd ();
 
 	glPopMatrix ();
@@ -194,9 +194,9 @@ void
 
 	use_color (color);
 	glBegin (GL_POLYGON);					// start drawing a polygon
-		glVertex3f (a->x, a->y, a->z);
-		glVertex3f (b->x, b->y, b->z);
-		glVertex3f (c->x, c->y, c->z);
+		glVertex3f (a->get_x (), a->get_y (), a->get_z ());
+		glVertex3f (b->get_x (), b->get_y (), b->get_z ());
+		glVertex3f (c->get_x (), c->get_y (), c->get_z ());
 	glEnd ();								// we're done with the polygon
 
 	glPopMatrix ();
