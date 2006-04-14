@@ -20,6 +20,8 @@ class SHR:
 		void initGL () const;
 		void draw_start () const;
 		void draw_stop () const;
+		int get_width () const;
+		int get_height () const;
 //		Texture loadTexture (string location) const;
 		void bind_texture (Texture * texture) const;
 		void render_quad (D3 * color, D3 * a, D3 * b, D3 * c, D3 * d)

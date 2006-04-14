@@ -33,11 +33,11 @@ World::
 	assert (size != NULL);
 	int temp_width = - 1;
 	size->Attribute ("width", & temp_width);
-	assert (0 < temp_width );
+	assert (0 < temp_width);
 	width = (unsigned int) (temp_width);
 	int temp_height = - 1;
 	size->Attribute ("height", & temp_height);
-	assert (0 < temp_height );
+	assert (0 < temp_height);
 	height = (unsigned int) (temp_height);
 
 	debug () << "Size: " << width << " " << height << endl;
@@ -152,6 +152,12 @@ bool
 	add_obstacle
 	(Obstacle * new_obstacle)
 {
+	assert (is_initialized ());
+	assert (new_obstacle->is_initialized ());
+//	assert (new_obstacle->get_x () + new_obstacle->get_radius () <= width);
+//	assert (new_obstacle->get_y () + new_obstacle->get_radius () <= height);
+
+
 	for (unsigned int i = 0; i < obstacles.size (); i++)
 	{
 		if (obstacles.at (i)->collides (new_obstacle))

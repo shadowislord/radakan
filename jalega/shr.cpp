@@ -33,7 +33,7 @@ SHR::
 
 	glutInit (&argc, argv);
 
-	glutInitWindowSize (800, 600);
+	glutInitWindowSize (get_width (), get_height ());
 	glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
 	main_window = glutCreateWindow ("tslrpg");
 	
@@ -121,6 +121,16 @@ void SHR::draw_stop () const
 	print_tga (new D3 (0.5, 0.5, 1), 30, 0, false, "Productions");
 
 	glutSwapBuffers ();
+}
+
+int SHR::get_width () const
+{
+	return 800;
+}
+
+int SHR::get_height () const
+{
+	return 600;
 }
 
 //	Enables 2D texturing

@@ -45,12 +45,18 @@ void
 }
 
 void
-	handle_input
-	(GLubyte key, GLint x, GLint y)
+	handle_keyboard_input
+	(GLubyte key, int x, int y)
 {
-	string a = "";
-	a.push_back (key);
+	string a (1, key);
 	event_engine->process (new Input_Event (a, x, y));
+}
+
+void
+	handle_mouse_input
+	(int button, int state, int x, int y)
+{
+	event_engine->process (new Input_Event (button, state, x, y));
 }
 
 void
@@ -93,10 +99,10 @@ int
 
 	glutDisplayFunc (draw);
 	glutReshapeFunc (resize);
-	glutKeyboardFunc (handle_input);
+	glutKeyboardFunc (handle_keyboard_input);
+	glutMouseFunc(handle_mouse_input);
 	
 	tsl = new World ("test_world");
-	tsl->add_obstacle (new Obstacle ("house", new D3 (127, 77, 0), 1));
 	tsl->add_obstacle (new Character ("hero", new D3 (52, 27, 0), 1));
 
 	glutMainLoop ();
