@@ -1,11 +1,10 @@
-//	main.cpp
-//
 //	Main entry point for tslrpg.
 
-#include "tslsysdef.hpp"
 #include "tsl.hpp"
 
 CS_IMPLEMENT_APPLICATION
+
+vector <Object *> objects;
 
 int main (int argc, char * * argv)
 {
