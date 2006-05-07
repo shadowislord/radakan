@@ -5,7 +5,7 @@
 #define OBJECT_HPP
 
 //	We expect to use Crystal Space everywhere.
-#include <cssysdef.h>
+#include <crystalspace.h>
 
 //	MSVC users do not run configure, so use special MSVC configuration file.
 #if defined (CS_WIN32_CSCONFIG)
@@ -19,7 +19,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <csutil/ref.h>
 
 using namespace std;
 

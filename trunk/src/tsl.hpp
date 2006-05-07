@@ -48,15 +48,18 @@ class Tsl :
 		CS_EVENTHANDLER_NIL_CONSTRAINTS
 
 	private:
-//	A reference to the 3D renderer plugin.
+//	The 3D renderer plugin.
 		csRef <iGraphics3D> g3d;
 
-//	A reference to the 3D engine plugin.
+//	The 3D engine plugin.
 		csRef <iEngine> engine;
 
-//		csRef<iLoader> loader;
-//		csRef<iKeyboardDriver> kbd;
-//		csRef<iVirtualClock> vc;
+		csRef <iLoader> loader;
+		csRef <iKeyboardDriver> kbd;
+		csRef <iVirtualClock> vc;
+		
+// The view which contains the camera.
+		csRef <iView> view;
 
 //	Set up everything that needs to be rendered on screen. This routine is
 //	called from the event handler in response to a cscmdProcess broadcast

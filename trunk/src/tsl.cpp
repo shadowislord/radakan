@@ -28,10 +28,83 @@ Tsl::
 void Tsl ::
 	ProcessFrame ()
 {
-	if (g3d->BeginDraw (engine->GetBeginDrawFlags () | CSDRAW_3DGRAPHICS))
+//	First get elapsed time from the virtual clock.
+	csTicks elapsed_time = vc->GetElapsedTicks ();
+//	Now rotate the camera according to keyboard state
+	float speed = (elapsed_time / 1000.0) * (0.06 * 20);
+
+	iCamera * cam = view->GetCamera();
+
+	if (kbd->GetKeyState (CSKEY_SHIFT))
 	{
-		// Draw frame.
+//	If the user is holding down shift, the arrow keys will cause the camera to
+//	strafe up, down, left or right from it's current position.
+		if (kbd->GetKeyState (CSKEY_RIGHT))
+		{
+			cam->Move (CS_VEC_RIGHT * 4 * speed);
+		}
+		if (kbd->GetKeyState (CSKEY_LEFT))
+		{
+			cam->Move (CS_VEC_LEFT * 4 * speed);
+		}
+		if (kbd->GetKeyState (CSKEY_UP))
+		{
+			cam->Move (CS_VEC_UP * 4 * speed);
+		}
+		if (kbd->GetKeyState (CSKEY_DOWN))
+		{
+			cam->Move (CS_VEC_DOWN * 4 * speed);
+		}
 	}
+	else
+	{
+//	left and right cause the camera to rotate on the global Y axis
+//	page up and page down cause the camera to rotate on the _camera's_ X axis
+//	up and down arrows cause the camera to go forwards and backwards
+		if (kbd->GetKeyState (CSKEY_RIGHT))
+		{
+			rot_y += speed;
+		}
+		if (kbd->GetKeyState (CSKEY_LEFT))
+		{
+			rot_y -= speed;
+		}
+		if (kbd->GetKeyState (CSKEY_PGUP))
+		{
+			rot_x += speed;
+		}
+		if (kbd->GetKeyState (CSKEY_PGDN))
+		{
+			rot_x -= speed;
+		}
+		if (kbd->GetKeyState (CSKEY_UP))
+		{
+			cam->Move (CS_VEC_FORWARD * 4 * speed);
+		}
+		if (kbd->GetKeyState (CSKEY_DOWN))
+		{
+			cam->Move (CS_VEC_BACKWARD * 4 * speed);
+		}
+	}
+
+//	We now assign a new rotation transformation to the camera. You can think of
+//	the rotation this way: starting from the zero position, you first rotate
+//	rot_y radians on your Y axis to get the first rotation. From there you
+//	rotate rot_x radians on the your X axis to get the final rotation.
+//	We multiply the individual rotations on each axis together to get a single
+//	rotation matrix. The rotations are applied in right to left order.
+	csMatrix3 rot = csXRotMatrix3 (rot_x) * csYRotMatrix3 (rot_y);
+	csOrthoTransform orthtransf (rot, cam->GetTransform().GetOrigin ());
+	cam->SetTransform (orthtransf);
+
+//	Tell 3D driver we're going to display 3D things.
+	if (! g3d->BeginDraw (engine->GetBeginDrawFlags() | CSDRAW_3DGRAPHICS))
+	{
+		return;
+	}
+
+//	Tell the camera to render into the frame buffer.
+	view->Draw ();
 }
 
 void Tsl ::
@@ -143,12 +216,32 @@ bool Tsl ::
 	{
 		return ReportError ("Failed to locate 3D renderer!");
 	}
-
 	engine = csQueryRegistry <iEngine> (r);
 	if (! engine)
 	{
 		return ReportError ("Failed to locate 3D engine!");
 	}
+	vc = csQueryRegistry <iVirtualClock> (r);
+	if (! vc)
+	{
+		return ReportError ("Failed to locate Virtual Clock!");
+	}
+	kbd = csQueryRegistry <iKeyboardDriver> (r);
+	if (! kbd)
+	{
+		return ReportError ("Failed to locate Keyboard Driver!");
+	}
+	loader = csQueryRegistry <iLoader> (r);
+	if (! loader)
+	{
+		return ReportError ("Failed to locate Loader!");
+	}
+
+//	We need a View to the virtual world.
+	view.AttachNew (new csView (engine, g3d));
+	iGraphics2D * g2d = g3d->GetDriver2D ();
+//	We use the full window to draw the world.
+	view->SetRectangle (0, 0, g2d->GetWidth (), g2d->GetHeight ());
 
 //	First disable the lighting cache. Our app is simple enough
 //	not to need this.
@@ -158,6 +251,9 @@ bool Tsl ::
 	rot_x = 0;
 	rot_y = 0;
 	create_room ();
+
+	view->GetCamera ()->SetSector (room);
+	view->GetCamera ()->GetTransform ().SetOrigin (csVector3 (0, 5, -3));
 
 //	Start the default run/event loop. This will return only when some code, such
 //	as OnKeyboard(), has asked the run loop to terminate.
@@ -172,7 +268,7 @@ void Tsl ::
 //	Load the texture from the standard library.  This is located in
 //	CS/data/standard.zip and mounted as /lib/std using the Virtual File System
 //	(VFS) plugin.
-/*	if (! loader->LoadTexture ("stone", "/lib/std/stone4.gif"))
+	if (! loader->LoadTexture ("stone", "/lib/std/stone4.gif"))
 	{
 		ReportError ("Error loading 'stone4' texture!");
 	}
@@ -204,5 +300,5 @@ void Tsl ::
 															csColor (0, 1, 0));
 	light_list->Add (light);
 
-	engine->Prepare ();*/
+	engine->Prepare ();
 }
