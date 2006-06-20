@@ -6,19 +6,21 @@ using namespace std;
 //  constructor
 World::
 	World
-	(string new_name):
-	Object::
-	Object
-	(new_name)
+	(string new_name, D3 new_position, D3 new_size):
+	Location::
+	Location
+	(new_name, new_position, new_size)
 {
 	assert (Object::is_initialized ());
+
+	cout << * this << endl;
 	
 	TiXmlDocument doc;
 	bool success = doc.LoadFile ("data/" + * this + ".xml");
 	assert (success);
 	TiXmlHandle docHandle (& doc);
 	TiXmlElement * image_xml =
-				docHandle.FirstChild ("world").FirstChild ("image").Element ();
+				docHandle.FirstChild (* this).FirstChild ("image").Element ();
 	assert (image_xml != NULL);
 	image_path = image_xml->Attribute ("path");
 	assert (image_path != "");
@@ -29,25 +31,29 @@ World::
 	debug () << "Image path: " << image_path << endl;
 
 	TiXmlElement * size =
-				docHandle.FirstChild ("world").FirstChild ("size").Element ();
+				docHandle.FirstChild (* this).FirstChild ("size").Element ();
 	assert (size != NULL);
-	int temp_width = - 1;
-	size->Attribute ("width", & temp_width);
-	assert (0 < temp_width);
-	width = (unsigned int) (temp_width);
-	int temp_height = - 1;
-	size->Attribute ("height", & temp_height);
-	assert (0 < temp_height);
-	height = (unsigned int) (temp_height);
+	int temp_tile_width = - 1;
+	size->Attribute ("tile_width", & temp_tile_width);
+	assert (0 < temp_tile_width);
+	tile_width = (unsigned int) (temp_tile_width);
+	int temp_tile_height = - 1;
+	size->Attribute ("tile_height", & temp_tile_height);
+	assert (0 < temp_tile_height);
+	tile_height = (unsigned int) (temp_tile_height);
+	int temp_tile_size = - 1;
+	size->Attribute ("tile_size", & temp_tile_size);
+	assert (0 < temp_tile_size);
+	tile_size = (unsigned int) (temp_tile_size);
 
-	debug () << "Size: " << width << " " << height << endl;
+	debug () << "Size: " << tile_width << " " << tile_height << endl;
 
-	for (unsigned int i = 0; i < width; i++)
+	for (unsigned int i = 0; i < tile_width; i++)
 	{
-		for (unsigned int j = 0; j < height; j++)
+		for (unsigned int j = 0; j < tile_height; j++)
 		{
 			tiles.push_back
-				(new Tile (* this + "_" + to_string (i) + "_" + to_string (j)));
+				(new Tile (* this + "_" + to_string (i) + "_" + to_string (j), *this + D3 (i * 25, j * 25, 0), D3(25, 25, 0)));
 		}
 	}
 	
@@ -98,7 +104,7 @@ Tile *
 {
 	assert (is_initialized ());
 
-	return tiles.at (x * height + y);
+	return tiles.at (x * tile_height + y);
 }
 
 unsigned int
@@ -109,7 +115,7 @@ unsigned int
 {
 	assert (is_initialized ());
 
-	return width;
+	return tile_size * tile_width;
 }
 
 unsigned int
@@ -120,31 +126,28 @@ unsigned int
 {
 	assert (is_initialized ());
 
-	return height;
+	return tile_size * tile_height;
 }
-
-//	virtual
-void
+unsigned int
 	World::
-	draw
-	(SHR * shr, float left, float bottom)
+	get_tile_width
+	()
 	const
 {
 	assert (is_initialized ());
 
-	for (unsigned int i = 0; i < get_width (); i++)
-	{
-//		make sure tiles in the back get draw first:
-		for (unsigned int j = 0; j < get_height (); j++)
-		{
-			get_tile (i, j)->draw (shr, left + 25 * i, bottom + 25 * j);
-		}
-	}
-	
-	for (unsigned int i = 0; i < obstacles.size (); i++)
-	{
-		obstacles.at (i)->draw (shr, left, bottom);
-	}
+	return tile_width;
+}
+
+unsigned int
+	World::
+	get_tile_height
+	()
+	const
+{
+	assert (is_initialized ());
+
+	return tile_height;
 }
 
 bool
@@ -154,9 +157,8 @@ bool
 {
 	assert (is_initialized ());
 	assert (new_obstacle->is_initialized ());
-//	assert (new_obstacle->get_x () + new_obstacle->get_radius () <= width);
-//	assert (new_obstacle->get_y () + new_obstacle->get_radius () <= height);
-
+//	assert (D3 (0, 0, 0) <= * new_obstacle);
+//	assert (* new_obstacle + new_obstacle->get_size () < get_size ());
 
 	for (unsigned int i = 0; i < obstacles.size (); i++)
 	{

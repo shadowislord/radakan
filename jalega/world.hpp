@@ -2,8 +2,8 @@
 #define WORLD_HPP
 
 #include "tile.hpp"
+#include "obstacle.hpp"
 //	#include <boost/multi_array.hpp>
-#include "tinyxml/tinyxml.h"
 
 using namespace std;
 //	using namespace boost;
@@ -14,21 +14,23 @@ using namespace std;
 //	2: (0, 2)	5: (1, 2)	8: (2, 2)
 
 class World:
-	public Object
+	public Location
 {
 	public:
-		World (string new_name);								//	constructor
-		virtual ~World ();										//	destructor
+		World (string new_name, D3 new_position, D3 new_size);
+		virtual ~World ();
 		virtual bool is_initialized () const;
 		unsigned int get_width () const;
 		unsigned int get_height () const;
+		unsigned int get_tile_width () const;
+		unsigned int get_tile_height () const;
 		Tile * get_tile (unsigned int x, unsigned int y) const;	//	zero based
-		virtual void draw (SHR * shr, float left, float bottom) const;
 		bool add_obstacle (Obstacle * new_obstacle);
 
 	private:
-		unsigned int width;
-		unsigned int height;
+		unsigned int tile_width;
+		unsigned int tile_height;
+		unsigned int tile_size;
 		string image_path;
 		vector <Tile *> tiles;
 		vector <Obstacle *> obstacles;

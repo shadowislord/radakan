@@ -1,24 +1,18 @@
 #ifndef OBSTACLE_HPP
 #define OBSTACLE_HPP
 
-#include "shr.hpp"
+#include "location.hpp"
 
 using namespace std;
 
 class Obstacle:
-	public D3
+	public Location
 {
 	public:
-		Obstacle (string new_name, D3 * new_position, float new_radius);
+		Obstacle (string new_name, D3 new_position, D3 new_size);
 		virtual ~Obstacle ();
 		virtual bool is_initialized () const;
-		virtual void draw (SHR * hsr, float left, float bottom) const;
-		void move (D3 * new_position);
-		float get_radius () const;
-		bool collides (Obstacle * other_obstacle) const;
-
-	private:
-		float radius;
+		virtual void draw (SHR * hsr) const;
 };
 
 #endif

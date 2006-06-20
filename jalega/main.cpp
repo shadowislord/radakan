@@ -64,27 +64,27 @@ void
 	()
 {
 	shr->draw_start ();
-	tsl->draw (shr, 50, 100);
+	tsl->draw (shr);
 	shr->render_quad (
-		new D3 (0.4, 0.4, 0.4),
-		new D3 (- 270, - 80, 0),
-		new D3 ( 270, - 80, 0),
-		new D3 ( 270, - 205, 0),
-		new D3 (- 270, - 205, 0)
+		D3 (0.4, 0.4, 0.4),
+		D3 (- 270, - 80, 0),
+		D3 ( 270, - 80, 0),
+		D3 ( 270, - 205, 0),
+		D3 (- 270, - 205, 0)
 	);
-	shr->print_bitmap (new D3 (0.9, 0.9, 0.9), - 260, - 100, 5,
+	shr->print_bitmap (D3 (0.9, 0.9, 0.9), - 260, - 100, 5,
 		"The world has been at peace for decades.");
-	shr->print_bitmap (new D3 (0.9, 0.9, 0.9), - 260, - 115, 5,
+	shr->print_bitmap (D3 (0.9, 0.9, 0.9), - 260, - 115, 5,
 		"Elves, Dwarves and Humans live in harmony, thanks to (war), the war that defeated the Orcs.");
-	shr->print_bitmap (new D3 (0.9, 0.9, 0.9), - 260, - 130, 5,
+	shr->print_bitmap (D3 (0.9, 0.9, 0.9), - 260, - 130, 5,
 		"No trace of Orcs had been seen since then.");
-	shr->print_bitmap (new D3 (0.9, 0.9, 0.9), - 260, - 145, 5,
+	shr->print_bitmap (D3 (0.9, 0.9, 0.9), - 260, - 145, 5,
 		"But somehow the resting Orcs gathered in the caves beneath the northern mountains.");
-	shr->print_bitmap (new D3 (0.9, 0.9, 0.9), - 260, - 160, 5,
+	shr->print_bitmap (D3 (0.9, 0.9, 0.9), - 260, - 160, 5,
 		"As you know, the Orcs attacked yesterday (Elven city) and captured it.");
-	shr->print_bitmap (new D3 (0.9, 0.9, 0.9), - 260, - 175, 5,
+	shr->print_bitmap (D3 (0.9, 0.9, 0.9), - 260, - 175, 5,
 		"This is why you, (You), have to have to go to speak with (Dwarven king).");
-	shr->print_bitmap (new D3 (0.9, 0.9, 0.9), - 260, - 190, 5,
+	shr->print_bitmap (D3 (0.9, 0.9, 0.9), - 260, - 190, 5,
 		"You have to convince him to join us so we can defeat together the Orcs again.");
 	shr->draw_stop ();
 }
@@ -102,8 +102,8 @@ int
 	glutKeyboardFunc (handle_keyboard_input);
 	glutMouseFunc(handle_mouse_input);
 	
-	tsl = new World ("test_world");
-	tsl->add_obstacle (new Character ("hero", new D3 (52, 27, 0), 1));
+	tsl = new World ("world", D3 (), D3 (500, 350, 0));
+	tsl->add_obstacle (new Character ("hero", D3 (52, 27, 0), D3 (25, 25, 25)));
 
 	glutMainLoop ();
 

@@ -76,7 +76,7 @@ ostream&
 	return cerr << "ERROR: ";
 }
 
-string to_string (int value)
+string to_string (float value)
 {
 	ostringstream oss;
 	oss << value;	//	insert int into stream
@@ -89,6 +89,11 @@ int to_int (string value)
 	int result;
 	iss >> result;	//	extract int from stream
 	return result;
+}
+
+bool is_nan (float value)
+{
+	return (value != value);
 }
 
 //	void pause ()

@@ -4,11 +4,11 @@ using namespace std;
 
 //  constructor
 Tile::
-	Tile (string new_name):
-	Object::
-	Object (new_name)
+	Tile (string new_name, D3 new_position, D3 new_size):
+	Location::
+	Location (new_name, new_position, new_size)
 {
-	assert (Object::is_initialized ());
+	assert (Location::is_initialized ());
 	
 	assert (is_initialized ());
 }
@@ -18,20 +18,4 @@ Tile::
 	~Tile ()
 {
 	assert (is_initialized ());
-}
-
-//	virtual
-void
-	Tile::
-	draw
-	(SHR * shr, float left, float bottom)
-	const
-{
-	shr->render_quad (
-		new D3 (0.2, 0.5, 0.2),
-		new D3 (left, bottom, 0),
-		new D3 (left + 24, bottom, 0),
-		new D3 (left + 24, bottom + 24, 0),
-		new D3 (left, bottom + 24, 0)
-	);
 }

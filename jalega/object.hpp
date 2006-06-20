@@ -31,7 +31,8 @@ class Object:
 
 extern vector <Object *> objects;
 
-string to_string (int value);
+string to_string (float value);
+bool is_nan (float value);
 int to_int (string value);
 //	void pause ();
 

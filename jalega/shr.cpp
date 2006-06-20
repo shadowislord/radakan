@@ -11,8 +11,6 @@
 
 #include "shr.hpp"
 
-int font_index = 0;
-
 void * bitmap_fonts[7] =
 {
 	GLUT_BITMAP_9_BY_15,
@@ -27,13 +25,31 @@ void * bitmap_fonts[7] =
 SHR::
 	SHR (int argc, char * * argv):
 	Object::
-	Object ("SHR")
+	Object ("shr")
 {
 	assert (Object::is_initialized ());
 
+	font_index = 0;
+
+	TiXmlDocument doc;
+	bool success = doc.LoadFile ("data/" + * this + ".xml");
+	assert (success);
+	TiXmlHandle docHandle (& doc);
+	TiXmlElement * size =
+				docHandle.FirstChild (* this).FirstChild ("size").Element ();
+	assert (size != NULL);
+	int temp_width = - 1;
+	size->Attribute ("width", & temp_width);
+	assert (0 < temp_width);
+	width = (unsigned int) (temp_width);
+	int temp_height = - 1;
+	size->Attribute ("height", & temp_height);
+	assert (0 < temp_height);
+	height = (unsigned int) (temp_height);
+
 	glutInit (&argc, argv);
 
-	glutInitWindowSize (get_width (), get_height ());
+	glutInitWindowSize (width, height);
 	glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
 	main_window = glutCreateWindow ("tslrpg");
 	
@@ -97,17 +113,17 @@ void
 	glLoadIdentity ();
 
 	render_triangle (
-		new D3 (0, 0.4, 0.7),				//	color
-		new D3 (- 225, 70, 20),	//	a
-		new D3 (100, 200, 0),		//	b
-		new D3 (10, - 50, 0)		//	c
+		D3 (0, 0.4, 0.7),				//	color
+		D3 (- 500, 70, 20),	//	a
+		D3 (- 225, 200, 0),	//	b
+		D3 (- 315, - 50, 0)	//	c
 	);
 
 	//	Draw the strings, according to the current mode and font.
 	for (int j = 0; j < 4; j++)
 	{
-		print_bitmap (new D3 (0, 1, 0), - 400, 250 - 20 * j,
-			font_index, text [j]);
+		print_bitmap (D3 (0, 1, 0), - get_width () /2,
+			get_height () / 2 - 50 - 20 * j, font_index, text [j]);
 	}
 }
 
@@ -115,23 +131,124 @@ void SHR::draw_stop () const
 {
 	assert (is_initialized ());
 	
-	print_tga (new D3 (1, 0.5, 0.5), 60, - 120, false, "Lazy");
-	print_tga (new D3 (0.85, 0.5, 0.67), 50, - 80, false, "Bum");
-	print_tga (new D3 (0.67, 0.5, 0.85), 40, - 40, false, "Ware");
-	print_tga (new D3 (0.5, 0.5, 1), 30, 0, false, "Productions");
+	print_tga (D3 (1, 0.5, 0.5), - 340, 120, false, "Lazy");
+	print_tga (D3 (0.85, 0.5, 0.67), - 350, 80, false, "Bum");
+	print_tga (D3 (0.67, 0.5, 0.85), - 360, 40, false, "Ware");
+	print_tga (D3 (0.5, 0.5, 1), - 370, 0, false, "Productions");
 
 	glutSwapBuffers ();
 }
 
 int SHR::get_width () const
 {
-	return 800;
+	return width;
 }
 
 int SHR::get_height () const
 {
-	return 600;
+	return height;
 }
+
+void draw (Location * location) const
+{
+	assert (is_initialized ());
+	assert (location->is_initialized ());
+
+//	Pay attention to the order of the types. It does matter.
+	if (location->is_type <Tile> ())
+	{
+		Tile * tile = location->to_type <Tile> ();
+		shr->render_quad (
+			D3 (0.2, 0.5, 0.2),
+			* tile + D3 (12, 12, 0),
+			* tile + D3 (12, - 12, 0),
+			* tile + D3 (- 12, - 12, 0),
+			* tile + D3 (- 12, 12, 0),
+		);
+	}
+	else if (location->is_type <World> ())
+	{
+		World * world = location->to_type <World> ();
+		for (unsigned int i = 0; i < world->tile_width; i++)
+		{
+//			make sure tiles in the back get draw first:
+			for (unsigned int j = 0; j < world->tile_height; j++)
+			{
+				draw (world->get_tile (i, j));
+			}
+		}
+	
+		for (unsigned int i = 0; i < world->obstacles.size (); i++)
+		{
+			draw (world->obstacles.at (i));
+		}
+	}
+	else if (location->is_type <Obstacle> ())
+	{
+		Obstacle * obstacle = location->to_type <Obstacle> ();
+
+//		a tiny house is rendered
+
+//		left wall
+		shr->render_quad (
+			D3 (0.6, 0.6, 0.6),
+			D3 (a, b + 5, 0),
+			D3 (a + 10, b, 0),
+			D3 (a + 10, b + 10, 0),
+			D3 (a, b + 15, 0)
+		);
+//		right wall
+		shr->render_quad (
+			D3 (0.7, 0.7, 0.7),
+			D3 (a + 20, b + 5, 0),
+			D3 (a + 10, b, 0),
+			D3 (a + 10, b + 10, 0),
+			D3 (a + 20, b + 15, 0)
+		);
+//		left roof
+		shr->render_triangle (
+			D3 (0.8, 0, 0.1),
+			D3 (a + 10, b + 25, 0),
+			D3 (a, b + 15, 0),
+			D3 (a + 10, b + 10, 0)
+		);
+//		right roof
+		shr->render_triangle (
+			D3 (0.9, 0, 0.2),
+			D3 (a + 10, b + 25, 0),
+			D3 (a + 20, b + 15, 0),
+			D3 (a + 10, b + 10, 0)
+		);
+//		door
+		shr->render_quad (
+			D3 (0.6, 0.1, 0.1),
+			D3 (a + 14, b + 2, 0),
+			D3 (a + 16, b + 3, 0),
+			D3 (a + 16, b + 9, 0),
+			D3 (a + 14, b + 8, 0)
+		);
+	}
+	else
+	{
+		//	left wall
+		shr->render_quad (
+			D3 (0.8, 0.5, 0.2),
+			* location + D3 (1, 5, 0),
+			* location + D3 (- 1, 5, 0),
+			* location + D3 (- 1, - 5, 0),
+			* location + D3 (1, - 5, 0),
+		);
+		//	right wall
+		shr->render_quad (
+			D3 (0.5, 0.2, 0.8),
+			* location + D3 (5, 1, 0),
+			* location + D3 (5, - 1, 0),
+			* location + D3 (- 5, - 1, 0),
+			* location + D3 (- 5, 1, 0)
+		);
+	}
+}
+
 
 //	Enables 2D texturing
 void SHR::texturing_2d (bool flag) const
@@ -148,14 +265,14 @@ void SHR::texturing_2d (bool flag) const
 	}
 }
 
-void SHR::use_color (D3 * color) const
+void SHR::use_color (D3 color) const
 {
 	assert (is_initialized ());
-	assert (color != NULL);
+//	assert (color != NULL);
 	
-	glColor3f (color->get_x (), color->get_y (), color->get_z ());
+	glColor3f (color.get_x (), color.get_y (), color.get_z ());
 
-	delete color;
+//	delete color;
 }
 
 //	Binds a texture with opengl.
@@ -170,33 +287,29 @@ void SHR::bind_texture (Texture * texture) const
 void
 	SHR::
 	render_quad
-	(D3 * color, D3 * a, D3 * b, D3 * c, D3 * d)
+	(D3 color, D3 a, D3 b, D3 c, D3 d)
 	const
 {
 	assert (is_initialized ());
 	
 	glPushMatrix ();
 
+	debug () << a << b << c << d << endl;
 	use_color (color);
 	glBegin (GL_QUADS);
-		glVertex3f (a->get_x (), a->get_y (), a->get_z ());
-		glVertex3f (b->get_x (), b->get_y (), b->get_z ());
-		glVertex3f (c->get_x (), c->get_y (), c->get_z ());
-		glVertex3f (d->get_x (), d->get_y (), d->get_z ());
+		glVertex3f (a.get_x (), a.get_y (), a.get_z ());
+		glVertex3f (b.get_x (), b.get_y (), b.get_z ());
+		glVertex3f (c.get_x (), c.get_y (), c.get_z ());
+		glVertex3f (d.get_x (), d.get_y (), d.get_z ());
 	glEnd ();
 
 	glPopMatrix ();
-
-	delete a;
-	delete b;
-	delete c;
-	delete d;
 }
 
 void
 	SHR::
 	render_triangle
-	(D3 * color, D3 * a, D3 * b, D3 * c) const
+	(D3 color, D3 a, D3 b, D3 c) const
 {
 	assert (is_initialized ());
 	
@@ -204,16 +317,12 @@ void
 
 	use_color (color);
 	glBegin (GL_POLYGON);					// start drawing a polygon
-		glVertex3f (a->get_x (), a->get_y (), a->get_z ());
-		glVertex3f (b->get_x (), b->get_y (), b->get_z ());
-		glVertex3f (c->get_x (), c->get_y (), c->get_z ());
+		glVertex3f (a.get_x (), a.get_y (), a.get_z ());
+		glVertex3f (b.get_x (), b.get_y (), b.get_z ());
+		glVertex3f (c.get_x (), c.get_y (), c.get_z ());
 	glEnd ();								// we're done with the polygon
 
 	glPopMatrix ();
-
-	delete a;
-	delete b;
-	delete c;
 }
 
 /*void
@@ -255,7 +364,7 @@ void SHR::disable2D ()
 void
 	SHR::
 	print_bitmap
-	(D3 * color, float x, float y, int font_number, string text)
+	(D3 color, float x, float y, int font_number, string text)
 	const
 {
 	assert (is_initialized ());
@@ -274,7 +383,7 @@ void
 }
 
 void SHR::
-	print_tga (D3 * color, float x, float y, bool italic, string text) const
+	print_tga (D3 color, float x, float y, bool italic, string text) const
 {
 	assert (is_initialized ());
 	assert (text != "");
@@ -283,20 +392,21 @@ void SHR::
 
 	use_color (color);
 
-	glTranslated (-x, -y, 0);							// Position The Text (0,0 - Top Left)
-	texturing_2d (true);								// Enable Texture Mapping
-	
+	glTranslated (x, y, 0);			// Position The Text (0,0 - Top Left)
+	texturing_2d (true);				// Enable Texture Mapping
+
 	if (italic)
 	{
-		glListBase (0 - 31);							// Choose The Font Set (0 or 1)
+		glListBase (0 - 31);			// Choose The Font Set (0 or 1)
 	}
 	else
 	{
-		glListBase (97);								// Choose The Font Set (0 or 1)
+		glListBase (97);				// Choose The Font Set (0 or 1)
 	}
-	glCallLists (text.size (), GL_UNSIGNED_BYTE, text.c_str ());	// Write The Text To The Screen
+	glCallLists (text.size (), GL_UNSIGNED_BYTE, text.c_str ());
+										// Write The Text To The Screen
 
-	texturing_2d (false);								// Disable Texture Mapping
+	texturing_2d (false);				// Disable Texture Mapping
 
 	glPopMatrix ();
 }

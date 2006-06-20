@@ -1,4 +1,4 @@
 <world>
 	<image path="images/test_tsl.tga" left="0" top="0"/>
-	<size tile_width="15" tile_height="10" tile_size="25" />
+	<size tile_width="20" tile_height="10" tile_size="25" />
 </world>

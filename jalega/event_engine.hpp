@@ -16,7 +16,6 @@ class Event_Engine:
 	
 	private:
 		void_func quit;
-		bool house_added;
 };
 
 #endif
