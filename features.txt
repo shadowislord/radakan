@@ -1,0 +1,25 @@
+Setting:
+	medieval fantasy
+	little magic
+	no industrialisation
+
+Skills:
+	agility
+	beauty
+	constitution
+	equolence
+	intelligence
+	quickness
+	strength
+	willpower
+
+Gameplay:
+	no tiles
+	simulteaneous turn-based combat
+	skill based (no levels)
+	inventory limited in both size and weight
+	HP increases slowly with constitution
+	variable damage
+
+Target public:
+	small commited community

@@ -24,11 +24,8 @@ mid term:
 - ground digging
 - 3D models
 - 3D model skins
-- reflections
-- waves
 
 long term:
-(Don't work on them now, just don't make these things impossible.)
 
 - NPC AI
 - NPC team members
