@@ -3,7 +3,8 @@
 using namespace std;
 
 Tslrpg::
-	Tslrpg ()
+	Tslrpg ():
+	Object ("Tslrpg")
 {
 }
 
@@ -27,7 +28,7 @@ void
 //	virtual
 void Tslrpg::createScene ()
 {
-	Entity* ent = mSceneMgr->createEntity("ogre", "fort.mesh");
+	Entity * ent = mSceneMgr->createEntity("ogre", "fort.mesh");
 	//ent->setMaterialName("metal_plate");
 	SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	node->attachObject(ent);
@@ -96,6 +97,6 @@ void Tslrpg::createScene ()
 
 void Tslrpg::createFrameListener ()
 {
-	mFrameListener = new LFrameListener (mSceneMgr, mWindow, mCamera);
+	mFrameListener = new FrameLstr (mSceneMgr, mWindow, mCamera);
 	mRoot->addFrameListener (mFrameListener);
 }

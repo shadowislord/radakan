@@ -1,10 +1,11 @@
 #ifndef TSLRPG_HPP
 #define TSLRPG_HPP 
 
-#include "lost.hpp"
+#include "framelistener.hpp"
 
 class Tslrpg:
-	public ExampleApplication
+	public ExampleApplication,
+	public Object
 {
 	public:
 		Tslrpg ();
