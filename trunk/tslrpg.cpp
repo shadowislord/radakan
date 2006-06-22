@@ -6,6 +6,12 @@ Tslrpg::
 	Tslrpg ():
 	Object ("Tslrpg")
 {
+	Character * player = new Character ("player", Vector3 (0,0,0));
+	assert (! player->inventory->contains (player));
+	assert (player->inventory->add (player));
+	assert (player->inventory->contains (player));
+	assert (player->inventory->remove (player));
+	assert (! player->inventory->contains (player));
 }
 
 Tslrpg::
@@ -18,11 +24,11 @@ void
 	Tslrpg::
 	createCamera ()
 {
-	mCamera = mSceneMgr->createCamera("PlayerCam");
-	mCamera->setPosition(Vector3(0,0,0));
-	mCamera->lookAt(Vector3(0,0,-300));
-	mCamera->setNearClipDistance(5);
-	mCamera->setFarClipDistance(2000);
+	mCamera = mSceneMgr->createCamera ("PlayerCam");
+	mCamera->setPosition (Vector3 (0,0,0));
+	mCamera->lookAt (Vector3 (0,0,-300));
+	mCamera->setNearClipDistance (5);
+	mCamera->setFarClipDistance (2000);
 }
 
 //	virtual

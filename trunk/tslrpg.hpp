@@ -1,6 +1,7 @@
 #ifndef TSLRPG_HPP
 #define TSLRPG_HPP 
 
+#include "character.hpp"
 #include "framelistener.hpp"
 
 class Tslrpg:
