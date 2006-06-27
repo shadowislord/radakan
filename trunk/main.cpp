@@ -11,13 +11,13 @@ vector <Object *> objects;
 #endif
 {
 	// Create application object
-	Tslrpg game;
-
-	SET_TERM_HANDLER;
+	Tslrpg * game;
 
 	try
 	{
-		game.go();
+		game = new Tslrpg ();
+		game->run ();
+		delete game;
 	}
 	catch (Ogre::Exception & e)
 	{

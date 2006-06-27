@@ -4,9 +4,9 @@ using namespace std;
 
 //  Constructor
 Character::
-	Character (string new_name, Vector3 new_position/*, D3 new_size*/):
+	Character (string new_name/*, Vector3 new_position, D3 new_size*/):
 	Obstacle::
-	Obstacle (new_name, new_position/*, new_size*/)
+	Obstacle (new_name/*, new_position, new_size*/)
 {
 	assert (Obstacle::is_initialized ());
 
@@ -20,4 +20,6 @@ Character::
 	~Character ()
 {
 	assert (is_initialized ());
+
+	delete inventory;
 }

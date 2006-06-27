@@ -4,7 +4,7 @@ using namespace std;
 
 //  Constructor
 Obstacle::
-	Obstacle (string new_name, Vector3 new_position/*, D3 new_size*/):
+	Obstacle (string new_name/*, Vector3 new_position, D3 new_size*/):
 	Object::
 	Object (new_name)
 {

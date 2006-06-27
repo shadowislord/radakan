@@ -4,18 +4,26 @@
 #include "character.hpp"
 #include "framelistener.hpp"
 
+using namespace Ogre;
+
 class Tslrpg:
-	public ExampleApplication,
+//	public ExampleApplication,
 	public Object
 {
 	public:
 		Tslrpg ();
 		~Tslrpg ();
+		void run ();
 
-	protected:
-		virtual void createCamera ();
-		virtual void createScene ();
-		void createFrameListener ();
+	private:
+		void create_scene ();
+
+		Root * root;
+		Camera * camera;
+		SceneManager * scene_mgr;
+		FrameLstr * frame_listener;
+		RenderWindow * window;
+		InputReader * input_device;
 };
 
 #endif

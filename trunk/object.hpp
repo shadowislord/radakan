@@ -5,7 +5,7 @@
 #define OBJECT_HPP
 
 #include <Ogre.h>
-#include <ExampleApplication.h>
+//	#include <ExampleApplication.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 	#define TSLRPG_WIN32

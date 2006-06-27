@@ -12,6 +12,16 @@ Skills:
 	quickness
 	strength
 	willpower
+	sword
+	axe
+	maxe
+	bow
+	crossbow(?)
+	cooking
+	stealth
+	lock picking
+	stealing
+	
 
 Gameplay:
 	no tiles
