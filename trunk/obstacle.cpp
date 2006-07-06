@@ -4,14 +4,14 @@ using namespace std;
 
 //  Constructor
 Obstacle::
-	Obstacle (string new_name/*, Vector3 new_position, D3 new_size*/):
-	Object::
-	Object (new_name)
+	Obstacle (string new_name, Vector3 new_size):
+	Tsl_Entity::
+	Tsl_Entity (new_name)
 {
-	assert (Object::is_initialized ());
+	assert (Tsl_Entity::is_initialized ());
 
+	size = new_size;
 
-	
 	assert (is_initialized ());
 }
 
@@ -29,5 +29,5 @@ bool
 	()
 	const
 {
-	return Object::is_initialized ();
+	return (0 < size.squaredLength()) && Object::is_initialized ();
 }

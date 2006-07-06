@@ -2,6 +2,7 @@
 #define FRAMELISTENER_HPP
 
 #include "object.hpp"
+#include <Ogre.h>
 #include <OgreKeyEvent.h>
 #include <OgreEventListeners.h>
 #include <OgreStringConverter.h>
@@ -14,7 +15,7 @@ using namespace Ogre;
 class FrameLstr:
 	public FrameListener,
 	public KeyListener,
-//	public MouseListener,	//	doesn't work yet
+//	public MouseListener,	//	doesn't work (yet)
 	public Object
 {
 	public:
@@ -23,8 +24,8 @@ class FrameLstr:
 			Camera * new_camera, bool useBufferedInputKeys,
 			bool useBufferedInputMouse);	//	these bools are default false
     	virtual ~FrameLstr ();
-		bool frameStarted (const FrameEvent& evt);
-		bool frameEnded (const FrameEvent& evt);
+		virtual bool frameStarted (const FrameEvent& evt);
+		virtual bool frameEnded (const FrameEvent& evt);
 		virtual bool processUnbufferedKeyInput(const FrameEvent& evt);
 		bool processUnbufferedMouseInput(const FrameEvent& evt);
 		void moveCamera();

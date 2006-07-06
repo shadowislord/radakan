@@ -4,7 +4,7 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
-#include <Ogre.h>
+#include <OgrePrerequisites.h>
 //	#include <ExampleApplication.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

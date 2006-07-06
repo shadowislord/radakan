@@ -24,6 +24,7 @@ class Tslrpg:
 		FrameLstr * frame_listener;
 		RenderWindow * window;
 		InputReader * input_device;
+		Character * player;
 };
 
 #endif

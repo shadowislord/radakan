@@ -9,7 +9,7 @@ class Character:
 	public Obstacle
 {
 	public:
-		Character (string new_name/*, Vector3 new_position, D3 new_size*/);
+		Character (string new_name, Vector3 new_size);
 		virtual ~Character ();
 
 		int agility;

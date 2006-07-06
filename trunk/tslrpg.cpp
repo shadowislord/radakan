@@ -7,7 +7,6 @@ Tslrpg::
 	Tslrpg ():
 	Object ("Tslrpg")
 {
-
 	root = new Root();
 
 	if (! root->showConfigDialog ())
@@ -68,30 +67,13 @@ Tslrpg::
 
 	create_scene ();
 
-	/*while (true)
-	{
-		Ogre::PlatformManager::getSingleton().messagePump (window);
 
-		if(root->renderOneFrame () == false)
-		{
-			break;
-		}
-
-		input_device->capture();
-
-		if (input_device->isKeyDown (Ogre::KC_ESCAPE))
-		{
-			break;
-		}
-	}*/
-
-	Character * player = new Character ("player");
+	player = new Character ("player", Vector3 (1, 1, 1));
 	assert (! player->inventory->contains (player));
 	assert (player->inventory->add (player));
 	assert (player->inventory->contains (player));
 	assert (player->inventory->remove (player));
 	assert (! player->inventory->contains (player));
-	delete player;
 }
 
 Tslrpg::
@@ -99,6 +81,8 @@ Tslrpg::
 {
 //	this doesn't get called somehow
 
+	debug () << ("Z");
+	delete player;
 	debug () << ("a");
 	delete root;
 	debug () << ("b");

@@ -76,6 +76,8 @@ void FrameLstr::updateStats(void)
 
 		const RenderTarget::FrameStats& stats = window->getStatistics();
 
+//		print << "FPS: " << stats.avgFPS << endl;
+
 		guiAvg->setCaption(avgFps + StringConverter::toString(stats.avgFPS));
 		guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
 		guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS)
@@ -147,7 +149,7 @@ bool FrameLstr::processUnbufferedKeyInput(const FrameEvent& evt)
         }
 
         if( input_device->isKeyDown( KC_ESCAPE) )
-        {            
+        {
             return false;
         }
 
@@ -259,16 +261,13 @@ bool FrameLstr::processUnbufferedKeyInput(const FrameEvent& evt)
 		return true;
 	}
 
-	void FrameLstr::moveCamera()
-	{
-
-        // Make all the changes to the camera
-        // Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW (e.g. airplane)
-        camera->yaw(mRotX);
-        camera->pitch(mRotY);
-        camera->moveRelative(mTranslateVector);
-
-
+void FrameLstr::moveCamera()
+{
+	// Make all the changes to the camera
+	// Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW (e.g. airplane)
+	camera->yaw(mRotX);
+	camera->pitch(mRotY);
+	camera->moveRelative (mTranslateVector);
 	}
 
     void FrameLstr::showDebugOverlay (bool show)
@@ -277,34 +276,38 @@ bool FrameLstr::processUnbufferedKeyInput(const FrameEvent& evt)
         {
             if (show)
             {
-                debug_overlay->show();
+                debug_overlay->show ();
             }
             else
             {
-                debug_overlay->hide();
+                debug_overlay->hide ();
             }
         }
     }
 
 // Override frameStarted event to process that (don't care about frameEnded)
-bool FrameLstr::frameStarted(const FrameEvent& evt)
+bool FrameLstr::frameStarted (const FrameEvent& evt)
 {
 	total_time += evt.timeSinceLastFrame;
 
-	if(window->isClosed())
+	if (window->isClosed ())
+	{
 		return false;
+	}
 
-	if (!mInputTypeSwitchingOn)
+	if (! mInputTypeSwitchingOn)
 	{
 		input_device->capture();
 	}
 
 
-	if ( !mUseBufferedInputMouse || !mUseBufferedInputKeys)
+	if (! mUseBufferedInputMouse || ! mUseBufferedInputKeys)
 	{
 		// one of the input modes is immediate, so setup what is needed for immediate mouse/key movement
 		if (mTimeUntilNextToggle >= 0)
+		{
 			mTimeUntilNextToggle -= evt.timeSinceLastFrame;
+		}
 
 		// If this is the first frame, pick a speed
 		if (evt.timeSinceLastFrame == 0)
@@ -332,7 +335,7 @@ bool FrameLstr::frameStarted(const FrameEvent& evt)
 	}
 	else
 	{
-		if (processUnbufferedKeyInput(evt) == false)
+		if (processUnbufferedKeyInput (evt) == false)
 		{
 			return false;
 		}
@@ -345,13 +348,13 @@ bool FrameLstr::frameStarted(const FrameEvent& evt)
 	}
 	else
 	{
-		if (processUnbufferedMouseInput(evt) == false)
+		if (processUnbufferedMouseInput (evt) == false)
 		{
 			return false;
 		}
 	}
 
-	if ( !mUseBufferedInputMouse || !mUseBufferedInputKeys)
+	if (! mUseBufferedInputMouse || ! mUseBufferedInputKeys)
 	{
 	// one of the input modes is immediate, so update the movement vector
 	moveCamera();
@@ -386,13 +389,15 @@ void FrameLstr::keyClicked (KeyEvent * e)
 	}
 	else if (e->getKeyChar() == 'k')
 	{
-			switchKeyMode();
+		switchKeyMode();
 	}
 }
 
 void FrameLstr::keyPressed (KeyEvent * e)
-{}
+{
+}
 
 void FrameLstr::keyReleased (KeyEvent * e)
-{}
+{
+}
 
