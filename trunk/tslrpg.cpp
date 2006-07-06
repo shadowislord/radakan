@@ -81,21 +81,21 @@ Tslrpg::
 {
 //	this doesn't get called somehow
 
-	debug () << ("Z");
+	debug () << ("deleting player...") << endl;
 	delete player;
-	debug () << ("a");
+	debug () << ("deleting root...") << endl;
 	delete root;
-	debug () << ("b");
+	debug () << ("deleting camera...") << endl;
 	delete camera;
-	debug () << ("c");
+	debug () << ("deleting scene_mgr...") << endl;
 	delete scene_mgr;
-	debug () << ("d");
+	debug () << ("deleting frame_listener...") << endl;
 	delete frame_listener;
-	debug () << ("e");
+	debug () << ("deleting window...") << endl;
 	delete window;
-	debug () << ("f");
+	debug () << ("deleting input_device...") << endl;
 	delete input_device;
-	debug () << ("g");
+	debug () << ("All deleted") << endl;
 }
 
 void
