@@ -6,7 +6,7 @@ using namespace Ogre;
 //  Constructor
 Character::
 	Character (string new_name, Vector3 new_size):
-	Obstacle::
+	//Obstacle::
 	Obstacle (new_name, new_size)
 {
 	assert (Obstacle::is_initialized ());

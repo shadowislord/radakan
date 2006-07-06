@@ -60,6 +60,7 @@ Tslrpg::
 	ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	frame_listener = new FrameLstr (scene_mgr, window, camera, false, false);
+
 	root->addFrameListener (frame_listener);
 	
 	input_device = PlatformManager::getSingleton().createInputReader();

@@ -7,6 +7,7 @@ FrameLstr::
 //	mSceneMgr (new_scene_mgr),
 	Object ("FrameListener")
 {
+
 	scene_mgr = new_scene_mgr;
 	total_time = 0;
 	camera = new_camera;
@@ -20,7 +21,8 @@ FrameLstr::
 	mTranslateVector = Vector3::ZERO;
 	mAniso = 1;
 	mFiltering = TFO_BILINEAR;
-	showDebugOverlay (true);
+
+	//showDebugOverlay (false);
 
 	debug_overlay = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
 	mUseBufferedInputKeys = useBufferedInputKeys;
@@ -278,10 +280,13 @@ void FrameLstr::moveCamera()
             {
                 debug_overlay->show ();
             }
+            //else
+           // {
+                //debug_overlay->hide ();
             else
-            {
-                debug_overlay->hide ();
-            }
+			{
+				abort ();
+			}
         }
     }
 

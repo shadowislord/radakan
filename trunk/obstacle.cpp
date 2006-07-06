@@ -5,7 +5,7 @@ using namespace std;
 //  Constructor
 Obstacle::
 	Obstacle (string new_name, Vector3 new_size):
-	Tsl_Entity::
+	//Tsl_Entity::
 	Tsl_Entity (new_name)
 {
 	assert (Tsl_Entity::is_initialized ());

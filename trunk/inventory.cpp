@@ -5,7 +5,7 @@ using namespace std;
 //  Constructor
 Inventory::
 	Inventory (string new_name):
-	Object::
+	//Object::
 	Object (new_name)
 {
 	assert (Object::is_initialized ());

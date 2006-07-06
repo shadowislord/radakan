@@ -15,6 +15,9 @@ class Obstacle:
 		virtual ~Obstacle ();
 		virtual bool is_initialized () const;
 		Vector3 size;	//	the bounding box
+		Vector3 position;	//	the position of the obstacle
+		float weight; //in kilograms preferably
+		bool moving; //true = object is moving, false = object is static
 };
 
 #endif

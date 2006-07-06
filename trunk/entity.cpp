@@ -5,7 +5,7 @@ using namespace std;
 //  constructor
 Tsl_Entity::
 	Tsl_Entity (string new_name):
-	Object::
+	//Object::
 	Object (new_name)
 {
 	assert (Object::is_initialized ());
