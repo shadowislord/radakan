@@ -19,9 +19,11 @@
 				<img src="optimized/images3/images/page4_03.gif" width="129" height="37" border="0">
 				<img src="optimized/images3/images/page4_06.gif" width="129" height="39" border="0" usemap="#Map">
 				<img src="optimized/images3/images/page4_07.gif" width="129" height="41" border="0" usemap="#Map2">
-				<img src="optimized/images3/images/page4_08.gif" width="129" height="43" border="0" usemap="#Map3">
-				<img src="optimized/images3/images/page4_09.gif" width="129" height="56" border="0" usemap="#Map4">
-				<img src="optimized/images3/images/page4_10.gif" width="129" height="41" border="0" usemap="#Map5">
+				<a href="to-do-list.txt">To-do list</a>
+				<a href="http://www.rathscode.net/e107_plugins/forum/forum_viewforum.php?10" target="blank_">Forum</a>
+				<!--img src="optimized/images3/images/page4_08.gif" width="129" height="43" border="0" usemap="#Map3">
+				<!--img src="optimized/images3/images/page4_09.gif" width="129" height="56" border="0" usemap="#Map4">
+				<!--img src="optimized/images3/images/page4_10.gif" width="129" height="41" border="0" usemap="#Map5">
 				<img src="optimized/images3/images/page4_11.gif" width="129" height="42" border="0" usemap="#Map6">
 				<img src="optimized/images3/images/page4_12.gif" width="129" height="58" border="0" usemap="#Map7">
 				<img src="optimized/images3/images/page4_13.gif" width="129" height="43" border="0" usemap="#Map8">

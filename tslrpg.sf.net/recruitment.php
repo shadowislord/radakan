@@ -2,13 +2,7 @@
 	include ("start.txt");
 ?>
 	<h1>-Recruitment-</h1>
-	Currently we are especially looking for people who can fill the following positions:
-	<ul>
-		<li>Ogre programmer</li>
-		<li>Network programmer</li>
-		<li>AI Programmer</li>
-	</ul>
-	If you don't have the skill to fit in one of these roles, but you would like to help us, let us know though.
+	All recruitement details can be found in <a href=http://www.gamedev.net/community/forums/topic.asp?topic_id=406871">our recruitement thread on Gamedev.net</a>.<br/>
 <?php
 	include ("end.txt");
 ?>

@@ -5,62 +5,20 @@
 
 		<img name="divider1" src="optimized/images3/images/divider1.gif" width="528" height="22" alt="divider"/><br/>
 		<br/>
-		June 24, 2006
-		<h3>Features and to-do list added</h3>
-		A while ago, a feature list and a to-do list were added. If you have anything to add please, let me know. You can find them under the links section.<br/>
+		August 10, 2006
+		<h3>Forum added</h3>
+		Today John Cramb joined us. He advised us to write a Game Design Document. We will write &amp; discuss the GDD on <a href="http://www.rathscode.net/e107_plugins/forum/forum_viewforum.php?10">John Cramb's forums</a>.<br/>
 		<br/>
-		Thank you,<br/>
 		Tinus<br/>
 		<br/>
 
 		<img name="divider1" src="optimized/images3/images/divider1.gif" width="528" height="22" alt="divider"/><br/>
 		<br/>
-		April 10, 2006
-		<h3>News example #1</h3>
-        This is just a random example with all sorts of useless data that really doesn't need to be read, and should be read, because there is absolutely zero content value. If you are reading this then you will learn nothing except that this text is worthless.<br/>
+		June 24, 2006
+		<h3>Features and to-do list added</h3>
+		A while ago, a feature list was added under the <a href="introduction.php">introduction page</a> and a <a href="to-do-list.txt">to-do</a> list was also added. If you have anything to add please, let me know.<br/>
 		<br/>
-		Thank you,<br/>
-		Heinz Pabst<br/>
-		<br/>
-
-		<img name="divider1" src="optimized/images3/images/divider1.gif" width="528" height="22" alt="divider"/><br/>
-		<br/>
-		April 10, 2006
-		<h3>News example #2</h3>
-        This is just a random example with all sorts of useless data that really doesn't need to be read, and should be read, because there is absolutely zero content value. If you are reading this then you will learn nothing except that this text is worthless.<br/>
-		<br/>
-		Thank you,<br/>
-		Heinz Pabst<br/>
-		<br/>
-		
-		<img name="divider1" src="optimized/images3/images/divider1.gif" width="528" height="22" alt="divider"/><br/>
-		<br/>
-		April 10, 2006
-		<h3>News example #3</h3>
-        This is just a random example with all sorts of useless data that really doesn't need to be read, and should be read, because there is absolutely zero content value. If you are reading this then you will learn nothing except that this text is worthless.<br/>
-		<br/>
-		Thank you,<br/>
-		Heinz Pabst<br/>
-		<br/>
-		
-		<img name="divider1" src="optimized/images3/images/divider1.gif" width="528" height="22" alt="divider"/><br/>
-		<br/>
-		April 10, 2006
-		<h3>News example #4</h3>
-        This is just a random example with all sorts of useless data that really doesn't need to be read, and should be read, because there is absolutely zero content value. If you are reading this then you will learn nothing except that this text is worthless.<br/>
-		<br/>
-		Thank you,<br/>
-		Heinz Pabst<br/>
-		<br/>
-		
-		<img name="divider1" src="optimized/images3/images/divider1.gif" width="528" height="22" alt="divider"/><br/>
-		<br/>
-		April 10, 2006
-		<h3>News example #5</h3>
-        This is just a random example with all sorts of useless data that really doesn't need to be read, and should be read, because there is absolutely zero content value. If you are reading this then you will learn nothing except that this text is worthless.<br/>
-		<br/>
-		Thank you,<br/>
-		Heinz Pabst<br/>
+		Tinus<br/>
 		<br/>
 
 <?php
