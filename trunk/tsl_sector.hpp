@@ -1,9 +1,6 @@
-
-
 #ifndef TSL_SECTOR_HPP
 #define TSL_SECTOR_HPP
 
-#include "object.hpp"
 #include "obstacle.hpp"
 
 using namespace std;

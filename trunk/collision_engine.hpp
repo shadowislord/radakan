@@ -20,5 +20,4 @@ class Collision_Engine:
 		void handle(Obstacle* hit, Obstacle* hitter);
 };
 
-
 #endif
