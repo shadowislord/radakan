@@ -1,0 +1,14 @@
+body {
+	color:				#aaa;
+	background-color:	#000;
+	width:				100%;
+	margin:				0px;
+}
+
+h1, h2, h3, h4, h5, h6, h7 {
+	text-align:			center;
+}
+
+a {
+	color:				#fa5;
+}
