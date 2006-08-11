@@ -10,29 +10,5 @@
 				</td>
 			</tr>
 		</table>
-		<map name="Map">
-			<area shape="rect" coords="2,2,118,38" href="index.php">
-		</map>
-		<map name="Map2">
-			<area shape="rect" coords="2,6,118,39" href="introduction.php">
-		</map>
-		<map name="Map3">
-			<area shape="rect" coords="2,9,118,41" href="gettingstarted.php">
-		</map>
-		<map name="Map4">
-			<area shape="rect" coords="2,21,117,55" href="faq.php">
-		</map>
-		<map name="Map5">
-			<area shape="rect" coords="1,5,118,39" href="servicecenter.php">
-		</map>
-		<map name="Map6">
-			<area shape="rect" coords="1,7,118,40" href="contactus.php">
-		</map>
-		<map name="Map7">
-			<area shape="rect" coords="1,21,118,56" href="recruitment.php">
-		</map>
-		<map name="Map8">
-			<area shape="rect" coords="1,7,119,41" href="links.php">
-		</map>
 	</body>
 </html>

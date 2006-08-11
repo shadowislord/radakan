@@ -10,23 +10,40 @@
 			<tr>
 				<td rowspan="3">&nbsp;</td>
 	 			<td height="97" colspan="3">
-					<img src="optimized/images3/images/page4_01.gif" width="129" height="107" alt="left top"/><!--no CR--><img name="topbar1" src="optimized/images3/images/page4_02.gif" width="671" height="107" alt="right top"/>
+					<img src="images/top_left.gif" width="129" height="107" alt="left top"/><!--no CR--><img name="topbar1" src="images/top.gif" width="671" height="107" alt="right top"/>
 				</td>
 			<td rowspan="3">&nbsp;</td>
 		</tr>
 		<tr align="left"> 
-			<td width="135" rowspan="2" valign="top"> 
-				<img src="optimized/images3/images/page4_03.gif" width="129" height="37" border="0">
-				<img src="optimized/images3/images/page4_06.gif" width="129" height="39" border="0" usemap="#Map">
-				<img src="optimized/images3/images/page4_07.gif" width="129" height="41" border="0" usemap="#Map2">
-				<a href="to-do-list.txt">To-do list</a>
-				<a href="http://www.rathscode.net/e107_plugins/forum/forum_viewforum.php?10" target="blank_">Forum</a>
-				<!--img src="optimized/images3/images/page4_08.gif" width="129" height="43" border="0" usemap="#Map3">
-				<!--img src="optimized/images3/images/page4_09.gif" width="129" height="56" border="0" usemap="#Map4">
-				<!--img src="optimized/images3/images/page4_10.gif" width="129" height="41" border="0" usemap="#Map5">
-				<img src="optimized/images3/images/page4_11.gif" width="129" height="42" border="0" usemap="#Map6">
-				<img src="optimized/images3/images/page4_12.gif" width="129" height="58" border="0" usemap="#Map7">
-				<img src="optimized/images3/images/page4_13.gif" width="129" height="43" border="0" usemap="#Map8">
-				<img src="optimized/images3/images/page4_16.gif" width="129" height="293" align="top">
+			<td width="135" rowspan="2" valign="top">
+				<table cellpadding="0" cellspacing="0"><!-- border="1"-->
+					<tr><td>
+						<img src="images/left_sub_top.gif" width="129" height="37">
+					</td></tr>
+					<tr><td class="menu">
+						<a href="index.php">Home</a>
+					</td></tr>
+					<tr><td class="menu">
+						<a href="introduction.php">Introduction</a>
+					</td></tr>
+					<tr><td class="menu">
+						<a href="to-do-list.php">To-do list</a>
+					</td></tr>
+					<tr><td class="menu">
+						<a href="http://www.rathscode.net/e107_plugins/forum/forum_viewforum.php?10" target="blank_">Forum</a>
+					</td></tr>
+					<tr><td class="menu">
+						<a href="contactus.php">Contact us</a>
+					</td></tr>
+					<tr><td class="menu">
+						<a href="recruitment.php">Recruitment</a>
+					</td></tr>
+					<tr><td class="menu">
+						<a href="links.php">Links</a>
+					</td></tr>
+					<tr><td class="menu">
+						<img src="images/bottom_left.gif" width="129" height="293">
+					</td></tr>
+				</table>
 			</td>
-			<td width="528" height="800" valign="top" background="optimized/images3/images/background.jpg">
+			<td width="528" height="800" valign="top" background="images/background.jpg">

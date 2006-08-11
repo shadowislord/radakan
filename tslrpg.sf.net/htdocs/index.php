@@ -3,7 +3,7 @@
 ?>
 		<h1>-News-</h1>
 
-		<img name="divider1" src="optimized/images3/images/divider1.gif" width="528" height="22" alt="divider"/><br/>
+		<img name="divider1" src="images/divider1.gif" width="528" height="22" alt="divider"/><br/>
 		<br/>
 		August 10, 2006
 		<h3>Forum added</h3>
@@ -12,7 +12,7 @@
 		Tinus<br/>
 		<br/>
 
-		<img name="divider1" src="optimized/images3/images/divider1.gif" width="528" height="22" alt="divider"/><br/>
+		<img name="divider1" src="images/divider1.gif" width="528" height="22" alt="divider"/><br/>
 		<br/>
 		June 24, 2006
 		<h3>Features and to-do list added</h3>
