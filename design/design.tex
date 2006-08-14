@@ -45,7 +45,7 @@
 \newcommand{\nadruk }[1]{\textbf{\emph{#1}}}
 
 \title{
-	Game design document for \\ 
+	Game Software Design Specifiation Document for \\ 
 	\nadruk{The Scattered Lands}
 }
 \author{
@@ -74,7 +74,14 @@
 
 		\section{Target}
 
-			TSL will run on both Microsoft Windows and Linux. We will considder other operating systems, if they are supported by our 3D engine, and if there is someone from the develoment team who has access to a computer with that OS.
+			\subsection{Audience}
+
+				The specific group that TSL might be intended for is a small community of dedicated players.
+
+			\subsection{Platform \& OS}
+
+			TSL will run on both Microsoft Windows and Linux. \\
+			We will considder other operating systems, if they are supported by our 3D engine, and if there is someone from the develoment team who has access to a computer with that OS.
 
 	\chapter{Feature Set}
 
@@ -105,13 +112,27 @@
 
 \part{Setting}
 
-	\chapter{General}
+	\chapter{General Setting}
 
 		TLS takes part in a medieval fantasy world, where magic is costly and industrialiarion is unexistant.
 
 	\chapter{World Layout}
 
+		\section{Key Locations}
+
+	\chapter{Envirionment}
+
+		\section{Animals}
+
+			\subsection{Wolves}
+
+		\section{Plants \& Fungi}
+
+			\subsection{Oak}
+
 	\chapter{Magic}
+
+	\chapter{History}
 
 	\chapter{Characters}
 
@@ -122,6 +143,23 @@
 	\chapter{Items}
 
 		\section{Weapons}
+
+	\chapter{Travel}
+
+	\chapter{Organizations}
+
+	\chapter{Gods}
+
+	\chapter{Weather}
+
+		Different colour fog is used to set the mood for the part of the map that the player is currently in.
+
+		Rain that comes down but doesn't, for instance land under a tree.
+		Note: Is this technically possible?
+
+	\chapter{Time}
+
+		\section{Day and Night}
 
 \part{User Interface}
 
@@ -143,15 +181,64 @@
 
 	\chapter{Fighting System}
 
+		As said before, the battle is turn-based and concurent. The system  we'll use is quite complicated, so I'l give an example first.
+
+		\section{The Sword-Equiped PC vs. The Vicious Rat}
+
+			At the moment the PC notices (sees, feels, ...) the rat, the game switches to  the turn-based mode. 
+
+			Round 1:
+			At this point both the rat and the player decide what they will do. As they both decide to attack each other, they both need to come closer first, which they do.
+
+			Round 2:
+			They are still to far away from eachother, so they both move closer.
+
+			Round 3:
+			Now our PC can almost hit the rat with his sword, so he decides to wait for the rat to come closer, which it does.
+
+			Round 4:
+			The PC decides to start to swing his sword to hit the rat. The rat needs to come even closer.
+
+			Round 5:
+			The PC notices that the rat moved so his sword won't hit it, so  he (automaticly) re-targets the swing. The rat jumps to the PC's ancles to bit them.
+
+			Round 6:
+			The PC misses the rat because it moved again. The rat bites in our PC's ankles. 
+
+			Round 7:
+			The rat continues to bite, but the PC will stab the rat now in it's back.
+
+			Round 8:
+			The rat is deadly hit in the back, and the PC moves back to make sure he doesn't bet bitten by the dying rat.
+
+			As the rat doesn't impose a threath anymore, the game returns to normal mode.
+
+		Note: an exact description will follow later.
+
 	\chapter{Ethical \& Political System}
+
+		I was thinking about an two axes system: \\
+		Libertarian (think 'Chaotic') - Authoritarian (think 'Lawfull') \\
+		Left (economical left, think 'Good') - Right (economical right, think 'Evil')
 
 	\chapter{Dynamic Terrain}
 
-\part{Technology}
+		It should be possible to:
+		\begin{itemize}
+			\item Dig holes in the ground.
+			\item Cut down trees.
+			\item ...
+		\end{itemize}
+
+	\chapter{Saving \& Loading System}
+
+\part{Resources}
 
 	\chapter{C++}
 
-	\chapter{External Resources}
+		\section{Coding Standards}
+
+	\chapter{External Librairies}
 
 		\section{Ogre 3D}
 
@@ -161,27 +248,27 @@
 
 \part{Miscellaneous}
 
-	\chapter{History}
+	\chapter{Design History}
 
-	\chapter{Notes}
+	\chapter{Licence}
 
 	\chapter{About Us}
 
 		\section{LazyBumWare}
 
-			\subsection{Pabst}
-
-			\subsection{Tinus}
-
 			\subsection{Damlaj}
+
+			\subsection{Jeff}
 
 			\subsection{John Crambs}
 
 			\subsection{Justin}
 
+			\subsection{Pabst}
+
 			\subsection{Scott}
 
-			\subsection{Jeff}
+			\subsection{Tinus}
 
 	\chapter{Thanks To}
 		
@@ -191,4 +278,3 @@
 		\end{itemize}
 
 \end{document}
-
