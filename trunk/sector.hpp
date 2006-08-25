@@ -1,16 +1,16 @@
-#ifndef TSL_SECTOR_HPP
-#define TSL_SECTOR_HPP
+#ifndef SECTOR_HPP
+#define SECTOR_HPP
 
 #include "obstacle.hpp"
 
 using namespace std;
 
-class Tsl_Sector:
+class Sector:
 	public Object
 {
 	public:
-		Tsl_Sector(string new_name);
-		virtual ~Tsl_Sector();
+		Sector(string new_name);
+		virtual ~Sector();
 		//vector<Obstacle*> getObstacles();
 
 		vector<Obstacle*> obstacles; //the obstacles that are currently in this sector

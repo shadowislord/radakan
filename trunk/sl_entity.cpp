@@ -3,9 +3,9 @@
 using namespace std;
 
 //  constructor
-Tsl_Entity::
-	Tsl_Entity (string new_name):
-	//Object::
+Sl_Entity::
+	Sl_Entity (string new_name):
+	//	Object::
 	Object (new_name)
 {
 	assert (Object::is_initialized ());
@@ -15,15 +15,15 @@ Tsl_Entity::
 }
 
 //  destructor
-Tsl_Entity::
-	~Tsl_Entity ()
+Sl_Entity::
+	~Sl_Entity ()
 {
 	assert (is_initialized ());
 }
 
 //	virtual
 bool
-	Tsl_Entity::
+	Sl_Entity::
 	is_initialized
 	()
 	const

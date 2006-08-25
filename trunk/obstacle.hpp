@@ -2,13 +2,13 @@
 #define OBSTACLE_HPP
 
 #include <OgreVector3.h>
-#include "entity.hpp"
+#include "sl_entity.hpp"
 
 using namespace std;
 using namespace Ogre;
 
 class Obstacle:
-	public Tsl_Entity
+	public Sl_Entity
 {
 	public:
 		Obstacle (string new_name, Vector3 new_size);

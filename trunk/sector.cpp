@@ -1,7 +1,7 @@
-#include "tsl_sector.hpp"
+#include "sector.hpp"
 
-Tsl_Sector::
-	Tsl_Sector(string new_name): 
+Sector::
+	Sector(string new_name):
 	Object(new_name)
 {
 	assert (Object::is_initialized ());
@@ -10,7 +10,7 @@ Tsl_Sector::
 
 }
 
-Tsl_Sector::~Tsl_Sector(){
+Sector::~Sector(){
 
 }
 

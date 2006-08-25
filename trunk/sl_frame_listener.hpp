@@ -1,5 +1,5 @@
-#ifndef FRAMELISTENER_HPP
-#define FRAMELISTENER_HPP
+#ifndef SL_FRAME_LISTENER_HPP
+#define SL_FRAME_LISTENER_HPP
 
 #include "object.hpp"
 #include <Ogre.h>
@@ -11,8 +11,7 @@
 using namespace std;
 using namespace Ogre;
 
-//	Class name 'FrameListener' is alreayd in use by Ogre.
-class FrameLstr:
+class Sl_Frame_Listener:
 	public FrameListener,
 	public KeyListener,
 //	public MouseListener,	//	doesn't work (yet)
@@ -20,10 +19,10 @@ class FrameLstr:
 {
 	public:
 		// Constructor takes a RenderWindow because it uses that to determine input context
-		FrameLstr (SceneManager * new_scene_mgr, RenderWindow * new_window,
+		Sl_Frame_Listener (SceneManager * new_scene_mgr, RenderWindow * new_window,
 			Camera * new_camera, bool useBufferedInputKeys,
 			bool useBufferedInputMouse);	//	these bools are default false
-    	virtual ~FrameLstr ();
+    	virtual ~Sl_Frame_Listener ();
 		virtual bool frameStarted (const FrameEvent& evt);
 		virtual bool frameEnded (const FrameEvent& evt);
 		virtual bool processUnbufferedKeyInput(const FrameEvent& evt);
@@ -67,4 +66,4 @@ class FrameLstr:
 		int mAniso;
 };
 
-#endif	//	FRAMELISTENER_HPP
+#endif	//	SL_FRAME_LISTENER_HPP

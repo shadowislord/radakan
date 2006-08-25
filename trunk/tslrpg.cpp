@@ -59,7 +59,7 @@ Tslrpg::
 
 	ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-	frame_listener = new FrameLstr (scene_mgr, window, camera, false, false);
+	frame_listener = new Sl_Frame_Listener (scene_mgr, window, camera, false, false);
 
 	root->addFrameListener (frame_listener);
 	

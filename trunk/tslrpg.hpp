@@ -2,7 +2,7 @@
 #define TSLRPG_HPP 
 
 #include "character.hpp"
-#include "framelistener.hpp"
+#include "sl_frame_listener.hpp"
 
 using namespace Ogre;
 
@@ -21,7 +21,7 @@ class Tslrpg:
 		Root * root;
 		Camera * camera;
 		SceneManager * scene_mgr;
-		FrameLstr * frame_listener;
+		Sl_Frame_Listener * frame_listener;
 		RenderWindow * window;
 		InputReader * input_device;
 		Character * player;
