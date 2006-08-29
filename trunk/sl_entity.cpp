@@ -4,12 +4,13 @@ using namespace std;
 
 //  constructor
 Sl_Entity::
-	Sl_Entity (string new_name):
-	//	Object::
-	Object (new_name)
+	Sl_Entity (string new_name, Vector3 new_size):
+	Object (new_name),
+	size (new_size)
 {
 	assert (Object::is_initialized ());
 
+	position = Vector3 (1, 1, 1);
 
 	assert (is_initialized ());
 }
@@ -28,5 +29,5 @@ bool
 	()
 	const
 {
-	return Object::is_initialized ();
+	return Object::is_initialized () && (0 < size.squaredLength ());
 }

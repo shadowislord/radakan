@@ -66,15 +66,16 @@ Tslrpg::
 	input_device = PlatformManager::getSingleton().createInputReader();
 	input_device->initialise (window);
 
+	player = new Character ("player");
+	Weapon * sword = new Weapon
+		("sword", Vector3 (1, 0.1, 0.1), 1, 2, 3, 4, 5, 6, 7, 8);
+	assert (! player->inventory->contains (sword));
+	assert (player->inventory->add (sword));
+	assert (player->inventory->contains (sword));
+	assert (player->inventory->remove (sword));
+	assert (! player->inventory->contains (sword));
+	
 	create_scene ();
-
-
-	player = new Character ("player", Vector3 (1, 1, 1));
-	assert (! player->inventory->contains (player));
-	assert (player->inventory->add (player));
-	assert (player->inventory->contains (player));
-	assert (player->inventory->remove (player));
-	assert (! player->inventory->contains (player));
 }
 
 Tslrpg::

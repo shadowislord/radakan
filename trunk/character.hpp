@@ -9,8 +9,10 @@ class Character:
 	public Obstacle
 {
 	public:
-		Character (string new_name, Vector3 new_size);
+		Character (string new_name);
 		virtual ~Character ();
+		virtual bool is_initialized () const;
+		float get_total_weight () const;
 
 		int agility;
 		int beauty;

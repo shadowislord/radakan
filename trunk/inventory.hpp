@@ -1,7 +1,7 @@
 #ifndef INVENTRORY_HPP
 #define INVENTRORY_HPP
 
-#include "obstacle.hpp"
+#include "weapon.hpp"
 
 using namespace std;
 

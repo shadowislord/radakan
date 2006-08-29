@@ -1,23 +1,25 @@
 #ifndef OBSTACLE_HPP
 #define OBSTACLE_HPP
 
-#include <OgreVector3.h>
 #include "sl_entity.hpp"
 
 using namespace std;
-using namespace Ogre;
 
 class Obstacle:
 	public Sl_Entity
 {
 	public:
-		Obstacle (string new_name, Vector3 new_size);
+		Obstacle
+			(string new_name,
+			Vector3 new_size,
+			bool new_movable,
+			float new_volume,
+			float new_weight);
 		virtual ~Obstacle ();
 		virtual bool is_initialized () const;
-		Vector3 size;	//	the bounding box
-		Vector3 position;	//	the position of the obstacle
-		float weight; //in kilograms preferably
-		bool moving; //true = object is moving, false = object is static
+		const bool movable;		//	false means that the object is static
+		const float volume;		//	in litres
+		const float weight;		//	in kilograms
 };
 
 #endif
