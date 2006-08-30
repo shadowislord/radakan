@@ -1,12 +1,15 @@
 #ifndef INVENTRORY_HPP
 #define INVENTRORY_HPP
 
-#include "weapon.hpp"
+// Dude where is this file!!
+//#include "weapon.hpp"
+
+#include "object.hpp"
+#include "obstacle.hpp"
 
 using namespace std;
 
-class Inventory:
-	public Object
+class Inventory:public Object
 {
 	public:
 		Inventory (string new_name);

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="Scattered Lands" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release">
+				<Option output="C:\Documents and Settings\Administrator\Desktop\sl\trunk\bin" />
+				<Option working_dir="C:\Documents and Settings\Administrator\Desktop\sl\trunk\bin" />
+				<Option object_output="C:\Documents and Settings\Administrator\Desktop\sl\trunk\\.objs" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DNDEBUG" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="OgreMain" />
+					<Add library="stlport.5.0" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-D_STLP_NO_CUSTOM_IO" />
+			<Add option="-D_STLP_USE_DYNAMIC_LIB" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-fident" />
+			<Add option="-DWIN32" />
+			<Add option="-D_WINDOWS" />
+			<Add option="-Wall" />
+			<Add directory="C:\programming\OgreSDK\stlport\stlport" />
+			<Add directory="C:\programming\OgreSDK\include" />
+			<Add directory="C:\programming\OgreSDK\samples\include" />
+			<Add directory="C:\programming\OgreSDK\samples\refapp\include" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--add-stdcall-alias" />
+			<Add library="opengl32" />
+			<Add library="gdi32" />
+			<Add library="user32" />
+			<Add library="kernel32" />
+			<Add directory="C:\programming\OgreSDK\lib" />
+			<Add directory="C:\programming\OgreSDK\bin\Debug" />
+			<Add directory="C:\programming\OgreSDK\bin\Release" />
+		</Linker>
+		<Unit filename="character.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="character.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="inventory.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="inventory.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="main.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="object.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="object.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="object.ipp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="obstacle.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="obstacle.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="obstacleholder.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="sector.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="sector.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="sl_entity.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="sl_entity.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="sl_frame_listener.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="sl_frame_listener.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="tslrpg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="tslrpg.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

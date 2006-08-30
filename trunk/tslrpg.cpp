@@ -14,29 +14,40 @@ Tslrpg::
 		 abort ();
 	}
 
-	ConfigFile conf;
-	conf.load("resources.cfg");
+    // I just don't like the resource cfg file :/
+    // Catch any errors
+    try
+    {
+        // Add textures directory
+        ResourceGroupManager::getSingleton().addResourceLocation("data/texture",
+                                                                 "FileSystem",
+                                                                 "Textures",
+                                                                 true);
 
-	// Go through all sections & settings in the file
-	ConfigFile::SectionIterator sec_it = conf.getSectionIterator ();
+        // Add 3D models directory
+        ResourceGroupManager::getSingleton().addResourceLocation("data/model",
+                                                                 "FileSystem",
+                                                                 "Models",
+                                                                 true);
 
-	String secName, typeName, archName;
-	while (sec_it.hasMoreElements())
-	{
-		secName = sec_it.peekNextKey ();
-		ConfigFile::SettingsMultiMap * settings = sec_it.getNext ();
-		ConfigFile::SettingsMultiMap::iterator i;
-		for (i = settings->begin (); i != settings->end (); ++i)
-		{
-			typeName = i->first;
-			archName = i->second;
-			ResourceGroupManager::getSingleton().addResourceLocation(
-				archName, typeName, secName);
-		}
-	}
-	
+        // Add materials directory
+        ResourceGroupManager::getSingleton().addResourceLocation("data/material",
+                                                                 "FileSystem",
+                                                                 "material",
+                                                                 true);
+
+        // Initialise our resources
+        ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+    // End of try statement
+    }
+    catch(Ogre::Exception &e)
+    {
+    }
+
+
 	window = root->initialise (true);
-	
+
 	scene_mgr = root->createSceneManager (ST_GENERIC);
 
 	//	Create the camera
@@ -62,19 +73,21 @@ Tslrpg::
 	frame_listener = new Sl_Frame_Listener (scene_mgr, window, camera, false, false);
 
 	root->addFrameListener (frame_listener);
-	
+
 	input_device = PlatformManager::getSingleton().createInputReader();
 	input_device->initialise (window);
 
 	player = new Character ("player");
-	Weapon * sword = new Weapon
-		("sword", Vector3 (1, 0.1, 0.1), 1, 2, 3, 4, 5, 6, 7, 8);
-	assert (! player->inventory->contains (sword));
-	assert (player->inventory->add (sword));
-	assert (player->inventory->contains (sword));
-	assert (player->inventory->remove (sword));
-	assert (! player->inventory->contains (sword));
-	
+
+	// Tinus - would you please give us all the weapon class :P
+	//Weapon * sword = new Weapon
+	//	("sword", Vector3 (1, 0.1, 0.1), 1, 2, 3, 4, 5, 6, 7, 8);
+	//assert (! player->inventory->contains (sword));
+	//assert (player->inventory->add (sword));
+	//assert (player->inventory->contains (sword));
+	//assert (player->inventory->remove (sword));
+	//assert (! player->inventory->contains (sword));
+
 	create_scene ();
 }
 
@@ -123,7 +136,7 @@ void Tslrpg::create_scene ()
 		BillboardSet* bbs2 = scene_mgr->createBillboardSet(name, 1);
 		bbs2->setBillboardRotationType(BBR_VERTEX);
 		SceneNode* bbsNode2 = scene_mgr->getRootSceneNode()->createChildSceneNode();
-		
+
 		char type[50];
 		int ran = ((int)(Math::RangeRandom(0, 1)*100))%8+1;
 		sprintf(type, "spacebillboard/cluster_%d", ran);
@@ -148,7 +161,7 @@ void Tslrpg::create_scene ()
 		BillboardSet* bbs2 = scene_mgr->createBillboardSet(name, 1);
 		bbs2->setBillboardRotationType(BBR_VERTEX);
 		SceneNode* bbsNode2 = scene_mgr->getRootSceneNode()->createChildSceneNode();
-		
+
 		char type[50];
 		int ran = ((int)(Math::RangeRandom(0, 1)*100))%2+1;
 		sprintf(type, "spacebillboard/star_%d", ran);
