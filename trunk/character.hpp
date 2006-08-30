@@ -14,14 +14,15 @@ class Character:
 		virtual bool is_initialized () const;
 		float get_total_weight () const;
 
-		int agility;
-		int beauty;
-		int constitution;
-		int equolence;
-		int intelligence;
-		int quickness;
-		int strength;
-		int willpower;
+		//	exp = experience
+		int agility_exp;
+		int beauty_exp;
+		int constitution_exp;
+		int equolence_exp;
+		int intelligence_exp;
+		int quickness_exp;
+		int strength_exp;
+		int willpower_exp;
 
 		Inventory * inventory;
 };
