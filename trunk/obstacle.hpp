@@ -16,7 +16,11 @@ class Obstacle:
 			float new_volume,
 			float new_weight);
 		virtual ~Obstacle ();
+		
+		//	this is useful for container system
 		virtual bool is_initialized () const;
+		
+		virtual float get_total_weight () const;
 		const bool movable;		//	false means that the object is static
 		const float volume;		//	in litres
 		const float weight;		//	in kilograms

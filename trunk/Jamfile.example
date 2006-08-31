@@ -1,0 +1,33 @@
+##	valgrind memcheck
+##	C++FLAGS =  $(CXXFLAGS) -O -march=pentium4 -Wall -g -fno-inline ;
+
+##	valgrind cachegrind
+##	C++FLAGS = $(CXXFLAGS) -O2 -march=pentium4 -Wall -g -fno-inline ;
+
+##	normal
+C++FLAGS = $(CXXFLAGS) -Wall  ;
+
+LINKFLAGS = -L/usr/lib/OGRE -lOgreMain -lCEGUIBase -lCEGUIOgreRenderer ;
+
+HDRS = /usr/include/OGRE ;
+##		/usr/local/src/ogre/Samples/Common/include
+##		/usr/local/src/ogre/ReferenceApplication/ReferenceAppLayer/include
+""		/usr/local/src/ogre/ReferenceApplication/Common/include ;
+
+CPPS =
+	character.cpp
+##	collision_engine.cpp
+	inventory.cpp
+	main.cpp
+	object.cpp
+	obstacle.cpp
+	sector.cpp
+	sl_entity.cpp
+	sl_frame_listener.cpp
+	tslrpg.cpp
+	weapon.cpp
+;
+
+Main tslrpg :
+	$(CPPS)
+;

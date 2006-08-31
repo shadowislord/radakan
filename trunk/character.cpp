@@ -10,7 +10,10 @@ Character::
 {
 	assert (Obstacle::is_initialized ());
 
-	inventory = new Inventory (* this + "'s inventory");
+	dead = false;
+
+	backpack = new Container
+		(* this + "'s inventory");
 	
 	assert (is_initialized ());
 }
@@ -21,7 +24,7 @@ Character::
 {
 	assert (is_initialized ());
 
-	delete inventory;
+	delete backpack;
 }
 
 //	virtual
@@ -32,4 +35,14 @@ bool
 	const
 {
 	return Obstacle::is_initialized ();
+}
+
+//	virtual
+float
+	Character::
+	get_total_weight
+	()
+	const
+{
+	return weight + backpack->get_total_weight ();
 }

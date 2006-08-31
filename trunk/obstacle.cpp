@@ -36,3 +36,13 @@ bool
 {
 	return Object::is_initialized () && (0 < size.squaredLength());
 }
+
+//	virtual
+float
+	Obstacle::
+	get_total_weight
+	()
+	const
+{
+	return weight;
+}

@@ -1,7 +1,7 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
-#include "inventory.hpp"
+#include "container.hpp"
 
 using namespace std;
 
@@ -12,8 +12,10 @@ class Character:
 		Character (string new_name);
 		virtual ~Character ();
 		virtual bool is_initialized () const;
-		float get_total_weight () const;
+		virtual float get_total_weight () const;
 
+		bool dead;
+		
 		//	exp = experience
 		int agility_exp;
 		int beauty_exp;
@@ -24,7 +26,7 @@ class Character:
 		int strength_exp;
 		int willpower_exp;
 
-		Inventory * inventory;
+		Container * backpack;
 };
 
 #endif

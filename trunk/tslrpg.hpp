@@ -1,8 +1,9 @@
 #ifndef TSLRPG_HPP
 #define TSLRPG_HPP 
 
-#include "character.hpp"
+#include "battle_engine.hpp"
 #include "sl_frame_listener.hpp"
+
 
 using namespace Ogre;
 
@@ -25,6 +26,7 @@ class Tslrpg:
 		RenderWindow * window;
 		InputReader * input_device;
 		Character * player;
+		Battle_Engine battle_engine;
 };
 
 #endif

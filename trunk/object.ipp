@@ -1,5 +1,5 @@
-#ifndef OBJECT_INC
-#define OBJECT_INC
+#ifndef OBJECT_IPP
+#define OBJECT_IPP
 
 #include "object.hpp"
 

@@ -78,15 +78,19 @@ Tslrpg::
 	input_device->initialise (window);
 
 	player = new Character ("player");
+	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
+	Weapon * sword = new Weapon
+		("sword", Vector3 (1, 0.1, 0.1), 1, 2, 3, 4, 5, 6, 7, 8);
+	debug () << * sword << "'s weight: " << sword->get_total_weight () << endl;
+	assert (! player->backpack->contains (sword));
+	assert (player->backpack->add (sword));
+	assert (player->backpack->contains (sword));
+	debug () << * player << "'s weight with sword: " << player->get_total_weight () << endl;
+	assert (player->backpack->remove (sword));
+	assert (! player->backpack->contains (sword));
+	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
 
-	// Tinus - would you please give us all the weapon class :P
-	//Weapon * sword = new Weapon
-	//	("sword", Vector3 (1, 0.1, 0.1), 1, 2, 3, 4, 5, 6, 7, 8);
-	//assert (! player->inventory->contains (sword));
-	//assert (player->inventory->add (sword));
-	//assert (player->inventory->contains (sword));
-	//assert (player->inventory->remove (sword));
-	//assert (! player->inventory->contains (sword));
+	battle_engine.hit (player, player);
 
 	create_scene ();
 }
