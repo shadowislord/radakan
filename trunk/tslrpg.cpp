@@ -68,13 +68,13 @@ Tslrpg::
 	// Set default mipmap level (NB some APIs ignore this)
 	TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-	ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+	ResourceGroupManager::getSingleton ().initialiseAllResourceGroups ();
 
 	frame_listener = new Sl_Frame_Listener (scene_mgr, window, camera, false, false);
 
 	root->addFrameListener (frame_listener);
 
-	input_device = PlatformManager::getSingleton().createInputReader();
+	input_device = PlatformManager::getSingleton ().createInputReader ();
 	input_device->initialise (window);
 
 	player = new Character ("player");
@@ -85,7 +85,8 @@ Tslrpg::
 	assert (! player->backpack->contains (sword));
 	assert (player->backpack->add (sword));
 	assert (player->backpack->contains (sword));
-	debug () << * player << "'s weight with sword: " << player->get_total_weight () << endl;
+	debug () << * player << "'s weight with sword: "
+		<< player->get_total_weight () << endl;
 	assert (player->backpack->remove (sword));
 	assert (! player->backpack->contains (sword));
 	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
@@ -136,10 +137,10 @@ void Tslrpg::create_scene ()
 	for (int i = 0; i < 100; i++)
 	{
 		char name[50];
-		sprintf(name, "cluster_%d", i);
-		BillboardSet* bbs2 = scene_mgr->createBillboardSet(name, 1);
-		bbs2->setBillboardRotationType(BBR_VERTEX);
-		SceneNode* bbsNode2 = scene_mgr->getRootSceneNode()->createChildSceneNode();
+		sprintf (name, "cluster_%d", i);
+		BillboardSet * bbs2 = scene_mgr->createBillboardSet (name, 1);
+		bbs2->setBillboardRotationType (BBR_VERTEX);
+		SceneNode* bbsNode2 = scene_mgr->getRootSceneNode ()->createChildSceneNode ();
 
 		char type[50];
 		int ran = ((int)(Math::RangeRandom(0, 1)*100))%8+1;
@@ -147,16 +148,16 @@ void Tslrpg::create_scene ()
 		bbs2->setMaterialName(type);
 		bbs2->getMaterial()->setTextureFiltering(TFO_TRILINEAR);
 		bbs2->getMaterial()->setDepthCheckEnabled(true);
-		int px = int (Math::RangeRandom(-2500, 2500));
-		int py = int (Math::RangeRandom(-2500, 2500));
-		int pz = int (Math::RangeRandom(-2500, 2500));
+		int px = int (Math::RangeRandom (-2500, 2500));
+		int py = int (Math::RangeRandom (-2500, 2500));
+		int pz = int (Math::RangeRandom (-2500, 2500));
 		px = 0;
-		Billboard* bb = bbs2->createBillboard(0, 0, 0, ColourValue());
-		int dim = int (Math::RangeRandom(1.5f, 2));
-		bb->setDimensions(100*dim, 100*dim);
-		bb->setRotation(Radian(Math::RangeRandom(0, 2*Math::PI)));
-		bbsNode2->attachObject(bbs2);
-		bbsNode2->setPosition(px, py, pz);
+		Billboard* bb = bbs2->createBillboard (0, 0, 0, ColourValue());
+		int dim = int (Math::RangeRandom (1.5f, 2));
+		bb->setDimensions (100*dim, 100*dim);
+		bb->setRotation (Radian (Math::RangeRandom (0, 2 * Math::PI)));
+		bbsNode2->attachObject (bbs2);
+		bbsNode2->setPosition (px, py, pz);
 	}
 	for(int i = 0; i < 200; i++)
 	{
@@ -167,14 +168,14 @@ void Tslrpg::create_scene ()
 		SceneNode* bbsNode2 = scene_mgr->getRootSceneNode()->createChildSceneNode();
 
 		char type[50];
-		int ran = ((int)(Math::RangeRandom(0, 1)*100))%2+1;
-		sprintf(type, "spacebillboard/star_%d", ran);
-		bbs2->setMaterialName(type);
-		bbs2->getMaterial()->setTextureFiltering(TFO_TRILINEAR);
-		bbs2->getMaterial()->setDepthCheckEnabled(true);
-		int px = int (Math::RangeRandom(-2500, 2500));
-		int py = int (Math::RangeRandom(-2500, 2500));
-		int pz = int (Math::RangeRandom(-2500, 2500));
+		int ran = ((int)(Math::RangeRandom (0, 1) * 100)) % 2 + 1;
+		sprintf (type, "spacebillboard/star_%d", ran);
+		bbs2->setMaterialName (type);
+		bbs2->getMaterial()->setTextureFiltering (TFO_TRILINEAR);
+		bbs2->getMaterial()->setDepthCheckEnabled (true);
+		int px = int (Math::RangeRandom (-2500, 2500));
+		int py = int (Math::RangeRandom (-2500, 2500));
+		int pz = int (Math::RangeRandom (-2500, 2500));
 		px = 0;
 		Billboard* bb = bbs2->createBillboard
 		(
@@ -187,8 +188,8 @@ void Tslrpg::create_scene ()
 			)
 		);
 		int dim = int (Math::RangeRandom(1.5f, 2));
-		bb->setDimensions(5*dim, 5*dim);
-		bb->setRotation(Radian(Math::RangeRandom(0, 2*Math::PI)));
+		bb->setDimensions (5 * dim, 5 * dim);
+		bb->setRotation (Radian (Math::RangeRandom (0, 2 * Math::PI)));
 		bbsNode2->attachObject (bbs2);
 		bbsNode2->setPosition (px, py, pz);
 	}

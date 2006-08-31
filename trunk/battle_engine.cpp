@@ -53,9 +53,9 @@ string
 	{
 		debug () << "Uniform (0, 1): " << uniform () << endl;
 	}
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 20; i++)
 	{
-		debug () << "Log-normal (1.03, 0.25): " << uniform () << endl;
+		debug () << "Log-normal (1.03, 0.25): " << lognormal () << endl;
 	}
 
 	return "Error";
