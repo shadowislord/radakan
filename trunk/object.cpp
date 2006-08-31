@@ -12,27 +12,22 @@ Object ::
 {
 	assert (! new_name.empty ());
 	debug () << new_name << "->Object::Object (" << new_name << ")" << endl;
-	objects.push_back (this);
+	
 	assign (new_name);
-//	assign (new_name + "_" + to_string (objects.size () - 1));
+	#ifdef SL_DEBUG
+		objects.insert (this);
+	#endif
 }
 
 //  Destructor
 Object ::
 	~Object ()
 {
-	debug () << * this << "->Object::~Object ()" << endl;
-	assert (is_initialized ());
+	assert (is_initialized (* this + "->Object::~Object ()"));
 	
-	for (unsigned int i = 0; i < objects.size (); i++)
-	{
-		if (objects.at (i) == this)
-		{
-			objects.at (i) = NULL;
-//			debug () << * this << " (object nr. " << i << ") is destructed. " << endl;
-			break;	//	breaks from the for loop to speed up things
-		}
-	}
+	#ifdef SL_DEBUG
+		objects.erase (this);
+	#endif
 }
 
 //	checks for empty string
@@ -42,10 +37,16 @@ bool
 	is_initialized ()
 	const
 {
-//	debug () << * this  << "->Object::is_initialized ()" << endl;
-//	debug () << "result: " <<  ! empty () << " (1 means true)" << endl;
 	return ! empty ();
+}
 
+bool
+	Object ::
+	is_initialized (string debug_message)
+	const
+{
+	debug () << debug_message << endl;
+	return is_initialized ();
 }
 
 //	virtual
@@ -63,8 +64,13 @@ ostream &
 	debug ()
 	const
 {
-	return debug_cout << "debug: ";
-//	return cout << "debug: ";
+	#ifdef SL_DEBUG
+		return debug_cout << "debug: ";
+	#else
+		//	This is faster.
+		//	Is it possible to 'absorb' this?
+		return cout << "debug: ";
+	#endif
 }
 
 //	virtual
@@ -95,9 +101,3 @@ bool is_nan (float value)
 {
 	return (value != value);
 }
-
-//	void pause ()
-//	{
-//		print() << "pause - hit any key to continue" << endl;
-//		getchar();
-//	}

@@ -12,11 +12,14 @@ template <typename T>
 	const
 {
 	assert (is_initialized ());
-	T * result = new T (* to_type <T> ());
-	result->assign (* this);	//	+ "_copy");
-//	result->assign (* this + "_copy_" + to_string (objects.size () - 1));
 	
-	objects.push_back (result);
+	T * result = new T (* to_type <T> ());
+	result->assign (* this);
+	
+	#ifdef SL_DEBUG
+		objects.insert (result);
+	#endif
+	
 	debug () << * this << " was copied to " << * result << ". " << endl;
 	return result;
 }
@@ -28,6 +31,7 @@ template <typename T>
 	const
 {
 	assert (is_initialized ());
+	
 	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
 }
 
@@ -39,6 +43,7 @@ template <typename T>
 {
 	assert (is_initialized ());
 	assert (is_type <T> ());
+	
 	return dynamic_cast <T *> (const_cast <Object *> (this));
 }
 

@@ -12,7 +12,7 @@ LINKFLAGS = -L/usr/lib/OGRE -lOgreMain -lCEGUIBase -lCEGUIOgreRenderer ;
 HDRS = /usr/include/OGRE ;
 ##		/usr/local/src/ogre/Samples/Common/include
 ##		/usr/local/src/ogre/ReferenceApplication/ReferenceAppLayer/include
-""		/usr/local/src/ogre/ReferenceApplication/Common/include ;
+##		/usr/local/src/ogre/ReferenceApplication/Common/include ;
 
 CPPS =
 	character.cpp

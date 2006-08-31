@@ -99,23 +99,25 @@ Tslrpg::
 Tslrpg::
 	~Tslrpg ()
 {
-//	this doesn't get called somehow
-
-	debug () << ("deleting player...") << int (player) << endl;
+	debug () << "deleting player..." << int (player) << endl;
 	delete player;
-	debug () << ("deleting input_device...") << int (input_device) << endl;
+	debug () << "deleting input_device..." << int (input_device) << endl;
 	delete input_device;
-	debug () << ("deleting frame_listener...") << int (frame_listener) << endl;
+	debug () << "deleting frame_listener..." << int (frame_listener) << endl;
 	delete frame_listener;
-	debug () << ("deleting camera...") << int (camera) << endl;
+	debug () << "deleting camera..." << int (camera) << endl;
 	delete camera;
-//	debug () << ("deleting window...") << int (window) << endl;
+
+//	These give problems:
+
+//	debug () << "deleting window..." << int (window) << endl;
 //	delete window;
-	debug () << ("deleting scene_mgr...") << int (scene_mgr) << endl;
-	delete scene_mgr;
-	debug () << ("deleting root...") << int (root) << endl;
-	delete root;
-	debug () << ("all deleted") << endl;
+//	debug () << "deleting scene_mgr..." << int (scene_mgr) << endl;
+//	delete scene_mgr;
+//	debug () << "deleting root..." << int (root) << endl;
+//	delete root;
+
+	debug () << "all deleted" << endl;
 }
 
 void

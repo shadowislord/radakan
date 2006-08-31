@@ -45,13 +45,12 @@ bool Container::contains (Obstacle * item)
 //	virtual
 float
 	Container::
-	get_total_weight
-	()
+	get_total_weight ()
 	const
 {
 	float total_weight = weight;
 
-	for (set <Obstacle *>::iterator i = items.begin (); i != items.end (); i++)
+	for (set <Obstacle *> :: iterator i = items.begin (); i != items.end (); i ++)
 	{
 		total_weight += (* i)->get_total_weight ();
 	}
