@@ -50,7 +50,7 @@ float
 {
 	float total_weight = weight;
 
-	for (set <Obstacle *> :: iterator i = items.begin (); i != items.end (); i ++)
+	for (set <Obstacle *> :: const_iterator i = items.begin (); i != items.end (); i ++)
 	{
 		total_weight += (* i)->get_total_weight ();
 	}
