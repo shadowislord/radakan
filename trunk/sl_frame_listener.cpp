@@ -1,9 +1,12 @@
 #include "sl_frame_listener.hpp"
 
-Sl_Frame_Listener::
-	Sl_Frame_Listener (SceneManager * new_scene_mgr, RenderWindow * new_window,
-		Camera * new_camera, bool useBufferedInputKeys,
-		bool useBufferedInputMouse):
+Sl_Frame_Listener ::
+	Sl_Frame_Listener
+		(SceneManager * new_scene_mgr,
+		RenderWindow * new_window,
+		Camera * new_camera,
+		bool useBufferedInputKeys,
+		bool useBufferedInputMouse) :
 //	mSceneMgr (new_scene_mgr),
 	Object ("Frame Listener")
 {
@@ -46,8 +49,8 @@ Sl_Frame_Listener::
 	}
 }
 
-//virtual
-	Sl_Frame_Listener::
+//	virtual
+Sl_Frame_Listener ::
 	~Sl_Frame_Listener ()
 {
 	if (mInputTypeSwitchingOn)
@@ -60,7 +63,8 @@ Sl_Frame_Listener::
 	}
 }
 
-void Sl_Frame_Listener::updateStats(void)
+void Sl_Frame_Listener ::
+	updateStats ()
 {
 	static String currFps = "Current FPS: ";
 	static String avgFps = "Average FPS: ";
@@ -102,7 +106,8 @@ void Sl_Frame_Listener::updateStats(void)
 
 
 //    virtual
-bool Sl_Frame_Listener::processUnbufferedKeyInput(const FrameEvent& evt)
+bool Sl_Frame_Listener ::
+	processUnbufferedKeyInput (const FrameEvent& evt)
     {
         if (input_device->isKeyDown(KC_A))
         {
@@ -242,7 +247,8 @@ bool Sl_Frame_Listener::processUnbufferedKeyInput(const FrameEvent& evt)
         return true;
     }
 
-    bool Sl_Frame_Listener::processUnbufferedMouseInput(const FrameEvent& evt)
+bool Sl_Frame_Listener ::
+	processUnbufferedMouseInput (const FrameEvent& evt)
     {
         /* Rotation factors, may not be used if the second mouse button is pressed. */
 
@@ -263,7 +269,8 @@ bool Sl_Frame_Listener::processUnbufferedKeyInput(const FrameEvent& evt)
 		return true;
 	}
 
-void Sl_Frame_Listener::moveCamera()
+void Sl_Frame_Listener ::
+	moveCamera ()
 {
 	// Make all the changes to the camera
 	// Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW (e.g. airplane)
@@ -272,7 +279,8 @@ void Sl_Frame_Listener::moveCamera()
 	camera->moveRelative (mTranslateVector);
 	}
 
-    void Sl_Frame_Listener::showDebugOverlay (bool show)
+void Sl_Frame_Listener ::
+	showDebugOverlay (bool show)
     {
         if (debug_overlay != NULL)
         {
@@ -291,7 +299,8 @@ void Sl_Frame_Listener::moveCamera()
     }
 
 // Override frameStarted event to process that (don't care about frameEnded)
-bool Sl_Frame_Listener::frameStarted (const FrameEvent& evt)
+bool Sl_Frame_Listener ::
+	frameStarted (const FrameEvent& evt)
 {
 	total_time += evt.timeSinceLastFrame;
 
@@ -368,25 +377,29 @@ bool Sl_Frame_Listener::frameStarted (const FrameEvent& evt)
 	return true;
 }
 
-bool Sl_Frame_Listener::frameEnded(const FrameEvent& evt)
+bool Sl_Frame_Listener ::
+	frameEnded (const FrameEvent& evt)
 {
 	updateStats();
 	return true;
 }
 
-void Sl_Frame_Listener::switchMouseMode ()
+void Sl_Frame_Listener ::
+	switchMouseMode ()
 {
 	mUseBufferedInputMouse = ! mUseBufferedInputMouse;
 	input_device->setBufferedInput(mUseBufferedInputKeys, mUseBufferedInputMouse);
 }
 	
-void Sl_Frame_Listener::switchKeyMode ()
+void Sl_Frame_Listener ::
+	switchKeyMode ()
 {
 	mUseBufferedInputKeys = ! mUseBufferedInputKeys;
 	input_device->setBufferedInput(mUseBufferedInputKeys, mUseBufferedInputMouse);
 }
 
-void Sl_Frame_Listener::keyClicked (KeyEvent * e)
+void Sl_Frame_Listener ::
+	keyClicked (KeyEvent * e)
 {
 	if (e->getKeyChar() == 'm')
 	{
@@ -398,11 +411,13 @@ void Sl_Frame_Listener::keyClicked (KeyEvent * e)
 	}
 }
 
-void Sl_Frame_Listener::keyPressed (KeyEvent * e)
+void Sl_Frame_Listener ::
+	keyPressed (KeyEvent * e)
 {
 }
 
-void Sl_Frame_Listener::keyReleased (KeyEvent * e)
+void Sl_Frame_Listener ::
+	keyReleased (KeyEvent * e)
 {
 }
 

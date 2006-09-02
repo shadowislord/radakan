@@ -5,9 +5,7 @@
 
 using namespace std;
 
-template <typename T>
-	T *
-	Object ::
+template <typename T> T * Object ::
 	copy ()
 	const
 {
@@ -24,9 +22,7 @@ template <typename T>
 	return result;
 }
 
-template <typename T>
-	bool
-	Object ::
+template <typename T> bool Object ::
 	is_type ()
 	const
 {
@@ -35,9 +31,7 @@ template <typename T>
 	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
 }
 
-template <typename T>
-	T *
-	Object ::
+template <typename T> T * Object ::
 	to_type ()
 	const
 {

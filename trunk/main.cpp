@@ -1,10 +1,15 @@
 #include "tslrpg.hpp"
 
 using namespace std;
-using namespace Ogre;
 
 #ifdef SL_DEBUG
+	ofstream log_cout ("log.txt");
+
 	set <Object *> objects;
+#else
+	//	This is faster.
+	//	Is it possible to 'absorb' this?
+	ofstream log_cout = cout;
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -15,21 +20,31 @@ using namespace Ogre;
 {
 	try
 	{
+
 		// Create application object
 		Tslrpg * game;
 		
-		cout << "Setting up Scattered Lands..." << endl;
+		log_cout << "Setting up Scattered Lands..." << endl;
 		game = new Tslrpg ();
-		cout << "Scattered Lands is set up." << endl;
+		log_cout << "Scattered Lands is set up." << endl;
 		
-		cout << "Running Scattered Lands..." << endl;
+		log_cout << "Running Scattered Lands..." << endl;
 		game->run ();
-		cout << "Scattered Lands is stopped." << endl;
+		log_cout << "Scattered Lands is stopped." << endl;
 		
-		cout << "Shutting down Scattered Lands..." << endl;
+		log_cout << "Shutting down Scattered Lands..." << endl;
 		delete game;
-		assert (objects.empty ());
-		cout << "Scattered Lands is shut down." << endl;
+
+		#ifdef SL_DEBUG
+			for (set <Object *> :: const_iterator i = objects.begin ();
+													i != objects.end (); i ++)
+			{
+				log_cout << "Not deleted: " << * * i << endl;
+			}
+			assert (objects.empty ());
+		#endif
+	
+		log_cout << "Scattered Lands is shut down." << endl;
 	}
 	catch (Exception & e)
 	{

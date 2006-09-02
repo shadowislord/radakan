@@ -2,24 +2,65 @@
 
 using namespace std;
 
-//  Constructor
-Container::
-	Container (string new_name):
-	Obstacle (new_name, Vector3 (0.3, 0.3, 0.3), true, 30, 3)
+//  constructor
+Container ::
+	Container
+		(string new_name,
+		bool new_movable,
+		float new_volume,
+		float new_weight,
+		Ogre :: Vector3 new_position) :
+	Entity
+		(new_name,
+		new_movable,
+		true,
+		new_volume,
+		new_weight,
+		new_position)
 {
-	assert (Object::is_initialized ());
+	assert (Entity :: is_initialized ());
 	
 	assert (is_initialized ());
 }
 
-//  Destructor
-Container::
+//  destructor
+Container ::
 	~Container ()
 {
 	assert (is_initialized ());
+
+	for (set <Entity *> :: const_iterator i = items.begin (); i != items.end (); i ++)
+	{
+		delete (* i);
+	}
 }
 
-bool Container::add (Obstacle * item)
+//	virtual
+bool Container ::
+	is_initialized ()
+	const
+{
+	return Entity :: is_initialized ();
+}
+
+//	virtual
+float Container ::
+	get_total_weight ()
+	const
+{
+	float total_weight = weight;
+
+	for (set <Entity *> :: const_iterator i = items.begin (); i != items.end (); i ++)
+	{
+		total_weight += (* i)->get_total_weight ();
+	}
+
+	return total_weight;
+}
+
+//	virtual
+bool Container ::
+	add (Entity * item)
 {
 	assert (is_initialized ());
 
@@ -28,32 +69,21 @@ bool Container::add (Obstacle * item)
 	return items.insert (item).second;
 }
 
-bool Container::remove (Obstacle * item)
+//	virtual
+bool Container ::
+	remove (Entity * item)
 {
 	assert (is_initialized ());
 
 	return (0 < items.erase (item));
 }
 
-bool Container::contains (Obstacle * item)
+//	virtual
+bool Container ::
+	contains (Entity * item)
+	const
 {
 	assert (is_initialized ());
 
 	return (items.find (item) != items.end ());
-}
-
-//	virtual
-float
-	Container::
-	get_total_weight ()
-	const
-{
-	float total_weight = weight;
-
-	for (set <Obstacle *> :: const_iterator i = items.begin (); i != items.end (); i ++)
-	{
-		total_weight += (* i)->get_total_weight ();
-	}
-
-	return total_weight;
 }

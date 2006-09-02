@@ -4,9 +4,9 @@
 
 using namespace std;
 
-ofstream debug_cout ("log.txt");
+extern ofstream log_cout;
 
-//  Constructor
+//  constructor
 Object ::
 	Object (string new_name)
 {
@@ -19,7 +19,7 @@ Object ::
 	#endif
 }
 
-//  Destructor
+//  destructor
 Object ::
 	~Object ()
 {
@@ -30,18 +30,16 @@ Object ::
 	#endif
 }
 
-//	checks for empty string
 //	virtual
-bool
-	Object ::
+bool Object ::
 	is_initialized ()
 	const
 {
+	//	checks for empty string
 	return ! empty ();
 }
 
-bool
-	Object ::
+bool Object ::
 	is_initialized (string debug_message)
 	const
 {
@@ -50,8 +48,7 @@ bool
 }
 
 //	virtual
-ostream &
-	Object ::
+ostream & Object ::
 	print ()
 	const
 {
@@ -59,27 +56,19 @@ ostream &
 }
 
 //	virtual
-ostream &
-	Object ::
+ostream & Object ::
 	debug ()
 	const
 {
-	#ifdef SL_DEBUG
-		return debug_cout << "debug: ";
-	#else
-		//	This is faster.
-		//	Is it possible to 'absorb' this?
-		return cout << "debug: ";
-	#endif
+	return log_cout << "debug: ";
 }
 
 //	virtual
-ostream &
-	Object ::
+ostream & Object ::
 	error ()
 	const
 {
-	return cerr << "ERROR: ";
+	return log_cout << "ERROR: ";
 }
 
 string to_string (float value)

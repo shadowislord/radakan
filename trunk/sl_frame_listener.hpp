@@ -18,7 +18,7 @@ class Sl_Frame_Listener:
 	public Object
 {
 	public:
-		// Constructor takes a RenderWindow because it uses that to determine input context
+		// constructor takes a RenderWindow because it uses that to determine input context
 		Sl_Frame_Listener (SceneManager * new_scene_mgr, RenderWindow * new_window,
 			Camera * new_camera, bool useBufferedInputKeys,
 			bool useBufferedInputMouse);	//	these bools are default false

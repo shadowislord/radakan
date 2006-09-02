@@ -4,7 +4,6 @@
 #include "battle_engine.hpp"
 #include "sl_frame_listener.hpp"
 
-
 using namespace Ogre;
 
 class Tslrpg:

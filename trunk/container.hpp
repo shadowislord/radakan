@@ -6,18 +6,24 @@
 using namespace std;
 
 class Container:
-	public Obstacle
+	public Entity
 {
 	public:
-		Container (string new_name);
+		Container
+			(string new_name,
+			bool new_movable,
+			float new_volume,
+			float new_weight,
+			Ogre::Vector3 new_position);
 		virtual ~Container ();
+		virtual bool is_initialized () const;
 		virtual float get_total_weight () const;
-		bool add (Obstacle * item);
-		bool remove (Obstacle * item);
-		bool contains (Obstacle * item);
+		virtual bool add (Entity * item);		//	true iff succesfull
+		virtual bool remove (Entity * item);	//	true iff succesfull
+		virtual bool contains (Entity * item) const;
 
 	private:
-		set <Obstacle *> items;
+		set <Entity *> items;
 };
 
 #endif

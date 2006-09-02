@@ -1,25 +1,25 @@
 #ifndef WEAPON_HPP
 #define WEAPON_HPP
 
-#include "obstacle.hpp"
+#include "entity.hpp"
 
 using namespace std;
 
 class Weapon:
-	public Obstacle
+	public Entity
 {
 	public:
 		Weapon
-			(string new_name,
-			Vector3 new_size,
-			float new_volume,
-			float new_weight,
-			float new_sharpness,
-			float new_break_chance,
-			float new_speed,
-			float new_attack_rate,
-			float new_defense_rate,
-			float new_damage);
+		(string new_name,
+		float new_volume,
+		float new_weight,
+		Ogre::Vector3 new_position,
+		float new_sharpness,
+		float new_break_chance,
+		float new_speed,
+		float new_attack_rate,
+		float new_defense_rate,
+		float new_damage);
 		virtual ~Weapon ();
 		virtual bool is_initialized () const;
 

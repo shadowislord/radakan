@@ -1,10 +1,9 @@
 #include "tslrpg.hpp"
 
 using namespace std;
-using namespace Ogre;
 
 Tslrpg::
-	Tslrpg ():
+	Tslrpg () :
 	Object ("Tslrpg")
 {
 	root = new Root();
@@ -14,36 +13,28 @@ Tslrpg::
 		 abort ();
 	}
 
-    // I just don't like the resource cfg file :/
-    // Catch any errors
-    try
-    {
-        // Add textures directory
-        ResourceGroupManager::getSingleton().addResourceLocation("data/texture",
-                                                                 "FileSystem",
-                                                                 "Textures",
-                                                                 true);
+	// I just don't like the resource cfg file :/
 
-        // Add 3D models directory
-        ResourceGroupManager::getSingleton().addResourceLocation("data/model",
-                                                                 "FileSystem",
-                                                                 "Models",
-                                                                 true);
+	try	// Catch any errors
+	{
+		// Add textures directory
+		ResourceGroupManager :: getSingleton ().addResourceLocation
+							("data/texture", "FileSystem", "Textures", true);
 
-        // Add materials directory
-        ResourceGroupManager::getSingleton().addResourceLocation("data/material",
-                                                                 "FileSystem",
-                                                                 "material",
-                                                                 true);
+		// Add 3D models directory
+		ResourceGroupManager :: getSingleton ().addResourceLocation
+								("data/model", "FileSystem", "Models", true);
 
-        // Initialise our resources
-        ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+		// Add materials directory
+		ResourceGroupManager :: getSingleton ().addResourceLocation
+							 ("data/material", "FileSystem", "material", true);
 
-    // End of try statement
-    }
-    catch(Ogre::Exception &e)
-    {
-    }
+		// Initialise our resources
+		ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
+	}	// End of try statement
+	catch(Ogre::Exception &e)
+	{
+	}
 
 
 	window = root->initialise (true);
@@ -77,26 +68,10 @@ Tslrpg::
 	input_device = PlatformManager::getSingleton ().createInputReader ();
 	input_device->initialise (window);
 
-	player = new Character ("player");
-	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
-	Weapon * sword = new Weapon
-		("sword", Vector3 (1, 0.1, 0.1), 1, 2, 3, 4, 5, 6, 7, 8);
-	debug () << * sword << "'s weight: " << sword->get_total_weight () << endl;
-	assert (! player->backpack->contains (sword));
-	assert (player->backpack->add (sword));
-	assert (player->backpack->contains (sword));
-	debug () << * player << "'s weight with sword: "
-		<< player->get_total_weight () << endl;
-	assert (player->backpack->remove (sword));
-	assert (! player->backpack->contains (sword));
-	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
-
-	battle_engine.hit (player, player);
-
 	create_scene ();
 }
 
-Tslrpg::
+Tslrpg ::
 	~Tslrpg ()
 {
 	debug () << "deleting player..." << int (player) << endl;
@@ -120,17 +95,42 @@ Tslrpg::
 	debug () << "all deleted" << endl;
 }
 
-void
-	Tslrpg::
+void Tslrpg ::
 	run ()
 {
+	player = new Character ("player");
+	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
+	Weapon * sword = new Weapon
+					("sword", 1, 2, Vector3 (1, 4, 4), 3, 4, 5, 6, 7, 8);
+	debug () << * sword << "'s weight: " << sword->get_total_weight () << endl;
+	assert (! player->contains (sword));
+	assert (player->add (sword));
+	assert (player->contains (sword));
+	debug () << * player << "'s weight with sword: "
+		<< player->get_total_weight () << endl;
+	assert (player->add (sword));
+	assert (player->contains (sword));
+	debug () << * player << "'s weight with two times the sword: "
+		<< player->get_total_weight () << endl;
+
+	battle_engine.hit (player, player);
+
+	assert (player->remove (sword));
+	assert (player->contains (sword));
+	assert (player->remove (sword));
+	assert (! player->contains (sword));
+	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
+
+	player->add (sword);
+
 	root->startRendering ();
 }
 
 //	virtual
-void Tslrpg::create_scene ()
+void Tslrpg ::
+	create_scene ()
 {
-	Entity * ent = scene_mgr->createEntity("ogre", "fort.mesh");
+	Ogre :: Entity * ent = scene_mgr->createEntity("ogre", "fort.mesh");
 	//ent->setMaterialName("metal_plate");
 	SceneNode* node = scene_mgr->getRootSceneNode()->createChildSceneNode();
 	node->attachObject(ent);

@@ -6,15 +6,19 @@
 using namespace std;
 
 class Character:
-	public Obstacle
+	public Container
 {
 	public:
 		Character (string new_name);
 		virtual ~Character ();
 		virtual bool is_initialized () const;
 		virtual float get_total_weight () const;
+		virtual bool add (Entity * item);
+		virtual bool remove (Entity * item);
+		virtual bool contains (Entity * item) const;
 
 		bool dead;
+		Weapon * weapon;
 		
 		//	exp = experience
 		int agility_exp;
