@@ -15,7 +15,7 @@ Weapon::
 		float new_attack_rate,
 		float new_defense_rate,
 		float new_damage):
-	Entity (new_name, true, true, new_volume, new_weight, new_position),
+	Entity (new_name, true, true, new_volume, new_weight, new_position, NULL, NULL),
 	break_chance (new_break_chance),
 	speed (new_speed),
 	attack_rate (new_attack_rate),

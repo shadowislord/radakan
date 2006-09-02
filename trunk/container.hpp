@@ -14,7 +14,9 @@ class Container:
 			bool new_movable,
 			float new_volume,
 			float new_weight,
-			Ogre::Vector3 new_position);
+			Ogre::Vector3 new_position,
+			Ogre :: Entity * new_ogre_entity,
+			Ogre :: SceneNode * new_node);
 		virtual ~Container ();
 		virtual bool is_initialized () const;
 		virtual float get_total_weight () const;

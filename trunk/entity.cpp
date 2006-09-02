@@ -10,7 +10,9 @@ Entity ::
 		bool new_solid,
 		float new_volume,
 		float new_weight,
-		Ogre :: Vector3 new_position):
+		Ogre :: Vector3 new_position,
+		Ogre :: Entity * new_ogre_entity,
+		Ogre :: SceneNode * new_node):
 	Object (new_name),
 	movable (new_movable),
 	solid (new_solid),
@@ -21,6 +23,22 @@ Entity ::
 
 	position = new_position;
 
+	node = new_node;
+	ogre_entity = new_ogre_entity;
+
+	if (new_ogre_entity == NULL)
+	{
+		assert (new_node == NULL);
+		//	this will be disabled later
+	}
+	else
+	{
+		assert (new_node != NULL);
+		
+		node->attachObject (ogre_entity);
+		node->setPosition (new_position);
+	}
+	
 	assert (is_initialized ());
 }
 
@@ -45,5 +63,7 @@ float Entity ::
 	get_total_weight ()
 	const
 {
+	assert (is_initialized ());
+	
 	return weight;
 }

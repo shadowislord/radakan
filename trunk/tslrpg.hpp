@@ -1,10 +1,9 @@
 #ifndef TSLRPG_HPP
 #define TSLRPG_HPP 
 
-#include "battle_engine.hpp"
-#include "sl_frame_listener.hpp"
+#include "sector.hpp"
 
-using namespace Ogre;
+using namespace std;
 
 class Tslrpg:
 //	public ExampleApplication,
@@ -13,19 +12,18 @@ class Tslrpg:
 	public:
 		Tslrpg ();
 		~Tslrpg ();
+		virtual bool is_initialized () const;
 		void run ();
 
 	private:
 		void create_scene ();
-
-		Root * root;
-		Camera * camera;
-		SceneManager * scene_mgr;
-		Sl_Frame_Listener * frame_listener;
-		RenderWindow * window;
-		InputReader * input_device;
-		Character * player;
+		Ogre :: Root * root;
+		Ogre :: InputReader * input_device;
+		Ogre :: RenderWindow * window;
 		Battle_Engine battle_engine;
+		Sector * active_sector;
+		set <Sector *> sectors;
+		Character * player;
 };
 
 #endif

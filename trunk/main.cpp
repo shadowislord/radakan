@@ -20,11 +20,17 @@ using namespace std;
 {
 	try
 	{
-
 		// Create application object
 		Tslrpg * game;
 		
 		log_cout << "Setting up Scattered Lands..." << endl;
+		
+		#ifdef SL_DEBUG
+			log_cout << "Debug mode: enabled." << endl;
+		#else
+			log_cout << "Debug mode: disabled." << endl;
+		#endif
+		
 		game = new Tslrpg ();
 		log_cout << "Scattered Lands is set up." << endl;
 		
@@ -46,7 +52,7 @@ using namespace std;
 	
 		log_cout << "Scattered Lands is shut down." << endl;
 	}
-	catch (Exception & e)
+	catch (Ogre :: Exception & e)
 	{
 		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 			MessageBox (NULL, e.getFullDescription ().c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);

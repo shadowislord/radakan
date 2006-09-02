@@ -9,14 +9,18 @@ Container ::
 		bool new_movable,
 		float new_volume,
 		float new_weight,
-		Ogre :: Vector3 new_position) :
+		Ogre :: Vector3 new_position,
+		Ogre :: Entity * new_ogre_entity,
+		Ogre :: SceneNode * new_node) :
 	Entity
 		(new_name,
 		new_movable,
 		true,
 		new_volume,
 		new_weight,
-		new_position)
+		new_position,
+		new_ogre_entity,
+		new_node)
 {
 	assert (Entity :: is_initialized ());
 	
@@ -48,6 +52,8 @@ float Container ::
 	get_total_weight ()
 	const
 {
+	assert (is_initialized ());
+	
 	float total_weight = weight;
 
 	for (set <Entity *> :: const_iterator i = items.begin (); i != items.end (); i ++)

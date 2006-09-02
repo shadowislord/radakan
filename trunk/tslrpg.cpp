@@ -6,11 +6,11 @@ Tslrpg::
 	Tslrpg () :
 	Object ("Tslrpg")
 {
-	root = new Root();
+	root = new Ogre :: Root();
 
 	if (! root->showConfigDialog ())
 	{
-		 abort ();
+		abort ();
 	}
 
 	// I just don't like the resource cfg file :/
@@ -18,70 +18,52 @@ Tslrpg::
 	try	// Catch any errors
 	{
 		// Add textures directory
-		ResourceGroupManager :: getSingleton ().addResourceLocation
+		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
 							("data/texture", "FileSystem", "Textures", true);
 
 		// Add 3D models directory
-		ResourceGroupManager :: getSingleton ().addResourceLocation
+		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
 								("data/model", "FileSystem", "Models", true);
 
 		// Add materials directory
-		ResourceGroupManager :: getSingleton ().addResourceLocation
+		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
 							 ("data/material", "FileSystem", "material", true);
 
 		// Initialise our resources
-		ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
+		Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
 	}	// End of try statement
-	catch(Ogre::Exception &e)
+	catch (Ogre :: Exception & e)
 	{
 	}
 
-
 	window = root->initialise (true);
 
-	scene_mgr = root->createSceneManager (ST_GENERIC);
-
-	//	Create the camera
-	camera = scene_mgr->createCamera ("PlayerCam");
-	camera->setPosition (Vector3 (0,0,0));
-	camera->lookAt (Vector3 (0,0,-300));
-	camera->setNearClipDistance (5);
-	camera->setFarClipDistance (2000);
-
-	// Create one viewport, entire window
-	Viewport * vp = window->addViewport (camera);
-	vp->setBackgroundColour (ColourValue (0,0,0));
-
-	// Alter the camera aspect ratio to match the viewport
-	camera->setAspectRatio (
-		Real (vp->getActualWidth ()) / Real (vp->getActualHeight ()));
-
-	// Set default mipmap level (NB some APIs ignore this)
-	TextureManager::getSingleton().setDefaultNumMipmaps(5);
-
-	ResourceGroupManager::getSingleton ().initialiseAllResourceGroups ();
-
-	frame_listener = new Sl_Frame_Listener (scene_mgr, window, camera, false, false);
-
-	root->addFrameListener (frame_listener);
-
-	input_device = PlatformManager::getSingleton ().createInputReader ();
+	input_device = Ogre :: PlatformManager::getSingleton ().createInputReader ();
 	input_device->initialise (window);
 
-	create_scene ();
+	active_sector = new Sector
+		("Sector 1", root->createSceneManager (Ogre :: ST_GENERIC), window);
+	sectors.insert (active_sector);
+
+	// Set default mipmap level (NB some APIs ignore this)
+	Ogre :: TextureManager :: getSingleton().setDefaultNumMipmaps (5);
+
+	Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
+
+	player = active_sector->get_player ();
+	root->addFrameListener (active_sector->get_frame_listener ());
 }
 
 Tslrpg ::
 	~Tslrpg ()
 {
-	debug () << "deleting player..." << int (player) << endl;
-	delete player;
-	debug () << "deleting input_device..." << int (input_device) << endl;
+	debug () << "Deleting sectors..." << endl;
+	for (set <Sector *> :: const_iterator i = sectors.begin (); i != sectors.end (); i ++)
+	{
+		delete (* i);
+	}
+	debug () << "Deleting input_device..." << int (input_device) << endl;
 	delete input_device;
-	debug () << "deleting frame_listener..." << int (frame_listener) << endl;
-	delete frame_listener;
-	debug () << "deleting camera..." << int (camera) << endl;
-	delete camera;
 
 //	These give problems:
 
@@ -95,104 +77,21 @@ Tslrpg ::
 	debug () << "all deleted" << endl;
 }
 
+//	virtual
+bool Tslrpg ::
+	is_initialized ()
+	const
+{
+	return Object :: is_initialized ();
+}
+
 void Tslrpg ::
 	run ()
 {
-	player = new Character ("player");
-	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
-	Weapon * sword = new Weapon
-					("sword", 1, 2, Vector3 (1, 4, 4), 3, 4, 5, 6, 7, 8);
-	debug () << * sword << "'s weight: " << sword->get_total_weight () << endl;
-	assert (! player->contains (sword));
-	assert (player->add (sword));
-	assert (player->contains (sword));
-	debug () << * player << "'s weight with sword: "
-		<< player->get_total_weight () << endl;
-	assert (player->add (sword));
-	assert (player->contains (sword));
-	debug () << * player << "'s weight with two times the sword: "
-		<< player->get_total_weight () << endl;
+	assert (is_initialized ());
 
+	active_sector->run ();
 	battle_engine.hit (player, player);
 
-	assert (player->remove (sword));
-	assert (player->contains (sword));
-	assert (player->remove (sword));
-	assert (! player->contains (sword));
-	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
-
-	player->add (sword);
-
 	root->startRendering ();
-}
-
-//	virtual
-void Tslrpg ::
-	create_scene ()
-{
-	Ogre :: Entity * ent = scene_mgr->createEntity("ogre", "fort.mesh");
-	//ent->setMaterialName("metal_plate");
-	SceneNode* node = scene_mgr->getRootSceneNode()->createChildSceneNode();
-	node->attachObject(ent);
-	node->setPosition(0,0,0);
-
-	for (int i = 0; i < 100; i++)
-	{
-		char name[50];
-		sprintf (name, "cluster_%d", i);
-		BillboardSet * bbs2 = scene_mgr->createBillboardSet (name, 1);
-		bbs2->setBillboardRotationType (BBR_VERTEX);
-		SceneNode* bbsNode2 = scene_mgr->getRootSceneNode ()->createChildSceneNode ();
-
-		char type[50];
-		int ran = ((int)(Math::RangeRandom(0, 1)*100))%8+1;
-		sprintf(type, "spacebillboard/cluster_%d", ran);
-		bbs2->setMaterialName(type);
-		bbs2->getMaterial()->setTextureFiltering(TFO_TRILINEAR);
-		bbs2->getMaterial()->setDepthCheckEnabled(true);
-		int px = int (Math::RangeRandom (-2500, 2500));
-		int py = int (Math::RangeRandom (-2500, 2500));
-		int pz = int (Math::RangeRandom (-2500, 2500));
-		px = 0;
-		Billboard* bb = bbs2->createBillboard (0, 0, 0, ColourValue());
-		int dim = int (Math::RangeRandom (1.5f, 2));
-		bb->setDimensions (100*dim, 100*dim);
-		bb->setRotation (Radian (Math::RangeRandom (0, 2 * Math::PI)));
-		bbsNode2->attachObject (bbs2);
-		bbsNode2->setPosition (px, py, pz);
-	}
-	for(int i = 0; i < 200; i++)
-	{
-		char name[50];
-		sprintf(name, "star_%d", i);
-		BillboardSet* bbs2 = scene_mgr->createBillboardSet(name, 1);
-		bbs2->setBillboardRotationType(BBR_VERTEX);
-		SceneNode* bbsNode2 = scene_mgr->getRootSceneNode()->createChildSceneNode();
-
-		char type[50];
-		int ran = ((int)(Math::RangeRandom (0, 1) * 100)) % 2 + 1;
-		sprintf (type, "spacebillboard/star_%d", ran);
-		bbs2->setMaterialName (type);
-		bbs2->getMaterial()->setTextureFiltering (TFO_TRILINEAR);
-		bbs2->getMaterial()->setDepthCheckEnabled (true);
-		int px = int (Math::RangeRandom (-2500, 2500));
-		int py = int (Math::RangeRandom (-2500, 2500));
-		int pz = int (Math::RangeRandom (-2500, 2500));
-		px = 0;
-		Billboard* bb = bbs2->createBillboard
-		(
-			0, 0, 0,
-			ColourValue
-			(
-				Math::RangeRandom (0.6f,1),
-				Math::RangeRandom (0.6f,1),
-				Math::RangeRandom (0.6f,1)
-			)
-		);
-		int dim = int (Math::RangeRandom(1.5f, 2));
-		bb->setDimensions (5 * dim, 5 * dim);
-		bb->setRotation (Radian (Math::RangeRandom (0, 2 * Math::PI)));
-		bbsNode2->attachObject (bbs2);
-		bbsNode2->setPosition (px, py, pz);
-	}
 }

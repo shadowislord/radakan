@@ -2,6 +2,7 @@
 #define OBSTACLE_HPP
 
 #include "object.hpp"
+#include <OgreSceneNode.h>
 #include <OgreEntity.h>
 
 using namespace std;
@@ -9,8 +10,6 @@ using namespace std;
 
 class Entity:
 	public Object
-//	,
-//	public Ogre :: Entity
 {
 	public:
 		Entity
@@ -19,7 +18,9 @@ class Entity:
 			bool new_solid,
 			float new_volume,
 			float new_weight,
-			Ogre :: Vector3 new_position);
+			Ogre :: Vector3 new_position,
+			Ogre :: Entity * new_ogre_entity,
+			Ogre :: SceneNode * new_node);
 		virtual ~Entity ();
 		virtual bool is_initialized () const;
 		virtual float get_total_weight () const;
@@ -28,6 +29,8 @@ class Entity:
 		const float volume;		//	in litres
 		const float weight;		//	in kilograms
 		Ogre :: Vector3 position;	//	the position of the obstacle
+		Ogre :: Entity * ogre_entity;	//	create through SceneManager?
+		Ogre :: SceneNode * node;	//	create through SceneManager?
 };
 
 #endif

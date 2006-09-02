@@ -18,7 +18,9 @@
 #include <string>
 #include <vector>
 
-#define SL_DEBUG
+#ifndef NDEBUG
+	#define SL_DEBUG
+#endif
 
 using namespace std;
 

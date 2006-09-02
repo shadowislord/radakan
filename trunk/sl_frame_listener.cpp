@@ -2,14 +2,15 @@
 
 Sl_Frame_Listener ::
 	Sl_Frame_Listener
-		(SceneManager * new_scene_mgr,
-		RenderWindow * new_window,
-		Camera * new_camera,
+		(Ogre :: SceneManager * new_scene_mgr,
+		Ogre :: RenderWindow * new_window,
+		Ogre :: Camera * new_camera,
 		bool useBufferedInputKeys,
 		bool useBufferedInputMouse) :
 //	mSceneMgr (new_scene_mgr),
 	Object ("Frame Listener")
 {
+	assert (Object :: is_initialized ());
 
 	scene_mgr = new_scene_mgr;
 	total_time = 0;
@@ -21,13 +22,14 @@ Sl_Frame_Listener ::
 	scene_detail_index = 0;
 	mMoveScale = 0.0f;
 	mRotScale = 0.0f;
-	mTranslateVector = Vector3::ZERO;
+	mTranslateVector = Ogre :: Vector3 :: ZERO;
 	mAniso = 1;
-	mFiltering = TFO_BILINEAR;
+	mFiltering = Ogre :: TFO_BILINEAR;
 
 	//showDebugOverlay (false);
 
-	debug_overlay = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
+	debug_overlay = Ogre :: OverlayManager :: getSingleton().getByName
+														("Core/DebugOverlay");
 	mUseBufferedInputKeys = useBufferedInputKeys;
 	mUseBufferedInputMouse = useBufferedInputMouse;
 	mInputTypeSwitchingOn = mUseBufferedInputKeys || mUseBufferedInputMouse;
@@ -36,272 +38,323 @@ Sl_Frame_Listener ::
 
 	if (mInputTypeSwitchingOn)
 	{
-		event_processor = new EventProcessor();
+		event_processor = new Ogre :: EventProcessor ();
 		event_processor->initialise(window);
-		event_processor->startProcessingEvents();
-		event_processor->addKeyListener(this);
-		input_device = event_processor->getInputReader();
+		event_processor->startProcessingEvents ();
+		event_processor->addKeyListener (this);
+		input_device = event_processor->getInputReader ();
 	}
 	else
 	{
-		input_device = PlatformManager::getSingleton().createInputReader();
-		input_device->initialise(window,true, true);
+		input_device = Ogre :: PlatformManager :: getSingleton ().createInputReader ();
+		input_device->initialise (window, true, true);
 	}
+	
+	assert (is_initialized ());
 }
 
 //	virtual
 Sl_Frame_Listener ::
 	~Sl_Frame_Listener ()
 {
+	assert (is_initialized ());
+	
 	if (mInputTypeSwitchingOn)
 	{
 		delete event_processor;
 	}
 	else
 	{
-		PlatformManager::getSingleton().destroyInputReader( input_device );
+		Ogre :: PlatformManager :: getSingleton ().destroyInputReader
+																(input_device);
 	}
 }
 
 void Sl_Frame_Listener ::
 	updateStats ()
 {
-	static String currFps = "Current FPS: ";
-	static String avgFps = "Average FPS: ";
-	static String bestFps = "Best FPS: ";
-	static String worstFps = "Worst FPS: ";
-	static String tris = "Triangle Count: ";
+	assert (is_initialized ());
+	
+	static string currFps = "Current FPS: ";
+	static string avgFps = "Average FPS: ";
+	static string bestFps = "Best FPS: ";
+	static string worstFps = "Worst FPS: ";
+	static string tris = "Triangle Count: ";
 
 	// update stats when necessary
 	try
 	{
-		OverlayElement* guiAvg = OverlayManager::getSingleton().getOverlayElement("Core/AverageFps");
-		OverlayElement* guiCurr = OverlayManager::getSingleton().getOverlayElement("Core/CurrFps");
-		OverlayElement* guiBest = OverlayManager::getSingleton().getOverlayElement("Core/BestFps");
-		OverlayElement* guiWorst = OverlayManager::getSingleton().getOverlayElement("Core/WorstFps");
+		Ogre :: OverlayElement * guiAvg = Ogre :: OverlayManager :: getSingleton ().getOverlayElement ("Core/AverageFps");
+		Ogre :: OverlayElement * guiCurr = Ogre :: OverlayManager :: getSingleton ().getOverlayElement ("Core/CurrFps");
+		Ogre :: OverlayElement* guiBest = Ogre :: OverlayManager :: getSingleton ().getOverlayElement ("Core/BestFps");
+		Ogre :: OverlayElement* guiWorst = Ogre :: OverlayManager :: getSingleton ().getOverlayElement ("Core/WorstFps");
 
-		const RenderTarget::FrameStats& stats = window->getStatistics();
+		const Ogre :: RenderTarget :: FrameStats & stats = window->getStatistics ();
 
 //		print << "FPS: " << stats.avgFPS << endl;
 
-		guiAvg->setCaption(avgFps + StringConverter::toString(stats.avgFPS));
-		guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
-		guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS)
-			+" "+StringConverter::toString(stats.bestFrameTime)+" ms");
-		guiWorst->setCaption(worstFps + StringConverter::toString(stats.worstFPS)
-			+" "+StringConverter::toString(stats.worstFrameTime)+" ms");
+		guiAvg->setCaption
+			(avgFps + Ogre :: StringConverter :: toString (stats.avgFPS));
+		guiCurr->setCaption
+			(currFps + Ogre :: StringConverter :: toString (stats.lastFPS));
+		guiBest->setCaption
+			(bestFps + Ogre :: StringConverter :: toString (stats.bestFPS)
+			+ " " + Ogre :: StringConverter :: toString (stats.bestFrameTime)
+			+ " ms");
+		guiWorst->setCaption
+			(worstFps + Ogre :: StringConverter :: toString (stats.worstFPS)
+			+ " " + Ogre :: StringConverter :: toString (stats.worstFrameTime)
+			+ " ms");
 
-		OverlayElement* guiTris = OverlayManager::getSingleton().getOverlayElement("Core/NumTris");
-		guiTris->setCaption(tris + StringConverter::toString(stats.triangleCount));
+		Ogre :: OverlayElement * guiTris = Ogre :: OverlayManager :: getSingleton ().getOverlayElement ("Core/NumTris");
+		guiTris->setCaption (tris + Ogre :: StringConverter :: toString (stats.triangleCount));
 
-		OverlayElement* guiDbg = OverlayManager::getSingleton().getOverlayElement("Core/DebugText");
-            guiDbg->setCaption(window->getDebugText());
-        }
-        catch (...)
-        {
-            // ignore
-        }
-    }
+		Ogre :: OverlayElement * guiDbg = Ogre :: OverlayManager :: getSingleton().getOverlayElement ("Core/DebugText");
+		guiDbg->setCaption (window->getDebugText ());
+	}
+	catch (...)
+	{
+		// ignore
+	}
+}
 
-
-
-//    virtual
+//	virtual
 bool Sl_Frame_Listener ::
-	processUnbufferedKeyInput (const FrameEvent& evt)
-    {
-        if (input_device->isKeyDown(KC_A))
-        {
-            // Move camera left
-            mTranslateVector.x = -mMoveScale;
-        }
+	processUnbufferedKeyInput (const Ogre :: FrameEvent & evt)
+{
+	assert (is_initialized ());
 
-        if (input_device->isKeyDown(KC_D))
-        {
-            // Move camera RIGHT
-            mTranslateVector.x = mMoveScale;
-        }
+	if (input_device->isKeyDown (Ogre :: KC_A))
+	{
+		// Move camera left
+		mTranslateVector.x = -mMoveScale;
+	}
 
-        /* Move camera forward by keypress. */
-        if (input_device->isKeyDown(KC_UP) || input_device->isKeyDown(KC_W) )
-        {
-            mTranslateVector.z = -mMoveScale;
-        }
+	if (input_device->isKeyDown (Ogre :: KC_D))
+	{
+		// Move camera RIGHT
+		mTranslateVector.x = mMoveScale;
+	}
 
-        /* Move camera backward by keypress. */
-        if (input_device->isKeyDown(KC_DOWN) || input_device->isKeyDown(KC_S) )
-        {
-            mTranslateVector.z = mMoveScale;
-        }
+	/* Move camera forward by keypress. */
+	if (input_device->isKeyDown (Ogre :: KC_UP)
+									|| input_device->isKeyDown (Ogre :: KC_W))
+	{
+		mTranslateVector.z = -mMoveScale;
+	}
 
-        if (input_device->isKeyDown(KC_PGUP))
-        {
-            // Move camera up
-            mTranslateVector.y = mMoveScale;
-        }
+	/* Move camera backward by keypress. */
+	if (input_device->isKeyDown (Ogre :: KC_DOWN)
+									|| input_device->isKeyDown (Ogre :: KC_S))
+	{
+		mTranslateVector.z = mMoveScale;
+	}
 
-        if (input_device->isKeyDown(KC_PGDOWN))
-        {
-            // Move camera down
-            mTranslateVector.y = -mMoveScale;
-        }
+	if (input_device->isKeyDown (Ogre :: KC_PGUP))
+	{
+		// Move camera up
+		mTranslateVector.y = mMoveScale;
+	}
 
-        if (input_device->isKeyDown(KC_RIGHT))
-        {
-            camera->yaw(-mRotScale);
-        }
+	if (input_device->isKeyDown (Ogre :: KC_PGDOWN))
+	{
+		// Move camera down
+		mTranslateVector.y = -mMoveScale;
+	}
+
+	if (input_device->isKeyDown (Ogre :: KC_RIGHT))
+	{
+		camera->yaw(-mRotScale);
+	}
 		
-        if (input_device->isKeyDown(KC_LEFT))
-        {
-            camera->yaw(mRotScale);
-        }
+	if (input_device->isKeyDown (Ogre :: KC_LEFT))
+	{
+		camera->yaw(mRotScale);
+	}
 
-        if( input_device->isKeyDown( KC_ESCAPE) )
-        {
-            return false;
-        }
+	if( input_device->isKeyDown (Ogre :: KC_ESCAPE))
+	{
+		return false;
+	}
 
-		// see if switching is on, and you want to toggle 
-        if (mInputTypeSwitchingOn && input_device->isKeyDown(KC_M) && mTimeUntilNextToggle <= 0)
-        {
-			switchMouseMode();
-            mTimeUntilNextToggle = 1;
-        }
+	static bool displayCameraDetails = false;
 
-        if (mInputTypeSwitchingOn && input_device->isKeyDown(KC_K) && mTimeUntilNextToggle <= 0)
-        {
-			// must be going from immediate keyboard to buffered keyboard
-			switchKeyMode();
-            mTimeUntilNextToggle = 1;
-        }
-        if (input_device->isKeyDown(KC_F) && mTimeUntilNextToggle <= 0)
-        {
-            mStatsOn = !mStatsOn;
-            showDebugOverlay(mStatsOn);
-
-            mTimeUntilNextToggle = 1;
-        }
-        if (input_device->isKeyDown(KC_T) && mTimeUntilNextToggle <= 0)
-        {
-            switch(mFiltering)
-            {
-            case TFO_BILINEAR:
-                mFiltering = TFO_TRILINEAR;
-                mAniso = 1;
-                break;
-            case TFO_TRILINEAR:
-                mFiltering = TFO_ANISOTROPIC;
-                mAniso = 8;
-                break;
-            case TFO_ANISOTROPIC:
-                mFiltering = TFO_BILINEAR;
-                mAniso = 1;
-                break;
-            default:
-                break;
-            }
-            MaterialManager::getSingleton().setDefaultTextureFiltering(mFiltering);
-            MaterialManager::getSingleton().setDefaultAnisotropy(mAniso);
-
-
-            showDebugOverlay(mStatsOn);
-
-            mTimeUntilNextToggle = 1;
-        }
-
-        if (input_device->isKeyDown(KC_SYSRQ) && mTimeUntilNextToggle <= 0)
-        {
-			char tmp[20];
-			sprintf(tmp, "screenshot_%d.png", ++mNumScreenShots);
-            window->writeContentsToFile(tmp);
-            mTimeUntilNextToggle = 0.5;
-			window->setDebugText(String("Wrote ") + tmp);
-        }
-		
-		if (input_device->isKeyDown(KC_R) && mTimeUntilNextToggle <=0)
+	if (mTimeUntilNextToggle <= 0)
+	{
+		if (mInputTypeSwitchingOn)
 		{
-			scene_detail_index = (scene_detail_index+1)%3 ;
-			switch(scene_detail_index) {
-				case 0 : camera->setPolygonMode(PM_SOLID) ; break ;
-				case 1 : camera->setPolygonMode(PM_WIREFRAME) ; break ;
-				case 2 : camera->setPolygonMode(PM_POINTS) ; break ;
+			// see if switching is on, and you want to toggle
+			if (input_device->isKeyDown (Ogre :: KC_M))
+			{
+				switchMouseMode();
+				mTimeUntilNextToggle = 1;
+			}
+			if (input_device->isKeyDown (Ogre :: KC_K))
+			{
+				// must be going from immediate keyboard to buffered keyboard
+				switchKeyMode();
+				mTimeUntilNextToggle = 1;
+			}
+		}
+		
+		if (input_device->isKeyDown (Ogre :: KC_F))
+		{
+			mStatsOn = ! mStatsOn;
+			showDebugOverlay (mStatsOn);
+			mTimeUntilNextToggle = 1;
+		}
+		
+		if (input_device->isKeyDown (Ogre :: KC_T))
+		{
+			switch (mFiltering)
+			{
+				case Ogre :: TFO_BILINEAR :
+				{
+					mFiltering = Ogre :: TFO_TRILINEAR;
+					mAniso = 1;
+					break;
+				}
+				case Ogre :: TFO_TRILINEAR :
+				{
+					mFiltering = Ogre :: TFO_ANISOTROPIC;
+					mAniso = 8;
+					break;
+				}
+				case Ogre :: TFO_ANISOTROPIC :
+				{
+					mFiltering = Ogre :: TFO_BILINEAR;
+					mAniso = 1;
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			Ogre :: MaterialManager :: getSingleton ().setDefaultTextureFiltering (mFiltering);
+			Ogre :: MaterialManager :: getSingleton().setDefaultAnisotropy (mAniso);
+
+			showDebugOverlay (mStatsOn);
+
+			mTimeUntilNextToggle = 1;
+		}
+
+		if (input_device->isKeyDown (Ogre :: KC_SYSRQ))
+		{
+			char tmp [20];
+			sprintf (tmp, "screenshot_%d.png", ++ mNumScreenShots);
+			window->writeContentsToFile (tmp);
+			mTimeUntilNextToggle = 0.5;
+			window->setDebugText (string ("Wrote ") + tmp);
+		}
+		
+		if (input_device->isKeyDown (Ogre :: KC_R))
+		{
+			scene_detail_index = (scene_detail_index + 1) % 3;
+			switch (scene_detail_index)
+			{
+				case 0 :
+				{
+					camera->setPolygonMode (Ogre :: PM_SOLID);
+					break;
+				}
+				case 1 :
+				{
+					camera->setPolygonMode (Ogre :: PM_WIREFRAME);
+					break;
+				}
+				case 2 :
+				{
+					camera->setPolygonMode (Ogre :: PM_POINTS);
+					break;
+				}
 			}
 			mTimeUntilNextToggle = 0.5;
 		}
 
-        static bool displayCameraDetails = false;
-        if (input_device->isKeyDown(KC_P) && mTimeUntilNextToggle <= 0)
-        {
-            displayCameraDetails = !displayCameraDetails;
-            mTimeUntilNextToggle = 0.5;
-            if (!displayCameraDetails)
-                window->setDebugText("");
-        }
-        if (displayCameraDetails)
-        {
-            // Print camera details
-            window->setDebugText("P: " + StringConverter::toString(camera->getDerivedPosition()) + " " +
-                "O: " + StringConverter::toString(camera->getDerivedOrientation()));
-        }
+		if (input_device->isKeyDown (Ogre :: KC_P))
+		{
+			displayCameraDetails = ! displayCameraDetails;
+			mTimeUntilNextToggle = 0.5;
+			if (!displayCameraDetails)
+			{
+				window->setDebugText ("");
+			}
+		}
+	}
+	
+	if (displayCameraDetails)
+	{
+		// Print camera details
+		window->setDebugText("P: " + Ogre :: StringConverter :: toString (camera->getDerivedPosition ()) + " " + "O: " + Ogre :: StringConverter :: toString (camera->getDerivedOrientation ()));
+	}
 
-        // Return true to continue rendering
-        return true;
-    }
+	// Return true to continue rendering
+	return true;
+}
 
 bool Sl_Frame_Listener ::
-	processUnbufferedMouseInput (const FrameEvent& evt)
-    {
-        /* Rotation factors, may not be used if the second mouse button is pressed. */
+	processUnbufferedMouseInput (const Ogre :: FrameEvent & evt)
+{
+	assert (is_initialized ());
+	
+		/* Rotation factors, may not be used if the second mouse button is pressed. */
 
-        /* If the second mouse button is pressed, then the mouse movement results in 
-           sliding the camera, otherwise we rotate. */
-        if( input_device->getMouseButton( 1 ) )
-        {
-            mTranslateVector.x += input_device->getMouseRelativeX() * 0.13;
-            mTranslateVector.y -= input_device->getMouseRelativeY() * 0.13;
-        }
-        else
-        {
-            mRotX = Degree(-input_device->getMouseRelativeX() * 0.13);
-            mRotY = Degree(-input_device->getMouseRelativeY() * 0.13);
-        }
-
-
-		return true;
-	}
+		/* If the second mouse button is pressed, then the mouse movement results in
+		   sliding the camera, otherwise we rotate. */
+		if(input_device->getMouseButton (1))
+		{
+			mTranslateVector.x += input_device->getMouseRelativeX() * 0.13;
+			mTranslateVector.y -= input_device->getMouseRelativeY() * 0.13;
+		}
+		else
+		{
+			mRotX = Ogre :: Degree (- input_device->getMouseRelativeX() * 0.13);
+			mRotY = Ogre :: Degree (- input_device->getMouseRelativeY() * 0.13);
+		}
+	
+	return true;
+}
 
 void Sl_Frame_Listener ::
 	moveCamera ()
 {
+	assert (is_initialized ());
+	
 	// Make all the changes to the camera
 	// Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW (e.g. airplane)
-	camera->yaw(mRotX);
-	camera->pitch(mRotY);
+	camera->yaw (mRotX);
+	camera->pitch (mRotY);
 	camera->moveRelative (mTranslateVector);
-	}
+}
 
 void Sl_Frame_Listener ::
 	showDebugOverlay (bool show)
-    {
-        if (debug_overlay != NULL)
-        {
-            if (show)
-            {
-                debug_overlay->show ();
-            }
-            //else
-           // {
-                //debug_overlay->hide ();
-            else
+{
+	assert (is_initialized ());
+	
+		if (debug_overlay != NULL)
+		{
+			if (show)
+			{
+				debug_overlay->show ();
+			}
+			//else
+		   // {
+				//debug_overlay->hide ();
+			else
 			{
 				abort ();
 			}
-        }
-    }
+		}
+	}
 
 // Override frameStarted event to process that (don't care about frameEnded)
 bool Sl_Frame_Listener ::
-	frameStarted (const FrameEvent& evt)
+	frameStarted (const Ogre :: FrameEvent & evt)
 {
+	assert (is_initialized ());
+	
 	total_time += evt.timeSinceLastFrame;
 
 	if (window->isClosed ())
@@ -311,9 +364,8 @@ bool Sl_Frame_Listener ::
 
 	if (! mInputTypeSwitchingOn)
 	{
-		input_device->capture();
+		input_device->capture ();
 	}
-
 
 	if (! mUseBufferedInputMouse || ! mUseBufferedInputKeys)
 	{
@@ -339,7 +391,7 @@ bool Sl_Frame_Listener ::
 		}
 		mRotX = 0;
 		mRotY = 0;
-		mTranslateVector = Vector3::ZERO;
+		mTranslateVector = Ogre :: Vector3 :: ZERO;
 	}
 
 	if (mUseBufferedInputKeys)
@@ -371,36 +423,45 @@ bool Sl_Frame_Listener ::
 	if (! mUseBufferedInputMouse || ! mUseBufferedInputKeys)
 	{
 	// one of the input modes is immediate, so update the movement vector
-	moveCamera();
+		moveCamera();
 	}
 
 	return true;
 }
 
 bool Sl_Frame_Listener ::
-	frameEnded (const FrameEvent& evt)
+	frameEnded (const Ogre :: FrameEvent & evt)
 {
-	updateStats();
+	assert (is_initialized ());
+	
+	updateStats ();
+	
 	return true;
 }
 
 void Sl_Frame_Listener ::
 	switchMouseMode ()
 {
+	assert (is_initialized ());
+	
 	mUseBufferedInputMouse = ! mUseBufferedInputMouse;
-	input_device->setBufferedInput(mUseBufferedInputKeys, mUseBufferedInputMouse);
+	input_device->setBufferedInput (mUseBufferedInputKeys, mUseBufferedInputMouse);
 }
 	
 void Sl_Frame_Listener ::
 	switchKeyMode ()
 {
+	assert (is_initialized ());
+	
 	mUseBufferedInputKeys = ! mUseBufferedInputKeys;
-	input_device->setBufferedInput(mUseBufferedInputKeys, mUseBufferedInputMouse);
+	input_device->setBufferedInput (mUseBufferedInputKeys, mUseBufferedInputMouse);
 }
 
 void Sl_Frame_Listener ::
-	keyClicked (KeyEvent * e)
+	keyClicked (Ogre :: KeyEvent * e)
 {
+	assert (is_initialized ());
+	
 	if (e->getKeyChar() == 'm')
 	{
 		switchMouseMode();
@@ -412,12 +473,13 @@ void Sl_Frame_Listener ::
 }
 
 void Sl_Frame_Listener ::
-	keyPressed (KeyEvent * e)
+	keyPressed (Ogre :: KeyEvent * e)
 {
+	assert (is_initialized ());
 }
 
 void Sl_Frame_Listener ::
-	keyReleased (KeyEvent * e)
+	keyReleased (Ogre :: KeyEvent * e)
 {
+	assert (is_initialized ());
 }
-

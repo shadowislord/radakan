@@ -4,13 +4,18 @@ using namespace std;
 
 //  constructor
 Character ::
-	Character (string new_name) :
+	Character
+		(string new_name,
+		Ogre :: Entity * new_ogre_entity,
+		Ogre :: SceneNode * new_node) :
 	Container
 		(new_name,
 		true,
 		80,
 		65,
-		Ogre :: Vector3 (0, 1, 2))
+		Ogre :: Vector3 (100, 100, 200),
+		new_ogre_entity,
+		new_node)
 {
 	assert (Container :: is_initialized ());
 
@@ -21,7 +26,9 @@ Character ::
 		true,
 		30,
 		3,
-		this->position);
+		this->position,
+		NULL,
+		NULL);
 
 	weapon = NULL;
 	
@@ -50,6 +57,8 @@ float Character ::
 	get_total_weight ()
 	const
 {
+	assert (is_initialized ());
+	
 	return Container :: get_total_weight () + backpack->get_total_weight ();
 }
 
@@ -92,4 +101,42 @@ bool Character ::
 	assert (is_initialized ());
 
 	return (Container :: contains (item) || backpack->contains (item));
+}
+
+void Character ::
+	die ()
+{
+	assert (is_initialized ());
+
+	dead = true;
+
+	debug () << *this << " died!" << endl;
+}
+
+bool Character ::
+	is_dead ()
+	const
+{
+	assert (is_initialized ());
+
+	return dead;
+}
+
+bool Character ::
+	has_weapon ()
+	const
+{
+	assert (is_initialized ());
+
+	return (weapon != NULL);
+}
+
+Weapon * Character ::
+	get_weapon ()
+	const
+{
+	assert (is_initialized ());
+	assert (has_weapon ());
+
+	return weapon;
 }
