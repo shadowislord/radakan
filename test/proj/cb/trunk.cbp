@@ -9,9 +9,9 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="Release">
-				<Option output="..\..\bin\Release\Scattered Lands" />
-				<Option working_dir="..\..\bin\Release\" />
-				<Option object_output="..\..\obj\Release" />
+				<Option output="..\..\bin\release\Scattered Lands" />
+				<Option working_dir="..\..\bin\release\" />
+				<Option object_output="..\..\obj\release" />
 				<Option deps_output="..\..\deps" />
 				<Option type="0" />
 				<Option compiler="gcc" />
