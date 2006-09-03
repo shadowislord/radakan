@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="5" />
+	<Project>
+		<Option title="Scattered Lands" />
+		<Option pch_mode="0" />
+		<Option default_target="" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="" />
+		<Build>
+			<Target title="Release">
+				<Option output="..\..\bin\Release\Scattered Lands" />
+				<Option working_dir="..\..\bin\Release\" />
+				<Option object_output="..\..\obj\Release" />
+				<Option deps_output="..\..\deps" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="OgreMain" />
+					<Add library="stlport.5.0" />
+				</Linker>
+			</Target>
+			<Environment>
+				<Variable name="BOOST_INCLUDE" value="C:\Boost\include\boost-1_33_1\" />
+				<Variable name="BOOST_LIB" value="c:\Boost\lib" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Release;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-fident" />
+			<Add option="-D_STLP_NO_CUSTOM_IO" />
+			<Add option="-D_STLP_USE_DYNAMIC_LIB" />
+			<Add option="-DWIN32" />
+			<Add option="-D_WINDOWS" />
+			<Add directory="$(OGRE_HOME)\stlport\stlport" />
+			<Add directory="$(OGRE_HOME)\include" />
+			<Add directory="$(OGRE_HOME)\samples\include" />
+			<Add directory="$(OGRE_HOME)\samples\refapp\include" />
+			<Add directory="..\..\include" />
+			<Add directory="$(BOOST_INCLUDE)" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--add-stdcall-alias" />
+			<Add directory="$(OGRE_HOME)\lib" />
+			<Add directory="$(OGRE_HOME)\bin\Debug" />
+			<Add directory="$(OGRE_HOME)\bin\Release" />
+			<Add directory="$(BOOST_LIB)" />
+			<Add directory="$(STLPORT_LIB)" />
+		</Linker>
+		<Unit filename="..\..\include\battle_engine.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\character.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\container.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\entity.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\object.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\object.ipp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\sector.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\sl_frame_listener.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\tslrpg.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\weapon.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\battle_engine.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\character.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\container.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\entity.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\main.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\object.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\sector.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\sl_frame_listener.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\tslrpg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\weapon.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
