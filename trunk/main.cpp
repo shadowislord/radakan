@@ -9,7 +9,7 @@ using namespace std;
 #else
 	//	This is faster.
 	//	Is it possible to 'absorb' this?
-	ofstream log_cout = cout;
+	ostream & log_cout = cout;
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

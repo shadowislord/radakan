@@ -18,6 +18,8 @@
 #include <string>
 #include <vector>
 
+//	#define NDEBUG
+
 #ifndef NDEBUG
 	#define SL_DEBUG
 #endif

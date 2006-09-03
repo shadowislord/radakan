@@ -4,7 +4,11 @@
 
 using namespace std;
 
-extern ofstream log_cout;
+#ifdef SL_DEBUG
+	extern ofstream log_cout;
+#else
+	extern ostream & log_cout;
+#endif
 
 //  constructor
 Object ::
