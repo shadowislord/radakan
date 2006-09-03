@@ -19,8 +19,7 @@ class Sl_Frame_Listener:
 	public:
 		// constructor takes a RenderWindow because it uses that to determine input context
 		Sl_Frame_Listener
-			(Ogre :: SceneManager * new_scene_mgr,
-			Ogre :: RenderWindow * new_window,
+			(Ogre :: RenderWindow * new_window,
 			Ogre :: Camera * new_camera,
 			bool useBufferedInputKeys,
 			bool useBufferedInputMouse);	//	these bools are default false
@@ -39,7 +38,6 @@ class Sl_Frame_Listener:
 		void keyReleased (Ogre :: KeyEvent* e);
 
 	private:
-		Ogre :: SceneManager * scene_mgr;
 		float total_time;
 		Ogre :: Vector3 vec;
 

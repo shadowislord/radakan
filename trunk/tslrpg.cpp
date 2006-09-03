@@ -34,6 +34,11 @@ Tslrpg::
 	}	// End of try statement
 	catch (Ogre :: Exception & e)
 	{
+		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+			MessageBox (NULL, e.getFullDescription ().c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+		#else
+			cerr << "An exception has occured: " << e.getFullDescription () << endl;
+		#endif
 	}
 
 	window = root->initialise (true);
@@ -44,6 +49,9 @@ Tslrpg::
 	active_sector = new Sector
 		("Sector 1", root->createSceneManager (Ogre :: ST_GENERIC), window);
 	sectors.insert (active_sector);
+	
+	frame_listener = new Sl_Frame_Listener (window, active_sector->get_camera (), false, false);
+	root->addFrameListener (frame_listener);
 
 	// Set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton().setDefaultNumMipmaps (5);
@@ -51,7 +59,6 @@ Tslrpg::
 	Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
 
 	player = active_sector->get_player ();
-	root->addFrameListener (active_sector->get_frame_listener ());
 }
 
 Tslrpg ::
@@ -60,21 +67,22 @@ Tslrpg ::
 	debug () << "Deleting sectors..." << endl;
 	for (set <Sector *> :: const_iterator i = sectors.begin (); i != sectors.end (); i ++)
 	{
+		debug () << "Deleting " << * * i << "..." << int (* i) << endl;
 		delete (* i);
 	}
 	debug () << "Deleting input_device..." << int (input_device) << endl;
 	delete input_device;
+	debug () << "Deleting frame_listener..." << int (frame_listener) << endl;
+	delete frame_listener;
 
 //	These give problems:
 
-//	debug () << "deleting window..." << int (window) << endl;
+//	debug () << "Deleting window..." << int (window) << endl;
 //	delete window;
-//	debug () << "deleting scene_mgr..." << int (scene_mgr) << endl;
+//	debug () << "Deleting scene_mgr..." << int (scene_mgr) << endl;
 //	delete scene_mgr;
-//	debug () << "deleting root..." << int (root) << endl;
+//	debug () << "Deleting root..." << int (root) << endl;
 //	delete root;
-
-	debug () << "all deleted" << endl;
 }
 
 //	virtual

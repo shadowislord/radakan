@@ -25,8 +25,6 @@ Sector::
 		(Ogre :: Real (view_port->getActualWidth ())
 		/ Ogre :: Real (view_port->getActualHeight ()));
 	
-	frame_listener = new Sl_Frame_Listener (scene_manager, window, camera, false, false);
-
 	Ogre :: Entity * fort = scene_manager->createEntity("Fort", "fort.mesh");
 	//	fort->setMaterialName("metal_plate");
 	Ogre :: SceneNode * fort_node = scene_manager->getRootSceneNode ()->createChildSceneNode ();
@@ -122,8 +120,6 @@ Sector ::
 		delete (* i);
 	}
 	
-	debug () << "deleting frame_listener..." << int (frame_listener) << endl;
-	delete frame_listener;
 	debug () << "deleting camera..." << int (camera) << endl;
 	delete camera;
 
@@ -159,13 +155,22 @@ void Sector ::
 	player->add (sword);
 }
 
-Sl_Frame_Listener * Sector ::
-	get_frame_listener ()
+Ogre :: SceneManager * Sector ::
+	get_scene_manager ()
 	const
 {
 	assert (is_initialized ());
 
-	return frame_listener;
+	return scene_manager;
+}
+
+Ogre :: Camera * Sector ::
+	get_camera ()
+	const
+{
+	assert (is_initialized ());
+
+	return camera;
 }
 
 Character * Sector ::

@@ -17,18 +17,17 @@ class Sector:
 		virtual ~Sector ();
 		virtual bool is_initialized () const;
 		void run ();
-		Sl_Frame_Listener * get_frame_listener () const;
+		Ogre :: SceneManager * get_scene_manager () const;
+		Ogre :: Camera * get_camera () const;
 		Character * get_player () const;
 
 	private:
 		Ogre :: SceneManager * scene_manager;
 		Ogre :: Camera * camera;
-		Sl_Frame_Listener * frame_listener;
 		Character * player;
 		Weapon * sword;
 		
 		set <Entity *> entities;	//	the items that are currently in this sector
-
 };
 
 #endif

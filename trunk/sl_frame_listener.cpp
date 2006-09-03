@@ -2,8 +2,7 @@
 
 Sl_Frame_Listener ::
 	Sl_Frame_Listener
-		(Ogre :: SceneManager * new_scene_mgr,
-		Ogre :: RenderWindow * new_window,
+		(Ogre :: RenderWindow * new_window,
 		Ogre :: Camera * new_camera,
 		bool useBufferedInputKeys,
 		bool useBufferedInputMouse) :
@@ -12,7 +11,6 @@ Sl_Frame_Listener ::
 {
 	assert (Object :: is_initialized ());
 
-	scene_mgr = new_scene_mgr;
 	total_time = 0;
 	camera = new_camera;
 	window = new_window;

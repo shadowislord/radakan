@@ -18,6 +18,7 @@ class Tslrpg:
 	private:
 		void create_scene ();
 		Ogre :: Root * root;
+		Sl_Frame_Listener * frame_listener;
 		Ogre :: InputReader * input_device;
 		Ogre :: RenderWindow * window;
 		Battle_Engine battle_engine;
