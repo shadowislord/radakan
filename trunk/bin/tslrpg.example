@@ -1,0 +1,20 @@
+#!/bin/bash
+
+TRUNK=${T_OPT}/tslrpg/trunk
+
+cd ${TRUNK}
+
+rm valgrind.*
+rm logs/Ogre.log
+
+TSLRPG="bin/debug/tslrpg ${TRUNK}"
+
+echo ${TSLRPG}
+
+if [[ ${1} == "" ]]; then
+	jam && ${TSLRPG}
+else
+	jam && valgrind --log-file=valgrind -v ${TSLRPG}
+fi
+
+mv Ogre.log logs/

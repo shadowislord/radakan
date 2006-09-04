@@ -1,33 +1,43 @@
+WORKDIR = ../.. ;
+
 ##	valgrind memcheck
-##	C++FLAGS =  $(CXXFLAGS) -O -march=pentium4 -Wall -g -fno-inline ;
+C++FLAGS =  -O -march=pentium4 -Wall -g -fno-inline ;
 
 ##	valgrind cachegrind
-##	C++FLAGS = $(CXXFLAGS) -O2 -march=pentium4 -Wall -g -fno-inline ;
+##	C++FLAGS = -O2 -march=pentium4 -Wall -g -fno-inline ;
 
 ##	normal
-C++FLAGS = $(CXXFLAGS) -Wall  ;
+##	C++FLAGS = $(CXXFLAGS) -Wall  ;
 
-LINKFLAGS = -L/usr/lib/OGRE -lOgreMain -lCEGUIBase -lCEGUIOgreRenderer ;
-
-HDRS = /usr/include/OGRE ;
-##		/usr/local/src/ogre/Samples/Common/include
-##		/usr/local/src/ogre/ReferenceApplication/ReferenceAppLayer/include
-##		/usr/local/src/ogre/ReferenceApplication/Common/include ;
-
-CPPS =
-	character.cpp
-##	collision_engine.cpp
-	inventory.cpp
-	main.cpp
-	object.cpp
-	obstacle.cpp
-	sector.cpp
-	sl_entity.cpp
-	sl_frame_listener.cpp
-	tslrpg.cpp
-	weapon.cpp
+LINKFLAGS =
+	-L/usr/lib/OGRE
+	-L/usr/local/lib/OIS
+	-lOgreMain
+	-lCEGUIBase
+	-lCEGUIOgreRenderer
 ;
 
-Main tslrpg :
+HDRS =
+	$(WORKDIR)/include
+	/usr/include/OGRE
+##	/usr/local/src/ogre/Samples/Common/include
+##	/usr/local/src/ogre/ReferenceApplication/ReferenceAppLayer/include
+##	/usr/local/src/ogre/ReferenceApplication/Common/include
+;
+
+CPPS =
+	$(WORKDIR)/src/battle_engine.cpp
+	$(WORKDIR)/src/character.cpp
+	$(WORKDIR)/src/container.cpp
+	$(WORKDIR)/src/entity.cpp
+	$(WORKDIR)/src/main.cpp
+	$(WORKDIR)/src/object.cpp
+	$(WORKDIR)/src/sector.cpp
+	$(WORKDIR)/src/sl_frame_listener.cpp
+	$(WORKDIR)/src/tslrpg.cpp
+	$(WORKDIR)/src/weapon.cpp
+;
+
+Main $(WORKDIR)/bin/debug/tslrpg :
 	$(CPPS)
 ;

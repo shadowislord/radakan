@@ -2,8 +2,10 @@
 
 using namespace std;
 
+extern string path;
+
 Tslrpg::
-	Tslrpg () :
+	Tslrpg (string path) :
 	Object ("Tslrpg")
 {
 	root = new Ogre :: Root();
@@ -19,15 +21,15 @@ Tslrpg::
 	{
 		// Add textures directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-							("data/texture", "FileSystem", "Textures", true);
+					(path + "/data/texture", "FileSystem", "Textures", true);
 
 		// Add 3D models directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-								("data/model", "FileSystem", "Models", true);
+					(path + "/data/model", "FileSystem", "Models", true);
 
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-							 ("data/material", "FileSystem", "material", true);
+					(path + "/data/material", "FileSystem", "material", true);
 
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
@@ -65,24 +67,24 @@ Tslrpg::
 Tslrpg ::
 	~Tslrpg ()
 {
-	debug () << "Deleting sectors..." << endl;
+	debug () << "deleting sectors..." << endl;
 	for (set <Sector *> :: const_iterator i = sectors.begin (); i != sectors.end (); i ++)
 	{
-		debug () << "Deleting " << * * i << "..." << int (* i) << endl;
+		debug () << "deleting " << * * i << "..." << int (* i) << endl;
 		delete (* i);
 	}
-	debug () << "Deleting input_device..." << int (input_device) << endl;
+	debug () << "deleting input_device..." << int (input_device) << endl;
 	delete input_device;
-	debug () << "Deleting frame_listener..." << int (frame_listener) << endl;
+	debug () << "deleting frame_listener..." << int (frame_listener) << endl;
 	delete frame_listener;
 
 //	These give problems:
 
-//	debug () << "Deleting window..." << int (window) << endl;
+//	debug () << "deleting window..." << int (window) << endl;
 //	delete window;
-//	debug () << "Deleting scene_mgr..." << int (scene_mgr) << endl;
+//	debug () << "deleting scene_mgr..." << int (scene_mgr) << endl;
 //	delete scene_mgr;
-//	debug () << "Deleting root..." << int (root) << endl;
+//	debug () << "deleting root..." << int (root) << endl;
 //	delete root;
 }
 

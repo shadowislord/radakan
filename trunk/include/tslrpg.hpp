@@ -12,7 +12,7 @@ class Tslrpg:
 	public Object
 {
 	public:
-		Tslrpg ();
+		Tslrpg (string path);
 		~Tslrpg ();
 		virtual bool is_initialized () const;
 		void run ();

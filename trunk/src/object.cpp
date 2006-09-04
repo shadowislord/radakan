@@ -5,9 +5,9 @@
 using namespace std;
 
 #ifdef SL_DEBUG
-	extern ofstream log_cout;
+	extern ofstream * log_cout;
 #else
-	extern ostream & log_cout;
+	extern ostream * log_cout;
 #endif
 
 //  constructor
@@ -64,7 +64,7 @@ ostream & Object ::
 	debug ()
 	const
 {
-	return log_cout << "debug: ";
+	return * log_cout << "debug: ";
 }
 
 //	virtual
@@ -72,7 +72,7 @@ ostream & Object ::
 	error ()
 	const
 {
-	return log_cout << "ERROR: ";
+	return * log_cout << "ERROR: ";
 }
 
 string to_string (float value)

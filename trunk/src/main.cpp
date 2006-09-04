@@ -3,13 +3,13 @@
 using namespace std;
 
 #ifdef SL_DEBUG
-	ofstream log_cout ("log.txt");
+	ofstream * log_cout;
 
 	set <Object *> objects;
 #else
-	//	This is faster.
+	//	This is faster, I think.
 	//	Is it possible to 'absorb' this?
-	ostream & log_cout = cout;
+	ostream * log_cout = cout;
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -23,34 +23,47 @@ using namespace std;
 		// Create application object
 		Tslrpg * game;
 		
-		log_cout << "Setting up Scattered Lands..." << endl;
+		cout << "Setting up Scattered Lands..." << endl;
 		
-		#ifdef SL_DEBUG
-			log_cout << "Debug mode: enabled." << endl;
+		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+			string path = strCmdLine;
 		#else
-			log_cout << "Debug mode: disabled." << endl;
+			string path = argv [argc - 1];
 		#endif
 		
-		game = new Tslrpg ();
-		log_cout << "Scattered Lands is set up." << endl;
+		cout << "path: " << path << endl;
 		
-		log_cout << "Running Scattered Lands..." << endl;
+		log_cout = new ofstream ((path + "/logs/log.txt").c_str ());
+
+		* log_cout << "Setting up Scattered Lands..." << endl;
+		* log_cout << "path: " << path << endl;
+
+		#ifdef SL_DEBUG
+			* log_cout << "Debug mode: enabled." << endl;
+		#else
+			* log_cout << "Debug mode: disabled." << endl;
+		#endif
+		
+		game = new Tslrpg (path);
+		* log_cout << "Scattered Lands is set up." << endl;
+		
+		* log_cout << "Running Scattered Lands..." << endl;
 		game->run ();
-		log_cout << "Scattered Lands is stopped." << endl;
+		* log_cout << "Scattered Lands is stopped." << endl;
 		
-		log_cout << "Shutting down Scattered Lands..." << endl;
+		* log_cout << "Shutting down Scattered Lands..." << endl;
 		delete game;
 
 		#ifdef SL_DEBUG
 			for (set <Object *> :: const_iterator i = objects.begin ();
 													i != objects.end (); i ++)
 			{
-				log_cout << "Not deleted: " << * * i << endl;
+				* log_cout << "Not deleted: " << * * i << endl;
 			}
 			assert (objects.empty ());
 		#endif
 	
-		log_cout << "Scattered Lands is shut down." << endl;
+		* log_cout << "Scattered Lands is shut down." << endl;
 	}
 	catch (Ogre :: Exception & e)
 	{
