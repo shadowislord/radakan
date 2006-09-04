@@ -5,8 +5,7 @@ using namespace std;
 //  constructor
 Weapon::
 	Weapon
-		(string new_name,
-		float new_volume,
+		(float new_volume,
 		float new_weight,
 		Ogre :: Vector3 new_position,
 		float new_sharpness,
@@ -14,8 +13,18 @@ Weapon::
 		float new_speed,
 		float new_attack_rate,
 		float new_defense_rate,
-		float new_damage):
-	Entity (new_name, true, true, new_volume, new_weight, new_position, NULL, NULL),
+		float new_damage,
+		Ogre :: Entity * new_ogre_entity,
+		Ogre :: SceneNode * new_node):
+	Entity
+		(true,
+		true,
+		true,
+		new_volume,
+		new_weight,
+		new_position,
+		new_ogre_entity,
+		new_node),
 	break_chance (new_break_chance),
 	speed (new_speed),
 	attack_rate (new_attack_rate),

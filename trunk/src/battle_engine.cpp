@@ -15,8 +15,7 @@ Battle_Engine ::
 	assert (Object :: is_initialized ());
 
 	//	the first result is not random
-	uniform ();
-	lognormal ();
+	generator.seed (static_cast <unsigned int> (time (0)));
 
 	assert (is_initialized ());
 }

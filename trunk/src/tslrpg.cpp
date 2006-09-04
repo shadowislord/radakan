@@ -50,7 +50,8 @@ Tslrpg::
 		("Sector 1", root->createSceneManager (Ogre :: ST_GENERIC), window);
 	sectors.insert (active_sector);
 	
-	frame_listener = new Sl_Frame_Listener (window, active_sector->get_camera (), false, false);
+	frame_listener = new Sl_Frame_Listener
+						(window, active_sector->get_camera (), false, false);
 	root->addFrameListener (frame_listener);
 
 	// Set default mipmap level (NB some APIs ignore this)
@@ -98,7 +99,6 @@ void Tslrpg ::
 {
 	assert (is_initialized ());
 
-	active_sector->run ();
 	battle_engine.hit (player, player);
 
 	root->startRendering ();

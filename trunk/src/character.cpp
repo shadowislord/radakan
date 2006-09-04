@@ -5,11 +5,10 @@ using namespace std;
 //  constructor
 Character ::
 	Character
-		(string new_name,
-		Ogre :: Entity * new_ogre_entity,
+		(Ogre :: Entity * new_ogre_entity,
 		Ogre :: SceneNode * new_node) :
 	Container
-		(new_name,
+		(true,
 		true,
 		80,
 		65,
@@ -21,15 +20,7 @@ Character ::
 
 	dead = false;
 
-	backpack = new Container
-		(* this + "'s backpack",
-		true,
-		30,
-		3,
-		this->position,
-		NULL,
-		NULL);
-
+	backpack = NULL;
 	weapon = NULL;
 	
 	assert (is_initialized ());
@@ -74,23 +65,36 @@ bool Character ::
 		weapon = item->to_type <Weapon> ();
 		return true;
 	}
-	else
+	else if ((backpack == NULL) && item->is_type <Container> ())
+	{
+		Container :: add (item);
+		backpack = item->to_type <Container> ();
+		return true;
+	}
+	else if (backpack != NULL)
 	{
 		return backpack->add (item);
+	}
+	else
+	{
+		return false;
 	}
 }
 
 //	virtual
 bool Character ::
-	remove (Entity * item)
+	move_to (Entity * item, Container * new_container)
 {
 	assert (is_initialized ());
+	assert (contains (item));
 
 	if (weapon == item)
 	{
 		weapon = NULL;
+		
 	}
-	return (Container :: remove (item) || backpack->remove (item));
+	return (Container :: move_to (item, new_container)
+								|| backpack->move_to (item, new_container));
 }
 
 //	virtual

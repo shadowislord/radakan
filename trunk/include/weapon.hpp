@@ -10,16 +10,17 @@ class Weapon:
 {
 	public:
 		Weapon
-		(string new_name,
-		float new_volume,
-		float new_weight,
-		Ogre::Vector3 new_position,
-		float new_sharpness,
-		float new_break_chance,
-		float new_speed,
-		float new_attack_rate,
-		float new_defense_rate,
-		float new_damage);
+			(float new_volume,
+			float new_weight,
+			Ogre::Vector3 new_position,
+			float new_sharpness,
+			float new_break_chance,
+			float new_speed,
+			float new_attack_rate,
+			float new_defense_rate,
+			float new_damage,
+			Ogre :: Entity * new_ogre_entity,
+			Ogre :: SceneNode * new_node);
 		virtual ~Weapon ();
 		virtual bool is_initialized () const;
 

@@ -5,19 +5,23 @@
 
 using namespace std;
 
+///	Character contains all data of one in-game character.
+
+///
+///	It is called by an engine to do something, or it's data is retrieved by Ogre.
+
 class Character:
 	public Container
 {
 	public:
 		Character
-			(string new_name,
-			Ogre :: Entity * new_ogre_entity,
+			(Ogre :: Entity * new_ogre_entity,
 			Ogre :: SceneNode * new_node);
 		virtual ~Character ();
 		virtual bool is_initialized () const;
 		virtual float get_total_weight () const;
 		virtual bool add (Entity * item);
-		virtual bool remove (Entity * item);
+		virtual bool move_to (Entity * item, Container * new_container);
 		virtual bool contains (Entity * item) const;
 		bool has_weapon () const;
 		bool is_dead () const;

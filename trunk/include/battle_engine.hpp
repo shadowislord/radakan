@@ -10,6 +10,8 @@
 using namespace std;
 using namespace boost;
 
+///	Battle_engine is called by the Frame_Listener.
+
 class Battle_Engine:
 	public Object
 {

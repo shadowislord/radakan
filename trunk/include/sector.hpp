@@ -6,6 +6,8 @@
 
 using namespace std;
 
+///	Sector keeps track of all data in an in-game sector.
+
 class Sector:
 	public Object
 {
@@ -16,18 +18,15 @@ class Sector:
 			Ogre :: RenderWindow * window);
 		virtual ~Sector ();
 		virtual bool is_initialized () const;
-		void run ();
 		Ogre :: SceneManager * get_scene_manager () const;
 		Ogre :: Camera * get_camera () const;
 		Character * get_player () const;
+		Container items;
 
 	private:
 		Ogre :: SceneManager * scene_manager;
 		Ogre :: Camera * camera;
 		Character * player;
-		Weapon * sword;
-		
-		set <Entity *> entities;	//	the items that are currently in this sector
 };
 
 #endif

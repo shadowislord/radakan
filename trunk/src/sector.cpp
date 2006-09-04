@@ -5,7 +5,15 @@ Sector::
 		(string new_name,
 		Ogre :: SceneManager * new_scene_manager,
 		Ogre :: RenderWindow * window) :
-	Object (new_name)
+	Object (new_name),
+	items
+		(false,
+		false,
+		0,
+		0,
+		Ogre :: Vector3 (0,0,0),
+		new_scene_manager->createEntity (* this + " items", "fort.mesh"),
+		new_scene_manager->getRootSceneNode ()->createChildSceneNode ())
 {
 	assert (Object :: is_initialized ());
 
@@ -24,21 +32,38 @@ Sector::
 	camera->setAspectRatio
 		(Ogre :: Real (view_port->getActualWidth ())
 		/ Ogre :: Real (view_port->getActualHeight ()));
-	
-	Ogre :: Entity * fort = scene_manager->createEntity("Fort", "fort.mesh");
-	//	fort->setMaterialName("metal_plate");
-	Ogre :: SceneNode * fort_node = scene_manager->getRootSceneNode ()->createChildSceneNode ();
-	fort_node->attachObject(fort);
-	fort_node->setPosition(0,0,0);
+
+	items.add
+		(new Entity
+			(false,
+			true,
+			true,
+			0,
+			0,
+			Ogre :: Vector3 (0, 0, 0),
+			scene_manager->createEntity ("Fort", "fort.mesh"), scene_manager->getRootSceneNode ()->createChildSceneNode ()));
 
 	player = new Character
-		("player",
-		scene_manager->createEntity ("player", "fort.mesh"),
+		(scene_manager->createEntity ("player", "fort.mesh"),
 		scene_manager->getRootSceneNode ()->createChildSceneNode ());
-	entities.insert (player);
+	player->node->setScale (Ogre :: Vector3 (0.2, 2, 0.2));
+	items.add (player);
+
+	Entity * backpack = new Container
+		(true,
+		true,
+		30,
+		3,
+		player->node->getPosition (),
+		scene_manager->createEntity ("backpack", "fort.mesh"),
+		scene_manager->getRootSceneNode ()->createChildSceneNode ());
+	player->add (backpack);
+	
 	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
 	Weapon * sword = new Weapon
-					("sword", 1, 2, Ogre :: Vector3 (1, 4, 4), 3, 4, 5, 6, 7, 8);
+			(1, 2, Ogre :: Vector3 (1, 4, 4), 3, 4, 5, 6, 7, 8,
+			scene_manager->createEntity ("Sword", "fort.mesh"),
+			scene_manager->getRootSceneNode ()->createChildSceneNode ());
 	debug () << * sword << "'s weight: " << sword->get_total_weight () << endl;
 	assert (! player->contains (sword));
 	assert (player->add (sword));
@@ -72,7 +97,7 @@ Sector::
 		bbsNode2->attachObject (bbs2);
 		bbsNode2->setPosition (px, py, pz);
 	}
-	for(int i = 0; i < 200; i++)
+	for(int i = 0; i < 100; i++)
 	{
 		char name[50];
 		sprintf(name, "star_%d", i);
@@ -107,6 +132,14 @@ Sector::
 		bbsNode2->setPosition (px, py, pz);
 	}
 
+	assert (player->get_weapon () == sword);
+	assert (player->move_to (sword, & items));
+	assert (! player->contains (sword));
+	assert (! player->has_weapon ());
+	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
+
+	assert (items.move_to (sword, player));
+
 	assert (is_initialized ());
 }
 
@@ -115,14 +148,8 @@ Sector ::
 {
 	assert (is_initialized ());
 
-	for (set <Entity *> :: const_iterator i = entities.begin (); i != entities.end (); i ++)
-	{
-		delete (* i);
-	}
-	
 	debug () << "deleting camera..." << int (camera) << endl;
 	delete camera;
-
 }
 
 //	virtual
@@ -131,28 +158,6 @@ bool Sector ::
 	const
 {
 	return Object :: is_initialized ();
-}
-
-void Sector ::
-	run ()
-{
-	assert (is_initialized ());
-
-	Weapon * sword = player->get_weapon ();
-	
-	assert (player->add (sword));
-	assert (player->contains (sword));
-	debug () << * player << "'s weight with two times the sword: "
-										<< player->get_total_weight () << endl;
-
-	assert (player->remove (sword));
-	assert (player->contains (sword));
-	assert (player->remove (sword));
-	assert (! player->contains (sword));
-	assert (! player->has_weapon ());
-	debug () << * player << "'s weight: " << player->get_total_weight () << endl;
-
-	player->add (sword);
 }
 
 Ogre :: SceneManager * Sector ::
@@ -181,7 +186,3 @@ Character * Sector ::
 
 	return player;
 }
-
-//vector<Obstacle*> getObstacles(){
-//	return obstacles;
-//}
