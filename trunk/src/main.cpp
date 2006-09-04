@@ -33,12 +33,12 @@ using namespace std;
 
 		cout << "path: " << path << endl;
 
-		log_cout = new ofstream ((path + "/logs/log.txt").c_str ());
-
-		* log_cout << "Setting up Scattered Lands..." << endl;
-		* log_cout << "path: " << path << endl;
-
 		#ifdef SL_DEBUG
+			log_cout = new ofstream ((path + "/logs/log.txt").c_str ());
+
+			* log_cout << "Setting up Scattered Lands..." << endl;
+			* log_cout << "path: " << path << endl;
+
 			* log_cout << "Debug mode: enabled." << endl;
 		#else
 			* log_cout << "Debug mode: disabled." << endl;
