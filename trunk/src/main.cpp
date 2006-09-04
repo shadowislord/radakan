@@ -9,7 +9,7 @@ using namespace std;
 #else
 	//	This is faster, I think.
 	//	Is it possible to 'absorb' this?
-	ostream * log_cout = cout;
+	ostream * log_cout = & cout;
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -22,17 +22,17 @@ using namespace std;
 	{
 		// Create application object
 		Tslrpg * game;
-		
+
 		cout << "Setting up Scattered Lands..." << endl;
-		
+
 		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 			string path = strCmdLine;
 		#else
 			string path = argv [argc - 1];
 		#endif
-		
+
 		cout << "path: " << path << endl;
-		
+
 		log_cout = new ofstream ((path + "/logs/log.txt").c_str ());
 
 		* log_cout << "Setting up Scattered Lands..." << endl;
@@ -43,14 +43,14 @@ using namespace std;
 		#else
 			* log_cout << "Debug mode: disabled." << endl;
 		#endif
-		
+
 		game = new Tslrpg (path);
 		* log_cout << "Scattered Lands is set up." << endl;
-		
+
 		* log_cout << "Running Scattered Lands..." << endl;
 		game->run ();
 		* log_cout << "Scattered Lands is stopped." << endl;
-		
+
 		* log_cout << "Shutting down Scattered Lands..." << endl;
 		delete game;
 
@@ -62,7 +62,7 @@ using namespace std;
 			}
 			assert (objects.empty ());
 		#endif
-	
+
 		* log_cout << "Scattered Lands is shut down." << endl;
 	}
 	catch (Ogre :: Exception & e)
