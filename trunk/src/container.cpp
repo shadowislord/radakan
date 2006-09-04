@@ -71,8 +71,8 @@ bool Container ::
 	assert (is_initialized ());
 	assert (item->is_in_container (NULL));
 
-	debug () << * item << " added to " << * this << endl;
 	item->put_in_container (this);
+	debug () << * item << " added to " << * this << endl;
 	
 	//	second means we're interested in if it worked or not.
 	//	first would give a iterator to the item
@@ -92,7 +92,7 @@ bool Container ::
 		items.erase (item);
 		return true;
 	}
-	item->put_in_container (this);
+	item->put_in_container (new_container);
 	return false;
 }
 

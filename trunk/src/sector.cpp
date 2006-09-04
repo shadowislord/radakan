@@ -12,7 +12,7 @@ Sector::
 		0,
 		0,
 		Ogre :: Vector3 (0,0,0),
-		new_scene_manager->createEntity (* this + " items", "fort.mesh"),
+		new_scene_manager->createEntity ("the " + * this + " entities", "fort.mesh"),
 		new_scene_manager->getRootSceneNode ()->createChildSceneNode ())
 {
 	assert (Object :: is_initialized ());

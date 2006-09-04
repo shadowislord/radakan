@@ -19,6 +19,7 @@ Entity ::
 		new_ogre_entity->getName ()),
 	movable (new_movable),
 	solid (new_solid),
+	visible (new_visible),
 	volume (new_volume),
 	weight (new_weight)
 {
@@ -33,7 +34,7 @@ Entity ::
 	node = new_node;
 	ogre_entity = new_ogre_entity;
 
-	ogre_entity->setVisible (new_visible);
+	ogre_entity->setVisible (visible);
 	node->attachObject (ogre_entity);
 	node->setPosition (new_position);
 
@@ -52,7 +53,7 @@ bool Entity ::
 	is_initialized ()
 	const
 {
-	return Object :: is_initialized () && (0 <= volume) && (0 <= weight);
+	return Object :: is_initialized () && (0 <= volume) && (0 <= weight) && (ogre_entity != NULL) && (node != NULL);
 }
 
 //	virtual
@@ -70,7 +71,7 @@ void Entity ::
 {
 	assert (is_initialized ());
 	assert (is_in_container (old_container_parent));
-	
+
 	container_parent = NULL;
 }
 
@@ -79,8 +80,12 @@ void Entity ::
 {
 	assert (is_initialized ());
 	assert (container_parent == NULL);
-	
+	assert (new_container_parent != NULL);
+
 	container_parent = new_container_parent;
+
+	//	only items directely in the sector are dispayed, when visible:
+	ogre_entity->setVisible (visible && container_parent->is_in_container (NULL));
 }
 
 bool Entity ::

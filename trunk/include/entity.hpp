@@ -29,6 +29,7 @@ class Entity:
 		
 		const bool movable;		//	false means that the object is static
 		const bool solid;		//	false means that you can pass through it
+		const bool visible;
 		const float volume;		//	in litres
 		const float weight;		//	in kilograms
 		Ogre :: Vector3 position;	//	the position of the obstacle
