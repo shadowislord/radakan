@@ -5,13 +5,12 @@ Sector::
 		(string new_name,
 		Ogre :: SceneManager * new_scene_manager,
 		Ogre :: RenderWindow * window) :
-	Object (new_name),
-	items (* this + "'s items")
+	Object (new_name)
 {
 	assert (Object :: is_initialized ());
 
 	scene_manager = new_scene_manager;
-	camera = scene_manager->createCamera ("PlayerCam");
+	camera = scene_manager->createCamera ("Eyes");
 	camera->setPosition (Ogre :: Vector3 (500, 0, 0));
 	camera->lookAt (Ogre :: Vector3 (0, 0, - 300));
 	camera->setNearClipDistance (5);
@@ -26,7 +25,11 @@ Sector::
 		(Ogre :: Real (view_port->getActualWidth ())
 		/ Ogre :: Real (view_port->getActualHeight ()));
 
-	items.add
+	items = new Container
+		(scene_manager->createEntity (* this + "'s items", "fort.mesh"),
+		scene_manager->getRootSceneNode ()->createChildSceneNode ());
+
+	items->add
 		(new Entity
 			(false,
 			true,
@@ -36,44 +39,41 @@ Sector::
 			Ogre :: Vector3 (0, 0, 0),
 			scene_manager->createEntity ("Fort", "fort.mesh"), scene_manager->getRootSceneNode ()->createChildSceneNode ()));
 
-	Container * player_tree = items.add
-	(
-		new Character
-		(
-			scene_manager->createEntity ("player", "fort.mesh"),
-			scene_manager->getRootSceneNode ()->createChildSceneNode ()
-		)
-	);
-	player_tree->data->node->setScale (Ogre :: Vector3 (0.2, 2, 0.2));
+	player = new Character
+		(scene_manager->createEntity ("Player", "fort.mesh"),
+		scene_manager->getRootSceneNode ()->createChildSceneNode ());
 
-	player_tree->add
+	items->add (player);
+	player->node->setScale (Ogre :: Vector3 (0.2, 2, 0.2));
+
+	player->add
 	(
-		new Entity
+		new Container
 		(
 			true,
 			true,
 			true,
 			30,
 			3,
-			player_tree->data->node->getPosition (),
-			scene_manager->createEntity ("backpack", "fort.mesh"),
+			player->node->getPosition (),
+			scene_manager->createEntity ("Backpack", "fort.mesh"),
 			scene_manager->getRootSceneNode ()->createChildSceneNode ()
 		)
 	);
 
-	debug () << * player_tree->data << "'s weight: "
-									<< player_tree->get_total_weight () << endl;
+	debug () << * player << "'s weight: "
+									<< player->get_total_weight () << endl;
 	Weapon * sword = new Weapon
 			(1, 2, Ogre :: Vector3 (1, 4, 4), 3, 4, 5, 6, 7, 8,
 			scene_manager->createEntity ("Sword", "fort.mesh"),
 			scene_manager->getRootSceneNode ()->createChildSceneNode ());
 	debug () << * sword << "'s weight: " << sword->get_total_weight () << endl;
-	assert (! player_tree->contains (sword));
-	Container * sword_tree = player_tree->add (sword);
-	assert (sword_tree != NULL);
-	assert (player_tree->contains (sword_tree));
-	debug () << * player_tree->data << "'s weight with sword: "
-									<< player_tree->get_total_weight () << endl;
+	assert (! player->contains (sword));
+	player->add (sword);
+	assert (sword != NULL);
+	assert (player->contains (sword));
+	debug () << * player << "'s weight with sword: "
+									<< player->get_total_weight () << endl;
 
 	for (int i = 0; i < 100; i++)
 	{
@@ -136,14 +136,14 @@ Sector::
 		bbsNode2->setPosition (px, py, pz);
 	}
 
-// !!!	assert (player->get_weapon () == sword);
-	assert (player_tree->move_to (sword, & items));
-	assert (! player_tree->contains (sword));
-// !!!	assert (! player_tree->has_weapon ());
-	debug () << * player_tree->data << "'s weight: "
-									<< player_tree->get_total_weight () << endl;
+	assert (player->get_weapon () == sword);
+	assert (player->move_to (sword, items));
+	assert (! player->contains (sword));
+	assert (! player->has_weapon ());
+	debug () << * player << "'s weight: "
+										<< player->get_total_weight () << endl;
 
-	assert (items.move_to (sword, player_tree));
+	assert (items->move_to (sword, player));
 
 	assert (is_initialized ());
 }
@@ -153,7 +153,9 @@ Sector ::
 {
 	assert (is_initialized ());
 
-	debug () << "deleting camera..." << int (camera) << endl;
+	debug () << "deleting items... " << int (items) << endl;
+	delete items;
+	debug () << "deleting camera... " << int (camera) << endl;
 	delete camera;
 }
 
@@ -183,11 +185,11 @@ Ogre :: Camera * Sector ::
 	return camera;
 }
 
-Container * Sector ::
-	get_player_tree ()
+Character * Sector ::
+	get_player ()
 	const
 {
 	assert (is_initialized ());
 
-	return player_tree;
+	return player;
 }

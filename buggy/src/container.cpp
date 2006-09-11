@@ -4,20 +4,62 @@ using namespace std;
 
 //  constructor
 Container ::
-	Container (string new_name):
-	Tree <Entity> (new_name)
+	Container
+		(Ogre :: Entity * new_ogre_entity,
+		Ogre :: SceneNode * new_node):
+	Object
+		((new_ogre_entity == NULL) ?
+		"[ERROR: new_ogre_entity is NULL]" :
+		new_ogre_entity->getName ()),
+	Entity
+		(false,
+		false,
+		false,
+		0,
+		0,
+		Ogre :: Vector3 (0, 0, 0),
+		new_ogre_entity,
+		new_node),
+	Tree
+		((new_ogre_entity == NULL) ?
+		"[ERROR: new_ogre_entity is NULL]" :
+		new_ogre_entity->getName ())
 {
-	assert (Tree <Entity> :: is_initialized ());
+	assert (Tree :: is_initialized ());
 	
 	assert (is_initialized ());
 }
 
 //  constructor
 Container ::
-	Container ( Entity * new_entity):
-	Tree <Entity> (new_entity)
+	Container
+		(bool new_movable,
+		bool new_solid,
+		bool new_visible,
+		float new_volume,
+		float new_weight,
+		Ogre :: Vector3 new_position,
+		Ogre :: Entity * new_ogre_entity,
+		Ogre :: SceneNode * new_node):
+	Object
+		((new_ogre_entity == NULL) ?
+		"[ERROR: new_ogre_entity is NULL]" :
+		new_ogre_entity->getName ()),
+	Entity
+		(new_movable,
+		new_solid,
+		new_visible,
+		new_volume,
+		new_weight,
+		new_position,
+		new_ogre_entity,
+		new_node),
+	Tree
+		((new_ogre_entity == NULL) ?
+		"[ERROR: new_ogre_entity is NULL]" :
+		new_ogre_entity->getName ())
 {
-	assert (Tree <Entity> :: is_initialized ());
+	assert (Tree :: is_initialized ());
 	
 	assert (is_initialized ());
 }
@@ -35,7 +77,7 @@ bool Container ::
 	is_initialized ()
 	const
 {
-	return Tree <Entity> :: is_initialized ();
+	return Tree :: is_initialized ();
 }
 
 //	virtual
@@ -45,9 +87,9 @@ float Container ::
 {
 	assert (is_initialized ());
 	
-	float total_weight = data->weight;
+	float total_weight = weight;
 
-/* !!!*/	for (set <Tree <Entity> *> :: const_iterator i = children.begin ();
+	for (set <Object *> :: const_iterator i = children.begin ();
 													i != children.end (); i ++)
 	{
 		assert ((* i)->is_type <Container> ());
@@ -59,12 +101,13 @@ float Container ::
 
 //	returns subtree, iff succes
 //	virtual
-Container * Container ::
-	add (Entity * entity)
+bool Container ::
+	add (Object * sub_tree)
 {
-	Container * subcontainer = new Container (entity);
-
-	Tree <Entity> :: add (subcontainer);
-
-	return subcontainer;
+	assert (is_initialized ());
+	assert (sub_tree != NULL);
+	assert (sub_tree->is_initialized ());
+	assert (sub_tree->is_type <Entity> ());
+	
+	return Tree :: add (sub_tree);
 }

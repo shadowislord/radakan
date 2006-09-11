@@ -43,15 +43,20 @@ class Object :
 		virtual ostream & print () const;
 		virtual ostream & debug () const;
 		virtual ostream & error () const;
+
+		virtual bool add (Object * sub_tree);				//	true iff succes
+		virtual bool contains (Object * sub_tree) const;
+		virtual bool move_to (Object * sub_tree, Object * other_tree);
+															//	true iff succes
 		
 	//	protected:
-		//	These methods should only be used by a container
-		bool is_in_tree (const Object * tree) const;
-		void put_in_tree (Object * new_tree_parent);
-		void remove_from_tree (Object * old_tree_parent);
+		//	These methods should only be used by a tree
+		bool is_in (const Object * tree) const;
+		void put_in (Object * new_tree);
+		void remove_from (Object * old_tree);
 		
 	private:
-		Object * tree_parent;	//	the tree in which the object is
+		Object * parent;	//	the tree in which the object is
 };
 
 #ifdef SL_DEBUG

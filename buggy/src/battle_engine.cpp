@@ -34,15 +34,12 @@ bool Battle_Engine ::
 }
 
 string Battle_Engine ::
-	hit (Container * attacker_tree, Container * defender_tree)
+	hit (Character * attacker, Character * defender)
 {
 	assert (is_initialized ());
-	assert (attacker_tree->data->is_type <Character> ());
-	assert (defender_tree->data->is_type <Character> ());
-	
-	Character * attacker = attacker_tree->data->to_type <Character> ();
-	Character * defender = defender_tree->data->to_type <Character> ();
-	
+	assert (attacker != NULL);
+	assert (defender != NULL);
+
 	assert (! attacker->is_dead ());
 	assert (! defender->is_dead ());
 	

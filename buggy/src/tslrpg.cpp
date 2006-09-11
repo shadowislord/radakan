@@ -61,7 +61,7 @@ Tslrpg::
 
 	Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
 
-	player_tree = active_sector->get_player_tree ();
+	player = active_sector->get_player ();
 }
 
 Tslrpg ::
@@ -101,7 +101,7 @@ void Tslrpg ::
 {
 	assert (is_initialized ());
 
-	battle_engine.hit (player_tree, player_tree);
+	battle_engine.hit (player, player);
 
 	root->startRendering ();
 }

@@ -11,7 +11,7 @@ using namespace std;
 ///	It is called by an engine to do something, or it's data is retrieved by Ogre.
 
 class Character:
-	public Entity
+	public Container
 {
 	public:
 		Character
@@ -20,8 +20,8 @@ class Character:
 		virtual ~Character ();
 		virtual bool is_initialized () const;
 		virtual float get_total_weight () const;
-//		virtual bool add (Entity * item);
-//		virtual bool move_to (Entity * item, Container * new_container);
+		virtual bool add (Object * sub_tree);				//	true iff succes
+		virtual bool move_to (Object * sub_tree, Object * other_tree);
 		bool has_weapon () const;
 		bool is_dead () const;
 		Weapon * get_weapon () const;

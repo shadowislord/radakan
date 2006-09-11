@@ -43,7 +43,7 @@ Entity ::
 Entity ::
 	~Entity ()
 {
-	assert (Object :: is_initialized (* this + "->Entity :: ~Entity ()"));
+	assert (Object :: is_initialized (* this + "->~Entity ()"));
 }
 
 //	virtual

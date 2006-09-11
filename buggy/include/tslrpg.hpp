@@ -26,7 +26,7 @@ class Tslrpg:
 		Battle_Engine battle_engine;
 		Sector * active_sector;
 		set <Sector *> sectors;
-		Container * player_tree;
+		Character * player;
 };
 
 #endif

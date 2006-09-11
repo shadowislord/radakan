@@ -16,6 +16,10 @@ Weapon::
 		float new_damage,
 		Ogre :: Entity * new_ogre_entity,
 		Ogre :: SceneNode * new_node):
+	Object
+		((new_ogre_entity == NULL) ?
+		"[ERROR: new_ogre_entity is NULL]" :
+		new_ogre_entity->getName ()),
 	Entity
 		(true,
 		true,

@@ -19,7 +19,7 @@ class Battle_Engine:
 		Battle_Engine ();
 		virtual ~Battle_Engine ();
 		virtual bool is_initialized () const;
-		string hit (Container * attacker, Container * defender);
+		string hit (Character * attacker, Character * defender);
 
 	private:
 		minstd_rand generator;

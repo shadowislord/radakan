@@ -20,13 +20,13 @@ class Sector:
 		virtual bool is_initialized () const;
 		Ogre :: SceneManager * get_scene_manager () const;
 		Ogre :: Camera * get_camera () const;
-		Container * get_player_tree () const;
-		Container items;
+		Character * get_player () const;
 
 	private:
 		Ogre :: SceneManager * scene_manager;
 		Ogre :: Camera * camera;
-		Container * player_tree;
+		Character * player;
+		Container * items;
 };
 
 #endif

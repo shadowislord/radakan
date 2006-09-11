@@ -7,7 +7,10 @@ Character ::
 	Character
 		(Ogre :: Entity * new_ogre_entity,
 		Ogre :: SceneNode * new_node) :
-	Entity
+	Object ((new_ogre_entity == NULL) ?
+		"[ERROR: new_ogre_entity is NULL]" :
+		new_ogre_entity->getName ()),
+	Container
 		(true,
 		true,
 		true,
@@ -31,9 +34,7 @@ Character ::
 Character ::
 	~Character ()
 {
-	assert (is_initialized ());
-
-	delete backpack;
+	assert (Object :: is_initialized (* this + "->~Character ()"));
 }
 
 //	virtual
@@ -41,7 +42,7 @@ bool Character ::
 	is_initialized ()
 	const
 {
-	return Entity :: is_initialized ();
+	return Entity :: is_initialized () && (backpack == NULL || backpack->is_initialized ()) && (weapon == NULL || weapon->is_initialized ());
 }
 
 //	virtual
@@ -50,31 +51,41 @@ float Character ::
 	const
 {
 	assert (is_initialized ());
+
+	float weight = Entity :: get_total_weight ();
+
+	if (backpack != NULL)
+	{
+		weight += backpack->get_total_weight ();
+	}
 	
-	return Entity :: get_total_weight () + backpack->get_total_weight ();
+	return weight;
 }
-/* !!!
+
 //	virtual
 bool Character ::
-	add (Entity * item)
+	add (Object * sub_tree)
 {
 	assert (is_initialized ());
+	assert (sub_tree != NULL);
+	assert (sub_tree->is_initialized ());
+	assert (sub_tree->is_type <Entity> ());
 
-	if ((weapon == NULL) && item->is_type <Weapon> ())
+	if ((weapon == NULL) && sub_tree->is_type <Weapon> ())
 	{
-		Container :: add (item);
-		weapon = item->to_type <Weapon> ();
+		Container :: add (sub_tree);
+		weapon = sub_tree->to_type <Weapon> ();
 		return true;
 	}
-	else if ((backpack == NULL) && item->is_type <Container> ())
+	else if ((backpack == NULL) && sub_tree->is_type <Container> ())
 	{
-		Container :: add (item);
-		backpack = item->to_type <Container> ();
+		Container :: add (sub_tree);
+		backpack = sub_tree->to_type <Container> ();
 		return true;
 	}
 	else if (backpack != NULL)
 	{
-		return backpack->add (item);
+		return backpack->add (sub_tree);
 	}
 	else
 	{
@@ -84,20 +95,33 @@ bool Character ::
 
 //	virtual
 bool Character ::
-	move_to (Entity * item, Container * new_container)
+	move_to (Object * sub_tree, Object * other_tree)
 {
 	assert (is_initialized ());
-	assert (contains (item));
+	assert (sub_tree != NULL);
+	assert (other_tree != NULL);
+	assert (sub_tree->is_initialized ());
+	assert (other_tree->is_initialized ());
+	assert (contains (sub_tree));
 
-	if (weapon == item)
+	if (weapon == sub_tree)
 	{
 		weapon = NULL;
-		
 	}
-	return (Entity :: move_to (item, new_container)
-								|| backpack->move_to (item, new_container));
+	else if (backpack == sub_tree)
+	{
+		backpack = NULL;
+	}
+	bool result = Container :: move_to (sub_tree, other_tree);
+
+	if (backpack != NULL)
+	{
+		result = result || backpack->move_to (sub_tree, other_tree);
+	}
+
+	return result;
 }
-*/
+
 
 void Character ::
 	die ()

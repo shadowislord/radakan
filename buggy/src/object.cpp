@@ -15,10 +15,10 @@ Object ::
 	Object (string new_name)
 {
 	assert (! new_name.empty ());
-	debug () << new_name << "->Object :: Object (" << new_name << ")" << endl;
+	debug () << new_name << "->Object (" << new_name << ")" << endl;
 	
 	assign (new_name);
-	tree_parent = NULL;
+	parent = NULL;
 	
 	#ifdef SL_DEBUG
 		objects.insert (this);
@@ -29,7 +29,7 @@ Object ::
 Object ::
 	~Object ()
 {
-	assert (is_initialized (* this + "->Object :: ~Object ()"));
+	assert (is_initialized (* this + "->~Object ()"));
 	
 	#ifdef SL_DEBUG
 		objects.erase (this);
@@ -78,31 +78,53 @@ ostream & Object ::
 }
 
 bool Object ::
-	is_in_tree (const Object * tree)
+	is_in (const Object * tree)
 	const
 {
 	assert (is_initialized ());
 	
-	return (tree_parent == tree);
+	return (parent == tree);
 }
 
 void Object ::
-	put_in_tree (Object * new_tree_parent)
+	put_in (Object * new_parent)
 {
 	assert (is_initialized ());
-	assert (tree_parent == NULL);
-	assert (new_tree_parent != NULL);
+	assert (parent == NULL);
+	assert (new_parent != NULL);
 
-	tree_parent = new_tree_parent;
+	parent = new_parent;
 }
 
 void Object ::
-	remove_from_tree (Object * old_tree_parent)
+	remove_from (Object * old_parent)
 {
 	assert (is_initialized ());
-	assert (is_in_tree (old_tree_parent));
+	assert (is_in (old_parent));
 
-	tree_parent = NULL;
+	parent = NULL;
+}
+
+//	virtual
+bool Object ::
+	add (Object * sub_tree)
+{
+	return false;
+}
+
+//	virtual
+bool Object ::
+	contains (Object * sub_tree)
+	const
+{
+	return false;
+}
+
+//	virtual
+bool Object ::
+	move_to (Object * sub_tree, Object * other_tree)
+{
+	return false;
 }
 
 string to_string (float value)
