@@ -70,21 +70,21 @@ Tslrpg ::
 	debug () << "deleting sectors..." << endl;
 	for (set <Sector *> :: const_iterator i = sectors.begin (); i != sectors.end (); i ++)
 	{
-		debug () << "deleting " << * * i << "..." << int (* i) << endl;
+		debug () << "deleting " << * * i << "... " << int (* i) << endl;
 		delete (* i);
 	}
-	debug () << "deleting input_device..." << int (input_device) << endl;
+	debug () << "deleting input_device... " << int (input_device) << endl;
 	delete input_device;
-	debug () << "deleting frame_listener..." << int (frame_listener) << endl;
+	debug () << "deleting frame_listener... " << int (frame_listener) << endl;
 	delete frame_listener;
 
 //	These give problems:
 
-//	debug () << "deleting window..." << int (window) << endl;
+//	debug () << "deleting window... " << int (window) << endl;
 //	delete window;
-//	debug () << "deleting scene_mgr..." << int (scene_mgr) << endl;
+//	debug () << "deleting scene_mgr... " << int (scene_mgr) << endl;
 //	delete scene_mgr;
-//	debug () << "deleting root..." << int (root) << endl;
+//	debug () << "deleting root... " << int (root) << endl;
 //	delete root;
 }
 

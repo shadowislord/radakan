@@ -2,6 +2,7 @@
 #define CHARACTER_HPP
 
 #include "container.hpp"
+#include "ai_machine.hpp"
 
 using namespace std;
 

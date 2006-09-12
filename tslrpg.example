@@ -1,0 +1,45 @@
+#!/bin/bash
+
+TSLRPG=${T_OPT}/tslrpg
+
+if [[ ${1} == "trunk" ]]; then
+	TRUNK=${TSLRPG}/trunk
+elif [[ ${1} == "trunk" ]]; then
+	TRUNK=${TSLRPG}/mi
+else
+	echo "Usage: tslrpg <trunk or mi> [v]"
+	echo "Exit..."
+	exit;
+fi
+
+cd ${TRUNK}
+
+rm logs/*
+mv obj/*.o src/
+
+cd proj/jam
+
+if [[ `jam -q | grep failed` != "" ]]; then
+#	echo `jam -q`
+	echo "Jam failed."
+
+	cd ../..
+	mv src/*.o obj/
+
+	echo "Exit..."
+	exit;
+fi
+cd ../..
+
+rm valgrind.*
+rm logs/Ogre.log
+
+if [[ ${2} != "" ]]; then
+	PREFIX="valgrind --log-file-exactely=valgrind.txt -v"
+fi
+
+${PREFIX} bin/debug/tslrpg ${TRUNK}
+
+mv src/*.o obj/
+mv Ogre.log logs/ogre.txt
+mv valgrind.txt logs/

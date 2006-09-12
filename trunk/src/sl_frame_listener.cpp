@@ -73,7 +73,7 @@ void Sl_Frame_Listener ::
 {
 	assert (is_initialized ());
 	
-	static string currFps = "Current FPS: ";
+/*	static string currFps = "Current FPS: ";
 	static string avgFps = "Average FPS: ";
 	static string bestFps = "Best FPS: ";
 	static string worstFps = "Worst FPS: ";
@@ -113,7 +113,7 @@ void Sl_Frame_Listener ::
 	catch (...)
 	{
 		// ignore
-	}
+	}*/
 }
 
 //	virtual

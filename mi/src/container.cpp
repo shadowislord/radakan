@@ -25,6 +25,7 @@ Container ::
 		"[ERROR: new_ogre_entity is NULL]" :
 		new_ogre_entity->getName ())
 {
+	assert (Entity :: is_initialized ());
 	assert (Tree :: is_initialized ());
 	
 	assert (is_initialized ());
@@ -59,6 +60,7 @@ Container ::
 		"[ERROR: new_ogre_entity is NULL]" :
 		new_ogre_entity->getName ())
 {
+	assert (Entity :: is_initialized ());
 	assert (Tree :: is_initialized ());
 	
 	assert (is_initialized ());
@@ -77,7 +79,7 @@ bool Container ::
 	is_initialized ()
 	const
 {
-	return Tree :: is_initialized ();
+	return Entity :: is_initialized () && Tree :: is_initialized ();
 }
 
 //	virtual

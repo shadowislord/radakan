@@ -39,9 +39,9 @@ using namespace std;
 			* log_cout << "Setting up Scattered Lands..." << endl;
 			* log_cout << "path: " << path << endl;
 
-			* log_cout << "Debug mode: enabled." << endl;
+			* log_cout << "debug mode: enabled." << endl;
 		#else
-			* log_cout << "Debug mode: disabled." << endl;
+			* log_cout << "debug mode: disabled." << endl;
 		#endif
 
 		game = new Tslrpg (path);
