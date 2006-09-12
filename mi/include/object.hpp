@@ -10,6 +10,9 @@
 	#define SL_WIN32
 	#define WIN32_LEAN_AND_MEAN
 	#include "windows.h"
+	#if _MSC_VER
+		#pragma warning(disable: 4250)
+	#endif
 #endif
 
 #include <cassert>

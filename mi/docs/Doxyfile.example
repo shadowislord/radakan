@@ -4,8 +4,8 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "Scattered Lands"
-PROJECT_NUMBER         = "SVN 118"
-OUTPUT_DIRECTORY       = /home/t/opt/tslrpg/mi/doc/
+PROJECT_NUMBER         = 0.0.0.0.0.0.1
+OUTPUT_DIRECTORY       = /home/t/src/tslrpg/doc/
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO
@@ -25,7 +25,7 @@ ABBREVIATE_BRIEF       = "The $name class" \
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = YES
-STRIP_FROM_PATH        = /home/t/opt/tslrpg
+STRIP_FROM_PATH        = /home/t/
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
@@ -81,7 +81,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /home/t/opt/tslrpg/mi/
+INPUT                  = /home/t/src/tslrpg/trunk/
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
@@ -267,4 +267,4 @@ DOT_CLEANUP            = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to the search engine   
 #---------------------------------------------------------------------------
-SEARCHENGINE           = YES
+SEARCHENGINE           = NO

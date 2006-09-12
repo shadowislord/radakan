@@ -2,10 +2,8 @@
 
 TSLRPG=${T_OPT}/tslrpg
 
-if [[ ${1} == "trunk" ]]; then
-	TRUNK=${TSLRPG}/trunk
-elif [[ ${1} == "trunk" ]]; then
-	TRUNK=${TSLRPG}/mi
+if [[ (${1} == "trunk") || (${1} == "mi") ]]; then
+	TRUNK=${TSLRPG}/${1}
 else
 	echo "Usage: tslrpg <trunk or mi> [v]"
 	echo "Exit..."
@@ -15,7 +13,7 @@ fi
 cd ${TRUNK}
 
 rm logs/*
-mv obj/*.o src/
+mv obj/debug/*.o src/
 
 cd proj/jam
 
@@ -24,7 +22,7 @@ if [[ `jam -q | grep failed` != "" ]]; then
 	echo "Jam failed."
 
 	cd ../..
-	mv src/*.o obj/
+	mv src/*.o obj/debug/
 
 	echo "Exit..."
 	exit;
@@ -40,6 +38,8 @@ fi
 
 ${PREFIX} bin/debug/tslrpg ${TRUNK}
 
-mv src/*.o obj/
+mv src/*.o obj/debug/
 mv Ogre.log logs/ogre.txt
 mv valgrind.txt logs/
+
+cat logs/log.txt
