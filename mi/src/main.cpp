@@ -27,6 +27,13 @@ using namespace std;
 
 		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 			string path = strCmdLine;
+
+			if( path == "" )
+			{
+				TCHAR Buffer[MAX_PATH];
+				GetCurrentDirectory(MAX_PATH, Buffer);
+				path = Buffer;
+			}
 		#else
 			string path = argv [argc - 1];
 		#endif
