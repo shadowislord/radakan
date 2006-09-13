@@ -5,7 +5,9 @@ Sector::
 		(string new_name,
 		Ogre :: SceneManager * new_scene_manager,
 		Ogre :: RenderWindow * window) :
-	Object (new_name)
+	Object (new_name),
+	Container (new_scene_manager->createEntity (new_name, "fort.mesh"),
+		new_scene_manager->getRootSceneNode ()->createChildSceneNode ())
 {
 	assert (Object :: is_initialized ());
 
@@ -25,11 +27,7 @@ Sector::
 		(Ogre :: Real (view_port->getActualWidth ())
 		/ Ogre :: Real (view_port->getActualHeight ()));
 
-	items = new Container
-		(scene_manager->createEntity (* this + "'s items", "fort.mesh"),
-		scene_manager->getRootSceneNode ()->createChildSceneNode ());
-
-	items->add
+	add
 		(new Entity
 			(false,
 			true,
@@ -43,7 +41,7 @@ Sector::
 		(scene_manager->createEntity ("Player", "fort.mesh"),
 		scene_manager->getRootSceneNode ()->createChildSceneNode ());
 
-	items->add (player);
+	add (player);
 	player->node->setScale (Ogre :: Vector3 (0.2, 2, 0.2));
 
 	player->add
@@ -137,13 +135,13 @@ Sector::
 	}
 
 	assert (player->get_weapon () == sword);
-	assert (player->move_to (sword, items));
+	assert (player->move_to (sword, this));
 	assert (! player->contains (sword));
 	assert (! player->has_weapon ());
 	debug () << * player << "'s weight: "
 										<< player->get_total_weight () << endl;
 
-	assert (items->move_to (sword, player));
+	assert (move_to (sword, player));
 
 	assert (is_initialized ());
 }
@@ -153,8 +151,6 @@ Sector ::
 {
 	assert (is_initialized ());
 
-	debug () << "deleting items... " << int (items) << endl;
-	delete items;
 	debug () << "deleting camera... " << int (camera) << endl;
 	delete camera;
 }

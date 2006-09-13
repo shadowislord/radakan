@@ -9,7 +9,7 @@ using namespace std;
 ///	Sector keeps track of all data in an in-game sector.
 
 class Sector:
-	public Object
+	public Container
 {
 	public:
 		Sector
@@ -26,7 +26,6 @@ class Sector:
 		Ogre :: SceneManager * scene_manager;
 		Ogre :: Camera * camera;
 		Character * player;
-		Container * items;
 };
 
 #endif

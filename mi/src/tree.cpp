@@ -18,13 +18,10 @@ Tree ::
 {
 	assert (Object :: is_initialized (* this + "->~Tree ()"));
 
-//	I've no idea why the out commented version foesn't work...
-
-//	for (set <Tree *> :: const_iterator i = children.begin ();
-//													i != children.end (); i ++)
-	for (_Rb_tree_const_iterator <Object *> i = children.begin (); i != children.end (); i ++)
+	for (set <Object *> :: const_iterator i = children.begin ();
+													i != children.end (); i ++)
 	{
-		debug () << "deleting " << * (* i) << "... " << int (* i) << endl;
+		debug () << "deleting " << * (* i) << "... " << (long int) (* i) << endl;
 		delete (* i);
 	}
 }
