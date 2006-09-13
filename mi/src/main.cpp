@@ -30,9 +30,9 @@ using namespace std;
 
 			if( path == "" )
 			{
-				TCHAR Buffer[MAX_PATH];
-				GetCurrentDirectory(MAX_PATH, Buffer);
-				path = Buffer;
+				TCHAR buffer[MAX_PATH];
+				GetCurrentDirectory(MAX_PATH, buffer);
+				path = buffer;
 			}
 		#else
 			string path = argv [argc - 1];
