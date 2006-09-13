@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="windows-1250"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
@@ -193,6 +193,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\ai_machine.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ai_state.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\battle_engine.cpp"
 				>
 			</File>
@@ -225,6 +233,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\tree.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\tslrpg.cpp"
 				>
 			</File>
@@ -238,6 +250,14 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd;ipp"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\include\ai_machine.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\ai_state.hpp"
+				>
+			</File>
 			<File
 				RelativePath="..\..\include\battle_engine.hpp"
 				>
@@ -259,15 +279,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\object.ipp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\sector.hpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\include\sl_frame_listener.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\tree.hpp"
 				>
 			</File>
 			<File
