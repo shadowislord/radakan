@@ -31,7 +31,7 @@ using namespace std;
 			if (path == "")
 			{
 				TCHAR buffer [MAX_PATH];
-				GetCurrentDirectory (MAX_PATH, Buffer);
+				GetCurrentDirectory (MAX_PATH, buffer);
 				path = buffer;
 			}
 		#else
