@@ -114,7 +114,7 @@ bool Object ::
 
 //	virtual
 bool Object ::
-	contains (Object * sub_tree)
+	contains (Object * sub_tree, bool recursive)
 	const
 {
 	return false;

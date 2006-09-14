@@ -18,7 +18,6 @@ Tree ::
 {
 	assert (Object :: is_initialized (* this + "->~Tree ()"));
 
-
 	for (set <Object *> :: const_iterator i = children.begin ();
 													i != children.end (); i ++)
 	{
@@ -53,7 +52,7 @@ bool Tree ::
 
 //	virtual
 bool Tree ::
-	contains (Object * sub_tree)
+	contains (Object * sub_tree, bool recursive)
 	const
 {
 	assert (is_initialized ());
@@ -61,6 +60,19 @@ bool Tree ::
 	bool result = (children.find (sub_tree) != children.end ());
 	
 	assert (result == (sub_tree->is_in (this)));
+
+	if ((! result) && recursive)
+	{
+		for (set <Object *> :: const_iterator i = children.begin ();
+													i != children.end (); i ++)
+		{
+			if ((* i)->contains (sub_tree, recursive))
+			{
+				return true;
+			}
+		}
+	}
+	
 	return result;
 }
 
@@ -69,7 +81,7 @@ bool Tree ::
 	move_to (Object * sub_tree, Object * other_tree)
 {
 	assert (is_initialized ());
-	assert (contains (sub_tree));
+	assert (contains (sub_tree, false));
 
 	sub_tree->remove_from (this);
 	if (other_tree->add (sub_tree))

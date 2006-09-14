@@ -7,7 +7,8 @@ Character ::
 	Character
 		(Ogre :: Entity * new_ogre_entity,
 		Ogre :: SceneNode * new_node) :
-	Object ((new_ogre_entity == NULL) ?
+	Object
+		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
 		new_ogre_entity->getName ()),
 	Container
@@ -26,7 +27,7 @@ Character ::
 
 	backpack = NULL;
 	weapon = NULL;
-	
+
 	assert (is_initialized ());
 }
 
@@ -102,7 +103,7 @@ bool Character ::
 	assert (other_tree != NULL);
 	assert (sub_tree->is_initialized ());
 	assert (other_tree->is_initialized ());
-	assert (contains (sub_tree));
+	assert (contains (sub_tree, false));
 
 	if (weapon == sub_tree)
 	{
@@ -121,7 +122,6 @@ bool Character ::
 
 	return result;
 }
-
 
 void Character ::
 	die ()

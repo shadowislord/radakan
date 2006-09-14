@@ -48,7 +48,7 @@ class Object :
 		virtual ostream & error () const;
 
 		virtual bool add (Object * sub_tree);				//	true iff succes
-		virtual bool contains (Object * sub_tree) const;
+		virtual bool contains (Object * sub_tree, bool recursive) const;
 		virtual bool move_to (Object * sub_tree, Object * other_tree);
 															//	true iff succes
 		

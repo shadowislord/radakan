@@ -66,13 +66,23 @@ Sector::
 			scene_manager->createEntity ("Sword", "fort.mesh"),
 			scene_manager->getRootSceneNode ()->createChildSceneNode ());
 	debug () << * sword << "'s weight: " << sword->get_total_weight () << endl;
-	assert (! player->contains (sword));
+	assert (! player->contains (sword, true));
 	player->add (sword);
 	assert (sword != NULL);
-	assert (player->contains (sword));
+	assert (player->contains (sword, false));
 	debug () << * player << "'s weight with sword: "
 									<< player->get_total_weight () << endl;
 
+	NPC * npc = new NPC
+		(scene_manager->createEntity ("NPC", "fort.mesh"),
+		scene_manager->getRootSceneNode ()->createChildSceneNode ());
+	add (npc);
+	npc->ai = new State_Machine (npc);
+	npc->ai->add (new Peace_State (npc));
+	Fight_State * fight_state = new Fight_State (npc);
+	npc->ai->add (fight_state);
+	npc->change_active_state (fight_state);
+	
 	for (int i = 0; i < 100; i++)
 	{
 		char name [50];
@@ -136,12 +146,23 @@ Sector::
 
 	assert (player->get_weapon () == sword);
 	assert (player->move_to (sword, this));
-	assert (! player->contains (sword));
+	assert (! player->contains (sword, true));
 	assert (! player->has_weapon ());
 	debug () << * player << "'s weight: "
 										<< player->get_total_weight () << endl;
 
-	assert (move_to (sword, player));
+	assert (move_to (sword, npc));
+
+	npc->ai->think (NULL);
+	npc->ai->act ();
+	
+	assert (npc->move_to (sword, player));
+	
+	npc->ai->think (NULL);
+	npc->ai->act ();
+	
+	npc->ai->think (NULL);
+	npc->ai->act ();
 
 	assert (is_initialized ());
 }

@@ -13,13 +13,15 @@ class Tree:
 		virtual ~Tree ();
 		virtual bool is_initialized () const;
 
-		//	The methods below are not recursive.
 		virtual bool add (Object * sub_tree);				//	true iff succes
-		virtual bool contains (Object * sub_tree) const;
+		virtual bool contains (Object * sub_tree, bool recursive) const;
 		virtual bool move_to (Object * sub_tree, Object * other_tree);
 															//	true iff succes
+		template <typename T> T * get_child () const;
 
 		set <Object *> children;
 };
+
+#include "tree.ipp"
 
 #endif
