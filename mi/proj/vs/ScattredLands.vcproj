@@ -193,14 +193,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\ai_machine.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\ai_state.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\battle_engine.cpp"
 				>
 			</File>
@@ -217,11 +209,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\fight_state.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\main.cpp"
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\npc.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\object.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\peace_state.cpp"
 				>
 			</File>
 			<File
@@ -230,6 +234,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\sl_frame_listener.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\state.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\state_machine.cpp"
 				>
 			</File>
 			<File
@@ -251,14 +263,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\ai_machine.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\ai_state.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\battle_engine.hpp"
 				>
 			</File>
@@ -275,7 +279,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\fight_state.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\npc.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\object.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\peace_state.hpp"
 				>
 			</File>
 			<File
@@ -284,6 +300,14 @@
 			</File>
 			<File
 				RelativePath="..\..\include\sl_frame_listener.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\state.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\state_machine.hpp"
 				>
 			</File>
 			<File
