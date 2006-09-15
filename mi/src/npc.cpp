@@ -26,10 +26,7 @@ NPC ::
 {
 	assert (Object :: is_initialized (* this + "->~NPC ()"));
 
-	if (ai != NULL)
-	{
-		delete ai;
-	}
+	delete ai;
 }
 
 //	virtual
@@ -40,12 +37,13 @@ bool NPC ::
 	return Character :: is_initialized () && ((ai == NULL) || ai->is_initialized ());
 }
 
-//	virtual
 void NPC ::
-	change_active_state (State * new_state)
+	create_ai ()
 {
 	assert (is_initialized ());
-	assert (ai != NULL);
+	assert (ai == NULL);
+	
+	ai = new State_Machine (this, NULL);
 
-	ai->change_active_state (new_state);
+	assert (is_initialized ());
 }

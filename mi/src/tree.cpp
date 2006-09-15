@@ -7,6 +7,7 @@ Tree ::
 	Tree (string new_name):
 	Object (new_name)
 {
+	debug () << * this << "->Tree (" << * this << ")"<< endl;
 	assert (Object :: is_initialized ());
 
 	assert (is_initialized ());

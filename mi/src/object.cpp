@@ -23,6 +23,8 @@ Object ::
 	#ifdef SL_DEBUG
 		objects.insert (this);
 	#endif
+
+	assert (Object :: is_initialized ());
 }
 
 //  destructor
@@ -58,7 +60,7 @@ ostream & Object ::
 	print ()
 	const
 {
-	return cout;
+	return * log_cout;
 }
 
 //	virtual

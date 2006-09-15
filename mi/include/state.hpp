@@ -9,13 +9,13 @@ class State:
 	public virtual Object
 {
 	public:
-		State (Character * new_owner);
+		State (Character * new_owner, State * new_parent_state);
 		virtual ~State ();
 		virtual bool is_initialized () const;
 		virtual void act ();
-		virtual void think (State * my_parent);	//	change your current state
-		virtual void change_active_state (State * new_state);
+		virtual void think ();	//	change your current state
 		Character * owner;
+		State * parent_state;
 };
 
 #endif	//	STATE_HPP

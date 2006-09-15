@@ -76,12 +76,11 @@ Sector::
 	NPC * npc = new NPC
 		(scene_manager->createEntity ("NPC", "fort.mesh"),
 		scene_manager->getRootSceneNode ()->createChildSceneNode ());
+	npc->create_ai ();
 	add (npc);
-	npc->ai = new State_Machine (npc);
-	npc->ai->add (new Peace_State (npc));
-	Fight_State * fight_state = new Fight_State (npc);
-	npc->ai->add (fight_state);
-	npc->change_active_state (fight_state);
+	npc->ai->add <Peace_State> ();
+	npc->ai->add <Fight_State> ();
+	npc->ai->change_active_state <Fight_State> ();
 	
 	for (int i = 0; i < 100; i++)
 	{
@@ -153,15 +152,15 @@ Sector::
 
 	assert (move_to (sword, npc));
 
-	npc->ai->think (NULL);
+	npc->ai->think ();
 	npc->ai->act ();
 	
 	assert (npc->move_to (sword, player));
 	
-	npc->ai->think (NULL);
+	npc->ai->think ();
 	npc->ai->act ();
 	
-	npc->ai->think (NULL);
+	npc->ai->think ();
 	npc->ai->act ();
 
 	assert (is_initialized ());

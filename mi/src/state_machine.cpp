@@ -4,15 +4,15 @@ using namespace std;
 
 //  constructor
 State_Machine ::
-	State_Machine (NPC * new_owner):
+	State_Machine (Character * new_owner, State * new_parent_state):
 	Object (* new_owner + "'s state machine"),
-	State (new_owner),
+	State (new_owner, new_parent_state),
 	Tree (* this)
 {
 	assert (State :: is_initialized ());
 	assert (Tree :: is_initialized ());
 
-	active_state = NULL;
+	active_child_state = NULL;
 	
 	assert (is_initialized ());
 }
@@ -29,7 +29,7 @@ bool State_Machine ::
 	is_initialized ()
 	const
 {
-	return State :: is_initialized () && Tree :: is_initialized () && ((active_state == NULL) || active_state->is_initialized ());
+	return State :: is_initialized () && Tree :: is_initialized () && ((active_child_state == NULL) || active_child_state->is_initialized ());
 }
 
 //	virtual
@@ -37,27 +37,17 @@ void State_Machine ::
 	act ()
 {
 	assert (is_initialized ());
-	assert (active_state != NULL);
-	active_state->act ();
+	assert (active_child_state != NULL);
+	active_child_state->act ();
 }
 
 //	virtual
 void State_Machine ::
-	think (State * my_parent)
+	think ()
 {
 	assert (is_initialized ());
-	assert (active_state != NULL);
-	active_state->think (this);
-}
-
-//virtual
-void State_Machine ::
-	change_active_state (State * new_state)
-{
-	assert (is_initialized ());
-	assert (contains (new_state, false));
-
-	active_state = new_state;
+	assert (active_child_state != NULL);
+	active_child_state->think ();
 }
 
 //	returns subtree, iff succes
@@ -74,9 +64,9 @@ bool State_Machine ::
 
 	assert (result);
 
-	if (active_state == NULL)
+	if (active_child_state == NULL)
 	{
-		active_state = sub_tree->to_type <State> ();
+		active_child_state = sub_tree->to_type <State> ();
 	}
 	
 	return true;

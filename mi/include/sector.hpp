@@ -3,6 +3,7 @@
 
 #include "battle_engine.hpp"
 #include "sl_frame_listener.hpp"
+#include "npc.hpp"
 #include "peace_state.hpp"
 #include "fight_state.hpp"
 

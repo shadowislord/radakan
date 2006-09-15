@@ -9,7 +9,7 @@ class Peace_State:
 	public State
 {
 	public:
-		Peace_State (NPC * new_owner);
+		Peace_State (Character * new_owner, State * new_parent_state);
 		virtual ~Peace_State ();
 		virtual bool is_initialized () const;
 		virtual void act ();

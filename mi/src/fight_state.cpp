@@ -5,9 +5,9 @@ using namespace std;
 
 //  constructor
 Fight_State ::
-	Fight_State (NPC * new_owner):
+	Fight_State (Character * new_owner, State * new_parent_state):
 	Object (* new_owner + "'s fight state"),
-	State (new_owner)
+	State (new_owner, new_parent_state)
 {
 	assert (State :: is_initialized ());
 
@@ -26,7 +26,7 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	return State :: is_initialized ();
+	return State :: is_initialized () && (parent_state != NULL);
 }
 
 //	virtual
@@ -38,15 +38,13 @@ void Fight_State ::
 
 //	virtual
 void Fight_State ::
-	think (State * my_parent)
+	think ()
 {
-	assert (this->is_in (my_parent));
-
 	if (! owner->has_weapon ())
 	{
 		debug () << "There's no point in being aggressive without a weapon..." << endl;
 
-		owner->to_type <NPC> ()->change_active_state (my_parent->to_type <State_Machine> ()->get_child <Peace_State> ());
+		parent_state->to_type <State_Machine> ()->change_active_state <Peace_State> ();
 	}
 	else
 	{

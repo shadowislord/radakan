@@ -9,11 +9,11 @@ class Fight_State:
 	public State
 {
 	public:
-		Fight_State (NPC * new_owner);
+		Fight_State (Character * new_owner, State * new_parent_state);
 		virtual ~Fight_State ();
 		virtual bool is_initialized () const;
 		virtual void act ();
-		virtual void think (State * my_parent);
+		virtual void think ();
 };
 
 #endif	//	FIGHT_STATE_HPP
