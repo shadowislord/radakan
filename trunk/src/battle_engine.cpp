@@ -5,7 +5,7 @@ using namespace boost;
 
 Battle_Engine ::
 	Battle_Engine () :
-	Object ("Battle engine"),
+	Engine ("Battle engine"),
 	generator (42u),
 	uniform_real_distribution (0, 1),
 	lognormal_real_distribution (1.133, 0.5),
@@ -30,63 +30,76 @@ bool Battle_Engine ::
 	is_initialized ()
 	const
 {
-	return Object::is_initialized ();
+	return Engine :: is_initialized ();
 }
 
-string Battle_Engine ::
-	hit (Character * attacker, Character * defender)
+Event * Battle_Engine ::
+	process (Event * event)
 {
 	assert (is_initialized ());
-	assert (attacker != NULL);
-	assert (defender != NULL);
+	assert (event != NULL);
+	assert (event->is_initialized ());
 
-	assert (! attacker->is_dead ());
-	assert (! defender->is_dead ());
+	if (event->is_type <Hit_Event> ())
+	{
+		Hit_Event * hit_event = event->to_type <Hit_Event> ();
+		Character * attacker = hit_event->attacker;
+		Character * defender = hit_event->defender;
+
+		delete event;
 	
-	if (1 < (attacker->position - defender->position).squaredLength ())
-	{
-		return "The target is out of reach.";
-	}
+		assert (is_initialized ());
+		assert (attacker != NULL);
+		assert (defender != NULL);
 
-	float attack = 0;
-	float defense = 0;
+		assert (! attacker->is_dead ());
+		assert (! defender->is_dead ());
 	
-	if (attacker->has_weapon ())
-	{
-		attack = attacker->get_weapon ()->attack_rate * lognormal ();
-	}
+		if (1 < (attacker->position - defender->position).squaredLength ())
+		{
+			return "The target is out of reach.";
+		}
 
-	if (attacker->has_weapon ())
-	{
-		defense = defender->get_weapon ()->defense_rate * lognormal ();
-	}
+		float attack = 0;
+		float defense = 0;
+	
+		if (attacker->has_weapon ())
+		{
+			attack = attacker->get_weapon ()->attack_rate * lognormal ();
+		}
 
-	// You can now retrieve random numbers from that distribution by means
-	// of a STL Generator interface, i.e. calling the generator as a zero-
-	// argument function.
-//	for (int i = 0; i < 3; i++)
-//	{
-//		debug () << "Uniform (0, 1): " << uniform () << endl;
-//	}
-//	for (int i = 0; i < 5; i++)
-//	{
-//		debug () << "Log-normal (1.133, 0.5): " << lognormal () << endl;
-//	}
+		if (attacker->has_weapon ())
+		{
+			defense = defender->get_weapon ()->defense_rate * lognormal ();
+		}
 
-	debug () << "Atack: " << to_string (attack) << endl;
-	debug () << "Defend: " << to_string (defense) << endl;
+		// You can now retrieve random numbers from that distribution by means
+		// of a STL Generator interface, i.e. calling the generator as a zero-
+		// argument function.
+//		for (int i = 0; i < 3; i++)
+//		{
+//			debug () << "Uniform (0, 1): " << uniform () << endl;
+//		}
+//		for (int i = 0; i < 5; i++)
+//		{
+//			debug () << "Log-normal (1.133, 0.5): " << lognormal () << endl;
+//		}
 
-	if (defense < attack)	//	Hit
-	{
-		debug () << "Hit!" << endl;
-		defender->die ();
-	}
-	else	//	Miss
-	{
-		debug () << "Miss!" << endl;
+		debug () << "Atack: " << to_string (attack) << endl;
+		debug () << "Defend: " << to_string (defense) << endl;
+
+		if (defense < attack)	//	Hit
+		{
+			debug () << "Hit!" << endl;
+			defender->die ();
+		}
+		else	//	Miss
+		{
+			debug () << "Miss!" << endl;
+		}
 	}
 
 //	if ();
 
-	return "Error";
+	return NULL;
 }

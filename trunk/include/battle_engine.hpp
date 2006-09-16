@@ -2,6 +2,7 @@
 #define BATTLE_ENGINE_HPP
 
 #include "character.hpp"
+#include "engine.hpp"
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
@@ -13,13 +14,12 @@ using namespace boost;
 ///	Battle_engine is called by the Frame_Listener.
 
 class Battle_Engine:
-	public Object
+	public Engine
 {
 	public:
 		Battle_Engine ();
 		virtual ~Battle_Engine ();
 		virtual bool is_initialized () const;
-		string hit (Character * attacker, Character * defender);
 
 	private:
 		minstd_rand generator;
