@@ -45,16 +45,14 @@ Tslrpg::
 
 	window = root->initialise (true);
 
-	input_device = Ogre :: PlatformManager::getSingleton ().createInputReader ();
-	input_device->initialise (window);
+    // This is the new input mechanism that is taking advantage of the
+    // new engine handler.
+    input_engine = Input_Engine();
+    input_engine.start_listening ( window );
 
 	active_sector = new Sector
 		("Sector 1", root->createSceneManager (Ogre :: ST_GENERIC), window);
 	sectors.insert (active_sector);
-	
-	frame_listener = new Sl_Frame_Listener
-						(window, active_sector->get_camera (), false, false);
-	root->addFrameListener (frame_listener);
 
 	// Set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton().setDefaultNumMipmaps (5);
@@ -73,10 +71,6 @@ Tslrpg ::
 		debug () << "deleting " << * * i << "... " << int (* i) << endl;
 		delete (* i);
 	}
-	debug () << "deleting input_device... " << int (input_device) << endl;
-	delete input_device;
-	debug () << "deleting frame_listener... " << int (frame_listener) << endl;
-	delete frame_listener;
 
 //	These give problems:
 

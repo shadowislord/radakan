@@ -1,6 +1,7 @@
 #ifndef TSLRPG_HPP
-#define TSLRPG_HPP 
+#define TSLRPG_HPP
 
+#include "input_engine.hpp"
 #include "sector.hpp"
 
 using namespace std;
@@ -19,14 +20,20 @@ class Tslrpg:
 
 	private:
 		void create_scene ();
+
 		Ogre :: Root * root;
-		Sl_Frame_Listener * frame_listener;
-		Ogre :: InputReader * input_device;
 		Ogre :: RenderWindow * window;
+
+        Input_Engine input_engine;
+
 		Battle_Engine battle_engine;
+
 		Sector * active_sector;
 		set <Sector *> sectors;
+
 		Character * player;
+
+
 };
 
 #endif

@@ -4777,7 +4777,8 @@
 1158433654 source:c:\sl2\trunk\src\main.cpp
 	"tslrpg.hpp"
 
-1158433654 c:\sl2\trunk\include\tslrpg.hpp
+1158447908 c:\sl2\trunk\include\tslrpg.hpp
+	"input_engine.hpp"
 	"sector.hpp"
 
 1158433654 c:\sl2\trunk\include\sector.hpp
@@ -5594,7 +5595,7 @@
 1158433654 source:c:\sl2\trunk\src\tree.cpp
 	"tree.hpp"
 
-1158433654 source:c:\sl2\trunk\src\tslrpg.cpp
+1158448990 source:c:\sl2\trunk\src\tslrpg.cpp
 	"tslrpg.hpp"
 
 1158433654 source:c:\sl2\trunk\src\weapon.cpp
@@ -5606,4 +5607,28 @@
 
 1158441023 c:\sl2\trunk\include\event.hpp
 	"object.hpp"
+
+1158441023 source:c:\sl2\trunk\src\battle_engine.cpp
+	"battle_engine.hpp"
+
+1158441023 source:c:\sl2\trunk\src\engine.cpp
+	"engine.hpp"
+
+1158441023 source:c:\sl2\trunk\src\event.cpp
+	"event.hpp"
+
+1158441023 source:c:\sl2\trunk\src\hit_event.cpp
+	"hit_event.hpp"
+
+1158448963 source:c:\sl2\trunk\src\input_engine.cpp
+	"input_engine.hpp"
+
+1158448956 c:\sl2\trunk\include\input_engine.hpp
+	<ogre.h>
+	<OISInputManager.h>
+	<OISKeyboard.h>
+	<OISMouse.h>
+	<OISEvents.h>
+	"event.hpp"
+	"engine.hpp"
 
