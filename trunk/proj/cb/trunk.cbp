@@ -50,6 +50,7 @@
 			<Add directory="$(OGRE_HOME)\samples\refapp\include" />
 			<Add directory="..\..\include" />
 			<Add directory="$(BOOST_INCLUDE)" />
+			<Add directory="$(OIS_LIB)\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
@@ -60,6 +61,7 @@
 			<Add directory="$(OGRE_HOME)\bin\Release" />
 			<Add directory="$(BOOST_LIB)" />
 			<Add directory="$(STLPORT_LIB)" />
+			<Add directory="$(OIS_LIB)\lib" />
 		</Linker>
 		<Unit filename="..\..\include\battle_engine.hpp">
 			<Option compilerVar="CPP" />
@@ -79,7 +81,43 @@
 			<Option link="0" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="..\..\include\engine.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
 		<Unit filename="..\..\include\entity.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\event.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\fight_state.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\hit_event.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\input_engine.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\npc.hpp">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -97,6 +135,12 @@
 			<Option link="0" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="..\..\include\peace_state.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
 		<Unit filename="..\..\include\sector.hpp">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
@@ -104,6 +148,36 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="..\..\include\sl_frame_listener.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\state.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\state_machine.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\state_machine.ipp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\tree.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\tree.ipp">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -133,7 +207,27 @@
 			<Option compilerVar="CPP" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="..\..\src\engine.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
 		<Unit filename="..\..\src\entity.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\event.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\fight_state.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\hit_event.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\input_engine.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Release" />
 		</Unit>
@@ -141,7 +235,15 @@
 			<Option compilerVar="CPP" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="..\..\src\npc.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
 		<Unit filename="..\..\src\object.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\peace_state.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Release" />
 		</Unit>
@@ -150,6 +252,18 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="..\..\src\sl_frame_listener.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\state.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\state_machine.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\tree.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Release" />
 		</Unit>

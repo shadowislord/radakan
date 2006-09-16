@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="All" />
+	<File name="..\..\include\engine.hpp" open="1" top="0" tabpos="3">
+		<Cursor position="88" topLine="0" />
+	</File>
+	<File name="..\..\src\battle_engine.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="839" topLine="44" />
+	</File>
+	<File name="..\..\src\main.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="564" topLine="6" />
+	</File>
 </CodeBlocks_layout_file>
