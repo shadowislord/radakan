@@ -57,7 +57,7 @@ Event * Battle_Engine ::
 	
 		if (1 < (attacker->position - defender->position).squaredLength ())
 		{
-			return "The target is out of reach.";
+			return NULL;
 		}
 
 		float attack = 0;

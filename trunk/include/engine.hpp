@@ -13,7 +13,7 @@ class Engine:
 		virtual ~Engine ();
 		virtual bool is_initialized () const;
 		
-		Event * process (Event * event);
+		virtual Event * process (Event * event);
 };
 
 #endif	//	ENGINE_HPP

@@ -1,7 +1,6 @@
 #include "engine.hpp"
 
 using namespace std;
-using namespace boost;
 
 Engine ::
 	Engine (string new_name) :
@@ -26,7 +25,8 @@ bool Engine ::
 	return Object :: is_initialized ();
 }
 
-Event * Battle_Engine ::
+//	virtual
+Event * Engine ::
 	process (Event * event)
 {
 	abort ();

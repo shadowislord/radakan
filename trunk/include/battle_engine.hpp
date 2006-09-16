@@ -1,7 +1,7 @@
 #ifndef BATTLE_ENGINE_HPP
 #define BATTLE_ENGINE_HPP
 
-#include "character.hpp"
+#include "hit_event.hpp"
 #include "engine.hpp"
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/uniform_real.hpp>
@@ -20,6 +20,7 @@ class Battle_Engine:
 		Battle_Engine ();
 		virtual ~Battle_Engine ();
 		virtual bool is_initialized () const;
+		virtual Event * process (Event * event);
 
 	private:
 		minstd_rand generator;

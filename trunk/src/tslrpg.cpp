@@ -101,7 +101,8 @@ void Tslrpg ::
 {
 	assert (is_initialized ());
 
-	battle_engine.hit (player, player);
+	Hit_Event * hit = new Hit_Event (player, player);
+	battle_engine.process (hit);
 
 	root->startRendering ();
 }
