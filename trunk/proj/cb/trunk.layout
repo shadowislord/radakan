@@ -4,55 +4,55 @@
 	<File name="..\..\include\container.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="183" topLine="0" />
 	</File>
-	<File name="..\..\include\engine.hpp" open="1" top="0" tabpos="8">
+	<File name="..\..\include\engine.hpp" open="0" top="0" tabpos="8">
 		<Cursor position="275" topLine="0" />
 	</File>
 	<File name="..\..\include\entity.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="266" topLine="0" />
 	</File>
-	<File name="..\..\include\event.hpp" open="1" top="0" tabpos="11">
+	<File name="..\..\include\event.hpp" open="0" top="0" tabpos="11">
 		<Cursor position="294" topLine="0" />
 	</File>
-	<File name="..\..\include\input_engine.hpp" open="1" top="0" tabpos="4">
-		<Cursor position="595" topLine="0" />
+	<File name="..\..\include\input_engine.hpp" open="0" top="0" tabpos="4">
+		<Cursor position="697" topLine="0" />
 	</File>
-	<File name="..\..\include\keyboard_event.hpp" open="1" top="0" tabpos="2">
+	<File name="..\..\include\keyboard_event.hpp" open="0" top="0" tabpos="2">
 		<Cursor position="443" topLine="0" />
 	</File>
 	<File name="..\..\include\object.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="825" topLine="17" />
 	</File>
-	<File name="..\..\include\tslrpg.hpp" open="1" top="0" tabpos="5">
+	<File name="..\..\include\tslrpg.hpp" open="0" top="0" tabpos="5">
 		<Cursor position="296" topLine="0" />
 	</File>
 	<File name="..\..\include\weapon.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="444" topLine="0" />
 	</File>
-	<File name="..\..\src\battle_engine.cpp" open="1" top="0" tabpos="7">
-		<Cursor position="824" topLine="0" />
+	<File name="..\..\src\battle_engine.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="117" topLine="0" />
 	</File>
-	<File name="..\..\src\engine.cpp" open="1" top="0" tabpos="9">
+	<File name="..\..\src\engine.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="447" topLine="0" />
 	</File>
 	<File name="..\..\src\entity.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="0" topLine="20" />
 	</File>
-	<File name="..\..\src\event.cpp" open="1" top="1" tabpos="10">
-		<Cursor position="335" topLine="0" />
+	<File name="..\..\src\event.cpp" open="0" top="0" tabpos="10">
+		<Cursor position="344" topLine="0" />
 	</File>
 	<File name="..\..\src\hit_event.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="172" topLine="0" />
 	</File>
-	<File name="..\..\src\input_engine.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="2439" topLine="35" />
+	<File name="..\..\src\input_engine.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="4867" topLine="0" />
 	</File>
-	<File name="..\..\src\keyboard_event.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="342" topLine="0" />
+	<File name="..\..\src\keyboard_event.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="156" topLine="0" />
 	</File>
 	<File name="..\..\src\main.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="564" topLine="6" />
 	</File>
-	<File name="..\..\src\tslrpg.cpp" open="1" top="0" tabpos="6">
+	<File name="..\..\src\tslrpg.cpp" open="0" top="0" tabpos="6">
 		<Cursor position="2735" topLine="62" />
 	</File>
 </CodeBlocks_layout_file>

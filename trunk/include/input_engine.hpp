@@ -26,10 +26,6 @@ class Input_Engine : public Engine,
 		virtual bool is_initialized () const;
 		virtual Event * process (Event * event);
 
-        virtual void Set_Event(char evt);
-        virtual char Get_Event(char evt);
-
-
     protected:
         virtual bool keyPressed(const OIS::KeyEvent& arg);
         virtual bool keyReleased(const OIS::KeyEvent&);

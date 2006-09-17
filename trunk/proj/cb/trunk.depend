@@ -3273,7 +3273,7 @@
 1157230124 source:e:\projects\sl - test\src\weapon.cpp
 	"weapon.hpp"
 
-1158433654 source:c:\sl2\trunk\src\character.cpp
+1158495981 source:c:\sl2\trunk\src\character.cpp
 	"character.hpp"
 
 1158433654 c:\sl2\trunk\include\character.hpp
@@ -4749,13 +4749,13 @@
 
 1158433654 c:\sl2\trunk\include\tree.ipp
 
-1158433654 source:c:\sl2\trunk\src\container.cpp
+1158495981 source:c:\sl2\trunk\src\container.cpp
 	"container.hpp"
 
-1158433654 source:c:\sl2\trunk\src\entity.cpp
+1158495981 source:c:\sl2\trunk\src\entity.cpp
 	"entity.hpp"
 
-1158433654 source:c:\sl2\trunk\src\fight_state.cpp
+1158495981 source:c:\sl2\trunk\src\fight_state.cpp
 	"fight_state.hpp"
 	"peace_state.hpp"
 
@@ -4774,7 +4774,7 @@
 1158433654 c:\sl2\trunk\include\peace_state.hpp
 	"state_machine.hpp"
 
-1158433654 source:c:\sl2\trunk\src\main.cpp
+1158495981 source:c:\sl2\trunk\src\main.cpp
 	"tslrpg.hpp"
 
 1158494233 c:\sl2\trunk\include\tslrpg.hpp
@@ -5569,37 +5569,37 @@
 1158433654 c:\sl2\trunk\include\npc.hpp
 	"state_machine.hpp"
 
-1158433654 source:c:\sl2\trunk\src\npc.cpp
+1158495981 source:c:\sl2\trunk\src\npc.cpp
 	"npc.hpp"
 
-1158433654 source:c:\sl2\trunk\src\object.cpp
+1158495981 source:c:\sl2\trunk\src\object.cpp
 	<fstream>
 	<sstream>
 	"object.hpp"
 
-1158433654 source:c:\sl2\trunk\src\peace_state.cpp
+1158495981 source:c:\sl2\trunk\src\peace_state.cpp
 	"peace_state.hpp"
 	"fight_state.hpp"
 
-1158433654 source:c:\sl2\trunk\src\sector.cpp
+1158495981 source:c:\sl2\trunk\src\sector.cpp
 	"sector.hpp"
 
-1158433654 source:c:\sl2\trunk\src\sl_frame_listener.cpp
+1158495981 source:c:\sl2\trunk\src\sl_frame_listener.cpp
 	"sl_frame_listener.hpp"
 
-1158433654 source:c:\sl2\trunk\src\state.cpp
+1158495981 source:c:\sl2\trunk\src\state.cpp
 	"state.hpp"
 
-1158433654 source:c:\sl2\trunk\src\state_machine.cpp
+1158495981 source:c:\sl2\trunk\src\state_machine.cpp
 	"state_machine.hpp"
 
-1158433654 source:c:\sl2\trunk\src\tree.cpp
+1158495981 source:c:\sl2\trunk\src\tree.cpp
 	"tree.hpp"
 
-1158494109 source:c:\sl2\trunk\src\tslrpg.cpp
+1158495981 source:c:\sl2\trunk\src\tslrpg.cpp
 	"tslrpg.hpp"
 
-1158433654 source:c:\sl2\trunk\src\weapon.cpp
+1158495981 source:c:\sl2\trunk\src\weapon.cpp
 	"weapon.hpp"
 
 1158441023 c:\sl2\trunk\include\hit_event.hpp
@@ -5609,23 +5609,23 @@
 1158495002 c:\sl2\trunk\include\event.hpp
 	"object.hpp"
 
-1158441023 source:c:\sl2\trunk\src\battle_engine.cpp
+1158495981 source:c:\sl2\trunk\src\battle_engine.cpp
 	"battle_engine.hpp"
 
-1158494847 source:c:\sl2\trunk\src\engine.cpp
+1158495981 source:c:\sl2\trunk\src\engine.cpp
 	"engine.hpp"
 
-1158494860 source:c:\sl2\trunk\src\event.cpp
+1158495981 source:c:\sl2\trunk\src\event.cpp
 	"event.hpp"
 
-1158441023 source:c:\sl2\trunk\src\hit_event.cpp
+1158495981 source:c:\sl2\trunk\src\hit_event.cpp
 	"hit_event.hpp"
 
-1158492812 source:c:\sl2\trunk\src\input_engine.cpp
+1158495981 source:c:\sl2\trunk\src\input_engine.cpp
 	"input_engine.hpp"
 	"keyboard_event.hpp"
 
-1158494923 c:\sl2\trunk\include\input_engine.hpp
+1158497186 c:\sl2\trunk\include\input_engine.hpp
 	<Ogre.h>
 	<OIS.h>
 	"event.hpp"
