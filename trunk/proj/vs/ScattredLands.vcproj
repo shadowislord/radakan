@@ -205,6 +205,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\engine.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\entity.cpp"
 				>
 			</File>
@@ -272,6 +276,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\container.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\engine.hpp"
 				>
 			</File>
 			<File
