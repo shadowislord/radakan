@@ -106,9 +106,12 @@ void Tslrpg ::
 		
 		input = input_engine -> process (NULL);
 
-		if (input -> is_type <Exit_Event> ())
+		if (input != NULL)
 		{
-			running = false;
+			if (input -> is_type <Exit_Event> ())
+			{
+				running = false;
+			}
 		}
 	}
 }
