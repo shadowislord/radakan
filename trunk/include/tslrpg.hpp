@@ -23,7 +23,7 @@ class Tslrpg:
 		Ogre :: Root * root;
 		Ogre :: RenderWindow * window;
 
-		Input_Engine input_engine;
+		Input_Engine * input_engine;
 
 		Battle_Engine battle_engine;
 
@@ -31,8 +31,6 @@ class Tslrpg:
 		set <Sector *> sectors;
 
 		Character * player;
-
-
 };
 
 #endif

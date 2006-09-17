@@ -3,7 +3,11 @@
 
 #include <Ogre.h>
 
-#include <OIS.h>
+#include <OISInputManager.h>
+#include <OISKeyboard.h>
+#include <OISMouse.h>
+#include <OISEvents.h>
+//	#include <OIS.h>
 
 #include "exit_event.hpp"
 #include "move_event.hpp"
@@ -19,10 +23,8 @@ class Input_Engine :
 	public OIS :: MouseListener
 {
 	public:
-		Input_Engine ();
+		Input_Engine (Ogre :: RenderWindow * window);
 		virtual ~Input_Engine ();
-
-		void start_listening (Ogre :: RenderWindow * window);
 
 		virtual bool is_initialized () const;
 		virtual Event * process (Event * event);
@@ -36,7 +38,6 @@ class Input_Engine :
 		virtual bool mouseReleased (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
 
 	private:
-		OIS :: InputManager * input_manager;
 		OIS :: Mouse * mouse;
 		OIS :: Keyboard * keyboard;
 

@@ -47,8 +47,7 @@ Tslrpg::
 
 	//	This is the new input mechanism that is taking advantage of the
 	//	new engine handler.
-	input_engine = Input_Engine();
-	input_engine.start_listening ( window );
+	input_engine = new Input_Engine (window);
 
 	active_sector = new Sector
 		("Sector 1", root->createSceneManager (Ogre :: ST_GENERIC), window);
@@ -105,7 +104,7 @@ void Tslrpg ::
 	{
 		root->renderOneFrame ();
 		
-		input = input_engine.process (NULL);
+		input = input_engine -> process (NULL);
 
 		if (input -> is_type <Exit_Event> ())
 		{
