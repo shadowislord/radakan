@@ -37,9 +37,13 @@ class Input_Engine :
 
 	private:
 		OIS :: InputManager * input_manager;
-
 		OIS :: Mouse * mouse;
 		OIS :: Keyboard * keyboard;
+
+		bool going_forward;
+		bool going_backward;
+		bool going_left;
+		bool going_right;
 };
 
 #endif	//	INPUT_ENGINE_HPP

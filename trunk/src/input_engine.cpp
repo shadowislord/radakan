@@ -1,5 +1,4 @@
 #include "input_engine.hpp"
-#include "keyboard_event.hpp"
 
 using namespace std;
 
@@ -7,17 +6,28 @@ Input_Engine ::
 	Input_Engine () :
 	Engine ("Input Engine")
 {
-	// Define pointers as NULL so that we can be
-	// sure that their status is un-initialised.
+	assert (Engine :: is_initialized ());
+	
+	//	Define pointers as NULL so that we can be
+	//	sure that their status is un-initialised.
 
 	input_manager = NULL;
 	mouse = NULL;
 	keyboard = NULL;
+
+	going_forward = false;
+	going_backward = false;
+	going_left = false;
+	going_right = false;
+
+	assert (is_initialized ());
 }
 
 Input_Engine ::
 	~Input_Engine ()
 {
+	assert (is_initialized ());
+	
 	input_manager -> destroyInputObject (keyboard);
 	input_manager -> destroyInputObject (mouse);
 	input_manager -> destroyInputSystem ();
@@ -32,6 +42,8 @@ Input_Engine ::
 void Input_Engine ::
 	start_listening (Ogre :: RenderWindow * window)
 {
+	assert (is_initialized ());
+	
 	OIS::ParamList param_list;
 
 	size_t window_handle_temp = 0;
@@ -82,6 +94,25 @@ bool Input_Engine ::
 Event * Input_Engine ::
 	process (Event * event)
 {
+	assert (is_initialized ());
+
+	if (going_forward)
+	{
+		event_queue.push (new Move_Event (Move_Event :: forward));
+	}
+	if (going_backward)
+	{
+		event_queue.push (new Move_Event (Move_Event :: backward));
+	}
+	if (going_left)
+	{
+		event_queue.push (new Move_Event (Move_Event :: left));
+	}
+	if (going_right)
+	{
+		event_queue.push (new Move_Event (Move_Event :: right));
+	}
+
 	if (event_queue.empty ())
 	{
 		return NULL;
@@ -98,31 +129,33 @@ Event * Input_Engine ::
 bool Input_Engine ::
 	keyPressed (const OIS :: KeyEvent & key_event)
 {
+	assert (is_initialized ());
+
 //	'Key -> action' mapping will happen here.
 
 	switch (key_event.key)
 	{
 		case OIS :: KC_W:
 		{
-			event_queue.push (new Move_Event (Move_Event :: forward));
+			going_forward = true;
 			break;
 		}
 
 		case OIS :: KC_S:
 		{
-			event_queue.push (new Move_Event (Move_Event :: backward));
+			going_backward = true;
 			break;
 		}
 
 		case OIS :: KC_A:
 		{
-			event_queue.push (new Move_Event (Move_Event :: left));
+			going_left = true;
 			break;
 		}
 
 		case OIS :: KC_D:
 		{
-			event_queue.push (new Move_Event (Move_Event :: right));
+			going_right = true;
 			break;
 		}
 
@@ -145,31 +178,33 @@ bool Input_Engine ::
 bool Input_Engine ::
 	keyReleased (const OIS :: KeyEvent & key_event)
 {
+	assert (is_initialized ());
+
 //	'Key -> action' mapping will happen here.
 
 	switch (key_event.key)
 	{
 		case OIS :: KC_W:
 		{
-			event_queue.push (new Move_Event (Move_Event :: forward));
+			going_forward = false;
 			break;
 		}
 
 		case OIS :: KC_S:
 		{
-			event_queue.push (new Move_Event (Move_Event :: backward));
+			going_backward = false;
 			break;
 		}
 
 		case OIS :: KC_A:
 		{
-			event_queue.push (new Move_Event (Move_Event :: left));
+			going_left = false;
 			break;
 		}
 
 		case OIS :: KC_D:
 		{
-			event_queue.push (new Move_Event (Move_Event :: right));
+			going_right = false;
 			break;
 		}
 
@@ -186,6 +221,8 @@ bool Input_Engine ::
 bool Input_Engine ::
 	mouseMoved (const OIS :: MouseEvent & mouse_event)
 {
+	assert (is_initialized ());
+	
 	return false;
 }
 
@@ -193,6 +230,8 @@ bool Input_Engine ::
 bool Input_Engine ::
 	mousePressed (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id)
 {
+	assert (is_initialized ());
+	
 	return false;
 }
 
@@ -200,5 +239,7 @@ bool Input_Engine ::
 bool Input_Engine ::
 	mouseReleased (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id)
 {
+	assert (is_initialized ());
+	
 	return false;
 }

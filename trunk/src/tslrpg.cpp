@@ -15,7 +15,7 @@ Tslrpg::
 		abort ();
 	}
 
-	// I just don't like the resource cfg file :/
+	// I just don't like the resource cfg file :-/ --Tariqwalji
 
 	try	// Catch any errors
 	{
@@ -45,8 +45,8 @@ Tslrpg::
 
 	window = root->initialise (true);
 
-	// This is the new input mechanism that is taking advantage of the
-	// new engine handler.
+	//	This is the new input mechanism that is taking advantage of the
+	//	new engine handler.
 	input_engine = Input_Engine();
 	input_engine.start_listening ( window );
 
@@ -54,7 +54,7 @@ Tslrpg::
 		("Sector 1", root->createSceneManager (Ogre :: ST_GENERIC), window);
 	sectors.insert (active_sector);
 
-	// Set default mipmap level (NB some APIs ignore this)
+	//	Set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton().setDefaultNumMipmaps (5);
 
 	Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
