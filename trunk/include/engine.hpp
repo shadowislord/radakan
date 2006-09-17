@@ -12,8 +12,11 @@ class Engine:
 		Engine (string new_name);
 		virtual ~Engine ();
 		virtual bool is_initialized () const;
-		
+
 		virtual Event * process (Event * event);
+
+        queue <Event*> event_queue;
+
 };
 
 #endif	//	ENGINE_HPP

@@ -4777,8 +4777,9 @@
 1158433654 source:c:\sl2\trunk\src\main.cpp
 	"tslrpg.hpp"
 
-1158447908 c:\sl2\trunk\include\tslrpg.hpp
+1158494233 c:\sl2\trunk\include\tslrpg.hpp
 	"input_engine.hpp"
+	"keyboard_event.hpp"
 	"sector.hpp"
 
 1158433654 c:\sl2\trunk\include\sector.hpp
@@ -4796,7 +4797,7 @@
 	<boost/random/variate_generator.hpp>
 	<boost/random/linear_congruential.hpp>
 
-1158441023 c:\sl2\trunk\include\engine.hpp
+1158494880 c:\sl2\trunk\include\engine.hpp
 	"event.hpp"
 
 1158433654 c:\sl2\trunk\include\sl_frame_listener.hpp
@@ -5595,7 +5596,7 @@
 1158433654 source:c:\sl2\trunk\src\tree.cpp
 	"tree.hpp"
 
-1158448990 source:c:\sl2\trunk\src\tslrpg.cpp
+1158494109 source:c:\sl2\trunk\src\tslrpg.cpp
 	"tslrpg.hpp"
 
 1158433654 source:c:\sl2\trunk\src\weapon.cpp
@@ -5605,30 +5606,34 @@
 	"character.hpp"
 	"event.hpp"
 
-1158441023 c:\sl2\trunk\include\event.hpp
+1158495002 c:\sl2\trunk\include\event.hpp
 	"object.hpp"
 
 1158441023 source:c:\sl2\trunk\src\battle_engine.cpp
 	"battle_engine.hpp"
 
-1158441023 source:c:\sl2\trunk\src\engine.cpp
+1158494847 source:c:\sl2\trunk\src\engine.cpp
 	"engine.hpp"
 
-1158441023 source:c:\sl2\trunk\src\event.cpp
+1158494860 source:c:\sl2\trunk\src\event.cpp
 	"event.hpp"
 
 1158441023 source:c:\sl2\trunk\src\hit_event.cpp
 	"hit_event.hpp"
 
-1158448963 source:c:\sl2\trunk\src\input_engine.cpp
+1158492812 source:c:\sl2\trunk\src\input_engine.cpp
 	"input_engine.hpp"
+	"keyboard_event.hpp"
 
-1158448956 c:\sl2\trunk\include\input_engine.hpp
-	<ogre.h>
-	<OISInputManager.h>
-	<OISKeyboard.h>
-	<OISMouse.h>
-	<OISEvents.h>
+1158494923 c:\sl2\trunk\include\input_engine.hpp
+	<Ogre.h>
+	<OIS.h>
 	"event.hpp"
 	"engine.hpp"
+
+1158491053 source:c:\sl2\trunk\src\keyboard_event.cpp
+	"keyboard_event.hpp"
+
+1158491371 c:\sl2\trunk\include\keyboard_event.hpp
+	"event.hpp"
 

@@ -13,6 +13,8 @@ class Event:
 		virtual ~Event ();
 		virtual bool is_initialized () const;
 
+        virtual void Set_Event(char evt);
+        virtual char Get_Event();
 };
 
 #endif	//	EVENT_HPP

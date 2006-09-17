@@ -26,3 +26,13 @@ bool Event ::
 {
 	return Object :: is_initialized ();
 }
+
+
+void Event::Set_Event(char evt)
+{
+}
+
+char Event::Get_Event()
+{
+    return 0;
+}

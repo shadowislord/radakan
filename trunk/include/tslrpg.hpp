@@ -2,6 +2,7 @@
 #define TSLRPG_HPP
 
 #include "input_engine.hpp"
+#include "keyboard_event.hpp"
 #include "sector.hpp"
 
 using namespace std;

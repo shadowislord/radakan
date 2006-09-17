@@ -1,12 +1,10 @@
+
 #ifndef INPUT_ENGINE_HPP
 #define INPUT_ENGINE_HPP
 
 #include <Ogre.h>
 
-#include <OISInputManager.h>
-#include <OISKeyboard.h>
-#include <OISMouse.h>
-#include <OISEvents.h>
+#include <OIS.h>
 
 #include "event.hpp"
 #include "engine.hpp"
@@ -15,32 +13,36 @@ using namespace std;
 
 ///	Input engine is responsible for translating player input into events and actions.
 
-class Input_Engine:
-	public Engine,
-	public OIS :: KeyListener,
-	public OIS :: MouseListener
+class Input_Engine : public Engine,
+                     public OIS::KeyListener,
+                     public OIS::MouseListener
 {
 	public:
 		Input_Engine ();
 		virtual ~Input_Engine ();
 
-		void start_listening (Ogre :: RenderWindow * window);
+		void start_listening(Ogre::RenderWindow *window);
 
 		virtual bool is_initialized () const;
 		virtual Event * process (Event * event);
 
-        virtual bool keyPressed (const OIS :: KeyEvent & key_event);
-        virtual bool keyReleased (const OIS :: KeyEvent & key_event);
+        virtual void Set_Event(char evt);
+        virtual char Get_Event(char evt);
 
-        virtual bool mouseMoved (const OIS :: MouseEvent & mouse_event);
-        virtual bool mousePressed (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
-        virtual bool mouseReleased (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
+
+    protected:
+        virtual bool keyPressed(const OIS::KeyEvent& arg);
+        virtual bool keyReleased(const OIS::KeyEvent&);
+
+        virtual bool mouseMoved(const OIS::MouseEvent& arg);
+        virtual bool mousePressed(const OIS::MouseEvent& arg, OIS::MouseButtonID);
+        virtual bool mouseReleased(const OIS::MouseEvent&, OIS::MouseButtonID);
 
 	private:
-        OIS :: InputManager * input_manager;
+        OIS::InputManager *input_manager;
 
-        OIS :: Mouse * mouse;
-        OIS :: Keyboard * keyboard;
+        OIS::Mouse* mouse;
+        OIS::Keyboard* keyboard;
 };
 
 #endif	//	INPUT_ENGINE_HPP

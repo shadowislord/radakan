@@ -46,7 +46,7 @@
 			<Add option="-D_WINDOWS" />
 			<Add directory="$(OGRE_HOME)\stlport\stlport" />
 			<Add directory="$(OGRE_HOME)\include" />
-			<Add directory="$(OGRE_HOME)\samples\include" />
+			<Add directory="$(OGRE_HOME)\samples\includes" />
 			<Add directory="$(OGRE_HOME)\samples\refapp\include" />
 			<Add directory="..\..\include" />
 			<Add directory="$(BOOST_INCLUDE)" />
@@ -112,6 +112,12 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="..\..\include\input_engine.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\keyboard_event.hpp">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -228,6 +234,10 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="..\..\src\input_engine.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\keyboard_event.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Release" />
 		</Unit>
