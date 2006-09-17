@@ -1,9 +1,4 @@
 #include "input_engine.hpp"
-#ifdef SL_WIN32
-	#include <Win32InputManager.h>
-#else
-	#include <LinuxInputManager.h>
-#endif
 
 using namespace std;
 

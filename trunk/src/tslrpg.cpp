@@ -71,6 +71,9 @@ Tslrpg ::
 		delete (* i);
 	}
 
+	delete input_engine;
+
+
 //	These give problems:
 
 //	debug () << "deleting window... " << int (window) << endl;
@@ -95,22 +98,38 @@ void Tslrpg ::
 	assert (is_initialized ());
 	
 	bool running = true;
-	Event * input;
+	Event * event;
 
-	Hit_Event * hit = new Hit_Event (player, player);
-	battle_engine.process (hit);
+	input_engine -> event_queue . push (new Move_Event (Move_Event :: forward));
+	input_engine -> event_queue . push (new Hit_Event (player, player));
+	input_engine -> event_queue . push (new Exit_Event ());
 
 	while (running)
 	{
 		root->renderOneFrame ();
 		
-		input = input_engine -> process (NULL);
+		event = input_engine -> process (NULL);
 
-		if (input != NULL)
+		if (event != NULL)
 		{
-			if (input -> is_type <Exit_Event> ())
+			if (event -> is_type <Exit_Event> ())
 			{
+				delete event;
 				running = false;
+			}
+			else if (event -> is_type <Hit_Event> ())
+			{
+				event = battle_engine . process (event);
+			}
+			else
+			{
+				delete event;
+			}
+
+			//	Sometimes a new event was generated:
+			if (event != NULL)
+			{
+				input_engine -> event_queue . push (event);
 			}
 		}
 	}
