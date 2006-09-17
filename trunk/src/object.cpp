@@ -15,7 +15,7 @@ Object ::
 	Object (string new_name)
 {
 	assert (! new_name.empty ());
-	debug () << new_name << "->Object (" << new_name << ")" << endl;
+	debug () << new_name << " -> Object (" << new_name << ")" << endl;
 	
 	assign (new_name);
 	parent = NULL;
@@ -31,7 +31,7 @@ Object ::
 Object ::
 	~Object ()
 {
-	assert (is_initialized (* this + "->~Object ()"));
+	assert (is_initialized (* this + " -> ~Object ()"));
 	
 	#ifdef SL_DEBUG
 		objects.erase (this);

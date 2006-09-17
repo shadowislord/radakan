@@ -16,7 +16,7 @@ Entity ::
 	Object (
 		(new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity->getName ()),
+		new_ogre_entity -> getName ()),
 	movable (new_movable),
 	solid (new_solid),
 	visible (new_visible),
@@ -32,9 +32,9 @@ Entity ::
 	node = new_node;
 	ogre_entity = new_ogre_entity;
 
-	ogre_entity->setVisible (visible);
-	node->attachObject (ogre_entity);
-	node->setPosition (new_position);
+	ogre_entity -> setVisible (visible);
+	node -> attachObject (ogre_entity);
+	node -> setPosition (new_position);
 
 	assert (is_initialized ());
 }
@@ -43,7 +43,7 @@ Entity ::
 Entity ::
 	~Entity ()
 {
-	assert (Object :: is_initialized (* this + "->~Entity ()"));
+	assert (Object :: is_initialized (* this + " -> ~Entity ()"));
 }
 
 //	virtual
@@ -65,4 +65,4 @@ float Entity ::
 }
 
 /* !!!	//	only items directely in the sector are dispayed, when visible:
-	ogre_entity->setVisible (visible && tree_parent->is_in_tree (NULL));*/
+	ogre_entity -> setVisible (visible && tree_parent -> is_in_tree (NULL));*/

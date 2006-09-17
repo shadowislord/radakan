@@ -19,7 +19,7 @@ Weapon::
 	Object
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity->getName ()),
+		new_ogre_entity -> getName ()),
 	Entity
 		(true,
 		true,

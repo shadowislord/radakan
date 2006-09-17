@@ -10,7 +10,7 @@ NPC ::
 	Object
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity->getName ()),
+		new_ogre_entity -> getName ()),
 	Character (new_ogre_entity, new_node)
 {
 	assert (Character :: is_initialized ());
@@ -24,7 +24,7 @@ NPC ::
 NPC ::
 	~NPC ()
 {
-	assert (Object :: is_initialized (* this + "->~NPC ()"));
+	assert (Object :: is_initialized (* this + " -> ~NPC ()"));
 
 	delete ai;
 }
@@ -34,7 +34,7 @@ bool NPC ::
 	is_initialized ()
 	const
 {
-	return Character :: is_initialized () && ((ai == NULL) || ai->is_initialized ());
+	return Character :: is_initialized () && ((ai == NULL) || ai -> is_initialized ());
 }
 
 void NPC ::

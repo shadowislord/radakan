@@ -10,7 +10,7 @@ Tslrpg::
 {
 	root = new Ogre :: Root();
 
-	if (! root->showConfigDialog ())
+	if (! root -> showConfigDialog ())
 	{
 		abort ();
 	}
@@ -43,7 +43,7 @@ Tslrpg::
 		#endif
 	}
 
-	window = root->initialise (true);
+	window = root -> initialise (true);
 
     // This is the new input mechanism that is taking advantage of the
     // new engine handler.
@@ -51,7 +51,7 @@ Tslrpg::
     input_engine.start_listening ( window );
 
 	active_sector = new Sector
-		("Sector 1", root->createSceneManager (Ogre :: ST_GENERIC), window);
+		("Sector 1", root -> createSceneManager (Ogre :: ST_GENERIC), window);
 	sectors.insert (active_sector);
 
 	// Set default mipmap level (NB some APIs ignore this)
@@ -59,7 +59,7 @@ Tslrpg::
 
 	Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
 
-	player = active_sector->get_player ();
+	player = active_sector -> get_player ();
 }
 
 Tslrpg ::
@@ -97,5 +97,5 @@ void Tslrpg ::
 
 	battle_engine.process (new Hit_Event (player, player));
 
-	root->startRendering ();
+	root -> startRendering ();
 }

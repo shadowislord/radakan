@@ -11,8 +11,8 @@ Hit_Event ::
 	assert (Event :: is_initialized ());
 	assert (new_attacker != NULL);
 	assert (new_defender != NULL);
-	assert (new_attacker->is_initialized ());
-	assert (new_defender->is_initialized ());
+	assert (new_attacker -> is_initialized ());
+	assert (new_defender -> is_initialized ());
 
 	attacker = new_attacker;
 	defender = new_defender;
@@ -24,7 +24,7 @@ Hit_Event ::
 Hit_Event ::
 	~Hit_Event ()
 {
-	assert (Object :: is_initialized (* this + "->~Hit_Event ()"));
+	assert (Object :: is_initialized (* this + " -> ~Hit_Event ()"));
 }
 
 //	virtual
@@ -32,6 +32,6 @@ bool Hit_Event ::
 	is_initialized ()
 	const
 {
-	return Event :: is_initialized () && (attacker != NULL) &&  (defender != NULL) && attacker->is_initialized () && defender->is_initialized ();
+	return Event :: is_initialized () && (attacker != NULL) &&  (defender != NULL) && attacker -> is_initialized () && defender -> is_initialized ();
 
 }

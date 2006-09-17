@@ -55,7 +55,7 @@ using namespace std;
 		* log_cout << "Scattered Lands is set up." << endl;
 
 		* log_cout << "Running Scattered Lands..." << endl;
-		game->run ();
+		game -> run ();
 		* log_cout << "Scattered Lands is stopped." << endl;
 
 		* log_cout << "Shutting down Scattered Lands..." << endl;

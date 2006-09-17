@@ -38,13 +38,13 @@ Event * Battle_Engine ::
 {
 	assert (is_initialized ());
 	assert (event != NULL);
-	assert (event->is_initialized ());
+	assert (event -> is_initialized ());
 
-	if (event->is_type <Hit_Event> ())
+	if (event -> is_type <Hit_Event> ())
 	{
-		Hit_Event * hit_event = event->to_type <Hit_Event> ();
-		Character * attacker = hit_event->attacker;
-		Character * defender = hit_event->defender;
+		Hit_Event * hit_event = event -> to_type <Hit_Event> ();
+		Character * attacker = hit_event -> attacker;
+		Character * defender = hit_event -> defender;
 
 		delete event;
 	
@@ -52,10 +52,10 @@ Event * Battle_Engine ::
 		assert (attacker != NULL);
 		assert (defender != NULL);
 
-		assert (! attacker->is_dead ());
-		assert (! defender->is_dead ());
+		assert (! attacker -> is_dead ());
+		assert (! defender -> is_dead ());
 	
-		if (1 < (attacker->position - defender->position).squaredLength ())
+		if (1 < (attacker -> position - defender -> position).squaredLength ())
 		{
 			return NULL;
 		}
@@ -63,14 +63,14 @@ Event * Battle_Engine ::
 		float attack = 0;
 		float defense = 0;
 	
-		if (attacker->has_weapon ())
+		if (attacker -> has_weapon ())
 		{
-			attack = attacker->get_weapon ()->attack_rate * lognormal ();
+			attack = attacker -> get_weapon () -> attack_rate * lognormal ();
 		}
 
-		if (attacker->has_weapon ())
+		if (attacker -> has_weapon ())
 		{
-			defense = defender->get_weapon ()->defense_rate * lognormal ();
+			defense = defender -> get_weapon () -> defense_rate * lognormal ();
 		}
 
 		// You can now retrieve random numbers from that distribution by means
@@ -91,7 +91,7 @@ Event * Battle_Engine ::
 		if (defense < attack)	//	Hit
 		{
 			debug () << "Hit!" << endl;
-			defender->die ();
+			defender -> die ();
 		}
 		else	//	Miss
 		{

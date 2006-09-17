@@ -7,7 +7,7 @@ Tree ::
 	Tree (string new_name) :
 	Object (new_name)
 {
-	debug () << * this << "->Tree (" << * this << ")"<< endl;
+	debug () << * this << " -> Tree (" << * this << ")"<< endl;
 	assert (Object :: is_initialized ());
 
 	assert (is_initialized ());
@@ -17,7 +17,7 @@ Tree ::
 Tree ::
 	~Tree ()
 {
-	assert (Object :: is_initialized (* this + "->~Tree ()"));
+	assert (Object :: is_initialized (* this + " -> ~Tree ()"));
 
 	for (set <Object *> :: const_iterator i = children.begin ();
 													i != children.end (); i ++)
@@ -41,9 +41,9 @@ bool Tree ::
 	add (Object * sub_tree)
 {
 	assert (is_initialized ());
-	assert (sub_tree->is_in (NULL));
+	assert (sub_tree -> is_in (NULL));
 
-	sub_tree->put_in (this);
+	sub_tree -> put_in (this);
 	debug () << * sub_tree << " added to " << * this << endl;
 	
 	//	second means we're interested in if it worked or not.
@@ -60,14 +60,14 @@ bool Tree ::
 
 	bool result = (children.find (sub_tree) != children.end ());
 	
-	assert (result == (sub_tree->is_in (this)));
+	assert (result == (sub_tree -> is_in (this)));
 
 	if ((! result) && recursive)
 	{
 		for (set <Object *> :: const_iterator i = children.begin ();
 													i != children.end (); i ++)
 		{
-			if ((* i)->contains (sub_tree, recursive))
+			if ((* i) -> contains (sub_tree, recursive))
 			{
 				return true;
 			}
@@ -84,12 +84,12 @@ bool Tree ::
 	assert (is_initialized ());
 	assert (contains (sub_tree, false));
 
-	sub_tree->remove_from (this);
-	if (other_tree->add (sub_tree))
+	sub_tree -> remove_from (this);
+	if (other_tree -> add (sub_tree))
 	{
 		children.erase (sub_tree);
 		return true;
 	}
-	sub_tree->put_in (other_tree);
+	sub_tree -> put_in (other_tree);
 	return false;
 }

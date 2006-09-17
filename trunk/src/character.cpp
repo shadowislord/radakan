@@ -10,7 +10,7 @@ Character ::
 	Object
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity->getName ()),
+		new_ogre_entity -> getName ()),
 	Container
 		(true,
 		true,
@@ -35,7 +35,7 @@ Character ::
 Character ::
 	~Character ()
 {
-	assert (Object :: is_initialized (* this + "->~Character ()"));
+	assert (Object :: is_initialized (* this + " -> ~Character ()"));
 }
 
 //	virtual
@@ -43,7 +43,7 @@ bool Character ::
 	is_initialized ()
 	const
 {
-	return Entity :: is_initialized () && (backpack == NULL || backpack->is_initialized ()) && (weapon == NULL || weapon->is_initialized ());
+	return Entity :: is_initialized () && (backpack == NULL || backpack -> is_initialized ()) && (weapon == NULL || weapon -> is_initialized ());
 }
 
 //	virtual
@@ -57,7 +57,7 @@ float Character ::
 
 	if (backpack != NULL)
 	{
-		weight += backpack->get_total_weight ();
+		weight += backpack -> get_total_weight ();
 	}
 	
 	return weight;
@@ -69,24 +69,24 @@ bool Character ::
 {
 	assert (is_initialized ());
 	assert (sub_tree != NULL);
-	assert (sub_tree->is_initialized ());
-	assert (sub_tree->is_type <Entity> ());
+	assert (sub_tree -> is_initialized ());
+	assert (sub_tree -> is_type <Entity> ());
 
-	if ((weapon == NULL) && sub_tree->is_type <Weapon> ())
+	if ((weapon == NULL) && sub_tree -> is_type <Weapon> ())
 	{
 		Container :: add (sub_tree);
-		weapon = sub_tree->to_type <Weapon> ();
+		weapon = sub_tree -> to_type <Weapon> ();
 		return true;
 	}
-	else if ((backpack == NULL) && sub_tree->is_type <Container> ())
+	else if ((backpack == NULL) && sub_tree -> is_type <Container> ())
 	{
 		Container :: add (sub_tree);
-		backpack = sub_tree->to_type <Container> ();
+		backpack = sub_tree -> to_type <Container> ();
 		return true;
 	}
 	else if (backpack != NULL)
 	{
-		return backpack->add (sub_tree);
+		return backpack -> add (sub_tree);
 	}
 	else
 	{
@@ -101,8 +101,8 @@ bool Character ::
 	assert (is_initialized ());
 	assert (sub_tree != NULL);
 	assert (other_tree != NULL);
-	assert (sub_tree->is_initialized ());
-	assert (other_tree->is_initialized ());
+	assert (sub_tree -> is_initialized ());
+	assert (other_tree -> is_initialized ());
 	assert (contains (sub_tree, false));
 
 	if (weapon == sub_tree)
@@ -117,7 +117,7 @@ bool Character ::
 
 	if (backpack != NULL)
 	{
-		result = result || backpack->move_to (sub_tree, other_tree);
+		result = result || backpack -> move_to (sub_tree, other_tree);
 	}
 
 	return result;

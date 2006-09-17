@@ -18,7 +18,7 @@ Fight_State ::
 Fight_State ::
 	~Fight_State ()
 {
-	assert (Object :: is_initialized (* this + "->~Fight_State ()"));
+	assert (Object :: is_initialized (* this + " -> ~Fight_State ()"));
 }
 
 //	virtual
@@ -40,11 +40,11 @@ void Fight_State ::
 void Fight_State ::
 	think ()
 {
-	if (! owner->has_weapon ())
+	if (! owner -> has_weapon ())
 	{
 		debug () << "There's no point in being aggressive without a weapon..." << endl;
 
-		parent_state->to_type <State_Machine> ()->change_active_state <Peace_State> ();
+		parent_state -> to_type <State_Machine> () -> change_active_state <Peace_State> ();
 	}
 	else
 	{

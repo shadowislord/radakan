@@ -16,7 +16,7 @@ Event ::
 Event ::
 	~Event ()
 {
-	assert (Object :: is_initialized (* this + "->~Event ()"));
+	assert (Object :: is_initialized (* this + " -> ~Event ()"));
 }
 
 //	virtual

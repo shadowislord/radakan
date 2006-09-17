@@ -29,6 +29,8 @@ bool Engine ::
 Event * Engine ::
 	process (Event * event)
 {
+	assert (is_initialized ());
+	
 	abort ();
 
 	return NULL;

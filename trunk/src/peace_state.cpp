@@ -18,7 +18,7 @@ Peace_State ::
 Peace_State ::
 	~Peace_State ()
 {
-	assert (Object :: is_initialized (* this + "->~Peace_State ()"));
+	assert (Object :: is_initialized (* this + " -> ~Peace_State ()"));
 }
 
 //	virtual
