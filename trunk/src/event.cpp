@@ -28,11 +28,13 @@ bool Event ::
 }
 
 
-void Event::Set_Event(char evt)
+void Event ::
+	set_event (char event)
 {
 }
 
-char Event::Get_Event()
+char Event ::
+	get_event ()
 {
-    return 0;
+	return 0;
 }

@@ -12,7 +12,7 @@ template <typename T> T * Object ::
 	assert (is_initialized ());
 	
 	T * result = new T (* to_type <T> ());
-	result->assign (* this);
+	result -> assign (* this);
 	
 	#ifdef SL_DEBUG
 		objects.insert (result);

@@ -45,10 +45,10 @@ Tslrpg::
 
 	window = root->initialise (true);
 
-    // This is the new input mechanism that is taking advantage of the
-    // new engine handler.
-    input_engine = Input_Engine();
-    input_engine.start_listening ( window );
+	// This is the new input mechanism that is taking advantage of the
+	// new engine handler.
+	input_engine = Input_Engine();
+	input_engine.start_listening ( window );
 
 	active_sector = new Sector
 		("Sector 1", root->createSceneManager (Ogre :: ST_GENERIC), window);
@@ -93,24 +93,23 @@ bool Tslrpg ::
 void Tslrpg ::
 	run ()
 {
-    bool running = true;
-    Event *input;
-
 	assert (is_initialized ());
+	
+	bool running = true;
+	Event * input;
 
 	Hit_Event * hit = new Hit_Event (player, player);
 	battle_engine.process (hit);
 
+	while (running)
+	{
+		root->renderOneFrame ();
+		
+		input = input_engine.process (NULL);
 
-    while(running)
-    {
-        input = input_engine.process(NULL);
-
-        if(input -> is_type <Keyboard_Event>())
-        {
-            if(input->Get_Event() == Keyboard_Event::EVENT_EXIT) running = false;
-        }
-
-        root->renderOneFrame();
-    }
+		if (input -> is_type <Exit_Event> ())
+		{
+			running = false;
+		}
+	}
 }

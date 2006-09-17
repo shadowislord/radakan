@@ -10,7 +10,7 @@ Container ::
 	Object
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity->getName ()),
+		new_ogre_entity  ->  getName ()),
 	Entity
 		(false,
 		false,
@@ -23,7 +23,7 @@ Container ::
 	Tree
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity->getName ())
+		new_ogre_entity -> getName ())
 {
 	assert (Entity :: is_initialized ());
 	assert (Tree :: is_initialized ());
@@ -45,7 +45,7 @@ Container ::
 	Object
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity->getName ()),
+		new_ogre_entity -> getName ()),
 	Entity
 		(new_movable,
 		new_solid,
@@ -58,7 +58,7 @@ Container ::
 	Tree
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity->getName ())
+		new_ogre_entity -> getName ())
 {
 	assert (Entity :: is_initialized ());
 	assert (Tree :: is_initialized ());
@@ -94,8 +94,8 @@ float Container ::
 	for (set <Object *> :: const_iterator i = children.begin ();
 													i != children.end (); i ++)
 	{
-		assert ((* i)->is_type <Container> ());
-		total_weight += (* i)->to_type <Container> ()->get_total_weight ();
+		assert ((* i) -> is_type <Container> ());
+		total_weight += (* i) -> to_type <Container> () -> get_total_weight ();
 	}
 
 	return total_weight;
@@ -108,8 +108,8 @@ bool Container ::
 {
 	assert (is_initialized ());
 	assert (sub_tree != NULL);
-	assert (sub_tree->is_initialized ());
-	assert (sub_tree->is_type <Entity> ());
+	assert (sub_tree -> is_initialized ());
+	assert (sub_tree -> is_type <Entity> ());
 	
 	return Tree :: add (sub_tree);
 }

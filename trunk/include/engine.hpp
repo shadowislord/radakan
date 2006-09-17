@@ -15,8 +15,7 @@ class Engine:
 
 		virtual Event * process (Event * event);
 
-        queue <Event*> event_queue;
-
+		queue <Event*> event_queue;
 };
 
 #endif	//	ENGINE_HPP

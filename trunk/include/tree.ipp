@@ -8,9 +8,9 @@ template <typename T> T * Tree ::
 	for (set <Object *> :: const_iterator i = children.begin ();
 													i != children.end (); i ++)
 	{
-		if ((* i)->is_type <T> ())
+		if ((* i) -> is_type <T> ())
 		{
-			return (*i)->to_type <T> ();
+			return (*i) -> to_type <T> ();
 		}
 	}
 	return NULL;

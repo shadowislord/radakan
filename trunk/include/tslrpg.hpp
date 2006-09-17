@@ -2,7 +2,6 @@
 #define TSLRPG_HPP
 
 #include "input_engine.hpp"
-#include "keyboard_event.hpp"
 #include "sector.hpp"
 
 using namespace std;
@@ -10,7 +9,6 @@ using namespace std;
 ///	Tslrpg is a implicit singleton class. It creates the eninges and the sectors.
 
 class Tslrpg:
-//	public ExampleApplication,
 	public Object
 {
 	public:
@@ -25,7 +23,7 @@ class Tslrpg:
 		Ogre :: Root * root;
 		Ogre :: RenderWindow * window;
 
-        Input_Engine input_engine;
+		Input_Engine input_engine;
 
 		Battle_Engine battle_engine;
 
