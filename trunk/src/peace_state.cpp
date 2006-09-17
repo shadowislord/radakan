@@ -5,7 +5,7 @@ using namespace std;
 
 //  constructor
 Peace_State ::
-	Peace_State (Character * new_owner, State * new_parent_state):
+	Peace_State (Character * new_owner, State * new_parent_state) :
 	Object (* new_owner + "'s peace state"),
 	State (new_owner, new_parent_state)
 {

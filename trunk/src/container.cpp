@@ -6,7 +6,7 @@ using namespace std;
 Container ::
 	Container
 		(Ogre :: Entity * new_ogre_entity,
-		Ogre :: SceneNode * new_node):
+		Ogre :: SceneNode * new_node) :
 	Object
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
@@ -41,7 +41,7 @@ Container ::
 		float new_weight,
 		Ogre :: Vector3 new_position,
 		Ogre :: Entity * new_ogre_entity,
-		Ogre :: SceneNode * new_node):
+		Ogre :: SceneNode * new_node) :
 	Object
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :

@@ -4,7 +4,7 @@ using namespace std;
 
 //  constructor
 Hit_Event ::
-	Hit_Event (Character * new_attacker, Character * new_defender):
+	Hit_Event (Character * new_attacker, Character * new_defender) :
 	Object (((new_attacker == NULL) ? string ("[ERROR: new_attacker is NULL]") : * new_attacker) + " hits " + ((new_defender == NULL) ? string ("[ERROR: defender is NULL]") : * new_defender)),
 	Event (((new_attacker == NULL) ? string ("[ERROR: new_attacker is NULL]") : * new_attacker) + " hits " + ((new_defender == NULL) ? string ("[ERROR: defender is NULL]") : * new_defender))
 {

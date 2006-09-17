@@ -15,7 +15,7 @@ Weapon::
 		float new_defense_rate,
 		float new_damage,
 		Ogre :: Entity * new_ogre_entity,
-		Ogre :: SceneNode * new_node):
+		Ogre :: SceneNode * new_node) :
 	Object
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :

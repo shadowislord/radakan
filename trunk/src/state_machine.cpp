@@ -4,7 +4,7 @@ using namespace std;
 
 //  constructor
 State_Machine ::
-	State_Machine (Character * new_owner, State * new_parent_state):
+	State_Machine (Character * new_owner, State * new_parent_state) :
 	Object (* new_owner + "'s state machine"),
 	State (new_owner, new_parent_state),
 	Tree (* this)

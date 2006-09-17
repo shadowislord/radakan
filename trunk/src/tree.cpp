@@ -4,7 +4,7 @@ using namespace std;
 
 //  constructor
 Tree ::
-	Tree (string new_name):
+	Tree (string new_name) :
 	Object (new_name)
 {
 	debug () << * this << "->Tree (" << * this << ")"<< endl;

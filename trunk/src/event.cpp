@@ -4,7 +4,7 @@ using namespace std;
 
 //  constructor
 Event ::
-	Event (string new_name):
+	Event (string new_name) :
 	Object (new_name)
 {
 	assert (Object :: is_initialized ());

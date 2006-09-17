@@ -4,7 +4,7 @@ using namespace std;
 
 //  constructor
 State ::
-	State (Character * new_owner, State * new_parent_state):
+	State (Character * new_owner, State * new_parent_state) :
 	Object (* new_owner + "'s generic state")
 {
 	assert (Object :: is_initialized ());
