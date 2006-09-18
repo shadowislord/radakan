@@ -102,7 +102,7 @@ void Tslrpg ::
 
 	input_engine -> event_queue . push (new Move_Event (Move_Event :: forward));
 	input_engine -> event_queue . push (new Hit_Event (player, player));
-	input_engine -> event_queue . push (new Exit_Event ());
+	// input_engine -> event_queue . push (new Exit_Event ());
 
 	while (running)
 	{

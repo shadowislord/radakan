@@ -28,24 +28,24 @@ Sector::
 		/ Ogre :: Real (view_port -> getActualHeight ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
-		scene_manager->createEntity ("Tavern", "tavern.mesh"),
-		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> createEntity ("Tavern", "tavern.mesh"),
+		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
-		scene_manager->createEntity ("Bar", "bar.mesh"),
-		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> createEntity ("Bar", "bar.mesh"),
+		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 17),
-		scene_manager->createEntity ("Table1", "table.mesh"),
-		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> createEntity ("Table1", "table.mesh"),
+		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 57),
-		scene_manager->createEntity ("Table2", "table.mesh"),
-		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> createEntity ("Table2", "table.mesh"),
+		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (26, 0, 97),
-		scene_manager->createEntity ("Table3", "table.mesh"),
-		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> createEntity ("Table3", "table.mesh"),
+		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
 
 	/*
 	add
