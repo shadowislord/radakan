@@ -13,8 +13,8 @@ Sector::
 
 	scene_manager = new_scene_manager;
 	camera = scene_manager -> createCamera ("Eyes");
-	camera -> setPosition (Ogre :: Vector3 (500, 0, 0));
-	camera -> lookAt (Ogre :: Vector3 (0, 0, - 300));
+	camera -> setPosition (Ogre :: Vector3 (0, 0, 200));
+	camera -> lookAt (Ogre :: Vector3 (0, 0, - 200));
 	camera -> setNearClipDistance (5);
 	camera -> setFarClipDistance (2000);
 
@@ -27,6 +27,27 @@ Sector::
 		(Ogre :: Real (view_port -> getActualWidth ())
 		/ Ogre :: Real (view_port -> getActualHeight ()));
 
+	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
+		scene_manager->createEntity ("Tavern", "tavern.mesh"),
+		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+
+	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
+		scene_manager->createEntity ("Bar", "bar.mesh"),
+		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+
+	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 17),
+		scene_manager->createEntity ("Table1", "table.mesh"),
+		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+
+	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 57),
+		scene_manager->createEntity ("Table2", "table.mesh"),
+		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+
+	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (26, 0, 97),
+		scene_manager->createEntity ("Table3", "table.mesh"),
+		scene_manager->getRootSceneNode ()->createChildSceneNode ()));
+
+	/*
 	add
 		(new Entity
 			(false,
@@ -36,6 +57,7 @@ Sector::
 			0,
 			Ogre :: Vector3 (0, 0, 0),
 			scene_manager -> createEntity ("Fort", "fort.mesh"), scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
+			*/
 
 	player = new Character
 		(scene_manager -> createEntity ("Player", "fort.mesh"),
