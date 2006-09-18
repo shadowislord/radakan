@@ -1,0 +1,33 @@
+material TavernWalls
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.5 0.5 0.5
+            diffuse 1.0 1.0 1.0
+            texture_unit
+            {
+                texture wall_006.jpg
+                filtering trilinear
+            }
+        }
+    }
+}
+
+material Wood_Walnut
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.5 0.5 0.5
+            diffuse 1.0 1.0 1.0
+            texture_unit
+            {
+                texture walnut3.tga
+                filtering trilinear
+            }
+        }
+    }
+}

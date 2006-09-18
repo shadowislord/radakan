@@ -6,7 +6,7 @@ Sector::
 		Ogre :: SceneManager * new_scene_manager,
 		Ogre :: RenderWindow * window) :
 	Object (new_name),
-	Container (new_scene_manager -> createEntity (new_name, "fort.mesh"),
+	Container (new_scene_manager -> createEntity (new_name, "tavern.mesh"),
 		new_scene_manager -> getRootSceneNode () -> createChildSceneNode ())
 {
 	assert (Object :: is_initialized ());
@@ -60,7 +60,7 @@ Sector::
 			*/
 
 	player = new Character
-		(scene_manager -> createEntity ("Player", "fort.mesh"),
+		(scene_manager -> createEntity ("Player", "bar.mesh"),
 		scene_manager -> getRootSceneNode () -> createChildSceneNode ());
 
 	add (player);
@@ -76,7 +76,7 @@ Sector::
 			30,
 			3,
 			player -> node -> getPosition (),
-			scene_manager -> createEntity ("Backpack", "fort.mesh"),
+			scene_manager -> createEntity ("Backpack", "bar.mesh"),
 			scene_manager -> getRootSceneNode () -> createChildSceneNode ()
 		)
 	);
@@ -85,7 +85,7 @@ Sector::
 									<< player -> get_total_weight () << endl;
 	Weapon * sword = new Weapon
 			(1, 2, Ogre :: Vector3 (1, 4, 4), 3, 4, 5, 6, 7, 8,
-			scene_manager -> createEntity ("Sword", "fort.mesh"),
+			scene_manager -> createEntity ("Sword", "bar.mesh"),
 			scene_manager -> getRootSceneNode () -> createChildSceneNode ());
 	debug () << * sword << "'s weight: " << sword -> get_total_weight () << endl;
 	assert (! player -> contains (sword, true));
@@ -96,7 +96,7 @@ Sector::
 									<< player -> get_total_weight () << endl;
 
 	NPC * npc = new NPC
-		(scene_manager -> createEntity ("NPC", "fort.mesh"),
+		(scene_manager -> createEntity ("NPC", "bar.mesh"),
 		scene_manager -> getRootSceneNode () -> createChildSceneNode ());
 	npc -> create_ai ();
 	add (npc);
