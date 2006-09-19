@@ -213,19 +213,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\event.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\exit_event.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\fight_state.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\hit_event.cpp"
 				>
 			</File>
 			<File
@@ -234,10 +222,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\main.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\move_event.cpp"
 				>
 			</File>
 			<File
@@ -307,27 +291,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\event.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\exit_event.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\fight_state.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\hit_event.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\input_engine.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\move_event.hpp"
 				>
 			</File>
 			<File
