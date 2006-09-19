@@ -5,8 +5,8 @@ template <typename T> T * Tree ::
 	get_child ()
 	const
 {
-	for (set <Object *> :: const_iterator i = children.begin ();
-													i != children.end (); i ++)
+	for (set <Object *> :: const_iterator i = children . begin ();
+													i != children . end (); i ++)
 	{
 		if ((* i) -> is_type <T> ())
 		{

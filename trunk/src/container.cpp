@@ -91,8 +91,8 @@ float Container ::
 	
 	float total_weight = weight;
 
-	for (set <Object *> :: const_iterator i = children.begin ();
-													i != children.end (); i ++)
+	for (set <Object *> :: const_iterator i = children . begin ();
+													i != children . end (); i ++)
 	{
 		assert ((* i) -> is_type <Container> ());
 		total_weight += (* i) -> to_type <Container> () -> get_total_weight ();

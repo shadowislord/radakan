@@ -9,8 +9,6 @@
 #include <OISEvents.h>
 //	#include <OIS.h>
 
-#include "exit_event.hpp"
-#include "move_event.hpp"
 #include "engine.hpp"
 
 using namespace std;
@@ -25,9 +23,12 @@ class Input_Engine :
 	public:
 		Input_Engine (Ogre :: RenderWindow * window);
 		virtual ~Input_Engine ();
-
 		virtual bool is_initialized () const;
-		virtual Event * process (Event * event);
+		void capture ();
+		bool get_key (string key, bool reset);
+		bool get_mouse_buttons (int button, bool reset);
+		int get_mouse_height () const;
+		int get_mouse_width () const;
 
 	protected:
 		virtual bool keyPressed (const OIS :: KeyEvent & key_event);
@@ -38,13 +39,13 @@ class Input_Engine :
 		virtual bool mouseReleased (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
 
 	private:
+		map <string, bool> keys;
+		map <int, bool> mouse_buttons;
+		int mouse_height;
+		int mouse_width;
+		
 		OIS :: Mouse * mouse;
 		OIS :: Keyboard * keyboard;
-
-		bool going_forward;
-		bool going_backward;
-		bool going_left;
-		bool going_right;
 };
 
 #endif	//	INPUT_ENGINE_HPP

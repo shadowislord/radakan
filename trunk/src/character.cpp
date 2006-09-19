@@ -123,14 +123,14 @@ bool Character ::
 	return result;
 }
 
-void Character ::
+string Character ::
 	die ()
 {
 	assert (is_initialized ());
 
 	dead = true;
 
-	debug () << *this << " died!" << endl;
+	return * this + " died!";
 }
 
 bool Character ::

@@ -1,9 +1,11 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include "event.hpp"
+#include "object.hpp"
 
 using namespace std;
+
+//	!!!	there's currently no use for this class
 
 class Engine:
 	public Object
@@ -12,10 +14,6 @@ class Engine:
 		Engine (string new_name);
 		virtual ~Engine ();
 		virtual bool is_initialized () const;
-
-		virtual Event * process (Event * event);
-
-		queue <Event *> event_queue;
 };
 
 #endif	//	ENGINE_HPP

@@ -24,16 +24,3 @@ bool Engine ::
 {
 	return Object :: is_initialized ();
 }
-
-//	virtual
-Event * Engine ::
-	process (Event * event)
-{
-	assert (is_initialized ());
-	
-	abort ();
-
-	return NULL;
-}
-
-

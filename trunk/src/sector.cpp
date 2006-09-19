@@ -47,7 +47,6 @@ Sector::
 		scene_manager -> createEntity ("Table3", "table.mesh"),
 		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
 
-	/*
 	add
 		(new Entity
 			(false,
@@ -57,7 +56,7 @@ Sector::
 			0,
 			Ogre :: Vector3 (0, 0, 0),
 			scene_manager -> createEntity ("Fort", "fort.mesh"), scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
-			*/
+			
 
 	player = new Character
 		(scene_manager -> createEntity ("Player", "bar.mesh"),
@@ -88,12 +87,7 @@ Sector::
 			scene_manager -> createEntity ("Sword", "bar.mesh"),
 			scene_manager -> getRootSceneNode () -> createChildSceneNode ());
 	debug () << * sword << "'s weight: " << sword -> get_total_weight () << endl;
-	assert (! player -> contains (sword, true));
 	player -> add (sword);
-	assert (sword != NULL);
-	assert (player -> contains (sword, false));
-	debug () << * player << "'s weight with sword: "
-									<< player -> get_total_weight () << endl;
 
 	NPC * npc = new NPC
 		(scene_manager -> createEntity ("NPC", "bar.mesh"),
@@ -165,14 +159,7 @@ Sector::
 		bbsNode2 -> setPosition (px, py, pz);
 	}
 
-	assert (player -> get_weapon () == sword);
-	assert (player -> move_to (sword, this));
-	assert (! player -> contains (sword, true));
-	assert (! player -> has_weapon ());
-	debug () << * player << "'s weight: "
-										<< player -> get_total_weight () << endl;
-
-	assert (move_to (sword, npc));
+	assert (player -> move_to (sword, npc));
 
 	npc -> ai -> think ();
 	npc -> ai -> act ();

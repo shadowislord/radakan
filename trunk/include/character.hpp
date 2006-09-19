@@ -25,7 +25,7 @@ class Character:
 		bool has_weapon () const;
 		bool is_dead () const;
 		Weapon * get_weapon () const;
-		void die ();
+		string die ();
 		
 	private:
 		//	exp = experience

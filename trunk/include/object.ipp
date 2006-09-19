@@ -15,7 +15,7 @@ template <typename T> T * Object ::
 	result -> assign (* this);
 	
 	#ifdef SL_DEBUG
-		objects.insert (result);
+		objects . insert (result);
 	#endif
 	
 	debug () << * this << " was copied to " << * result << ". " << endl;

@@ -98,39 +98,39 @@ void Tslrpg ::
 	assert (is_initialized ());
 	
 	bool running = true;
-	Event * event;
-
-	input_engine -> event_queue . push (new Move_Event (Move_Event :: forward));
-	input_engine -> event_queue . push (new Hit_Event (player, player));
-	input_engine -> event_queue . push (new Exit_Event ());
 
 	while (running)
 	{
 		root->renderOneFrame ();
-		
-		event = input_engine -> process (NULL);
 
-		if (event != NULL)
+		input_engine -> capture ();
+
+		//	hit
+		if (input_engine -> get_key ("h", true))
 		{
-			if (event -> is_type <Exit_Event> ())
+			Character * npc = active_sector -> get_child <NPC> ();
+			debug () << battle_engine . hit (player, npc) << endl;
+		}
+		
+		//	transfer
+		if (input_engine -> get_key ("t", true))
+		{
+			Character * npc = active_sector -> get_child <NPC> ();
+			if (player -> has_weapon ())
 			{
-				delete event;
-				running = false;
-			}
-			else if (event -> is_type <Hit_Event> ())
-			{
-				event = battle_engine . process (event);
+				player -> move_to (player -> get_weapon (), npc);
 			}
 			else
 			{
-				delete event;
+				npc -> move_to (npc -> get_weapon (), player);
 			}
-
-			//	Sometimes a new event was generated:
-			if (event != NULL)
-			{
-				input_engine -> event_queue . push (event);
-			}
+		}
+		
+		//	quit
+		if (player -> is_dead () || input_engine -> get_key ("q", false)
+								|| input_engine -> get_key ("Escape", false))
+		{
+			running = false;
 		}
 	}
 }

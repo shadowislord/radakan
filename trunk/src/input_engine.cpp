@@ -8,11 +8,6 @@ Input_Engine ::
 {
 	assert (Engine :: is_initialized ());
 	
-	going_forward = false;
-	going_backward = false;
-	going_left = false;
-	going_right = false;
-
 	OIS :: ParamList param_list;
 
 	size_t window_handle_temp = 0;
@@ -21,40 +16,40 @@ Input_Engine ::
 	// Each operating system uses a different mechanism to
 	// refer to the main rendering window.
 	#ifdef SL_WIN32
-		window->getCustomAttribute("HWND", &window_handle_temp);
+		window -> getCustomAttribute ("HWND", & window_handle_temp);
 	#else
-		window->getCustomAttribute("GLXWINDOW", &window_handle_temp);
-	#endif
+		window -> getCustomAttribute ("GLXWINDOW", & window_handle_temp);
+	#endif-
 
 	window_handle << window_handle_temp;
 
 	//	The input/output system needs to know how to interact with
 	//	the system window.
-	param_list.insert (make_pair (string("WINDOW"), window_handle.str()));
+	param_list . insert (make_pair (string("WINDOW"), window_handle . str ()));
 	
 	OIS :: InputManager :: createInputSystem (param_list);
 
-	// The final parameter refers to "buffered". If this is causing us a problem,
-	// enable it.
+	//	The final parameter refers to "buffered".
+	//	If this is causes a problem, disable it.
 	keyboard = dynamic_cast <OIS :: Keyboard *>
 	(
 		OIS :: InputManager :: getSingletonPtr () -> createInputObject
 		(
-			OIS :: OISKeyboard, false
+			OIS :: OISKeyboard, true
 		)
 	);
 	mouse = dynamic_cast <OIS :: Mouse *>
 	(
 		OIS :: InputManager :: getSingletonPtr () -> createInputObject
 		(
-			OIS :: OISMouse, false
+			OIS :: OISMouse, true
 		)
 	);
 
-	// Reference methods keyPressed, keyReleased
+	//	Reference methods keyPressed, keyReleased
 	keyboard -> setEventCallback (this);
 
-	// Reference methods mouseMoved, mousePressed, mouseReleased
+	//	Reference methods mouseMoved, mousePressed, mouseReleased
 	mouse -> setEventCallback (this);
 
 	assert (is_initialized ());
@@ -69,15 +64,15 @@ Input_Engine ::
 	OIS :: InputManager :: getSingletonPtr () -> destroyInputObject (mouse);
 	OIS :: InputManager :: destroyInputSystem ();
 
-	// Set to NULL so we can query if they have been
-	// initialised.
+	//	Set to NULL so we can query if they have been initialised.
 	keyboard = NULL;
 	mouse = NULL;
 }
 
 //	virtual
 bool Input_Engine ::
-	is_initialized () const
+	is_initialized ()
+	const
 {
 	if ((OIS :: InputManager :: getSingletonPtr () == NULL) || (mouse == NULL) || (keyboard == NULL))
 	{
@@ -89,39 +84,66 @@ bool Input_Engine ::
 	}
 }
 
-//	virtual
-Event * Input_Engine ::
-	process (Event * event)
+void Input_Engine ::
+	capture ()
 {
 	assert (is_initialized ());
-
-	if (going_forward)
+	
+	mouse -> capture ();
+	if (! mouse -> buffered ())
 	{
-		event_queue.push (new Move_Event (Move_Event :: forward));
-	}
-	if (going_backward)
-	{
-		event_queue.push (new Move_Event (Move_Event :: backward));
-	}
-	if (going_left)
-	{
-		event_queue.push (new Move_Event (Move_Event :: left));
-	}
-	if (going_right)
-	{
-		event_queue.push (new Move_Event (Move_Event :: right));
+//		handleNonBufferedMouse ();
 	}
 
-	if (event_queue.empty ())
+	keyboard->capture ();
+	if (! keyboard -> buffered ())
 	{
-		return NULL;
+//		handleNonBufferedKeys ();
 	}
-	else
+}
+
+bool Input_Engine ::
+	get_key (string key, bool reset)
+{
+	assert (is_initialized ());
+	
+	bool result = keys [key];
+	if (reset)
 	{
-		Event * event = event_queue.front();
-		event_queue.pop();
-		return event;
+		keys [key] = false;
 	}
+	return result;
+}
+
+bool Input_Engine ::
+	get_mouse_buttons (int button, bool reset)
+{
+	assert (is_initialized ());
+	
+	bool result = mouse_buttons [button];
+	if (reset)
+	{
+		mouse_buttons [button] = false;
+	}
+	return result;
+}
+
+int Input_Engine ::
+	get_mouse_height ()
+	const
+{
+	assert (is_initialized ());
+	
+	return mouse_height;
+}
+
+int Input_Engine ::
+	get_mouse_width ()
+	const
+{
+	assert (is_initialized ());
+	
+	return mouse_width;
 }
 
 //	virtual
@@ -130,45 +152,7 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-//	'Key -> action' mapping will happen here.
-
-	switch (key_event.key)
-	{
-		case OIS :: KC_W:
-		{
-			going_forward = true;
-			break;
-		}
-
-		case OIS :: KC_S:
-		{
-			going_backward = true;
-			break;
-		}
-
-		case OIS :: KC_A:
-		{
-			going_left = true;
-			break;
-		}
-
-		case OIS :: KC_D:
-		{
-			going_right = true;
-			break;
-		}
-
-		case OIS :: KC_ESCAPE:
-		{
-			event_queue.push (new Exit_Event ());
-			break;
-		}
-
-		default:
-		{
-			break;
-		}
-	}
+	keys [keyboard -> getAsString (key_event . key)] = true;
 
 	return true;
 }
@@ -179,39 +163,7 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-//	'Key -> action' mapping will happen here.
-
-	switch (key_event.key)
-	{
-		case OIS :: KC_W:
-		{
-			going_forward = false;
-			break;
-		}
-
-		case OIS :: KC_S:
-		{
-			going_backward = false;
-			break;
-		}
-
-		case OIS :: KC_A:
-		{
-			going_left = false;
-			break;
-		}
-
-		case OIS :: KC_D:
-		{
-			going_right = false;
-			break;
-		}
-
-		default:
-		{
-			break;
-		}
-	}
+	keys [keyboard -> getAsString (key_event . key)] = false;
 
 	return true;
 }
