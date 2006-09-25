@@ -12,6 +12,8 @@ using namespace std;
 	ostream * log_cout = & cout;
 #endif
 
+string path;
+
 #ifdef SL_WIN32
 	INT WINAPI WinMain (HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
 #else
@@ -26,7 +28,7 @@ using namespace std;
 		cout << "Setting up Scattered Lands..." << endl;
 
 		#ifdef SL_WIN32
-			string path = strCmdLine;
+			path = strCmdLine;
 
 			if (path == "")
 			{
@@ -35,7 +37,7 @@ using namespace std;
 				path = buffer;
 			}
 		#else
-			string path = argv [argc - 1];
+			path = argv [argc - 1];
 		#endif
 
 		cout << "path: " << path << endl;

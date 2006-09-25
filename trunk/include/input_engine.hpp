@@ -1,7 +1,7 @@
 #ifndef INPUT_ENGINE_HPP
 #define INPUT_ENGINE_HPP
 
-#include <Ogre.h>
+#include <OgreRenderWindow.h>
 
 #include <OISInputManager.h>
 #include <OISKeyboard.h>

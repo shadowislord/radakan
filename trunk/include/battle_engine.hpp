@@ -11,7 +11,7 @@
 using namespace std;
 using namespace boost;
 
-///	Battle_engine is called by the Frame_Listener.
+///	Battle_engine is called by Tslrpg.
 
 class Battle_Engine:
 	public Engine

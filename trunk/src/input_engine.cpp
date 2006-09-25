@@ -19,7 +19,7 @@ Input_Engine ::
 		window -> getCustomAttribute ("HWND", & window_handle_temp);
 	#else
 		window -> getCustomAttribute ("GLXWINDOW", & window_handle_temp);
-	#endif-
+	#endif
 
 	window_handle << window_handle_temp;
 

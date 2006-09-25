@@ -1,6 +1,7 @@
 #ifndef TSLRPG_HPP
 #define TSLRPG_HPP
 
+#include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "sector.hpp"
 
@@ -23,9 +24,9 @@ class Tslrpg:
 		Ogre :: Root * root;
 		Ogre :: RenderWindow * window;
 
-		Input_Engine * input_engine;
-
 		Battle_Engine battle_engine;
+		GUI_Engine * gui_engine;
+		Input_Engine * input_engine;
 
 		Sector * active_sector;
 		set <Sector *> sectors;

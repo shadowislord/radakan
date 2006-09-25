@@ -78,8 +78,6 @@ Tslrpg ::
 
 //	debug () << "deleting window... " << int (window) << endl;
 //	delete window;
-//	debug () << "deleting scene_mgr... " << int (scene_mgr) << endl;
-//	delete scene_mgr;
 //	debug () << "deleting root... " << int (root) << endl;
 //	delete root;
 }
@@ -103,6 +101,8 @@ void Tslrpg ::
 	{
 		root->renderOneFrame ();
 
+		gui_engine -> render ();
+		
 		input_engine -> capture ();
 
 		//	hit
@@ -133,4 +133,6 @@ void Tslrpg ::
 			running = false;
 		}
 	}
+
+	root->startRendering ();
 }
