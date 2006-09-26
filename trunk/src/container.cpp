@@ -110,6 +110,13 @@ bool Container ::
 	assert (sub_tree != NULL);
 	assert (sub_tree -> is_initialized ());
 	assert (sub_tree -> is_type <Entity> ());
+
+	Entity * sub_entity = sub_tree -> to_type <Entity> ();
 	
-	return Tree :: add (sub_tree);
+	if (Tree :: add (sub_entity))
+	{
+		sub_entity -> ogre_entity -> setVisible (sub_entity -> visible && (ogre_entity -> getVisible () || is_in (NULL)));
+		return true;
+	}
+	return false;
 }

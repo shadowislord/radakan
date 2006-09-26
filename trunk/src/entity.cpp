@@ -63,6 +63,3 @@ float Entity ::
 	
 	return weight;
 }
-
-/* !!!	//	only items directely in the sector are dispayed, when visible:
-	ogre_entity -> setVisible (visible && tree_parent -> is_in_tree (NULL));*/

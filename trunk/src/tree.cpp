@@ -82,6 +82,10 @@ bool Tree ::
 	move_to (Object * sub_tree, Object * other_tree)
 {
 	assert (is_initialized ());
+	assert (sub_tree - is_initialized ());
+	assert (other_tree != NULL);
+	assert (sub_tree -> is_initialized ());
+	assert (other_tree -> is_initialized ());
 	assert (contains (sub_tree, false));
 
 	sub_tree -> remove_from (this);
