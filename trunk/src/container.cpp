@@ -115,7 +115,7 @@ bool Container ::
 	
 	if (Tree :: add (sub_entity))
 	{
-		sub_entity -> ogre_entity -> setVisible (sub_entity -> visible && (ogre_entity -> getVisible () || is_in (NULL)));
+		sub_entity -> ogre_entity -> setVisible (sub_entity -> visible && (ogre_entity -> isVisible () || is_in (NULL)));
 		return true;
 	}
 	return false;

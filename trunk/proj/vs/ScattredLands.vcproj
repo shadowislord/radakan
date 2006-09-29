@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib OIS_static_d.lib"
+				AdditionalDependencies="OgreMain_d.lib OIS_static_d.lib CEGUIBase_d.lib OgreGUIRenderer_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(OGRE_HOME)\lib"
@@ -217,6 +217,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui_engine.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\input_engine.cpp"
 				>
 			</File>
@@ -292,6 +296,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\fight_state.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui_engine.hpp"
 				>
 			</File>
 			<File
