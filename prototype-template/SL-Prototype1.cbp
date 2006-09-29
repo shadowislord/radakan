@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="5" />
+	<Project>
+		<Option title="SL-Prototype1" />
+		<Option pch_mode="2" />
+		<Option default_target="" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin\SL-Prototype1.exe" />
+				<Option working_dir="bin\" />
+				<Option object_output="obj\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-D_DEBUG" />
+					<Add option="-D_STLP_DEBUG" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="OgreMain_d" />
+					<Add library="stlportstlg.5.0" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin\SL-Prototype1.exe" />
+				<Option working_dir="bin\" />
+				<Option object_output="obj\" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DNDEBUG" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="OgreMain" />
+					<Add library="stlport.5.0" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-D_STLP_NO_CUSTOM_IO" />
+			<Add option="-D_STLP_USE_DYNAMIC_LIB" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-fident" />
+			<Add option="-DWIN32" />
+			<Add option="-D_WINDOWS" />
+			<Add option="-Wall" />
+			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\stlport\stlport" />
+			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\include" />
+			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\samples\include" />
+			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\samples\refapp\include" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--add-stdcall-alias" />
+			<Add library="opengl32" />
+			<Add library="gdi32" />
+			<Add library="user32" />
+			<Add library="kernel32" />
+			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\lib" />
+			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\bin\Debug" />
+			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\bin\Release" />
+		</Linker>
+		<Unit filename="main.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="prototype_application.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="prototype_application.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
