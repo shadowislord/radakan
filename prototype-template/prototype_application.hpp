@@ -1,7 +1,7 @@
 #ifndef __PROTOTYPE_APPLICATION__
 #define __PROTOTYPE_APPLICATION__
 
-#include <ogre.h>
+#include <Ogre.h>
 
 using namespace Ogre;
 
