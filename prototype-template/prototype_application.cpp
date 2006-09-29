@@ -21,7 +21,20 @@ PrototypeApplication::PrototypeApplication()
 
 	ogre_scene_manager = ogre_root->createSceneManager(ST_GENERIC, "PrototypeApplication");
 
-	running = true;
+	// Create our camera
+	ogre_camera = ogre_scene_manager->createCamera("ThePlayer");
+	ogre_camera->setPosition(Vector3(0,0,0));
+	ogre_camera->lookAt(Vector3(0,0,-300));
+	ogre_camera->setNearClipDistance(5);
+
+	// Create a new view port from our active window
+	// Apply our viewport to the camera.
+	Viewport *vp = ogre_window->addViewport(ogre_camera);
+	vp->setBackgroundColour(ColourValue(0,0,255));
+
+	// Aspect ratio corrections
+	ogre_camera->setAspectRatio(Real(vp->getActualWidth())/Real(vp->getActualHeight()));
+
 }
 
 void PrototypeApplication::Load_Resources()
@@ -41,12 +54,16 @@ bool PrototypeApplication::Run()
 	// Initialise renderer
 	ogre_renderer->_initRenderTargets();
 
-	while(running)
+	while(!ogre_window->isClosed())
 	{
+		// Quick info: Interestingly, this actually just delegates the messagePump
+		// depending on the OS.
 		ogre_platform_manager->messagePump(ogre_window);
 
 		if(!ogre_root->renderOneFrame()) break;
 	}
+
+	return true;
 }
 
 void PrototypeApplication::Create_Scene(void)

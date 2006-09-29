@@ -28,7 +28,8 @@ private:
 	PlatformManager *ogre_platform_manager;
 	SceneManager 	*ogre_scene_manager;
 
-	bool running;
+	// Game specific objects
+	Camera *ogre_camera;
 };
 
 
