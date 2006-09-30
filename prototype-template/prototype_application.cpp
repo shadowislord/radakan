@@ -18,15 +18,15 @@ PrototypeApplication::PrototypeApplication()
 
 	ogre_renderer = ogre_root->getRenderSystem();
 
-//	// Platform specific stuff (used in rendering loop - see run()).
+	// Platform specific stuff (used in rendering loop - see run()).
 	ogre_platform_manager = & PlatformManager::getSingleton();
 
 	ogre_scene_manager = ogre_root->createSceneManager(ST_GENERIC, "PrototypeApplication");
 
 	// Create our camera
 	ogre_camera = ogre_scene_manager->createCamera("ThePlayer");
-	ogre_camera->setPosition(Vector3(0,0,0));
-	ogre_camera->lookAt(Vector3(0,0,-300));
+	ogre_camera->setPosition(Vector3(300,300,-500));
+	ogre_camera->lookAt(Vector3(0,-100,300));
 	ogre_camera->setNearClipDistance(5);
 
 	// Create a new view port from our active window
@@ -36,7 +36,6 @@ PrototypeApplication::PrototypeApplication()
 
 	// Aspect ratio corrections
 	ogre_camera->setAspectRatio(Real(vp->getActualWidth())/Real(vp->getActualHeight()));
-
 }
 
 void PrototypeApplication::Load_Resources()

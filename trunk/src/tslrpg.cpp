@@ -43,7 +43,7 @@ Tslrpg::
 		#endif
 	}
 
-	window = root->initialise (true);
+	window = root->initialise (true, "Scattered Lands");
 
 	//	This is the new input mechanism that is taking advantage of the
 	//	new engine handler.
