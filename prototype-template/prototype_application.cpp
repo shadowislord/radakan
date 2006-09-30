@@ -14,10 +14,12 @@ PrototypeApplication::PrototypeApplication()
 	// Create a new window based on the settings
 	ogre_window = ogre_root->initialise(true, "Scattered Lands Prototype Application");
 
+	assert (ogre_window != NULL);
+
 	ogre_renderer = ogre_root->getRenderSystem();
 
-	// Platform specific stuff (used in rendering loop - see run()).
-	ogre_platform_manager = new PlatformManager();
+//	// Platform specific stuff (used in rendering loop - see run()).
+	ogre_platform_manager = & PlatformManager::getSingleton();
 
 	ogre_scene_manager = ogre_root->createSceneManager(ST_GENERIC, "PrototypeApplication");
 
@@ -86,10 +88,10 @@ void PrototypeApplication::Create_Scene(void)
         Entity *ent2 = ogre_scene_manager->createEntity( "Table", "Table.mesh" );
 		ent2->setCastShadows( true );
 
-        Entity *ent3 = ogre_scene_manager->createEntity( "Pot", "Pot.mesh" );
+        Entity *ent3 = ogre_scene_manager->createEntity( "Pot", "pot.mesh" );
 		ent3->setCastShadows( true );
 
-        Entity *ent4 = ogre_scene_manager->createEntity( "Pot2", "Pot2.mesh" );
+        Entity *ent4 = ogre_scene_manager->createEntity( "Pot2", "pot2.mesh" );
 		ent3->setCastShadows( true );
 
 
@@ -111,17 +113,17 @@ void PrototypeApplication::Create_Scene(void)
 		node4->setPosition(300, 0, 200);
 
 
-		Plane plane( Vector3::UNIT_Y, 0 );
-		MeshManager::getSingleton().createPlane("ground",
-		   ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane,
-		   1000,1000,20,20,true,1,5,5,Vector3::UNIT_Z);
+//		Plane plane( Vector3::UNIT_Y, 0 );
+//		MeshManager::getSingleton().createPlane("ground",
+//		   ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane,
+//		   1000,1000,20,20,true,1,5,5,Vector3::UNIT_Z);
 
 
-       Entity *ent = ogre_scene_manager->createEntity( "GroundEntity", "ground" );
-       ogre_scene_manager->getRootSceneNode()->createChildSceneNode()->attachObject(ent);
+//       Entity *ent = ogre_scene_manager->createEntity( "GroundEntity", "ground" );
+//       ogre_scene_manager->getRootSceneNode()->createChildSceneNode()->attachObject(ent);
 
-       ent->setMaterialName("Examples/Rockwall");
-       ent->setCastShadows(false);
+//       ent->setMaterialName("Examples/Rockwall");
+//       ent->setCastShadows(false);
 
     }
 

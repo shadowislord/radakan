@@ -1,6 +1,5 @@
 Render System=OpenGL Rendering Subsystem
 
-
 [OpenGL Rendering Subsystem]
 Colour Depth=32
 Display Frequency=60
