@@ -15,11 +15,12 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-g" />
 					<Add option="-D_DEBUG" />
 					<Add option="-D_STLP_DEBUG" />
-					<Add option="-g" />
 				</Compiler>
 				<Linker>
+					<Add library="OIS" />
 					<Add library="OgreMain_d" />
 					<Add library="stlportstlg.5.0" />
 				</Linker>
@@ -31,11 +32,12 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-DNDEBUG" />
 					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="OIS" />
 					<Add library="OgreMain" />
 					<Add library="stlport.5.0" />
 				</Linker>
@@ -68,6 +70,18 @@
 			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\bin\Debug" />
 			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\bin\Release" />
 		</Linker>
+		<Unit filename="input.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="input.hpp">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
 		<Unit filename="main.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Debug" />
