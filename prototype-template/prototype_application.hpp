@@ -2,8 +2,11 @@
 #define __PROTOTYPE_APPLICATION__
 
 #include <Ogre.h>
+#include "input.hpp"
+
 
 using namespace Ogre;
+
 
 class PrototypeApplication
 {
@@ -28,8 +31,12 @@ private:
 	PlatformManager *ogre_platform_manager;
 	SceneManager 	*ogre_scene_manager;
 
+	// Input handling
+	Input *input;
+
 	// Game specific objects
 	Camera *ogre_camera;
+
 };
 
 

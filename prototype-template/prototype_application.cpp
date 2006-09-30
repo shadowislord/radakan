@@ -32,17 +32,20 @@ PrototypeApplication::PrototypeApplication()
 	// Create a new view port from our active window
 	// Apply our viewport to the camera.
 	Viewport *vp = ogre_window->addViewport(ogre_camera);
-	vp->setBackgroundColour(ColourValue(0,0,255));
+	vp->setBackgroundColour(ColourValue(0,0,0));
 
 	// Aspect ratio corrections
 	ogre_camera->setAspectRatio(Real(vp->getActualWidth())/Real(vp->getActualHeight()));
+	// Create and add our input frame listener
+	input = new Input(ogre_window, ogre_camera);
+	ogre_root->addFrameListener(input);
 }
 
 void PrototypeApplication::Load_Resources()
 {
 	// Actually all this line of code does is delegate the parameters to
 	// addResourceLocation().
-	ogre_root->addResourceLocation("Models/", "FileSystem", "Models", true);
+	ogre_root->addResourceLocation("./Models/", "FileSystem", "Models", true);
 
 	ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
@@ -61,6 +64,8 @@ bool PrototypeApplication::Run()
 		// depending on the OS.
 		ogre_platform_manager->messagePump(ogre_window);
 
+		// Interestingly, if you return a false within your frameStarted
+		// in your frame listener, this will return false.
 		if(!ogre_root->renderOneFrame()) break;
 	}
 
