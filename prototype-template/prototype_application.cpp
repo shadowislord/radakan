@@ -46,6 +46,7 @@ void PrototypeApplication::Load_Resources()
 	// Actually all this line of code does is delegate the parameters to
 	// addResourceLocation().
 	ogre_root->addResourceLocation("./Models/", "FileSystem", "Models", true);
+	ogre_root->addResourceLocation("./Sky/", "FileSystem", "Skies", true);
 
 	ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
@@ -74,6 +75,9 @@ bool PrototypeApplication::Run()
 
 void PrototypeApplication::Create_Scene(void)
     {
+
+        ogre_scene_manager->setSkyDome( true, "Peaceful" );
+
 
         // Create a light
         Light* myLight = ogre_scene_manager->createLight("Light0");
