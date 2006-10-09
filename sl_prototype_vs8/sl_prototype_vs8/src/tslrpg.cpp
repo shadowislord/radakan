@@ -3,6 +3,7 @@
 
 bool Tslrpg_Prototype::setup_ogre (void)
 {
+
 	// Get the OGRE root object
 	root = new Root ();
 
@@ -43,6 +44,7 @@ bool Tslrpg_Prototype::setup_ogre (void)
 
 bool Tslrpg_Prototype::setup_resources (void)
 {
+
 	// Add models directory
 	ResourceGroupManager::getSingleton ().addResourceLocation
 		("./data/model", "FileSystem", "Models", true);

@@ -84,6 +84,7 @@ bool Input::mouseReleased (const OIS::MouseEvent& arg, OIS::MouseButtonID id)
 // frameStarted is executed every loop
 bool Input::frameStarted (const FrameEvent& evt)
 {
+
 	Vector3 translate = Vector3::ZERO;
 
 	double time_elapsed = timer->getMilliseconds () * 0.0001f;
