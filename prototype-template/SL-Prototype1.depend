@@ -99,7 +99,7 @@
 	"OgreCompositionPass.h"
 	"OgreCompositionTargetPass.h"
 
-1153669132 d:\programming\programs\codeblocks\ogresdk\include\ogreprerequisites.h
+1158511194 d:\programming\programs\codeblocks\ogresdk\include\ogreprerequisites.h
 	"OgrePlatform.h"
 	"OgreStdHeaders.h"
 	"OgreMemoryManager.h"
@@ -1255,7 +1255,7 @@
 
 1133557682 d:\programming\programs\codeblocks\ogresdk\include\ogrememorymacros.h
 
-1140966072 d:\programming\programs\codeblocks\ogresdk\include\ogreanimation.h
+1158377204 d:\programming\programs\codeblocks\ogresdk\include\ogreanimation.h
 	"OgrePrerequisites.h"
 	"OgreString.h"
 	"OgreIteratorWrappers.h"
@@ -1266,7 +1266,7 @@
 	"OgrePrerequisites.h"
 	<ext/hash_map>
 
-1150682804 d:\programming\programs\codeblocks\ogresdk\include\ogreiteratorwrappers.h
+1158170640 d:\programming\programs\codeblocks\ogresdk\include\ogreiteratorwrappers.h
 	"OgrePrerequisites.h"
 
 1144277760 d:\programming\programs\codeblocks\ogresdk\include\ogreanimable.h
@@ -1312,7 +1312,7 @@
 	"OgreString.h"
 	"OgreSharedPtr.h"
 
-1116699708 d:\programming\programs\codeblocks\ogresdk\include\ogreexception.h
+1158170640 d:\programming\programs\codeblocks\ogresdk\include\ogreexception.h
 	"OgrePrerequisites.h"
 	"OgreString.h"
 
@@ -1334,7 +1334,7 @@
 	<typeinfo>
 	<stl/_epilog.h>
 
-1144277760 d:\programming\programs\codeblocks\ogresdk\include\ogreanimationtrack.h
+1158377204 d:\programming\programs\codeblocks\ogresdk\include\ogreanimationtrack.h
 	"OgrePrerequisites.h"
 	"OgreSimpleSpline.h"
 	"OgreRotationalSpline.h"
@@ -1366,7 +1366,7 @@
 	"OgrePrerequisites.h"
 	"OgreQuaternion.h"
 
-1144277760 d:\programming\programs\codeblocks\ogresdk\include\ogrekeyframe.h
+1158377204 d:\programming\programs\codeblocks\ogresdk\include\ogrekeyframe.h
 	"OgrePrerequisites.h"
 	"OgreVector3.h"
 	"OgreQuaternion.h"
@@ -1383,7 +1383,7 @@
 1107542878 d:\programming\programs\codeblocks\ogresdk\include\ogrehardwarebuffer.h
 	"OgrePrerequisites.h"
 
-1135348372 d:\programming\programs\codeblocks\ogresdk\include\ogrepose.h
+1158377206 d:\programming\programs\codeblocks\ogresdk\include\ogrepose.h
 	"OgrePrerequisites.h"
 	"OgreString.h"
 	"OgreHardwareVertexBuffer.h"
@@ -1534,7 +1534,7 @@
 	"OgrePrerequisites.h"
 	"OgreColourValue.h"
 
-1153062178 d:\programming\programs\codeblocks\ogresdk\include\ogregpuprogram.h
+1156529730 d:\programming\programs\codeblocks\ogresdk\include\ogregpuprogram.h
 	"OgrePrerequisites.h"
 	"OgreResource.h"
 	"OgreSharedPtr.h"
@@ -1673,7 +1673,7 @@
 	"OgreHardwareVertexBuffer.h"
 	"OgreHardwareIndexBuffer.h"
 
-1141613340 d:\programming\programs\codeblocks\ogresdk\include\ogremesh.h
+1158170640 d:\programming\programs\codeblocks\ogresdk\include\ogremesh.h
 	"OgrePrerequisites.h"
 	"OgreResource.h"
 	"OgreVertexIndexData.h"
@@ -1853,7 +1853,7 @@
 	"OgreIteratorWrappers.h"
 	"OgreMatrix4.h"
 
-1153062178 d:\programming\programs\codeblocks\ogresdk\include\ogrescenenode.h
+1158170640 d:\programming\programs\codeblocks\ogresdk\include\ogrescenenode.h
 	"OgrePrerequisites.h"
 	"OgreNode.h"
 	"OgreIteratorWrappers.h"
@@ -1864,7 +1864,7 @@
 	"OgreOverlayElement.h"
 	"OgreIteratorWrappers.h"
 
-1107542904 d:\programming\programs\codeblocks\ogresdk\include\ogreoverlayelement.h
+1158170640 d:\programming\programs\codeblocks\ogresdk\include\ogreoverlayelement.h
 	"OgrePrerequisites.h"
 	"OgreString.h"
 	"OgreRenderable.h"
@@ -2057,7 +2057,7 @@
 	"OgreSingleton.h"
 	"OgreIteratorWrappers.h"
 
-1149359522 d:\programming\programs\codeblocks\ogresdk\include\ogrescenemanager.h
+1156529730 d:\programming\programs\codeblocks\ogresdk\include\ogrescenemanager.h
 	"OgrePrerequisites.h"
 	"OgreString.h"
 	"OgreSceneNode.h"
@@ -2158,14 +2158,14 @@
 	"OgrePrerequisites.h"
 	"OgreDataStream.h"
 
-1146776712 d:\programming\programs\codeblocks\ogresdk\include\ogrecompositorchain.h
+1158170640 d:\programming\programs\codeblocks\ogresdk\include\ogrecompositorchain.h
 	"OgrePrerequisites.h"
 	"OgreRenderTargetListener.h"
 	"OgreRenderQueueListener.h"
 	"OgreCompositorInstance.h"
 	"OgreCompositor.h"
 
-1144456270 d:\programming\programs\codeblocks\ogresdk\include\ogrecompositorinstance.h
+1158170640 d:\programming\programs\codeblocks\ogresdk\include\ogrecompositorinstance.h
 	"OgrePrerequisites.h"
 	"OgreMaterial.h"
 	"OgreTexture.h"
@@ -2213,22 +2213,676 @@
 	"OgrePrerequisites.h"
 	"OgreInputEvent.h"
 
-1159506967 source:c:\prototypes\prototype1\main.cpp
+1159701192 source:c:\prototypes\prototype1\main.cpp
 	<Ogre.h>
 	"prototype_application.hpp"
 	"windows.h"
 
-1159647744 source:c:\prototypes\prototype1\prototype_application.cpp
+1160338175 source:c:\prototypes\prototype1\prototype_application.cpp
 	"prototype_application.hpp"
 
-1159645782 c:\prototypes\prototype1\prototype_application.hpp
-	<ogre.h>
+1160338020 c:\prototypes\prototype1\prototype_application.hpp
+	"input.hpp"
+	<Ogre.h>
+	<CEGUI/CEGUIImageset.h>
+	<CEGUI/CEGUISystem.h>
+	<CEGUI/CEGUILogger.h>
+	<CEGUI/CEGUISchemeManager.h>
+	<CEGUI/CEGUIWindowManager.h>
+	<CEGUI/CEGUIWindow.h>
+	<CEGUI/elements/CEGUICombobox.h>
+	<CEGUI/elements/CEGUIListbox.h>
+	<CEGUI/elements/CEGUIListboxTextItem.h>
+	<CEGUI/elements/CEGUIPushButton.h>
+	<CEGUI/elements/CEGUIScrollbar.h>
+	<CEGUI/elements/CEGUIStaticImage.h>
+	"OgreCEGUIRenderer.h"
+	"OgreCEGUIResourceProvider.h"
+
+1159905115 source:c:\prototypes\prototype1\input.cpp
 	"input.hpp"
 
-1159647649 source:c:\prototypes\prototype1\input.cpp
-	"input.hpp"
-
-1159644857 c:\prototypes\prototype1\input.hpp
+1159765331 c:\prototypes\prototype1\input.hpp
 	<Ogre.h>
 	<OIS.h>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\cegui.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIRect.h"
+	"CEGUIExceptions.h"
+	"CEGUITexture.h"
+	"CEGUIRenderer.h"
+	"CEGUIImageset.h"
+	"CEGUIImagesetManager.h"
+	"CEGUILogger.h"
+	"CEGUIMouseCursor.h"
+	"CEGUIFont.h"
+	"CEGUIFontManager.h"
+	"CEGUIEventArgs.h"
+	"CEGUIEvent.h"
+	"CEGUIEventSet.h"
+	"CEGUIGlobalEventSet.h"
+	"CEGUIProperty.h"
+	"CEGUIPropertySet.h"
+	"CEGUIWindow.h"
+	"CEGUIWindowFactory.h"
+	"CEGUIWindowFactoryManager.h"
+	"CEGUIWindowManager.h"
+	"CEGUIScheme.h"
+	"CEGUISchemeManager.h"
+	"CEGUISystem.h"
+	"CEGUIScriptModule.h"
+	"CEGUIRenderableFrame.h"
+	"CEGUIRenderableImage.h"
+	"elements/CEGUIButtonBase.h"
+	"elements/CEGUIPushButton.h"
+	"elements/CEGUICheckbox.h"
+	"elements/CEGUIRadioButton.h"
+	"elements/CEGUITitlebar.h"
+	"elements/CEGUIFrameWindow.h"
+	"elements/CEGUIProgressBar.h"
+	"elements/CEGUIEditbox.h"
+	"elements/CEGUIThumb.h"
+	"elements/CEGUISlider.h"
+	"elements/CEGUIScrollbar.h"
+	"elements/CEGUIStatic.h"
+	"elements/CEGUIListbox.h"
+	"elements/CEGUICombobox.h"
+	"elements/CEGUIListHeader.h"
+	"elements/CEGUIMultiColumnList.h"
+	"elements/CEGUIStaticText.h"
+	"elements/CEGUIStaticImage.h"
+	"elements/CEGUIGUISheet.h"
+	"elements/CEGUIListboxTextItem.h"
+	"elements/CEGUIComboDropList.h"
+	"elements/CEGUIMultiLineEditbox.h"
+	"elements/CEGUITabButton.h"
+	"elements/CEGUITabPane.h"
+	"elements/CEGUITabControl.h"
+	"elements/CEGUISpinner.h"
+	"elements/CEGUIDragContainer.h"
+	"elements/CEGUIScrolledContainer.h"
+	"elements/CEGUIScrollablePane.h"
+	"elements/CEGUITooltip.h"
+	"elements/CEGUIItemEntry.h"
+	"elements/CEGUITextItem.h"
+	"elements/CEGUIMenuItem.h"
+	"elements/CEGUIItemListBase.h"
+	"elements/CEGUIMenuBase.h"
+	"elements/CEGUIMenubar.h"
+	"elements/CEGUIPopupMenu.h"
+
+1158251216 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguibase.h
+	<cassert>
+	"CEGUIConfig.h"
+	"CEGUIVersion.h"
+	<string>
+	"CEGUIForwardRefs.h"
+
+1158253936 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiconfig.h
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiversion.h
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiforwardrefs.h
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguistring.h
+	"CEGUIBase.h"
+	<string>
+	<string.h>
+	<stdexcept>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguirect.h
+	"CEGUIBase.h"
+	"CEGUIVector.h"
+	"CEGUISize.h"
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguivector.h
+	"CEGUIBase.h"
+	"CEGUISize.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguisize.h
+	"CEGUIBase.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiexceptions.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguitexture.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguirenderer.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIRect.h"
+	"CEGUIColourRect.h"
+	"CEGUIEventSet.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguicolourrect.h
+	"CEGUIBase.h"
+	"CEGUIcolour.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguicolour.h
+	"CEGUIBase.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguieventset.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIEvent.h"
+	"CEGUIIteratorBase.h"
+	<map>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguievent.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIEventArgs.h"
+	"CEGUIRefPtr.h"
+	<map>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguieventargs.h
+	"CEGUIBase.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguirefptr.h
+	"CEGUIBase.h"
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiiteratorbase.h
+	"CEGUIBase.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiimageset.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIRect.h"
+	"CEGUIColourRect.h"
+	"CEGUIImagesetManager.h"
+	"CEGUIImage.h"
+	"CEGUIIteratorBase.h"
+	<map>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiimagesetmanager.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUISingleton.h"
+	"CEGUIIteratorBase.h"
+	<map>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguisingleton.h
+	"CEGUIBase.h"
+	<cassert>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiimage.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIRect.h"
+	"CEGUIColourRect.h"
+	"CEGUIVector.h"
+	"CEGUISize.h"
+	"CEGUIRenderer.h"
+	<map>
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguilogger.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	<fstream>
+	<sstream>
+	<vector>
+	<utility>
+	"CEGUISingleton.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguimousecursor.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUISingleton.h"
+	"CEGUIVector.h"
+	"CEGUIRect.h"
+	"CEGUIEventSet.h"
+	"CEGUIInputEvent.h"
+	"CEGUIUDim.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiinputevent.h
+	"CEGUIBase.h"
+	"CEGUIEventArgs.h"
+	"CEGUIString.h"
+	"CEGUIVector.h"
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiudim.h
+	"CEGUIRect.h"
+	"CEGUIVector.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguifont.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIRect.h"
+	"CEGUIVector.h"
+	"CEGUIColourRect.h"
+	<map>
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguifontmanager.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUISingleton.h"
+	"CEGUIIteratorBase.h"
+	<map>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiglobaleventset.h
+	"CEGUIEventSet.h"
+	"CEGUISingleton.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiproperty.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguipropertyset.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIIteratorBase.h"
+	"CEGUIProperty.h"
+	<map>
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiwindow.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIVector.h"
+	"CEGUIRect.h"
+	"CEGUISize.h"
+	"CEGUIEventSet.h"
+	"CEGUIPropertySet.h"
+	"CEGUISystem.h"
+	"CEGUIInputEvent.h"
+	"CEGUIWindowProperties.h"
+	"CEGUIUDim.h"
+	"CEGUIRenderCache.h"
+	<vector>
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguisystem.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUISingleton.h"
+	"CEGUIRenderer.h"
+	"CEGUIMouseCursor.h"
+	"CEGUIInputEvent.h"
+	"CEGUIResourceProvider.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiresourceprovider.h
+	"CEGUIBase.h"
+	"CEGUIDataContainer.h"
+	"CEGUIString.h"
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguidatacontainer.h
+	"CEGUIBase.h"
+	<malloc.h>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiwindowproperties.h
+	"CEGUIProperty.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguirendercache.h
+	"CEGUIVector.h"
+	"CEGUIRect.h"
+	"CEGUIImage.h"
+	"CEGUIFont.h"
+	<vector>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiwindowfactory.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIWindow.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiwindowfactorymanager.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUISingleton.h"
+	"CEGUILogger.h"
+	"CEGUIIteratorBase.h"
+	<map>
+	<vector>
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiwindowmanager.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUISingleton.h"
+	"CEGUILogger.h"
+	"CEGUIIteratorBase.h"
+	<map>
+	<vector>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguischeme.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUISchemeManager.h"
+	<vector>
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguischememanager.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUISingleton.h"
+	"CEGUIIteratorBase.h"
+	<map>
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguiscriptmodule.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIEvent.h"
+
+1158191278 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguirenderableframe.h
+	"CEGUIBase.h"
+	"CEGUIRenderableElement.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguirenderableelement.h
+	"CEGUIBase.h"
+	"CEGUISystem.h"
+	"CEGUIColourRect.h"
+	"CEGUIVector.h"
+	"CEGUIRenderCache.h"
+
+1158191276 d:\programming\programs\codeblocks\ogresdk\include\cegui\ceguirenderableimage.h
+	"CEGUIBase.h"
+	"CEGUIRenderableElement.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguibuttonbase.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIButtonBaseProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguipushbutton.h
+	"CEGUIBase.h"
+	"elements/CEGUIButtonBase.h"
+	"elements/CEGUIPushButtonProperties.h"
+	"CEGUIRenderableImage.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguicheckbox.h
+	"CEGUIBase.h"
+	"elements/CEGUIButtonBase.h"
+	"elements/CEGUICheckboxProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiradiobutton.h
+	"CEGUIBase.h"
+	"elements/CEGUIButtonBase.h"
+	"elements/CEGUIRadioButtonProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguititlebar.h
+	"CEGUIWindow.h"
+	"elements/CEGUITitlebarProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiframewindow.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIFrameWindowProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiprogressbar.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIProgressBarProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguieditbox.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIEditboxProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguithumb.h
+	"CEGUIPushButton.h"
+	"elements/CEGUIThumbProperties.h"
+	<utility>
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguislider.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUISliderProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiscrollbar.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIScrollbarProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguistatic.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"CEGUIRenderableFrame.h"
+	"elements/CEGUIStaticProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguilistbox.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIListboxProperties.h"
+	<vector>
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguicombobox.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIComboboxProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguilistheader.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIListHeaderSegment.h"
+	"elements/CEGUIListHeaderProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguimulticolumnlist.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"CEGUIListHeader.h"
+	"elements/CEGUIMultiColumnListProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguistatictext.h
+	"elements/CEGUIStatic.h"
+	"elements/CEGUIStaticTextProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguistaticimage.h
+	"elements/CEGUIStatic.h"
+	"CEGUIRenderableImage.h"
+	"elements/CEGUIStaticImageProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiguisheet.h
+	"CEGUIWindow.h"
+	"CEGUIWindowFactory.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguilistboxtextitem.h
+	"elements/CEGUIListboxItem.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguicombodroplist.h
+	"elements/CEGUIListbox.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguimultilineeditbox.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"CEGUIFont.h"
+	"elements/CEGUIMultiLineEditboxProperties.h"
+	<vector>
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguitabbutton.h
+	"CEGUIBase.h"
+	"elements/CEGUIButtonBase.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguitabpane.h
+	"elements/CEGUIStatic.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguitabcontrol.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUITabControlProperties.h"
+	"elements/CEGUITabPane.h"
+	<vector>
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguispinner.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUISpinnerProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguidragcontainer.h
+	"CEGUIWindow.h"
+	"CEGUIWindowFactory.h"
+	"elements/CEGUIDragContainerProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiscrolledcontainer.h
+	"CEGUIWindow.h"
+	"CEGUIWindowFactory.h"
+	"elements/CEGUIScrolledContainerProperties.h"
+	<map>
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiscrollablepane.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIScrollablePaneProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguitooltip.h
+	"CEGUIWindow.h"
+	"elements/CEGUITooltipProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiitementry.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguitextitem.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIItemEntry.h"
+	"elements/CEGUITextItemProperties.h"
+	"CEGUIFont.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguimenuitem.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUITextItem.h"
+	"elements/CEGUIMenuItemProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiitemlistbase.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIItemListBaseProperties.h"
+	"elements/CEGUIItemEntry.h"
+	<vector>
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguimenubase.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIMenuBaseProperties.h"
+	"elements/CEGUIItemListBase.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguimenubar.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIMenuBase.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguipopupmenu.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIPopupMenuProperties.h"
+	"elements/CEGUIMenuBase.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguibuttonbaseproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguipushbuttonproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguicheckboxproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiradiobuttonproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguititlebarproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiframewindowproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiprogressbarproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguieditboxproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguithumbproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguisliderproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiscrollbarproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguistaticproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguilistboxproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguicomboboxproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguilistheadersegment.h
+	"CEGUIBase.h"
+	"CEGUIWindow.h"
+	"elements/CEGUIListHeaderSegmentProperties.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguilistheadersegmentproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguilistheaderproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguimulticolumnlistproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguistatictextproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguistaticimageproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguilistboxitem.h
+	"CEGUIBase.h"
+	"CEGUIString.h"
+	"CEGUIColourRect.h"
+	"CEGUIRenderCache.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguimultilineeditboxproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguitabcontrolproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguispinnerproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguidragcontainerproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiscrolledcontainerproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiscrollablepaneproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguitooltipproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguitextitemproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguimenuitemproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguiitemlistbaseproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguimenubaseproperties.h
+	"CEGUIProperty.h"
+
+1158191274 d:\programming\programs\codeblocks\ogresdk\include\cegui\elements\ceguipopupmenuproperties.h
+	"CEGUIProperty.h"
+
+1107542904 d:\programming\programs\codeblocks\ogresdk\include\ogrenomemorymacros.h
+
+1158515150 d:\programming\programs\codeblocks\ogresdk\samples\include\ogreceguirenderer.h
+	<CEGUI/CEGUIBase.h>
+	<CEGUI/CEGUIRenderer.h>
+	<CEGUI/CEGUITexture.h>
+	<OgreRenderQueueListener.h>
+	<OgreSceneManagerEnumerator.h>
+	<OgreTextureUnitState.h>
+
+1158515150 d:\programming\programs\codeblocks\ogresdk\samples\include\ogreceguiresourceprovider.h
+	<CEGUI/CEGUIResourceProvider.h>
+	"OgreCEGUIRenderer.h"
 

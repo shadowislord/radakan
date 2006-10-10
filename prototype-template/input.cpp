@@ -1,4 +1,5 @@
 
+
 #include "input.hpp"
 
 Input::Input(RenderWindow *window, Camera *camera)
@@ -84,10 +85,10 @@ bool Input::frameStarted(const FrameEvent& evt)
 	const OIS::MouseState &mouse_state = ois_mouse->getMouseState();
 
 	// Handle input
-	if(ois_keyboard->isKeyDown(OIS::KC_W)) translate.z = -1;
-	if(ois_keyboard->isKeyDown(OIS::KC_S)) translate.z = 1;
-	if(ois_keyboard->isKeyDown(OIS::KC_A)) translate.x = -1;
-	if(ois_keyboard->isKeyDown(OIS::KC_D)) translate.x = 1;
+	if(ois_keyboard->isKeyDown(OIS::KC_W)) translate.z = -3;
+	if(ois_keyboard->isKeyDown(OIS::KC_S)) translate.z = 3;
+	if(ois_keyboard->isKeyDown(OIS::KC_A)) translate.x = -3;
+	if(ois_keyboard->isKeyDown(OIS::KC_D)) translate.x = 3;
 	if(ois_keyboard->isKeyDown(OIS::KC_ESCAPE)) return false;
 
 	ogre_camera->moveRelative(translate);

@@ -17,7 +17,6 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
-					<Add option="-D_STLP_DEBUG" />
 				</Compiler>
 				<Linker>
 					<Add library="OIS" />
@@ -39,24 +38,24 @@
 					<Add option="-s" />
 					<Add library="OIS" />
 					<Add library="OgreMain" />
-					<Add library="stlport.5.0" />
+					<Add library="CEGUIBase" />
+					<Add library="OgreGUIRenderer" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-D_STLP_NO_CUSTOM_IO" />
-			<Add option="-D_STLP_USE_DYNAMIC_LIB" />
+			<Add option="-Wall" />
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-fident" />
 			<Add option="-DWIN32" />
 			<Add option="-D_WINDOWS" />
-			<Add option="-Wall" />
 			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\stlport\stlport" />
 			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\include" />
 			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\samples\include" />
 			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\samples\refapp\include" />
+			<Add directory="D:\Programming\programs\codeblocks\OgreSDK\include\CEGUI" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
