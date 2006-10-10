@@ -1,12 +1,26 @@
 #ifndef __PROTOTYPE_APPLICATION__
 #define __PROTOTYPE_APPLICATION__
 
-#include <Ogre.h>
 #include "input.hpp"
 
+#include <Ogre.h>
+
+#include <CEGUI/CEGUIImageset.h>
+#include <CEGUI/CEGUISystem.h>
+#include <CEGUI/CEGUILogger.h>
+#include <CEGUI/CEGUISchemeManager.h>
+#include <CEGUI/CEGUIWindowManager.h>
+#include <CEGUI/CEGUIWindow.h>
+#include <CEGUI/elements/CEGUICombobox.h>
+#include <CEGUI/elements/CEGUIListbox.h>
+#include <CEGUI/elements/CEGUIListboxTextItem.h>
+#include <CEGUI/elements/CEGUIPushButton.h>
+#include <CEGUI/elements/CEGUIScrollbar.h>
+#include <CEGUI/elements/CEGUIStaticImage.h>
+#include "OgreCEGUIRenderer.h"
+#include "OgreCEGUIResourceProvider.h"
 
 using namespace Ogre;
-
 
 class PrototypeApplication
 {
@@ -36,6 +50,11 @@ private:
 
 	// Game specific objects
 	Camera *ogre_camera;
+
+	// CEGUI stuff
+	CEGUI::OgreCEGUIRenderer *cegui_renderer;
+    CEGUI::System* cegui_system;
+    CEGUI::Window* cegui_window;
 
 };
 
