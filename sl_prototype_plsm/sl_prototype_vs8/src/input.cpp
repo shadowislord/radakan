@@ -44,6 +44,7 @@ Input::Input (RenderWindow* window, Camera* camera)
 
 	// Create a timer
 	timer = PlatformManager::getSingletonPtr ()->createTimer ();
+	last_time = 0.0f;
 
 	// Get the scene manager
 	scene_mgr = ogre_camera->getSceneManager ();
@@ -92,8 +93,11 @@ bool Input::frameStarted (const FrameEvent& evt)
 
 	Vector3 translate = Vector3::ZERO;
 
-	double time_elapsed = timer->getMilliseconds () * 0.0001f;
-	double move_speed = 0.8f * time_elapsed;
+	double current_time = timer->getMicroseconds () * 0.0001f;
+	double time_elapsed = current_time - last_time;
+	last_time = current_time;
+
+	double move_speed = 0.6f * time_elapsed;
 	double gravity = 0.4f * time_elapsed;
 
 	// Ensure that our window has not been closed
