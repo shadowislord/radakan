@@ -44,6 +44,7 @@ Input::Input (RenderWindow* window, Camera* camera)
 
 	// Create a timer
 	timer = PlatformManager::getSingletonPtr ()->createTimer ();
+	last_time = 0.0f;
 
 	// Get the scene manager
 	scene_mgr = ogre_camera->getSceneManager ();
