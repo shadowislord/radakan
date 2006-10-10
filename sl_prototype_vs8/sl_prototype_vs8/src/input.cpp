@@ -39,15 +39,16 @@ Input::Input (RenderWindow* window, Camera* camera)
 	ois_keyboard->setEventCallback (this);
 	ois_mouse->setEventCallback (this);
 
+	// 
 	ogre_camera = camera;
 	ogre_window = window;
+
+	// Get the scene manager
+	scene_mgr = ogre_camera->getSceneManager ();
 
 	// Create a timer
 	timer = PlatformManager::getSingletonPtr ()->createTimer ();
 	last_time = 0.0f;
-
-	// Get the scene manager
-	scene_mgr = ogre_camera->getSceneManager ();
 }
 
 Input::~Input ()
@@ -81,7 +82,7 @@ bool Input::mouseReleased (const OIS::MouseEvent& arg, OIS::MouseButtonID id)
 }
 
 
-// Ogre related events (from FrameListener)
+// Ogre related events
 // frameStarted is executed every loop
 bool Input::frameStarted (const FrameEvent& evt)
 {
