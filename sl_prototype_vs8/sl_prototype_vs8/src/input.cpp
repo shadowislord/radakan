@@ -87,8 +87,11 @@ bool Input::frameStarted (const FrameEvent& evt)
 
 	Vector3 translate = Vector3::ZERO;
 
-	double time_elapsed = timer->getMilliseconds () * 0.0001f;
-	double move_speed = 0.8f * time_elapsed;
+	double current_time = timer->getMicroseconds () * 0.0001f;
+	double time_elapsed = current_time - last_time;
+	last_time = current_time;
+
+	double move_speed = 0.6f * time_elapsed;
 
 	// Ensure that our window has not been closed
 	if (ogre_window->isClosed ()) return false;

@@ -42,6 +42,7 @@ private:
 	SceneManager* scene_mgr;
 
 	Timer* timer;
+	double last_time;
 
 };
 
