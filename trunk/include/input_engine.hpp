@@ -25,6 +25,7 @@ class Input_Engine :
 		virtual ~Input_Engine ();
 		virtual bool is_initialized () const;
 		void capture ();
+		bool is_key_down (OIS::KeyCode);
 		bool get_key (string key, bool reset);
 		bool get_mouse_buttons (int button, bool reset);
 		int get_mouse_height () const;
