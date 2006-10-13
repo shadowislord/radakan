@@ -35,7 +35,7 @@ Input_Engine ::
 	(
 		OIS :: InputManager :: getSingletonPtr () -> createInputObject
 		(
-			OIS :: OISKeyboard, true
+			OIS :: OISKeyboard, false
 		)
 	);
 	mouse = dynamic_cast <OIS :: Mouse *>
@@ -100,6 +100,13 @@ void Input_Engine ::
 	{
 //		handleNonBufferedKeys ();
 	}
+}
+
+bool Input_Engine::is_key_down (OIS::KeyCode key_code)
+{
+
+	if (keyboard->isKeyDown (key_code)) return true;
+	else return false;
 }
 
 bool Input_Engine ::

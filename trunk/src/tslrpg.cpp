@@ -99,11 +99,29 @@ void Tslrpg ::
 
 	while (running)
 	{
-		root->renderOneFrame ();
+		input_engine -> capture ();
+
+		//	quit
+		/*if (player -> is_dead () || input_engine -> get_key ("q", false)
+								|| input_engine -> get_key ("Escape", false)
+								|| window -> isClosed())
+		{
+			running = false;
+		}*/
+
+		if (player->is_dead() || input_engine->is_key_down (OIS::KC_ESCAPE)
+			|| window->isClosed ())
+		{
+			running = false;
+		}
+
+		Ogre::PlatformManager::getSingletonPtr ()->messagePump (window);
+
+		if (! root->renderOneFrame ()) break;
+
+		// root->renderOneFrame ();
 
 		gui_engine -> render ();
-		
-		input_engine -> capture ();
 
 		//	hit
 		if (input_engine -> get_key ("h", true))
@@ -125,14 +143,7 @@ void Tslrpg ::
 				npc -> move_to (npc -> get_weapon (), player);
 			}
 		}
-		
-		//	quit
-		if (player -> is_dead () || input_engine -> get_key ("q", false)
-								|| input_engine -> get_key ("Escape", false))
-		{
-			running = false;
-		}
 	}
 
-	root->startRendering ();
+	// root->startRendering ();
 }
