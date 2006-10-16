@@ -21,6 +21,8 @@ class Sector:
 			Ogre :: RenderWindow * window);
 		virtual ~Sector ();
 		virtual bool is_initialized () const;
+		virtual bool add (Entity * entity);
+		void update ();
 		Ogre :: SceneManager * get_scene_manager () const;
 		Ogre :: Camera * get_camera () const;
 		Character * get_player () const;
@@ -29,6 +31,8 @@ class Sector:
 		Ogre :: SceneManager * scene_manager;
 		Ogre :: Camera * camera;
 		Character * player;
+		set <NPC *> npcs;
+
 };
 
 #endif

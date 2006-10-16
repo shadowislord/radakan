@@ -13,7 +13,7 @@ class Peace_State:
 		virtual ~Peace_State ();
 		virtual bool is_initialized () const;
 		virtual void act ();
-		virtual void think (State * my_parent);
+		virtual void think ();
 };
 
 #endif	//	PEACE_STATE_HPP

@@ -47,12 +47,12 @@ bool State ::
 void State ::
 	act ()
 {
-	debug () << "default AI state acting..." << endl;
+	debug () << * this << " acting..." << endl;
 }
 
 //	virtual
 void State ::
 	think ()
 {
-	debug () << "default AI state thinking..." << endl;
+	debug () << * this << " thinking..." << endl;
 }

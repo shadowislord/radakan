@@ -20,8 +20,8 @@ class Character:
 		virtual ~Character ();
 		virtual bool is_initialized () const;
 		virtual float get_total_weight () const;
-		virtual bool add (Object * sub_tree);				//	true iff succes
-		virtual bool move_to (Object * sub_tree, Object * other_tree);
+		virtual bool add (Entity * entity);		//	true iff succes
+		virtual bool move_to (Entity * entity, Set <Entity> * other_set);
 		bool has_weapon () const;
 		bool is_dead () const;
 		Weapon * get_weapon () const;

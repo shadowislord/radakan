@@ -65,28 +65,23 @@ float Character ::
 
 //	virtual
 bool Character ::
-	add (Object * sub_tree)
+	add (Entity * entity)
 {
 	assert (is_initialized ());
-	assert (sub_tree != NULL);
-	assert (sub_tree -> is_initialized ());
-	assert (sub_tree -> is_type <Entity> ());
+	assert (entity != NULL);
+	assert (entity -> is_initialized ());
 
-	if ((weapon == NULL) && sub_tree -> is_type <Weapon> ())
+	if ((weapon == NULL) && entity -> is_type <Weapon> ())
 	{
-		Container :: add (sub_tree);
-		weapon = sub_tree -> to_type <Weapon> ();
+		Container :: add (entity);
+		weapon = entity -> to_type <Weapon> ();
 		return true;
 	}
-	else if ((backpack == NULL) && sub_tree -> is_type <Container> ())
+	else if ((backpack == NULL) && entity -> is_type <Container> ())
 	{
-		Container :: add (sub_tree);
-		backpack = sub_tree -> to_type <Container> ();
+		Container :: add (entity);
+		backpack = entity -> to_type <Container> ();
 		return true;
-	}
-	else if (backpack != NULL)
-	{
-		return backpack -> add (sub_tree);
 	}
 	else
 	{
@@ -96,29 +91,30 @@ bool Character ::
 
 //	virtual
 bool Character ::
-	move_to (Object * sub_tree, Object * other_tree)
+	move_to (Entity * entity, Set <Entity> * other_set)
 {
 	assert (is_initialized ());
-	assert (sub_tree != NULL);
-	assert (other_tree != NULL);
-	assert (sub_tree -> is_initialized ());
-	assert (other_tree -> is_initialized ());
-	assert (contains (sub_tree, false));
+	assert (entity != NULL);
+	assert (other_set != NULL);
+	assert (entity -> is_initialized ());
+	assert (other_set -> is_initialized ());
+	assert (contains (entity, false));
 
-	if (weapon == sub_tree)
-	{
-		weapon = NULL;
-	}
-	else if (backpack == sub_tree)
-	{
-		backpack = NULL;
-	}
-	bool result = Container :: move_to (sub_tree, other_tree);
+	bool result = Container :: move_to (entity, other_set);
 
-	if (backpack != NULL)
+	if (result)
 	{
-		result = result || backpack -> move_to (sub_tree, other_tree);
+		if (weapon == entity)
+		{
+			weapon = NULL;
+		}
+		else if (backpack == entity)
+		{
+			backpack = NULL;
+		}
 	}
+	
+	assert (result == other_set -> contains (entity, false));
 
 	return result;
 }

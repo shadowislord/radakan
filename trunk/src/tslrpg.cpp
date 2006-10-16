@@ -73,11 +73,7 @@ Tslrpg ::
 
 	delete input_engine;
 
-
-//	These give problems:
-
-//	debug () << "deleting window... " << int (window) << endl;
-//	delete window;
+//	This gives a problem:
 //	debug () << "deleting root... " << int (root) << endl;
 //	delete root;
 }
@@ -99,51 +95,64 @@ void Tslrpg ::
 
 	while (running)
 	{
+		debug () << "Main loop - A" << endl;
+		active_sector -> update ();
+	
+		debug () << "Main loop - B" << endl;
 		input_engine -> capture ();
 
+		debug () << "Main loop - C" << endl;
+		Ogre :: PlatformManager :: getSingletonPtr () -> messagePump (window);
+
+		debug () << "Main loop - D" << endl;
+		if (! root -> renderOneFrame ())
+		{
+			debug () << "Main loop - E" << endl;
+			break;
+		}
+
+		debug () << "Main loop - F" << endl;
+		//	!!!	gui_engine -> render ();
+
+		debug () << "Main loop - G" << endl;
 		//	quit
-		/*if (player -> is_dead () || input_engine -> get_key ("q", false)
+		if (player -> is_dead () || input_engine -> get_key ("q", false)
+							//	|| input_engine->is_key_down (OIS :: KC_ESCAPE)
 								|| input_engine -> get_key ("Escape", false)
 								|| window -> isClosed())
 		{
-			running = false;
-		}*/
-
-		if (player->is_dead() || input_engine->is_key_down (OIS::KC_ESCAPE)
-			|| window->isClosed ())
-		{
+		debug () << "Main loop - H" << endl;
 			running = false;
 		}
 
-		Ogre::PlatformManager::getSingletonPtr ()->messagePump (window);
-
-		if (! root->renderOneFrame ()) break;
-
-		// root->renderOneFrame ();
-
-		gui_engine -> render ();
-
 		//	hit
+		debug () << "Main loop - I" << endl;
 		if (input_engine -> get_key ("h", true))
 		{
+			debug () << "Main loop - J" << endl;
 			Character * npc = active_sector -> get_child <NPC> ();
 			debug () << battle_engine . hit (player, npc) << endl;
 		}
 		
 		//	transfer
+		debug () << "Main loop - K" << endl;
 		if (input_engine -> get_key ("t", true))
 		{
+			debug () << "Key 't' was pressed." << endl;
 			Character * npc = active_sector -> get_child <NPC> ();
+			assert (npc != NULL);
+			assert (npc -> is_initialized ());
 			if (player -> has_weapon ())
 			{
 				player -> move_to (player -> get_weapon (), npc);
+				assert (npc -> has_weapon ());
 			}
 			else
 			{
 				npc -> move_to (npc -> get_weapon (), player);
 			}
 		}
+		
+		debug () << "Main loop - L" << endl;
 	}
-
-	// root->startRendering ();
 }

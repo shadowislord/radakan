@@ -47,19 +47,14 @@ class Object :
 		virtual ostream & debug () const;
 		virtual ostream & error () const;
 
-		virtual bool add (Object * sub_tree);				//	true iff succes
-		virtual bool contains (Object * sub_tree, bool recursive) const;
-		virtual bool move_to (Object * sub_tree, Object * other_tree);
-															//	true iff succes
-		
 	//	protected:
-		//	These methods should only be used by a tree
-		bool is_in (const Object * tree) const;
-		void put_in (Object * new_tree);
-		void remove_from (Object * old_tree);
+		//	These methods should only be used by a Set
+		bool is_in (const Object * set) const;
+		void put_in (Object * new_parent);
+		void remove_from (Object * old_parent);
 		
 	private:
-		Object * parent;	//	the tree in which the object is
+		Object * parent;	//	the set in which the object is
 };
 
 #ifdef SL_DEBUG

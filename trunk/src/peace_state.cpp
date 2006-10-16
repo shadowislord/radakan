@@ -33,12 +33,20 @@ bool Peace_State ::
 void Peace_State ::
 	act ()
 {
-	debug () << "Hey!" << endl;
 }
 
 //	virtual
 void Peace_State ::
-	think (State * parent)
+	think ()
 {
-	debug () << "nothing to worry..." << endl;
+	if (owner -> has_weapon ())
+	{
+		debug () << * owner << " gets aggressive!" << endl;
+
+		parent_state -> to_type <State_Machine> () -> change_active_state <Fight_State> ();
+	}
+	else
+	{
+		debug () << * owner << " stays calm." << endl;
+	}
 }

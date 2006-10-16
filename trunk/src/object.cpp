@@ -80,12 +80,12 @@ ostream & Object ::
 }
 
 bool Object ::
-	is_in (const Object * tree)
+	is_in (const Object * set)
 	const
 {
 	assert (is_initialized ());
 	
-	return (parent == tree);
+	return (parent == set);
 }
 
 void Object ::
@@ -105,28 +105,6 @@ void Object ::
 	assert (is_in (old_parent));
 
 	parent = NULL;
-}
-
-//	virtual
-bool Object ::
-	add (Object * sub_tree)
-{
-	return false;
-}
-
-//	virtual
-bool Object ::
-	contains (Object * sub_tree, bool recursive)
-	const
-{
-	return false;
-}
-
-//	virtual
-bool Object ::
-	move_to (Object * sub_tree, Object * other_tree)
-{
-	return false;
 }
 
 string to_string (float value)

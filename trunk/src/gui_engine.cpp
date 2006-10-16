@@ -54,12 +54,19 @@ bool GUI_Engine ::
 	is_initialized ()
 	const
 {
-	return Engine :: is_initialized ();
+	debug () << "a" << endl;
+	bool result = Engine :: is_initialized ();
+	debug () << "b" << endl;
+	return result;
 }
 
 void GUI_Engine ::
 	render ()
 	const
 {
-//	!!!	system -> renderGUI ();
+	debug () << "c" << endl;
+
+	assert (is_initialized ());
+	assert (system != NULL);
+	system -> renderGUI ();
 }

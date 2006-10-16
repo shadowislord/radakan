@@ -33,7 +33,6 @@ bool Fight_State ::
 void Fight_State ::
 	act ()
 {
-	debug () << "Attack!" << endl;
 }
 
 //	virtual
@@ -42,12 +41,12 @@ void Fight_State ::
 {
 	if (! owner -> has_weapon ())
 	{
-		debug () << "There's no point in being aggressive without a weapon..." << endl;
+		debug () << * owner << " says 'There's no point in being aggressive without a weapon.'" << endl;
 
 		parent_state -> to_type <State_Machine> () -> change_active_state <Peace_State> ();
 	}
 	else
 	{
-		debug () << "Let's attack..." << endl;
+		debug () << * owner << " looks for an ennemy." << endl;
 	}
 }

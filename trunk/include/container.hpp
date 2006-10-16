@@ -2,7 +2,7 @@
 #define CONTAINER_HPP
 
 #include "weapon.hpp"
-#include "tree.hpp"
+#include "set.hpp"
 
 using namespace std;
 
@@ -10,7 +10,7 @@ using namespace std;
 
 class Container:
 	public Entity,
-	public Tree
+	public Set <Entity>
 {
 	public:
 		Container
@@ -28,7 +28,7 @@ class Container:
 		virtual ~Container ();
 		virtual bool is_initialized () const;
 		virtual float get_total_weight () const;
-		virtual bool add (Object * sub_tree);
+		virtual bool add (Entity * entity);
 };
 
 #endif

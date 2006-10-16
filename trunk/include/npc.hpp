@@ -6,7 +6,8 @@
 using namespace std;
 
 class NPC:
-	public Character
+	public Character,
+	public State_Machine
 {
 	public:
 		NPC
@@ -15,9 +16,6 @@ class NPC:
 		virtual ~NPC ();
 		virtual bool is_initialized () const;
 
-		//	The AI needs an already initialized owner
-		void create_ai ();
-		State_Machine * ai;
 };
 
 #endif	//	NPC_HPP

@@ -11,11 +11,11 @@ NPC ::
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
 		new_ogre_entity -> getName ()),
-	Character (new_ogre_entity, new_node)
+	Character (new_ogre_entity, new_node),
+	State_Machine (NULL)
 {
 	assert (Character :: is_initialized ());
-	
-	ai = NULL;
+	assert (State_Machine :: is_initialized ());
 	
 	assert (is_initialized ());
 }
@@ -25,8 +25,6 @@ NPC ::
 	~NPC ()
 {
 	assert (Object :: is_initialized (* this + " -> ~NPC ()"));
-
-	delete ai;
 }
 
 //	virtual
@@ -34,16 +32,5 @@ bool NPC ::
 	is_initialized ()
 	const
 {
-	return Character :: is_initialized () && ((ai == NULL) || ai -> is_initialized ());
-}
-
-void NPC ::
-	create_ai ()
-{
-	assert (is_initialized ());
-	assert (ai == NULL);
-	
-	ai = new State_Machine (this, NULL);
-
-	assert (is_initialized ());
+	return Character :: is_initialized () && State_Machine :: is_initialized ();
 }

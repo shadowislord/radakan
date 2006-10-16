@@ -29,23 +29,23 @@ Sector::
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
 		scene_manager -> createEntity ("Tavern", "tavern.mesh"),
-		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
 		scene_manager -> createEntity ("Bar", "bar.mesh"),
-		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 17),
-		scene_manager -> createEntity ("Table1", "table.mesh"),
-		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> createEntity ("Table 1", "table.mesh"),
+		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 57),
-		scene_manager -> createEntity ("Table2", "table.mesh"),
-		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> createEntity ("Table 2", "table.mesh"),
+		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (26, 0, 97),
-		scene_manager -> createEntity ("Table3", "table.mesh"),
-		scene_manager -> getRootSceneNode ()->createChildSceneNode ()));
+		scene_manager -> createEntity ("Table 3", "table.mesh"),
+		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
 
 	add
 		(new Entity
@@ -92,12 +92,10 @@ Sector::
 	NPC * npc = new NPC
 		(scene_manager -> createEntity ("NPC", "bar.mesh"),
 		scene_manager -> getRootSceneNode () -> createChildSceneNode ());
-	npc -> create_ai ();
 	add (npc);
-	npc -> ai -> add <Peace_State> ();
-	npc -> ai -> add <Fight_State> ();
-	npc -> ai -> change_active_state <Fight_State> ();
-	
+	npc -> State_Machine :: add <Peace_State> ();
+	npc -> State_Machine :: add <Fight_State> ();
+
 	for (int i = 0; i < 100; i++)
 	{
 		char name [50];
@@ -107,7 +105,7 @@ Sector::
 		Ogre :: SceneNode * bbsNode2 = scene_manager -> getRootSceneNode () -> createChildSceneNode ();
 
 		char type [50];
-		int ran = ((int)(Ogre :: Math :: RangeRandom (0, 1) * 100)) % 8 + 1;
+		int ran = (int (Ogre :: Math :: RangeRandom (0, 1) * 100)) % 8 + 1;
 		sprintf (type, "spacebillboard/cluster_%d", ran);
 		bbs2 -> setMaterialName (type);
 		bbs2 -> getMaterial () -> setTextureFiltering (Ogre :: TFO_TRILINEAR);
@@ -124,16 +122,16 @@ Sector::
 		bbsNode2 -> attachObject (bbs2);
 		bbsNode2 -> setPosition (px, py, pz);
 	}
-	for(int i = 0; i < 100; i++)
+	for (int i = 0; i < 100; i++)
 	{
-		char name[50];
-		sprintf(name, "star_%d", i);
+		char name [50];
+		sprintf (name, "star_%d", i);
 		Ogre :: BillboardSet * bbs2 = scene_manager -> createBillboardSet (name, 1);
 		bbs2 -> setBillboardRotationType (Ogre :: BBR_VERTEX);
 		Ogre :: SceneNode * bbsNode2 = scene_manager -> getRootSceneNode () -> createChildSceneNode ();
 
-		char type[50];
-		int ran = ((int)(Ogre :: Math :: RangeRandom (0, 1) * 100)) % 2 + 1;
+		char type [50];
+		int ran = (int (Ogre :: Math :: RangeRandom (0, 1) * 100)) % 2 + 1;
 		sprintf (type, "spacebillboard/star_%d", ran);
 		bbs2 -> setMaterialName (type);
 		bbs2 -> getMaterial () -> setTextureFiltering (Ogre :: TFO_TRILINEAR);
@@ -158,20 +156,7 @@ Sector::
 		bbsNode2 -> attachObject (bbs2);
 		bbsNode2 -> setPosition (px, py, pz);
 	}
-
-	assert (player -> move_to (sword, npc));
-
-	npc -> ai -> think ();
-	npc -> ai -> act ();
 	
-	assert (npc -> move_to (sword, player));
-	
-	npc -> ai -> think ();
-	npc -> ai -> act ();
-	
-	npc -> ai -> think ();
-	npc -> ai -> act ();
-
 	assert (is_initialized ());
 }
 
@@ -190,6 +175,35 @@ bool Sector ::
 	const
 {
 	return Object :: is_initialized ();
+}
+
+//	virtual
+bool Sector ::
+	add (Entity * entity)
+{
+	assert (is_initialized ());
+	assert (entity != NULL);
+	assert (entity -> is_initialized ());
+
+	if (entity -> is_type <NPC> ())
+	{
+		bool success = npcs . insert (entity -> to_type <NPC> ()) . second;
+		assert (success);
+	}
+	return Container :: add (entity);
+}
+
+void Sector ::
+	update ()
+{
+	assert (is_initialized ());
+
+	for (set <NPC *> :: const_iterator i = npcs . begin ();
+													i != npcs . end (); i ++)
+	{
+		(* i) -> think ();
+		(* i) -> act ();
+	}
 }
 
 Ogre :: SceneManager * Sector ::

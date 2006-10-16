@@ -25,7 +25,7 @@ Input_Engine ::
 
 	//	The input/output system needs to know how to interact with
 	//	the system window.
-	param_list . insert (make_pair (string("WINDOW"), window_handle . str ()));
+	param_list . insert (make_pair (string ("WINDOW"), window_handle . str ()));
 	
 	OIS :: InputManager :: createInputSystem (param_list);
 
@@ -35,7 +35,9 @@ Input_Engine ::
 	(
 		OIS :: InputManager :: getSingletonPtr () -> createInputObject
 		(
-			OIS :: OISKeyboard, false
+			OIS :: OISKeyboard, true
+			//	I (Tinus) set this to buffered again, as otherwise get_key (...)
+			//	doesn't work.
 		)
 	);
 	mouse = dynamic_cast <OIS :: Mouse *>
@@ -102,12 +104,11 @@ void Input_Engine ::
 	}
 }
 
-bool Input_Engine::is_key_down (OIS::KeyCode key_code)
-{
-
-	if (keyboard->isKeyDown (key_code)) return true;
-	else return false;
-}
+//	bool Input_Engine ::
+//		is_key_down (OIS :: KeyCode key_code)
+//	{
+//		return keyboard->isKeyDown (key_code);
+//	}
 
 bool Input_Engine ::
 	get_key (string key, bool reset)

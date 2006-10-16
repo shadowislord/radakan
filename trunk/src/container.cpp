@@ -20,13 +20,12 @@ Container ::
 		Ogre :: Vector3 (0, 0, 0),
 		new_ogre_entity,
 		new_node),
-	Tree
+	Set <Entity>
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
 		new_ogre_entity -> getName ())
 {
-	assert (Entity :: is_initialized ());
-	assert (Tree :: is_initialized ());
+	assert (Set <Entity> :: is_initialized ());
 	
 	assert (is_initialized ());
 }
@@ -55,13 +54,12 @@ Container ::
 		new_position,
 		new_ogre_entity,
 		new_node),
-	Tree
+	Set <Entity>
 		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
 		new_ogre_entity -> getName ())
 {
-	assert (Entity :: is_initialized ());
-	assert (Tree :: is_initialized ());
+	assert (Set <Entity> :: is_initialized ());
 	
 	assert (is_initialized ());
 }
@@ -79,7 +77,7 @@ bool Container ::
 	is_initialized ()
 	const
 {
-	return Entity :: is_initialized () && Tree :: is_initialized ();
+	return Set <Entity> :: is_initialized ();
 }
 
 //	virtual
@@ -91,7 +89,7 @@ float Container ::
 	
 	float total_weight = weight;
 
-	for (set <Object *> :: const_iterator i = children . begin ();
+	for (set <Entity *> :: const_iterator i = children . begin ();
 													i != children . end (); i ++)
 	{
 		assert ((* i) -> is_type <Container> ());
@@ -101,21 +99,18 @@ float Container ::
 	return total_weight;
 }
 
-//	returns subtree, iff succes
 //	virtual
 bool Container ::
-	add (Object * sub_tree)
+	add (Entity * entity)
 {
 	assert (is_initialized ());
-	assert (sub_tree != NULL);
-	assert (sub_tree -> is_initialized ());
-	assert (sub_tree -> is_type <Entity> ());
+	assert (entity != NULL);
+	assert (entity -> is_initialized ());
 
-	Entity * sub_entity = sub_tree -> to_type <Entity> ();
-	
-	if (Tree :: add (sub_entity))
+	if (Set <Entity> :: add (entity))
 	{
-		sub_entity -> ogre_entity -> setVisible (sub_entity -> visible && (ogre_entity -> isVisible () || is_in (NULL)));
+		//	An entity can be seen when it's visible & (directely) in the sector.
+		entity -> ogre_entity -> setVisible (entity -> visible && (ogre_entity -> isVisible () || is_in (NULL)));
 		return true;
 	}
 	return false;

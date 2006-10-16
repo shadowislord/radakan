@@ -4,13 +4,12 @@ using namespace std;
 
 //  constructor
 State_Machine ::
-	State_Machine (Character * new_owner, State * new_parent_state) :
-	Object (* new_owner + "'s state machine"),
-	State (new_owner, new_parent_state),
-	Tree (* this)
+	State_Machine (State * new_parent_state) :
+	Object (* this + "'s state machine"),
+	State (this -> to_type <Character> (), new_parent_state),
+	Set <State> (* this)
 {
-	assert (State :: is_initialized ());
-	assert (Tree :: is_initialized ());
+	assert (Set <State> :: is_initialized ());
 
 	active_child_state = NULL;
 	
@@ -29,7 +28,7 @@ bool State_Machine ::
 	is_initialized ()
 	const
 {
-	return State :: is_initialized () && Tree :: is_initialized () && ((active_child_state == NULL) || active_child_state -> is_initialized ());
+	return Set <State> :: is_initialized () && ((active_child_state == NULL) || active_child_state -> is_initialized ());
 }
 
 //	virtual
@@ -50,24 +49,19 @@ void State_Machine ::
 	active_child_state -> think ();
 }
 
-//	returns subtree, iff succes
 //	virtual
 bool State_Machine ::
-	add (Object * sub_tree)
+	add (State * state)
 {
 	assert (is_initialized ());
-	assert (sub_tree != NULL);
-	assert (sub_tree -> is_initialized ());
-	assert (sub_tree -> is_type <State> ());
+	assert (state != NULL);
+	assert (state -> is_initialized ());
 
-	bool result = Tree :: add (sub_tree);
+	bool result = Set <State> :: add (state);
 
 	assert (result);
 
-	if (active_child_state == NULL)
-	{
-		active_child_state = sub_tree -> to_type <State> ();
-	}
-	
+	active_child_state = state -> to_type <State> ();
+
 	return true;
 }
