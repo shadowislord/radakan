@@ -30,6 +30,10 @@ Tslrpg::
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
 					(path + "/data/material", "FileSystem", "material", true);
+					
+		// Add gui directory
+		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
+					(path + "/data/gui", "FileSystem", "gui", true);
 
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
@@ -37,13 +41,16 @@ Tslrpg::
 	catch (Ogre :: Exception & e)
 	{
 		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-			MessageBox (NULL, e.getFullDescription ().c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+			MessageBox (NULL, e . getFullDescription () . c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		#else
-			cerr << "An exception has occured: " << e.getFullDescription () << endl;
+			cerr << "An exception has occured!" << endl;
 		#endif
+		abort ();
 	}
 
 	window = root->initialise (true, "Scattered Lands");
+
+	//	!!!	gui_engine = new GUI_Engine (window);
 
 	//	This is the new input mechanism that is taking advantage of the
 	//	new engine handler.
@@ -54,9 +61,9 @@ Tslrpg::
 	sectors.insert (active_sector);
 
 	//	Set default mipmap level (NB some APIs ignore this)
-	Ogre :: TextureManager :: getSingleton().setDefaultNumMipmaps (5);
+	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
 
-	Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
+	Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
 
 	player = active_sector->get_player ();
 }
@@ -91,54 +98,43 @@ void Tslrpg ::
 {
 	assert (is_initialized ());
 	
-	bool running = true;
-
-	while (running)
+	while (true)
 	{
-		debug () << "Main loop - A" << endl;
 		active_sector -> update ();
 	
-		debug () << "Main loop - B" << endl;
 		input_engine -> capture ();
 
-		debug () << "Main loop - C" << endl;
 		Ogre :: PlatformManager :: getSingletonPtr () -> messagePump (window);
 
-		debug () << "Main loop - D" << endl;
 		if (! root -> renderOneFrame ())
 		{
-			debug () << "Main loop - E" << endl;
 			break;
 		}
 
-		debug () << "Main loop - F" << endl;
 		//	!!!	gui_engine -> render ();
 
-		debug () << "Main loop - G" << endl;
 		//	quit
+		//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
 		if (player -> is_dead () || input_engine -> get_key ("q", false)
-							//	|| input_engine->is_key_down (OIS :: KC_ESCAPE)
 								|| input_engine -> get_key ("Escape", false)
 								|| window -> isClosed())
 		{
-		debug () << "Main loop - H" << endl;
-			running = false;
+			break;
 		}
 
 		//	hit
-		debug () << "Main loop - I" << endl;
 		if (input_engine -> get_key ("h", true))
 		{
-			debug () << "Main loop - J" << endl;
 			Character * npc = active_sector -> get_child <NPC> ();
-			debug () << battle_engine . hit (player, npc) << endl;
+			if (! npc -> is_dead ())
+			{
+				debug () << battle_engine . hit (player, npc) << endl;
+			}
 		}
 		
 		//	transfer
-		debug () << "Main loop - K" << endl;
 		if (input_engine -> get_key ("t", true))
 		{
-			debug () << "Key 't' was pressed." << endl;
 			Character * npc = active_sector -> get_child <NPC> ();
 			assert (npc != NULL);
 			assert (npc -> is_initialized ());
@@ -152,7 +148,5 @@ void Tslrpg ::
 				npc -> move_to (npc -> get_weapon (), player);
 			}
 		}
-		
-		debug () << "Main loop - L" << endl;
 	}
 }

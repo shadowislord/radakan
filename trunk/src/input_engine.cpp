@@ -55,6 +55,19 @@ Input_Engine ::
 	mouse -> setEventCallback (this);
 
 	assert (is_initialized ());
+
+
+	// Find out OIS key code names
+ofstream ofs ("ois_key_test.txt");
+ofs << keyboard -> getAsString (OIS :: KC_ESCAPE) << endl;
+ofs << keyboard -> getAsString (OIS :: KC_H) << endl;
+ofs << keyboard -> getAsString (OIS :: KC_Q) << endl;
+ofs . close ();
+
+
+
+
+
 }
 
 Input_Engine ::
@@ -114,13 +127,33 @@ bool Input_Engine ::
 	get_key (string key, bool reset)
 {
 	assert (is_initialized ());
-	
-	bool result = keys [key];
-	if (reset)
+
+	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+		if (key == "Escape")
+		{
+			key = "Esc";
+		}
+		if (key_win . size () == 1)
+		{
+			int temp = int (key . at (0));
+			if ((96 < temp) && (temp < 123))
+			{
+				key . erase ();
+				key . push_back (char (temp - 32));
+			}
+		}
+	#endif
+
+	if (keys [key])
 	{
-		keys [key] = false;
+		debug () << "Key '" << key << "' was pressed." << endl;
+		if (reset)
+		{
+			keys [key] = false;
+		}
+		return true;
 	}
-	return result;
+	return false;
 }
 
 bool Input_Engine ::

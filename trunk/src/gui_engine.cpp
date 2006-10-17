@@ -21,19 +21,19 @@ GUI_Engine ::
 
 	CEGUI :: Logger :: getSingleton () . setLoggingLevel (CEGUI :: Informative);
 
-	/*CEGUI::SchemeManager::getSingleton().loadScheme((utf8 *)"TaharezLook.scheme");
+	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("schemes/TaharezLook.scheme");
 
-	mGuiSystem->setDefaultMouseCursor((utf8 *)"TaharezLook", (utf8 *)"MouseArrow");
+	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
-	mGuiSystem->setDefaultFont((utf8 *)"Tahoma-12");*/
+//	system -> setDefaultFont ("Tahoma-12");
 
 	root_window = system -> setGUISheet
 	(
-		window_manager -> createWindow ("DefaultGUISheet", "Root")
+		window_manager -> createWindow ("DefaultWindow", "Sheet")
 	);
 
 	Window * test_window = window_manager -> createWindow
-									("TaharezLook/FrameWindow", "testWindow");
+									("TaharezLook/Button");
 	test_window -> setPosition (Point (0.25f, 0.25f));
 	test_window -> setSize (Size (0.5f, 0.5f));
 	test_window -> setText ("Hello World!");
