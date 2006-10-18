@@ -35,6 +35,10 @@ Tslrpg::
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
 					(path + "/data/gui", "FileSystem", "gui", true);
 
+		// Add fonts directory
+		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
+					(path + "/data/fonts", "FileSystem", "fonts", true);
+
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
 	}	// End of try statement
@@ -43,14 +47,14 @@ Tslrpg::
 		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 			MessageBox (NULL, e . getFullDescription () . c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		#else
-			cerr << "An exception has occured!" << endl;
+			cerr << "An exception has occured: " << e . getFullDescription () << endl;
 		#endif
 		abort ();
 	}
 
 	window = root->initialise (true, "Scattered Lands");
 
-	//	!!!	gui_engine = new GUI_Engine (window);
+	gui_engine = new GUI_Engine (window);
 
 	//	This is the new input mechanism that is taking advantage of the
 	//	new engine handler.
@@ -78,6 +82,7 @@ Tslrpg ::
 		delete (* i);
 	}
 
+	delete gui_engine;
 	delete input_engine;
 
 //	This gives a problem:
@@ -111,7 +116,8 @@ void Tslrpg ::
 			break;
 		}
 
-		//	!!!	gui_engine -> render ();
+		//	!!!
+		gui_engine -> render ();
 
 		//	quit
 		//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.

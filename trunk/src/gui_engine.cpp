@@ -21,11 +21,11 @@ GUI_Engine ::
 
 	CEGUI :: Logger :: getSingleton () . setLoggingLevel (CEGUI :: Informative);
 
-	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("schemes/TaharezLook.scheme");
+	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
 
 	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
-//	system -> setDefaultFont ("Tahoma-12");
+	system -> setDefaultFont ("BlueHighway-12");
 
 	root_window = system -> setGUISheet
 	(
@@ -33,12 +33,12 @@ GUI_Engine ::
 	);
 
 	Window * test_window = window_manager -> createWindow
-									("TaharezLook/Button");
+														("TaharezLook/Button");
 	test_window -> setPosition (Point (0.25f, 0.25f));
 	test_window -> setSize (Size (0.5f, 0.5f));
 	test_window -> setText ("Hello World!");
 
-	root_window -> addChildWindow (test_window);
+//	root_window -> addChildWindow (test_window);
 	
 	assert (is_initialized ());
 }
@@ -54,18 +54,13 @@ bool GUI_Engine ::
 	is_initialized ()
 	const
 {
-	debug () << "a" << endl;
-	bool result = Engine :: is_initialized ();
-	debug () << "b" << endl;
-	return result;
+	return Engine :: is_initialized ();
 }
 
 void GUI_Engine ::
 	render ()
 	const
 {
-	debug () << "c" << endl;
-
 	assert (is_initialized ());
 	assert (system != NULL);
 	system -> renderGUI ();
