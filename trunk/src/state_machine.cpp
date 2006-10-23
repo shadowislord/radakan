@@ -32,21 +32,21 @@ bool State_Machine ::
 }
 
 //	virtual
-void State_Machine ::
+string State_Machine ::
 	act ()
 {
 	assert (is_initialized ());
 	assert (active_child_state != NULL);
-	active_child_state -> act ();
+	return active_child_state -> act ();
 }
 
 //	virtual
-void State_Machine ::
+string State_Machine ::
 	think ()
 {
 	assert (is_initialized ());
 	assert (active_child_state != NULL);
-	active_child_state -> think ();
+	return active_child_state -> think ();
 }
 
 //	virtual

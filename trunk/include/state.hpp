@@ -12,8 +12,8 @@ class State:
 		State (Character * new_owner, State * new_parent_state);
 		virtual ~State ();
 		virtual bool is_initialized () const;
-		virtual void act ();
-		virtual void think ();	//	change your current state
+		virtual string act ();
+		virtual string think ();	//	change your current state
 		Character * owner;
 		State * parent_state;
 };

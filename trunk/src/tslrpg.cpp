@@ -21,11 +21,11 @@ Tslrpg::
 	{
 		// Add textures directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/texture", "FileSystem", "Textures", true);
+					(path + "/data/texture", "FileSystem", "textures", true);
 
 		// Add 3D models directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/model", "FileSystem", "Models", true);
+					(path + "/data/model", "FileSystem", "models", true);
 
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
@@ -54,20 +54,22 @@ Tslrpg::
 
 	window = root->initialise (true, "Scattered Lands");
 
-	gui_engine = new GUI_Engine (window);
 
-	//	This is the new input mechanism that is taking advantage of the
-	//	new engine handler.
-	input_engine = new Input_Engine (window);
-
-	active_sector = new Sector
-		("Sector 1", root->createSceneManager (Ogre :: ST_GENERIC), window);
+	Ogre :: SceneManager * scene_manager = root->createSceneManager
+														(Ogre :: ST_GENERIC);
+	active_sector = new Sector ("Sector 1", scene_manager, window);
 	sectors.insert (active_sector);
 
+	gui_engine = new GUI_Engine (window, scene_manager);
+	
 	//	Set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
 
 	Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
+
+	//	This is the new input mechanism that is taking advantage of the
+	//	new engine handler.
+	input_engine = new Input_Engine (window);	
 
 	player = active_sector->get_player ();
 }

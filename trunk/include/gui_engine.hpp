@@ -13,7 +13,7 @@ class GUI_Engine:
 	public Engine
 {
 	public:
-		GUI_Engine (Ogre :: RenderWindow * window);
+		GUI_Engine (Ogre :: RenderWindow * window, Ogre :: SceneManager * scene_manager);
 		virtual ~GUI_Engine ();
 		virtual bool is_initialized () const;
 		void render () const;

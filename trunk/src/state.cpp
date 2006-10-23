@@ -44,15 +44,21 @@ bool State ::
 }
 
 //	virtual
-void State ::
+string State ::
 	act ()
 {
-	debug () << * this << " acting..." << endl;
+	assert (is_initialized ());
+
+	abort ();
+	return "";
 }
 
 //	virtual
-void State ::
+string State ::
 	think ()
 {
-	debug () << * this << " thinking..." << endl;
+	assert (is_initialized ());
+	
+	abort ();
+	return "";
 }

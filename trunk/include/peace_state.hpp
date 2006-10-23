@@ -12,8 +12,8 @@ class Peace_State:
 		Peace_State (Character * new_owner, State * new_parent_state);
 		virtual ~Peace_State ();
 		virtual bool is_initialized () const;
-		virtual void act ();
-		virtual void think ();
+		virtual string act ();
+		virtual string think ();
 };
 
 #endif	//	PEACE_STATE_HPP

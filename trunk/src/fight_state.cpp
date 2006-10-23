@@ -30,23 +30,23 @@ bool Fight_State ::
 }
 
 //	virtual
-void Fight_State ::
+string Fight_State ::
 	act ()
 {
+	return "";
 }
 
 //	virtual
-void Fight_State ::
+string Fight_State ::
 	think ()
 {
 	if (! owner -> has_weapon ())
 	{
-		debug () << * owner << " says 'There's no point in being aggressive without a weapon.'" << endl;
-
 		parent_state -> to_type <State_Machine> () -> change_active_state <Peace_State> ();
+		return * owner + " says 'There's no point in being aggressive without a weapon.'";
 	}
 	else
 	{
-		debug () << * owner << " looks for an ennemy." << endl;
+		return * owner + " looks for an ennemy.";
 	}
 }

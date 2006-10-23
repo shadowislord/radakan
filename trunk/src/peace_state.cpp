@@ -30,23 +30,23 @@ bool Peace_State ::
 }
 
 //	virtual
-void Peace_State ::
+string Peace_State ::
 	act ()
 {
+	return "";
 }
 
 //	virtual
-void Peace_State ::
+string Peace_State ::
 	think ()
 {
 	if (owner -> has_weapon ())
 	{
-		debug () << * owner << " gets aggressive!" << endl;
-
 		parent_state -> to_type <State_Machine> () -> change_active_state <Fight_State> ();
+		return * owner + " gets aggressive!";
 	}
 	else
 	{
-		debug () << * owner << " stays calm." << endl;
+		return * owner + " stays calm.";
 	}
 }

@@ -55,19 +55,6 @@ Input_Engine ::
 	mouse -> setEventCallback (this);
 
 	assert (is_initialized ());
-
-
-	// Find out OIS key code names
-ofstream ofs ("ois_key_test.txt");
-ofs << keyboard -> getAsString (OIS :: KC_ESCAPE) << endl;
-ofs << keyboard -> getAsString (OIS :: KC_H) << endl;
-ofs << keyboard -> getAsString (OIS :: KC_Q) << endl;
-ofs . close ();
-
-
-
-
-
 }
 
 Input_Engine ::

@@ -198,11 +198,21 @@ void Sector ::
 {
 	assert (is_initialized ());
 
+	string think;
+	string act;
 	for (set <NPC *> :: const_iterator i = npcs . begin ();
 													i != npcs . end (); i ++)
 	{
-		(* i) -> think ();
-		(* i) -> act ();
+		think = (* i) -> think ();
+		if (! think . empty ())
+		{
+			debug () << think << endl;
+		}
+		act = (* i) -> act ();
+		if (! act . empty ())
+		{
+			debug () << act << endl;
+		}
 	}
 }
 

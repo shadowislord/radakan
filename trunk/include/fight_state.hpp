@@ -12,8 +12,8 @@ class Fight_State:
 		Fight_State (Character * new_owner, State * new_parent_state);
 		virtual ~Fight_State ();
 		virtual bool is_initialized () const;
-		virtual void act ();
-		virtual void think ();
+		virtual string act ();
+		virtual string think ();
 };
 
 #endif	//	FIGHT_STATE_HPP
