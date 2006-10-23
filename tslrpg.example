@@ -2,11 +2,10 @@
 
 TSLRPG=${T_OPT}/tslrpg
 
-if [[ (${1} == "trunk") || (${1} == "si") ]]; then
-	TRUNK=${TSLRPG}/${1}
+if [[ ${1} == "si" ]]; then
+	TRUNK=${TSLRPG}/si
 else
-	echo "Usage: tslrpg <trunk or si> [v]"
-	exit;
+	TRUNK=${TSLRPG}/trunk
 fi
 
 cd ${TRUNK}
@@ -16,6 +15,7 @@ mv obj/debug/*.o src/
 
 cd proj/jam
 
+jam -q
 JAM_RESULT=`jam -q | grep failed`
 
 cd ../..
@@ -27,7 +27,7 @@ if [[ ${JAM_RESULT} != "" ]]; then
 fi
 
 if [[ ${2} != "" ]]; then
-	PREFIX="valgrind --log-file-exactly=logs/valgrind.txt -v"
+	PREFIX="valgrind --log-file-exactly=logs/valgrind.txt -v --time-stamp=yes"
 fi
 
 COMMAND="${PREFIX} bin/debug/tslrpg ${TRUNK}"
@@ -36,4 +36,4 @@ ${COMMAND}
 
 mv Ogre.log logs/ogre.txt
 
-cat logs/log.txt
+cat logs/log.txt | tail
