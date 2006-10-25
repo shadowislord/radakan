@@ -257,10 +257,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tree.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\tslrpg.cpp"
 				>
 			</File>
@@ -323,6 +319,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\set.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\sl_frame_listener.hpp"
 				>
 			</File>
@@ -332,10 +332,6 @@
 			</File>
 			<File
 				RelativePath="..\..\include\state_machine.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\tree.hpp"
 				>
 			</File>
 			<File
