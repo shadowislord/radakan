@@ -4,9 +4,9 @@ using namespace std;
 
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow * window) :
-	Engine ("Input Engine")
+	Object ("Input Engine")
 {
-	assert (Engine :: is_initialized ());
+	assert (Object :: is_initialized ());
 	
 	OIS :: ParamList param_list;
 
@@ -82,7 +82,7 @@ bool Input_Engine ::
 	}
 	else
 	{
-		return Engine :: is_initialized();
+		return Object :: is_initialized();
 	}
 }
 

@@ -5,12 +5,13 @@
 #include <OgreCEGUIRenderer.h>
 #include <CEGUI.h>
 
-#include "engine.hpp"
+#include "object.hpp"
 
 using namespace std;
 
 class GUI_Engine:
-	public Engine
+	public Object/*	!!!,
+	public Ogre :: Singleton <GUI_Engine>*/
 {
 	public:
 		GUI_Engine (Ogre :: RenderWindow * window, Ogre :: SceneManager * scene_manager);

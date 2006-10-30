@@ -150,7 +150,7 @@ void Tslrpg ::
 		{
 			player -> node -> yaw (Ogre :: Radian (- 0.005 * time));
 		}
-		active_sector -> get_camera () -> setPosition (player -> node -> getPosition ());
+		active_sector -> get_camera () -> setPosition (player -> node -> getPosition () + Ogre :: Vector3 (0, 50, 0));
 		active_sector -> get_camera () -> setOrientation (player -> node -> getOrientation ());
 
 		//	hit

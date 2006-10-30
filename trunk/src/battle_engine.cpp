@@ -5,7 +5,7 @@ using namespace boost;
 
 Battle_Engine ::
 	Battle_Engine () :
-	Engine ("Battle engine"),
+	Object ("Battle engine"),
 	generator (42u),
 	uniform_real_distribution (0, 1),
 	lognormal_real_distribution (1.133, 0.5),
@@ -30,7 +30,7 @@ bool Battle_Engine ::
 	is_initialized ()
 	const
 {
-	return Engine :: is_initialized ();
+	return Object :: is_initialized ();
 }
 
 string Battle_Engine ::

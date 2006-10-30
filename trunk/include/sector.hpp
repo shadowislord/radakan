@@ -16,7 +16,7 @@ using namespace std;
 ///	Sector keeps track of all data in an in-game sector.
 
 class Sector:
-	public Container
+	public Set <Entity>
 {
 	public:
 		Sector

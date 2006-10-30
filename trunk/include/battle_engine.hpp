@@ -2,7 +2,6 @@
 #define BATTLE_ENGINE_HPP
 
 #include "character.hpp"
-#include "engine.hpp"
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
@@ -14,7 +13,8 @@ using namespace boost;
 ///	Battle_engine is called by Tslrpg.
 
 class Battle_Engine:
-	public Engine
+	public Object/*	!!!,
+	public Ogre :: Singleton <Battle_Engine>*/
 {
 	public:
 		Battle_Engine ();

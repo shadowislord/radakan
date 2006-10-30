@@ -6,8 +6,7 @@ Sector::
 		Ogre :: SceneManager * new_scene_manager,
 		Ogre :: RenderWindow * window) :
 	Object (new_name),
-	Container (new_scene_manager -> createEntity (new_name, "tavern.mesh"),
-		new_scene_manager -> getRootSceneNode () -> createChildSceneNode ())
+	Set <Entity> (new_name)
 {
 	assert (Object :: is_initialized ());
 
@@ -81,7 +80,7 @@ Sector::
 	debug () << * player << "'s weight: "
 									<< player -> get_total_weight () << endl;
 	Weapon * sword = new Weapon
-			(1, 2, Ogre :: Vector3 (1, 4, 4), 3, 4, 5, 6, 7, 8,
+			(1, 2, Ogre :: Vector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
 			scene_manager -> createEntity ("Sword", "bar.mesh"),
 			scene_manager -> getRootSceneNode () -> createChildSceneNode ());
 	debug () << * sword << "'s weight: " << sword -> get_total_weight () << endl;
@@ -188,7 +187,7 @@ bool Sector ::
 		bool success = npcs . insert (entity -> to_type <NPC> ()) . second;
 		assert (success);
 	}
-	return Container :: add (entity);
+	return Set <Entity> :: add (entity);
 }
 
 void Sector ::

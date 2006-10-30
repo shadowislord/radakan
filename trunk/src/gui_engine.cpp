@@ -7,7 +7,7 @@ extern string path;
 
 GUI_Engine ::
 	GUI_Engine (Ogre :: RenderWindow * window, Ogre :: SceneManager * scene_manager) :
-	Engine ("Gui engine")
+	Object ("Gui engine")
 {
 	assert (Object :: is_initialized ());
 	assert (window != NULL);
@@ -63,7 +63,7 @@ bool GUI_Engine ::
 	is_initialized ()
 	const
 {
-	return Engine :: is_initialized ();
+	return Object :: is_initialized ();
 }
 
 void GUI_Engine ::

@@ -17,7 +17,7 @@ Character ::
 		true,
 		80,
 		65,
-		Ogre :: Vector3 (100, 50, 200),
+		Ogre :: Vector3 (100, 0, 200),
 		new_ogre_entity,
 		new_node)
 {
