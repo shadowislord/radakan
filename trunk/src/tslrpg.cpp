@@ -54,13 +54,12 @@ Tslrpg::
 
 	window = root->initialise (true, "Scattered Lands");
 
-
 	Ogre :: SceneManager * scene_manager = root->createSceneManager
 														(Ogre :: ST_GENERIC);
 	active_sector = new Sector ("Sector 1", scene_manager, window);
 	sectors.insert (active_sector);
 
-	gui_engine = new GUI_Engine (window, scene_manager);
+	//	!!!	gui_engine = new GUI_Engine (window, scene_manager);
 	
 	//	Set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
@@ -72,6 +71,8 @@ Tslrpg::
 	input_engine = new Input_Engine (window);	
 
 	player = active_sector->get_player ();
+
+	timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 }
 
 Tslrpg ::
@@ -84,7 +85,7 @@ Tslrpg ::
 		delete (* i);
 	}
 
-	delete gui_engine;
+	//	!!!	delete gui_engine;
 	delete input_engine;
 
 //	This gives a problem:
@@ -107,6 +108,8 @@ void Tslrpg ::
 	
 	while (true)
 	{
+		timer -> reset ();
+		
 		active_sector -> update ();
 	
 		input_engine -> capture ();
@@ -118,17 +121,37 @@ void Tslrpg ::
 			break;
 		}
 
-		//	!!!
-		gui_engine -> render ();
+		//	!!!	gui_engine -> render ();
 
 		//	quit
 		//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
-		if (player -> is_dead () || input_engine -> get_key ("q", false)
-								|| input_engine -> get_key ("Escape", false)
-								|| window -> isClosed())
+		if (player -> is_dead () || input_engine -> get_key ("Escape", false)
+														|| window -> isClosed())
 		{
 			break;
 		}
+
+		//	Normal WASD keys don't work on all keyboards, so we'll use ESDF for now.
+		int time = timer -> getMilliseconds ();
+		// Handle movement
+		if (input_engine -> get_key ("e", false))
+		{
+			player -> node -> translate (player -> node -> getOrientation () * Ogre :: Vector3 (0, 0, - 0.5 * time));
+		}
+		if (input_engine -> get_key ("d", false))
+		{
+			player -> node -> translate (player -> node -> getOrientation () * Ogre :: Vector3 (0, 0, 0.25 * time));
+		}
+		if (input_engine -> get_key ("s", false))
+		{
+			player -> node -> yaw (Ogre :: Radian (0.005 * time));
+		}
+		if (input_engine -> get_key ("f", false))
+		{
+			player -> node -> yaw (Ogre :: Radian (- 0.005 * time));
+		}
+		active_sector -> get_camera () -> setPosition (player -> node -> getPosition ());
+		active_sector -> get_camera () -> setOrientation (player -> node -> getOrientation ());
 
 		//	hit
 		if (input_engine -> get_key ("h", true))

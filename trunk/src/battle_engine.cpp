@@ -43,7 +43,7 @@ string Battle_Engine ::
 	assert (! attacker -> is_dead ());
 	assert (! defender -> is_dead ());
 	
-	if (1 < (attacker -> position - defender -> position) . squaredLength ())
+	if (1 < (attacker -> node -> getPosition () - defender -> node -> getPosition ()) . squaredLength ())
 	{
 		return "Target is out of range.";
 	}

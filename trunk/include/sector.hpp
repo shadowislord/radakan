@@ -2,10 +2,14 @@
 #define SECTOR_HPP
 
 #include "battle_engine.hpp"
-#include "sl_frame_listener.hpp"
 #include "npc.hpp"
 #include "peace_state.hpp"
 #include "fight_state.hpp"
+#include <Ogre.h>
+#include <OgreKeyEvent.h>
+#include <OgreEventListeners.h>
+#include <OgreStringConverter.h>
+#include <OgreException.h>
 
 using namespace std;
 

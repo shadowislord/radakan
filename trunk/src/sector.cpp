@@ -13,8 +13,6 @@ Sector::
 
 	scene_manager = new_scene_manager;
 	camera = scene_manager -> createCamera ("Eyes");
-	camera -> setPosition (Ogre :: Vector3 (0, 0, 200));
-	camera -> lookAt (Ogre :: Vector3 (0, 0, - 200));
 	camera -> setNearClipDistance (5);
 	camera -> setFarClipDistance (2000);
 
@@ -54,7 +52,7 @@ Sector::
 			true,
 			0,
 			0,
-			Ogre :: Vector3 (0, 0, 0),
+			Ogre :: Vector3 (1000, 0, 500),
 			scene_manager -> createEntity ("Fort", "fort.mesh"), scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
 			
 

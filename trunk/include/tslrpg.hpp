@@ -27,7 +27,8 @@ class Tslrpg:
 		Battle_Engine battle_engine;
 		GUI_Engine * gui_engine;
 		Input_Engine * input_engine;
-
+		Ogre :: Timer * timer;
+		
 		Sector * active_sector;
 		set <Sector *> sectors;
 

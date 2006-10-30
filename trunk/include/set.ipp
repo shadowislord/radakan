@@ -70,13 +70,15 @@ template <typename T> bool Set <T> ::
 		for (_Rb_tree_const_iterator <T *> i = children . begin ();
 													i != children . end (); i ++)
 		{
-			/*	!!!	if ((* i) -> is_type <Set <T> > ())
+			T * temp = * i;
+			
+			if (temp -> is_type <Set <T> > ())
 			{
-				if ((* i) -> to_type <Set <T> > () -> contains (t, recursive))
+				if (temp -> to_type <Set <T> > () -> contains (t, recursive))
 				{
 					return true;
 				}
-			}*/
+			}
 		}
 	}
 	

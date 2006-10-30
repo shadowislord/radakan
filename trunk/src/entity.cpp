@@ -13,8 +13,8 @@ Entity ::
 		Ogre :: Vector3 new_position,
 		Ogre :: Entity * new_ogre_entity,
 		Ogre :: SceneNode * new_node) :
-	Object (
-		(new_ogre_entity == NULL) ?
+	Object
+		((new_ogre_entity == NULL) ?
 		"[ERROR: new_ogre_entity is NULL]" :
 		new_ogre_entity -> getName ()),
 	movable (new_movable),
@@ -26,8 +26,6 @@ Entity ::
 	assert (Object :: is_initialized ());
 	assert (new_ogre_entity != NULL);
 	assert (new_node != NULL);
-
-	position = new_position;
 
 	node = new_node;
 	ogre_entity = new_ogre_entity;

@@ -32,7 +32,6 @@ class Entity:
 		const bool visible;
 		const float volume;		//	in litres
 		const float weight;		//	in kilograms
-		Ogre :: Vector3 position;	//	the position of the obstacle
 		Ogre :: SceneNode * node;	//	create through Scene_Manager
 		Ogre :: Entity * ogre_entity;	//	create through Scene_Manager
 };
