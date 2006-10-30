@@ -4,6 +4,7 @@
 #include "object.hpp"
 
 using namespace std;
+using namespace sl;
 
 template <typename T> T * Object ::
 	copy ()

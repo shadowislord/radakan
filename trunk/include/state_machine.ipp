@@ -1,6 +1,9 @@
 #ifndef STATE_MACHINE_IPP
 #define STATE_MACHINE_IPP
 
+using namespace std;
+using namespace sl;
+
 //virtual
 template <typename T> void State_Machine ::
 		change_active_state ()

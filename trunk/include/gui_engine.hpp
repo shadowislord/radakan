@@ -9,22 +9,24 @@
 
 using namespace std;
 
-class GUI_Engine:
-	public Object/*	!!!,
-	public Ogre :: Singleton <GUI_Engine>*/
+namespace sl
 {
-	public:
-		GUI_Engine (Ogre :: RenderWindow * window, Ogre :: SceneManager * scene_manager);
-		virtual ~GUI_Engine ();
-		virtual bool is_initialized () const;
-		void render () const;
+	class GUI_Engine :
+		public Object/*	!!!,
+		public Ogre :: Singleton <GUI_Engine>*/
+	{
+		public :
+			GUI_Engine (Ogre :: RenderWindow * window, Ogre :: SceneManager * scene_manager);
+			virtual ~GUI_Engine ();
+			virtual bool is_initialized () const;
+			bool render () const;
 
-	private:
-		CEGUI :: OgreCEGUIRenderer * renderer;
-		CEGUI :: Window * root_window;
-		CEGUI :: System * system;
-		CEGUI :: WindowManager * window_manager;
-
-};
+		private :
+			CEGUI :: OgreCEGUIRenderer * renderer;
+			CEGUI :: Window * root_window;
+			CEGUI :: System * system;
+			CEGUI :: WindowManager * window_manager;
+	};
+}
 
 #endif	//	GUI_ENGINE_HPP

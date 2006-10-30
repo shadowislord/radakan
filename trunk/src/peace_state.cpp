@@ -2,6 +2,7 @@
 #include "fight_state.hpp"
 
 using namespace std;
+using namespace sl;
 
 //  constructor
 Peace_State ::

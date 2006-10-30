@@ -3,6 +3,7 @@
 #include "object.hpp"
 
 using namespace std;
+using namespace sl;
 
 #ifdef SL_DEBUG
 	extern ofstream * log_cout;
@@ -107,14 +108,14 @@ void Object ::
 	parent = NULL;
 }
 
-string to_string (float value)
+string sl :: to_string (float value)
 {
 	ostringstream oss;
 	oss << value;	//	insert int into stream
 	return oss.str ();
 }
 
-int to_int (string value)
+int sl :: to_int (string value)
 {
 	istringstream iss (value);
 	int result;
@@ -122,7 +123,7 @@ int to_int (string value)
 	return result;
 }
 
-bool is_nan (float value)
+bool sl :: is_nan (float value)
 {
 	return (value != value);
 }

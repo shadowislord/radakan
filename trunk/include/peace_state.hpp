@@ -5,15 +5,18 @@
 
 using namespace std;
 
-class Peace_State:
-	public State
+namespace sl
 {
-	public:
-		Peace_State (Character * new_owner, State * new_parent_state);
-		virtual ~Peace_State ();
-		virtual bool is_initialized () const;
-		virtual string act ();
-		virtual string think ();
-};
+	class Peace_State :
+		public State
+	{
+		public :
+			Peace_State (Character * new_owner, State * new_parent_state);
+			virtual ~Peace_State ();
+			virtual bool is_initialized () const;
+			virtual string act ();
+			virtual string think ();
+	};
+}
 
 #endif	//	PEACE_STATE_HPP

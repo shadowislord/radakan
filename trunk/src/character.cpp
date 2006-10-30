@@ -1,16 +1,12 @@
 #include "character.hpp"
 
 using namespace std;
+using namespace sl;
 
 //  constructor
 Character ::
-	Character
-		(Ogre :: Entity * new_ogre_entity,
-		Ogre :: SceneNode * new_node) :
-	Object
-		((new_ogre_entity == NULL) ?
-		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity -> getName ()),
+	Character (Ogre :: SceneNode * new_node) :
+	Object (get_name (new_node)),
 	Container
 		(true,
 		true,
@@ -18,7 +14,6 @@ Character ::
 		80,
 		65,
 		Ogre :: Vector3 (100, 0, 200),
-		new_ogre_entity,
 		new_node)
 {
 	assert (Entity :: is_initialized ());

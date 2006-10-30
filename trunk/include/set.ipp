@@ -4,6 +4,7 @@
 #include "set.hpp"
 
 using namespace std;
+using namespace sl;
 
 //  constructor
 template <typename T> Set <T> ::

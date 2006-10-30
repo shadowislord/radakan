@@ -1,10 +1,11 @@
 #include "tslrpg.hpp"
 
 using namespace std;
+using namespace sl;
 
 extern string path;
 
-Tslrpg::
+Tslrpg ::
 	Tslrpg (string path) :
 	Object ("Tslrpg")
 {
@@ -59,7 +60,7 @@ Tslrpg::
 	active_sector = new Sector ("Sector 1", scene_manager, window);
 	sectors.insert (active_sector);
 
-	//	!!!	gui_engine = new GUI_Engine (window, scene_manager);
+	gui_engine = new GUI_Engine (window, scene_manager);
 	
 	//	Set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
@@ -85,7 +86,7 @@ Tslrpg ::
 		delete (* i);
 	}
 
-	//	!!!	delete gui_engine;
+	delete gui_engine;
 	delete input_engine;
 
 //	This gives a problem:
@@ -116,24 +117,19 @@ void Tslrpg ::
 
 		Ogre :: PlatformManager :: getSingletonPtr () -> messagePump (window);
 
-		if (! root -> renderOneFrame ())
-		{
-			break;
-		}
-
-		//	!!!	gui_engine -> render ();
-
-		//	quit
 		//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
-		if (player -> is_dead () || input_engine -> get_key ("Escape", false)
-														|| window -> isClosed())
+		if (! root -> renderOneFrame ()
+				|| ! gui_engine -> render ()
+				|| player -> is_dead ()
+				|| input_engine -> get_key ("Escape", false)
+				|| window -> isClosed())
 		{
 			break;
 		}
 
-		//	Normal WASD keys don't work on all keyboards, so we'll use ESDF for now.
+		//	Handle movement
+		//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
 		int time = timer -> getMilliseconds ();
-		// Handle movement
 		if (input_engine -> get_key ("e", false))
 		{
 			player -> node -> translate (player -> node -> getOrientation () * Ogre :: Vector3 (0, 0, - 0.5 * time));
@@ -150,7 +146,7 @@ void Tslrpg ::
 		{
 			player -> node -> yaw (Ogre :: Radian (- 0.005 * time));
 		}
-		active_sector -> get_camera () -> setPosition (player -> node -> getPosition () + Ogre :: Vector3 (0, 50, 0));
+		active_sector -> get_camera () -> setPosition (player -> node -> getPosition () + Ogre :: Vector3 (0, 23, 0));
 		active_sector -> get_camera () -> setOrientation (player -> node -> getOrientation ());
 
 		//	hit
@@ -163,7 +159,7 @@ void Tslrpg ::
 			}
 		}
 		
-		//	transfer
+		//	transfer the weapon
 		if (input_engine -> get_key ("t", true))
 		{
 			Character * npc = active_sector -> get_child <NPC> ();

@@ -1,6 +1,7 @@
 #include "state_machine.hpp"
 
 using namespace std;
+using namespace sl;
 
 //  constructor
 State_Machine ::

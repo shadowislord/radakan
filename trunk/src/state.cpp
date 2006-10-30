@@ -1,6 +1,7 @@
 #include "state.hpp"
 
 using namespace std;
+using namespace sl;
 
 //  constructor
 State ::

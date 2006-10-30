@@ -10,24 +10,25 @@
 using namespace std;
 using namespace boost;
 
-///	Battle_engine is called by Tslrpg.
-
-class Battle_Engine:
-	public Object/*	!!!,
-	public Ogre :: Singleton <Battle_Engine>*/
+namespace sl
 {
-	public:
-		Battle_Engine ();
-		virtual ~Battle_Engine ();
-		virtual bool is_initialized () const;
-		string hit (Character * attacker, Character * defender);
+	class Battle_Engine :
+		public Object/*	!!!,
+		public Ogre :: Singleton <Battle_Engine>*/
+	{
+		public :
+			Battle_Engine ();
+			virtual ~Battle_Engine ();
+			virtual bool is_initialized () const;
+			string hit (Character * attacker, Character * defender);
 
-	private:
-		minstd_rand generator;
-		uniform_real <> uniform_real_distribution;
-		lognormal_distribution <> lognormal_real_distribution;
-		variate_generator <minstd_rand&, uniform_real <> > uniform;
-		variate_generator <minstd_rand&, lognormal_distribution <> > lognormal;
-};
+		private :
+			minstd_rand generator;
+			uniform_real <> uniform_real_distribution;
+			lognormal_distribution <> lognormal_real_distribution;
+			variate_generator <minstd_rand&, uniform_real <> > uniform;
+			variate_generator <minstd_rand&, lognormal_distribution <> > lognormal;
+	};
+}
 
 #endif	//	BATTLE_ENGINE_HPP

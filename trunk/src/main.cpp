@@ -1,11 +1,12 @@
 #include "tslrpg.hpp"
 
 using namespace std;
+using namespace sl;
 
 #ifdef SL_DEBUG
 	ofstream * log_cout;
 
-	set <Object *> objects;
+	set <Object *> sl :: objects;
 #else
 	//	This is faster, I think.
 	//	Is it possible to 'absorb' this?
@@ -43,7 +44,7 @@ string path;
 		cout << "path: " << path << endl;
 
 		#ifdef SL_DEBUG
-			log_cout = new ofstream ((path + "/logs/log.txt").c_str ());
+			log_cout = new ofstream ((path + "/logs/log.txt") . c_str ());
 
 			* log_cout << "Setting up Scattered Lands..." << endl;
 			* log_cout << "path: " << path << endl;
@@ -64,8 +65,8 @@ string path;
 		delete game;
 
 		#ifdef SL_DEBUG
-			for (set <Object *> :: const_iterator i = objects.begin ();
-													i != objects.end (); i ++)
+			for (set <Object *> :: const_iterator i = objects . begin ();
+													i != objects . end (); i ++)
 			{
 				* log_cout << "Not deleted: " << * * i << endl;
 			}
@@ -77,9 +78,9 @@ string path;
 	catch (Ogre :: Exception & e)
 	{
 		#ifdef SL_WIN32
-			MessageBox (NULL, e.getFullDescription ().c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+			MessageBox (NULL, e . getFullDescription () . c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		#else
-			cerr << "An exception has occured: " << e.getFullDescription () << endl;
+			cerr << "An exception has occured: " << e . getFullDescription () << endl;
 		#endif
 	}
 

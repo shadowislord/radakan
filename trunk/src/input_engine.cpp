@@ -1,6 +1,7 @@
 #include "input_engine.hpp"
 
 using namespace std;
+using namespace sl;
 
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow * window) :

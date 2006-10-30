@@ -2,6 +2,7 @@
 
 using namespace std;
 using namespace boost;
+using namespace sl;
 
 Battle_Engine ::
 	Battle_Engine () :

@@ -1,6 +1,9 @@
 #include "sector.hpp"
 
-Sector::
+using namespace std;
+using namespace sl;
+
+Sector ::
 	Sector
 		(string new_name,
 		Ogre :: SceneManager * new_scene_manager,
@@ -25,24 +28,19 @@ Sector::
 		/ Ogre :: Real (view_port -> getActualHeight ()));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
-		scene_manager -> createEntity ("Tavern", "tavern.mesh"),
-		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
+		create_entity_node ("Tavern", "tavern.mesh")));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
-		scene_manager -> createEntity ("Bar", "bar.mesh"),
-		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
+		create_entity_node ("Bar", "bar.mesh")));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 17),
-		scene_manager -> createEntity ("Table 1", "table.mesh"),
-		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
+		create_entity_node ("Table 1", "table.mesh")));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 57),
-		scene_manager -> createEntity ("Table 2", "table.mesh"),
-		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
+		create_entity_node ("Table 2", "table.mesh")));
 
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (26, 0, 97),
-		scene_manager -> createEntity ("Table 3", "table.mesh"),
-		scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
+		create_entity_node ("Table 3", "table.mesh")));
 
 	add
 		(new Entity
@@ -52,12 +50,10 @@ Sector::
 			0,
 			0,
 			Ogre :: Vector3 (1000, 0, 500),
-			scene_manager -> createEntity ("Fort", "fort.mesh"), scene_manager -> getRootSceneNode () -> createChildSceneNode ()));
+			create_entity_node ("Fort", "fort.mesh")));
 			
 
-	player = new Character
-		(scene_manager -> createEntity ("Player", "bar.mesh"),
-		scene_manager -> getRootSceneNode () -> createChildSceneNode ());
+	player = new Character (create_entity_node ("Player", "bar.mesh"));
 
 	add (player);
 	player -> node -> setScale (Ogre :: Vector3 (0.2, 2, 0.2));
@@ -72,8 +68,7 @@ Sector::
 			30,
 			3,
 			player -> node -> getPosition (),
-			scene_manager -> createEntity ("Backpack", "bar.mesh"),
-			scene_manager -> getRootSceneNode () -> createChildSceneNode ()
+			create_entity_node ("Backpack", "bar.mesh")
 		)
 	);
 
@@ -81,14 +76,11 @@ Sector::
 									<< player -> get_total_weight () << endl;
 	Weapon * sword = new Weapon
 			(1, 2, Ogre :: Vector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
-			scene_manager -> createEntity ("Sword", "bar.mesh"),
-			scene_manager -> getRootSceneNode () -> createChildSceneNode ());
+			create_entity_node ("Sword", "bar.mesh"));
 	debug () << * sword << "'s weight: " << sword -> get_total_weight () << endl;
 	player -> add (sword);
 
-	NPC * npc = new NPC
-		(scene_manager -> createEntity ("NPC", "bar.mesh"),
-		scene_manager -> getRootSceneNode () -> createChildSceneNode ());
+	NPC * npc = new NPC (create_entity_node ("NPC", "bar.mesh"));
 	add (npc);
 	npc -> State_Machine :: add <Peace_State> ();
 	npc -> State_Machine :: add <Fight_State> ();
@@ -113,7 +105,7 @@ Sector::
 //		px = 0;
 		Ogre :: Billboard * bb = bbs2 -> createBillboard
 											(0, 0, 0, Ogre :: ColourValue());
-		int dim = int (Ogre :: Math::RangeRandom (1.5f, 2));
+		int dim = int (Ogre :: Math :: RangeRandom (1.5f, 2));
 		bb -> setDimensions (100 * dim, 100 * dim);
 		bb -> setRotation (Ogre :: Radian (Ogre :: Math :: RangeRandom (0, 2 * Ogre :: Math :: PI)));
 		bbsNode2 -> attachObject (bbs2);
@@ -238,4 +230,16 @@ Character * Sector ::
 	assert (is_initialized ());
 
 	return player;
+}
+
+Ogre :: SceneNode * Sector ::
+	create_entity_node (string name, string mesh_name)
+{
+	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode () -> createChildSceneNode ();
+	
+	node -> attachObject (scene_manager -> createEntity (name, mesh_name));
+	
+	assert (node -> numAttachedObjects () == 1);
+	assert (node -> getAttachedObject (0) != NULL);
+	return node;
 }

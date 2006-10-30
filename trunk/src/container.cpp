@@ -1,16 +1,13 @@
 #include "container.hpp"
 
 using namespace std;
+using namespace sl;
 
 //  constructor
 Container ::
 	Container
-		(Ogre :: Entity * new_ogre_entity,
-		Ogre :: SceneNode * new_node) :
-	Object
-		((new_ogre_entity == NULL) ?
-		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity  ->  getName ()),
+		(Ogre :: SceneNode * new_node) :
+	Object (get_name (new_node)),
 	Entity
 		(false,
 		false,
@@ -18,12 +15,8 @@ Container ::
 		0,
 		0,
 		Ogre :: Vector3 (0, 0, 0),
-		new_ogre_entity,
 		new_node),
-	Set <Entity>
-		((new_ogre_entity == NULL) ?
-		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity -> getName ())
+	Set <Entity> (get_name (new_node))
 {
 	assert (Set <Entity> :: is_initialized ());
 	
@@ -39,12 +32,8 @@ Container ::
 		float new_volume,
 		float new_weight,
 		Ogre :: Vector3 new_position,
-		Ogre :: Entity * new_ogre_entity,
 		Ogre :: SceneNode * new_node) :
-	Object
-		((new_ogre_entity == NULL) ?
-		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity -> getName ()),
+	Object (get_name (new_node)),
 	Entity
 		(new_movable,
 		new_solid,
@@ -52,12 +41,8 @@ Container ::
 		new_volume,
 		new_weight,
 		new_position,
-		new_ogre_entity,
 		new_node),
-	Set <Entity>
-		((new_ogre_entity == NULL) ?
-		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity -> getName ())
+	Set <Entity> (get_name (new_node))
 {
 	assert (Set <Entity> :: is_initialized ());
 	
@@ -107,11 +92,5 @@ bool Container ::
 	assert (entity != NULL);
 	assert (entity -> is_initialized ());
 
-	if (Set <Entity> :: add (entity))
-	{
-		//	An entity can be seen when it's visible & (directely) in the sector.
-		entity -> ogre_entity -> setVisible (entity -> visible && (ogre_entity -> isVisible () || is_in (NULL)));
-		return true;
-	}
-	return false;
+	return Set <Entity> :: add (entity);
 }

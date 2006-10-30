@@ -1,9 +1,10 @@
 #include "weapon.hpp"
 
 using namespace std;
+using namespace sl;
 
 //  constructor
-Weapon::
+Weapon ::
 	Weapon
 		(float new_volume,
 		float new_weight,
@@ -14,12 +15,8 @@ Weapon::
 		float new_attack_rate,
 		float new_defense_rate,
 		float new_damage,
-		Ogre :: Entity * new_ogre_entity,
 		Ogre :: SceneNode * new_node) :
-	Object
-		((new_ogre_entity == NULL) ?
-		"[ERROR: new_ogre_entity is NULL]" :
-		new_ogre_entity -> getName ()),
+	Object (get_name (new_node)),
 	Entity
 		(true,
 		true,
@@ -27,7 +24,6 @@ Weapon::
 		new_volume,
 		new_weight,
 		new_position,
-		new_ogre_entity,
 		new_node),
 	break_chance (new_break_chance),
 	speed (new_speed),
@@ -44,7 +40,7 @@ Weapon::
 }
 
 //  destructor
-Weapon::
+Weapon ::
 	~Weapon ()
 {
 	assert (is_initialized ());

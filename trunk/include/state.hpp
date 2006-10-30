@@ -5,17 +5,20 @@
 
 using namespace std;
 
-class State:
-	public virtual Object
+namespace sl
 {
-	public:
-		State (Character * new_owner, State * new_parent_state);
-		virtual ~State ();
-		virtual bool is_initialized () const;
-		virtual string act ();
-		virtual string think ();	//	change your current state
-		Character * owner;
-		State * parent_state;
-};
+	class State :
+		public virtual Object
+	{
+		public :
+			State (Character * new_owner, State * new_parent_state);
+			virtual ~State ();
+			virtual bool is_initialized () const;
+			virtual string act ();
+			virtual string think ();	//	change your current state
+			Character * owner;
+			State * parent_state;
+	};
+}
 
 #endif	//	STATE_HPP

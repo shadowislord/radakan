@@ -9,31 +9,34 @@ using namespace std;
 
 ///	Tslrpg is a implicit singleton class. It creates the eninges and the sectors.
 
-class Tslrpg:
-	public Object/*	!!!,
-	public Ogre :: Singleton <Tslrpg>*/
+namespace sl
 {
-	public:
-		Tslrpg (string path);
-		~Tslrpg ();
-		virtual bool is_initialized () const;
-		void run ();
+	class Tslrpg :
+		public Object/*	!!!,
+		public Ogre :: Singleton <Tslrpg>*/
+	{
+		public :
+			Tslrpg (string path);
+			~Tslrpg ();
+			virtual bool is_initialized () const;
+			void run ();
 
-	private:
-		void create_scene ();
+		private :
+			void create_scene ();
 
-		Ogre :: Root * root;
-		Ogre :: RenderWindow * window;
+			Ogre :: Root * root;
+			Ogre :: RenderWindow * window;
 
-		Battle_Engine battle_engine;
-		GUI_Engine * gui_engine;
-		Input_Engine * input_engine;
-		Ogre :: Timer * timer;
-		
-		Sector * active_sector;
-		set <Sector *> sectors;
+			Battle_Engine battle_engine;
+			GUI_Engine * gui_engine;
+			Input_Engine * input_engine;
+			Ogre :: Timer * timer;
 
-		Character * player;
-};
+			Sector * active_sector;
+			set <Sector *> sectors;
+
+			Character * player;
+	};
+}
 
 #endif
