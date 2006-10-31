@@ -22,15 +22,15 @@ Tslrpg ::
 	{
 		// Add textures directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/textures", "FileSystem", "textures", true);
+					(path + "/data/texture", "FileSystem", "textures", true);
 
 		// Add 3D models directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/models", "FileSystem", "models", true);
+					(path + "/data/model", "FileSystem", "models", true);
 
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/materials", "FileSystem", "materials", true);
+					(path + "/data/material", "FileSystem", "materials", true);
 					
 		// Add gui directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
