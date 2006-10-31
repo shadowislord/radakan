@@ -14,10 +14,11 @@
 
 using namespace std;
 
-///	Sector keeps track of all data in an in-game sector.
-
 namespace sl
 {
+
+	///	Sector keeps track of all data in an in-game sector.
+
 	class Sector :
 		public Set <Entity>
 	{

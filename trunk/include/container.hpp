@@ -8,6 +8,7 @@ using namespace std;
 
 namespace sl
 {
+
 	///	Container holds the data of one in-game container.
 
 	class Container :

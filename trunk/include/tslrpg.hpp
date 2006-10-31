@@ -7,10 +7,11 @@
 
 using namespace std;
 
-///	Tslrpg is a implicit singleton class. It creates the eninges and the sectors.
-
 namespace sl
 {
+
+	///	Tslrpg is a implicit singleton class. It creates the eninges and the sectors.
+
 	class Tslrpg :
 		public Object/*	!!!,
 		public Ogre :: Singleton <Tslrpg>*/

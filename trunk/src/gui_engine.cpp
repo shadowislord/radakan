@@ -23,7 +23,7 @@ GUI_Engine ::
 
 	CEGUI :: Logger :: getSingleton () . setLoggingLevel (CEGUI :: Informative);
 
-	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
+	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("taharez_look_skin.scheme");
 	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
 	system -> setDefaultFont ("BlueHighway-12");

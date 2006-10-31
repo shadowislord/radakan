@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <GUIScheme Name="TaharezLookSkin">
-	<Imageset Name="TaharezLook" Filename="TaharezLook.imageset" />
+	<Imageset Name="TaharezLook" Filename="taharez_look.imageset" />
 	<Font Name="BlueHighway-12" Filename="bluehighway-12.font" />
 	<Font Name="BlueHighway-10" Filename="bluehighway-10.font" />
 	<Font Name="BlueHighway-8" Filename="bluehighway-8.font" />
-	<LookNFeel Filename="TaharezLook.looknfeel" />
+	<LookNFeel Filename="taharez_look.looknfeel" />
 	<WindowSet Filename="CEGUIFalagardBase" />
 	<FalagardMapping WindowType="TaharezLook/AlternateProgressBar" TargetType="Falagard/ProgressBar" LookNFeel="TaharezLook/AltProgressBar" />
 	<FalagardMapping WindowType="TaharezLook/Button" TargetType="Falagard/Button" LookNFeel="TaharezLook/Button" />

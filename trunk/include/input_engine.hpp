@@ -13,10 +13,11 @@
 
 using namespace std;
 
-///	Input engine is responsible for translating player input into events and actions.
-
 namespace sl
 {
+
+	///	Input engine is responsible for translating player input into events and actions.
+
 	class Input_Engine :
 		public Object/*	!!!,
 		public Ogre :: Singleton <Input_Engine>*/,

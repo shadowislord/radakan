@@ -121,7 +121,7 @@ bool Input_Engine ::
 		{
 			key = "Esc";
 		}
-		if (key_win . size () == 1)
+		if (key . size () == 1)
 		{
 			int temp = int (key . at (0));
 			if ((96 < temp) && (temp < 123))

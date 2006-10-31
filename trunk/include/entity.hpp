@@ -9,6 +9,7 @@ using namespace std;
 
 namespace sl
 {
+
 	///	Entity is the generic class that holds all data about one in-game entity.
 
 	class Entity :
