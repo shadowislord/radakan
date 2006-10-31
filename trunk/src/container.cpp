@@ -6,26 +6,6 @@ using namespace sl;
 //  constructor
 Container ::
 	Container
-		(Ogre :: SceneNode * new_node) :
-	Object (get_name (new_node)),
-	Entity
-		(false,
-		false,
-		false,
-		0,
-		0,
-		Ogre :: Vector3 (0, 0, 0),
-		new_node),
-	Set <Entity> (get_name (new_node))
-{
-	assert (Set <Entity> :: is_initialized ());
-	
-	assert (is_initialized ());
-}
-
-//  constructor
-Container ::
-	Container
 		(bool new_movable,
 		bool new_solid,
 		bool new_visible,
@@ -92,5 +72,28 @@ bool Container ::
 	assert (entity != NULL);
 	assert (entity -> is_initialized ());
 
-	return Set <Entity> :: add (entity);
+	bool result = Set <Entity> :: add (entity);
+	entity -> node -> setVisible (false);
+	return result;
+}
+
+//	virtual
+bool Container ::
+	move_to (Entity * entity, Set <Entity> * other_set)
+{
+	assert (is_initialized ());
+	assert (entity != NULL);
+	assert (entity -> is_initialized ());
+	assert (other_set != NULL);
+	assert (other_set -> is_initialized ());
+
+	//	Enitities inside a container are not visible. But when an enitity
+	//	is moved to a plain Set <Enitity>, is should be visible.
+	entity -> node -> setVisible (true);
+	bool result = other_set -> Set <Entity> :: move_to (entity, other_set);
+	if (! result)
+	{
+		entity -> node -> setVisible (false);
+	}
+	return result;
 }

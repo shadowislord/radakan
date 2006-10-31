@@ -35,7 +35,7 @@ namespace sl
 			Sector * active_sector;
 			set <Sector *> sectors;
 
-			Character * player;
+			Player * player;
 	};
 }
 

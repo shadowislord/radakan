@@ -69,7 +69,7 @@ ostream & Object ::
 	debug ()
 	const
 {
-	return * log_cout << "debug: ";
+	return * log_cout << "(" << * this << ") debug: ";
 }
 
 //	virtual
@@ -77,7 +77,7 @@ ostream & Object ::
 	error ()
 	const
 {
-	return * log_cout << "ERROR: ";
+	return * log_cout << "(" << * this << ") ERROR: ";
 }
 
 bool Object ::

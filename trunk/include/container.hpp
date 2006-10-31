@@ -16,8 +16,6 @@ namespace sl
 	{
 		public :
 			Container
-				(Ogre :: SceneNode * new_node);
-			Container
 				(bool new_movable,
 				bool new_solid,
 				bool new_visible,
@@ -29,6 +27,7 @@ namespace sl
 			virtual bool is_initialized () const;
 			virtual float get_total_weight () const;
 			virtual bool add (Entity * entity);
+			virtual bool move_to (Entity * entity, Set <Entity> * other_set);
 	};
 }
 

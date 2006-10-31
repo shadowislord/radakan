@@ -98,7 +98,7 @@ void Input_Engine ::
 //		handleNonBufferedMouse ();
 	}
 
-	keyboard->capture ();
+	keyboard -> capture ();
 	if (! keyboard -> buffered ())
 	{
 //		handleNonBufferedKeys ();
@@ -108,7 +108,7 @@ void Input_Engine ::
 //	bool Input_Engine ::
 //		is_key_down (OIS :: KeyCode key_code)
 //	{
-//		return keyboard->isKeyDown (key_code);
+//		return keyboard -> isKeyDown (key_code);
 //	}
 
 bool Input_Engine ::

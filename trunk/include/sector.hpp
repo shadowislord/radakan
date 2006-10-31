@@ -5,6 +5,7 @@
 #include "npc.hpp"
 #include "peace_state.hpp"
 #include "fight_state.hpp"
+#include "player.hpp"
 #include <Ogre.h>
 #include <OgreKeyEvent.h>
 #include <OgreEventListeners.h>
@@ -31,13 +32,13 @@ namespace sl
 			void update ();
 			Ogre :: SceneManager * get_scene_manager () const;
 			Ogre :: Camera * get_camera () const;
-			Character * get_player () const;
+			Player * get_player () const;
 
 		private :
 			Ogre :: SceneNode * create_entity_node (string name, string mesh_name);
 			Ogre :: SceneManager * scene_manager;
 			Ogre :: Camera * camera;
-			Character * player;
+			Player * player;
 			set <NPC *> npcs;
 	};
 }

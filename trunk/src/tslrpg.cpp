@@ -11,7 +11,7 @@ Tslrpg ::
 {
 	root = new Ogre :: Root();
 
-	if (! root->showConfigDialog ())
+	if (! root -> showConfigDialog ())
 	{
 		abort ();
 	}
@@ -22,26 +22,24 @@ Tslrpg ::
 	{
 		// Add textures directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/texture", "FileSystem", "textures", true);
+					(path + "/data/textures", "FileSystem", "textures", true);
 
 		// Add 3D models directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/model", "FileSystem", "models", true);
+					(path + "/data/models", "FileSystem", "models", true);
 
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/material", "FileSystem", "material", true);
+					(path + "/data/materials", "FileSystem", "materials", true);
 					
 		// Add gui directory
 		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
 					(path + "/data/gui", "FileSystem", "gui", true);
 
-		// Add fonts directory
-		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/fonts", "FileSystem", "fonts", true);
-
+		debug () << "A" << endl;
 		// Initialise our resources
-		Ogre :: ResourceGroupManager :: getSingleton ().initialiseAllResourceGroups ();
+		Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
+		debug () << "B" << endl;
 	}	// End of try statement
 	catch (Ogre :: Exception & e)
 	{
@@ -52,13 +50,15 @@ Tslrpg ::
 		#endif
 		abort ();
 	}
+	
+	debug () << "C" << endl;
+	window = root -> initialise (true, "Scattered Lands");
+	debug () << "D" << endl;
 
-	window = root->initialise (true, "Scattered Lands");
-
-	Ogre :: SceneManager * scene_manager = root->createSceneManager
+	Ogre :: SceneManager * scene_manager = root -> createSceneManager
 														(Ogre :: ST_GENERIC);
 	active_sector = new Sector ("Sector 1", scene_manager, window);
-	sectors.insert (active_sector);
+	sectors . insert (active_sector);
 
 	gui_engine = new GUI_Engine (window, scene_manager);
 	
@@ -71,7 +71,7 @@ Tslrpg ::
 	//	new engine handler.
 	input_engine = new Input_Engine (window);	
 
-	player = active_sector->get_player ();
+	player = active_sector -> get_player ();
 
 	timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 }
@@ -132,11 +132,11 @@ void Tslrpg ::
 		int time = timer -> getMilliseconds ();
 		if (input_engine -> get_key ("e", false))
 		{
-			player -> node -> translate (player -> node -> getOrientation () * Ogre :: Vector3 (0, 0, - 0.5 * time));
+			player -> node -> translate (player -> node -> getOrientation () * Ogre :: Vector3 (0, 0, - 0.2 * time));
 		}
 		if (input_engine -> get_key ("d", false))
 		{
-			player -> node -> translate (player -> node -> getOrientation () * Ogre :: Vector3 (0, 0, 0.25 * time));
+			player -> node -> translate (player -> node -> getOrientation () * Ogre :: Vector3 (0, 0, 0.1 * time));
 		}
 		if (input_engine -> get_key ("s", false))
 		{
@@ -152,7 +152,9 @@ void Tslrpg ::
 		//	hit
 		if (input_engine -> get_key ("h", true))
 		{
-			Character * npc = active_sector -> get_child <NPC> ();
+			NPC * npc = active_sector -> get_child <NPC> ();
+			assert (npc != NULL);
+			assert (npc -> is_initialized ());
 			if (! npc -> is_dead ())
 			{
 				debug () << battle_engine . hit (player, npc) << endl;
@@ -162,7 +164,7 @@ void Tslrpg ::
 		//	transfer the weapon
 		if (input_engine -> get_key ("t", true))
 		{
-			Character * npc = active_sector -> get_child <NPC> ();
+			NPC * npc = active_sector -> get_child <NPC> ();
 			assert (npc != NULL);
 			assert (npc -> is_initialized ());
 			if (player -> has_weapon ())
@@ -172,7 +174,7 @@ void Tslrpg ::
 			}
 			else
 			{
-				npc -> move_to (npc -> get_weapon (), player);
+				npc -> Character :: move_to (npc -> get_weapon (), player);
 			}
 		}
 	}

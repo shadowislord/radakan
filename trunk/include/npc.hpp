@@ -12,8 +12,7 @@ namespace sl
 		public State_Machine
 	{
 		public :
-			NPC
-				(Ogre :: SceneNode * new_node);
+			NPC (Ogre :: SceneNode * new_node);
 			virtual ~NPC ();
 			virtual bool is_initialized () const;
 

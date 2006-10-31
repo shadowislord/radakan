@@ -53,7 +53,7 @@ Sector ::
 			create_entity_node ("Fort", "fort.mesh")));
 			
 
-	player = new Character (create_entity_node ("Player", "bar.mesh"));
+	player = new Player (create_entity_node ("Player", "bar.mesh"));
 
 	add (player);
 	player -> node -> setScale (Ogre :: Vector3 (0.2, 2, 0.2));
@@ -223,7 +223,7 @@ Ogre :: Camera * Sector ::
 	return camera;
 }
 
-Character * Sector ::
+Player * Sector ::
 	get_player ()
 	const
 {
