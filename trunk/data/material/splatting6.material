@@ -1,0 +1,102 @@
+// This material will be used with splatting
+material Splatting6
+{
+	lod_distances 2800000
+
+	technique
+	{
+		// splat 1
+		pass
+		{
+			texture_unit
+			{
+				texture Splatting
+				scale 0.01 0.01
+				 
+			}
+			texture_unit
+			{
+
+				colour_op_ex blend_diffuse_alpha  src_current src_texture
+				texture Alpha 2d unlimited alpha
+				tex_address_mode clamp
+			}
+		}
+
+		// splat 2
+		pass
+		{
+			scene_blend alpha_blend
+			texture_unit
+			{
+				texture Splatting
+				scale 0.01 0.01
+				 
+			}
+			texture_unit
+			{
+				//alpha mask
+				colour_op_ex blend_diffuse_alpha  src_current src_texture
+				texture Alpha 2d unlimited alpha
+				tex_address_mode clamp
+			}
+		}
+
+		// splat 3
+		pass
+		{
+			scene_blend alpha_blend
+			texture_unit
+			{
+				texture Splatting
+				scale 0.01 0.01
+			}
+			texture_unit
+			{
+				//alpha mask
+				colour_op_ex blend_diffuse_alpha  src_current src_texture
+				tex_address_mode clamp
+				texture Alpha 2d unlimited alpha
+			}
+		}
+		// splat 4
+		pass
+		{
+			scene_blend alpha_blend
+			texture_unit
+			{
+				//colour_op replace
+				texture Splatting
+				scale 0.01 0.01
+			}
+			texture_unit
+			{
+				//alpha mask
+				colour_op_ex blend_diffuse_alpha  src_current src_texture
+				tex_address_mode clamp
+				texture Alpha 2d unlimited alpha
+			}
+		}
+
+	}
+	technique
+	{
+		lod_index 1
+		pass
+		{
+			texture_unit
+			{
+				texture Base 2d unlimited 
+				tex_coord_set 0
+			}
+			texture_unit
+			{
+				// Light Alpha map
+				texture Light 2d unlimited 
+				tex_address_mode clamp
+				//colour_op_ex modulate_x2 src_current src_texture
+				colour_op modulate
+			}
+		}
+	}
+}

@@ -1,0 +1,578 @@
+material PagingLandScape.0.0
+{
+	technique
+	{
+		pass
+		{
+			lighting on
+			ambient 1.0 0.0 0.0
+			diffuse 1.0 0.0 0.0
+			emissive 1.0 0.0 0.0
+			specular 1.0 0.0 0.0 0.0
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.0.0.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.0.1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.0.1.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.0.2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.0.2.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.0.3
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.0.3.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.0.4
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.0.4.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.1.0
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.1.0.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.1.1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.1.1.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.1.2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.1.2.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.1.3
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.1.3.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.1.4
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.1.4.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.2.0
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.2.0.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.2.1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.2.1.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.2.2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.2.2.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.2.3
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.2.3.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.2.4
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.2.4.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.3.0
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.3.0.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.3.1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.3.1.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.3.2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.3.2.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.3.3
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.3.3.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.3.4
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.3.4.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.4.0
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.4.0.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.4.1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.4.1.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.4.2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.4.2.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.4.3
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.4.3.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}
+material PagingLandScape.4.4
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.35 0.35 0.35
+
+			texture_unit
+			{
+				texture gcanyon_texture_4k2k.4.4.png
+				tex_address_mode clamp
+			}
+
+			texture_unit
+			{
+				texture Detail3.jpg
+				scale 0.03 0.03
+			}
+		}
+	}
+}

@@ -1,0 +1,65 @@
+material BaseWhiteNoLightNoDepthCheckWrite
+{
+	technique
+	{
+		pass
+		{
+			lighting off	
+			colour_write off
+			depth_write off
+			cull_hardware none
+		}
+	}
+}
+
+material BaseWhiteNoLightNoDepthCheck
+{
+	technique
+	{
+		pass
+		{
+			ambient 1.0 1.0 1.0
+            diffuse 1.0 1.0 1.0 
+			depth_check off 
+		}
+	}
+}
+
+material BaseRedNoLightNoDepthCheck
+{
+	technique
+	{
+		pass
+		{
+			ambient 1.0 0.0 0.0
+            diffuse 1.0 0.0 0.0
+			depth_check off
+		}
+	}
+}
+
+material BaseGreenNoLightNoDepthCheck
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.0 1.0 0.0
+            diffuse 0.0 1.0 0.0
+			depth_check off
+		}
+	}
+}
+
+material BaseBlueNoLightNoDepthCheck
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.0 0.0 1.0 
+            diffuse 0.0 0.0 1.0 
+			depth_check off
+		}
+	}
+}

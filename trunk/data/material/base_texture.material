@@ -1,0 +1,324 @@
+material Base
+{
+    lod_distances 280000
+    technique
+    {
+        lod_index 0
+        pass
+        {
+            // Base Pass
+            ambient 1.0 1.0 1.0
+            diffuse 1.0 1.0 1.0
+            texture_unit
+            {
+                // Base Texture
+                texture Base
+                tex_address_mode clamp
+            }
+            texture_unit
+            {
+                // Noise texture
+                texture Detail3.jpg
+                tex_address_mode mirror
+                scale 0.03 0.03
+            }
+        }
+    }
+    technique
+    {
+        lod_index 1
+        pass
+        {
+            texture_unit
+            {
+                texture Base
+                tex_address_mode clamp
+                tex_coord_set 0
+            }
+        }
+    }
+}
+
+material Base2
+{
+    lod_distances 280000
+    technique
+    {
+        lod_index 0
+        pass
+        {
+            // Base Pass
+            ambient 1.0 1.0 1.0
+            diffuse 1.0 1.0 1.0
+            texture_unit
+            {
+                // Base Texture
+                texture Base
+                tex_address_mode clamp
+            }
+            texture_unit
+            {
+                // Noise texture
+                texture Detail3.jpg
+                tex_address_mode mirror
+                scale 0.03 0.03
+            }
+        }
+    }
+    technique
+    {
+        lod_index 1
+        pass
+        {
+            texture_unit
+            {
+                texture Base
+                tex_address_mode clamp
+                tex_coord_set 0
+            }
+        }
+    }
+}
+
+
+material InstantBaseDecompress
+{
+    //lod_distances 28000
+    technique
+    {
+        //lod_index 0
+        pass
+        {
+            vertex_program_ref DecompressVertex/VP
+            {
+                param_named_auto worldViewProj      worldviewproj_matrix
+                //param_named_auto lightDirection     light_direction_object_space 0
+                //param_named_auto ambientLight       ambient_light_colour
+
+                // compressionSettings are;
+                //     world to texture scalex
+                //     scaley
+                //     world to texture scalez
+                //     MorphFactor
+                param_named compressionSettings float4 90000.0 1.37331 90000.0 0.0
+                /// 90000 / 65535
+
+                //  First is Distance to Detail Texture alpha appareance
+                param_named FogSettings float4 2000.0 0.0 0.0 0.0
+            }
+
+			shadow_receiver_vertex_program_ref DecompressVertexShadowReceiver/VP
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+		        param_named_auto worldMatrix world_matrix
+		        param_named_auto texViewProjMatrix texture_viewproj_matrix
+				
+               	// Config settings are;
+               	//     x scale
+               	//     y (height) start
+               	//     z scale
+               	//
+               	param_named compressionSettings float4 90000.0 1.37331 90000.0 50000.0
+			}
+            texture_unit
+            {
+                // Base  texture
+                texture Base
+                tex_address_mode clamp
+                //scale 0.03 0.03
+            }
+            texture_unit
+            {
+                // Noise texture
+                texture Detail3.jpg
+                tex_address_mode mirror
+                scale 0.3 0.3
+            }
+            texture_unit
+            {
+                // light texture
+                texture Light 
+                colour_op modulate 
+                //tex_address_mode mirror
+                //scale 0.2 0.2
+            }
+        }
+    }
+    technique
+    {
+        //lod_index 0
+        pass
+        {
+            vertex_program_ref DecompressVertexLighted/VP
+            {
+                param_named_auto worldViewProj      worldviewproj_matrix
+                //param_named_auto lightDirection     light_direction_object_space 0
+                //param_named_auto ambientLight       ambient_light_colour
+
+                   // compressionSettings are;
+                //     world to texture scalex
+                //     scaley
+                //     world to texture scalez
+                //     MorphFactor
+                param_named compressionSettings float4 90000.0 1.37331 90000.0 0.0
+                /// 90000 / 65535
+
+                //  First is Distance to Detail Texture alpha appareance
+                param_named FogSettings float4 1000.0 0.0 0.0 0.0
+            }
+
+			shadow_receiver_vertex_program_ref DecompressVertexShadowReceiver/VP
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+		        param_named_auto worldMatrix world_matrix
+		        param_named_auto texViewProjMatrix texture_viewproj_matrix
+				
+               	// Config settings are;
+               	//     x scale
+               	//     y (height) start
+               	//     z scale
+               	//
+               	param_named compressionSettings float4 90000.0 1.37331 90000.0 50000.0
+			}
+            fragment_program_ref DecompressVertexLighted/FP
+            {
+
+                //param_named_auto lightDirection     light_direction_object_space 0
+                //param_named_auto ambientLight       ambient_light_colour
+            }
+
+            texture_unit
+            {
+                // Base  texture
+                texture Base
+                tex_address_mode clamp
+                //scale 0.03 0.03
+            }
+            texture_unit
+            {
+                // Noise texture
+                texture Detail3.jpg
+                tex_address_mode mirror
+                //scale 0.3 0.3
+            }
+        }
+    }
+}
+
+
+material InstantBaseShadowedDecompress
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref DecompressVertexLighted/VP
+            {
+                param_named_auto worldViewProj      worldviewproj_matrix
+                //param_named_auto lightDirection     light_direction_object_space 0
+                //param_named_auto ambientLight       ambient_light_colour
+
+                   // compressionSettings are;
+                //     world to texture scalex
+                //     scaley
+                //     world to texture scalez
+                //     MorphFactor
+                param_named compressionSettings float4 90000.0 1.37331 90000.0 0.0
+                /// 90000 / 65535
+
+                //  First is Distance to Detail Texture alpha appareance
+                param_named FogSettings float4 1000.0 0.0 0.0 0.0
+            }
+
+			shadow_receiver_vertex_program_ref DecompressVertexShadowReceiver/VP
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+		        param_named_auto worldMatrix world_matrix
+		        param_named_auto texViewProjMatrix texture_viewproj_matrix
+				
+               	// Config settings are;
+               	//     x scale
+               	//     y (height) start
+               	//     z scale
+               	//
+               	param_named compressionSettings float4 90000.0 1.37331 90000.0 50000.0
+			}
+            fragment_program_ref DecompressVertexShadowed/FP
+            {
+                // angle  pos/neg  ?  ?
+                param_named HorizonSettings float4 0.0 0.0 0.0 0.0
+                //param_named_auto lightDirection     light_direction_object_space 0
+                //param_named_auto ambientLight       ambient_light_colour
+            }
+
+            texture_unit
+            {
+                // Base  texture
+                texture Base
+                tex_address_mode clamp
+            }
+            texture_unit
+            {
+                // Noise texture
+                texture Detail3.jpg
+                tex_address_mode mirror
+            }
+            texture_unit
+            {
+                // Horizon texture
+                texture Horizon 
+            }
+        }
+    }
+}
+material InstantBase
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                // Base  texture
+                texture Base
+                tex_address_mode clamp
+            }
+            texture_unit
+            {
+                // Noise texture
+                texture Detail3.jpg
+                tex_address_mode mirror
+                scale 0.2 0.2
+            }
+        }
+    }
+}
+
+material InstantBaseShadowed
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                // Base  texture
+                texture Base
+                tex_address_mode clamp
+            }
+            texture_unit
+            {
+                // Noise texture
+                texture Detail3.jpg
+                tex_address_mode mirror
+                scale 0.2 0.2
+            }
+            texture_unit
+            {
+                // light texture
+                texture Light  2d unlimited
+                colour_op modulate 
+            }
+        }
+    }
+}

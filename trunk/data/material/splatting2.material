@@ -1,0 +1,108 @@
+// This material will be used with splatting
+material Splatting2
+{
+	lod_distances 280000
+
+	technique
+	{ 
+		lod_index 0
+		pass
+		{
+			ambient 1.0 1.0 1.0
+			diffuse 1.0 1.0 1.0
+			// Sand Pass
+			texture_unit
+			{
+				// Snow Splat
+				texture Splatting
+				 
+				scale 0.01 0.01
+			}
+			texture_unit
+			{
+				// Snow Alpha map
+				texture Alpha 2d unlimited alpha
+				tex_address_mode clamp
+				colour_op_ex blend_diffuse_alpha  src_current src_texture
+			}
+		}
+		pass
+		{
+			ambient 1.0 1.0 1.0
+			diffuse 1.0 1.0 1.0
+			// Grass Pass
+			scene_blend alpha_blend
+			texture_unit
+			{
+				// Grass Splat
+				texture Splatting
+				 
+				scale 0.01 0.01
+			}
+			texture_unit
+			{
+				// Grass Alpha map
+				texture Alpha 2d unlimited alpha
+				tex_address_mode clamp
+				colour_op_ex blend_diffuse_alpha  src_current src_texture
+			}
+		}
+		pass
+		{
+			ambient 1.0 1.0 1.0
+			diffuse 1.0 1.0 1.0
+			//Rock Pass
+			scene_blend alpha_blend
+			texture_unit
+			{
+				// Rock Splat
+				texture Splatting
+				 
+				scale 0.01 0.01
+			}
+			texture_unit
+			{
+				// Rock Alpha map
+				texture Alpha 2d unlimited alpha
+				tex_address_mode clamp
+				colour_op_ex blend_diffuse_alpha  src_current src_texture
+			}
+		}
+		pass
+		{
+			ambient 1.0 1.0 1.0
+			diffuse 1.0 1.0 1.0
+			// Snow Pass
+			scene_blend alpha_blend
+			texture_unit
+			{
+				// Sand Splat
+				texture Splatting
+				scale 0.01 0.01
+			}
+			texture_unit
+			{
+				// Sand Alpha map
+				texture Alpha 2d unlimited alpha
+				tex_address_mode clamp
+				 
+				colour_op_ex blend_diffuse_alpha  src_current src_texture
+			}
+		}
+	}
+	technique
+	{
+		lod_index 1
+		pass
+		{
+			ambient 1.0 1.0 1.0
+			diffuse 1.0 1.0 1.0
+			texture_unit
+			{
+				// Base Texture
+				texture Base 2d unlimited
+				tex_address_mode clamp
+			}
+		}
+	}
+}

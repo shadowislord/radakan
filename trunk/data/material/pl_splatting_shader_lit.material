@@ -1,0 +1,322 @@
+material PLSplattingShaderLit
+{
+  lod_distances 1
+  technique
+  {
+    lod_index 0
+
+    //Ambient pass
+    //This is the first pass that runs before all other passes
+    //In fact, Ogre knows this is an ambient only pass because ambient is 1, 1, 1, 1
+    //and therefore all ambient passes on all materials first before continuing on to other passes
+    //This allows early z out by laying down the depth buffer so that the expensive pixel shaders don't have to attempt
+    //to render to pixels that are going to end up occluded
+    
+    pass AmbientPass
+    {
+      // These base colors identify the pass to Ogre as an ambient only pass
+      // but are ignored by the shaders
+      ambient 1 1 1
+      emissive 0 0 0
+      diffuse 0 0 0 
+      specular 0 0 0 0 
+	
+      // Ambient and emissive pass vertex program
+      vertex_program_ref PLAmbientVPCG
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto globalAmbient ambient_light_colour
+        param_named matAmbient float4 1 1 1 1
+        param_named matEmissive float4 0 0 0 0
+      }
+      
+      shadow_receiver_vertex_program_ref VertexShadowReceiver/VP
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto texViewProjMatrix texture_viewproj_matrix
+      }
+    }
+
+    //Directional light pass - run for each directional light that affects this
+    //renderable.
+    //
+    pass DirectionalLightPass
+    {
+      iteration once_per_light directional
+      
+      // These base colors are ignored by the shaders but 
+      // identify this non ambient pass
+      ambient 0 0 0 
+      diffuse 1 1 1
+      specular 1 1 1 1
+      
+      fog_override true none
+      
+      scene_blend add
+      
+      vertex_program_ref PLDirectionalVP2CG
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto lightPosition light_position_object_space 0
+        param_named_auto lightDiffuse light_diffuse_colour 0
+        param_named matDiffuse float4 1 1 1 1
+      }
+      
+      fragment_program_ref PLSplatDirectionalFP2CG
+      {
+        param_named splatScales float4 20 20 20 20
+      }
+      
+      shadow_receiver_vertex_program_ref VertexShadowReceiver/VP
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto texViewProjMatrix texture_viewproj_matrix
+      }
+      
+      texture_unit
+      {
+        // coverage texture : rgba handling alpha for each splat
+        texture Coverage
+      }
+     
+       texture_unit
+      {
+        texture Splatting
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }      
+    }
+    
+    //Point light pass - run for each point light that affects this
+    //renderable.
+    //
+    pass PointLightPass
+    {
+      iteration once_per_light point
+      
+      // These base colors are ignored by the shaders but 
+      // identify this non ambient pass
+      ambient 0 0 0 
+      diffuse 1 1 1
+      specular 1 1 1 1
+      
+      fog_override true none
+      
+      scene_blend add
+      
+      //If you want high quality point light (per pixel for all calculations)
+      //change this to PLPointVP2HighCG and remove light position parameter below
+      vertex_program_ref PLPointVP2MedCG
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto lightPosition light_position_object_space 0
+      }
+      
+      //If you want high quality point light (per pixel for all calculations)
+      //change this to PLPointFP2HighCG and add light position parameter below
+      //param_named_auto lightPosition light_position_object_space 0
+      //
+      fragment_program_ref PLSplatPointFP2MedCG
+      {
+        param_named_auto lightDiffuse light_diffuse_colour 0
+        param_named_auto lightAttenuation light_attenuation 0
+        param_named matDiffuse float4 1 1 1 1
+        param_named splatScales float4 20 20 20 20
+      }
+      
+      shadow_receiver_vertex_program_ref VertexShadowReceiver/VP
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto texViewProjMatrix texture_viewproj_matrix
+      }
+      
+      texture_unit
+      {
+        // coverage texture : rgba handling alpha for each splat
+        texture Coverage
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }  
+
+      // Normalization cube map for speeding up
+      // normalization in the fragment program instead of using normalize()
+      texture_unit
+      {
+        cubic_texture nm.png combinedUVW
+        tex_coord_set 1
+        tex_address_mode clamp
+      }
+    }
+  }
+  technique
+  {
+    lod_index 1
+
+    //Ambient pass
+    //This is the first pass that runs before all other passes
+    //In fact, Ogre knows this is an ambient only pass because ambient is 1, 1, 1, 1
+    //and therefore all ambient passes on all materials first before continuing on to other passes
+    //This allows early z out by laying down the depth buffer so that the expensive pixel shaders don't have to attempt
+    //to render to pixels that are going to end up occluded
+    
+    pass AmbientPass
+    {
+      // These base colors identify the pass to Ogre as an ambient only pass
+      // but are ignored by the shaders
+      ambient 1 1 1
+      emissive 0 0 0
+      diffuse 0 0 0 
+      specular 0 0 0 0 
+	
+      // Ambient and emissive pass vertex program
+      vertex_program_ref PLAmbientVPCG
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto globalAmbient ambient_light_colour
+        param_named matAmbient float4 1 1 1 1
+        param_named matEmissive float4 0 0 0 0
+      }
+      
+      shadow_receiver_vertex_program_ref VertexShadowReceiver/VP
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto texViewProjMatrix texture_viewproj_matrix
+      }
+    }
+
+    //Directional light pass - run for each directional light that affects this
+    //renderable.
+    //
+    pass DirectionalLightPass
+    {
+      iteration once_per_light directional
+      
+      // These base colors are ignored by the shaders but 
+      // identify this non ambient pass
+      ambient 0 0 0 
+      diffuse 1 1 1
+      specular 1 1 1 1
+      
+      fog_override true none
+      
+      scene_blend add
+      
+      vertex_program_ref PLDirectionalVP2CG
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto lightPosition light_position_object_space 0
+        param_named_auto lightDiffuse light_diffuse_colour 0
+        param_named matDiffuse float4 1 1 1 1
+      }
+      
+      fragment_program_ref PLDirectionalFP2CG
+      {
+      }
+      
+      shadow_receiver_vertex_program_ref VertexShadowReceiver/VP
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto texViewProjMatrix texture_viewproj_matrix
+      }
+      
+      texture_unit
+      {
+        texture Base
+      }      
+    }
+    
+    //Point light pass - run for each point light that affects this
+    //renderable.
+    //
+    pass PointLightPass
+    {
+      iteration once_per_light point
+      
+      // These base colors are ignored by the shaders but 
+      // identify this non ambient pass
+      ambient 0 0 0 
+      diffuse 1 1 1
+      specular 1 1 1 1
+      
+      fog_override true none
+      
+      scene_blend add
+      
+      //If you want high quality point light (per pixel for all calculations)
+      //change this to PLPointVP2HighCG and remove light position parameter below
+      vertex_program_ref PLPointVP2MedCG
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto lightPosition light_position_object_space 0
+      }
+      
+      //If you want high quality point light (per pixel for all calculations)
+      //change this to PLPointFP2HighCG and add light position parameter below
+      //param_named_auto lightPosition light_position_object_space 0
+      //
+      fragment_program_ref PLPointFP2MedCG
+      {
+        param_named_auto lightDiffuse light_diffuse_colour 0
+        param_named_auto lightAttenuation light_attenuation 0
+        param_named matDiffuse float4 1 1 1 1
+      }
+      
+      shadow_receiver_vertex_program_ref VertexShadowReceiver/VP
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto texViewProjMatrix texture_viewproj_matrix
+      }
+      
+      texture_unit
+      {
+         texture Base
+      }
+    
+      // Normalization cube map for speeding up
+      // normalization in the fragment program instead of using normalize()
+      texture_unit
+      {
+        cubic_texture nm.png combinedUVW
+        tex_coord_set 1
+        tex_address_mode clamp
+      }
+    }
+  }
+}

@@ -1,0 +1,104 @@
+material PLSplattingShaderUnlitDecompress
+{
+  lod_distances 1
+  technique
+  {
+    lod_index 0
+
+    pass
+    {
+      lighting off
+	
+      // Ambient and emissive pass vertex program
+      vertex_program_ref PLDecompressUnlitVP2CG
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named compressionSettings float4 90000.0 1.37331 90000.0 0.0
+      }
+
+      fragment_program_ref PLSplatUnlitFP2CG
+      {
+        param_named splatScales float4 20 20 20 20
+      }
+      
+      shadow_receiver_vertex_program_ref DecompressVertexShadowReceiver/VP
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto texViewProjMatrix texture_viewproj_matrix
+                  
+        // Config settings are;
+        //     x scale
+        //     y (height) start
+        //     z scale
+        //
+        param_named compressionSettings float4 90000.0 1.37331 90000.0 50000.0
+      }
+
+      texture_unit
+      {
+        // coverage texture : rgba handling alpha for each splat
+        texture Coverage
+      }
+     
+       texture_unit
+      {
+        texture Splatting
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }
+     
+      texture_unit
+      {
+        texture Splatting
+      }      
+    }
+  }
+
+  technique
+  {
+    lod_index 1
+
+    pass
+    {
+      lighting off
+	
+      vertex_program_ref PLDecompressUnlitVP2CG
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named compressionSettings float4 90000.0 1.37331 90000.0 0.0
+      }
+
+      fragment_program_ref PLUnlitFP2CG
+      {
+      }
+      
+      shadow_receiver_vertex_program_ref DecompressVertexShadowReceiver/VP
+      {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto texViewProjMatrix texture_viewproj_matrix
+                  
+        // Config settings are;
+        //     x scale
+        //     y (height) start
+        //     z scale
+        //
+        param_named compressionSettings float4 90000.0 1.37331 90000.0 50000.0
+      }
+
+      texture_unit
+      {
+        texture Base
+      }      
+    }
+  }
+}
