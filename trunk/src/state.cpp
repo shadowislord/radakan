@@ -15,11 +15,11 @@ State ::
 	
 	if (new_parent_state == NULL)
 	{
-		debug () << * this << " -> State (" << * new_owner << ", " << "NULL" << ")"<< endl;
+		debug () << "State (" << * new_owner << ", " << "NULL" << ")"<< endl;
 	}
 	else
 	{
-		debug () << * this << " -> State (" << * new_owner << ", " << * new_parent_state << ")"<< endl;
+		debug () << "State (" << * new_owner << ", " << * new_parent_state << ")"<< endl;
 	}
 	
 	parent_state = new_parent_state;
@@ -32,7 +32,7 @@ State ::
 State ::
 	~State ()
 {
-	assert (Object :: is_initialized (* this + " -> ~State ()"));
+	assert (Object :: is_initialized ("~State ()"));
 }
 
 //	virtual

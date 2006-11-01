@@ -10,7 +10,7 @@ material metal_sheet/Metal_Plate
             emissive 0.0 0.0 0.0
             texture_unit
             {
-                texture MtlPlat2.jpg
+                texture mtl_plat2.jpg
             }
         }
     }

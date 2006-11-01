@@ -27,6 +27,8 @@ Sector ::
 		(Ogre :: Real (view_port -> getActualWidth ())
 		/ Ogre :: Real (view_port -> getActualHeight ()));
 
+	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);	//	Doesn't work.
+
 	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
 		create_entity_node ("Tavern", "tavern.mesh")));
 

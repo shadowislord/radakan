@@ -19,7 +19,7 @@ Fight_State ::
 Fight_State ::
 	~Fight_State ()
 {
-	assert (Object :: is_initialized (* this + " -> ~Fight_State ()"));
+	assert (Object :: is_initialized ("~Fight_State ()"));
 }
 
 //	virtual

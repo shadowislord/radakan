@@ -16,7 +16,7 @@ Object ::
 	Object (string new_name)
 {
 	assert (! new_name.empty ());
-	debug () << new_name << " -> Object (" << new_name << ")" << endl;
+	debug () << "Object (" << new_name << ")" << endl;
 	
 	assign (new_name);
 	parent = NULL;
@@ -32,7 +32,7 @@ Object ::
 Object ::
 	~Object ()
 {
-	assert (is_initialized (* this + " -> ~Object ()"));
+	assert (is_initialized ("~Object ()"));
 	
 	#ifdef SL_DEBUG
 		objects.erase (this);
@@ -69,7 +69,7 @@ ostream & Object ::
 	debug ()
 	const
 {
-	return * log_cout << "(" << * this << ") debug: ";
+	return * log_cout << "debug: " << * this << " - ";
 }
 
 //	virtual
@@ -77,7 +77,7 @@ ostream & Object ::
 	error ()
 	const
 {
-	return * log_cout << "(" << * this << ") ERROR: ";
+	return * log_cout << "ERROR: " << * this << " - ";
 }
 
 bool Object ::

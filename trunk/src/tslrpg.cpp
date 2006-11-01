@@ -1,4 +1,6 @@
 #include "tslrpg.hpp"
+//#include </home/t/opt/ogre/RenderSystems/GL/include/OgreGLGpuProgramManager.h>
+
 
 using namespace std;
 using namespace sl;
@@ -20,21 +22,35 @@ Tslrpg ::
 
 	try	// Catch any errors
 	{
+//		new Ogre :: GLGpuProgramManager ();
+	
 		// Add textures directory
-		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(path + "/data/texture", "FileSystem", "textures", true);
 
 		// Add 3D models directory
-		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(path + "/data/model", "FileSystem", "models", true);
 
 		// Add materials directory
-		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(path + "/data/material", "FileSystem", "materials", true);
 					
-		// Add gui directory
-		Ogre :: ResourceGroupManager :: getSingleton ().addResourceLocation
-					(path + "/data/gui", "FileSystem", "gui", true);
+		// Add gui font directory
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
+					(path + "/data/gui/font", "FileSystem", "gui", true);
+					
+		// Add gui imageset directory
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
+					(path + "/data/gui/imageset", "FileSystem", "gui", true);
+
+		// Add gui looknfeel directory
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
+					(path + "/data/gui/looknfeel", "FileSystem", "gui", true);
+
+		// Add gui scheme directory
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
+					(path + "/data/gui/scheme", "FileSystem", "gui", true);
 
 		debug () << "A" << endl;
 		// Initialise our resources

@@ -17,7 +17,7 @@ GUI_Engine ::
 													false, 3000, scene_manager);
 	//	This only works for me in debug mode. --Tinus
 
-	system = new System (renderer, String (path + "/logs/cegui.txt") . data ());
+	system = new System (renderer, String (path + "/log/cegui.txt") . data ());
 
 	window_manager = & WindowManager :: getSingleton ();
 

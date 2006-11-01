@@ -20,7 +20,7 @@ NPC ::
 NPC ::
 	~NPC ()
 {
-	assert (Object :: is_initialized (* this + " -> ~NPC ()"));
+	assert (Object :: is_initialized ("~NPC ()"));
 }
 
 //	virtual

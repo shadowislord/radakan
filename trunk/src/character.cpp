@@ -30,7 +30,7 @@ Character ::
 Character ::
 	~Character ()
 {
-	assert (Object :: is_initialized (* this + " -> ~Character ()"));
+	assert (Object :: is_initialized ("~Character ()"));
 }
 
 //	virtual

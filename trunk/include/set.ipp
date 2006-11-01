@@ -11,7 +11,7 @@ template <typename T> Set <T> ::
 	Set (string new_name) :
 	Object (new_name)
 {
-	debug () << * this << " -> Set (" << * this << ")"<< endl;
+	debug () << "Set (" << * this << ")"<< endl;
 	assert (Object :: is_initialized ());
 
 	assert (is_initialized ());
@@ -21,7 +21,7 @@ template <typename T> Set <T> ::
 template <typename T> Set <T> ::
 	~Set ()
 {
-	assert (Object :: is_initialized (* this + " -> ~Set ()"));
+	assert (Object :: is_initialized ("~Set ()"));
 
 	for (_Rb_tree_const_iterator <T *> i = children . begin ();
 													i != children . end (); i ++)

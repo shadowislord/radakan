@@ -18,7 +18,7 @@ Player ::
 Player ::
 	~Player ()
 {
-	assert (Object :: is_initialized (* this + " -> ~Player ()"));
+	assert (Object :: is_initialized ("~Player ()"));
 }
 
 //	virtual
