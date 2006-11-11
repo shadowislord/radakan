@@ -29,6 +29,7 @@
 
 using namespace std;
 
+///	Scattered Lands namespace
 namespace sl
 {
 	class Object :

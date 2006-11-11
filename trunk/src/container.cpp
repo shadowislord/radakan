@@ -83,14 +83,15 @@ bool Container ::
 {
 	assert (is_initialized ());
 	assert (entity != NULL);
-	assert (entity -> is_initialized ());
 	assert (other_set != NULL);
+	assert (entity -> is_initialized ());
 	assert (other_set -> is_initialized ());
+	assert (contains (entity, false));
 
 	//	Enitities inside a container are not visible. But when an enitity
 	//	is moved to a plain Set <Enitity>, is should be visible.
 	entity -> node -> setVisible (true);
-	bool result = other_set -> Set <Entity> :: move_to (entity, other_set);
+	bool result = Set <Entity> :: move_to (entity, other_set);
 	if (! result)
 	{
 		entity -> node -> setVisible (false);

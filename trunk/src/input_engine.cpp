@@ -145,16 +145,20 @@ bool Input_Engine ::
 }
 
 bool Input_Engine ::
-	get_mouse_buttons (int button, bool reset)
+	get_mouse_button (string button, bool reset)
 {
 	assert (is_initialized ());
 	
-	bool result = mouse_buttons [button];
-	if (reset)
+	if (mouse_buttons [button])
 	{
-		mouse_buttons [button] = false;
+		debug () << "Mouse button '" << button << "' was pressed." << endl;
+		if (reset)
+		{
+			mouse_buttons [button] = false;
+		}
+		return true;
 	}
-	return result;
+	return false;
 }
 
 int Input_Engine ::
@@ -202,7 +206,10 @@ bool Input_Engine ::
 	mouseMoved (const OIS :: MouseEvent & mouse_event)
 {
 	assert (is_initialized ());
-	
+
+	mouse_height = mouse_event . state . height;
+	mouse_width = mouse_event . state . width;
+
 	return false;
 }
 
@@ -211,8 +218,10 @@ bool Input_Engine ::
 	mousePressed (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id)
 {
 	assert (is_initialized ());
+
+	mouse_buttons [to_string (id)] = true;
 	
-	return false;
+	return true;
 }
 
 //	virtual
@@ -221,5 +230,33 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 	
-	return false;
+	mouse_buttons [to_string (id)] = false;
+	
+	return true;
+}
+
+bool Input_Engine ::
+	is_mouse_button (string button) const
+{
+	return (button == left_mouse_button) || (button == middle_mouse_button) || (button == right_mouse_button);
+}
+
+string Input_Engine ::
+	to_string (OIS :: MouseButtonID id)
+{
+	assert (is_initialized ());
+	
+	if (id == OIS :: MB_Left)
+	{
+		return left_mouse_button;
+	}
+	else if (id == OIS :: MB_Middle)
+	{
+		return middle_mouse_button;
+	}
+	else if (id == OIS :: MB_Right)
+	{
+		return right_mouse_button;
+	}
+	return "other";
 }

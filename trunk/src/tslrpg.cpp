@@ -177,8 +177,8 @@ void Tslrpg ::
 			}
 		}
 		
-		//	transfer the weapon
-		if (input_engine -> get_key ("t", true))
+		//	move the weapon
+		if (input_engine -> get_key ("m", true))
 		{
 			NPC * npc = active_sector -> get_child <NPC> ();
 			assert (npc != NULL);
@@ -192,6 +192,16 @@ void Tslrpg ::
 			{
 				npc -> Character :: move_to (npc -> get_weapon (), player);
 			}
+		}
+
+		if (input_engine -> get_mouse_button (left_mouse_button, false))
+		{
+			debug () << "left?" << endl;
+		}
+		
+		if (input_engine -> get_mouse_button (middle_mouse_button, true))
+		{
+			debug () << "middle?" << endl;
 		}
 	}
 }

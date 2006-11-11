@@ -31,9 +31,10 @@ namespace sl
 			void capture ();
 	//		bool is_key_down (OIS :: KeyCode);	the interface should be OIS independant
 			bool get_key (string key, bool reset);
-			bool get_mouse_buttons (int button, bool reset);
+			bool get_mouse_button (string button, bool reset);
 			int get_mouse_height () const;
 			int get_mouse_width () const;
+			bool is_mouse_button (string button) const;
 
 		protected :
 			virtual bool keyPressed (const OIS :: KeyEvent & key_event);
@@ -45,13 +46,18 @@ namespace sl
 
 		private :
 			map <string, bool> keys;
-			map <int, bool> mouse_buttons;
+			map <string, bool> mouse_buttons;
 			int mouse_height;
 			int mouse_width;
+			string to_string (OIS :: MouseButtonID id);
 			
 			OIS :: Mouse * mouse;
 			OIS :: Keyboard * keyboard;
 	};
+
+const string left_mouse_button = "left";
+const string middle_mouse_button = "middle";
+const string right_mouse_button = "right";
 }
 
 #endif	//	INPUT_ENGINE_HPP

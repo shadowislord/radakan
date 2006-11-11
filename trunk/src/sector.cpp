@@ -21,6 +21,7 @@ Sector ::
 	// Create one viewport, entire window
 	Ogre :: Viewport * view_port = window -> addViewport (camera);
 	view_port -> setBackgroundColour (Ogre :: ColourValue (0, 0, 0));
+	view_port -> setOverlaysEnabled (true);
 
 	// Alter the camera aspect ratio to match the viewport
 	camera -> setAspectRatio
@@ -136,9 +137,9 @@ Sector ::
 			0, 0, 0,
 			Ogre :: ColourValue
 			(
-				Ogre :: Math :: RangeRandom (0.6f,1),
-				Ogre :: Math :: RangeRandom (0.6f,1),
-				Ogre :: Math :: RangeRandom (0.6f,1)
+				Ogre :: Math :: RangeRandom (0.6f, 1),
+				Ogre :: Math :: RangeRandom (0.6f, 1),
+				Ogre :: Math :: RangeRandom (0.6f, 1)
 			)
 		);
 		int dim = int (Ogre :: Math :: RangeRandom(1.5f, 2));
@@ -147,7 +148,7 @@ Sector ::
 		bbsNode2 -> attachObject (bbs2);
 		bbsNode2 -> setPosition (px, py, pz);
 	}
-	
+
 	assert (is_initialized ());
 }
 

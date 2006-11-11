@@ -11,6 +11,8 @@
 #include <OgreEventListeners.h>
 #include <OgreStringConverter.h>
 #include <OgreException.h>
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 using namespace std;
 
@@ -20,7 +22,8 @@ namespace sl
 	///	Sector keeps track of all data in an in-game sector.
 
 	class Sector :
-		public Set <Entity>
+		public Set <Entity>/* !!!,
+		public btDiscreteDynamicsWorld*/
 	{
 		public :
 			Sector
