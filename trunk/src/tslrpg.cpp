@@ -122,7 +122,7 @@ void Tslrpg ::
 	run ()
 {
 	assert (is_initialized ());
-	
+
 	while (true)
 	{
 		timer -> reset ();
@@ -194,14 +194,15 @@ void Tslrpg ::
 			}
 		}
 
-		if (input_engine -> get_mouse_button (left_mouse_button, false))
+		if (input_engine -> get_mouse_button (left_mouse_button, true))
 		{
-			debug () << "left?" << endl;
+			debug () << left_mouse_button << endl;
 		}
 		
-		if (input_engine -> get_mouse_button (middle_mouse_button, true))
+		if (input_engine -> get_mouse_button (middle_mouse_button, false))
 		{
-			debug () << "middle?" << endl;
+			debug () << middle_mouse_button << endl;
+			player -> node -> yaw (Ogre :: Degree (- 0.13 * input_engine -> get_mouse_width (true)));
 		}
 	}
 }

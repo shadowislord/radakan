@@ -32,8 +32,8 @@ namespace sl
 	//		bool is_key_down (OIS :: KeyCode);	the interface should be OIS independant
 			bool get_key (string key, bool reset);
 			bool get_mouse_button (string button, bool reset);
-			int get_mouse_height () const;
-			int get_mouse_width () const;
+			float get_mouse_height (bool relative) const;
+			float get_mouse_width (bool relative) const;
 			bool is_mouse_button (string button) const;
 
 		protected :
@@ -47,8 +47,10 @@ namespace sl
 		private :
 			map <string, bool> keys;
 			map <string, bool> mouse_buttons;
-			int mouse_height;
-			int mouse_width;
+			float relative_mouse_height;
+			float relative_mouse_width;
+			float absolute_mouse_height;
+			float absolute_mouse_width;
 			string to_string (OIS :: MouseButtonID id);
 			
 			OIS :: Mouse * mouse;

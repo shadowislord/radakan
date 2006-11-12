@@ -161,22 +161,32 @@ bool Input_Engine ::
 	return false;
 }
 
-int Input_Engine ::
-	get_mouse_height ()
+float Input_Engine ::
+	get_mouse_height (bool relative)
 	const
 {
 	assert (is_initialized ());
+
+	if (relative)
+	{
+		return relative_mouse_height;
+	}
 	
-	return mouse_height;
+	return absolute_mouse_height;
 }
 
-int Input_Engine ::
-	get_mouse_width ()
+float Input_Engine ::
+	get_mouse_width (bool relative)
 	const
 {
 	assert (is_initialized ());
 	
-	return mouse_width;
+	if (relative)
+	{
+		return relative_mouse_width;
+	}
+
+	return absolute_mouse_width;
 }
 
 //	virtual
@@ -207,10 +217,13 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	mouse_height = mouse_event . state . height;
-	mouse_width = mouse_event . state . width;
+	relative_mouse_width = mouse_event . state . relX;
+	relative_mouse_height = mouse_event . state . relY;
 
-	return false;
+	absolute_mouse_width = mouse_event . state . abX;
+	absolute_mouse_height = mouse_event . state . abY;
+
+	return true;
 }
 
 //	virtual
