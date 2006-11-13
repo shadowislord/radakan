@@ -1,4 +1,5 @@
 #include "tslrpg.hpp"
+#include <algorithm>
 //#include </home/t/opt/ogre/RenderSystems/GL/include/OgreGLGpuProgramManager.h>
 
 
@@ -201,8 +202,17 @@ void Tslrpg ::
 		
 		if (input_engine -> get_mouse_button (middle_mouse_button, false))
 		{
-			debug () << middle_mouse_button << endl;
-			player -> node -> yaw (Ogre :: Degree (- 0.13 * input_engine -> get_mouse_width (true)));
+			float raw_x_offset = input_engine -> get_mouse_width (true);
+
+			if (raw_x_offset != 0)
+			{
+				//	apply treshold
+				float x_offset = raw_x_offset / abs (raw_x_offset) * max (abs (raw_x_offset) - 3, 0.f);
+			
+				debug () << middle_mouse_button << " " << - 0.15 * raw_x_offset << " " << - 0.15 * x_offset << endl;
+
+				player -> node -> yaw (Ogre :: Degree (- 0.15 * x_offset));
+			}
 		}
 	}
 }
