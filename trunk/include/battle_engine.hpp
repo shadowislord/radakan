@@ -13,8 +13,8 @@ using namespace boost;
 namespace sl
 {
 	class Battle_Engine :
-		public Object/*	!!!,
-		public Ogre :: Singleton <Battle_Engine>*/
+		public Object,
+		public Ogre :: Singleton <Battle_Engine>
 	{
 		public :
 			Battle_Engine ();

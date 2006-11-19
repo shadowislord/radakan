@@ -7,7 +7,7 @@ Sector ::
 	Sector
 		(string new_name,
 		Ogre :: SceneManager * new_scene_manager,
-		Ogre :: RenderWindow * window) :
+		float aspect_ratio) :
 	Object (new_name),
 	Set <Entity> (new_name)
 {
@@ -17,16 +17,7 @@ Sector ::
 	camera = scene_manager -> createCamera ("Eyes");
 	camera -> setNearClipDistance (5);
 	camera -> setFarClipDistance (2000);
-
-	// Create one viewport, entire window
-	Ogre :: Viewport * view_port = window -> addViewport (camera);
-	view_port -> setBackgroundColour (Ogre :: ColourValue (0, 0, 0));
-	view_port -> setOverlaysEnabled (true);
-
-	// Alter the camera aspect ratio to match the viewport
-	camera -> setAspectRatio
-		(Ogre :: Real (view_port -> getActualWidth ())
-		/ Ogre :: Real (view_port -> getActualHeight ()));
+	camera -> setAspectRatio (aspect_ratio);
 
 	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);	//	Doesn't work.
 
@@ -56,32 +47,35 @@ Sector ::
 			create_entity_node ("Fort", "fort.mesh")));
 			
 
-	player = new Player (create_entity_node ("Player", "bar.mesh"));
+	if (Player :: getSingletonPtr () == NULL)
+	{
+		Player * player = new Player (create_entity_node ("Player", "bar.mesh"));
+			player -> node -> setScale (Ogre :: Vector3 (0.2, 2, 0.2));
 
-	add (player);
-	player -> node -> setScale (Ogre :: Vector3 (0.2, 2, 0.2));
-
-	player -> add
-	(
-		new Container
+		player -> add
 		(
-			true,
-			true,
-			true,
-			30,
-			3,
-			player -> node -> getPosition (),
-			create_entity_node ("Backpack", "bar.mesh")
-		)
-	);
+			new Container
+			(
+				true,
+				true,
+				true,
+				30,
+				3,
+				player -> node -> getPosition (),
+				create_entity_node ("Backpack", "bar.mesh")
+			)
+		);
 
-	debug () << * player << "'s weight: "
-									<< player -> get_total_weight () << endl;
-	Weapon * sword = new Weapon
-			(1, 2, Ogre :: Vector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
-			create_entity_node ("Sword", "bar.mesh"));
-	debug () << * sword << "'s weight: " << sword -> get_total_weight () << endl;
-	player -> add (sword);
+		debug () << * player << "'s weight: "
+										<< player -> get_total_weight () << endl;
+		Weapon * sword = new Weapon
+				(1, 2, Ogre :: Vector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
+				create_entity_node ("Sword", "bar.mesh"));
+		debug () << * sword << "'s weight: " << sword -> get_total_weight () << endl;
+		player -> add (sword);
+		
+		add (player);
+	}
 
 	NPC * npc = new NPC (create_entity_node ("NPC", "bar.mesh"));
 	add (npc);
@@ -224,15 +218,6 @@ Ogre :: Camera * Sector ::
 	assert (is_initialized ());
 
 	return camera;
-}
-
-Player * Sector ::
-	get_player ()
-	const
-{
-	assert (is_initialized ());
-
-	return player;
 }
 
 Ogre :: SceneNode * Sector ::

@@ -4,6 +4,8 @@ using namespace std;
 using namespace boost;
 using namespace sl;
 
+template <> Battle_Engine * Ogre :: Singleton <Battle_Engine> :: ms_Singleton = NULL;
+
 Battle_Engine ::
 	Battle_Engine () :
 	Object ("Battle engine"),
@@ -13,7 +15,7 @@ Battle_Engine ::
 	uniform (generator, uniform_real_distribution),
 	lognormal (generator, lognormal_real_distribution)
 {
-	assert (Object :: is_initialized ());
+	assert (Object :: is_initialized ("Battle_Engine ()"));
 
 	generator.seed (static_cast <unsigned int> (time (0)));
 
@@ -23,6 +25,8 @@ Battle_Engine ::
 Battle_Engine ::
 	~Battle_Engine ()
 {
+	assert (Object :: is_initialized ("~Battle_Engine ()"));
+	
 	assert (is_initialized ());
 }
 
@@ -37,7 +41,7 @@ bool Battle_Engine ::
 string Battle_Engine ::
 	hit (Character * attacker, Character * defender)
 {
-	assert (is_initialized ());
+	assert (Object :: is_initialized ("hit (" + * attacker + ", " + * defender + ")"));
 	assert (attacker != NULL);
 	assert (defender != NULL);
 

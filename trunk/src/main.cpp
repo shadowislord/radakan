@@ -44,6 +44,8 @@ string path;
 		cout << "path: " << path << endl;
 
 		#ifdef SL_DEBUG
+			cout << "debug mode: enabled." << endl;
+
 			log_cout = new ofstream ((path + "/log/log.txt") . c_str ());
 
 			* log_cout << "Setting up Scattered Lands..." << endl;
@@ -51,6 +53,8 @@ string path;
 
 			* log_cout << "debug mode: enabled." << endl;
 		#else
+			cout << "debug mode: disabled." << endl;
+			
 			* log_cout << "debug mode: disabled." << endl;
 		#endif
 

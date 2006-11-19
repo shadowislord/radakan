@@ -8,7 +8,8 @@ using namespace std;
 namespace sl
 {
 	class Player :
-		public Character
+		public Character,
+		public Ogre :: Singleton <Player>
 	{
 		public :
 			Player (Ogre :: SceneNode * new_node);

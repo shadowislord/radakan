@@ -3,6 +3,8 @@
 using namespace std;
 using namespace sl;
 
+template <> Input_Engine * Ogre :: Singleton <Input_Engine> :: ms_Singleton = NULL;
+
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow * window) :
 	Object ("Input Engine")
@@ -195,7 +197,9 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	keys [keyboard -> getAsString (key_event . key)] = true;
+	string key_string = keyboard -> getAsString (key_event . key);
+	keys [key_string] = true;
+	trace () << "key '" << key_string << "' was pressed." << endl;
 
 	return true;
 }
@@ -206,7 +210,9 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	keys [keyboard -> getAsString (key_event . key)] = false;
+	string key_string = keyboard -> getAsString (key_event . key);
+	keys [key_string] = false;
+	trace () << "key '" << key_string << "' was released." << endl;
 
 	return true;
 }

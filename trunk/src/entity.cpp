@@ -49,7 +49,7 @@ float Entity ::
 	get_total_weight ()
 	const
 {
-	assert (is_initialized ());
+	assert (Object :: is_initialized ("get_total_weight ()"));
 	
 	return weight;
 }

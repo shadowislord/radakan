@@ -13,8 +13,9 @@ namespace sl
 	///	Tslrpg is a implicit singleton class. It creates the eninges and the sectors.
 
 	class Tslrpg :
-		public Object/*	!!!,
-		public Ogre :: Singleton <Tslrpg>*/
+//		public State_Machine,
+		public Set <Sector>,
+		public Ogre :: Singleton <Tslrpg>
 	{
 		public :
 			Tslrpg (string path);
@@ -23,7 +24,9 @@ namespace sl
 			void run ();
 
 		private :
-			void create_scene ();
+			void switch_to (Sector * new_active_sector);
+
+			float aspect_ratio;
 
 			Ogre :: Root * root;
 			Ogre :: RenderWindow * window;
@@ -34,9 +37,7 @@ namespace sl
 			Ogre :: Timer * timer;
 
 			Sector * active_sector;
-			set <Sector *> sectors;
-
-			Player * player;
+			Ogre :: Viewport * view_port;
 	};
 }
 

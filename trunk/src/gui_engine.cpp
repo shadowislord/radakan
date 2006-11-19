@@ -6,15 +6,16 @@ using namespace sl;
 
 extern string path;
 
+template <> GUI_Engine * Ogre :: Singleton <GUI_Engine> :: ms_Singleton = NULL;
+
 GUI_Engine ::
-	GUI_Engine (Ogre :: RenderWindow * window, Ogre :: SceneManager * scene_manager) :
+	GUI_Engine (Ogre :: RenderWindow * window) :
 	Object ("Gui engine")
 {
 	assert (Object :: is_initialized ());
 	assert (window != NULL);
 
-	renderer = new OgreCEGUIRenderer (window, Ogre :: RENDER_QUEUE_OVERLAY,
-													false, 3000, scene_manager);
+	renderer = new OgreCEGUIRenderer (window);
 	//	This only works for me in debug mode. --Tinus
 
 	system = new System (renderer, String (path + "/log/cegui.txt") . data ());
@@ -61,7 +62,7 @@ bool GUI_Engine ::
 {
 	assert (is_initialized ());
 	assert (system != NULL);
-	system -> renderGUI ();
+//	!!!	system -> renderGUI ();
 
 	return true;
 }

@@ -29,20 +29,18 @@ namespace sl
 			Sector
 				(string new_name,
 				Ogre :: SceneManager * new_scene_manager,
-				Ogre :: RenderWindow * window);
+				float aspect_ratio);
 			virtual ~Sector ();
 			virtual bool is_initialized () const;
 			virtual bool add (Entity * entity);
 			void update ();
 			Ogre :: SceneManager * get_scene_manager () const;
 			Ogre :: Camera * get_camera () const;
-			Player * get_player () const;
 
 		private :
 			Ogre :: SceneNode * create_entity_node (string name, string mesh_name);
 			Ogre :: SceneManager * scene_manager;
 			Ogre :: Camera * camera;
-			Player * player;
 			set <NPC *> npcs;
 	};
 }

@@ -114,6 +114,22 @@ bool Character ::
 	return result;
 }
 
+void Character ::
+	run (float distance)
+{
+	assert (is_initialized ());
+
+	node -> translate (node -> getOrientation () * Ogre :: Vector3 (0, 0, - distance));
+}
+
+void Character ::
+	turn (float radian_angle)
+{
+	assert (is_initialized ());
+
+	node -> yaw (Ogre :: Radian (radian_angle));
+}
+
 string Character ::
 	die ()
 {

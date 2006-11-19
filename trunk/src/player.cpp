@@ -3,6 +3,8 @@
 using namespace std;
 using namespace sl;
 
+template <> Player * Ogre :: Singleton <Player> :: ms_Singleton = NULL;
+
 //  constructor
 Player ::
 	Player (Ogre :: SceneNode * new_node) :

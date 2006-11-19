@@ -52,7 +52,7 @@ bool Object ::
 	is_initialized (string debug_message)
 	const
 {
-	debug () << debug_message << endl;
+	trace () << debug_message << endl;
 	return is_initialized ();
 }
 
@@ -70,6 +70,14 @@ ostream & Object ::
 	const
 {
 	return * log_cout << "debug: " << * this << " - ";
+}
+
+//	virtual
+ostream & Object ::
+	trace ()
+	const
+{
+	return * log_cout << "trace: " << * this << " - ";
 }
 
 //	virtual
@@ -106,6 +114,15 @@ void Object ::
 	assert (is_in (old_parent));
 
 	parent = NULL;
+}
+
+string sl :: to_string (bool value)
+{
+	if (value)
+	{
+		return "true";
+	}
+	return "false";
 }
 
 string sl :: to_string (float value)

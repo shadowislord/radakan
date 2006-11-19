@@ -26,6 +26,8 @@ namespace sl
 			bool has_weapon () const;
 			bool is_dead () const;
 			Weapon * get_weapon () const;
+			void run (float distance);
+			void turn (float radian_angle);
 			string die ();
 		
 		private :

@@ -41,13 +41,13 @@ namespace sl
 	#endif
 			Object (string new_name);								//	constructor
 			virtual ~Object ();										//	destructor
-			template <typename T> T * copy () const;
 			template <typename T> bool is_type () const;
 			template <typename T> T * to_type () const;
 			virtual bool is_initialized () const;
 			bool is_initialized (string debug_message) const;
 			virtual ostream & print () const;
 			virtual ostream & debug () const;
+			virtual ostream & trace () const;
 			virtual ostream & error () const;
 
 			//	These methods should only be used by a Set
@@ -64,6 +64,7 @@ namespace sl
 		extern set <Object *> objects;
 	#endif
 	
+	string to_string (bool value);
 	string to_string (float value);
 	bool is_nan (float value);
 	int to_int (string value);

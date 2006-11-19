@@ -11,8 +11,7 @@ template <typename T> Set <T> ::
 	Set (string new_name) :
 	Object (new_name)
 {
-	debug () << "Set (" << * this << ")"<< endl;
-	assert (Object :: is_initialized ());
+	assert (Object :: is_initialized ("Set (" + * this + ")"));
 
 	assert (is_initialized ());
 }
@@ -44,7 +43,7 @@ template <typename T> bool Set <T> ::
 template <typename T> bool Set <T> ::
 	add (T * t)
 {
-	assert (is_initialized ());
+	assert (Object :: is_initialized ("add (" + * t + ")"));
 	assert (t -> is_in (NULL));
 
 	t -> put_in (this);
@@ -60,7 +59,7 @@ template <typename T> bool Set <T> ::
 	contains (T * t, bool recursive)
 	const
 {
-	assert (is_initialized ());
+	assert (Object :: is_initialized ("contains (" + * t + ", " + to_string (recursive) + ")"));
 
 	bool result = (children . find (t) != children . end ());
 	
@@ -90,7 +89,7 @@ template <typename T> bool Set <T> ::
 template <typename T> bool Set <T> ::
 	move_to (T * t, Set <T> * other_set)
 {
-	assert (is_initialized ());
+	assert (Object :: is_initialized ("move_to (" + * t + ", " + * other_set + ")"));
 	assert (t -> is_initialized ());
 	assert (other_set != NULL);
 	assert (t -> is_initialized ());
@@ -111,10 +110,29 @@ template <typename T> template <typename U> U * Set <T> ::
 	get_child ()
 	const
 {
+	assert (Object :: is_initialized ("get_child ()"));
+	
 	for (_Rb_tree_const_iterator <T *> i = children . begin ();
 													i != children . end (); i ++)
 	{
 		if ((* i) -> is_type <U> ())
+		{
+			return (* i) -> to_type <U> ();
+		}
+	}
+	return NULL;
+}
+
+template <typename T> template <typename U> U * Set <T> ::
+	get_child (string name)
+	const
+{
+	assert (Object :: is_initialized ("get_child (" + name + ")"));
+	
+	for (_Rb_tree_const_iterator <T *> i = children . begin ();
+													i != children . end (); i ++)
+	{
+		if ((* i) -> is_type <U> () && ((* i) -> compare (name) == 0))
 		{
 			return (* i) -> to_type <U> ();
 		}

@@ -21,6 +21,8 @@ namespace sl
 																//	true iff succes
 			//	returns a child of type U, if possible.
 			template <typename U> U * get_child () const;
+			//	returns a child of type U, if possible.
+			template <typename U> U * get_child (string name) const;
 
 			set <T *> children;
 	};

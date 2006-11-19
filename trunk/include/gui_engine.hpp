@@ -12,11 +12,11 @@ using namespace std;
 namespace sl
 {
 	class GUI_Engine :
-		public Object/*	!!!,
-		public Ogre :: Singleton <GUI_Engine>*/
+		public Object,
+		public Ogre :: Singleton <GUI_Engine>
 	{
 		public :
-			GUI_Engine (Ogre :: RenderWindow * window, Ogre :: SceneManager * scene_manager);
+			GUI_Engine (Ogre :: RenderWindow * window);
 			virtual ~GUI_Engine ();
 			virtual bool is_initialized () const;
 			bool render () const;
