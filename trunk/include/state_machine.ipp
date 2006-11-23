@@ -8,7 +8,8 @@ using namespace sl;
 template <typename T> void State_Machine ::
 		change_active_state ()
 {
-	assert (Object :: is_initialized ("change_active_state ()"));
+	trace () << "change_active_state ()" << endl;
+	assert (Object :: is_initialized ());
 
 	active_child_state = get_child <T> ();
 
@@ -18,7 +19,8 @@ template <typename T> void State_Machine ::
 template <typename T> void State_Machine ::
 	add ()
 {
-	assert (Object :: is_initialized ("add ()"));
+	trace () << "add ()" << endl;
+	assert (Object :: is_initialized ());
 	
 	assert (get_child <T> () == NULL);
 

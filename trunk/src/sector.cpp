@@ -192,12 +192,12 @@ void Sector ::
 		think = (* i) -> think ();
 		if (! think . empty ())
 		{
-			debug () << think << endl;
+			trace () << think << endl;
 		}
 		act = (* i) -> act ();
 		if (! act . empty ())
 		{
-			debug () << act << endl;
+			trace () << act << endl;
 		}
 	}
 }
@@ -218,6 +218,23 @@ Ogre :: Camera * Sector ::
 	assert (is_initialized ());
 
 	return camera;
+}
+
+Ogre :: SceneNode * Sector ::
+	copy_node (Ogre :: SceneNode * example)
+{
+	assert (example -> numAttachedObjects () == 1);
+	assert (example -> getAttachedObject (0) != NULL);
+	
+	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode () -> createChildSceneNode ();
+	
+	node -> attachObject (example -> detachObject (static_cast<unsigned short int>(0)));
+	node -> setPosition (example -> getPosition ());
+	node -> setOrientation (example -> getOrientation ());
+//	node -> setVisibility (example -> getVisibility ());
+	node -> setScale (example -> getScale ());
+	
+	return node;
 }
 
 Ogre :: SceneNode * Sector ::

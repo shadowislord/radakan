@@ -6,9 +6,7 @@ using namespace std;
 using namespace sl;
 
 #ifdef SL_DEBUG
-	extern ofstream * log_cout;
-#else
-	extern ostream * log_cout;
+	extern ofstream * sl_out;
 #endif
 
 //  constructor
@@ -16,7 +14,7 @@ Object ::
 	Object (string new_name)
 {
 	assert (! new_name.empty ());
-	debug () << "Object (" << new_name << ")" << endl;
+	trace () << "Object (" << new_name << ")" << endl;
 	
 	assign (new_name);
 	parent = NULL;
@@ -32,10 +30,11 @@ Object ::
 Object ::
 	~Object ()
 {
-	assert (is_initialized ("~Object ()"));
+	trace () << "~Object ()" << endl;
+	assert (is_initialized ());
 	
 	#ifdef SL_DEBUG
-		objects.erase (this);
+		objects . erase (this);
 	#endif
 }
 
@@ -48,20 +47,12 @@ bool Object ::
 	return ! empty ();
 }
 
-bool Object ::
-	is_initialized (string debug_message)
-	const
-{
-	trace () << debug_message << endl;
-	return is_initialized ();
-}
-
 //	virtual
 ostream & Object ::
 	print ()
 	const
 {
-	return * log_cout;
+	return * sl_out;
 }
 
 //	virtual
@@ -69,7 +60,9 @@ ostream & Object ::
 	debug ()
 	const
 {
-	return * log_cout << "debug: " << * this << " - ";
+	#ifdef SL_DEBUG
+		return * sl_out << "debug: " << * this << " - ";
+	#endif
 }
 
 //	virtual
@@ -77,7 +70,9 @@ ostream & Object ::
 	trace ()
 	const
 {
-	return * log_cout << "trace: " << * this << " - ";
+	#ifdef SL_TRACE
+		return * sl_out << "trace: " << * this << " - ";
+	#endif
 }
 
 //	virtual
@@ -85,7 +80,7 @@ ostream & Object ::
 	error ()
 	const
 {
-	return * log_cout << "ERROR: " << * this << " - ";
+	return * sl_out << "ERROR: " << * this << " - ";
 }
 
 bool Object ::
@@ -100,7 +95,8 @@ bool Object ::
 void Object ::
 	put_in (Object * new_parent)
 {
-	assert (is_initialized ());
+	trace () << "put_in (" << to_string (new_parent) << ")" << endl;
+	assert (Object :: is_initialized ());
 	assert (parent == NULL);
 	assert (new_parent != NULL);
 
@@ -130,6 +126,15 @@ string sl :: to_string (float value)
 	ostringstream oss;
 	oss << value;	//	insert int into stream
 	return oss.str ();
+}
+
+string sl :: to_string (Object * object)
+{
+	if (object != NULL)
+	{
+		return * object;
+	}
+	return "NULL";
 }
 
 int sl :: to_int (string value)

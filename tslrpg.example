@@ -1,39 +1,41 @@
 #!/bin/bash
 
-TSLRPG=${T_OPT}/tslrpg
+TRUNK=${T_OPT}/tslrpg/trunk
+JAM_ARGUMENT=-q
+ARGUMENT_LIST=(${1} ${2} ${3} ${4} ${5} ${6})
 
-if [[ ${1} == "si" ]]; then
-	TRUNK=${TSLRPG}/si
-else
-	TRUNK=${TSLRPG}/trunk
-fi
+for ARGUMENT in ${ARGUMENT_LIST[@]}; do
+	if [[ ${ARGUMENT} == "val" ]]; then
+		PREFIX="valgrind --log-file-exactly=log/valgrind.txt --time-stamp=yes"
+	elif [[ ${ARGUMENT} == "doxy" ]]; then
+		cd ${TRUNK}/doc
+		doxygen
+		cd ..
+	elif [[ ${PREV_ARGUMENT} == "--" ]]; then
+		JAM_ARGUMENT=${ARGUMENT}
+	fi
+	PREV_ARGUMENT=${ARGUMENT}
+done
 
 cd ${TRUNK}
 
-rm logs/*
+rm log/*
 mv obj/debug/*.o src/
 
 cd proj/jam
 
-jam -q
-JAM_RESULT=`jam -q | grep failed`
+jam ${JAM_ARGUMENT}
+JAM_RESULT="${?}"
 
 cd ../..
 mv src/*.o obj/debug/
 
-if [[ ${JAM_RESULT} != "" ]]; then
+if [[ ${JAM_RESULT} != "0" ]]; then
 	echo "Jam failed."
 	exit;
 fi
 
-if [[ ${2} != "" ]]; then
-	PREFIX="valgrind --log-file-exactly=logs/valgrind.txt -v --time-stamp=yes"
-fi
+${PREFIX} bin/debug/tslrpg ${TRUNK}
+echo "tslrpg exit code: ${?}"
 
-COMMAND="${PREFIX} bin/debug/tslrpg ${TRUNK}"
-echo "Command: ${COMMAND}"
-${COMMAND}
-
-mv Ogre.log logs/ogre.txt
-
-cat logs/log.txt | tail
+mv Ogre.log log/ogre.txt

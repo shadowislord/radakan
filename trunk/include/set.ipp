@@ -11,7 +11,8 @@ template <typename T> Set <T> ::
 	Set (string new_name) :
 	Object (new_name)
 {
-	assert (Object :: is_initialized ("Set (" + * this + ")"));
+	trace () << "Set (" << new_name << ")" << endl;
+	assert (Object :: is_initialized ());
 
 	assert (is_initialized ());
 }
@@ -20,14 +21,14 @@ template <typename T> Set <T> ::
 template <typename T> Set <T> ::
 	~Set ()
 {
-	assert (Object :: is_initialized ("~Set ()"));
+	trace () << "~Set ()" << endl;
+	assert (Object :: is_initialized ());
 
-	for (_Rb_tree_const_iterator <T *> i = children . begin ();
-													i != children . end (); i ++)
+	for (T * i = get_one_child (); i != NULL; i = get_another_child ())
 	{
 
-		debug () << "deleting " << * (* i) << "... " << (long int) (* i) << endl;
-		delete (* i);
+		debug () << "deleting " << * i << "... " << (long int) (i) << endl;
+		delete i;
 	}
 }
 
@@ -43,7 +44,8 @@ template <typename T> bool Set <T> ::
 template <typename T> bool Set <T> ::
 	add (T * t)
 {
-	assert (Object :: is_initialized ("add (" + * t + ")"));
+	trace () << "add (" << * t << ")" << endl;
+	assert (Object :: is_initialized ());
 	assert (t -> is_in (NULL));
 
 	t -> put_in (this);
@@ -59,7 +61,8 @@ template <typename T> bool Set <T> ::
 	contains (T * t, bool recursive)
 	const
 {
-	assert (Object :: is_initialized ("contains (" + * t + ", " + to_string (recursive) + ")"));
+	trace () << "contains (" << * t << ", " << to_string (recursive) + ")" << endl;
+	assert (Object :: is_initialized ());
 
 	bool result = (children . find (t) != children . end ());
 	
@@ -67,14 +70,11 @@ template <typename T> bool Set <T> ::
 
 	if ((! result) && recursive)
 	{
-		for (_Rb_tree_const_iterator <T *> i = children . begin ();
-													i != children . end (); i ++)
+		for (T * i = get_one_child (); i != NULL; i = get_another_child ())
 		{
-			T * temp = * i;
-			
-			if (temp -> is_type <Set <T> > ())
+			if (i -> is_type <Set <T> > ())
 			{
-				if (temp -> to_type <Set <T> > () -> contains (t, recursive))
+				if (i -> to_type <Set <T> > () -> contains (t, recursive))
 				{
 					return true;
 				}
@@ -89,7 +89,8 @@ template <typename T> bool Set <T> ::
 template <typename T> bool Set <T> ::
 	move_to (T * t, Set <T> * other_set)
 {
-	assert (Object :: is_initialized ("move_to (" + * t + ", " + * other_set + ")"));
+	trace () << "move_to (" << * t << ", " << * other_set << ")" << endl;
+	assert (Object :: is_initialized ());
 	assert (t -> is_initialized ());
 	assert (other_set != NULL);
 	assert (t -> is_initialized ());
@@ -110,14 +111,14 @@ template <typename T> template <typename U> U * Set <T> ::
 	get_child ()
 	const
 {
-	assert (Object :: is_initialized ("get_child ()"));
+	trace () << "get_child ()" << endl;
+	assert (Object :: is_initialized ());
 	
-	for (_Rb_tree_const_iterator <T *> i = children . begin ();
-													i != children . end (); i ++)
+	for (T * i = get_one_child (); i != NULL; i = get_another_child ())
 	{
-		if ((* i) -> is_type <U> ())
+		if (i -> is_type <U> ())
 		{
-			return (* i) -> to_type <U> ();
+			return i -> to_type <U> ();
 		}
 	}
 	return NULL;
@@ -127,8 +128,9 @@ template <typename T> template <typename U> U * Set <T> ::
 	get_child (string name)
 	const
 {
-	assert (Object :: is_initialized ("get_child (" + name + ")"));
-	
+	trace () << "get_child (" << name << ")" << endl;
+	assert (Object :: is_initialized ());
+
 	for (_Rb_tree_const_iterator <T *> i = children . begin ();
 													i != children . end (); i ++)
 	{
@@ -138,6 +140,35 @@ template <typename T> template <typename U> U * Set <T> ::
 		}
 	}
 	return NULL;
+}
+
+template <typename T> T * Set <T> ::
+	get_one_child ()
+	const
+{
+	trace () << "get_one_child ()" << endl;
+	assert (Object :: is_initialized ());
+
+	if (children . empty ())
+	{
+		return NULL;
+	}
+	const_cast <Set <T> *> (this) -> next_child = children . begin ();
+	return * (const_cast <Set <T> *> (this) -> next_child ++);
+}
+
+template <typename T> T * Set <T> ::
+	get_another_child ()
+	const
+{
+	trace () << "get_another_child ()" << endl;
+	assert (Object :: is_initialized ());
+
+	if (next_child == children . end ())
+	{
+		return NULL;
+	}
+	return * (const_cast <Set <T> *> (this) -> next_child ++);
 }
 
 #endif	//	SET_IPP

@@ -16,6 +16,7 @@ Character ::
 		Ogre :: Vector3 (100, 0, 200),
 		new_node)
 {
+	trace () << "Character (scene_node)" << endl;
 	assert (Entity :: is_initialized ());
 
 	dead = false;
@@ -30,7 +31,8 @@ Character ::
 Character ::
 	~Character ()
 {
-	assert (Object :: is_initialized ("~Character ()"));
+	trace () << "~Character ()" << endl;
+	assert (Character :: is_initialized ());
 }
 
 //	virtual

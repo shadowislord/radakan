@@ -24,7 +24,10 @@
 //	#define NDEBUG
 
 #ifndef NDEBUG
+	//	SL run with SL_DEBUG will print usefull messages.
 	#define SL_DEBUG
+	//	SL run with SL_TRACE will print all messages, do not use it without SL_DEBUG.
+	#define SL_TRACE
 #endif
 
 using namespace std;
@@ -44,7 +47,7 @@ namespace sl
 			template <typename T> bool is_type () const;
 			template <typename T> T * to_type () const;
 			virtual bool is_initialized () const;
-			bool is_initialized (string debug_message) const;
+			
 			virtual ostream & print () const;
 			virtual ostream & debug () const;
 			virtual ostream & trace () const;
@@ -54,7 +57,7 @@ namespace sl
 			bool is_in (const Object * set) const;
 			void put_in (Object * new_parent);
 			void remove_from (Object * old_parent);
-			
+
 		private :
 			Object * parent;	//	the set in which the object is
 	};
@@ -66,6 +69,7 @@ namespace sl
 	
 	string to_string (bool value);
 	string to_string (float value);
+	string to_string (Object * object);
 	bool is_nan (float value);
 	int to_int (string value);
 }

@@ -19,7 +19,8 @@ Fight_State ::
 Fight_State ::
 	~Fight_State ()
 {
-	assert (Object :: is_initialized ("~Fight_State ()"));
+	trace () << "~Fight_State ()" << endl;
+	assert (Object :: is_initialized ());
 }
 
 //	virtual

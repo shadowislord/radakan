@@ -20,7 +20,8 @@ NPC ::
 NPC ::
 	~NPC ()
 {
-	assert (Object :: is_initialized ("~NPC ()"));
+	trace () << "~NPC ()" << endl;
+	assert (Object :: is_initialized ());
 }
 
 //	virtual

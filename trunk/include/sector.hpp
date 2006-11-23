@@ -36,12 +36,14 @@ namespace sl
 			void update ();
 			Ogre :: SceneManager * get_scene_manager () const;
 			Ogre :: Camera * get_camera () const;
+			Ogre :: SceneNode * copy_node (Ogre :: SceneNode * example);
 
 		private :
 			Ogre :: SceneNode * create_entity_node (string name, string mesh_name);
 			Ogre :: SceneManager * scene_manager;
 			Ogre :: Camera * camera;
-			set <NPC *> npcs;
+			set <NPC *> npcs;	//	This can't be a Set <NPC>, as the NPCs
+			//	would be part of diffrent Set <T>s.
 	};
 }
 

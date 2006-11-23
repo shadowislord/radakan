@@ -136,7 +136,7 @@ bool Input_Engine ::
 
 	if (keys [key])
 	{
-		debug () << "Key '" << key << "' was pressed." << endl;
+		trace () << "Key '" << key << "' was pressed." << endl;
 		if (reset)
 		{
 			keys [key] = false;
@@ -153,7 +153,7 @@ bool Input_Engine ::
 	
 	if (mouse_buttons [button])
 	{
-		debug () << "Mouse button '" << button << "' was pressed." << endl;
+		trace () << "Mouse button '" << button << "' was pressed." << endl;
 		if (reset)
 		{
 			mouse_buttons [button] = false;

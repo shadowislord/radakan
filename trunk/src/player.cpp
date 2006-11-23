@@ -20,7 +20,8 @@ Player ::
 Player ::
 	~Player ()
 {
-	assert (Object :: is_initialized ("~Player ()"));
+	trace () << "~Player ()" << endl;
+	assert (Object :: is_initialized ());
 }
 
 //	virtual

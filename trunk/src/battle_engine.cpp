@@ -15,9 +15,10 @@ Battle_Engine ::
 	uniform (generator, uniform_real_distribution),
 	lognormal (generator, lognormal_real_distribution)
 {
-	assert (Object :: is_initialized ("Battle_Engine ()"));
+	trace () << "Battle_Engine ()" << endl;
+	assert (Object :: is_initialized ());
 
-	generator.seed (static_cast <unsigned int> (time (0)));
+	generator . seed (static_cast <unsigned int> (time (0)));
 
 	assert (is_initialized ());
 }
@@ -25,8 +26,7 @@ Battle_Engine ::
 Battle_Engine ::
 	~Battle_Engine ()
 {
-	assert (Object :: is_initialized ("~Battle_Engine ()"));
-	
+	trace () << "~Battle_Engine ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -41,7 +41,8 @@ bool Battle_Engine ::
 string Battle_Engine ::
 	hit (Character * attacker, Character * defender)
 {
-	assert (Object :: is_initialized ("hit (" + * attacker + ", " + * defender + ")"));
+	trace () << "hit (" << to_string (attacker) << ", " << to_string (defender) << ")" << endl;
+	assert (is_initialized ());
 	assert (attacker != NULL);
 	assert (defender != NULL);
 

@@ -57,10 +57,8 @@ Tslrpg ::
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(path + "/data/gui/scheme", "FileSystem", "gui", true);
 
-		debug () << "A" << endl;
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
-		debug () << "B" << endl;
 	}	// End of try statement
 	catch (Ogre :: Exception & e)
 	{
@@ -72,9 +70,7 @@ Tslrpg ::
 		abort ();
 	}
 	
-	debug () << "C" << endl;
 	window = root -> initialise (true, "Scattered Lands");
-	debug () << "D" << endl;
 
 	view_port = window -> addViewport (NULL);
 
@@ -236,6 +232,11 @@ void Tslrpg ::
 void Tslrpg ::
 	switch_to (Sector * new_active_sector)
 {
-	active_sector = new_active_sector;
-	view_port -> setCamera (active_sector -> get_camera ());
+	if (new_active_sector != active_sector)
+	{
+		active_sector -> move_to (Player :: getSingletonPtr (), new_active_sector);
+		Player :: getSingleton () . node = new_active_sector -> copy_node (Player :: getSingleton () . node);
+		active_sector = new_active_sector;
+		view_port -> setCamera (active_sector -> get_camera ());
+	}
 }

@@ -19,7 +19,8 @@ Peace_State ::
 Peace_State ::
 	~Peace_State ()
 {
-	assert (Object :: is_initialized ("~Peace_State ()"));
+	trace () << "~Peace_State ()" << endl;
+	assert (Object :: is_initialized ());
 }
 
 //	virtual

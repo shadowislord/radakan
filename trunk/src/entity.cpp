@@ -33,7 +33,8 @@ Entity ::
 Entity ::
 	~Entity ()
 {
-	assert (Object :: is_initialized ("~Entity ()"));
+	trace () << "~Entity ()" << endl;
+	assert (Object :: is_initialized ());
 }
 
 //	virtual
@@ -49,7 +50,8 @@ float Entity ::
 	get_total_weight ()
 	const
 {
-	assert (Object :: is_initialized ("get_total_weight ()"));
+	trace () << "get_total_weight ()" << endl;
+	assert (Object :: is_initialized ());
 	
 	return weight;
 }
