@@ -2,16 +2,13 @@
 #include <algorithm>
 //#include </home/t/opt/ogre/RenderSystems/GL/include/OgreGLGpuProgramManager.h>
 
-
 using namespace std;
 using namespace sl;
-
-extern string path;
 
 template <> Tslrpg * Ogre :: Singleton <Tslrpg> :: ms_Singleton = NULL;
 
 Tslrpg ::
-	Tslrpg (string path) :
+	Tslrpg (string sl_path, string ogre_path) :
 	Object ("Tslrpg"),
 //	State_Machine (NULL),
 	Set <Sector> ("Tslrpg")
@@ -23,39 +20,43 @@ Tslrpg ::
 		abort ();
 	}
 
-	// I just don't like the resource cfg file :-/ --Tariqwalji
-
 	try	// Catch any errors
 	{
 //		new Ogre :: GLGpuProgramManager ();
 	
 		// Add textures directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(path + "/data/texture", "FileSystem", "textures", true);
+					(sl_path + "/data/texture", "FileSystem", "textures", true);
 
 		// Add 3D models directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(path + "/data/model", "FileSystem", "models", true);
+					(sl_path + "/data/model", "FileSystem", "models", true);
 
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(path + "/data/material", "FileSystem", "materials", true);
+					(sl_path + "/data/material", "FileSystem", "materials", true);
 					
 		// Add gui font directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(path + "/data/gui/font", "FileSystem", "gui", true);
+					(sl_path + "/data/gui/font", "FileSystem", "gui", true);
 					
 		// Add gui imageset directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(path + "/data/gui/imageset", "FileSystem", "gui", true);
+					(sl_path + "/data/gui/imageset", "FileSystem", "gui", true);
 
 		// Add gui looknfeel directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(path + "/data/gui/looknfeel", "FileSystem", "gui", true);
+					(sl_path + "/data/gui/looknfeel", "FileSystem", "gui", true);
 
 		// Add gui scheme directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(path + "/data/gui/scheme", "FileSystem", "gui", true);
+					(sl_path + "/data/gui/scheme", "FileSystem", "gui", true);
+
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
+					(ogre_path + "/Samples/Media/gui", "FileSystem", "gui", true);
+					
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
+					(ogre_path + "/Samples/Media/fonts", "FileSystem", "gui", true);
 
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
@@ -85,7 +86,7 @@ Tslrpg ::
 				root -> createSceneManager (Ogre :: ST_GENERIC), aspect_ratio));
 
 	debug () << int (root -> getRenderSystem () -> _getViewport ()) << endl;
-	gui_engine = new GUI_Engine (window);
+	gui_engine = new GUI_Engine (window, sl_path + "/log/cegui.txt");
 
 	view_port -> setCamera (active_sector -> get_camera ());
 	

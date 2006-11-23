@@ -136,10 +136,10 @@ bool Input_Engine ::
 
 	if (keys [key])
 	{
-		trace () << "Key '" << key << "' was pressed." << endl;
 		if (reset)
 		{
 			keys [key] = false;
+			trace () << "key '" << key << "' was reset." << endl;
 		}
 		return true;
 	}

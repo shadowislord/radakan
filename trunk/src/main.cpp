@@ -3,7 +3,6 @@
 using namespace std;
 using namespace sl;
 
-string path;
 ostream * sl_out = & cout;
 
 #ifdef SL_DEBUG
@@ -25,28 +24,34 @@ ostream * sl_out = & cout;
 	
 	* sl_out << "Setting up Scattered Lands..." << endl;
 
+	string sl_path;
+	string ogre_path;
 	#ifdef SL_WIN32
-		path = strCmdLine;
+		//	!!! This is incorrectely handled.
+		sl_path = strCmdLine;
 
-		if (path . empty ())
+		if (sl_path . empty ())
 		{
 			TCHAR buffer [MAX_PATH];
 			GetCurrentDirectory (MAX_PATH, buffer);
-			path = buffer;
+			sl_path = buffer;
 		}
 	#else
-		path = argv [argc - 1];
+		sl_path = argv [argc - 2];
+		ogre_path = argv [argc - 1];
 	#endif
 
-	* sl_out << "path: " << path << endl;
+	* sl_out << "sl_path: " << sl_path << endl;
+	* sl_out << "ogre_path: " << ogre_path << endl;
 
 	#ifdef SL_DEBUG
 		* sl_out << "debug mode: enabled." << endl;
 
-		sl_out = new ofstream ((path + "/log/log.txt") . c_str ());
+		sl_out = new ofstream ((sl_path + "/log/log.txt") . c_str ());
 
 		* sl_out << "Setting up Scattered Lands..." << endl;
-		* sl_out << "path: " << path << endl;
+		* sl_out << "sl_path: " << sl_path << endl;
+		* sl_out << "ogre_path: " << ogre_path << endl;
 
 		* sl_out << "debug mode: enabled." << endl;
 	#else
@@ -55,7 +60,7 @@ ostream * sl_out = & cout;
 
 	try
 	{
-		Tslrpg game (path);
+		Tslrpg game (sl_path, ogre_path);
 		* sl_out << "Scattered Lands is set up." << endl;
 
 		* sl_out << "Running Scattered Lands..." << endl;

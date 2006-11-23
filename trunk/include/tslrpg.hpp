@@ -18,7 +18,7 @@ namespace sl
 		public Ogre :: Singleton <Tslrpg>
 	{
 		public :
-			Tslrpg (string path);
+			Tslrpg (string sl_path, string ogre_path);
 			~Tslrpg ();
 			virtual bool is_initialized () const;
 			void run ();

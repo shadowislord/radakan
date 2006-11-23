@@ -16,7 +16,7 @@ namespace sl
 		public Ogre :: Singleton <GUI_Engine>
 	{
 		public :
-			GUI_Engine (Ogre :: RenderWindow * window);
+			GUI_Engine (Ogre :: RenderWindow * window, string log_file_name);
 			virtual ~GUI_Engine ();
 			virtual bool is_initialized () const;
 			bool render () const;

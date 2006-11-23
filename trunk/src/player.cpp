@@ -11,6 +11,7 @@ Player ::
 	Object (get_name (new_node)),
 	Character (new_node)
 {
+	trace () << "Player (" << get_name (node) << ")" << endl;
 	assert (Character :: is_initialized ());
 
 	assert (is_initialized ());

@@ -35,7 +35,7 @@ if [[ ${JAM_RESULT} != "0" ]]; then
 	exit;
 fi
 
-${PREFIX} bin/debug/tslrpg ${TRUNK}
+${PREFIX} bin/debug/tslrpg ${TRUNK} /usr/doc/ogre-1.2.3
 echo "tslrpg exit code: ${?}"
 
 mv Ogre.log log/ogre.txt
