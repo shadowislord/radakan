@@ -26,10 +26,7 @@ namespace sl
 		public btDiscreteDynamicsWorld*/
 	{
 		public :
-			Sector
-				(string new_name,
-				Ogre :: SceneManager * new_scene_manager,
-				float aspect_ratio);
+			Sector (string new_name, Ogre :: SceneManager * new_scene_manager);
 			virtual ~Sector ();
 			virtual bool is_initialized () const;
 			virtual bool add (Entity * entity);

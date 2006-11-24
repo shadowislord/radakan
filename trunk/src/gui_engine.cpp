@@ -13,7 +13,6 @@ GUI_Engine ::
 	assert (window != NULL);
 
 	renderer = new CEGUI :: OgreCEGUIRenderer (window);
-	//	This only works for me in debug mode. --Tinus
 
 	system = new CEGUI :: System (renderer, CEGUI :: String (log_file_name) . data ());
 
@@ -59,7 +58,7 @@ bool GUI_Engine ::
 {
 	assert (is_initialized ());
 	assert (system != NULL);
-system -> renderGUI ();
+	system -> renderGUI ();
 
 	return true;
 }

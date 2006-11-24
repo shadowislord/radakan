@@ -4,8 +4,8 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "Scattered Lands"
-PROJECT_NUMBER         = 0.0.0.0.0.0.1
-OUTPUT_DIRECTORY       = /home/t/src/tslrpg/doc/
+PROJECT_NUMBER         = "SVN"
+OUTPUT_DIRECTORY       = /home/t/opt/tslrpg/trunk/doc/
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO
@@ -25,8 +25,8 @@ ABBREVIATE_BRIEF       = "The $name class" \
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = YES
-STRIP_FROM_PATH        = /home/t/
-STRIP_FROM_INC_PATH    = 
+STRIP_FROM_PATH        = /home/t/opt/
+STRIP_FROM_INC_PATH    = /home/t/opt/
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
 MULTILINE_CPP_IS_BRIEF = NO
@@ -81,7 +81,16 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /home/t/src/tslrpg/trunk/
+INPUT                  = /home/t/opt/tslrpg/trunk/include \
+						 /home/t/opt/ogre/OgreMain \
+						 /home/t/opt/ogre/PlatformManagers \
+						 /home/t/opt/ogre/PlugIns \
+						 /home/t/opt/ogre/RenderSystems \
+						 /home/t/opt/ogre/ReferenceApplication/ReferenceAppLayer \
+						 /usr/include/CEGUI \
+						 /usr/include/boost \
+						 /home/t/opt/ois/include
+#						 /home/t/opt/bullet/include
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \

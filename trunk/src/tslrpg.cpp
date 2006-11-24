@@ -73,27 +73,19 @@ Tslrpg ::
 	
 	window = root -> initialise (true, "Scattered Lands");
 
-	view_port = window -> addViewport (NULL);
-
-	aspect_ratio = Ogre :: Real (view_port -> getActualWidth ())
-		/ Ogre :: Real (view_port -> getActualHeight ());
-
-	active_sector = new Sector ("Sector 1",
-				root -> createSceneManager (Ogre :: ST_GENERIC), aspect_ratio);
-	Set <Sector> :: add (active_sector);
+	Set <Sector> :: add (new Sector ("Sector 1",
+				root -> createSceneManager (Ogre :: ST_GENERIC)));
 
 	Set <Sector> :: add (new Sector ("Sector 2",
-				root -> createSceneManager (Ogre :: ST_GENERIC), aspect_ratio));
+				root -> createSceneManager (Ogre :: ST_GENERIC)));
+	active_sector = Set <Sector> :: get_one_child ();
 
-	debug () << int (root -> getRenderSystem () -> _getViewport ()) << endl;
-	gui_engine = new GUI_Engine (window, sl_path + "/log/cegui.txt");
-
-	view_port -> setCamera (active_sector -> get_camera ());
+	root -> getRenderSystem () -> _setViewport
+					(window -> addViewport (active_sector -> get_camera ()));
 	
+	gui_engine = new GUI_Engine (window, sl_path + "/log/cegui.txt");
 	//	Set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
-
-	Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
 
 	//	This is the new input mechanism that is taking advantage of the
 	//	new engine handler.
@@ -202,16 +194,16 @@ void Tslrpg ::
 		
 		if (input_engine -> get_mouse_button (middle_mouse_button, false))
 		{
-			float raw_x_offset = input_engine -> get_mouse_width (true);
+			float raw_x_offset = - 0.007 * input_engine -> get_mouse_width (true);
 
 			if (raw_x_offset != 0)
 			{
 				//	apply treshold
-				float x_offset = raw_x_offset / abs (raw_x_offset) * max (abs (raw_x_offset) - 3, 0.f);
+				float x_offset = raw_x_offset / abs (raw_x_offset) * max (abs (raw_x_offset) - 0.030f, 0.f);
 			
-				debug () << middle_mouse_button << " " << - 0.001 * raw_x_offset << " " << - 0.001 * x_offset << endl;
+				debug () << middle_mouse_button << " " <<  raw_x_offset << " " << x_offset << endl;
 
-				Player :: getSingleton () . turn (- 0.001 * x_offset);
+				Player :: getSingleton () . turn (x_offset);
 			}
 		}
 		
@@ -238,6 +230,6 @@ void Tslrpg ::
 		active_sector -> move_to (Player :: getSingletonPtr (), new_active_sector);
 		Player :: getSingleton () . node = new_active_sector -> copy_node (Player :: getSingleton () . node);
 		active_sector = new_active_sector;
-		view_port -> setCamera (active_sector -> get_camera ());
+		root -> getRenderSystem () -> _getViewport () -> setCamera (active_sector -> get_camera ());
 	}
 }

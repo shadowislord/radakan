@@ -37,7 +37,6 @@ namespace sl
 			Ogre :: Timer * timer;
 
 			Sector * active_sector;
-			Ogre :: Viewport * view_port;
 	};
 }
 

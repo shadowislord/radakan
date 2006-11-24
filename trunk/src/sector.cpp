@@ -6,8 +6,7 @@ using namespace sl;
 Sector ::
 	Sector
 		(string new_name,
-		Ogre :: SceneManager * new_scene_manager,
-		float aspect_ratio) :
+		Ogre :: SceneManager * new_scene_manager) :
 	Object (new_name),
 	Set <Entity> (new_name)
 {
@@ -17,7 +16,6 @@ Sector ::
 	camera = scene_manager -> createCamera ("Eyes");
 	camera -> setNearClipDistance (5);
 	camera -> setFarClipDistance (2000);
-	camera -> setAspectRatio (aspect_ratio);
 
 	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);	//	Doesn't work.
 
@@ -96,10 +94,9 @@ Sector ::
 		bbs2 -> setMaterialName (type);
 		bbs2 -> getMaterial () -> setTextureFiltering (Ogre :: TFO_TRILINEAR);
 		bbs2 -> getMaterial () -> setDepthCheckEnabled (true);
-		int px = int (Ogre :: Math :: RangeRandom (-2500, 2500));
-		int py = int (Ogre :: Math :: RangeRandom (-2500, 2500));
-		int pz = int (Ogre :: Math :: RangeRandom (-2500, 2500));
-//		px = 0;
+		int px = int (Ogre :: Math :: RangeRandom (- 2500, 2500));
+		int py = int (Ogre :: Math :: RangeRandom (- 2500, 2500));
+		int pz = int (Ogre :: Math :: RangeRandom (- 2500, 2500));
 		Ogre :: Billboard * bb = bbs2 -> createBillboard
 											(0, 0, 0, Ogre :: ColourValue());
 		int dim = int (Ogre :: Math :: RangeRandom (1.5f, 2));
@@ -125,7 +122,6 @@ Sector ::
 		int px = int (Ogre :: Math :: RangeRandom (-2500, 2500));
 		int py = int (Ogre :: Math :: RangeRandom (-2500, 2500));
 		int pz = int (Ogre :: Math :: RangeRandom (-2500, 2500));
-//		px = 0;
 		Ogre :: Billboard * bb = bbs2 -> createBillboard
 		(
 			0, 0, 0,
@@ -226,9 +222,11 @@ Ogre :: SceneNode * Sector ::
 	assert (example -> numAttachedObjects () == 1);
 	assert (example -> getAttachedObject (0) != NULL);
 	
-	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode () -> createChildSceneNode ();
+	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode ()
+													-> createChildSceneNode ();
 	
-	node -> attachObject (example -> detachObject (static_cast<unsigned short int>(0)));
+	node -> attachObject (example -> detachObject
+										(static_cast <unsigned short int> (0)));
 	node -> setPosition (example -> getPosition ());
 	node -> setOrientation (example -> getOrientation ());
 //	node -> setVisibility (example -> getVisibility ());
@@ -240,7 +238,8 @@ Ogre :: SceneNode * Sector ::
 Ogre :: SceneNode * Sector ::
 	create_entity_node (string name, string mesh_name)
 {
-	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode () -> createChildSceneNode ();
+	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode () ->
+													createChildSceneNode ();
 	
 	node -> attachObject (scene_manager -> createEntity (name, mesh_name));
 	
