@@ -47,8 +47,8 @@ Sector ::
 
 	if (Player :: getSingletonPtr () == NULL)
 	{
-		Player * player = new Player (create_entity_node ("Player", "bar.mesh"));
-			player -> node -> setScale (Ogre :: Vector3 (0.2, 2, 0.2));
+		Player * player = new Player (create_entity_node ("Player", "ninja.mesh"));
+		player -> node -> setScale (Ogre :: Vector3 (0.1, 0.1, 0.1));
 
 		player -> add
 		(
@@ -75,10 +75,13 @@ Sector ::
 		add (player);
 	}
 
-	NPC * npc = new NPC (create_entity_node ("NPC", "bar.mesh"));
-	add (npc);
-	npc -> State_Machine :: add <Peace_State> ();
-	npc -> State_Machine :: add <Fight_State> ();
+	NPC * ninja = new NPC (create_entity_node ("Ninja", "ninja.mesh"));
+	ninja -> node -> setScale (Ogre :: Vector3 (0.1, 0.1, 0.1));
+	ninja -> node -> setPosition (Ogre :: Vector3 (120, 0, 30));
+	add (ninja);
+	ninja -> State_Machine :: add <Peace_State> ();
+	ninja -> State_Machine :: add <Fight_State> ();
+	
 
 	for (int i = 0; i < 100; i++)
 	{

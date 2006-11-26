@@ -58,6 +58,7 @@ bool GUI_Engine ::
 {
 	assert (is_initialized ());
 	assert (system != NULL);
+
 	system -> renderGUI ();
 
 	return true;

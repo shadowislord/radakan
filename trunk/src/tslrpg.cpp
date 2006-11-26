@@ -58,6 +58,9 @@ Tslrpg ::
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(ogre_path + "/Samples/Media/fonts", "FileSystem", "gui", true);
 
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
+					(ogre_path + "/Samples/Media/models", "FileSystem", "models", true);
+
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
 	}	// End of try statement
@@ -117,6 +120,11 @@ void Tslrpg ::
 	run ()
 {
 	assert (is_initialized ());
+
+	debug () << "_getViewport()->getOverlaysEnabled(): " << root -> getRenderSystem () -> _getViewport()->getOverlaysEnabled() << endl;
+	debug () << " !d_quadlist.empty(): " << endl;
+	
+
 
 	while (true)
 	{
@@ -217,7 +225,7 @@ void Tslrpg ::
 			switch_to (Set <Sector> :: get_child <Sector> ("Sector 2"));
 		}
 
-		active_sector -> get_camera () -> setPosition (Player :: getSingleton () . node -> getPosition () + Ogre :: Vector3 (0, 23, 0));
+		active_sector -> get_camera () -> setPosition (Player :: getSingleton () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
 		active_sector -> get_camera () -> setOrientation (Player :: getSingleton () . node -> getOrientation ());
 	}
 }
