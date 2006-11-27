@@ -5,8 +5,8 @@ using namespace sl;
 
 //  constructor
 Character ::
-	Character (Ogre :: SceneNode * new_node) :
-	Object (get_name (new_node)),
+	Character (Ogre :: SceneNode & new_node) :
+	Object (get_name (* node)),
 	Container
 		(true,
 		true,
@@ -16,7 +16,7 @@ Character ::
 		Ogre :: Vector3 (100, 0, 200),
 		new_node)
 {
-	trace () << "Character (" << get_name (node) << ")" << endl;
+	trace () << "Character (" << get_name (* node) << ")" << endl;
 	assert (Entity :: is_initialized ());
 
 	dead = false;
@@ -40,7 +40,14 @@ bool Character ::
 	is_initialized ()
 	const
 {
-	return Entity :: is_initialized () && (backpack == NULL || backpack -> is_initialized ()) && (weapon == NULL || weapon -> is_initialized ());
+	return warn <Character> (Entity :: is_initialized () && (backpack == NULL || backpack -> is_initialized ()) && (weapon == NULL || weapon -> is_initialized ()));
+}
+
+//	static
+string Character ::
+	get_type_name ()
+{
+	return "character";
 }
 
 //	virtual
@@ -62,56 +69,50 @@ float Character ::
 
 //	virtual
 bool Character ::
-	add (Entity * entity)
+	add (Entity & entity)
 {
 	assert (is_initialized ());
-	assert (entity != NULL);
-	assert (entity -> is_initialized ());
+	assert (entity . is_initialized ());
 
-	if ((weapon == NULL) && entity -> is_type <Weapon> ())
+	if ((weapon == NULL) && entity . is_type <Weapon> ())
 	{
 		Container :: add (entity);
-		weapon = entity -> to_type <Weapon> ();
+		weapon = & entity . to_type <Weapon> ();
 		return true;
 	}
-	else if ((backpack == NULL) && entity -> is_type <Container> ())
+	else if ((backpack == NULL) && entity . is_type <Container> ())
 	{
 		Container :: add (entity);
-		backpack = entity -> to_type <Container> ();
+		backpack = & entity . to_type <Container> ();
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 //	virtual
 bool Character ::
-	move_to (Entity * entity, Set <Entity> * other_set)
+	move_to (Entity & entity, Set <Entity> & other_set)
 {
-	assert (is_initialized ());
-	assert (entity != NULL);
-	assert (other_set != NULL);
-	assert (entity -> is_initialized ());
-	assert (other_set -> is_initialized ());
+	assert (Character :: is_initialized ());
+	assert (entity . is_initialized ());
+	assert (other_set . is_initialized ());
 	assert (contains (entity, false));
 
 	bool result = Container :: move_to (entity, other_set);
 
 	if (result)
 	{
-		if (weapon == entity)
+		if (weapon == & entity)
 		{
 			weapon = NULL;
 		}
-		else if (backpack == entity)
+		else if (backpack == & entity)
 		{
 			backpack = NULL;
 		}
 	}
 	
-	assert (result == other_set -> contains (entity, false));
+	assert (result == other_set . contains (entity, false));
 
 	return result;
 }
@@ -119,7 +120,7 @@ bool Character ::
 void Character ::
 	run (float distance)
 {
-	assert (is_initialized ());
+	assert (Character :: is_initialized ());
 
 	node -> translate (node -> getOrientation () * Ogre :: Vector3 (0, 0, - distance));
 }
@@ -127,7 +128,7 @@ void Character ::
 void Character ::
 	turn (float radian_angle)
 {
-	assert (is_initialized ());
+	assert (Character :: is_initialized ());
 
 	node -> yaw (Ogre :: Radian (radian_angle));
 }
@@ -135,7 +136,7 @@ void Character ::
 string Character ::
 	die ()
 {
-	assert (is_initialized ());
+	assert (Character :: is_initialized ());
 
 	dead = true;
 
@@ -146,7 +147,7 @@ bool Character ::
 	is_dead ()
 	const
 {
-	assert (is_initialized ());
+	assert (Character :: is_initialized ());
 
 	return dead;
 }
@@ -155,7 +156,7 @@ bool Character ::
 	has_weapon ()
 	const
 {
-	assert (is_initialized ());
+	assert (Character :: is_initialized ());
 
 	return (weapon != NULL);
 }
@@ -164,7 +165,7 @@ Weapon * Character ::
 	get_weapon ()
 	const
 {
-	assert (is_initialized ());
+	assert (Character :: is_initialized ());
 	assert (has_weapon ());
 
 	return weapon;

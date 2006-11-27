@@ -21,9 +21,10 @@ namespace sl
 				float new_attack_rate,
 				float new_defense_rate,
 				float new_damage,
-				Ogre :: SceneNode * new_node);
+				Ogre :: SceneNode & new_node);
 			virtual ~Weapon ();
 			virtual bool is_initialized () const;
+			static string get_type_name ();
 
 			bool broken;
 			float sharpness;	//	in percent

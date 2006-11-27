@@ -23,9 +23,10 @@ namespace sl
 				float new_volume,
 				float new_weight,
 				Ogre :: Vector3 new_position,
-				Ogre :: SceneNode * new_node);
+				Ogre :: SceneNode & new_node);
 			virtual ~Entity ();
 			virtual bool is_initialized () const;
+			static string get_type_name ();
 			virtual float get_total_weight () const;
 		
 			const bool movable;		//	false means that the object is static
@@ -35,7 +36,7 @@ namespace sl
 			Ogre :: SceneNode * node;	//	create through Scene_Manager
 	};
 
-	string get_name (Ogre :: SceneNode * node);
+	string get_name (Ogre :: SceneNode & node);
 }
 
 #endif

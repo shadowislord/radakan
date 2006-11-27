@@ -6,36 +6,37 @@ using namespace sl;
 Sector ::
 	Sector
 		(string new_name,
-		Ogre :: SceneManager * new_scene_manager) :
+		Ogre :: SceneManager & new_scene_manager) :
 	Object (new_name),
-	Set <Entity> (new_name)
+	Set <Entity> (new_name),
+	scene_manager (& new_scene_manager)
 {
+	trace () << "Sector (" << new_name << ", ~new_scene_manager~)" << endl;
 	assert (Object :: is_initialized ());
 
-	scene_manager = new_scene_manager;
 	camera = scene_manager -> createCamera ("Eyes");
 	camera -> setNearClipDistance (5);
 	camera -> setFarClipDistance (2000);
 
 	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);	//	Doesn't work.
 
-	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
+	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
 		create_entity_node ("Tavern", "tavern.mesh")));
 
-	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
+	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
 		create_entity_node ("Bar", "bar.mesh")));
 
-	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 17),
+	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 17),
 		create_entity_node ("Table 1", "table.mesh")));
 
-	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 57),
+	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 57),
 		create_entity_node ("Table 2", "table.mesh")));
 
-	add (new Entity (false, true, true, 0, 0, Ogre :: Vector3 (26, 0, 97),
+	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (26, 0, 97),
 		create_entity_node ("Table 3", "table.mesh")));
 
 	add
-		(new Entity
+		(* new Entity
 			(false,
 			true,
 			true,
@@ -52,7 +53,7 @@ Sector ::
 
 		player -> add
 		(
-			new Container
+			* new Container
 			(
 				true,
 				true,
@@ -64,24 +65,21 @@ Sector ::
 			)
 		);
 
-		debug () << * player << "'s weight: "
+		debug () << to_string (player) << "'s weight: "
 										<< player -> get_total_weight () << endl;
 		Weapon * sword = new Weapon
 				(1, 2, Ogre :: Vector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
 				create_entity_node ("Sword", "bar.mesh"));
-		debug () << * sword << "'s weight: " << sword -> get_total_weight () << endl;
-		player -> add (sword);
+		debug () << to_string (sword) << "'s weight: " << sword -> get_total_weight () << endl;
+		player -> add (* sword);
 		
-		add (player);
+		add (* player);
 	}
 
 	NPC * ninja = new NPC (create_entity_node ("Ninja", "ninja.mesh"));
 	ninja -> node -> setScale (Ogre :: Vector3 (0.1, 0.1, 0.1));
 	ninja -> node -> setPosition (Ogre :: Vector3 (120, 0, 30));
-	add (ninja);
-	ninja -> State_Machine :: add <Peace_State> ();
-	ninja -> State_Machine :: add <Fight_State> ();
-	
+	add (* ninja);
 
 	for (int i = 0; i < 100; i++)
 	{
@@ -148,6 +146,7 @@ Sector ::
 Sector ::
 	~Sector ()
 {
+	trace () << "~Sector (" << endl;
 	assert (is_initialized ());
 
 	debug () << "deleting camera... " << int (camera) << endl;
@@ -159,20 +158,26 @@ bool Sector ::
 	is_initialized ()
 	const
 {
-	return Object :: is_initialized ();
+	return warn <Sector> (Object :: is_initialized ());
+}
+
+//	static
+string Sector ::
+	get_type_name ()
+{
+	return "sector";
 }
 
 //	virtual
 bool Sector ::
-	add (Entity * entity)
+	add (Entity & entity)
 {
 	assert (is_initialized ());
-	assert (entity != NULL);
-	assert (entity -> is_initialized ());
+	assert (entity . is_initialized ());
 
-	if (entity -> is_type <NPC> ())
+	if (entity . is_type <NPC> ())
 	{
-		bool success = npcs . insert (entity -> to_type <NPC> ()) . second;
+		bool success = npcs . insert (& entity . to_type <NPC> ()) . second;
 		assert (success);
 	}
 	return Set <Entity> :: add (entity);
@@ -193,52 +198,47 @@ void Sector ::
 		{
 			trace () << think << endl;
 		}
-		act = (* i) -> act ();
-		if (! act . empty ())
-		{
-			trace () << act << endl;
-		}
 	}
 }
 
-Ogre :: SceneManager * Sector ::
-	get_scene_manager ()
-	const
-{
-	assert (is_initialized ());
-
-	return scene_manager;
-}
-
-Ogre :: Camera * Sector ::
+Ogre :: Camera & Sector ::
 	get_camera ()
 	const
 {
 	assert (is_initialized ());
 
-	return camera;
+	return * camera;
 }
 
-Ogre :: SceneNode * Sector ::
-	copy_node (Ogre :: SceneNode * example)
+Ogre :: SceneManager & Sector ::
+	get_scene_manager ()
+	const
 {
-	assert (example -> numAttachedObjects () == 1);
-	assert (example -> getAttachedObject (0) != NULL);
+	assert (is_initialized ());
+
+	return * scene_manager;
+}
+
+Ogre :: SceneNode & Sector ::
+	copy_node (Ogre :: SceneNode & example)
+{
+	assert (example . numAttachedObjects () == 1);
+	assert (example . getAttachedObject (0) != NULL);
 	
 	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode ()
 													-> createChildSceneNode ();
 	
-	node -> attachObject (example -> detachObject
+	node -> attachObject (example . detachObject
 										(static_cast <unsigned short int> (0)));
-	node -> setPosition (example -> getPosition ());
-	node -> setOrientation (example -> getOrientation ());
-//	node -> setVisibility (example -> getVisibility ());
-	node -> setScale (example -> getScale ());
+	node -> setPosition (example . getPosition ());
+	node -> setOrientation (example . getOrientation ());
+//	node -> setVisibility (example . getVisibility ());
+	node -> setScale (example . getScale ());
 	
-	return node;
+	return * node;
 }
 
-Ogre :: SceneNode * Sector ::
+Ogre :: SceneNode & Sector ::
 	create_entity_node (string name, string mesh_name)
 {
 	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode () ->
@@ -248,5 +248,5 @@ Ogre :: SceneNode * Sector ::
 	
 	assert (node -> numAttachedObjects () == 1);
 	assert (node -> getAttachedObject (0) != NULL);
-	return node;
+	return * node;
 }

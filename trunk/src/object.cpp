@@ -13,14 +13,14 @@ using namespace sl;
 Object ::
 	Object (string new_name)
 {
-	assert (! new_name.empty ());
+	assert (! new_name . empty ());
 	trace () << "Object (" << new_name << ")" << endl;
 	
 	assign (new_name);
 	parent = NULL;
 	
 	#ifdef SL_DEBUG
-		objects.insert (this);
+		objects . insert (this);
 	#endif
 
 	assert (Object :: is_initialized ());
@@ -44,7 +44,14 @@ bool Object ::
 	const
 {
 	//	checks for empty string
-	return ! empty ();
+	return warn <Object> ((! empty ()) && (objects . find (const_cast <Object *> (this)) != objects . end ()));
+}
+
+//	static
+string Object ::
+	get_type_name ()
+{
+	return "object";
 }
 
 //	virtual
@@ -84,27 +91,45 @@ ostream & Object ::
 }
 
 bool Object ::
-	is_in (const Object * set)
+	has_parent ()
 	const
 {
 	assert (is_initialized ());
 	
-	return (parent == set);
+	return (parent != NULL);
 }
 
-void Object ::
-	put_in (Object * new_parent)
+bool Object ::
+	is_in (const Object & set)
+	const
 {
-	trace () << "put_in (" << to_string (new_parent) << ")" << endl;
-	assert (Object :: is_initialized ());
-	assert (parent == NULL);
-	assert (new_parent != NULL);
+	assert (is_initialized ());
 
-	parent = new_parent;
+	debug () << "parent: " << * parent << ", set: " << set << endl;
+	debug () << "parent: " << parent << ", set: " << & set << endl;
+
+	int a = 4;
+	int & b = a;
+	int * c = & a;
+	int * d = & b;
+	debug () << "a: " << & a << ", b: " << & b << endl;
+	debug () << "c: " << c << ", d: " << d << endl;
+	
+	return (parent == & set);
 }
 
 void Object ::
-	remove_from (Object * old_parent)
+	put_in (const Object & new_parent)
+{
+	trace () << "put_in (" << new_parent << ")" << endl;
+	assert (Object :: is_initialized ());
+	assert (! has_parent ());
+
+	parent = & new_parent;
+}
+
+void Object ::
+	remove_from (const Object & old_parent)
 {
 	assert (is_initialized ());
 	assert (is_in (old_parent));
@@ -112,23 +137,8 @@ void Object ::
 	parent = NULL;
 }
 
-string sl :: to_string (bool value)
-{
-	if (value)
-	{
-		return "true";
-	}
-	return "false";
-}
-
-string sl :: to_string (float value)
-{
-	ostringstream oss;
-	oss << value;	//	insert int into stream
-	return oss.str ();
-}
-
-string sl :: to_string (Object * object)
+string Object ::
+	to_string (const Object * object)
 {
 	if (object != NULL)
 	{
@@ -137,7 +147,26 @@ string sl :: to_string (Object * object)
 	return "NULL";
 }
 
-int sl :: to_int (string value)
+string Object ::
+	bool_to_string (bool value)
+{
+	if (value)
+	{
+		return "true";
+	}
+	return "false";
+}
+
+string Object ::
+	to_string (float value)
+{
+	ostringstream oss;
+	oss << value;	//	insert int into stream
+	return oss.str ();
+}
+
+int Object ::
+	to_int (string value)
 {
 	istringstream iss (value);
 	int result;
@@ -145,7 +174,8 @@ int sl :: to_int (string value)
 	return result;
 }
 
-bool sl :: is_nan (float value)
+bool Object ::
+	is_nan (float value)
 {
 	return (value != value);
 }

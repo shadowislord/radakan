@@ -16,13 +16,13 @@ namespace sl
 		public Container
 	{
 		public :
-			Character
-				(Ogre :: SceneNode * new_node);
+			Character (Ogre :: SceneNode & new_node);
 			virtual ~Character ();
 			virtual bool is_initialized () const;
+			static string get_type_name ();
 			virtual float get_total_weight () const;
-			virtual bool add (Entity * entity);		//	true iff succes
-			virtual bool move_to (Entity * entity, Set <Entity> * other_set);
+			virtual bool add (Entity & entity);		//	true iff succes
+			virtual bool move_to (Entity & entity, Set <Entity> & other_set);
 			bool has_weapon () const;
 			bool is_dead () const;
 			Weapon * get_weapon () const;

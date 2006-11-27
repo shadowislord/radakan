@@ -5,19 +5,21 @@ using namespace sl;
 
 //  constructor
 State ::
-	State (Character * new_owner, State * new_parent_state) :
-	Object (* new_owner + "'s generic state")
+	State (Character & new_owner) :
+	Object (new_owner + "'s generic state"),
+	owner (new_owner)
 {
-	trace () << "State (" << to_string (new_owner) << ", " << to_string (new_parent_state) << ")" << endl;
+	trace () << "State (" << new_owner << ")" << endl;
 	assert (Object :: is_initialized ());
-	assert (new_owner != NULL);
-	assert (new_owner -> is_initialized ());
-	assert ((new_parent_state == NULL) || new_parent_state -> is_initialized ());
+//	trace () << "State (" << new_owner << ") A" << endl;
 	
-	parent_state = new_parent_state;
-	owner = new_owner;
+	assert (owner . Character :: is_initialized ());
+//	trace () << "State (" << new_owner << ") B" << endl;
+	assert (! owner . is_dead ());
+//	trace () << "State (" << new_owner << ") C" << endl;
 
-	assert (is_initialized ());
+	assert (State :: is_initialized ());
+//	trace () << "State (" << new_owner << ") D" << endl;
 }
 
 //  destructor
@@ -25,7 +27,7 @@ State ::
 	~State ()
 {
 	trace () << "~State ()" << endl;
-	assert (Object :: is_initialized ());
+	assert (State :: is_initialized ());
 }
 
 //	virtual
@@ -33,18 +35,23 @@ bool State ::
 	is_initialized ()
 	const
 {
-	bool result = Object :: is_initialized ();
-	return result && (owner != NULL);
+//	trace () << "State :: is_initialized () A" << endl;
+	assert (warn <State> (Object :: is_initialized ()));
+//	trace () << "State :: is_initialized () B" << endl;
+	assert (warn <State> (owner . Character :: is_initialized ()));
+//	trace () << "State :: is_initialized () C" << endl;
+
+	bool result = warn <State> ((! owner . is_dead ()));
+
+//	trace () << "State :: is_initialized () D" << endl;
+	return result;
 }
 
-//	virtual
+//	static
 string State ::
-	act ()
+	get_type_name ()
 {
-	assert (is_initialized ());
-
-	abort ();
-	return "";
+	return "state";
 }
 
 //	virtual

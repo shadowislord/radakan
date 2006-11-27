@@ -12,9 +12,10 @@ namespace sl
 		public Ogre :: Singleton <Player>
 	{
 		public :
-			Player (Ogre :: SceneNode * new_node);
+			Player (Ogre :: SceneNode & new_node);
 			virtual ~Player ();
 			virtual bool is_initialized () const;
+			static string get_type_name ();
 	};
 }
 

@@ -11,10 +11,10 @@ namespace sl
 		public State
 	{
 		public :
-			Peace_State (Character * new_owner, State * new_parent_state);
+			Peace_State (Character & new_owner);
 			virtual ~Peace_State ();
 			virtual bool is_initialized () const;
-			virtual string act ();
+			static string get_type_name ();
 			virtual string think ();
 	};
 }

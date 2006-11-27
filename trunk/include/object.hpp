@@ -44,9 +44,11 @@ namespace sl
 	#endif
 			Object (string new_name);								//	constructor
 			virtual ~Object ();										//	destructor
-			template <typename T> bool is_type () const;
-			template <typename T> T * to_type () const;
 			virtual bool is_initialized () const;
+			static string get_type_name ();
+			template <typename T> bool is_type () const;
+			template <typename T> T & to_type () const;
+			template <typename T> bool warn (bool initialization) const;
 			
 			virtual ostream & print () const;
 			virtual ostream & debug () const;
@@ -54,24 +56,25 @@ namespace sl
 			virtual ostream & error () const;
 
 			//	These methods should only be used by a Set
-			bool is_in (const Object * set) const;
-			void put_in (Object * new_parent);
-			void remove_from (Object * old_parent);
+			bool has_parent () const;
+			bool is_in (const Object & set) const;
+			void put_in (const Object & new_parent);
+			void remove_from (const Object & old_parent);
+
+			static string to_string (const Object * object);
+			static string bool_to_string (bool value);
+			static string to_string (float value);
+			static bool is_nan (float value);
+			static int to_int (string value);
 
 		private :
-			Object * parent;	//	the set in which the object is
+			const Object * parent;	//	the set in which the object is
 	};
 
 	#ifdef SL_DEBUG
 		//	This set is used to check if all objects were properly destructed.
 		extern set <Object *> objects;
 	#endif
-	
-	string to_string (bool value);
-	string to_string (float value);
-	string to_string (Object * object);
-	bool is_nan (float value);
-	int to_int (string value);
 }
 
 #include "object.ipp"

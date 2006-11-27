@@ -21,7 +21,7 @@ ostream * sl_out = & cout;
 			abort ();
 		#endif
 	#endif
-	
+
 	* sl_out << "Setting up Scattered Lands..." << endl;
 
 	string sl_path;

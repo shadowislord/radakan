@@ -6,7 +6,7 @@ using namespace sl;
 template <> Input_Engine * Ogre :: Singleton <Input_Engine> :: ms_Singleton = NULL;
 
 Input_Engine ::
-	Input_Engine (Ogre :: RenderWindow * window) :
+	Input_Engine (Ogre :: RenderWindow & window) :
 	Object ("Input Engine")
 {
 	assert (Object :: is_initialized ());
@@ -19,9 +19,9 @@ Input_Engine ::
 	// Each operating system uses a different mechanism to
 	// refer to the main rendering window.
 	#ifdef SL_WIN32
-		window -> getCustomAttribute ("HWND", & window_handle_temp);
+		window . getCustomAttribute ("HWND", & window_handle_temp);
 	#else
-		window -> getCustomAttribute ("GLXWINDOW", & window_handle_temp);
+		window . getCustomAttribute ("GLXWINDOW", & window_handle_temp);
 	#endif
 
 	window_handle << window_handle_temp;
@@ -81,12 +81,19 @@ bool Input_Engine ::
 {
 	if ((OIS :: InputManager :: getSingletonPtr () == NULL) || (mouse == NULL) || (keyboard == NULL))
 	{
-		return false;
+		return warn <Input_Engine> (false);
 	}
 	else
 	{
-		return Object :: is_initialized();
+		return warn <Input_Engine> (Object :: is_initialized ());
 	}
+}
+
+//	static
+string Input_Engine ::
+	get_type_name ()
+{
+	return "input engine";
 }
 
 void Input_Engine ::

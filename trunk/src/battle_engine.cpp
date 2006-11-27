@@ -35,36 +35,41 @@ bool Battle_Engine ::
 	is_initialized ()
 	const
 {
-	return Object :: is_initialized ();
+	return warn <Battle_Engine> (Object :: is_initialized ());
+}
+
+//	static
+string Battle_Engine ::
+	get_type_name ()
+{
+	return "battle engine";
 }
 
 string Battle_Engine ::
-	hit (Character * attacker, Character * defender)
+	hit (Character & attacker, Character & defender)
 {
-	trace () << "hit (" << to_string (attacker) << ", " << to_string (defender) << ")" << endl;
+	trace () << "hit (" << attacker << ", " << defender << ")" << endl;
 	assert (is_initialized ());
-	assert (attacker != NULL);
-	assert (defender != NULL);
 
-	assert (! attacker -> is_dead ());
-	assert (! defender -> is_dead ());
+	assert (! attacker . is_dead ());
+	assert (! defender . is_dead ());
 	
-	if (1 < (attacker -> node -> getPosition () - defender -> node -> getPosition ()) . squaredLength ())
+	if (100 < (attacker . node -> getPosition () - defender . node -> getPosition ()) . squaredLength ())
 	{
-		return "Target is out of range.";
+		return "Target is out of range: " + to_string (((attacker . node -> getPosition () - defender . node -> getPosition ()) . squaredLength ()) - 100);
 	}
 
 	float attack = 0;
 	float defense = 0;
 	
-	if (attacker -> has_weapon ())
+	if (attacker . has_weapon ())
 	{
-		attack = attacker -> get_weapon () -> attack_rate * lognormal ();
+		attack = attacker . get_weapon () -> attack_rate * lognormal ();
 	}
 
-	if (defender -> has_weapon ())
+	if (defender . has_weapon ())
 	{
-		defense = defender -> get_weapon () -> defense_rate * lognormal ();
+		defense = defender . get_weapon () -> defense_rate * lognormal ();
 	}
 
 	// You can now retrieve random numbers from that distribution by means
@@ -79,15 +84,15 @@ string Battle_Engine ::
 //			debug () << "Log-normal (1.133, 0.5): " << lognormal () << endl;
 //		}
 
-	debug () << "Atack: " << to_string (attack) << endl;
-	debug () << "Defend: " << to_string (defense) << endl;
+	debug () << "Atack: " << attack << endl;
+	debug () << "Defend: " << defense << endl;
 
 	if (defense < attack)	//	Hit
 	{
-		return defender -> die ();
+		return defender . die ();
 	}
 	else
 	{
-		return * attacker + " missed!";
+		return attacker + " missed!";
 	}
 }

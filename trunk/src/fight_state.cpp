@@ -6,9 +6,9 @@ using namespace sl;
 
 //  constructor
 Fight_State ::
-	Fight_State (Character * new_owner, State * new_parent_state) :
-	Object (* new_owner + "'s fight state"),
-	State (new_owner, new_parent_state)
+	Fight_State (Character & new_owner) :
+	Object (new_owner + "'s fight state"),
+	State (new_owner)
 {
 	assert (State :: is_initialized ());
 
@@ -28,27 +28,29 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	return State :: is_initialized () && (parent_state != NULL);
+	return State :: is_initialized ();
 }
 
-//	virtual
+//	static
 string Fight_State ::
-	act ()
+	get_type_name ()
 {
-	return "";
+	return "fight state";
 }
 
 //	virtual
 string Fight_State ::
 	think ()
 {
-	if (! owner -> has_weapon ())
+	assert (is_initialized ());
+	
+	if (! owner . has_weapon ())
 	{
-		parent_state -> to_type <State_Machine> () -> change_active_state <Peace_State> ();
-		return * owner + " says 'There's no point in being aggressive without a weapon.'";
+		owner . to_type <State_Machine> () . change_active_state <Peace_State> ();
+		return owner + " says 'There's no point in being aggressive without a weapon.'";
 	}
 	else
 	{
-		return * owner + " looks for an ennemy.";
+		return owner + " looks for an ennemy.";
 	}
 }

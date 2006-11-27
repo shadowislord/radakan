@@ -11,13 +11,15 @@ namespace sl
 		public virtual Object
 	{
 		public :
-			State (Character * new_owner, State * new_parent_state);
+			State (Character & new_owner);
 			virtual ~State ();
 			virtual bool is_initialized () const;
-			virtual string act ();
+			static string get_type_name ();
+			
 			virtual string think ();	//	change your current state
-			Character * owner;
-			State * parent_state;
+
+		protected:
+			Character & owner;
 	};
 }
 

@@ -12,14 +12,15 @@ namespace sl
 		public Set <State>
 	{
 		public :
-			State_Machine (State * new_parent_state);
+			State_Machine ();
 			virtual ~State_Machine ();
 			virtual bool is_initialized () const;
-			virtual string act ();
-			virtual string think ();
+			static string get_type_name ();
+			
 			template <typename T> void change_active_state ();
-			virtual bool add (State * state);
+			virtual bool add (State & state);
 			template <typename T> void add ();
+			virtual string think ();
 
 		private :
 			State * active_child_state;

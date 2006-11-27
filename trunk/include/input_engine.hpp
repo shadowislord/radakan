@@ -25,9 +25,10 @@ namespace sl
 		public OIS :: MouseListener
 	{
 		public :
-			Input_Engine (Ogre :: RenderWindow * window);
+			Input_Engine (Ogre :: RenderWindow & window);
 			virtual ~Input_Engine ();
 			virtual bool is_initialized () const;
+			static string get_type_name ();
 			void capture ();
 	//		bool is_key_down (OIS :: KeyCode);	the interface should be OIS independant
 			bool get_key (string key, bool reset);

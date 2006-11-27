@@ -13,8 +13,9 @@ Tslrpg ::
 //	State_Machine (NULL),
 	Set <Sector> ("Tslrpg")
 {
-	root = new Ogre :: Root();
+	trace () << "Tslrpg (" << sl_path << ", " << ogre_path << ")" << endl;
 
+	root = new Ogre :: Root ();
 	if (! root -> showConfigDialog ())
 	{
 		abort ();
@@ -76,23 +77,25 @@ Tslrpg ::
 	
 	window = root -> initialise (true, "Scattered Lands");
 
-	Set <Sector> :: add (new Sector ("Sector 1",
-				root -> createSceneManager (Ogre :: ST_GENERIC)));
+	Set <Sector> :: add (* new Sector ("Sector 1",
+				* root -> createSceneManager (Ogre :: ST_GENERIC)));
 
-	Set <Sector> :: add (new Sector ("Sector 2",
-				root -> createSceneManager (Ogre :: ST_GENERIC)));
+	Set <Sector> :: add (* new Sector ("Sector 2",
+				* root -> createSceneManager (Ogre :: ST_GENERIC)));
 	active_sector = Set <Sector> :: get_one_child ();
 
 	root -> getRenderSystem () -> _setViewport
-					(window -> addViewport (active_sector -> get_camera ()));
-	
-	gui_engine = new GUI_Engine (window, sl_path + "/log/cegui.txt");
+					(window -> addViewport (& active_sector -> get_camera ()));
+
+	gui_engine = new GUI_Engine (* window, sl_path + "/log/cegui.txt");
+	gui_engine -> set_scene_manager (active_sector -> get_scene_manager ());
+
 	//	Set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
 
 	//	This is the new input mechanism that is taking advantage of the
 	//	new engine handler.
-	input_engine = new Input_Engine (window);
+	input_engine = new Input_Engine (* window);
 
 	timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 }
@@ -100,12 +103,9 @@ Tslrpg ::
 Tslrpg ::
 	~Tslrpg ()
 {
+	trace () << "~Tslrpg ()" << endl;
 	delete gui_engine;
 	delete input_engine;
-
-//	This gives a problem:
-//	debug () << "deleting root... " << int (root) << endl;
-//	delete root;
 }
 
 //	virtual
@@ -113,18 +113,20 @@ bool Tslrpg ::
 	is_initialized ()
 	const
 {
-	return Set <Sector> :: is_initialized ();
+	return warn <Tslrpg> (Set <Sector> :: is_initialized ());
+}
+
+//	static
+string Tslrpg ::
+	get_type_name ()
+{
+	return "tslrpg";
 }
 
 void Tslrpg ::
 	run ()
 {
 	assert (is_initialized ());
-
-	debug () << "_getViewport()->getOverlaysEnabled(): " << root -> getRenderSystem () -> _getViewport()->getOverlaysEnabled() << endl;
-	debug () << " !d_quadlist.empty(): " << endl;
-	
-
 
 	while (true)
 	{
@@ -171,27 +173,28 @@ void Tslrpg ::
 		{
 			NPC * npc = active_sector -> get_child <NPC> ();
 			assert (npc != NULL);
-			assert (npc -> is_initialized ());
 			if (! npc -> is_dead ())
 			{
-				debug () << battle_engine . hit (Player :: getSingletonPtr (), npc) << endl;
+				debug () << battle_engine . hit (Player :: getSingleton (), * npc) << endl;
 			}
 		}
 		
 		//	move the weapon
 		if (input_engine -> get_key ("m", true))
 		{
-			NPC * npc = active_sector -> get_child <NPC> ();
-			assert (npc != NULL);
-			assert (npc -> is_initialized ());
+			NPC npc = * active_sector -> get_child <NPC> ();
+			assert (npc . is_initialized ());
 			if (Player :: getSingleton () . has_weapon ())
 			{
-				Player :: getSingleton () . move_to (Player :: getSingleton () . get_weapon (), npc);
-				assert (npc -> has_weapon ());
+				Player :: getSingleton () . move_to (* Player :: getSingleton () . get_weapon (), npc);
+				assert (! Player :: getSingleton () . has_weapon ());
+				assert (npc . has_weapon ());
 			}
 			else
 			{
-				npc -> Character :: move_to (npc -> get_weapon (), Player :: getSingletonPtr ());
+				npc . Character :: move_to (* npc . get_weapon (), Player :: getSingleton ());
+				assert (Player :: getSingleton () . has_weapon ());
+				assert (! npc . has_weapon ());
 			}
 		}
 
@@ -225,8 +228,8 @@ void Tslrpg ::
 			switch_to (Set <Sector> :: get_child <Sector> ("Sector 2"));
 		}
 
-		active_sector -> get_camera () -> setPosition (Player :: getSingleton () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
-		active_sector -> get_camera () -> setOrientation (Player :: getSingleton () . node -> getOrientation ());
+		active_sector -> get_camera () . setPosition (Player :: getSingleton () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
+		active_sector -> get_camera () . setOrientation (Player :: getSingleton () . node -> getOrientation ());
 	}
 }
 
@@ -235,9 +238,10 @@ void Tslrpg ::
 {
 	if (new_active_sector != active_sector)
 	{
-		active_sector -> move_to (Player :: getSingletonPtr (), new_active_sector);
-		Player :: getSingleton () . node = new_active_sector -> copy_node (Player :: getSingleton () . node);
+		active_sector -> move_to (Player :: getSingleton (), * new_active_sector);
+		Player :: getSingleton () . node = & new_active_sector -> copy_node (* Player :: getSingleton () . node);
 		active_sector = new_active_sector;
-		root -> getRenderSystem () -> _getViewport () -> setCamera (active_sector -> get_camera ());
+		root -> getRenderSystem () -> _getViewport () -> setCamera (& active_sector -> get_camera ());
+		gui_engine -> set_scene_manager (active_sector -> get_scene_manager ());
 	}
 }

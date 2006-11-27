@@ -12,7 +12,7 @@ Entity ::
 		float new_volume,
 		float new_weight,
 		Ogre :: Vector3 new_position,
-		Ogre :: SceneNode * new_node) :
+		Ogre :: SceneNode & new_node) :
 	Object (get_name (new_node)),
 	movable (new_movable),
 	solid (new_solid),
@@ -20,9 +20,8 @@ Entity ::
 	weight (new_weight)
 {
 	assert (Object :: is_initialized ());
-	assert (new_node != NULL);
 
-	node = new_node;
+	node = & new_node;
 	node -> setVisible (new_visible);
 	node -> setPosition (new_position);
 
@@ -42,7 +41,14 @@ bool Entity ::
 	is_initialized ()
 	const
 {
-	return Object :: is_initialized () && (0 <= volume) && (0 <= weight) && (node != NULL);
+	return warn <Entity> (Object :: is_initialized () && (0 <= volume) && (0 <= weight) && (node != NULL));
+}
+
+//	static
+string Entity ::
+	get_type_name ()
+{
+	return "entity";
 }
 
 //	virtual
@@ -56,11 +62,10 @@ float Entity ::
 	return weight;
 }
 
-string sl :: get_name (Ogre :: SceneNode * node)
+string sl :: get_name (Ogre :: SceneNode & node)
 {
-	assert (node != NULL);
-	assert (node -> numAttachedObjects () == 1);
-	Ogre :: MovableObject * movable_object = node -> getAttachedObject (0);
+	assert (node . numAttachedObjects () == 1);
+	Ogre :: MovableObject * movable_object = node . getAttachedObject (0);
 	assert (movable_object != NULL);
 
 	return movable_object -> getName ();

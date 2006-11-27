@@ -8,23 +8,21 @@ using namespace sl;
 template <typename T> void State_Machine ::
 		change_active_state ()
 {
-	trace () << "change_active_state ()" << endl;
+	trace () << "change_active_state <" << T :: get_type_name () << "> ()" << endl;
 	assert (Object :: is_initialized ());
 
 	active_child_state = get_child <T> ();
-
-	assert (active_child_state != NULL);
 }
 
 template <typename T> void State_Machine ::
 	add ()
 {
-	trace () << "add ()" << endl;
-	assert (Object :: is_initialized ());
+	trace () << "add <" << T :: get_type_name () << "> ()" << endl;
+	assert (is_initialized ());
 	
 	assert (get_child <T> () == NULL);
 
-	add (new T (owner, this));
+	add (* new T (owner));
 }
 
 #endif	//	STATE_MACHINE_IPP

@@ -5,23 +5,24 @@ using namespace sl;
 
 //  constructor
 State_Machine ::
-	State_Machine (State * new_parent_state) :
+	State_Machine () :
 	Object (* this + "'s state machine"),
-	State (this -> to_type <Character> (), new_parent_state),
+	State (this -> to_type <Character> ()),
 	Set <State> (* this)
 {
+	trace () << "State_Machine ()" << endl;
 	assert (Set <State> :: is_initialized ());
 
 	active_child_state = NULL;
 	
-	assert (is_initialized ());
+	assert (State_Machine :: is_initialized ());
 }
 
 //  destructor
 State_Machine ::
 	~State_Machine ()
 {
-	assert (is_initialized ());
+	assert (State_Machine :: is_initialized ());
 }
 
 //	virtual
@@ -29,16 +30,20 @@ bool State_Machine ::
 	is_initialized ()
 	const
 {
-	return Set <State> :: is_initialized () && ((active_child_state == NULL) || active_child_state -> is_initialized ());
+//	trace () << "State_Machine :: is_initialized () A" << endl;
+	assert (warn <State_Machine> (State :: is_initialized ()));
+//	trace () << "State_Machine :: is_initialized () B" << endl;
+	assert (warn <State_Machine> (Set <State> :: is_initialized ()));
+//	trace () << "State_Machine :: is_initialized () C" << endl;
+
+	return (warn <State_Machine> ((active_child_state == NULL) || active_child_state -> is_initialized ()));
 }
 
-//	virtual
+//	static
 string State_Machine ::
-	act ()
+	get_type_name ()
 {
-	assert (is_initialized ());
-	assert (active_child_state != NULL);
-	return active_child_state -> act ();
+	return "state machine";
 }
 
 //	virtual
@@ -47,22 +52,22 @@ string State_Machine ::
 {
 	assert (is_initialized ());
 	assert (active_child_state != NULL);
+	
 	return active_child_state -> think ();
 }
 
 //	virtual
 bool State_Machine ::
-	add (State * state)
+	add (State & state)
 {
 	assert (is_initialized ());
-	assert (state != NULL);
-	assert (state -> is_initialized ());
+	assert (state . is_initialized ());
 
 	bool result = Set <State> :: add (state);
 
 	assert (result);
 
-	active_child_state = state -> to_type <State> ();
+	active_child_state = & state . to_type <State> ();
 
 	return true;
 }

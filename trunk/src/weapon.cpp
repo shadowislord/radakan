@@ -15,7 +15,7 @@ Weapon ::
 		float new_attack_rate,
 		float new_defense_rate,
 		float new_damage,
-		Ogre :: SceneNode * new_node) :
+		Ogre :: SceneNode & new_node) :
 	Object (get_name (new_node)),
 	Entity
 		(true,
@@ -51,7 +51,14 @@ bool Weapon ::
 	is_initialized ()
 	const
 {
-	return Entity :: is_initialized () && (0 < break_chance)
+	return warn <Weapon> (Entity :: is_initialized () && (0 < break_chance)
 	&& (break_chance < 100)  && (0 < sharpness) && (sharpness < 100)
-	&& (0 < speed) && (0 < attack_rate) && (0 < defense_rate) && (0 < damage);
+	&& (0 < speed) && (0 < attack_rate) && (0 < defense_rate) && (0 < damage));
+}
+
+//	static
+string Weapon ::
+	get_type_name ()
+{
+	return "weapon";
 }

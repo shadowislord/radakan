@@ -23,12 +23,13 @@ namespace sl
 				float new_volume,
 				float new_weight,
 				Ogre :: Vector3 new_position,
-				Ogre :: SceneNode * new_node);
+				Ogre :: SceneNode & new_node);
 			virtual ~Container ();
 			virtual bool is_initialized () const;
+			static string get_type_name ();
 			virtual float get_total_weight () const;
-			virtual bool add (Entity * entity);
-			virtual bool move_to (Entity * entity, Set <Entity> * other_set);
+			virtual bool add (Entity & entity);
+			virtual bool move_to (Entity & entity, Set <Entity> & other_set);
 	};
 }
 

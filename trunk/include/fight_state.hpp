@@ -11,10 +11,10 @@ namespace sl
 		public State
 	{
 		public :
-			Fight_State (Character * new_owner, State * new_parent_state);
+			Fight_State (Character & new_owner);
 			virtual ~Fight_State ();
 			virtual bool is_initialized () const;
-			virtual string act ();
+			static string get_type_name ();
 			virtual string think ();
 	};
 }

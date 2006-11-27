@@ -3,8 +3,6 @@
 
 #include "battle_engine.hpp"
 #include "npc.hpp"
-#include "peace_state.hpp"
-#include "fight_state.hpp"
 #include "player.hpp"
 #include <Ogre.h>
 #include <OgreKeyEvent.h>
@@ -26,17 +24,19 @@ namespace sl
 		public btDiscreteDynamicsWorld*/
 	{
 		public :
-			Sector (string new_name, Ogre :: SceneManager * new_scene_manager);
+			Sector (string new_name, Ogre :: SceneManager & new_scene_manager);
 			virtual ~Sector ();
 			virtual bool is_initialized () const;
-			virtual bool add (Entity * entity);
+			static string get_type_name ();
+			
+			virtual bool add (Entity & entity);
 			void update ();
-			Ogre :: SceneManager * get_scene_manager () const;
-			Ogre :: Camera * get_camera () const;
-			Ogre :: SceneNode * copy_node (Ogre :: SceneNode * example);
+			Ogre :: Camera & get_camera () const;
+			Ogre :: SceneNode & copy_node (Ogre :: SceneNode & example);
+			Ogre :: SceneManager & get_scene_manager () const;
 
 		private :
-			Ogre :: SceneNode * create_entity_node (string name, string mesh_name);
+			Ogre :: SceneNode & create_entity_node (string name, string mesh_name);
 			Ogre :: SceneManager * scene_manager;
 			Ogre :: Camera * camera;
 			set <NPC *> npcs;	//	This can't be a Set <NPC>, as the NPCs

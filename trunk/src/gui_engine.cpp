@@ -6,13 +6,12 @@ using namespace sl;
 template <> GUI_Engine * Ogre :: Singleton <GUI_Engine> :: ms_Singleton = NULL;
 
 GUI_Engine ::
-	GUI_Engine (Ogre :: RenderWindow * window, string log_file_name) :
+	GUI_Engine (Ogre :: RenderWindow & window, string log_file_name) :
 	Object ("Gui engine")
 {
 	assert (Object :: is_initialized ());
-	assert (window != NULL);
 
-	renderer = new CEGUI :: OgreCEGUIRenderer (window);
+	renderer = new CEGUI :: OgreCEGUIRenderer (& window);
 
 	system = new CEGUI :: System (renderer, CEGUI :: String (log_file_name) . data ());
 
@@ -49,7 +48,20 @@ bool GUI_Engine ::
 	is_initialized ()
 	const
 {
-	return Object :: is_initialized ();
+	return warn <GUI_Engine> (Object :: is_initialized ());
+}
+
+//	static
+string GUI_Engine ::
+	get_type_name ()
+{
+	return "GUI engine";
+}
+
+void GUI_Engine ::
+	set_scene_manager (Ogre :: SceneManager & new_scene_manager)
+{
+	renderer -> setTargetSceneManager (& new_scene_manager);
 }
 
 bool GUI_Engine ::
@@ -57,7 +69,6 @@ bool GUI_Engine ::
 	const
 {
 	assert (is_initialized ());
-	assert (system != NULL);
 
 	system -> renderGUI ();
 
