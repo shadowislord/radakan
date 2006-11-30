@@ -1,6 +1,5 @@
 #include "tslrpg.hpp"
 #include <algorithm>
-//#include </home/t/opt/ogre/RenderSystems/GL/include/OgreGLGpuProgramManager.h>
 
 using namespace std;
 using namespace sl;

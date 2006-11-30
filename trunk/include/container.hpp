@@ -22,7 +22,7 @@ namespace sl
 				bool new_visible,
 				float new_volume,
 				float new_weight,
-				Ogre :: Vector3 new_position,
+				btVector3 new_position,
 				Ogre :: SceneNode & new_node);
 			virtual ~Container ();
 			virtual bool is_initialized () const;

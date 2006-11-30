@@ -11,7 +11,7 @@ Container ::
 		bool new_visible,
 		float new_volume,
 		float new_weight,
-		Ogre :: Vector3 new_position,
+		btVector3 new_position,
 		Ogre :: SceneNode & new_node) :
 	Object (get_name (new_node)),
 	Entity

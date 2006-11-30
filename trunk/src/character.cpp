@@ -13,7 +13,7 @@ Character ::
 		true,
 		80,
 		65,
-		Ogre :: Vector3 (100, 0, 200),
+		btVector3 (100, 0, 200),
 		new_node)
 {
 	trace () << "Character (" << get_name (* node) << ")" << endl;
@@ -122,7 +122,25 @@ void Character ::
 {
 	assert (Character :: is_initialized ());
 
-	node -> translate (node -> getOrientation () * Ogre :: Vector3 (0, 0, - distance));
+	trace () << "position: (" << get_position () . getX () << ", " << get_position () . getY () << ", " << get_position () . getZ () << ")" << endl;
+
+	Ogre :: Quaternion r = Ogre :: Quaternion
+	(
+		get_rotation () . getW (),
+		get_rotation () . getX (),
+		get_rotation () . getY (),
+		get_rotation () . getZ ()
+	);
+	
+	Ogre :: Vector3 v = Ogre :: Vector3 (0, 0, - distance);
+
+	//	This is not some kind of multiplication, but the rotation of r applied to v.
+	//	Bullet seems to lack an equivalent.
+	Ogre :: Vector3 w = r * v;	
+	set_position (get_position () + btVector3 (w . x, w . y, w . z));
+	trace () << "new position: (" << get_position () . getX () << ", " << get_position () . getY () << ", " << get_position () . getZ () << ")" << endl;
+
+	update_scene_node ();
 }
 
 void Character ::
@@ -130,7 +148,12 @@ void Character ::
 {
 	assert (Character :: is_initialized ());
 
-	node -> yaw (Ogre :: Radian (radian_angle));
+	trace () << "rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
+
+	set_rotation (get_rotation () * btQuaternion (btVector3 (0, 1, 0), radian_angle));
+
+	trace () << "new rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
+
 }
 
 string Character ::

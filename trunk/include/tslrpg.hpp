@@ -10,7 +10,7 @@ using namespace std;
 namespace sl
 {
 
-	///	Tslrpg is a implicit singleton class. It creates the eninges and the sectors.
+	///	Tslrpg is the main class. It manages the eninges and the sectors.
 
 	class Tslrpg :
 //		public State_Machine,

@@ -9,6 +9,12 @@ Sector ::
 		Ogre :: SceneManager & new_scene_manager) :
 	Object (new_name),
 	Set <Entity> (new_name),
+	btDiscreteDynamicsWorld
+	(
+		new btCollisionDispatcher (),
+		new btSimpleBroadphase (),
+		new btSequentialImpulseConstraintSolver ()
+	),
 	scene_manager (& new_scene_manager)
 {
 	trace () << "Sector (" << new_name << ", ~new_scene_manager~)" << endl;
@@ -20,19 +26,19 @@ Sector ::
 
 	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);	//	Doesn't work.
 
-	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
+	add (* new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
 		create_entity_node ("Tavern", "tavern.mesh")));
 
-	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (0, 0, 0),
+	add (* new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
 		create_entity_node ("Bar", "bar.mesh")));
 
-	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 17),
+	add (* new Entity (false, true, true, 0, 0, btVector3 (116, 0, 17),
 		create_entity_node ("Table 1", "table.mesh")));
 
-	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (116, 0, 57),
+	add (* new Entity (false, true, true, 0, 0, btVector3 (116, 0, 57),
 		create_entity_node ("Table 2", "table.mesh")));
 
-	add (* new Entity (false, true, true, 0, 0, Ogre :: Vector3 (26, 0, 97),
+	add (* new Entity (false, true, true, 0, 0, btVector3 (26, 0, 97),
 		create_entity_node ("Table 3", "table.mesh")));
 
 	add
@@ -42,7 +48,7 @@ Sector ::
 			true,
 			0,
 			0,
-			Ogre :: Vector3 (1000, 0, 500),
+			btVector3 (1000, 0, 500),
 			create_entity_node ("Fort", "fort.mesh")));
 			
 
@@ -60,7 +66,7 @@ Sector ::
 				true,
 				30,
 				3,
-				player -> node -> getPosition (),
+				player -> get_position (),
 				create_entity_node ("Backpack", "bar.mesh")
 			)
 		);
@@ -68,7 +74,7 @@ Sector ::
 		debug () << to_string (player) << "'s weight: "
 										<< player -> get_total_weight () << endl;
 		Weapon * sword = new Weapon
-				(1, 2, Ogre :: Vector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
+				(1, 2, btVector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
 				create_entity_node ("Sword", "bar.mesh"));
 		debug () << to_string (sword) << "'s weight: " << sword -> get_total_weight () << endl;
 		player -> add (* sword);
@@ -78,7 +84,7 @@ Sector ::
 
 	NPC * ninja = new NPC (create_entity_node ("Ninja", "ninja.mesh"));
 	ninja -> node -> setScale (Ogre :: Vector3 (0.1, 0.1, 0.1));
-	ninja -> node -> setPosition (Ogre :: Vector3 (120, 0, 30));
+	ninja -> set_position (btVector3 (120, 0, 30));
 	add (* ninja);
 
 	for (int i = 0; i < 100; i++)
@@ -180,7 +186,10 @@ bool Sector ::
 		bool success = npcs . insert (& entity . to_type <NPC> ()) . second;
 		assert (success);
 	}
-	return Set <Entity> :: add (entity);
+	bool result = Set <Entity> :: add (entity);
+	assert (result);
+	addRigidBody (& entity);
+	return true;
 }
 
 void Sector ::

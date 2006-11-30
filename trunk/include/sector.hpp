@@ -9,8 +9,10 @@
 #include <OgreEventListeners.h>
 #include <OgreStringConverter.h>
 #include <OgreException.h>
-#include <btBulletCollisionCommon.h>
-#include <btBulletDynamicsCommon.h>
+
+#include <BulletCollision/BroadphaseCollision/btSimpleBroadphase.h>
+#include <BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
+#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 
 using namespace std;
 
@@ -20,8 +22,8 @@ namespace sl
 	///	Sector keeps track of all data in an in-game sector.
 
 	class Sector :
-		public Set <Entity>/* !!!,
-		public btDiscreteDynamicsWorld*/
+		public Set <Entity>,
+		public btDiscreteDynamicsWorld
 	{
 		public :
 			Sector (string new_name, Ogre :: SceneManager & new_scene_manager);
@@ -39,8 +41,10 @@ namespace sl
 			Ogre :: SceneNode & create_entity_node (string name, string mesh_name);
 			Ogre :: SceneManager * scene_manager;
 			Ogre :: Camera * camera;
-			set <NPC *> npcs;	//	This can't be a Set <NPC>, as the NPCs
-			//	would be part of diffrent Set <T>s.
+
+			//	This can't be a Set <NPC>,
+			//	as the NPCs would be part of diffrent Set <T>s.
+			set <NPC *> npcs;	
 	};
 }
 

@@ -14,7 +14,7 @@ namespace sl
 			Weapon
 				(float new_volume,
 				float new_weight,
-				Ogre :: Vector3 new_position,
+				btVector3 new_position,
 				float new_sharpness,
 				float new_break_chance,
 				float new_speed,
