@@ -41,9 +41,6 @@ ostream * sl_out = & cout;
 		ogre_path = argv [argc - 1];
 	#endif
 
-	* sl_out << "sl_path: " << sl_path << endl;
-	* sl_out << "ogre_path: " << ogre_path << endl;
-
 	#ifdef SL_DEBUG
 		* sl_out << "debug mode: enabled." << endl;
 
@@ -52,8 +49,6 @@ ostream * sl_out = & cout;
 		* sl_out << "Setting up Scattered Lands..." << endl;
 		* sl_out << "sl_path: " << sl_path << endl;
 		* sl_out << "ogre_path: " << ogre_path << endl;
-
-		* sl_out << "debug mode: enabled." << endl;
 	#else
 		* sl_out << "debug mode: disabled." << endl;
 	#endif

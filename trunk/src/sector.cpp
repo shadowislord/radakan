@@ -193,12 +193,12 @@ bool Sector ::
 }
 
 void Sector ::
-	update ()
+	update (int milliseconds_passed)
 {
 	assert (is_initialized ());
 
+//	stepSimulation (milliseconds_passed / 1000000.f);
 	string think;
-	string act;
 	for (set <NPC *> :: const_iterator i = npcs . begin ();
 													i != npcs . end (); i ++)
 	{

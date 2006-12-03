@@ -32,7 +32,7 @@ namespace sl
 			static string get_type_name ();
 			
 			virtual bool add (Entity & entity);
-			void update ();
+			void update (int milliseconds_passed);
 			Ogre :: Camera & get_camera () const;
 			Ogre :: SceneNode & copy_node (Ogre :: SceneNode & example);
 			Ogre :: SceneManager & get_scene_manager () const;

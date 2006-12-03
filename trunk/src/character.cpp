@@ -122,7 +122,7 @@ void Character ::
 {
 	assert (Character :: is_initialized ());
 
-	trace () << "position: (" << get_position () . getX () << ", " << get_position () . getY () << ", " << get_position () . getZ () << ")" << endl;
+	trace () << "(absolute) position: (" << get_position () . getX () << ", " << get_position () . getY () << ", " << get_position () . getZ () << ")" << endl;
 
 	Ogre :: Quaternion r = Ogre :: Quaternion
 	(
@@ -135,10 +135,11 @@ void Character ::
 	Ogre :: Vector3 v = Ogre :: Vector3 (0, 0, - distance);
 
 	//	This is not some kind of multiplication, but the rotation of r applied to v.
-	//	Bullet seems to lack an equivalent.
+	//	Bullet seems to lack equivalent functionality.
 	Ogre :: Vector3 w = r * v;	
+	trace () << "new (relative) position: (" << w . x << ", " << w . y << ", " << w . z << ")" << endl;
 	set_position (get_position () + btVector3 (w . x, w . y, w . z));
-	trace () << "new position: (" << get_position () . getX () << ", " << get_position () . getY () << ", " << get_position () . getZ () << ")" << endl;
+	trace () << "new (absolute) position: (" << get_position () . getX () << ", " << get_position () . getY () << ", " << get_position () . getZ () << ")" << endl;
 
 	update_scene_node ();
 }
@@ -148,11 +149,13 @@ void Character ::
 {
 	assert (Character :: is_initialized ());
 
-	trace () << "rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
+	trace () << "(absolute) rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
 
+//	trace () << "new (relative) rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
+	
 	set_rotation (get_rotation () * btQuaternion (btVector3 (0, 1, 0), radian_angle));
 
-	trace () << "new rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
+	trace () << "new (absolute) rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
 
 }
 

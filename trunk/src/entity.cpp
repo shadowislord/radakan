@@ -107,6 +107,11 @@ void Entity ::
 	assert (Entity :: is_initialized ());
 
 	get_motion_state () -> m_graphicsWorldTrans . setOrigin (new_position);
+	
+//	This somehow doesn't do what it's supposed to do. (It doesn't change anything.)
+//	translate (new_position);
+
+//	Keep the Ogre :: SceneNode in sync.
 	update_scene_node ();
 }
 

@@ -2,6 +2,7 @@
 #define AI_MACHINE_HPP
 
 #include "state.hpp"
+#include "set.hpp"
 
 using namespace std;
 

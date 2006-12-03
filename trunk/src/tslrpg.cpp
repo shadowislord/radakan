@@ -127,16 +127,16 @@ void Tslrpg ::
 {
 	assert (is_initialized ());
 
+	int time = 0;
 	while (true)
 	{
 		timer -> reset ();
-		
-		active_sector -> update ();
+
+		active_sector -> update (time);
 	
 		input_engine -> capture ();
-
 		Ogre :: PlatformManager :: getSingletonPtr () -> messagePump (window);
-
+		
 		//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
 		if (! root -> renderOneFrame ()
 				|| ! gui_engine -> render ()
@@ -149,7 +149,6 @@ void Tslrpg ::
 
 		//	Handle movement
 		//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
-		int time = timer -> getMilliseconds ();
 		if (input_engine -> get_key ("e", false))
 		{
 			Player :: getSingleton () . run (0.2 * time);
@@ -229,6 +228,8 @@ void Tslrpg ::
 
 		active_sector -> get_camera () . setPosition (Player :: getSingleton () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
 		active_sector -> get_camera () . setOrientation (Player :: getSingleton () . node -> getOrientation ());
+
+		time = timer -> getMilliseconds ();
 	}
 }
 
@@ -237,9 +238,14 @@ void Tslrpg ::
 {
 	if (new_active_sector != active_sector)
 	{
+		//	Update player position:
+		active_sector -> removeRigidBody (Player :: getSingletonPtr ());
 		active_sector -> move_to (Player :: getSingleton (), * new_active_sector);
 		Player :: getSingleton () . node = & new_active_sector -> copy_node (* Player :: getSingleton () . node);
 		active_sector = new_active_sector;
+		active_sector -> addRigidBody (Player :: getSingletonPtr ());
+
+		//	Update camera & scene manager:
 		root -> getRenderSystem () -> _getViewport () -> setCamera (& active_sector -> get_camera ());
 		gui_engine -> set_scene_manager (active_sector -> get_scene_manager ());
 	}
