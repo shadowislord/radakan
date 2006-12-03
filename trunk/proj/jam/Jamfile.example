@@ -1,4 +1,6 @@
-WORKDIR = ../.. ;
+TSLRPG = $(T_OPT)/tslrpg/trunk ;
+BULLET = $(T_OPT)/bullet ;
+OIS = $(T_OPT)/ois ;
 
 ##	valgrind memcheck
 C++FLAGS =  -O -march=pentium4 -Wall -g -fno-inline ;
@@ -11,33 +13,81 @@ C++FLAGS =  -O -march=pentium4 -Wall -g -fno-inline ;
 
 LINKFLAGS =
 	-L/usr/lib/OGRE
-	-L/usr/local/lib/OIS
 	-lOgreMain
+	-lOIS
 	-lCEGUIBase
 	-lCEGUIOgreRenderer
 ;
 
 HDRS =
-	$(WORKDIR)/include
+	$(TSLRPG)/include
+	/usr/include/CEGUI
 	/usr/include/OGRE
-##	/usr/local/src/ogre/Samples/Common/include
-##	/usr/local/src/ogre/ReferenceApplication/ReferenceAppLayer/include
-##	/usr/local/src/ogre/ReferenceApplication/Common/include
+	$(OIS)/include
+	$(BULLET)/src
 ;
 
 CPPS =
-	$(WORKDIR)/src/battle_engine.cpp
-	$(WORKDIR)/src/character.cpp
-	$(WORKDIR)/src/container.cpp
-	$(WORKDIR)/src/entity.cpp
-	$(WORKDIR)/src/main.cpp
-	$(WORKDIR)/src/object.cpp
-	$(WORKDIR)/src/sector.cpp
-	$(WORKDIR)/src/sl_frame_listener.cpp
-	$(WORKDIR)/src/tslrpg.cpp
-	$(WORKDIR)/src/weapon.cpp
+	$(TSLRPG)/src/battle_engine.cpp
+	$(TSLRPG)/src/character.cpp
+	$(TSLRPG)/src/container.cpp
+	$(TSLRPG)/src/entity.cpp
+	$(TSLRPG)/src/fight_state.cpp
+	$(TSLRPG)/src/gui_engine.cpp
+	$(TSLRPG)/src/input_engine.cpp
+	$(TSLRPG)/src/main.cpp
+	$(TSLRPG)/src/npc.cpp
+	$(TSLRPG)/src/object.cpp
+	$(TSLRPG)/src/peace_state.cpp
+	$(TSLRPG)/src/player.cpp
+	$(TSLRPG)/src/sector.cpp
+	$(TSLRPG)/src/state.cpp
+	$(TSLRPG)/src/state_machine.cpp
+	$(TSLRPG)/src/tslrpg.cpp
+	$(TSLRPG)/src/weapon.cpp
+	$(BULLET)/src/BulletCollision/BroadphaseCollision/btCollisionAlgorithm.cpp
+	$(BULLET)/src/BulletCollision/BroadphaseCollision/btDispatcher.cpp
+	$(BULLET)/src/BulletCollision/BroadphaseCollision/btOverlappingPairCache.cpp
+	$(BULLET)/src/BulletCollision/BroadphaseCollision/btSimpleBroadphase.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btCollisionDispatcher.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btCollisionObject.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btCollisionWorld.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btConvexConcaveCollisionAlgorithm.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btConvexConvexAlgorithm.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btEmptyCollisionAlgorithm.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btManifoldResult.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btSimulationIslandManager.cpp
+	$(BULLET)/src/BulletCollision/CollisionDispatch/btUnionFind.cpp
+	$(BULLET)/src/BulletCollision/CollisionShapes/btBoxShape.cpp
+	$(BULLET)/src/BulletCollision/CollisionShapes/btCollisionShape.cpp
+	$(BULLET)/src/BulletCollision/CollisionShapes/btConvexShape.cpp
+	$(BULLET)/src/BulletCollision/CollisionShapes/btMinkowskiSumShape.cpp
+	$(BULLET)/src/BulletCollision/CollisionShapes/btPolyhedralConvexShape.cpp
+	$(BULLET)/src/BulletCollision/CollisionShapes/btSphereShape.cpp
+	$(BULLET)/src/BulletCollision/CollisionShapes/btStridingMeshInterface.cpp
+	$(BULLET)/src/BulletCollision/CollisionShapes/btTriangleCallback.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btConvexCast.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btGjkConvexCast.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btGjkEpa.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btGjkPairDetector.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btMinkowskiPenetrationDepthSolver.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btPersistentManifold.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btRaycastCallback.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btSubSimplexConvexCast.cpp
+	$(BULLET)/src/BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.cpp
+	$(BULLET)/src/BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.cpp
+	$(BULLET)/src/BulletDynamics/ConstraintSolver/btContactConstraint.cpp
+	$(BULLET)/src/BulletDynamics/ConstraintSolver/btTypedConstraint.cpp
+	$(BULLET)/src/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.cpp
+	$(BULLET)/src/BulletDynamics/Dynamics/btRigidBody.cpp
+	$(BULLET)/src/BulletDynamics/Dynamics/btSimpleDynamicsWorld.cpp
+	$(BULLET)/src/BulletDynamics/Vehicle/btRaycastVehicle.cpp
+	$(BULLET)/src/BulletDynamics/Vehicle/btWheelInfo.cpp
+	$(BULLET)/src/LinearMath/btQuickprof.cpp
 ;
 
-Main $(WORKDIR)/bin/debug/tslrpg :
+Main $(TSLRPG)/bin/debug/tslrpg :
 	$(CPPS)
 ;

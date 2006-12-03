@@ -2,9 +2,8 @@
 
 TRUNK=${T_OPT}/tslrpg/trunk
 JAM_ARGUMENT=-q
-ARGUMENT_LIST=(${1} ${2} ${3} ${4} ${5} ${6})
 
-for ARGUMENT in ${ARGUMENT_LIST[@]}; do
+for ARGUMENT in ${*}; do
 	if [[ ${ARGUMENT} == "val" ]]; then
 		PREFIX="valgrind --log-file-exactly=log/valgrind.txt --time-stamp=yes"
 	elif [[ ${ARGUMENT} == "doxy" ]]; then
@@ -19,7 +18,6 @@ done
 
 cd ${TRUNK}
 
-rm log/*
 mv obj/debug/*.o src/
 
 cd proj/jam
@@ -34,6 +32,8 @@ if [[ ${JAM_RESULT} != "0" ]]; then
 	echo "Jam failed."
 	exit;
 fi
+
+rm log/*
 
 ${PREFIX} bin/debug/tslrpg ${TRUNK} /usr/doc/ogre-1.2.3
 echo "tslrpg exit code: ${?}"
