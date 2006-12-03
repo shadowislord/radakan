@@ -1,0 +1,30 @@
+myenv = Environment(tools = [ "mingw" ] )
+
+myenv.Append( CPPPATH = [  
+                            "../src/hpp",
+                            "../src/imp",
+                            "c:\OgreSDK\include",
+                            "../external/bullet",
+                            "c:\Boost\include"
+                        ] )
+                            
+myenv.Program( target = "tslrpg",
+    source = [  
+                "../src/cpp/battle_engine.cpp", 
+                "../src/cpp/character.cpp", 
+                "../src/cpp/container.cpp", 
+                "../src/cpp/entity.cpp",
+                "../src/cpp/fight_state.cpp", 
+                "../src/cpp/gui_engine.cpp", 
+                "../src/cpp/input_engine.cpp", 
+                "../src/cpp/main.cpp",
+                "../src/cpp/npc.cpp", 
+                "../src/cpp/object.cpp", 
+                "../src/cpp/peace_state.cpp",
+                "../src/cpp/player.cpp", 
+                "../src/cpp/sector.cpp",
+                "../src/cpp/state.cpp",
+                "../src/cpp/state_machine.cpp",
+                "../src/cpp/tslrpg.cpp",
+                "../src/cpp/weapon.cpp" 
+            ] )
