@@ -1,0 +1,363 @@
+//DUST CLOUDS
+material spacebillboard/cloud_1
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cloud_1.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cloud_2
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cloud_2.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cloud_3
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cloud_3.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cloud_4
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cloud_4.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cloud_5
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cloud_5.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cloud_6
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cloud_6.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cloud_7
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cloud_7.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+//CLUSTERS
+material spacebillboard/cluster_1
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cluster_1.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cluster_2
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cluster_2.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cluster_3
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cluster_3.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cluster_4
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cluster_4.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cluster_5
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cluster_5.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cluster_6
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cluster_6.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cluster_7
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cluster_7.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/cluster_8
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture cluster_8.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+//STARS
+material spacebillboard/star_1
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture star_1.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material spacebillboard/star_2
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture star_2.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+//LARGE STAR CLOUD
+material spacebillboard/starcloud_2
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture starcloud_2.png
+				filtering anisotropic
+				tex_address_mode clamp
+			}
+		}
+	}
+}
