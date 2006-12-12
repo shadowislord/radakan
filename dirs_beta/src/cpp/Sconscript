@@ -1,9 +1,0 @@
-import glob
-
-Import( "env" )
-myenv = env.Copy()
-
-myenv.Program   ( 
-                    target = "tslrpg",
-                    source = glob.glob( "*.cpp" ) 
-                )
