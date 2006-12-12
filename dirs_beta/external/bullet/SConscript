@@ -1,0 +1,34 @@
+Import( "env", "dev", "mode" )
+localenv = env.Copy()
+
+project = "bullet"
+
+#~ if we are on windows we need to tell gcc to bild a windows exe
+#~ we need to set -mwindows as a compiler flag
+
+include_path        =   [
+                            "#external/bullet"
+                        ]
+
+localenv.Append( CPPPATH = include_path)
+
+import sys
+if sys.platform == "win32":
+    localenv.Tool( "mingw" )
+
+name = project
+if mode == "debug":
+    name += "_d"
+
+files = []
+files += dev.DevGetSourceFiles( "BulletCollision/BroadphaseCollision", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "BulletCollision/CollisionDispatch", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "BulletCollision/CollisionShapes", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "BulletCollision/NarrowPhaseCollision", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "BulletDynamics/ConstraintSolver", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "BulletDynamics/Dynamics", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "BulletDynamics/Vehicle", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "LinearMath", [ "*.cpp" ]  )
+
+tgt = localenv.StaticLibrary( name, files )
+localenv.Alias(project, tgt)

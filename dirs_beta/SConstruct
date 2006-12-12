@@ -1,0 +1,75 @@
+import SCons.Script
+import os
+import fnmatch
+
+##-------------------------------------------------
+# Use:
+#   scons projectx [mode=debug]
+#        - defaults to mode=release
+##-------------------------------------------------
+
+##-------------------------------------------------
+#-- Function definitions here
+
+def DoWork(tgt, mode, dir):
+    BuildDir   = os.path.join( "bin", mode, "obj", tgt ) 
+    SConscript( dir + "/SConscript", build_dir = BuildDir, duplicate = 0 )
+    
+class Dev(Environment):
+   def DevGetSourceFiles(self, dir, patterns=None):
+      files = []
+
+      if patterns is None:
+         patterns=[ "*" + self[ "CXXFILESUFFIX" ], "*" + self[ "CFILESUFFIX" ], "*" + self[ "QT_UISUFFIX" ] ]
+      for file in os.listdir(self.Dir(dir).srcnode().abspath):
+          for pattern in patterns:
+             if fnmatch.fnmatchcase(file, pattern):
+                 files.append(dir + "/" + file)
+      return files
+
+
+##-------------------------------------------------
+
+#--
+# prevent accidental building of everything;
+# - to build everything use 'scons.py .'
+Default(None)
+
+##-------------------------------------------------
+
+#- check compilation mode: 'debug' or 'release' only
+mode = ARGUMENTS.get( "mode", "debug" )
+if not ( mode in [ "debug", "release" ] ):
+   print "Error: expected debug or release, found: " + mode
+   Exit(1)
+
+print "**** Compiling in " + mode + " mode..."
+
+env = Environment( ENV = os.environ )
+dev = Dev()
+
+if mode == "release":
+    env.Append  (  
+                    CCFLAGS =   [
+                                    "-O2",
+                                    "-pipe"
+                                ]                        
+                )
+else:
+    env.Append  (  
+                    CCFLAGS =   [
+                                    "-Wall"
+                                    "-g"
+                                ]
+                )               
+
+
+Export( "env", "dev", "mode")
+
+DoWork("tslrpg", mode, "src/cpp")
+DoWork("bullet", mode, "external/bullet")
+#~ DoWork("bulletcollision", mode, "external/bullet/BulletCollision")
+#~ DoWork("bulletdynamics", mode, "external/bullet/BulletDynamics")
+    
+                        
+
