@@ -1,0 +1,112 @@
+import os
+import sys
+
+release_libs =  [
+                    "OIS",
+                    "CEGUIBase",
+                    "CEGUIFalagardBas",
+                    "CEGUITaharezLook",
+                    "CEGUIWindowsLook",
+                    "cg",
+                    "DevIL",
+                    "ILU",
+                    "mingwm10",
+                    "OgreGUIRenderer",
+                    "OgreMain",
+                    "OgrePlatform",
+                    "Plugin_BSPSceneManager",
+                    "Plugin_CgProgramManager",
+                    "Plugin_OctreeSceneManager",
+                    "Plugin_ParticleFX",
+                    "ReferenceAppLayer",
+                    "RenderSystem_Direct3D9",
+                    "RenderSystem_GL",
+                    "zlib1"
+                ];
+                
+debug_libs  =   [                
+                    "OIS_d",
+                    "CEGUIBase_d",
+                    "CEGUIFalagardBase_d",
+                    "CEGUITaharezLook_d",
+                    "CEGUIWindowsLook_d",
+                    "cg",
+                    "DevIL",
+                    "ILU",
+                    "mingwm10",
+                    "OgreGUIRenderer_d",
+                    "OgreMain_d",
+                    "OgrePlatform_d",
+                    "Plugin_BSPSceneManager",
+                    "Plugin_CgProgramManager",
+                    "Plugin_OctreeSceneManager",
+                    "Plugin_ParticleFX",
+                    "ReferenceAppLayer",
+                    "RenderSystem_Direct3D9",
+                    "RenderSystem_GL",
+                    "zlib1"
+                ];   
+
+cpp_release_flags   =   [   
+                            "-O2",
+                            "-pipe"
+                        ]
+                    
+cpp_debug_flags     =   [
+                            "-Wall",
+                            "-g"
+                        ]
+                        
+debug_libs_path     =   [
+                            "bin/debug/programs",
+                            "c:/OgreSDK/bin/debug",
+                            "c:/OIS_SDK/libs/MinGW_stlport"
+                        ]
+                        
+release_libs_path   =   [
+                            "bin/relase/programs",
+                            "c:/OgreSDK/bin/debug",
+                            "c:/OIS_SDK/libs/MinGW_stlport"
+                        ]
+                        
+include_path        =   [
+                            "../../../src/hpp",
+                            "../../../src/imp",
+                            "c:/OgreSDK/include",
+                            "c:/OgreSDK/include/CEGUI",
+                            "c:/OgreSDK/samples/include",
+                            "c:/OIS_SDK/includes",
+                            "../../../external/bullet",
+                            "c:/Boost/include"
+                        ]
+
+env = Environment( ENV = os.environ )
+
+if sys.platform == "win32":
+    env.Tool( "mingw" )
+    env.Append( LINKFLAGS = "--subsystem,windows" )
+
+env.Append( CPPPATH = include_path)
+
+if ARGUMENTS.get( "mode", "debug" ) == "release" :
+    env.Append  (  
+                    LIBPATH = release_libs_path,
+                    LIBS    = release_libs,
+                    CCFLAGS = cpp_release_flags                      
+                )
+else:
+    env.Append  (  
+                    LIBPATH = debug_libs_path,
+                    LIBS    = debug_libs,
+                    CCFLAGS = cpp_debug_flags                      
+                )
+
+Export( "env" )
+
+if ARGUMENTS.get( "mode", "debug" )  == "release" :
+    SConscript( "src\cpp\SConscript", build_dir = "bin\release\obj", duplicate = 0 )
+else:
+    SConscript( "src\cpp\SConscript", build_dir = "bin\debug\obj", duplicate = 0 )
+    
+                        
+
