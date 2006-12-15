@@ -1,0 +1,51 @@
+Import( "env", "dev", "mode", "cpp_release_flags", "cpp_debug_flags" )
+localenv = env.Copy()
+
+project = "bulletcollision"
+
+#~ if we are on windows we need to tell gcc to bild a windows exe
+#~ we need to set -mwindows as a compiler flag
+
+include_path        =   [
+                            "#external/bullet"
+                        ]
+
+localenv.Append( CPPPATH = include_path)
+if mode == "release":
+    name = project
+    localenv.Append (  
+                        CCFLAGS = cpp_release_flags,
+                        LIBS    =   [ 
+                                        "bulletmath"
+                                    ],
+                        LIBPATH =   [
+                                        "/bin/release/obj/bulletmath"
+                                    ]                        
+                    )
+else:
+    name = project + "_d"
+    localenv.Append (  
+                        CCFLAGS = cpp_debug_flags,                     
+                        LIBS    =   [ 
+                                        "bulletmath_d"
+                                    ],
+                        LIBPATH =   [
+                                        "/bin/debug/obj/bulletmath"
+                                    ]
+                    )
+                    
+    
+import sys
+if sys.platform == "win32":
+    localenv.Tool( "mingw" )
+
+files = []
+files += dev.DevGetSourceFiles( "BroadphaseCollision", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "CollisionDispatch", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "CollisionShapes", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "NarrowPhaseCollision", [ "*.cpp" ]  )
+
+#~ print files
+
+tgt = localenv.StaticLibrary( name, files )
+localenv.Alias(project, tgt)

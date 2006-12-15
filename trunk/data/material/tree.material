@@ -1,0 +1,50 @@
+material Leaves
+{
+	technique
+	{
+		pass
+		{
+			//scene_blend alpha_blend
+			alpha_rejection greater 50
+			//depth_check off
+			//depth_write off
+			texture_unit
+			{
+				//colour_op alpha_blend
+				texture tree1leaves.png
+			}		
+		}
+	}
+}
+
+material Trunk
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture tree1wood.jpg
+			}		
+		}
+	}
+}
+
+material Grass
+{
+	technique
+	{
+		pass
+		{
+			//scene_blend alpha_blend
+			alpha_rejection greater 50
+			//depth_write off
+			texture_unit
+			{
+				//colour_op alpha_blend
+				texture gras_02.png
+			}		
+		}
+	}
+}

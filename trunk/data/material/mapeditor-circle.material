@@ -1,0 +1,79 @@
+material TextureCircle
+{
+	technique
+	{
+		pass
+		{
+			
+			diffuse 1.0 1.0 1.0
+			//depth_check off
+			//depth_write off
+			texture_unit
+			{
+				texture red.png
+				tex_address_mode wrap
+				scale 1.0 1.0
+			}
+		}
+	}
+}
+
+material PaintTextureCircle
+{
+	technique
+	{
+		pass
+		{
+			
+			diffuse 1.0 1.0 1.0
+			//depth_check off
+			//depth_write off
+			texture_unit
+			{
+				texture green.png
+				tex_address_mode wrap
+				scale 1.0 1.0
+			}
+		}
+	}
+}
+
+material PaintColorCircle
+{
+	technique
+	{
+		pass
+		{
+			
+			diffuse 1.0 1.0 1.0
+			//depth_check off
+			//depth_write off
+			texture_unit
+			{
+				texture pink.png
+				tex_address_mode wrap
+				scale 1.0 1.0
+			}
+		}
+	}
+}
+
+material MorphCircle
+{
+	technique
+	{
+		pass
+		{
+			
+			diffuse 1.0 1.0 1.0
+			//depth_check off
+			//depth_write off
+			texture_unit
+			{
+				texture yellow.png
+				tex_address_mode wrap
+				scale 1.0 1.0
+			}
+		}
+	}
+}
