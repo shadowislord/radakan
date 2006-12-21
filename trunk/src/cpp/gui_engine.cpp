@@ -13,7 +13,8 @@ GUI_Engine ::
 
 	renderer = new CEGUI :: OgreCEGUIRenderer (& window);
 
-	system = new CEGUI :: System (renderer, CEGUI :: String (log_file_name) . data ());
+//	CEGUI :: System :: setDefaultXMLParserName ("XercesParser");
+	system = new CEGUI :: System (renderer, NULL, NULL, NULL, CEGUI :: String (), CEGUI :: String (log_file_name));
 
 	window_manager = & CEGUI :: WindowManager :: getSingleton ();
 
@@ -24,15 +25,8 @@ GUI_Engine ::
 
 	system -> setDefaultFont ("BlueHighway-12");
 
-	root_window = window_manager -> createWindow ("DefaultWindow", "root");
+	root_window = window_manager -> loadWindowLayout("data/gui/config/tslrpg.conf");
 	system -> setGUISheet (root_window);
-
-	CEGUI :: Window * test_window = window_manager -> createWindow
-												("TaharezLook/Button", "test");
-	root_window -> addChildWindow (test_window);
-	test_window -> setPosition (CEGUI :: Point (0.7f, 0.0f));
-	test_window -> setSize (CEGUI :: Size (0.3f, 0.1f));
-	test_window -> setText ("Hello World!");
 
 	assert (is_initialized ());
 }

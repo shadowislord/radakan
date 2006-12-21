@@ -14,6 +14,9 @@ Tslrpg ::
 {
 	trace () << "Tslrpg (" << sl_path << ", " << ogre_path << ")" << endl;
 
+	Ogre :: LogManager * logger = new Ogre :: LogManager ();
+	logger -> createLog ("log/ogre.txt");
+	
 	root = new Ogre :: Root ();
 	if (! root -> showConfigDialog ())
 	{
