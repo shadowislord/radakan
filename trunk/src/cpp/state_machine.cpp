@@ -52,6 +52,7 @@ string State_Machine ::
 {
 	assert (is_initialized ());
 	assert (active_child_state != NULL);
+	assert (! owner . is_dead ());
 	
 	return active_child_state -> think ();
 }

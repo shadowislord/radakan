@@ -78,7 +78,7 @@ ostream * sl_out = & cout;
 		for (set <Object *> :: const_iterator i = objects . begin ();
 													i != objects . end (); i ++)
 		{
-			* sl_out << "Warning: " << * * i << " was not deleted." << endl;
+			* sl_out << "Warning: " << * * i << " (" << * i << ") was not deleted." << endl;
 		}
 		assert (objects . empty ());
 	#endif

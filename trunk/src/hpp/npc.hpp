@@ -1,8 +1,9 @@
 #ifndef NPC_HPP
 #define NPC_HPP
 
-#include "peace_state.hpp"
+#include "dead_state.hpp"
 #include "fight_state.hpp"
+#include "peace_state.hpp"
 
 using namespace std;
 
@@ -17,6 +18,10 @@ namespace sl
 			virtual ~NPC ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
+			virtual string die ();
+
+		private:
+			NPC (const NPC & npc);
 	};
 }
 

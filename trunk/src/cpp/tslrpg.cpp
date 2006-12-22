@@ -14,10 +14,7 @@ Tslrpg ::
 {
 	trace () << "Tslrpg (" << sl_path << ", " << ogre_path << ")" << endl;
 
-	Ogre :: LogManager * logger = new Ogre :: LogManager ();
-	logger -> createLog ("log/ogre.txt");
-	
-	root = new Ogre :: Root ();
+	root = new Ogre :: Root ("data/plugins.cfg", "data/ogre.cfg", "log/ogre.txt");
 	if (! root -> showConfigDialog ())
 	{
 		abort ();
@@ -38,6 +35,10 @@ Tslrpg ::
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(sl_path + "/data/material", "FileSystem", "materials", true);
+					
+		// Add gui config directory
+		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
+					(sl_path + "/data/gui/config", "FileSystem", "gui", true);
 					
 		// Add gui font directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
@@ -183,7 +184,10 @@ void Tslrpg ::
 		//	move the weapon
 		if (input_engine -> get_key ("m", true))
 		{
-			NPC npc = * active_sector -> get_child <NPC> ();
+			//	Memo to self (Tinus):
+			//	NPC npc = * active_sector -> get_child <NPC> ();
+			//	that *copies* the NPC.
+			NPC & npc = * active_sector -> get_child <NPC> ();
 			assert (npc . is_initialized ());
 			if (Player :: getSingleton () . has_weapon ())
 			{

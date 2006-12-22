@@ -12,6 +12,14 @@ template <typename T> void State_Machine ::
 	assert (Object :: is_initialized ());
 
 	active_child_state = get_child <T> ();
+
+	if (active_child_state == NULL)
+	{
+		add <T> ();
+		active_child_state = get_child <T> ();
+	}
+
+	assert (active_child_state != NULL);
 }
 
 template <typename T> void State_Machine ::

@@ -23,6 +23,13 @@ Object ::
 		objects . insert (this);
 	#endif
 
+	* sl_out << "So far, we have:" << endl;
+	for (set <Object *> :: const_iterator i = objects . begin ();
+													i != objects . end (); i ++)
+	{
+		* sl_out << "\t" << * * i << " (" << * i << ")" << endl;
+	}
+
 	assert (Object :: is_initialized ());
 }
 
@@ -44,7 +51,11 @@ bool Object ::
 	const
 {
 	//	checks for empty string
-	return warn <Object> ((! empty ()) && (objects . find (const_cast <Object *> (this)) != objects . end ()));
+	assert (warn <Object> (! empty ()));
+	#ifdef SL_DEBUG
+		assert (warn <Object> (objects . find (const_cast <Object *> (this)) != objects . end ()));
+	#endif
+	return true;
 }
 
 //	static
@@ -69,6 +80,8 @@ ostream & Object ::
 {
 	#ifdef SL_DEBUG
 		return * sl_out << "debug: " << * this << " - ";
+	#else
+		//	!!! ignore
 	#endif
 }
 
@@ -79,6 +92,8 @@ ostream & Object ::
 {
 	#ifdef SL_TRACE
 		return * sl_out << "trace: " << * this << " - ";
+	#else
+		//	!!! ignore
 	#endif
 }
 
@@ -105,16 +120,6 @@ bool Object ::
 {
 	assert (is_initialized ());
 
-	debug () << "parent: " << * parent << ", set: " << set << endl;
-	debug () << "parent: " << parent << ", set: " << & set << endl;
-
-	int a = 4;
-	int & b = a;
-	int * c = & a;
-	int * d = & b;
-	debug () << "a: " << & a << ", b: " << & b << endl;
-	debug () << "c: " << c << ", d: " << d << endl;
-	
 	return (parent == & set);
 }
 

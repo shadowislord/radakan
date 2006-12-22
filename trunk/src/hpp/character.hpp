@@ -28,7 +28,7 @@ namespace sl
 			Weapon * get_weapon () const;
 			void run (float distance);
 			void turn (float radian_angle);
-			string die ();
+			virtual string die ();
 		
 		private :
 			//	exp = experience

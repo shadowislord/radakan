@@ -14,7 +14,7 @@ GUI_Engine ::
 	renderer = new CEGUI :: OgreCEGUIRenderer (& window);
 
 //	CEGUI :: System :: setDefaultXMLParserName ("XercesParser");
-	system = new CEGUI :: System (renderer, NULL, NULL, NULL, CEGUI :: String (), CEGUI :: String (log_file_name));
+	system = new CEGUI :: System (renderer, CEGUI :: String (log_file_name) . data ());
 
 	window_manager = & CEGUI :: WindowManager :: getSingleton ();
 
@@ -25,7 +25,7 @@ GUI_Engine ::
 
 	system -> setDefaultFont ("BlueHighway-12");
 
-	root_window = window_manager -> loadWindowLayout("data/gui/config/tslrpg.conf");
+	root_window = window_manager -> loadWindowLayout("tslrpg.conf");
 	system -> setGUISheet (root_window);
 
 	assert (is_initialized ());

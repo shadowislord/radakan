@@ -35,16 +35,7 @@ bool State ::
 	is_initialized ()
 	const
 {
-//	trace () << "State :: is_initialized () A" << endl;
-	assert (warn <State> (Object :: is_initialized ()));
-//	trace () << "State :: is_initialized () B" << endl;
-	assert (warn <State> (owner . Character :: is_initialized ()));
-//	trace () << "State :: is_initialized () C" << endl;
-
-	bool result = warn <State> ((! owner . is_dead ()));
-
-//	trace () << "State :: is_initialized () D" << endl;
-	return result;
+	return warn <State> (Object :: is_initialized () && owner . Character :: is_initialized ());
 }
 
 //	static

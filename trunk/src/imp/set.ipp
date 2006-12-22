@@ -40,12 +40,10 @@ template <typename T> bool Set <T> ::
 	for (_Rb_tree_const_iterator <T *> i = children . begin ();
 													i != children . end (); i ++)
 	{
-		if (! (* i) -> is_initialized ())
-		{
-			return warn <Set <T> > (false);
-		}
+		assert (warn <Set <T> > ((* i) -> T :: is_initialized ()));
 	}
-	return warn <Set <T> > (Object :: is_initialized ());
+	assert (warn <Set <T> > (Object :: is_initialized ()));
+	return true;
 }
 
 //	static

@@ -18,9 +18,7 @@ NPC ::
 
 	State_Machine :: add <Peace_State> ();
 //	trace () << "NPC (" << get_name (* node) << ") C" << endl;
-	State_Machine :: add <Fight_State> ();
-//	trace () << "NPC (" << get_name (* node) << ") D" << endl;
-	
+
 	assert (is_initialized ());
 //	trace () << "NPC (" << get_name (* node) << ") E" << endl;
 }
@@ -38,7 +36,9 @@ bool NPC ::
 	is_initialized ()
 	const
 {
-	return warn <NPC> (Character :: is_initialized () && (is_dead () || State_Machine :: is_initialized ()));
+	assert (warn <NPC> (Character :: is_initialized ()));
+	assert (warn <NPC> (State_Machine :: is_initialized ()));
+	return true;
 }
 
 //	static
@@ -46,4 +46,15 @@ string NPC ::
 	get_type_name ()
 {
 	return "NPC";
+}
+
+//	virtual
+string NPC ::
+	die ()
+{
+	assert (NPC :: is_initialized ());
+
+	change_active_state <Dead_State> ();
+
+	return Character :: die ();
 }

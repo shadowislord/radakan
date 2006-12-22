@@ -1,5 +1,6 @@
-#include "peace_state.hpp"
+#include "dead_state.hpp"
 #include "fight_state.hpp"
+#include "peace_state.hpp"
 
 using namespace std;
 using namespace sl;
@@ -28,7 +29,7 @@ bool Peace_State ::
 	is_initialized ()
 	const
 {
-	return State :: is_initialized ();
+	return State :: is_initialized () && (! owner . is_dead ());
 }
 
 //	static

@@ -82,7 +82,7 @@ Sector ::
 		add (* player);
 	}
 
-	NPC * ninja = new NPC (create_entity_node ("Ninja", "ninja.mesh"));
+	NPC * ninja = new NPC (create_entity_node ("Ninja (" + * this + ")", "ninja.mesh"));
 	ninja -> node -> setScale (Ogre :: Vector3 (0.1, 0.1, 0.1));
 	ninja -> set_position (btVector3 (120, 0, 30));
 	add (* ninja);
@@ -199,13 +199,19 @@ void Sector ::
 
 //	stepSimulation (milliseconds_passed / 1000000.f);
 	string think;
+
+	NPC * npc = NULL;
 	for (set <NPC *> :: const_iterator i = npcs . begin ();
 													i != npcs . end (); i ++)
 	{
-		think = (* i) -> think ();
-		if (! think . empty ())
+		npc = * i;
+		if (! npc -> is_dead ())
 		{
-			trace () << think << endl;
+			think = npc -> think ();
+			if (! think . empty ())
+			{
+				trace () << think << endl;
+			}
 		}
 	}
 }

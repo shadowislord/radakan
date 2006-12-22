@@ -1,3 +1,4 @@
+#include "dead_state.hpp"
 #include "fight_state.hpp"
 #include "peace_state.hpp"
 
@@ -12,7 +13,7 @@ Fight_State ::
 {
 	assert (State :: is_initialized ());
 
-	assert (is_initialized ());
+	assert (Fight_State :: is_initialized ());
 }
 
 //  destructor
@@ -20,7 +21,7 @@ Fight_State ::
 	~Fight_State ()
 {
 	trace () << "~Fight_State ()" << endl;
-	assert (Object :: is_initialized ());
+	assert (State :: is_initialized ());
 }
 
 //	virtual
@@ -28,7 +29,7 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	return State :: is_initialized ();
+	return State :: is_initialized () && (! owner . is_dead ());
 }
 
 //	static
@@ -43,7 +44,7 @@ string Fight_State ::
 	think ()
 {
 	assert (is_initialized ());
-	
+
 	if (! owner . has_weapon ())
 	{
 		owner . to_type <State_Machine> () . change_active_state <Peace_State> ();

@@ -159,6 +159,7 @@ void Character ::
 
 }
 
+//	virtual
 string Character ::
 	die ()
 {

@@ -33,7 +33,7 @@ template <typename T> bool Object ::
 {
 	if (! initialization)
 	{
-		error () << * this <<  " is not fully initialized as " << T :: get_type_name () << "!" << endl;
+		error () << * this << " (" << this << ") is not fully initialized as " << T :: get_type_name () << "!" << endl;
 	}
 	return initialization;
 }
