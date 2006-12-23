@@ -67,6 +67,7 @@ Tslrpg ::
 
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
+
 	}	// End of try statement
 	catch (Ogre :: Exception & e)
 	{
@@ -79,6 +80,9 @@ Tslrpg ::
 	}
 	
 	window = root -> initialise (true, "Scattered Lands");
+
+	Ogre :: MeshManager :: getSingleton (). createPlane ("plane.mesh", "custom", Ogre :: Plane (Ogre :: Vector3 :: UNIT_Z, Ogre :: Vector3 :: ZERO), 2000, 2000, 20, 20);
+	
 
 	Set <Sector> :: add (* new Sector ("Sector 1",
 				* root -> createSceneManager (Ogre :: ST_GENERIC)));
@@ -223,12 +227,12 @@ void Tslrpg ::
 			}
 		}
 		
-		if (input_engine -> get_key ("KP_End", true))
+		if (input_engine -> get_key ("1", true))
 		{
 			switch_to (Set <Sector> :: get_child <Sector> ("Sector 1"));
 		}
 		
-		if (input_engine -> get_key ("KP_Down", true))
+		if (input_engine -> get_key ("2", true))
 		{
 			switch_to (Set <Sector> :: get_child <Sector> ("Sector 2"));
 		}
@@ -246,11 +250,10 @@ void Tslrpg ::
 	if (new_active_sector != active_sector)
 	{
 		//	Update player position:
-		active_sector -> removeRigidBody (Player :: getSingletonPtr ());
 		active_sector -> move_to (Player :: getSingleton (), * new_active_sector);
 		Player :: getSingleton () . node = & new_active_sector -> copy_node (* Player :: getSingleton () . node);
+		
 		active_sector = new_active_sector;
-		active_sector -> addRigidBody (Player :: getSingletonPtr ());
 
 		//	Update camera & scene manager:
 		root -> getRenderSystem () -> _getViewport () -> setCamera (& active_sector -> get_camera ());

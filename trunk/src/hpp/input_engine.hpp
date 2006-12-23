@@ -53,6 +53,7 @@ namespace sl
 			float absolute_mouse_height;
 			float absolute_mouse_width;
 			string to_string (OIS :: MouseButtonID id);
+			string convert (string key_value);
 			
 			OIS :: Mouse * mouse;
 			OIS :: Keyboard * keyboard;

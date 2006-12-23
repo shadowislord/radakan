@@ -125,22 +125,6 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-		if (key == "Escape")
-		{
-			key = "Esc";
-		}
-		if (key . size () == 1)
-		{
-			int temp = int (key . at (0));
-			if ((96 < temp) && (temp < 123))
-			{
-				key . erase ();
-				key . push_back (char (temp - 32));
-			}
-		}
-	#endif
-
 	if (keys [key])
 	{
 		if (reset)
@@ -204,7 +188,7 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	string key_string = keyboard -> getAsString (key_event . key);
+	string key_string = convert (keyboard -> getAsString (key_event . key));
 	keys [key_string] = true;
 	trace () << "key '" << key_string << "' was pressed." << endl;
 
@@ -217,7 +201,7 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	string key_string = keyboard -> getAsString (key_event . key);
+	string key_string = convert (keyboard -> getAsString (key_event . key));
 	keys [key_string] = false;
 	trace () << "key '" << key_string << "' was released." << endl;
 
@@ -285,4 +269,79 @@ string Input_Engine ::
 		return right_mouse_button;
 	}
 	return "other";
+}
+
+string Input_Engine ::
+	convert (string key)
+{
+	assert (is_initialized ());
+	debug () << "converting - in: " << key << endl;
+	
+	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+		//	Converting capitals to lower-case:
+		if (key . size () == 1)
+		{
+			int temp = int (key . at (0));
+			if ((96 < temp) && (temp < 123))
+			{
+				key . erase ();
+				key . push_back (char (temp - 32));
+			}
+		}
+		//	converting 'NUM X' to 'X':
+		if (key . find ("NUM ") != key . end ())
+		{
+			assert (key . size () == 5);
+			key = string (1, key . at (4));
+		}
+		if (key == "ESC")
+		{
+			key = "Escape";
+		}
+	#else
+		if (key == "KP_Insert")
+		{
+			key = "0";
+		}
+		if (key == "KP_End")
+		{
+			key = "1";
+		}
+		if (key == "KP_Down")
+		{
+			key = "2";
+		}
+		if (key == "KP_Next")
+		{
+			key = "3";
+		}
+		if (key == "KP_Left")
+		{
+			key = "4";
+		}
+		if (key == "KP_Begin")
+		{
+			key = "5";
+		}
+		if (key == "KP_Right")
+		{
+			key = "6";
+		}
+		if (key == "KP_Home")
+		{
+			key = "7";
+		}
+		if (key == "KP_Up")
+		{
+			key = "8";
+		}
+		if (key == "KP_Prior")
+		{
+			key = "9";
+		}
+	
+	#endif
+	
+	debug () << "converting - out: " << key << endl;
+	return key;
 }

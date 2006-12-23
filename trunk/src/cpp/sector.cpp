@@ -146,6 +146,10 @@ Sector ::
 		bbsNode2 -> setPosition (px, py, pz);
 	}
 
+	Ogre :: SceneNode & groundNode = create_entity_node ("Ground","plane.mesh");
+	dynamic_cast <Ogre :: Entity *> (groundNode . getAttachedObject (0)) -> setMaterialName ("TavernWalls");
+	groundNode . setOrientation (Ogre :: Quaternion (Ogre :: Radian (- Ogre :: Math :: HALF_PI), Ogre :: Vector3 :: UNIT_X));
+
 	assert (is_initialized ());
 }
 
@@ -189,7 +193,21 @@ bool Sector ::
 	bool result = Set <Entity> :: add (entity);
 	assert (result);
 	addRigidBody (& entity);
+	
 	return true;
+}
+
+//	virtual
+bool Sector ::
+	move_to (Entity & entity, Set <Entity> & other_set)
+{
+	assert (is_initialized ());
+	assert (entity . is_initialized ());
+	assert (other_set . is_initialized ());
+	
+	removeRigidBody (& entity);
+
+	return Set <Entity> :: move_to (entity, other_set);
 }
 
 void Sector ::
