@@ -1,0 +1,26 @@
+Import( "env", "dev", "mode" )
+localenv = env.Copy()
+
+project = "lua"
+
+#~ if we are on windows we need to tell gcc to bild a windows exe
+#~ we need to set -mwindows as a compiler flag
+
+include_path        =   [
+                            "#external/lua/include"
+                        ]
+
+localenv.Append( CPPPATH = include_path)
+
+import sys
+if sys.platform == "win32":
+    localenv.Tool( "mingw" )
+
+name = project
+if mode == "debug":
+    name += "_d"
+
+files = dev.DevGetSourceFiles( "src", [ "*.cpp" ]  )
+
+tgt = localenv.StaticLibrary( name, files )
+localenv.Alias(project, tgt)
