@@ -70,8 +70,9 @@ else:
 
 Export( "env", "dev", "mode")
 
-DoWork("tslrpg", mode, "src/cpp")
+DoWork("tslrpg", mode, "src")
 DoWork("bullet", mode, "external/bullet")
+DoWork("lua", mode, "external/lua")
 #~ DoWork("bulletcollision", mode, "external/bullet/BulletCollision")
 #~ DoWork("bulletdynamics", mode, "external/bullet/BulletDynamics")
     
