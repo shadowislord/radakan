@@ -275,7 +275,7 @@ string Input_Engine ::
 	convert (string key)
 {
 	assert (is_initialized ());
-	debug () << "converting - in: " << key << endl;
+	trace () << "converting - in: " << key << endl;
 	
 	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		//	Converting capitals to lower-case:
@@ -288,7 +288,7 @@ string Input_Engine ::
 				key . push_back (char (temp - 32));
 			}
 		}
-		//	converting 'NUM X' to 'X':
+		//	Converting 'NUM X' to 'X':
 		if (key . find ("NUM ") != key . end ())
 		{
 			assert (key . size () == 5);
@@ -298,7 +298,8 @@ string Input_Engine ::
 		{
 			key = "Escape";
 		}
-	#else
+	#else	//	assuming linux
+		//	Converting keypad codes to numbers:
 		if (key == "KP_Insert")
 		{
 			key = "0";
@@ -342,6 +343,6 @@ string Input_Engine ::
 	
 	#endif
 	
-	debug () << "converting - out: " << key << endl;
+	trace () << "converting - out: " << key << endl;
 	return key;
 }
