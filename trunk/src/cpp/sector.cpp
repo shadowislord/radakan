@@ -26,30 +26,30 @@ Sector ::
 
 	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);	//	Doesn't work.
 
-	add (* new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
-		create_entity_node ("Tavern", "tavern.mesh")));
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
+		create_entity_node ("Tavern", "tavern.mesh"))) );
 
-	add (* new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
-		create_entity_node ("Bar", "bar.mesh")));
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
+		create_entity_node ("Bar", "bar.mesh"))) );
 
-	add (* new Entity (false, true, true, 0, 0, btVector3 (116, 0, 17),
-		create_entity_node ("Table 1", "table.mesh")));
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (116, 0, 17),
+		create_entity_node ("Table 1", "table.mesh"))) );
 
-	add (* new Entity (false, true, true, 0, 0, btVector3 (116, 0, 57),
-		create_entity_node ("Table 2", "table.mesh")));
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (116, 0, 57),
+		create_entity_node ("Table 2", "table.mesh"))) );
 
-	add (* new Entity (false, true, true, 0, 0, btVector3 (26, 0, 97),
-		create_entity_node ("Table 3", "table.mesh")));
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (26, 0, 97),
+		create_entity_node ("Table 3", "table.mesh"))) );
 
 	add
-		(* new Entity
+		(* (new Entity
 			(false,
 			true,
 			true,
 			0,
 			0,
 			btVector3 (1000, 0, 500),
-			create_entity_node ("Fort", "fort.mesh")));
+			create_entity_node ("Fort", "fort.mesh"))) );
 			
 
 	if (Player :: getSingletonPtr () == NULL)
@@ -59,7 +59,7 @@ Sector ::
 
 		player -> add
 		(
-			* new Container
+			* (new Container
 			(
 				true,
 				true,
@@ -68,7 +68,7 @@ Sector ::
 				3,
 				player -> get_position (),
 				create_entity_node ("Backpack", "bar.mesh")
-			)
+			))
 		);
 
 		debug () << to_string (player) << "'s weight: "

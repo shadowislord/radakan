@@ -84,11 +84,11 @@ Tslrpg ::
 	Ogre :: MeshManager :: getSingleton (). createPlane ("plane.mesh", "custom", Ogre :: Plane (Ogre :: Vector3 :: UNIT_Z, Ogre :: Vector3 :: ZERO), 2000, 2000, 20, 20);
 	
 
-	Set <Sector> :: add (* new Sector ("Sector 1",
-				* root -> createSceneManager (Ogre :: ST_GENERIC)));
+	Set <Sector> :: add (* (new Sector ("Sector 1",
+				* root -> createSceneManager (Ogre :: ST_GENERIC))) );
 
-	Set <Sector> :: add (* new Sector ("Sector 2",
-				* root -> createSceneManager (Ogre :: ST_GENERIC)));
+	Set <Sector> :: add (* (new Sector ("Sector 2",
+				* root -> createSceneManager (Ogre :: ST_GENERIC))) );
 	active_sector = Set <Sector> :: get_one_child ();
 
 	root -> getRenderSystem () -> _setViewport

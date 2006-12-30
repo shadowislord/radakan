@@ -30,10 +30,14 @@ namespace sl
 
 		private:
 			set <T *> children;
-			
+		
 			//	Changes to next_child are ignored for const-ness.
-			_Rb_tree_const_iterator <T *> next_child;
-	};
+			//_Rb_tree_const_iterator <T *> next_child;
+			//found a way to compile it under vs 2005
+			//no need for the _Rb_tree_const_iterator
+			//added type name to solve warning C4346
+			typename set<T *>::const_iterator next_child;
+		};
 }
 
 #include "set.ipp"

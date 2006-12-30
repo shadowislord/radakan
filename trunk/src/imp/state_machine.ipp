@@ -30,7 +30,9 @@ template <typename T> void State_Machine ::
 	
 	assert (get_child <T> () == NULL);
 
-	add (* new T (owner));
+	//add (* new T (owner));
+	//T *state = new T (owner);
+	add (* (new T (owner)) );
 }
 
 #endif	//	STATE_MACHINE_IPP

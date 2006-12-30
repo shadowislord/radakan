@@ -289,7 +289,9 @@ string Input_Engine ::
 			}
 		}
 		//	Converting 'NUM X' to 'X':
-		if (key . find ("NUM ") != key . end ())
+		//if (key . find ("NUM ") != key . end ())
+		//solving vs 2005 error C2678: binary '!=' : no operator found which takes a left-hand operand of type '__w64 unsigned int' (or there is no acceptable conversion)
+		if (key . find ("NUM ") != string::npos)
 		{
 			assert (key . size () == 5);
 			key = string (1, key . at (4));
