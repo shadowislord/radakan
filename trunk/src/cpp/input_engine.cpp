@@ -4,6 +4,9 @@ using namespace std;
 using namespace sl;
 
 template <> Input_Engine * Ogre :: Singleton <Input_Engine> :: ms_Singleton = NULL;
+const string Input_Engine :: left_mouse_button = "left";
+const string Input_Engine :: middle_mouse_button = "middle";
+const string Input_Engine :: right_mouse_button = "right";
 
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow & window) :
@@ -246,7 +249,7 @@ bool Input_Engine ::
 }
 
 bool Input_Engine ::
-	is_mouse_button (string button) const
+	is_mouse_button (string button)
 {
 	return (button == left_mouse_button) || (button == middle_mouse_button) || (button == right_mouse_button);
 }

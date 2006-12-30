@@ -7,6 +7,9 @@ using namespace std;
 
 namespace sl
 {
+
+	///	Set is a generic container, but every Object can't be in more then one Set at once.
+
 	template <typename T> class Set :
 		public virtual Object
 	{
@@ -25,6 +28,7 @@ namespace sl
 			template <typename U> U * get_child (string name) const;
 
 		protected:
+			//	These two methods make it very easy to get a pointer to each child:
 			T * get_one_child () const;
 			T * get_another_child () const;
 
@@ -32,10 +36,7 @@ namespace sl
 			set <T *> children;
 		
 			//	Changes to next_child are ignored for const-ness.
-			//_Rb_tree_const_iterator <T *> next_child;
-			//found a way to compile it under vs 2005
-			//no need for the _Rb_tree_const_iterator
-			//added type name to solve warning C4346
+			//	'typename' added to solve warning C4346.
 			typename set<T *>::const_iterator next_child;
 		};
 }

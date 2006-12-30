@@ -16,13 +16,13 @@ using namespace std;
 namespace sl
 {
 
-	///	Input engine is responsible for translating player input into events and actions.
+	///	Input engine is responsible for recording player input.
 
 	class Input_Engine :
 		public Object,
 		public Ogre :: Singleton <Input_Engine>,
-		public OIS :: KeyListener,
-		public OIS :: MouseListener
+		private OIS :: KeyListener,
+		private OIS :: MouseListener
 	{
 		public :
 			Input_Engine (Ogre :: RenderWindow & window);
@@ -30,14 +30,17 @@ namespace sl
 			virtual bool is_initialized () const;
 			static string get_type_name ();
 			void capture ();
-	//		bool is_key_down (OIS :: KeyCode);	the interface should be OIS independant
 			bool get_key (string key, bool reset);
 			bool get_mouse_button (string button, bool reset);
 			float get_mouse_height (bool relative) const;
 			float get_mouse_width (bool relative) const;
-			bool is_mouse_button (string button) const;
+			
+			static bool is_mouse_button (string button);
+			static const string left_mouse_button;
+			static const string middle_mouse_button;
+			static const string right_mouse_button;
 
-		protected :
+		private :
 			virtual bool keyPressed (const OIS :: KeyEvent & key_event);
 			virtual bool keyReleased (const OIS :: KeyEvent & key_event);
 
@@ -45,7 +48,6 @@ namespace sl
 			virtual bool mousePressed (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
 			virtual bool mouseReleased (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
 
-		private :
 			map <string, bool> keys;
 			map <string, bool> mouse_buttons;
 			float relative_mouse_height;
@@ -58,10 +60,6 @@ namespace sl
 			OIS :: Mouse * mouse;
 			OIS :: Keyboard * keyboard;
 	};
-
-const string left_mouse_button = "left";
-const string middle_mouse_button = "middle";
-const string right_mouse_button = "right";
 }
 
 #endif	//	INPUT_ENGINE_HPP

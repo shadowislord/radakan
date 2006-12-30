@@ -89,7 +89,7 @@ Tslrpg ::
 
 	Set <Sector> :: add (* (new Sector ("Sector 2",
 				* root -> createSceneManager (Ogre :: ST_GENERIC))) );
-	active_sector = Set <Sector> :: get_one_child ();
+	active_sector = Set <Sector> :: get_child <Sector> ();
 
 	root -> getRenderSystem () -> _setViewport
 					(window -> addViewport (& active_sector -> get_camera ()));
@@ -207,12 +207,12 @@ void Tslrpg ::
 			}
 		}
 
-		if (input_engine -> get_mouse_button (left_mouse_button, true))
+		if (input_engine -> get_mouse_button (input_engine -> left_mouse_button, true))
 		{
-			debug () << left_mouse_button << endl;
+			debug () << input_engine -> left_mouse_button << endl;
 		}
 		
-		if (input_engine -> get_mouse_button (middle_mouse_button, false))
+		if (input_engine -> get_mouse_button (input_engine -> middle_mouse_button, false))
 		{
 			float raw_x_offset = - 0.007 * input_engine -> get_mouse_width (true);
 
@@ -221,7 +221,7 @@ void Tslrpg ::
 				//	apply treshold
 				float x_offset = raw_x_offset / abs (raw_x_offset) * max (abs (raw_x_offset) - 0.030f, 0.f);
 			
-				debug () << middle_mouse_button << " " <<  raw_x_offset << " " << x_offset << endl;
+				debug () << input_engine -> middle_mouse_button << " " <<  raw_x_offset << " " << x_offset << endl;
 
 				Player :: getSingleton () . turn (x_offset);
 			}
