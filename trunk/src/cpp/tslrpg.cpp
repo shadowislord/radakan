@@ -181,7 +181,7 @@ void Tslrpg ::
 			assert (npc != NULL);
 			if (! npc -> is_dead ())
 			{
-				debug () << battle_engine . hit (Player :: getSingleton (), * npc) << endl;
+				trace () << battle_engine . hit (Player :: getSingleton (), * npc) << endl;
 			}
 		}
 		
@@ -207,19 +207,14 @@ void Tslrpg ::
 			}
 		}
 
-		if (input_engine -> get_mouse_button (input_engine -> left_mouse_button, true))
-		{
-			debug () << input_engine -> left_mouse_button << endl;
-		}
-		
 		if (input_engine -> get_mouse_button (input_engine -> middle_mouse_button, false))
 		{
-			float raw_x_offset = - 0.007 * input_engine -> get_mouse_width (true);
+			float raw_x_offset = - 0.02 * input_engine -> get_mouse_width (true);
 
 			if (raw_x_offset != 0)
 			{
 				//	apply treshold
-				float x_offset = raw_x_offset / abs (raw_x_offset) * max (abs (raw_x_offset) - 0.030f, 0.f);
+				float x_offset = raw_x_offset; // / abs (raw_x_offset) * max (abs (raw_x_offset) - 0.030f, 0.f);
 			
 				debug () << input_engine -> middle_mouse_button << " " <<  raw_x_offset << " " << x_offset << endl;
 

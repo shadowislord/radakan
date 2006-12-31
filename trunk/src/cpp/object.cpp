@@ -67,42 +67,32 @@ string Object ::
 
 //	virtual
 ostream & Object ::
-	print ()
-	const
-{
-	return * sl_out;
-}
-
-//	virtual
-ostream & Object ::
 	debug ()
 	const
 {
 	#ifdef SL_DEBUG
-		return * sl_out << "debug: " << * this << " - ";
+		return print ("debug");
 	#else
-		//	!!! ignore
+		//	!!! Ignore, but how?
 	#endif
 }
 
-//	virtual
 ostream & Object ::
 	trace ()
 	const
 {
 	#ifdef SL_TRACE
-		return * sl_out << "trace: " << * this << " - ";
+		return print ("trace");
 	#else
-		//	!!! ignore
+		//	!!! Ignore, but how?
 	#endif
 }
 
-//	virtual
 ostream & Object ::
 	error ()
 	const
 {
-	return * sl_out << "ERROR: " << * this << " - ";
+	return print ("ERROR");
 }
 
 bool Object ::
@@ -183,4 +173,10 @@ bool Object ::
 	is_nan (float value)
 {
 	return (value != value);
+}
+
+ostream & Object ::
+	print (string message) const
+{
+	return * sl_out << message << ": " << * this << " - ";
 }

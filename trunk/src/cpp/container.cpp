@@ -61,7 +61,7 @@ float Container ::
 	
 	float total_weight = weight;
 
-	for (Entity * i = get_one_child (); i != NULL; i = get_another_child ())
+	for (Entity * i = get_child (); i != NULL; i = get_another_child ())
 	{
 		assert (i -> is_type <Container> ());
 		total_weight += i -> to_type <Container> () . get_total_weight ();

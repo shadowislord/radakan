@@ -60,6 +60,9 @@ Input_Engine ::
 	//	Reference methods mouseMoved, mousePressed, mouseReleased
 	mouse -> setEventCallback (this);
 
+//	mouse . state . width = window . getWidth ();
+//	mouse . state . height = window . getHeight ();
+
 	assert (is_initialized ());
 }
 
@@ -217,11 +220,17 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	relative_mouse_width = mouse_event . state . relX;
-	relative_mouse_height = mouse_event . state . relY;
+	//	Relative mouse position isn't handeled correctely by OIS.
+	
+	relative_mouse_width = mouse_event . state . abX - absolute_mouse_width;
+	relative_mouse_height = mouse_event . state . abY - absolute_mouse_height;
+
+	debug () << relative_mouse_width << " " << mouse_event . state . relX << endl;
 
 	absolute_mouse_width = mouse_event . state . abX;
 	absolute_mouse_height = mouse_event . state . abY;
+
+	debug () << mouse_event . state . width << endl;
 
 	return true;
 }

@@ -24,16 +24,9 @@ template <typename T> Set <T> ::
 	trace () << "~Set <" << T :: get_type_name () << "> ()" << endl;
 	assert (Set <T> :: is_initialized ());
 
-	//for (_Rb_tree_const_iterator <T *> i = children . begin ();
-	//												i != children . end (); i ++)
-	//{
-	//	debug () << "deleting " << to_string (* i) << "..." << endl;
-	//	delete (* i);
-	//}
-
-	for (typename set<T *>::const_iterator i = children . begin (); i != children . end (); i ++)
+	for (typename set<T *> :: const_iterator i = children . begin (); i != children . end (); i ++)
 	{
-		debug () << "deleting " << to_string (* i) << "..." << endl;
+		trace () << "deleting " << to_string (* i) << "..." << endl;
 		delete (* i);
 	}
 }
@@ -43,13 +36,7 @@ template <typename T> bool Set <T> ::
 	is_initialized ()
 	const
 {
-	//for (_Rb_tree_const_iterator <T *> i = children . begin ();
-	//												i != children . end (); i ++)
-	//{
-	//	assert (warn <Set <T> > ((* i) -> T :: is_initialized ()));
-	//}
-
-	for (typename set<T *>::const_iterator i = children . begin ();
+	for (typename set <T *> :: const_iterator i = children . begin ();
 							i != children . end (); i ++)
 	{
 		assert (warn <Set <T> > ((* i) -> T :: is_initialized ()));
@@ -76,8 +63,8 @@ template <typename T> bool Set <T> ::
 	t . put_in (* this);
 	debug () << t << " was added." << endl;
 
-	//	second means we're interested in if it worked or not.
-	//	first would give a iterator to the item
+	//	'second' means we're interested in if it worked or not.
+	//	'first' would give a iterator to the item.
 	bool result = children . insert (& t) . second;
 	assert (Set <T> :: is_initialized ());
 	return result;
@@ -98,7 +85,7 @@ template <typename T> bool Set <T> ::
 
 	if ((! result) && recursive)
 	{
-		for (T * i = get_one_child (); i != NULL; i = get_another_child ())
+		for (T * i = get_child (); i != NULL; i = get_another_child ())
 		{
 			if (i -> is_type <Set <T> > ())
 			{
@@ -140,7 +127,7 @@ template <typename T> template <typename U> U * Set <T> ::
 	trace () << "get_child <" << T :: get_type_name () << ", " << U :: get_type_name () << "> ()" << endl;
 	assert (Set <T> :: is_initialized ());
 
-	for (T * i = get_one_child (); i != NULL; i = get_another_child ())
+	for (T * i = get_child (); i != NULL; i = get_another_child ())
 	{
 		if (i -> is_type <U> ())
 		{
@@ -157,7 +144,7 @@ template <typename T> template <typename U> U * Set <T> ::
 	trace () << "get_child <" << T :: get_type_name () << "> (" << name << ")" << endl;
 	assert (Set <T> :: is_initialized ());
 
-	for (T * i = get_one_child (); i != NULL; i = get_another_child ())
+	for (T * i = get_child (); i != NULL; i = get_another_child ())
 	{
 		if ( i -> is_type <U> () && (i -> compare (name) == 0))
 		{
@@ -168,10 +155,10 @@ template <typename T> template <typename U> U * Set <T> ::
 }
 
 template <typename T> T * Set <T> ::
-	get_one_child ()
+	get_child ()
 	const
 {
-	trace () << "get_one_child <" << T :: get_type_name () << "> ()" << endl;
+	trace () << "get_child <" << T :: get_type_name () << "> ()" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	if (children . empty ())

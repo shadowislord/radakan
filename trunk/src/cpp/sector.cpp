@@ -71,12 +71,12 @@ Sector ::
 			))
 		);
 
-		debug () << to_string (player) << "'s weight: "
+		trace () << to_string (player) << "'s weight: "
 										<< player -> get_total_weight () << endl;
 		Weapon * sword = new Weapon
 				(1, 2, btVector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
 				create_entity_node ("Sword", "bar.mesh"));
-		debug () << to_string (sword) << "'s weight: " << sword -> get_total_weight () << endl;
+		trace () << to_string (sword) << "'s weight: " << sword -> get_total_weight () << endl;
 		player -> add (* sword);
 		
 		add (* player);
@@ -159,7 +159,7 @@ Sector ::
 	trace () << "~Sector (" << endl;
 	assert (is_initialized ());
 
-	debug () << "deleting camera... " << int (camera) << endl;
+	trace () << "deleting camera... " << int (camera) << endl;
 	delete camera;
 }
 

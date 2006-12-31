@@ -50,12 +50,12 @@ namespace sl
 			template <typename T> T & to_type () const;
 			template <typename T> bool warn (bool initialization) const;
 			
-			virtual ostream & print () const;
-			virtual ostream & debug () const;
-			virtual ostream & trace () const;
-			virtual ostream & error () const;
+			ostream & debug () const;
+			ostream & trace () const;
+			ostream & error () const;
 
-			//	These methods should only be used by a Set
+			//	These methods should only be used by a Set. Don't use them directly.
+			//	Use the Set <T> methods (add, contains & move_to) instead.
 			bool has_parent () const;
 			bool is_in (const Object & set) const;
 			void put_in (const Object & new_parent);
@@ -68,7 +68,8 @@ namespace sl
 			static int to_int (string value);
 
 		private :
-			const Object * parent;	//	the set in which the object is
+			ostream & print (string message) const;
+			const Object * parent;	//	the Set <T> in which the object is
 	};
 
 	#ifdef SL_DEBUG

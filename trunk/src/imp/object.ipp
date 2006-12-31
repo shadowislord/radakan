@@ -27,8 +27,9 @@ template <typename T> T & Object ::
 	return * dynamic_cast <T *> (const_cast <Object *> (this));
 }
 
+//	This method is only used for debugging.
 //	Example usage: assert (warn <Class> (object -> Class :: is_initialized ()));
-//	This doesn't only give you the assert, but also an informative warning.
+//	In case of an assertion failure, you get an informative warning in the log.
 template <typename T> bool Object ::
 	warn (bool initialization)
 	const
