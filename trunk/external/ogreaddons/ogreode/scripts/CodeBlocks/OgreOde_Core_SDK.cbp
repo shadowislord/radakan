@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="5" />
+	<Project>
+		<Option title="OgreOde_Core" />
+		<Option pch_mode="2" />
+		<Option default_target="" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\..\lib\Debug\OgreOde_Core_d.dll" />
+				<Option object_output="..\..\obj\Debug" />
+				<Option external_deps="..\..\lib\Debug|Win32\libode.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_STLP_DEBUG" />
+					<Add option="-DOGREODE_EXPORTS" />
+					<Add option="-DWIN32" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_USRDLL" />
+					<Add directory="$(OGRE_HOME)\stlport\stlport" />
+					<Add directory="..\..\ode\include" />
+					<Add directory="$(OGRE_HOME)\include" />
+				</Compiler>
+				<Linker>
+					<Add library="ode" />
+					<Add library="libode.a" />
+					<Add library="ogremain_d" />
+					<Add library="stlportstlg.5.0" />
+					<Add directory="..\..\ode\lib\Debug" />
+					<Add directory="$(OGRE_HOME)\bin\debug" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="$(OGREODE_HOME)\scripts\codeblocks\copy.bat $(OGREODE_HOME)\lib\Debug\$(APPNAME) $(OGRE_HOME)\bin\debug\$(APPNAME)" />
+				</ExtraCommands>
+				<Environment>
+					<Variable name="APPNAME" value="OgreOde_Core_d.dll" />
+				</Environment>
+			</Target>
+			<Target title="Release">
+				<Option output="..\..\lib\Release\OgreOde_Core.dll" />
+				<Option object_output="..\..\obj\Release" />
+				<Option external_deps="..\..\lib\Release|Win32\libode.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_USRDLL" />
+					<Add option="-DOGREODE_EXPORTS" />
+					<Add directory="..\..\ode\include" />
+					<Add directory="$(OGRE_HOME)\include" />
+					<Add directory="$(OGRE_HOME)\stlport\stlport" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="ode" />
+					<Add library="libode.a" />
+					<Add library="ogremain" />
+					<Add library="stlport.5.0" />
+					<Add directory="..\..\ode\lib\Release" />
+					<Add directory="$(OGRE_HOME)\bin\release" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="$(OGREODE_HOME)\scripts\codeblocks\copy.bat $(OGREODE_HOME)\lib\Release\$(APPNAME) $(OGRE_HOME)\bin\release\$(APPNAME)" />
+				</ExtraCommands>
+				<Environment>
+					<Variable name="APPNAME" value="OgreOde_Core.dll" />
+				</Environment>
+			</Target>
+			<Environment>
+				<Variable name="OGREODE_HOME" value="$(OGRE_HOME)" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-fident" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--add-stdcall-alias" />
+		</Linker>
+		<Unit filename="..\..\include\OgreOdeBody.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeCollision.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeDebugObject.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeEigenSolver.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeEntityInformer.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeGeometry.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeJoint.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeMaintainedList.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeMass.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdePreReqs.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeSpace.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeStepper.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeUtility.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOdeWorld.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\include\OgreOde_Core.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeBody.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeCollision.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeDebugObject.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeEigenSolver.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeEntityInformer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeGeometry.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeJoint.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeMass.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeSpace.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeStepper.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeUtility.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\OgreOdeWorld.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
