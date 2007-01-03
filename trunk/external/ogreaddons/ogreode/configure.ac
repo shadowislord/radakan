@@ -28,10 +28,10 @@ AC_CHECK_HEADERS([ode/ode.h],,
 
 AC_ARG_WITH([samples],AC_HELP_STRING([--with-samples=[PATH]],
 	    [look for the ogre samples in PATH, default is
-	     ../../../../../ogrenew/Samples/]),
+	     /usr/share/doc/ogre-1.2.4/Samples/]),
 	     [samples=$withval],[samples=no])
 
-SAMPLES="../../../../../ogrenew/Samples"
+SAMPLES="/usr/share/doc/ogre-1.2.4/Samples"
 if test "x$samples" != "xno"
 then
 	SAMPLES="${samples}"
