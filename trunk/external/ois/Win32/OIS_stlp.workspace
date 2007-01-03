@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="ois workspace">
+		<Project filename="ois_stlp.cbp" active="1" />
+		<Project filename="DemoFFOgre\DemoFFOgre_stlp.cbp">
+			<Depends filename="ois_stlp.cbp" />
+		</Project>
+		<Project filename="DemoFFTest\DemoFFTest_stlp.cbp">
+			<Depends filename="ois_stlp.cbp" />
+		</Project>
+		<Project filename="CommandLine\CommandLine_stlp.cbp">
+			<Depends filename="ois_stlp.cbp" />
+		</Project>
+		<Project filename="OgreGui\OgreGui_stlp.cbp">
+			<Depends filename="ois_stlp.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>
