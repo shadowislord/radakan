@@ -1,0 +1,56 @@
+release_libs =  [
+                    "OIS",
+                    "CEGUIBase",
+                    "CEGUIOgreRenderer",
+                    "OgreMain"
+                ];
+                
+debug_libs  =   [                
+                    "OIS",
+                    "CEGUIBase",
+                    "CEGUIOgreRenderer",
+                    "OgreMain"
+                ];   
+                        
+debug_libs_path     =   [
+                            "/usr/lib/OGRE"
+                        ]
+                        
+release_libs_path   =   [
+                            "/usr/lib/OGRE"
+                        ]
+                        
+include_path        =   [
+                            "#src",
+                            "#include",
+                            "/usr/include/OGRE",
+                            "/usr/include/ode",
+                            "#external/ois/includes"
+                        ]
+                        
+Import( "env", "dev", "mode")
+localenv = env.Copy()
+
+project = "ogreode"
+
+#~ if we are on windows we need to tell gcc to bild a windows exe
+#~ we need to set -mwindows as a compiler flag
+import sys
+if sys.platform == "win32":
+    localenv.Tool( "mingw" )
+    localenv[ "CCFLAGS" ] += [ "-mwindows" ]
+
+localenv.Append( CPPPATH = include_path)
+if mode == "release":
+    localenv.Append (  
+                        LIBPATH = release_libs_path,
+                        LIBS    = release_libs                    
+                    )
+else:
+    localenv.Append (  
+                        LIBPATH = debug_libs_path,
+                        LIBS    = debug_libs                   
+                    )
+    
+tgt = localenv.Program(project, dev.DevGetSourceFiles( "src", [ "*.cpp" ] ) )
+localenv.Alias(project, tgt)
