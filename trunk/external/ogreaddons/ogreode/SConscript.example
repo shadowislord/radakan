@@ -21,11 +21,17 @@ release_libs_path   =   [
                         ]
                         
 include_path        =   [
-                            "#src",
-                            "#include",
+                            "#external/ogreaddons/ogreode/include",
+                            "#external/ogreaddons/ogreode/loader/include",
+                            "#external/ogreaddons/ogreode/prefab/include",
+                            "#external/ogreaddons/ogreode/tinyxml",
+                            "#external/ogreaddons/ogreode/demos/GranTurismOgre/include",
+                            "#external/ogreaddons/ogreode/demos/Landscape/include",
+                            "#external/ogreaddons/ogreode/demos/SimpleScenes/include",
                             "/usr/include/OGRE",
                             "/usr/include/ode",
-                            "#external/ois/includes"
+                            "#external/ois/includes",
+                            "/usr/share/doc/ogre-1.2.4/Samples/Common/include"
                         ]
                         
 Import( "env", "dev", "mode")
@@ -51,6 +57,19 @@ else:
                         LIBPATH = debug_libs_path,
                         LIBS    = debug_libs                   
                     )
-    
-tgt = localenv.Program(project, dev.DevGetSourceFiles( "src", [ "*.cpp" ] ) )
+
+name = project
+if mode == "debug":
+    name += "_d"
+
+files = dev.DevGetSourceFiles( "src", [ "*.cpp" ] )
+files += dev.DevGetSourceFiles( "loader/src", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "prefab/src", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "tinyxml", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "demos/GranTurismOgre/src", [ "*.cpp" ] )
+files += dev.DevGetSourceFiles( "demos/Landscape/src", [ "*.cpp" ]  )
+files += dev.DevGetSourceFiles( "demos/SimpleScenes/src", [ "*.cpp" ]  )
+
+tgt = localenv.StaticLibrary( name, files )
+
 localenv.Alias(project, tgt)
