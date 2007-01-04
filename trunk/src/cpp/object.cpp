@@ -5,8 +5,44 @@
 using namespace std;
 using namespace sl;
 
-#ifdef SL_DEBUG
-	extern ofstream * sl_out;
+#ifndef SL_DEBUG
+
+	//	!!! Doesn't work yet!
+	class IgnoreLog : public ostream
+	{
+		public:
+			IgnoreLog () {init (clog . rdbuf ());};
+			IgnoreLog & operator<< (bool& val ){return * this;};
+			IgnoreLog & operator<< (short& val ){return * this;};
+			IgnoreLog & operator<< (unsigned short& val ){return * this;};
+			IgnoreLog & operator<< (int& val ){return * this;};
+			IgnoreLog & operator<< (unsigned int& val ){return * this;};
+			IgnoreLog & operator<< (long& val ){return * this;};
+			IgnoreLog & operator<< (unsigned long& val ){return * this;};
+			IgnoreLog & operator<< (float& val ){return * this;};
+			IgnoreLog & operator<< (double& val ){return * this;};
+			IgnoreLog & operator<< (long double& val ){return * this;};
+			IgnoreLog & operator<< (void*& val ){return * this;};
+ 
+			IgnoreLog & operator<< (streambuf& sb ){return * this;};
+ 
+			IgnoreLog & operator<< (ostream& ( *pf )(ostream&)){return * this;};
+			IgnoreLog & operator<< (ios& ( *pf )(ios&)){return * this;};
+			IgnoreLog & operator<< (ios_base& ( *pf )(ios_base&)){return * this;};
+	};
+	
+	IgnoreLog & operator<< (IgnoreLog & o, char c ){return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, signed char c ){return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, unsigned char c ){return o;};
+ 
+	IgnoreLog & operator<< (IgnoreLog & o, const char* s ){return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, const signed char* s ){return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, const unsigned char* s ){return o;};
+	
+	template <class T> IgnoreLog & operator << (IgnoreLog & o , T const & obj)
+	{return o;}
+
+	IgnoreLog * ignore = new IgnoreLog();
 #endif
 
 //  constructor
@@ -19,16 +55,16 @@ Object ::
 	assign (new_name);
 	parent = NULL;
 	
-	#ifdef SL_DEBUG
+	#ifdef SL_TRACE
 		objects . insert (this);
-	#endif
 
-	* sl_out << "So far, we have:" << endl;
-	for (set <Object *> :: const_iterator i = objects . begin ();
+		trace () << "So far, we have:" << endl;
+		for (set <Object *> :: const_iterator i = objects . begin ();
 													i != objects . end (); i ++)
-	{
-		* sl_out << "\t" << * * i << " (" << * i << ")" << endl;
-	}
+		{
+			trace () << "\t" << * * i << " (" << * i << ")" << endl;
+		}
+	#endif
 
 	assert (Object :: is_initialized ());
 }
@@ -73,7 +109,7 @@ ostream & Object ::
 	#ifdef SL_DEBUG
 		return print ("debug");
 	#else
-		//	!!! Ignore, but how?
+		return * ignore;
 	#endif
 }
 
@@ -84,7 +120,7 @@ ostream & Object ::
 	#ifdef SL_TRACE
 		return print ("trace");
 	#else
-		//	!!! Ignore, but how?
+		return * ignore;
 	#endif
 }
 
@@ -178,5 +214,5 @@ bool Object ::
 ostream & Object ::
 	print (string message) const
 {
-	return * sl_out << message << ": " << * this << " - ";
+	return clog << message << ": " << * this << " - ";
 }

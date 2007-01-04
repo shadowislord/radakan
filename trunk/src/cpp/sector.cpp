@@ -185,13 +185,16 @@ bool Sector ::
 	assert (is_initialized ());
 	assert (entity . is_initialized ());
 
-	if (entity . is_type <NPC> ())
-	{
-		bool success = npcs . insert (& entity . to_type <NPC> ()) . second;
-		assert (success);
-	}
-	bool result = Set <Entity> :: add (entity);
-	assert (result);
+	#ifdef SL_DEBUG
+		if (entity . is_type <NPC> ())
+		{
+			bool success = npcs . insert (& entity . to_type <NPC> ()) . second;
+			assert (success);
+		}
+		bool result = Set <Entity> :: add (entity);
+		assert (result);
+	#endif
+	
 	addRigidBody (& entity);
 	
 	return true;

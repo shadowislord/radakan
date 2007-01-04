@@ -3,8 +3,6 @@
 using namespace std;
 using namespace sl;
 
-ostream * sl_out = & cout;
-
 #ifdef SL_DEBUG
 	set <Object *> sl :: objects;
 #endif
@@ -22,7 +20,7 @@ ostream * sl_out = & cout;
 		#endif
 	#endif
 
-	* sl_out << "Setting up Scattered Lands..." << endl;
+	clog << "Setting up Scattered Lands..." << endl;
 
 	string sl_path;
 	string ogre_path;
@@ -42,35 +40,39 @@ ostream * sl_out = & cout;
 	#endif
 
 	#ifdef SL_DEBUG
-		* sl_out << "debug mode: enabled." << endl;
+		clog << "debug mode: enabled." << endl;
+		
+		//	'clog' is redirected to a log file.
+		//	Note: don't use 'cout' or 'cerr'.
+		clog . rdbuf ((new ofstream ((sl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
 
-		sl_out = new ofstream ((sl_path + "/log/log.txt") . c_str ());
+		clog << "debug mode: enabled." << endl;
 
-		* sl_out << "Setting up Scattered Lands..." << endl;
-		* sl_out << "sl_path: " << sl_path << endl;
-		* sl_out << "ogre_path: " << ogre_path << endl;
+		clog << "Setting up Scattered Lands..." << endl;
+		clog << "sl_path: " << sl_path << endl;
+		clog << "ogre_path: " << ogre_path << endl;
 	#else
-		* sl_out << "debug mode: disabled." << endl;
+		clog << "debug mode: disabled." << endl;
 	#endif
 
 	try
 	{
 		Tslrpg game (sl_path, ogre_path);
-		* sl_out << "Scattered Lands is set up." << endl;
+		clog << "Scattered Lands is set up." << endl;
 
-		* sl_out << "Running Scattered Lands..." << endl;
+		clog << "Running Scattered Lands..." << endl;
 		game . run ();
-		* sl_out << "Scattered Lands is stopped." << endl;
+		clog << "Scattered Lands is stopped." << endl;
 
-		* sl_out << "Shutting down Scattered Lands..." << endl;
-		//	game is automatically shut down.
+		clog << "Shutting down Scattered Lands..." << endl;
+		//	The game is automatically shut down here.
 	}
 	catch (Ogre :: Exception & e)
 	{
 		#ifdef SL_WIN32
 			MessageBox (NULL, e . getFullDescription () . c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		#else
-			* sl_out << "ERROR: " << e . getFullDescription () << endl;
+			clog << "ERROR: " << e . getFullDescription () << endl;
 		#endif
 	}
 
@@ -78,12 +80,12 @@ ostream * sl_out = & cout;
 		for (set <Object *> :: const_iterator i = objects . begin ();
 													i != objects . end (); i ++)
 		{
-			* sl_out << "Warning: " << * * i << " (" << * i << ") was not deleted." << endl;
+			clog << "Warning: " << * * i << " (" << * i << ") was not deleted." << endl;
 		}
 		assert (objects . empty ());
 	#endif
 
-	* sl_out << "Scattered Lands is shut down." << endl;
+	clog << "Scattered Lands is shut down." << endl;
 
 	return 0;
 }
