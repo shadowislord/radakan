@@ -12,35 +12,35 @@ using namespace sl;
 	{
 		public:
 			IgnoreLog () {init (clog . rdbuf ());};
-			IgnoreLog & operator<< (bool& val ){return * this;};
-			IgnoreLog & operator<< (short& val ){return * this;};
-			IgnoreLog & operator<< (unsigned short& val ){return * this;};
-			IgnoreLog & operator<< (int& val ){return * this;};
-			IgnoreLog & operator<< (unsigned int& val ){return * this;};
-			IgnoreLog & operator<< (long& val ){return * this;};
-			IgnoreLog & operator<< (unsigned long& val ){return * this;};
-			IgnoreLog & operator<< (float& val ){return * this;};
-			IgnoreLog & operator<< (double& val ){return * this;};
-			IgnoreLog & operator<< (long double& val ){return * this;};
-			IgnoreLog & operator<< (void*& val ){return * this;};
+			IgnoreLog & operator<< (bool& val ){cout << "#A";return * this;};
+			IgnoreLog & operator<< (short& val ){cout << "#B";return * this;};
+			IgnoreLog & operator<< (unsigned short& val ){cout << "#C";return * this;};
+			IgnoreLog & operator<< (int& val ){cout << "#D";return * this;};
+			IgnoreLog & operator<< (unsigned int& val ){cout << "#E";return * this;};
+			IgnoreLog & operator<< (long& val ){cout << "#F";return * this;};
+			IgnoreLog & operator<< (unsigned long& val ){cout << "#G";return * this;};
+			IgnoreLog & operator<< (float& val ){cout << "#H";return * this;};
+			IgnoreLog & operator<< (double& val ){cout << "#I";return * this;};
+			IgnoreLog & operator<< (long double& val ){cout << "#J";return * this;};
+			IgnoreLog & operator<< (void*& val ){cout << "#K";return * this;};
  
-			IgnoreLog & operator<< (streambuf& sb ){return * this;};
+			IgnoreLog & operator<< (streambuf& sb ){cout << "#L";return * this;};
  
-			IgnoreLog & operator<< (ostream& ( *pf )(ostream&)){return * this;};
-			IgnoreLog & operator<< (ios& ( *pf )(ios&)){return * this;};
-			IgnoreLog & operator<< (ios_base& ( *pf )(ios_base&)){return * this;};
+			IgnoreLog & operator<< (ostream& ( *pf )(ostream&)){cout << "#M";return * this;};
+			IgnoreLog & operator<< (ios& ( *pf )(ios&)){cout << "#N";return * this;};
+			IgnoreLog & operator<< (ios_base& ( *pf )(ios_base&)){cout << "#O";return * this;};
 	};
 	
-	IgnoreLog & operator<< (IgnoreLog & o, char c ){return o;};
-	IgnoreLog & operator<< (IgnoreLog & o, signed char c ){return o;};
-	IgnoreLog & operator<< (IgnoreLog & o, unsigned char c ){return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, char c ){cout << "#P";return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, signed char c ){cout << "#Q";return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, unsigned char c ){cout << "#R";return o;};
  
-	IgnoreLog & operator<< (IgnoreLog & o, const char* s ){return o;};
-	IgnoreLog & operator<< (IgnoreLog & o, const signed char* s ){return o;};
-	IgnoreLog & operator<< (IgnoreLog & o, const unsigned char* s ){return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, const char* s ){cout << "#S";return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, const signed char* s ){cout << "#T";return o;};
+	IgnoreLog & operator<< (IgnoreLog & o, const unsigned char* s ){cout << "#U";return o;};
 	
 	template <class T> IgnoreLog & operator << (IgnoreLog & o , T const & obj)
-	{return o;}
+	{cout << "#V";return o;}
 
 	IgnoreLog * ignore = new IgnoreLog();
 #endif
@@ -109,6 +109,8 @@ ostream & Object ::
 	#ifdef SL_DEBUG
 		return print ("debug");
 	#else
+		* ignore << "<#1>";
+		cout << "<#2>";
 		return * ignore;
 	#endif
 }
@@ -120,6 +122,8 @@ ostream & Object ::
 	#ifdef SL_TRACE
 		return print ("trace");
 	#else
+		* ignore << "<#3>";
+		cout << "<#4>";
 		return * ignore;
 	#endif
 }
