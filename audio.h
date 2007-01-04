@@ -2,8 +2,8 @@
 
 #include <fmod.h>
 
-void Init_FMOD () { FSOUND_Init (44100, 32, 0); }
-void Close_FMOD () { FSOUND_Close (); }
+void init_fmod () { FSOUND_Init (44100, 32, 0); }
+void shutdown_fmod () { FSOUND_Close (); }
 
 // .MOD, .S3M, .XM, .IT, .MID, .RMI, .SGT, .FSB
 class Music_Module
