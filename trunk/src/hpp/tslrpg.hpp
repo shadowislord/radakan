@@ -1,6 +1,7 @@
 #ifndef TSLRPG_HPP
 #define TSLRPG_HPP
 
+#include "audio_engine.hpp"
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "sector.hpp"

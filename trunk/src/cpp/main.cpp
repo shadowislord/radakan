@@ -20,7 +20,7 @@ using namespace sl;
 		#endif
 	#endif
 
-	clog << "Setting up Scattered Lands..." << endl;
+	cout << "Setting up Scattered Lands..." << endl;
 
 	string sl_path;
 	string ogre_path;
@@ -40,31 +40,39 @@ using namespace sl;
 	#endif
 
 	#ifdef SL_DEBUG
-		clog << "debug mode: enabled." << endl;
+		cout << "debug mode: enabled." << endl;
+		#ifdef SL_TRACE
+			cout << "trace mode: enabled." << endl;
+		#else
+			cout << "trace mode: disabled." << endl;
+		#endif
 		
-		//	'clog' is redirected to a log file.
+		//	'cout' is redirected to a log file.
 		//	Note: don't use 'cout' or 'cerr'.
-		clog . rdbuf ((new ofstream ((sl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
+		cout . rdbuf ((new ofstream ((sl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
 
-		clog << "debug mode: enabled." << endl;
+		cout << "debug mode: enabled." << endl;
 
-		clog << "Setting up Scattered Lands..." << endl;
-		clog << "sl_path: " << sl_path << endl;
-		clog << "ogre_path: " << ogre_path << endl;
+		cout << "Setting up Scattered Lands..." << endl;
+		cout << "sl_path: " << sl_path << endl;
+		cout << "ogre_path: " << ogre_path << endl;
 	#else
-		clog << "debug mode: disabled." << endl;
+		cout << "debug mode: disabled." << endl;
+
+		//	From here on, all cout messages are ignored.
+		cout . rdbuf ((new ostream (new stringbuf (ios_base :: out))) -> rdbuf ());
 	#endif
 
 	try
 	{
 		Tslrpg game (sl_path, ogre_path);
-		clog << "Scattered Lands is set up." << endl;
+		cout << "Scattered Lands is set up." << endl;
 
-		clog << "Running Scattered Lands..." << endl;
+		cout << "Running Scattered Lands..." << endl;
 		game . run ();
-		clog << "Scattered Lands is stopped." << endl;
+		cout << "Scattered Lands is stopped." << endl;
 
-		clog << "Shutting down Scattered Lands..." << endl;
+		cout << "Shutting down Scattered Lands..." << endl;
 		//	The game is automatically shut down here.
 	}
 	catch (Ogre :: Exception & e)
@@ -72,7 +80,7 @@ using namespace sl;
 		#ifdef SL_WIN32
 			MessageBox (NULL, e . getFullDescription () . c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		#else
-			clog << "ERROR: " << e . getFullDescription () << endl;
+			cerr << "ERROR: " << e . getFullDescription () << endl;
 		#endif
 	}
 
@@ -80,12 +88,12 @@ using namespace sl;
 		for (set <Object *> :: const_iterator i = objects . begin ();
 													i != objects . end (); i ++)
 		{
-			clog << "Warning: " << * * i << " (" << * i << ") was not deleted." << endl;
+			cout << "Warning: " << * * i << " (" << * i << ") was not deleted." << endl;
 		}
 		assert (objects . empty ());
 	#endif
 
-	clog << "Scattered Lands is shut down." << endl;
+	cout << "Scattered Lands is shut down." << endl;
 
 	return 0;
 }

@@ -89,6 +89,7 @@ void Entity ::
 {
 	assert (Entity :: is_initialized ());
 
+	//	!!!	This sets the absolute rotation, instead of the relative rotation (to the current rotation).
 	get_motion_state () -> m_graphicsWorldTrans . setRotation (new_rotation);
 	update_scene_node ();
 }

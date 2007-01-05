@@ -21,6 +21,7 @@
 #include <string>
 #include <set>
 
+//	Uncomment the next line for release mode.
 //	#define NDEBUG
 
 #ifndef NDEBUG
@@ -54,7 +55,7 @@ namespace sl
 			ostream & trace () const;
 			ostream & error () const;
 
-			//	These methods should only be used by a Set. Don't use them directly.
+			//	These methods should only be used by a Set <T>. Don't use them directly.
 			//	Use the Set <T> methods (add, contains & move_to) instead.
 			bool has_parent () const;
 			bool is_in (const Object & set) const;
@@ -81,4 +82,3 @@ namespace sl
 #include "object.ipp"
 
 #endif	//	OBJECT_HPP
-

@@ -14,7 +14,15 @@ Tslrpg ::
 {
 	trace () << "Tslrpg (" << sl_path << ", " << ogre_path << ")" << endl;
 
-	root = new Ogre :: Root ("data/plugins.cfg", "data/ogre.cfg", "log/ogre.txt");
+	//	Don't copy the log to the console:
+	(new Ogre :: LogManager ()) -> createLog ("log/ogre.txt", true, false,
+		#ifdef SL_DEBUG
+			false
+		#else
+			true
+		#endif
+		);
+	root = new Ogre :: Root ("data/plugins.cfg", "data/ogre.cfg");
 	if (! root -> showConfigDialog ())
 	{
 		abort ();
@@ -105,6 +113,11 @@ Tslrpg ::
 	input_engine = new Input_Engine (* window);
 
 	timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
+
+	Audio_Engine * audio = new Audio_Engine ();
+
+	audio -> samples . push_back (Sound_Sample ("data/sound/prelude_11.mp3"));
+	audio -> samples .at (0) . play ();
 }
 
 Tslrpg ::
