@@ -34,6 +34,22 @@ using namespace sl;
 			GetCurrentDirectory (MAX_PATH, buffer);
 			sl_path = buffer;
 		}
+		else
+		{
+			int spacePos = 0;
+			for (int i = 0;i < sl_path.length();i++)
+			{
+				if (sl_path[i] == '~')
+				{
+					spacePos = i;
+				}
+
+			}
+			ogre_path = sl_path.substr(spacePos+1,sl_path.length());
+            sl_path = sl_path.substr(0,spacePos);
+			clog << "SLPATH:\t" << sl_path << endl;
+			clog << "OGPATH:\t" << ogre_path << endl;
+		}
 	#else
 		sl_path = argv [argc - 2];
 		ogre_path = argv [argc - 1];
@@ -46,7 +62,7 @@ using namespace sl;
 		#else
 			cout << "trace mode: disabled." << endl;
 		#endif
-		
+
 		//	'cout' is redirected to a log file.
 		//	Note: don't use 'cout' or 'cerr'.
 		cout . rdbuf ((new ofstream ((sl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
