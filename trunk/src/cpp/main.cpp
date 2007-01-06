@@ -47,8 +47,6 @@ using namespace sl;
 			}
 			ogre_path = sl_path.substr(spacePos+1,sl_path.length());
             sl_path = sl_path.substr(0,spacePos);
-			clog << "SLPATH:\t" << sl_path << endl;
-			clog << "OGPATH:\t" << ogre_path << endl;
 		}
 	#else
 		sl_path = argv [argc - 2];

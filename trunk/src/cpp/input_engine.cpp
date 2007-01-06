@@ -13,7 +13,7 @@ Input_Engine ::
 	Object ("Input Engine")
 {
 	assert (Object :: is_initialized ());
-	
+
 	OIS :: ParamList param_list;
 
 	size_t window_handle_temp = 0;
@@ -32,7 +32,7 @@ Input_Engine ::
 	//	The input/output system needs to know how to interact with
 	//	the system window.
 	param_list . insert (make_pair (string ("WINDOW"), window_handle . str ()));
-	
+
 	OIS :: InputManager :: createInputSystem (param_list);
 
 	//	The final parameter refers to "buffered".
@@ -70,7 +70,7 @@ Input_Engine ::
 	~Input_Engine ()
 {
 	assert (is_initialized ());
-	
+
 	OIS :: InputManager :: getSingletonPtr () -> destroyInputObject (keyboard);
 	OIS :: InputManager :: getSingletonPtr () -> destroyInputObject (mouse);
 	OIS :: InputManager :: destroyInputSystem ();
@@ -106,7 +106,7 @@ void Input_Engine ::
 	capture ()
 {
 	assert (is_initialized ());
-	
+
 	mouse -> capture ();
 	if (! mouse -> buffered ())
 	{
@@ -147,7 +147,7 @@ bool Input_Engine ::
 	get_mouse_button (string button, bool reset)
 {
 	assert (is_initialized ());
-	
+
 	if (mouse_buttons [button])
 	{
 		trace () << "Mouse button '" << button << "' was pressed." << endl;
@@ -170,7 +170,7 @@ float Input_Engine ::
 	{
 		return relative_mouse_height;
 	}
-	
+
 	return absolute_mouse_height;
 }
 
@@ -179,7 +179,7 @@ float Input_Engine ::
 	const
 {
 	assert (is_initialized ());
-	
+
 	if (relative)
 	{
 		return relative_mouse_width;
@@ -221,7 +221,7 @@ bool Input_Engine ::
 	assert (is_initialized ());
 
 	//	Relative mouse position isn't handeled correctely by OIS.
-	
+
 	relative_mouse_width = mouse_event . state . abX - absolute_mouse_width;
 	relative_mouse_height = mouse_event . state . abY - absolute_mouse_height;
 
@@ -242,7 +242,7 @@ bool Input_Engine ::
 	assert (is_initialized ());
 
 	mouse_buttons [to_string (id)] = true;
-	
+
 	return true;
 }
 
@@ -251,9 +251,9 @@ bool Input_Engine ::
 	mouseReleased (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id)
 {
 	assert (is_initialized ());
-	
+
 	mouse_buttons [to_string (id)] = false;
-	
+
 	return true;
 }
 
@@ -267,7 +267,7 @@ string Input_Engine ::
 	to_string (OIS :: MouseButtonID id)
 {
 	assert (is_initialized ());
-	
+
 	if (id == OIS :: MB_Left)
 	{
 		return left_mouse_button;
@@ -288,30 +288,34 @@ string Input_Engine ::
 {
 	assert (is_initialized ());
 	trace () << "converting - in: " << key << endl;
-	
+
 	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+
 		//	Converting capitals to lower-case:
+
 		if (key . size () == 1)
 		{
 			int temp = int (key . at (0));
-			if ((96 < temp) && (temp < 123))
+			if ((64 < temp) && (temp < 90))
 			{
 				key . erase ();
-				key . push_back (char (temp - 32));
+				key . push_back (char (temp + 32));
 			}
 		}
 		//	Converting 'NUM X' to 'X':
 		//if (key . find ("NUM ") != key . end ())
 		//solving vs 2005 error C2678: binary '!=' : no operator found which takes a left-hand operand of type '__w64 unsigned int' (or there is no acceptable conversion)
-		if (key . find ("NUM ") != string::npos)
+		if (key . find ("Num ") != string::npos)
 		{
 			assert (key . size () == 5);
 			key = string (1, key . at (4));
 		}
-		if (key == "ESC")
+		if (key == "Esc")
 		{
 			key = "Escape";
 		}
+
+
 	#else	//	assuming linux
 		//	Converting keypad codes to numbers:
 		if (key == "KP_Insert")
@@ -354,9 +358,9 @@ string Input_Engine ::
 		{
 			key = "9";
 		}
-	
+
 	#endif
-	
+
 	trace () << "converting - out: " << key << endl;
 	return key;
 }
