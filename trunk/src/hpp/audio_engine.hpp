@@ -1,88 +1,130 @@
 // Starting code to incorporate FMOD into the project by Mike
 
-#include <string>
-#include <vector>
+#include "set.hpp"
 #include <fmod.h>
 
 using namespace std;
 
-// .MOD, .S3M, .XM, .IT, .MID, .RMI, .SGT, .FSB
-class Music_Module
+namespace sl
 {
-
-public:
-
-	Music_Module (string file_name) : module (NULL)
+	// abstract base class for sounds
+	class Sound :
+		public Object
 	{
-		module = FMUSIC_LoadSong (file_name.c_str());
-	}
+		protected:
+			Sound (string file_name) :
+				Object (file_name)
+			{
+			}
+		public:
+			virtual ~Sound ()
+			{
+			}
 
-	~Music_Module () { FMUSIC_FreeSong (module); }
+			virtual void play ()
+			{
+				abort ();
+			}
+	};
 
-	void play () { FMUSIC_PlaySong (module); }
-
-private:
-
-	FMUSIC_MODULE* module;
-
-};
-
-// .WAV, .MP2, .MP3, .OGG or .RAW
-// Loads and decodes a static soundfile into memory
-class Sound_Sample
-{
-
-public:
-
-	Sound_Sample (string file_name) : sample (NULL)
+	// .MOD, .S3M, .XM, .IT, .MID, .RMI, .SGT, .FSB
+	class Music_Module :
+		public Sound
 	{
-			sample = FSOUND_Sample_Load (FSOUND_FREE, file_name.c_str (), FSOUND_NORMAL,0,0);
-	}
+		public:
+			Music_Module (string file_name) :
+				Sound (file_name)
+			{
+				module = FMUSIC_LoadSong (file_name . c_str ());
+			}
+			~Music_Module ()
+			{
+				FMUSIC_FreeSong (module);
+			}
+			virtual void play ()
+			{
+				FMUSIC_PlaySong (module);
+			}
+			
+		private:
+			FMUSIC_MODULE * module;
+	};
 
-	// These files are closed automatically
-
-	void play () { FSOUND_PlaySound (FSOUND_FREE, sample); }
-
-private:
-
-	FSOUND_SAMPLE* sample;
-
-};
-
-// Opens an audio file/url/cd ready for streaming
-class Sound_Stream
-{
-
-public:
-
-	Sound_Stream () : stream (NULL) { };
-
-	void open (std::string file_name)
+	// for static soundfiles, like .WAV, .MP2, .MP3, .OGG and .RAW
+	class Sound_Sample :
+		public Sound
 	{
-		 stream = FSOUND_Stream_Open (file_name.c_str (), 0,0,0);
-	}
+		public:
+			Sound_Sample (string file_name) :
+				Sound (file_name)
+			{
+				sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
+			}
+			// These files are closed automatically
+			virtual void play ()
+			{
+				FSOUND_PlaySound (FSOUND_FREE, sample);
+			}
 
-	void close () {  FSOUND_Stream_Close (stream); }
+		private:
+			FSOUND_SAMPLE * sample;
+	};
 
-	void play () { FSOUND_Stream_Play (FSOUND_FREE, stream); }
+	// for streamed audio, like file, url and cd
+	class Sound_Stream :
+		public Sound
+	{
+		public:
+			Sound_Stream (string file_name) :
+				Sound (file_name)
+			{
+				stream = FSOUND_Stream_Open (file_name . c_str (), 0, 0, 0);
+			}
 
-private:
+			~Sound_Stream ()
+			{
+				FSOUND_Stream_Close (stream);
+			}
 
-	FSOUND_STREAM* stream;
+			virtual void play ()
+			{
+				FSOUND_Stream_Play (FSOUND_FREE, stream);
+			}
 
-};
+	private:
 
-class Audio_Engine
-{
+		FSOUND_STREAM * stream;
 
-public:
+	};
 
-	Audio_Engine () { FSOUND_Init (44100, 32, 0); }
-	~Audio_Engine () { FSOUND_Close (); }
-
-	// Unsure of actual Audio Engine implementation
-	vector <Music_Module> modules;
-	vector <Sound_Sample> samples;
-	vector <Sound_Stream> streams;
-
-};
+	class Audio_Engine :
+		private Set <Sound>
+	{
+		public:
+			Audio_Engine () :
+				Object ("Audio engine"),
+				Set <Sound> ("Audio engine")
+			{
+				FSOUND_Init (44100, 32, 0);
+			}
+			~Audio_Engine ()
+			{
+				FSOUND_Close ();
+			}
+			void play ()
+			{
+				//	!!!	Not compete yet.
+				get_child () -> play ();
+			};
+			void load (string file_name)
+			{
+				assert (5 < file_name . size ());
+				string extension = file_name . substr (file_name . size () - 3);
+				if (extension == "mp3")
+				{
+					add ((new Sound_Sample (file_name)) -> to_type <Sound> ());
+				}
+				//	!!!	Not compete yet.
+			}
+	};
+}

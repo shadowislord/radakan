@@ -14,6 +14,10 @@ Tslrpg ::
 {
 	trace () << "Tslrpg (" << sl_path << ", " << ogre_path << ")" << endl;
 
+	audio_engine = new Audio_Engine ();
+	audio_engine -> load ("data/sound/prelude_11.mp3");
+	audio_engine -> play ();
+
 	//	Don't copy the log to the console:
 	(new Ogre :: LogManager ()) -> createLog ("log/ogre.txt", true, false,
 		#ifdef SL_DEBUG
@@ -113,11 +117,6 @@ Tslrpg ::
 	input_engine = new Input_Engine (* window);
 
 	timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
-
-	Audio_Engine * audio = new Audio_Engine ();
-
-	audio -> samples . push_back (Sound_Sample ("data/sound/prelude_11.mp3"));
-	audio -> samples .at (0) . play ();
 }
 
 Tslrpg ::
@@ -126,6 +125,7 @@ Tslrpg ::
 	trace () << "~Tslrpg ()" << endl;
 	delete gui_engine;
 	delete input_engine;
+	delete audio_engine;
 }
 
 //	virtual

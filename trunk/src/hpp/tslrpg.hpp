@@ -36,6 +36,7 @@ namespace sl
 			Input_Engine * input_engine;
 			Ogre :: Timer * timer;
 			Sector * active_sector;
+			Audio_Engine * audio_engine;
 	};
 }
 
