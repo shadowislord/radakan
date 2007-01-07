@@ -290,9 +290,7 @@ string Input_Engine ::
 	trace () << "converting - in: " << key << endl;
 
 	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-
-		//	Converting capitals to lower-case:
-
+		//	Convert capitals to lower-case:
 		if (key . size () == 1)
 		{
 			int temp = int (key . at (0));
@@ -302,9 +300,7 @@ string Input_Engine ::
 				key . push_back (char (temp + 32));
 			}
 		}
-		//	Converting 'NUM X' to 'X':
-		//if (key . find ("NUM ") != key . end ())
-		//solving vs 2005 error C2678: binary '!=' : no operator found which takes a left-hand operand of type '__w64 unsigned int' (or there is no acceptable conversion)
+		//	Convert 'NUM X' to 'X':
 		if (key . find ("NUM ") != string :: npos)
 		{
 			assert (key . size () == 5);
@@ -314,10 +310,8 @@ string Input_Engine ::
 		{
 			key = "Escape";
 		}
-
-
 	#else	//	assuming linux
-		//	Converting keypad codes to numbers:
+		//	Convert the keypad codes to numbers:
 		if (key == "KP_Insert")
 		{
 			key = "0";
@@ -358,7 +352,6 @@ string Input_Engine ::
 		{
 			key = "9";
 		}
-
 	#endif
 
 	trace () << "converting - out: " << key << endl;
