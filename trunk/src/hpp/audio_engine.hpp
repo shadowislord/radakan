@@ -1,4 +1,5 @@
-// Starting code to incorporate FMOD into the project by Mike
+#ifndef AUDIO_ENGINE_HPP
+#define AUDIO_ENGINE_HPP
 
 #include "set.hpp"
 #include <fmod.h>
@@ -7,23 +8,23 @@ using namespace std;
 
 namespace sl
 {
-	// abstract base class for sounds
+
+	/// Sound is the abstract base class for all sounds classes.
 	class Sound :
 		public Object
 	{
+		public:
+			//	protected constructor(s), see below
+			virtual ~Sound ()
+			{
+			}
+			//	pure virtual method
+			virtual void play () = 0;
+			
 		protected:
 			Sound (string file_name) :
 				Object (file_name)
 			{
-			}
-		public:
-			virtual ~Sound ()
-			{
-			}
-
-			virtual void play ()
-			{
-				abort ();
 			}
 	};
 
@@ -80,21 +81,17 @@ namespace sl
 			{
 				stream = FSOUND_Stream_Open (file_name . c_str (), 0, 0, 0);
 			}
-
 			~Sound_Stream ()
 			{
 				FSOUND_Stream_Close (stream);
 			}
-
 			virtual void play ()
 			{
 				FSOUND_Stream_Play (FSOUND_FREE, stream);
 			}
 
 	private:
-
 		FSOUND_STREAM * stream;
-
 	};
 
 	class Audio_Engine :
@@ -113,18 +110,28 @@ namespace sl
 			}
 			void play ()
 			{
-				//	!!!	Not compete yet.
 				get_child () -> play ();
 			};
 			void load (string file_name)
 			{
 				assert (5 < file_name . size ());
 				string extension = file_name . substr (file_name . size () - 3);
-				if (extension == "mp3")
+				if (extension == "ogg")
 				{
 					add ((new Sound_Sample (file_name)) -> to_type <Sound> ());
 				}
-				//	!!!	Not compete yet.
+				else if (extension == "mp3")
+				{
+					error () << "- We do not have the rights to use the .mp3 format. Please use the .ogg format instead." << endl;
+					abort ();
+				}
+				else
+				{
+					error () << "doesn't know the file format '" << extension << "'" << endl;
+					abort ();
+				}
 			}
 	};
 }
+
+#endif

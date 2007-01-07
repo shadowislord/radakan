@@ -44,13 +44,3 @@ string State ::
 {
 	return "state";
 }
-
-//	virtual
-string State ::
-	think ()
-{
-	assert (is_initialized ());
-	
-	abort ();
-	return "";
-}

@@ -25,7 +25,7 @@ GUI_Engine ::
 
 	system -> setDefaultFont ("BlueHighway-12");
 
-	root_window = window_manager -> loadWindowLayout("tslrpg.conf");
+	root_window = window_manager -> loadWindowLayout ("tsl.config");
 	system -> setGUISheet (root_window);
 
 	assert (is_initialized ());

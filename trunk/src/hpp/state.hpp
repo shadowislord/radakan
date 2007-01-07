@@ -7,18 +7,23 @@ using namespace std;
 
 namespace sl
 {
+
+	///	State is the abstract base class for all 'finite state machine'-states.
+
 	class State :
 		public virtual Object
 	{
 		public :
-			State (Character & new_owner);
+			//	protected constructor, see below
 			virtual ~State ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
-			
-			virtual string think ();	//	change your current state
+
+			//	pure virtual method
+			virtual string think () = 0;	//	change your current state
 
 		protected:
+			State (Character & new_owner);
 			Character & owner;
 	};
 }

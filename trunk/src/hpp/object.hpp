@@ -1,9 +1,6 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
-//	The universal base class
-//	All other files should (in)directly include this master include file.
-
 #include <OgrePrerequisites.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -36,15 +33,16 @@ using namespace std;
 ///	Scattered Lands namespace
 namespace sl
 {
+	
+	///	Object is the universal abstract base class for all TSL classes.
+	///	All other files should (in)directly include this master include file.
+
 	class Object :
 		public string
 	{
 		public :
-	#ifdef SL_WIN32
-			Object ();	//	Some Windows compilers give an error otherwise.
-	#endif
-			Object (string new_name);								//	constructor
-			virtual ~Object ();										//	destructor
+			//	protected constructor(s), see below
+			virtual ~Object ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
 			template <typename T> bool is_type () const;
@@ -55,8 +53,8 @@ namespace sl
 			ostream & trace () const;
 			ostream & error () const;
 
-			//	These methods should only be used by a Set <T>. Don't use them directly.
-			//	Use the Set <T> methods (add, contains & move_to) instead.
+			///	These methods should only be used by a Set <T>. Don't use them directly.
+			///	Use the Set <T> methods (add, contains & move_to) instead.
 			bool has_parent () const;
 			bool is_in (const Object & set) const;
 			void put_in (const Object & new_parent);
@@ -67,6 +65,14 @@ namespace sl
 			static string to_string (float value);
 			static bool is_nan (float value);
 			static int to_int (string value);
+
+		protected:
+			///	To avoid 'plain' Object instances, the constructor(s) is/are proteced.
+			#ifdef SL_WIN32
+				///	Some Windows compilers give an error otherwise.
+				Object ();
+			#endif
+			Object (string new_name);
 
 		private :
 			ostream & print (string message) const;

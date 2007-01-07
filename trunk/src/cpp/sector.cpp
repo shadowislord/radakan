@@ -24,33 +24,44 @@ Sector ::
 	camera -> setNearClipDistance (5);
 	camera -> setFarClipDistance (2000);
 
-	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);	//	Doesn't work.
+	//	!!!	This doesn't work somehow.
+	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
-		create_entity_node ("Tavern", "tavern.mesh"))) );
+		create_entity_node ("Tavern", "tavern.mesh"))));
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
-		create_entity_node ("Bar", "bar.mesh"))) );
+		create_entity_node ("Bar", "bar.mesh"))));
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (116, 0, 17),
-		create_entity_node ("Table 1", "table.mesh"))) );
+		create_entity_node ("Table 1", "table.mesh"))));
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (116, 0, 57),
-		create_entity_node ("Table 2", "table.mesh"))) );
+		create_entity_node ("Table 2", "table.mesh"))));
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (26, 0, 97),
-		create_entity_node ("Table 3", "table.mesh"))) );
+		create_entity_node ("Table 3", "table.mesh"))));
 
-	add
-		(* (new Entity
-			(false,
-			true,
-			true,
-			0,
-			0,
-			btVector3 (1000, 0, 500),
-			create_entity_node ("Fort", "fort.mesh"))) );
-			
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (126, 0, - 197),
+		create_entity_node ("Fence 1", "fences1.mesh"))));
+
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (226, 0, - 297),
+		create_entity_node ("Fence 2", "fences2.mesh"))));
+
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (326, 0, - 397),
+		create_entity_node ("Fence 3", "fences3.mesh"))));
+
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (426, 0, - 497),
+		create_entity_node ("Fence 4", "fences4.mesh"))));
+
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (526, 0, - 597),
+		create_entity_node ("Fence 5", "fences5.mesh"))));
+
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (1000, 0, 500),
+		create_entity_node ("House", "house.mesh"))));
+
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 500, 0, - 500),
+		create_entity_node ("Wagon", "wagon.mesh"))));
 
 	if (Player :: getSingletonPtr () == NULL)
 	{

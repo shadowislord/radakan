@@ -42,7 +42,8 @@ string Dead_State ::
 	think ()
 {
 	assert (is_initialized ());
-	
+
+	error () << "- The deads can't think." << endl;
 	abort ();
 
 	return "The deads can't think.";
