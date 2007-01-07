@@ -28,45 +28,73 @@ Sector ::
 	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
-		create_entity_node ("Tavern", "tavern.mesh"))));
+		create_entity_node ("Tavern", "tavern.mesh", 1))));
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
-		create_entity_node ("Bar", "bar.mesh"))));
+		create_entity_node ("Bar", "bar.mesh", 1))));
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (116, 0, 17),
-		create_entity_node ("Table 1", "table.mesh"))));
+		create_entity_node ("Table 1", "table.mesh", 1))));
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (116, 0, 57),
-		create_entity_node ("Table 2", "table.mesh"))));
+		create_entity_node ("Table 2", "table.mesh", 1))));
 
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (26, 0, 97),
-		create_entity_node ("Table 3", "table.mesh"))));
+		create_entity_node ("Table 3", "table.mesh", 1))));
 
+	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (126, 0, - 197),
-		create_entity_node ("Fence 1", "fences1.mesh"))));
+		create_entity_node ("Fence 1", "fences1.mesh", 0.3))));
 
+	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (226, 0, - 297),
-		create_entity_node ("Fence 2", "fences2.mesh"))));
+		create_entity_node ("Fence 2", "fences2.mesh", 0.3))));
 
+	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (326, 0, - 397),
-		create_entity_node ("Fence 3", "fences3.mesh"))));
+		create_entity_node ("Fence 3", "fences3.mesh", 0.3))));
 
+	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (426, 0, - 497),
-		create_entity_node ("Fence 4", "fences4.mesh"))));
+		create_entity_node ("Fence 4", "fences4.mesh", 0.3))));
 
+	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (526, 0, - 597),
-		create_entity_node ("Fence 5", "fences5.mesh"))));
+		create_entity_node ("Fence 5", "fences5.mesh", 0.3))));
 
+	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (1000, 0, 500),
-		create_entity_node ("House", "house.mesh"))));
+		create_entity_node ("House", "house.mesh", 0.4))));
 
+	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 500, 0, - 500),
-		create_entity_node ("Wagon", "wagon.mesh"))));
+		create_entity_node ("Wagon", "wagon.mesh", 0.02))));
+
+	//	not textured
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 550, 0, - 500),
+		create_entity_node ("Pot", "pot.mesh", 0.2))));
+
+	//	not textured
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 600, 0, - 500),
+		create_entity_node ("Pot (2)", "pot_2.mesh", 0.2))));
+
+	//	textured
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 700, 45, - 500),
+		create_entity_node ("Pine tree", "pine_tree.mesh", 0.7))));
+
+	//	not textured
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 700, 35, - 700),
+		create_entity_node ("Pine tree (2)", "pine_tree_2.mesh", 1.5))));
+
+	//	textured
+	Entity * tree2 = new Entity (false, true, true, 0, 0, btVector3 (- 500, 0, - 700),
+		create_entity_node ("Tree", "tree.mesh", 1.5));
+	add (* tree2);
+	tree2 -> node -> setDirection (0, - 1, 0);
 
 	if (Player :: getSingletonPtr () == NULL)
 	{
-		Player * player = new Player (create_entity_node ("Player", "ninja.mesh"));
-		player -> node -> setScale (Ogre :: Vector3 (0.1, 0.1, 0.1));
+		Player * player = new Player (create_entity_node ("Player", "ninja.mesh", 0.1));
 
 		player -> add
 		(
@@ -78,7 +106,7 @@ Sector ::
 				30,
 				3,
 				player -> get_position (),
-				create_entity_node ("Backpack", "bar.mesh")
+				create_entity_node ("Backpack", "bar.mesh", 1)
 			))
 		);
 
@@ -86,15 +114,14 @@ Sector ::
 										<< player -> get_total_weight () << endl;
 		Weapon * sword = new Weapon
 				(1, 2, btVector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
-				create_entity_node ("Sword", "bar.mesh"));
+				create_entity_node ("Sword", "bar.mesh", 1));
 		trace () << to_string (sword) << "'s weight: " << sword -> get_total_weight () << endl;
 		player -> add (* sword);
 		
 		add (* player);
 	}
 
-	NPC * ninja = new NPC (create_entity_node ("Ninja (" + * this + ")", "ninja.mesh"));
-	ninja -> node -> setScale (Ogre :: Vector3 (0.1, 0.1, 0.1));
+	NPC * ninja = new NPC (create_entity_node ("Ninja (" + * this + ")", "ninja.mesh", 0.1));
 	ninja -> set_position (btVector3 (120, 0, 30));
 	add (* ninja);
 
@@ -157,7 +184,7 @@ Sector ::
 		bbsNode2 -> setPosition (px, py, pz);
 	}
 
-	Ogre :: SceneNode & groundNode = create_entity_node ("Ground","plane.mesh");
+	Ogre :: SceneNode & groundNode = create_entity_node ("Ground","plane.mesh", 1);
 	dynamic_cast <Ogre :: Entity *> (groundNode . getAttachedObject (0)) -> setMaterialName ("TavernWalls");
 	groundNode . setOrientation (Ogre :: Quaternion (Ogre :: Radian (- Ogre :: Math :: HALF_PI), Ogre :: Vector3 :: UNIT_X));
 
@@ -286,7 +313,7 @@ Ogre :: SceneNode & Sector ::
 }
 
 Ogre :: SceneNode & Sector ::
-	create_entity_node (string name, string mesh_name)
+	create_entity_node (string name, string mesh_name, float scale)
 {
 	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode () ->
 													createChildSceneNode ();
@@ -295,5 +322,6 @@ Ogre :: SceneNode & Sector ::
 	
 	assert (node -> numAttachedObjects () == 1);
 	assert (node -> getAttachedObject (0) != NULL);
+	node -> setScale (Ogre :: Vector3 (scale, scale, scale));
 	return * node;
 }

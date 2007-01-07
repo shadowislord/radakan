@@ -40,7 +40,7 @@ namespace sl
 			Ogre :: SceneManager & get_scene_manager () const;
 
 		private :
-			Ogre :: SceneNode & create_entity_node (string name, string mesh_name);
+			Ogre :: SceneNode & create_entity_node (string name, string mesh_name, float scale);
 			Ogre :: SceneManager * scene_manager;
 			Ogre :: Camera * camera;
 
