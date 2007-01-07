@@ -1,4 +1,4 @@
-#include "tslrpg.hpp"
+#include "tsl.hpp"
 
 using namespace std;
 using namespace sl;
@@ -16,6 +16,7 @@ using namespace sl;
 	//	check for conflicting debug and trace flags
 	#ifdef SL_TRACE
 		#ifndef SL_DEBUG
+			error () << " detected conflicting SL_DEBUG and SL_TRACE flags." << endl;
 			abort ();
 		#endif
 	#endif
@@ -25,7 +26,6 @@ using namespace sl;
 	string sl_path;
 	string ogre_path;
 	#ifdef SL_WIN32
-		//	!!! This is incorrectely handled.
 		sl_path = strCmdLine;
 
 		if (sl_path . empty ())
@@ -36,19 +36,14 @@ using namespace sl;
 		}
 		else
 		{
-			int spacePos = 0;
-			for (int i = 0;i < sl_path.length();i++)
-			{
-				if (sl_path[i] == '~')
-				{
-					spacePos = i;
-				}
-
-			}
-			ogre_path = sl_path.substr(spacePos+1,sl_path.length());
-            sl_path = sl_path.substr(0,spacePos);
+			//	example arguments: C:/John/TSL~C:/OgreSDK
+			int spacePos = sl_path . find ('~');
+			assert (spacePos != string :: npos);
+			ogre_path = sl_path . substr (spacePos + 1, sl_path . length ());
+            sl_path = sl_path . substr (0, spacePos);
 		}
 	#else
+		//	example arguments: /home/john/tsl /usr/share/doc/ogre-1.2.4
 		sl_path = argv [argc - 2];
 		ogre_path = argv [argc - 1];
 	#endif
@@ -65,8 +60,6 @@ using namespace sl;
 		//	Note: don't use 'cout' or 'cerr'.
 		cout . rdbuf ((new ofstream ((sl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
 
-		cout << "debug mode: enabled." << endl;
-
 		cout << "Setting up Scattered Lands..." << endl;
 		cout << "sl_path: " << sl_path << endl;
 		cout << "ogre_path: " << ogre_path << endl;
@@ -79,7 +72,7 @@ using namespace sl;
 
 	try
 	{
-		Tslrpg game (sl_path, ogre_path);
+		TSL game (sl_path, ogre_path);
 		cout << "Scattered Lands is set up." << endl;
 
 		cout << "Running Scattered Lands..." << endl;
