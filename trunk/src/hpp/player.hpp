@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 	class Player :
 		public Character,

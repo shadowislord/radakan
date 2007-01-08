@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 
 	///	Container holds the data of one in-game container.

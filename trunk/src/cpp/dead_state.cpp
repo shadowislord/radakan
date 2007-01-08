@@ -1,7 +1,7 @@
 #include "dead_state.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 //  constructor
 Dead_State ::

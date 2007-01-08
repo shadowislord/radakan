@@ -13,7 +13,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 
 	///	Input engine is responsible for recording player input.
@@ -32,8 +32,7 @@ namespace sl
 			void capture ();
 			bool get_key (string key, bool reset);
 			bool get_mouse_button (string button, bool reset);
-			float get_mouse_height (bool relative) const;
-			float get_mouse_width (bool relative) const;
+			pair <float, float> get_mouse_position (bool relative) const;
 			
 			static bool is_mouse_button (string button);
 			static const string left_mouse_button;
@@ -50,10 +49,8 @@ namespace sl
 
 			map <string, bool> keys;
 			map <string, bool> mouse_buttons;
-			float relative_mouse_height;
-			float relative_mouse_width;
-			float absolute_mouse_height;
-			float absolute_mouse_width;
+			pair <float, float> relative_mouse_position;
+			pair <float, float> absolute_mouse_position;
 			string to_string (OIS :: MouseButtonID id);
 			string convert (string key_value);
 			

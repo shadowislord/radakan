@@ -1,7 +1,7 @@
 #include "player.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 template <> Player * Ogre :: Singleton <Player> :: ms_Singleton = NULL;
 

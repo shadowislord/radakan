@@ -4,7 +4,7 @@
 #include "set.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 //  constructor
 template <typename T> Set <T> ::
@@ -165,8 +165,8 @@ template <typename T> T * Set <T> ::
 	{
 		return NULL;
 	}
-	const_cast <Set <T> *> (this) -> next_child = children . begin ();
-	return * (const_cast <Set <T> *> (this) -> next_child ++);
+	next_child = children . begin ();
+	return * (next_child ++);
 }
 
 template <typename T> T * Set <T> ::
@@ -180,7 +180,7 @@ template <typename T> T * Set <T> ::
 	{
 		return NULL;
 	}
-	return * (const_cast <Set <T> *> (this) -> next_child ++);
+	return * (next_child ++);
 }
 
 #endif	//	SET_IPP

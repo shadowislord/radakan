@@ -4,7 +4,7 @@
 #include <OgrePrerequisites.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-	#define SL_WIN32
+	#define TSL_WIN32
 	#define WIN32_LEAN_AND_MEAN
 	#include "windows.h"
 	#if _MSC_VER
@@ -22,16 +22,16 @@
 //	#define NDEBUG
 
 #ifndef NDEBUG
-	//	SL run with SL_DEBUG will print usefull messages.
-	#define SL_DEBUG
-	//	SL run with SL_TRACE will print all messages, do not use it without SL_DEBUG.
-	#define SL_TRACE
+	//	TSL run with TSL_DEBUG will print usefull messages.
+	#define TSL_DEBUG
+	//	TSL run with TSL_TRACE will print all messages. Do not use it without TSL_DEBUG.
+	#define TSL_TRACE
 #endif
 
 using namespace std;
 
-///	Scattered Lands namespace
-namespace sl
+///	The Scattered Lands namespace
+namespace tsl
 {
 	
 	///	Object is the universal abstract base class for all TSL classes.
@@ -53,8 +53,8 @@ namespace sl
 			ostream & trace () const;
 			ostream & error () const;
 
-			///	These methods should only be used by a Set <T>. Don't use them directly.
-			///	Use the Set <T> methods (add, contains & move_to) instead.
+			///	These methods should only be used by a Set &#60;T&#62;. Don't use them directly.
+			///	Use the Set &#60;T&#62; methods (add, contains & move_to) instead.
 			bool has_parent () const;
 			bool is_in (const Object & set) const;
 			void put_in (const Object & new_parent);
@@ -68,7 +68,7 @@ namespace sl
 
 		protected:
 			///	To avoid 'plain' Object instances, the constructor(s) is/are proteced.
-			#ifdef SL_WIN32
+			#ifdef TSL_WIN32
 				///	Some Windows compilers give an error otherwise.
 				Object ();
 			#endif
@@ -79,7 +79,7 @@ namespace sl
 			const Object * parent;	//	the Set <T> in which the object is
 	};
 
-	#ifdef SL_DEBUG
+	#ifdef TSL_DEBUG
 		//	This set is used to check if all objects were properly destructed.
 		extern set <Object *> objects;
 	#endif

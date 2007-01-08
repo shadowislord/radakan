@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 
 	///	Character contains all data of one in-game character.

@@ -1,7 +1,7 @@
 #include "character.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 //  constructor
 Character ::

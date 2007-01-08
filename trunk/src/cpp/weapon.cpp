@@ -1,7 +1,7 @@
 #include "weapon.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 //  constructor
 Weapon ::

@@ -3,7 +3,7 @@
 #include "peace_state.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 //  constructor
 Fight_State ::

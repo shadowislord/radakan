@@ -2,7 +2,7 @@
 
 using namespace std;
 using namespace boost;
-using namespace sl;
+using namespace tsl;
 
 template <> Battle_Engine * Ogre :: Singleton <Battle_Engine> :: ms_Singleton = NULL;
 

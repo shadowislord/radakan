@@ -5,10 +5,10 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 
-	///	Set <T> is a generic container, but every Object can't be in more then one Set <T> at once.
+	///	Set &#60;T&#62; is a generic container, but every Object can't be in more then one Set &#60;T&#62; at once.
 
 	template <typename T> class Set :
 		public virtual Object
@@ -35,9 +35,9 @@ namespace sl
 		private:
 			set <T *> children;
 		
-			//	Changes to next_child are ignored for const-ness.
+			//	'mutable' added to allow change even if in a const Set <T>.
 			//	'typename' added to solve warning C4346.
-			typename set <T *> :: const_iterator next_child;
+			mutable typename set <T *> :: const_iterator next_child;
 		};
 }
 

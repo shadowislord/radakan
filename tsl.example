@@ -1,0 +1,40 @@
+#!/bin/bash
+
+TRUNK="${T_OPT}/tsl/trunk"
+BUILD_COMMAND="scons"
+BUILD_ARGUMENT="bullet lua ois ogreode tsl"
+
+cd ${TRUNK}
+
+for ARGUMENT in ${*}; do
+	if [[ ${ARGUMENT} == "val" ]]; then
+		PREFIX="valgrind --log-file-exactly=log/valgrind.txt --time-stamp=yes -v"
+	elif [[ ${ARGUMENT} == "doxy" ]]; then
+		cd doc
+		doxygen
+		cd ..
+	elif [[ ${ARGUMENT} == "no" ]]; then
+		RUN="no"
+	else
+		BUILD_ARGUMENT="${ARGUMENT}"
+	fi
+done
+
+${BUILD_COMMAND} ${BUILD_ARGUMENT}
+BUILD_RESULT="${?}"
+
+if [[ ${BUILD_RESULT} != "0" ]]; then
+	echo "Building failed."
+	exit;
+fi
+
+if [[ ${RUN} != "no" ]]; then
+	rm log/*
+
+	${PREFIX} bin/debug/obj/tsl/tsl ${TRUNK} /usr/share/doc/ogre-1.2.4
+	echo "tsl exit code: ${?}"
+else
+	echo "Running tsl not required."
+fi
+
+echo "Done."

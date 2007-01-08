@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 
 	///	State is the abstract base class for all 'finite state machine'-states.

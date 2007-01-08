@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 
 	/// Sound is the abstract base class for all sounds classes.

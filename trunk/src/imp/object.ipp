@@ -4,7 +4,7 @@
 #include "object.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 template <typename T> bool Object ::
 	is_type ()

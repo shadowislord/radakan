@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 
 	///	TSL is the main class. It manages the eninges and the sectors.
@@ -19,7 +19,7 @@ namespace sl
 		public Set <Sector>
 	{
 		public :
-			TSL (string sl_path, string ogre_path);
+			TSL (string tsl_path, string ogre_path);
 			~TSL ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();

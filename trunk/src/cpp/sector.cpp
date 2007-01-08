@@ -1,7 +1,7 @@
 #include "sector.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 Sector ::
 	Sector
@@ -194,7 +194,7 @@ Sector ::
 Sector ::
 	~Sector ()
 {
-	trace () << "~Sector (" << endl;
+	trace () << "~Sector ()" << endl;
 	assert (is_initialized ());
 
 	trace () << "deleting camera... " << int (camera) << endl;
@@ -223,7 +223,7 @@ bool Sector ::
 	assert (is_initialized ());
 	assert (entity . is_initialized ());
 
-	#ifdef SL_DEBUG
+	#ifdef TSL_DEBUG
 		if (entity . is_type <NPC> ())
 		{
 			bool success = npcs . insert (& entity . to_type <NPC> ()) . second;

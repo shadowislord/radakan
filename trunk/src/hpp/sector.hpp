@@ -16,7 +16,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 
 	///	Sector keeps track of all data in an in-game sector.

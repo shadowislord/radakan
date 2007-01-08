@@ -9,7 +9,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 	class GUI_Engine :
 		public Object,
@@ -21,6 +21,7 @@ namespace sl
 			virtual bool is_initialized () const;
 			static string get_type_name ();
 			void set_scene_manager (Ogre :: SceneManager & new_scene_manager);
+			void set_mouse_position (pair <float, float> new_position);
 			bool render () const;
 
 		private :

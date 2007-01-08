@@ -2,7 +2,7 @@
 #define STATE_MACHINE_IPP
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 //virtual
 template <typename T> void State_Machine ::

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 
 	///	Entity is the base class for all in-game entity classes.

@@ -3,7 +3,7 @@
 #include "object.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 //  constructor
 Object ::
@@ -15,7 +15,7 @@ Object ::
 	assign (new_name);
 	parent = NULL;
 	
-	#ifdef SL_TRACE
+	#ifdef TSL_TRACE
 		objects . insert (this);
 
 		trace () << "So far, we have:" << endl;
@@ -36,7 +36,7 @@ Object ::
 	trace () << "~Object ()" << endl;
 	assert (is_initialized ());
 	
-	#ifdef SL_DEBUG
+	#ifdef TSL_DEBUG
 		objects . erase (this);
 	#endif
 }
@@ -48,7 +48,7 @@ bool Object ::
 {
 	//	checks for empty string
 	assert (warn <Object> (! empty ()));
-	#ifdef SL_DEBUG
+	#ifdef TSL_DEBUG
 		assert (warn <Object> (objects . find (const_cast <Object *> (this)) != objects . end ()));
 	#endif
 	return true;
@@ -66,7 +66,7 @@ ostream & Object ::
 	debug ()
 	const
 {
-	#ifdef SL_DEBUG
+	#ifdef TSL_DEBUG
 		return print ("debug");
 	#else
 		return cout << "<#1>";
@@ -77,7 +77,7 @@ ostream & Object ::
 	trace ()
 	const
 {
-	#ifdef SL_TRACE
+	#ifdef TSL_TRACE
 		return print ("trace");
 	#else
 		return cout << "<#2>";

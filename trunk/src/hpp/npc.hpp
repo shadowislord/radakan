@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 	class NPC :
 		public Character,

@@ -1,7 +1,7 @@
 #include "gui_engine.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 template <> GUI_Engine * Ogre :: Singleton <GUI_Engine> :: ms_Singleton = NULL;
 
@@ -56,6 +56,13 @@ void GUI_Engine ::
 	set_scene_manager (Ogre :: SceneManager & new_scene_manager)
 {
 	renderer -> setTargetSceneManager (& new_scene_manager);
+}
+
+void GUI_Engine ::
+	set_mouse_position (pair <float, float> new_position)
+{
+	debug () << "new mouse position: " << new_position . first << " " << new_position . second << endl;
+	system -> injectMousePosition (new_position . first, new_position . second);
 }
 
 bool GUI_Engine ::

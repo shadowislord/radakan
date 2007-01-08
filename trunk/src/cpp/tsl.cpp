@@ -2,31 +2,31 @@
 #include <algorithm>
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 template <> TSL * Ogre :: Singleton <TSL> :: ms_Singleton = NULL;
 
 TSL ::
-	TSL (string sl_path, string ogre_path) :
+	TSL (string tsl_path, string ogre_path) :
 	Object ("TSL"),
 //	State_Machine (NULL),
 	Set <Sector> ("TSL")
 {
-	trace () << "TSL (" << sl_path << ", " << ogre_path << ")" << endl;
+	trace () << "TSL (" << tsl_path << ", " << ogre_path << ")" << endl;
 
 	audio_engine = new Audio_Engine ();
-	audio_engine -> load (sl_path + "/data/sound/prelude_11.ogg");
+	audio_engine -> load (tsl_path + "/data/sound/prelude_11.ogg");
 	audio_engine -> play ();
 
 	//	Don't copy the log to the console. Store the log to a file, if debugging.
-	(new Ogre :: LogManager ()) -> createLog (sl_path + "/log/ogre.txt", true, false,
-		#ifdef SL_DEBUG
+	(new Ogre :: LogManager ()) -> createLog (tsl_path + "/log/ogre.txt", true, false,
+		#ifdef TSL_DEBUG
 			false
 		#else
 			true
 		#endif
 		);
-	root = new Ogre :: Root (sl_path + "/data/plugins.cfg", sl_path + "/data/ogre.cfg");
+	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg",tsl_path + "/data/ogre.cfg");
 	if (! root -> showConfigDialog ())
 	{
 		error () << " detected a configuration dialog problem." << endl;
@@ -37,35 +37,35 @@ TSL ::
 	{
 		// Add textures directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(sl_path + "/data/texture", "FileSystem", "textures", true);
+					(tsl_path + "/data/texture", "FileSystem", "textures", true);
 
 		// Add 3D models directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(sl_path + "/data/model", "FileSystem", "models", true);
+					(tsl_path + "/data/model", "FileSystem", "models", true);
 
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(sl_path + "/data/material", "FileSystem", "materials", true);
+					(tsl_path + "/data/material", "FileSystem", "materials", true);
 					
 		// Add gui config directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(sl_path + "/data/gui/config", "FileSystem", "gui", true);
+					(tsl_path + "/data/gui/config", "FileSystem", "gui", true);
 					
 		// Add gui font directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(sl_path + "/data/gui/font", "FileSystem", "gui", true);
+					(tsl_path + "/data/gui/font", "FileSystem", "gui", true);
 					
 		// Add gui imageset directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(sl_path + "/data/gui/imageset", "FileSystem", "gui", true);
+					(tsl_path + "/data/gui/imageset", "FileSystem", "gui", true);
 
 		// Add gui looknfeel directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(sl_path + "/data/gui/looknfeel", "FileSystem", "gui", true);
+					(tsl_path + "/data/gui/looknfeel", "FileSystem", "gui", true);
 
 		// Add gui scheme directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(sl_path + "/data/gui/scheme", "FileSystem", "gui", true);
+					(tsl_path + "/data/gui/scheme", "FileSystem", "gui", true);
 
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(ogre_path + "/Samples/Media/gui", "FileSystem", "gui", true);
@@ -105,7 +105,7 @@ TSL ::
 	root -> getRenderSystem () -> _setViewport
 					(window -> addViewport (& active_sector -> get_camera ()));
 
-	gui_engine = new GUI_Engine (* window, sl_path + "/log/cegui.txt");
+	gui_engine = new GUI_Engine (* window,tsl_path + "/log/cegui.txt");
 	gui_engine -> set_scene_manager (active_sector -> get_scene_manager ());
 
 	//	Set default mipmap level (NB some APIs ignore this)
@@ -156,6 +156,8 @@ void TSL ::
 	
 		input_engine -> capture ();
 		Ogre :: PlatformManager :: getSingletonPtr () -> messagePump (window);
+
+		gui_engine -> set_mouse_position (input_engine -> get_mouse_position (false));
 		
 		//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
 		if (! root -> renderOneFrame ()
@@ -221,14 +223,14 @@ void TSL ::
 
 		if (input_engine -> get_mouse_button (input_engine -> middle_mouse_button, false))
 		{
-			float raw_x_offset = - 0.02 * input_engine -> get_mouse_width (true);
+			float x_offset = input_engine -> get_mouse_position (true) . first;
 
-			if (raw_x_offset != 0)
+			if (x_offset != 0)
 			{
 				//	apply treshold
-				float x_offset = raw_x_offset; // / abs (raw_x_offset) * max (abs (raw_x_offset) - 0.030f, 0.f);
+				x_offset = - 0.002 * x_offset;
 			
-				debug () << input_engine -> middle_mouse_button << " " <<  raw_x_offset << " " << x_offset << endl;
+				debug () << input_engine -> middle_mouse_button << " - x offset: " <<  x_offset << endl;
 
 				Player :: getSingleton () . turn (x_offset);
 			}

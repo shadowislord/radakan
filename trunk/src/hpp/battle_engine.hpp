@@ -10,7 +10,7 @@
 using namespace std;
 using namespace boost;
 
-namespace sl
+namespace tsl
 {
 	class Battle_Engine :
 		public Object,

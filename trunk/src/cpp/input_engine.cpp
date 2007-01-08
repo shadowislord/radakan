@@ -1,7 +1,7 @@
 #include "input_engine.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 template <> Input_Engine * Ogre :: Singleton <Input_Engine> :: ms_Singleton = NULL;
 const string Input_Engine :: left_mouse_button = "left";
@@ -21,7 +21,7 @@ Input_Engine ::
 
 	// Each operating system uses a different mechanism to
 	// refer to the main rendering window.
-	#ifdef SL_WIN32
+	#ifdef TSL_WIN32
 		window . getCustomAttribute ("HWND", & window_handle_temp);
 	#else
 		window . getCustomAttribute ("GLXWINDOW", & window_handle_temp);
@@ -59,6 +59,8 @@ Input_Engine ::
 
 	//	Reference methods mouseMoved, mousePressed, mouseReleased
 	mouse -> setEventCallback (this);
+	mouse -> getMouseState () . width = window . getWidth ();
+	mouse -> getMouseState () . height = window . getHeight ();
 
 //	mouse . state . width = window . getWidth ();
 //	mouse . state . height = window . getHeight ();
@@ -160,32 +162,18 @@ bool Input_Engine ::
 	return false;
 }
 
-float Input_Engine ::
-	get_mouse_height (bool relative)
+pair <float, float> Input_Engine ::
+	get_mouse_position (bool relative)
 	const
 {
 	assert (is_initialized ());
 
 	if (relative)
 	{
-		return relative_mouse_height;
+		return relative_mouse_position;
 	}
 
-	return absolute_mouse_height;
-}
-
-float Input_Engine ::
-	get_mouse_width (bool relative)
-	const
-{
-	assert (is_initialized ());
-
-	if (relative)
-	{
-		return relative_mouse_width;
-	}
-
-	return absolute_mouse_width;
+	return absolute_mouse_position;
 }
 
 //	virtual
@@ -222,15 +210,13 @@ bool Input_Engine ::
 
 	//	Relative mouse position isn't handeled correctely by OIS.
 
-	relative_mouse_width = mouse_event . state . abX - absolute_mouse_width;
-	relative_mouse_height = mouse_event . state . abY - absolute_mouse_height;
+	relative_mouse_position = pair <float, float>
+		(mouse_event . state . abX - absolute_mouse_position . first,
+		mouse_event . state . abY - absolute_mouse_position . second);
 
-	debug () << relative_mouse_width << " " << mouse_event . state . relX << endl;
-
-	absolute_mouse_width = mouse_event . state . abX;
-	absolute_mouse_height = mouse_event . state . abY;
-
-	debug () << mouse_event . state . width << endl;
+	absolute_mouse_position = pair <float, float>
+		(mouse_event . state . abX,
+		mouse_event . state . abY);
 
 	return true;
 }

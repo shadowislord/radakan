@@ -40,7 +40,7 @@ include_path        =   [
 Import( "env", "dev", "mode")
 localenv = env.Copy()
 
-project = "tslrpg"
+project = "tsl"
 
 #~ if we are on windows we need to tell gcc to bild a windows exe
 #~ we need to set -mwindows as a compiler flag

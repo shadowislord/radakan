@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace sl
+namespace tsl
 {
 	class State_Machine :
 		public State,

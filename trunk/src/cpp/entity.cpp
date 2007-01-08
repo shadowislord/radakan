@@ -1,7 +1,7 @@
 #include "entity.hpp"
 
 using namespace std;
-using namespace sl;
+using namespace tsl;
 
 //  constructor
 Entity ::
@@ -138,7 +138,7 @@ btDefaultMotionState * Entity ::
 	return result;
 }
 
-string sl :: get_name (Ogre :: SceneNode & node)
+string tsl :: get_name (Ogre :: SceneNode & node)
 {
 	assert (node . numAttachedObjects () == 1);
 	Ogre :: MovableObject * movable_object = node . getAttachedObject (0);
