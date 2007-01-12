@@ -27,37 +27,35 @@ Sector ::
 	//	!!!	This doesn't work somehow.
 	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);
 
+	//	the ground
+	Ogre :: SceneNode & groundNode = create_entity_node ("Ground","plane.mesh", 1);
+	dynamic_cast <Ogre :: Entity *> (groundNode . getAttachedObject (0)) -> setMaterialName ("TavernWalls");
+	groundNode . setOrientation (Ogre :: Quaternion (Ogre :: Radian (- Ogre :: Math :: HALF_PI), Ogre :: Vector3 :: UNIT_X));
+
+	//	the tavern
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
 		create_entity_node ("Tavern", "tavern.mesh", 1))));
-
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
 		create_entity_node ("Bar", "bar.mesh", 1))));
-
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (116, 0, 17),
 		create_entity_node ("Table 1", "table.mesh", 1))));
-
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (116, 0, 57),
 		create_entity_node ("Table 2", "table.mesh", 1))));
-
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (26, 0, 97),
 		create_entity_node ("Table 3", "table.mesh", 1))));
 
 	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (126, 0, - 197),
 		create_entity_node ("Fence 1", "fences1.mesh", 0.3))));
-
 	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (226, 0, - 297),
 		create_entity_node ("Fence 2", "fences2.mesh", 0.3))));
-
 	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (326, 0, - 397),
 		create_entity_node ("Fence 3", "fences3.mesh", 0.3))));
-
 	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (426, 0, - 497),
 		create_entity_node ("Fence 4", "fences4.mesh", 0.3))));
-
 	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (526, 0, - 597),
 		create_entity_node ("Fence 5", "fences5.mesh", 0.3))));
@@ -86,11 +84,25 @@ Sector ::
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 700, 35, - 700),
 		create_entity_node ("Pine tree (2)", "pine_tree_2.mesh", 1.5))));
 
-	//	textured
-	Entity * tree2 = new Entity (false, true, true, 0, 0, btVector3 (- 500, 0, - 700),
-		create_entity_node ("Tree", "tree.mesh", 1.5));
-	add (* tree2);
-	tree2 -> node -> setDirection (0, - 1, 0);
+
+	//	200 x 150 is to much
+	for (int i = 0; i < 50; i++)
+	{
+		for (int j = 0; j < 50; j++)
+		{
+			//	textured
+			Entity * tree2 = new Entity (false, true, true, 0, 0,
+				btVector3
+				(
+					1000 - 50 * i + Ogre :: Math :: RangeRandom (- 30, 30),
+					0,
+					500 + 50 * j + Ogre :: Math :: RangeRandom (- 30, 30)
+				),
+				create_entity_node ("Tree, no. " + to_string (150 * i + j), "tree.mesh", 1.5));
+			add (* tree2);
+			tree2 -> node -> setDirection (0, - 1, 0);
+		}
+	}
 
 	if (Player :: getSingletonPtr () == NULL)
 	{
@@ -183,10 +195,6 @@ Sector ::
 		bbsNode2 -> attachObject (bbs2);
 		bbsNode2 -> setPosition (px, py, pz);
 	}
-
-	Ogre :: SceneNode & groundNode = create_entity_node ("Ground","plane.mesh", 1);
-	dynamic_cast <Ogre :: Entity *> (groundNode . getAttachedObject (0)) -> setMaterialName ("TavernWalls");
-	groundNode . setOrientation (Ogre :: Quaternion (Ogre :: Radian (- Ogre :: Math :: HALF_PI), Ogre :: Vector3 :: UNIT_X));
 
 	assert (is_initialized ());
 }

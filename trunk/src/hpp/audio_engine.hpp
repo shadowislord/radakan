@@ -2,7 +2,14 @@
 #define AUDIO_ENGINE_HPP
 
 #include "set.hpp"
-#include <fmod.h>
+
+//	#define TSL_FMOD
+
+#ifdef TSL_FMOD
+	#include <fmod.h>
+#else
+	#include <audiere.h>
+#endif
 
 using namespace std;
 
@@ -28,6 +35,7 @@ namespace tsl
 			}
 	};
 
+#ifdef TSL_FMOD
 	// .MOD, .S3M, .XM, .IT, .MID, .RMI, .SGT, .FSB
 	class Music_Module :
 		public Sound
@@ -50,27 +58,50 @@ namespace tsl
 		private:
 			FMUSIC_MODULE * module;
 	};
+#endif
 
 	// for static soundfiles, like .WAV, .MP2, .MP3, .OGG and .RAW
 	class Sound_Sample :
 		public Sound
 	{
 		public:
-			Sound_Sample (string file_name) :
+			#ifdef TSL_FMOD
+				Sound_Sample (string file_name) :
+			#else
+				Sound_Sample (string file_name, audiere :: AudioDevicePtr device) :
+			#endif
 				Sound (file_name)
 			{
-				sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
+				#ifdef TSL_FMOD
+					sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
+				#else
+					sound = audiere :: OpenSound (device, file_name . c_str ());
+					if (! sound)
+					{
+						error () << "OpenSound (...) failed" << endl;
+    					abort ();
+					}
+				#endif
 			}
 			// These files are closed automatically
 			virtual void play ()
 			{
-				FSOUND_PlaySound (FSOUND_FREE, sample);
+				#ifdef TSL_FMOD
+					FSOUND_PlaySound (FSOUND_FREE, sample);
+				#else
+					sound -> play();
+				#endif
 			}
 
 		private:
-			FSOUND_SAMPLE * sample;
+			#ifdef TSL_FMOD
+				FSOUND_SAMPLE * sample;
+			#else
+				audiere :: OutputStreamPtr sound;
+			#endif
 	};
 
+#ifdef TSL_FMOD
 	// for streamed audio, like file, url and cd
 	class Sound_Stream :
 		public Sound
@@ -93,6 +124,7 @@ namespace tsl
 	private:
 		FSOUND_STREAM * stream;
 	};
+#endif
 
 	class Audio_Engine :
 		private Set <Sound>
@@ -102,11 +134,22 @@ namespace tsl
 				Object ("Audio engine"),
 				Set <Sound> ("Audio engine")
 			{
-				FSOUND_Init (44100, 32, 0);
+				#ifdef TSL_FMOD
+					FSOUND_Init (44100, 32, 0);
+				#else
+					device = audiere :: OpenDevice ("");
+					if (! device)
+					{
+						error () << "OpenDevice () failed" << endl;
+						abort ();
+					}
+				#endif
 			}
 			~Audio_Engine ()
 			{
-				FSOUND_Close ();
+				#ifdef TSL_FMOD
+					FSOUND_Close ();
+				#endif
 			}
 			void play ()
 			{
@@ -118,7 +161,11 @@ namespace tsl
 				string extension = file_name . substr (file_name . size () - 3);
 				if (extension == "ogg")
 				{
-					add ((new Sound_Sample (file_name)) -> to_type <Sound> ());
+					add ((new Sound_Sample (file_name
+						#ifndef TSL_FMOD
+							, device
+						#endif
+						)) -> to_type <Sound> ());
 				}
 				else if (extension == "mp3")
 				{
@@ -131,6 +178,11 @@ namespace tsl
 					abort ();
 				}
 			}
+
+		#ifndef TSL_FMOD
+			private:
+				audiere :: AudioDevicePtr device;
+		#endif
 	};
 }
 

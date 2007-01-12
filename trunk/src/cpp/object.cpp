@@ -18,12 +18,12 @@ Object ::
 	#ifdef TSL_TRACE
 		objects . insert (this);
 
-		trace () << "So far, we have:" << endl;
+		/*trace () << "So far, we have:" << endl;
 		for (set <Object *> :: const_iterator i = objects . begin ();
 													i != objects . end (); i ++)
 		{
 			trace () << "\t" << * * i << " (" << * i << ")" << endl;
-		}
+		}*/
 	#endif
 
 	assert (Object :: is_initialized ());

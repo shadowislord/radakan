@@ -56,6 +56,8 @@ namespace tsl
 			
 			OIS :: Mouse * mouse;
 			OIS :: Keyboard * keyboard;
+			OIS :: InputManager * input_manager;
+
 	};
 }
 

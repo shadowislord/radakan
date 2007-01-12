@@ -29,7 +29,7 @@ TSL ::
 	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg",tsl_path + "/data/ogre.cfg");
 	if (! root -> showConfigDialog ())
 	{
-		error () << " detected a configuration dialog problem." << endl;
+		error () << " detected an Ogre configuration dialog problem." << endl;
 		abort ();
 	}
 
@@ -92,7 +92,7 @@ TSL ::
 	
 	window = root -> initialise (true, "The Scattered Lands");
 
-	Ogre :: MeshManager :: getSingleton (). createPlane ("plane.mesh", "custom", Ogre :: Plane (Ogre :: Vector3 :: UNIT_Z, Ogre :: Vector3 :: ZERO), 2000, 2000, 20, 20);
+	Ogre :: MeshManager :: getSingleton (). createPlane ("plane.mesh", "custom", Ogre :: Plane (Ogre :: Vector3 :: UNIT_Z, Ogre :: Vector3 :: ZERO), 20000, 20000, 20, 20);
 	
 
 	Set <Sector> :: add (* (new Sector ("Sector 1",

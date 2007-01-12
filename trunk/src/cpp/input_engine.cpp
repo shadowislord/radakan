@@ -33,13 +33,12 @@ Input_Engine ::
 	//	the system window.
 	param_list . insert (make_pair (string ("WINDOW"), window_handle . str ()));
 
-	OIS :: InputManager :: createInputSystem (param_list);
+	input_manager = OIS :: InputManager :: createInputSystem (param_list);
 
 	//	The final parameter refers to "buffered".
-	//	If this is causes a problem, disable it.
 	keyboard = dynamic_cast <OIS :: Keyboard *>
 	(
-		OIS :: InputManager :: getSingletonPtr () -> createInputObject
+		input_manager -> createInputObject
 		(
 			OIS :: OISKeyboard, true
 			//	I (Tinus) set this to buffered again, as otherwise get_key (...)
@@ -48,7 +47,7 @@ Input_Engine ::
 	);
 	mouse = dynamic_cast <OIS :: Mouse *>
 	(
-		OIS :: InputManager :: getSingletonPtr () -> createInputObject
+		input_manager -> createInputObject
 		(
 			OIS :: OISMouse, true
 		)
@@ -73,9 +72,14 @@ Input_Engine ::
 {
 	assert (is_initialized ());
 
-	OIS :: InputManager :: getSingletonPtr () -> destroyInputObject (keyboard);
-	OIS :: InputManager :: getSingletonPtr () -> destroyInputObject (mouse);
-	OIS :: InputManager :: destroyInputSystem ();
+	input_manager -> destroyInputObject (keyboard);
+	input_manager -> destroyInputObject (mouse);
+	#if OIS_VERSION_MAJOR < 1
+		input_manager -> destroyInputSystem ();
+	#else
+		//	!!! this gives a linking error
+		//	input_manager -> destroyInputSystem (input_manager);
+	#endif
 
 	//	Set to NULL so we can query if they have been initialised.
 	keyboard = NULL;
@@ -87,14 +91,7 @@ bool Input_Engine ::
 	is_initialized ()
 	const
 {
-	if ((OIS :: InputManager :: getSingletonPtr () == NULL) || (mouse == NULL) || (keyboard == NULL))
-	{
-		return warn <Input_Engine> (false);
-	}
-	else
-	{
-		return warn <Input_Engine> (Object :: is_initialized ());
-	}
+	return warn <Input_Engine> (Object :: is_initialized () && (input_manager != NULL) && (mouse != NULL) && (keyboard != NULL));
 }
 
 //	static
@@ -109,24 +106,17 @@ void Input_Engine ::
 {
 	assert (is_initialized ());
 
-	mouse -> capture ();
-	if (! mouse -> buffered ())
-	{
-//		handleNonBufferedMouse ();
-	}
-
 	keyboard -> capture ();
 	if (! keyboard -> buffered ())
 	{
 //		handleNonBufferedKeys ();
 	}
+	mouse -> capture ();
+	if (! mouse -> buffered ())
+	{
+//		handleNonBufferedMouse ();
+	}
 }
-
-//	bool Input_Engine ::
-//		is_key_down (OIS :: KeyCode key_code)
-//	{
-//		return keyboard -> isKeyDown (key_code);
-//	}
 
 bool Input_Engine ::
 	get_key (string key, bool reset)
@@ -208,15 +198,38 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	//	Relative mouse position isn't handeled correctely by OIS.
+	#ifdef TSL_DEBUG
+		pair <float, float> prev = absolute_mouse_position;
+	#endif
+	
+	#if OIS_VERSION_MAJOR < 1
+		//	assuming ois-0.7.2
+		relative_mouse_position = pair <float, float>
+				(mouse_event . state . relX, mouse_event . state . relY);
 
-	relative_mouse_position = pair <float, float>
-		(mouse_event . state . abX - absolute_mouse_position . first,
-		mouse_event . state . abY - absolute_mouse_position . second);
+		absolute_mouse_position = pair <float, float>
+				(mouse_event . state . abX, mouse_event . state . abY);
+	#else
+		error () << "OIS 1" << endl;
 
-	absolute_mouse_position = pair <float, float>
-		(mouse_event . state . abX,
-		mouse_event . state . abY);
+		error () << "OIS 1.8" << endl;
+		int a = mouse_event . state . X . rel;
+		error () << "OIS: " << a << endl;
+		error () << "OIS 1.9" << endl;
+		relative_mouse_position = pair <float, float>
+				(mouse_event . state . X . rel, mouse_event . state . Y . rel);
+		error () << "OIS 2" << endl;
+
+		absolute_mouse_position = pair <float, float>
+				(mouse_event . state . X . abs, mouse_event . state . Y . abs);
+		error () << "OIS 3" << endl;
+	#endif
+
+//	The assertions below fail if you move the mouse outside the window.
+//	debug () << prev . first << " + " << relative_mouse_position . first << " ?= " <<  absolute_mouse_position . first << endl;
+//	assert (prev . first + relative_mouse_position . first == absolute_mouse_position . first);
+//	debug () << prev . second << " + " << relative_mouse_position . second << " ?= " <<  absolute_mouse_position . second << endl;
+//	assert (prev . second + relative_mouse_position . second == absolute_mouse_position . second);
 
 	return true;
 }
