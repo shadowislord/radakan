@@ -100,7 +100,7 @@ TSL ::
 
 	Set <Sector> :: add (* (new Sector ("Sector 2",
 				* root -> createSceneManager (Ogre :: ST_GENERIC))) );
-	active_sector = Set <Sector> :: get_child <Sector> ();
+	active_sector = Set <Sector> :: get_typed_child <Sector> ();
 
 	root -> getRenderSystem () -> _setViewport
 					(window -> addViewport (& active_sector -> get_camera ()));
@@ -191,7 +191,7 @@ void TSL ::
 		//	hit
 		if (input_engine -> get_key ("h", true))
 		{
-			NPC * npc = active_sector -> get_child <NPC> ();
+			NPC * npc = active_sector -> get_typed_child <NPC> ();
 			assert (npc != NULL);
 			if (! npc -> is_dead ())
 			{
@@ -205,7 +205,7 @@ void TSL ::
 			//	Memo to self (Tinus):
 			//	NPC npc = * active_sector -> get_child <NPC> ();
 			//	that *copies* the NPC.
-			NPC & npc = * active_sector -> get_child <NPC> ();
+			NPC & npc = * active_sector -> get_typed_child <NPC> ();
 			assert (npc . is_initialized ());
 			if (Player :: getSingleton () . has_weapon ())
 			{
@@ -238,12 +238,12 @@ void TSL ::
 		
 		if (input_engine -> get_key ("1", true))
 		{
-			switch_to (Set <Sector> :: get_child <Sector> ("Sector 1"));
+			switch_to (Set <Sector> :: get_typed_child <Sector> ("Sector 1"));
 		}
 		
 		if (input_engine -> get_key ("2", true))
 		{
-			switch_to (Set <Sector> :: get_child <Sector> ("Sector 2"));
+			switch_to (Set <Sector> :: get_typed_child <Sector> ("Sector 2"));
 		}
 
 		active_sector -> get_camera () . setPosition (Player :: getSingleton () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));

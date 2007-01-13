@@ -9,7 +9,7 @@ using namespace tsl;
 Peace_State ::
 	Peace_State (Character & new_owner) :
 	Object (new_owner + "'s peace state"),
-	State (new_owner)
+	State <Character> (new_owner)
 {
 	assert (Peace_State :: is_initialized ());
 
@@ -29,7 +29,7 @@ bool Peace_State ::
 	is_initialized ()
 	const
 {
-	return State :: is_initialized () && (! owner . is_dead ());
+	return State <Character> :: is_initialized () && (! owner . is_dead ());
 }
 
 //	static
@@ -47,7 +47,7 @@ string Peace_State ::
 	
 	if (owner . has_weapon ())
 	{
-		owner . to_type <State_Machine> () . change_active_state <Fight_State> ();
+		owner . to_type <State_Machine <Character> > () . change_active_state <Fight_State> ();
 		return owner + " gets aggressive!";
 	}
 	else

@@ -11,10 +11,16 @@ namespace tsl
 {
 	class NPC :
 		public Character,
-		public State_Machine
+		public State_Machine <Character>
 	{
 		public :
-			NPC (Ogre :: SceneNode & new_node);
+			NPC
+			(
+				float new_volume,
+				float new_weight,
+				btVector3 new_position,
+				Ogre :: SceneNode & new_node
+			);
 			virtual ~NPC ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();

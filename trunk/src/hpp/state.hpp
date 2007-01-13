@@ -1,7 +1,7 @@
 #ifndef STATE_HPP
 #define STATE_HPP
 
-#include "character.hpp"
+#include "set.hpp"
 
 using namespace std;
 
@@ -10,7 +10,7 @@ namespace tsl
 
 	///	State is the abstract base class for all 'finite state machine'-states.
 
-	class State :
+	template <typename T> class State :
 		public virtual Object
 	{
 		public :
@@ -23,8 +23,8 @@ namespace tsl
 			virtual string think () = 0;	//	change your current state
 
 		protected:
-			State (Character & new_owner);
-			Character & owner;
+			State (T & new_owner);
+			T & owner;
 	};
 }
 

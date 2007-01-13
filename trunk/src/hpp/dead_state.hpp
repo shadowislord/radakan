@@ -2,13 +2,14 @@
 #define DEAD_STATE_HPP
 
 #include "state_machine.hpp"
+#include "character.hpp"
 
 using namespace std;
 
 namespace tsl
 {
 	class Dead_State :
-		public State
+		public State <Character>
 	{
 		public :
 			Dead_State (Character & new_owner);

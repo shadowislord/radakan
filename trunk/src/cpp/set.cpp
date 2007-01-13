@@ -1,6 +1,3 @@
-#ifndef SET_IPP
-#define SET_IPP
-
 #include "set.hpp"
 
 using namespace std;
@@ -121,7 +118,7 @@ template <typename T> bool Set <T> ::
 }
 
 template <typename T> template <typename U> U * Set <T> ::
-	get_child ()
+	get_typed_child ()
 	const
 {
 	trace () << "get_child <" << T :: get_type_name () << ", " << U :: get_type_name () << "> ()" << endl;
@@ -138,7 +135,7 @@ template <typename T> template <typename U> U * Set <T> ::
 }
 
 template <typename T> template <typename U> U * Set <T> ::
-	get_child (string name)
+	get_typed_child (string name)
 	const
 {
 	trace () << "get_child <" << T :: get_type_name () << "> (" << name << ")" << endl;
@@ -183,4 +180,14 @@ template <typename T> T * Set <T> ::
 	return * (next_child ++);
 }
 
-#endif	//	SET_IPP
+#include "sector.hpp"
+#include "state.hpp"
+#include "audio_engine.hpp"
+
+template class Set <Entity>;
+template NPC * Set <Entity> :: get_typed_child <NPC> () const;
+template class Set <Sector>;
+template Sector * Set <Sector> :: get_typed_child <Sector> () const;
+template Sector * Set <Sector> :: get_typed_child <Sector> (string name) const;
+//	template class Set <Sound>;
+template class Set <State <Character> >;

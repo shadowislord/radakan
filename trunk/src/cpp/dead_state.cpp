@@ -7,9 +7,9 @@ using namespace tsl;
 Dead_State ::
 	Dead_State (Character & new_owner) :
 	Object (new_owner + "'s dead state"),
-	State (new_owner)
+	State <Character> (new_owner)
 {
-	assert (State :: is_initialized ());
+	assert (State <Character> :: is_initialized ());
 
 	assert (Dead_State :: is_initialized ());
 }
@@ -19,7 +19,7 @@ Dead_State ::
 	~Dead_State ()
 {
 	trace () << "~Dead_State ()" << endl;
-	assert (State :: is_initialized ());
+	assert (State <Character> :: is_initialized ());
 }
 
 //	virtual
@@ -27,7 +27,7 @@ bool Dead_State ::
 	is_initialized ()
 	const
 {
-	return State :: is_initialized ();
+	return State <Character> :: is_initialized ();
 }
 
 //	static

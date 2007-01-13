@@ -2,13 +2,14 @@
 #define FIGHT_STATE_HPP
 
 #include "state_machine.hpp"
+#include "character.hpp"
 
 using namespace std;
 
 namespace tsl
 {
 	class Fight_State :
-		public State
+		public State <Character>
 	{
 		public :
 			Fight_State (Character & new_owner);

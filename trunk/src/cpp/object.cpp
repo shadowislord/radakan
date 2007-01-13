@@ -176,3 +176,77 @@ ostream & Object ::
 {
 	return cout << message << ": " << * this << " - ";
 }
+
+template <typename T> bool Object ::
+	is_type ()
+	const
+{
+	trace () << "is_type <" << T :: get_type_name () << "> ()" << endl;
+	assert (is_initialized ());
+	
+	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
+}
+
+template <typename T> T & Object ::
+	to_type ()
+	const
+{
+	trace () << "to_type <" << T :: get_type_name () << "> ()" << endl;
+	assert (is_initialized ());
+	assert (is_type <T> ());
+	
+	return * dynamic_cast <T *> (const_cast <Object *> (this));
+}
+
+//	This method is only used for debugging.
+//	Example usage: assert (warn <Class> (object -> Class :: is_initialized ()));
+//	In case of an assertion failure, you get an informative warning in the log.
+template <typename T> bool Object ::
+	warn (bool initialization)
+	const
+{
+	if (! initialization)
+	{
+		error () << " is not fully initialized as " << T :: get_type_name () << "!" << endl;
+	}
+	return initialization;
+}
+
+#include "tsl.hpp"
+
+template Container & Object :: to_type <Container> () const;
+template Sector & Object :: to_type <Sector> () const;
+template Set <Entity> & Object :: to_type <Set <Entity> > () const;
+template Set <Sector> & Object :: to_type <Set <Sector> > () const;
+template Set <Sound> & Object :: to_type <Set <Sound> > () const;
+template Set <State <Character> > & Object :: to_type <Set <State <Character> > > () const;
+template State_Machine <Character> & Object :: to_type <State_Machine <Character> > () const;
+template NPC & Object :: to_type <NPC> () const;
+template Sound & Object :: to_type <Sound> () const;
+template Weapon & Object :: to_type <Weapon> () const;
+
+template bool Object :: is_type <Container> () const;
+template bool Object :: is_type <NPC> () const;
+template bool Object :: is_type <Sector> () const;
+template bool Object :: is_type <Set <Entity> > () const;
+template bool Object :: is_type <Set <Sector> > () const;
+template bool Object :: is_type <Set <Sound> > () const;
+template bool Object :: is_type <Set <State <Character> > > () const;
+template bool Object :: is_type <Weapon> () const;
+
+template bool Object :: warn <Battle_Engine> (bool initialization) const;
+template bool Object :: warn <Character> (bool initialization) const;
+template bool Object :: warn <Entity> (bool initialization) const;
+template bool Object :: warn <GUI_Engine> (bool initialization) const;
+template bool Object :: warn <Input_Engine> (bool initialization) const;
+template bool Object :: warn <NPC> (bool initialization) const;
+template bool Object :: warn <Sector> (bool initialization) const;
+template bool Object :: warn <Set <Entity> > (bool initialization) const;
+template bool Object :: warn <Set <Sector> > (bool initialization) const;
+template bool Object :: warn <Set <Sound> > (bool initialization) const;
+template bool Object :: warn <Set <State <Character> > > (bool initialization) const;
+template bool Object :: warn <State <Character> > (bool initialization) const;
+template bool Object :: warn <State_Machine <Character> > (bool initialization) const;
+template bool Object :: warn <TSL> (bool initialization) const;
+template bool Object :: warn <Weapon> (bool initialization) const;
+

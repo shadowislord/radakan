@@ -24,8 +24,8 @@ namespace tsl
 			virtual bool move_to (T & t, Set <T> & other_set);
 															//	true iff succes
 			//	returns a child of type U, if possible
-			template <typename U> U * get_child () const;
-			template <typename U> U * get_child (string name) const;
+			template <typename U> U * get_typed_child () const;
+			template <typename U> U * get_typed_child (string name) const;
 
 		protected:
 			//	These two methods make it very easy to get a pointer to each child:
@@ -36,11 +36,9 @@ namespace tsl
 			set <T *> children;
 		
 			//	'mutable' added to allow change even if in a const Set <T>.
-			//	'typename' added to solve warning C4346.
+			//	'typename' added to solve (MSV?) warning C4346.
 			mutable typename set <T *> :: const_iterator next_child;
 		};
 }
-
-#include "set.ipp"
 
 #endif	//	SET_HPP

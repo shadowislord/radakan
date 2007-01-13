@@ -5,16 +5,24 @@ using namespace tsl;
 
 //  constructor
 Character ::
-	Character (Ogre :: SceneNode & new_node) :
+	Character
+	(
+		float new_volume,
+		float new_weight,
+		btVector3 new_position,
+		Ogre :: SceneNode & new_node
+	) :
 	Object (get_name (* node)),
 	Container
-		(true,
+	(
 		true,
 		true,
-		80,
-		65,
-		btVector3 (100, 0, 200),
-		new_node)
+		true,
+		new_volume,
+		new_weight,
+		new_position,
+		new_node
+	)
 {
 	trace () << "Character (" << get_name (* node) << ")" << endl;
 	assert (Entity :: is_initialized ());

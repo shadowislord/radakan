@@ -2,13 +2,14 @@
 #define PEACE_STATE_HPP
 
 #include "state_machine.hpp"
+#include "character.hpp"
 
 using namespace std;
 
 namespace tsl
 {
 	class Peace_State :
-		public State
+		public State <Character>
 	{
 		public :
 			Peace_State (Character & new_owner);

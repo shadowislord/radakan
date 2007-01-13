@@ -126,6 +126,8 @@ namespace tsl
 	};
 #endif
 
+	template class Set <Sound>;
+
 	class Audio_Engine :
 		private Set <Sound>
 	{

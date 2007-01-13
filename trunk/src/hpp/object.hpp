@@ -85,6 +85,4 @@ namespace tsl
 	#endif
 }
 
-#include "object.ipp"
-
 #endif	//	OBJECT_HPP

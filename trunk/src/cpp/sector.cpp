@@ -44,69 +44,69 @@ Sector ::
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (26, 0, 97),
 		create_entity_node ("Table 3", "table.mesh", 1))));
 
-	//	not textured
+	//	These fences are not textured yet.
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (126, 0, - 197),
 		create_entity_node ("Fence 1", "fences1.mesh", 0.3))));
-	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (226, 0, - 297),
 		create_entity_node ("Fence 2", "fences2.mesh", 0.3))));
-	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (326, 0, - 397),
 		create_entity_node ("Fence 3", "fences3.mesh", 0.3))));
-	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (426, 0, - 497),
 		create_entity_node ("Fence 4", "fences4.mesh", 0.3))));
-	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (526, 0, - 597),
 		create_entity_node ("Fence 5", "fences5.mesh", 0.3))));
 
 	//	not textured
-	add (* (new Entity (false, true, true, 0, 0, btVector3 (1000, 0, 500),
+	add (* (new Entity (false, true, true, 0, 0, btVector3 (800, 0, 200),
 		create_entity_node ("House", "house.mesh", 0.4))));
-
-	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 500, 0, - 500),
 		create_entity_node ("Wagon", "wagon.mesh", 0.02))));
-
-	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 550, 0, - 500),
 		create_entity_node ("Pot", "pot.mesh", 0.2))));
-
-	//	not textured
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 600, 0, - 500),
-		create_entity_node ("Pot (2)", "pot_2.mesh", 0.2))));
-
-	//	textured
-	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 700, 45, - 500),
-		create_entity_node ("Pine tree", "pine_tree.mesh", 0.7))));
-
-	//	not textured
+		create_entity_node ("Pot 2", "pot_2.mesh", 0.2))));
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 700, 35, - 700),
-		create_entity_node ("Pine tree (2)", "pine_tree_2.mesh", 1.5))));
+		create_entity_node ("Pine tree", "pine_tree_2.mesh", 1.5))));
 
-
-	//	200 x 150 is to much
-	for (int i = 0; i < 50; i++)
+	//	forest of about 2000 trees
+	//	(30000 trees takes to long to load)
+	Entity * temp_tree = NULL;
+	for (int i = - 25; i <= 25; i++)
 	{
-		for (int j = 0; j < 50; j++)
+		for (int j = int (- sqrt (625 - i * i)); j <= sqrt (625 - i * i); j++)
 		{
-			//	textured
-			Entity * tree2 = new Entity (false, true, true, 0, 0,
-				btVector3
+			btVector3 pos = btVector3
 				(
-					1000 - 50 * i + Ogre :: Math :: RangeRandom (- 30, 30),
+					- 1500 + 100 * i + Ogre :: Math :: RangeRandom (- 130, 130),
 					0,
-					500 + 50 * j + Ogre :: Math :: RangeRandom (- 30, 30)
-				),
-				create_entity_node ("Tree, no. " + to_string (150 * i + j), "tree.mesh", 1.5));
-			add (* tree2);
-			tree2 -> node -> setDirection (0, - 1, 0);
+					3000 + 100 * j + Ogre :: Math :: RangeRandom (- 130, 130)
+				);
+			if (0.4 < Ogre :: Math :: RangeRandom (0, 1))
+			{
+				temp_tree = new Entity (false, true, true, 0, 0, pos,
+					create_entity_node ("Tree no. " + to_string (50 * i + j),
+					"tree.mesh", 1.5));
+				temp_tree -> node -> setDirection (0, - 1, 0);
+			}
+			else
+			{
+				temp_tree = new Entity (false, true, true, 0, 0, pos + btVector3 (0, 96, 0),
+					create_entity_node ("Tree no. " + to_string (50 * i + j),
+					"pine_tree.mesh", 1.5));
+			}
+			add (* temp_tree);
 		}
 	}
 
 	if (Player :: getSingletonPtr () == NULL)
 	{
-		Player * player = new Player (create_entity_node ("Player", "ninja.mesh", 0.1));
+		Player * player = new Player
+		(
+			80,
+			65,
+			btVector3 (100, 0, 200),
+			create_entity_node ("Player", "ninja.mesh", 0.1)
+		);
 
 		player -> add
 		(
@@ -133,11 +133,16 @@ Sector ::
 		add (* player);
 	}
 
-	NPC * ninja = new NPC (create_entity_node ("Ninja (" + * this + ")", "ninja.mesh", 0.1));
-	ninja -> set_position (btVector3 (120, 0, 30));
+	NPC * ninja = new NPC
+	(
+		80,
+		65,
+		btVector3 (120, 0, 30),
+		create_entity_node ("Ninja (" + * this + ")", "ninja.mesh", 0.1)
+	);
 	add (* ninja);
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 200; i++)
 	{
 		char name [50];
 		sprintf (name, "cluster_%d", i);
@@ -152,7 +157,6 @@ Sector ::
 		bbs2 -> getMaterial () -> setTextureFiltering (Ogre :: TFO_TRILINEAR);
 		bbs2 -> getMaterial () -> setDepthCheckEnabled (true);
 		int px = int (Ogre :: Math :: RangeRandom (- 2500, 2500));
-		int py = int (Ogre :: Math :: RangeRandom (- 2500, 2500));
 		int pz = int (Ogre :: Math :: RangeRandom (- 2500, 2500));
 		Ogre :: Billboard * bb = bbs2 -> createBillboard
 											(0, 0, 0, Ogre :: ColourValue());
@@ -160,40 +164,7 @@ Sector ::
 		bb -> setDimensions (100 * dim, 100 * dim);
 		bb -> setRotation (Ogre :: Radian (Ogre :: Math :: RangeRandom (0, 2 * Ogre :: Math :: PI)));
 		bbsNode2 -> attachObject (bbs2);
-		bbsNode2 -> setPosition (px, py, pz);
-	}
-	for (int i = 0; i < 100; i++)
-	{
-		char name [50];
-		sprintf (name, "star_%d", i);
-		Ogre :: BillboardSet * bbs2 = scene_manager -> createBillboardSet (name, 1);
-		bbs2 -> setBillboardRotationType (Ogre :: BBR_VERTEX);
-		Ogre :: SceneNode * bbsNode2 = scene_manager -> getRootSceneNode () -> createChildSceneNode ();
-
-		char type [50];
-		int ran = (int (Ogre :: Math :: RangeRandom (0, 1) * 100)) % 2 + 1;
-		sprintf (type, "spacebillboard/star_%d", ran);
-		bbs2 -> setMaterialName (type);
-		bbs2 -> getMaterial () -> setTextureFiltering (Ogre :: TFO_TRILINEAR);
-		bbs2 -> getMaterial () -> setDepthCheckEnabled (true);
-		int px = int (Ogre :: Math :: RangeRandom (-2500, 2500));
-		int py = int (Ogre :: Math :: RangeRandom (-2500, 2500));
-		int pz = int (Ogre :: Math :: RangeRandom (-2500, 2500));
-		Ogre :: Billboard * bb = bbs2 -> createBillboard
-		(
-			0, 0, 0,
-			Ogre :: ColourValue
-			(
-				Ogre :: Math :: RangeRandom (0.6f, 1),
-				Ogre :: Math :: RangeRandom (0.6f, 1),
-				Ogre :: Math :: RangeRandom (0.6f, 1)
-			)
-		);
-		int dim = int (Ogre :: Math :: RangeRandom(1.5f, 2));
-		bb -> setDimensions (5 * dim, 5 * dim);
-		bb -> setRotation (Ogre :: Radian (Ogre :: Math :: RangeRandom (0, 2 * Ogre :: Math :: PI)));
-		bbsNode2 -> attachObject (bbs2);
-		bbsNode2 -> setPosition (px, py, pz);
+		bbsNode2 -> setPosition (px, 500, pz);
 	}
 
 	assert (is_initialized ());

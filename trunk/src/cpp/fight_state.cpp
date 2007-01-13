@@ -9,9 +9,9 @@ using namespace tsl;
 Fight_State ::
 	Fight_State (Character & new_owner) :
 	Object (new_owner + "'s fight state"),
-	State (new_owner)
+	State <Character> (new_owner)
 {
-	assert (State :: is_initialized ());
+	assert (State <Character> :: is_initialized ());
 
 	assert (Fight_State :: is_initialized ());
 }
@@ -21,7 +21,7 @@ Fight_State ::
 	~Fight_State ()
 {
 	trace () << "~Fight_State ()" << endl;
-	assert (State :: is_initialized ());
+	assert (State <Character> :: is_initialized ());
 }
 
 //	virtual
@@ -29,7 +29,7 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	return State :: is_initialized () && (! owner . is_dead ());
+	return State <Character> :: is_initialized () && (! owner . is_dead ());
 }
 
 //	static
@@ -47,7 +47,7 @@ string Fight_State ::
 
 	if (! owner . has_weapon ())
 	{
-		owner . to_type <State_Machine> () . change_active_state <Peace_State> ();
+		owner . to_type <State_Machine <Character> > () . change_active_state <Peace_State> ();
 		return owner + " says 'There's no point in being aggressive without a weapon.'";
 	}
 	else

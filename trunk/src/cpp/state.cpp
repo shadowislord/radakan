@@ -4,8 +4,8 @@ using namespace std;
 using namespace tsl;
 
 //  constructor
-State ::
-	State (Character & new_owner) :
+template <typename T> State <T> ::
+	State (T & new_owner) :
 	Object (new_owner + "'s generic state"),
 	owner (new_owner)
 {
@@ -13,34 +13,36 @@ State ::
 	assert (Object :: is_initialized ());
 //	trace () << "State (" << new_owner << ") A" << endl;
 	
-	assert (owner . Character :: is_initialized ());
+	assert (owner . T :: is_initialized ());
 //	trace () << "State (" << new_owner << ") B" << endl;
-	assert (! owner . is_dead ());
-//	trace () << "State (" << new_owner << ") C" << endl;
 
-	assert (State :: is_initialized ());
+	assert (State <T> :: is_initialized ());
 //	trace () << "State (" << new_owner << ") D" << endl;
 }
 
 //  destructor
-State ::
+template <typename T> State <T> ::
 	~State ()
 {
 	trace () << "~State ()" << endl;
-	assert (State :: is_initialized ());
+	assert (State <T> :: is_initialized ());
 }
 
 //	virtual
-bool State ::
+template <typename T> bool State <T> ::
 	is_initialized ()
 	const
 {
-	return warn <State> (Object :: is_initialized () && owner . Character :: is_initialized ());
+	return warn <State <T> > (Object :: is_initialized () && owner . T :: is_initialized ());
 }
 
 //	static
-string State ::
+template <typename T> string State <T> ::
 	get_type_name ()
 {
 	return "state";
 }
+
+#include "character.hpp"
+
+template class State <Character>;

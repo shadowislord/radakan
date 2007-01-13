@@ -75,6 +75,7 @@ Input_Engine ::
 	input_manager -> destroyInputObject (keyboard);
 	input_manager -> destroyInputObject (mouse);
 	#if OIS_VERSION_MAJOR < 1
+		//	assuming ois-0.7.2
 		input_manager -> destroyInputSystem ();
 	#else
 		//	!!! this gives a linking error

@@ -10,13 +10,11 @@ namespace tsl
 
 	///	Character contains all data of one in-game character.
 
-	///
-	///	It is called by an engine to do something, or it's data is retrieved by Ogre.
 	class Character :
 		public Container
 	{
 		public :
-			Character (Ogre :: SceneNode & new_node);
+			//	The constructor is protected, see below.
 			virtual ~Character ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
@@ -29,7 +27,16 @@ namespace tsl
 			void run (float distance);
 			void turn (float radian_angle);
 			virtual string die ();
-		
+
+		protected:
+			Character
+			(
+				float new_volume,
+				float new_weight,
+				btVector3 new_position,
+				Ogre :: SceneNode & new_node
+			);
+
 		private :
 			//	exp = experience
 			int agility_exp;

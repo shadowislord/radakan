@@ -7,9 +7,21 @@ template <> Player * Ogre :: Singleton <Player> :: ms_Singleton = NULL;
 
 //  constructor
 Player ::
-	Player (Ogre :: SceneNode & new_node) :
+	Player
+	(
+		float new_volume,
+		float new_weight,
+		btVector3 new_position,
+		Ogre :: SceneNode & new_node
+	) :
 	Object (get_name (new_node)),
-	Character (new_node)
+	Character
+	(
+		new_volume,
+		new_weight,
+		new_position,
+		new_node
+	)
 {
 	trace () << "Player (" << node << ")" << endl;
 	assert (Character :: is_initialized ());

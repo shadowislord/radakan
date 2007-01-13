@@ -5,18 +5,30 @@ using namespace tsl;
 
 //  constructor
 NPC ::
-	NPC (Ogre :: SceneNode & new_node) :
+	NPC
+	(
+		float new_volume,
+		float new_weight,
+		btVector3 new_position,
+		Ogre :: SceneNode & new_node
+	) :
 	Object (get_name (new_node)),
-	Character (new_node),
-	State_Machine ()
+	Character
+	(
+		new_volume,
+		new_weight,
+		new_position,
+		new_node
+	),
+	State_Machine <Character> (this)
 {
 	trace () << "NPC (" << get_name (* node) << ")" << endl;
 	assert (Character :: is_initialized ());
 //	trace () << "NPC (" << get_name (* node) << ") A" << endl;
-	assert (State_Machine :: is_initialized ());
+	assert (State_Machine <Character> :: is_initialized ());
 //	trace () << "NPC (" << get_name (* node) << ") B" << endl;
 
-	State_Machine :: add <Peace_State> ();
+	State_Machine <Character> :: add <Peace_State> ();
 //	trace () << "NPC (" << get_name (* node) << ") C" << endl;
 
 	assert (is_initialized ());
@@ -37,7 +49,7 @@ bool NPC ::
 	const
 {
 	assert (warn <NPC> (Character :: is_initialized ()));
-	assert (warn <NPC> (State_Machine :: is_initialized ()));
+	assert (warn <NPC> (State_Machine <Character> :: is_initialized ()));
 	return true;
 }
 
