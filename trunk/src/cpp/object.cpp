@@ -214,7 +214,11 @@ template <typename T> bool Object ::
 
 #include "tsl.hpp"
 
+template Character & Object :: to_type <Character> () const;
 template Container & Object :: to_type <Container> () const;
+template Dead_State & Object :: to_type <Dead_State> () const;
+template Fight_State & Object :: to_type <Fight_State> () const;
+template Peace_State & Object :: to_type <Peace_State> () const;
 template Sector & Object :: to_type <Sector> () const;
 template Set <Entity> & Object :: to_type <Set <Entity> > () const;
 template Set <Sector> & Object :: to_type <Set <Sector> > () const;

@@ -191,11 +191,14 @@ void TSL ::
 		//	hit
 		if (input_engine -> get_key ("h", true))
 		{
-			NPC * npc = active_sector -> get_typed_child <NPC> ();
-			assert (npc != NULL);
-			if (! npc -> is_dead ())
+			NPC & npc = * * active_sector -> npcs . begin ();
+			if (! npc . is_dead ())
 			{
-				trace () << battle_engine . hit (Player :: getSingleton (), * npc) << endl;
+				gui_engine -> show (battle_engine . hit (Player :: getSingleton (), npc));
+			}
+			else
+			{
+				gui_engine -> show ("Mutilating a dead body is *not* nice.");
 			}
 		}
 		
@@ -205,19 +208,24 @@ void TSL ::
 			//	Memo to self (Tinus):
 			//	NPC npc = * active_sector -> get_child <NPC> ();
 			//	that *copies* the NPC.
-			NPC & npc = * active_sector -> get_typed_child <NPC> ();
-			assert (npc . is_initialized ());
+			NPC & npc = * * active_sector -> npcs . begin ();
 			if (Player :: getSingleton () . has_weapon ())
 			{
 				Player :: getSingleton () . move_to (* Player :: getSingleton () . get_weapon (), npc);
 				assert (! Player :: getSingleton () . has_weapon ());
 				assert (npc . has_weapon ());
+				gui_engine -> show ("You gave your weapon to the ninja.");
 			}
-			else
+			else if (npc . has_weapon ())
 			{
 				npc . Character :: move_to (* npc . get_weapon (), Player :: getSingleton ());
 				assert (Player :: getSingleton () . has_weapon ());
 				assert (! npc . has_weapon ());
+				gui_engine -> show ("You took your weapon from the ninja.");
+			}
+			else
+			{
+				gui_engine -> show ("Both you and the ninja don't have a weapon.");
 			}
 		}
 
@@ -227,8 +235,7 @@ void TSL ::
 
 			if (x_offset != 0)
 			{
-				//	apply treshold
-				x_offset = - 0.002 * x_offset;
+				x_offset = - 0.01 * x_offset;
 			
 				debug () << input_engine -> middle_mouse_button << " - x offset: " <<  x_offset << endl;
 
@@ -239,17 +246,20 @@ void TSL ::
 		if (input_engine -> get_key ("1", true))
 		{
 			switch_to (Set <Sector> :: get_typed_child <Sector> ("Sector 1"));
+			gui_engine -> show ("Sector 1");
 		}
 		
 		if (input_engine -> get_key ("2", true))
 		{
 			switch_to (Set <Sector> :: get_typed_child <Sector> ("Sector 2"));
+			gui_engine -> show ("Sector 2");
 		}
 
 		active_sector -> get_camera () . setPosition (Player :: getSingleton () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
 		active_sector -> get_camera () . setOrientation (Player :: getSingleton () . node -> getOrientation ());
 
 		time = timer -> getMilliseconds ();
+		input_engine -> end_of_turn ();
 	}
 }
 

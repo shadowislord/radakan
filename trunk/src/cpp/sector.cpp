@@ -141,6 +141,7 @@ Sector ::
 		create_entity_node ("Ninja (" + * this + ")", "ninja.mesh", 0.1)
 	);
 	add (* ninja);
+	npcs . insert (ninja);
 
 	for (int i = 0; i < 200; i++)
 	{

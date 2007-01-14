@@ -5,10 +5,10 @@ using namespace tsl;
 
 //  constructor
 template <typename T> State_Machine <T> ::
-	State_Machine (T * new_owner) :
-	Object (* new_owner + "'s state machine"),
-	State <T> (* new_owner),
-	Set <State <T> > (* new_owner + "'s state machine")
+	State_Machine (T & new_owner) :
+	Object (new_owner + "'s state machine"),
+	State <T> (new_owner),
+	Set <State <T> > (new_owner + "'s state machine")
 {
 	Object :: trace () << "State_Machine ()" << endl;
 	assert (Set <State <T> > :: is_initialized ());
@@ -80,14 +80,12 @@ template <typename T> template <typename U> void State_Machine <T> ::
 	Object :: trace () << "change_active_state <" << U :: get_type_name () << "> ()" << endl;
 	assert (Object :: is_initialized ());
 
-	//	!!! doesn't work yet
-	//	active_child_state = Set <State <T> > :: get_child <U> ();
+	active_child_state = Set <State <T> > :: template get_typed_child <U> ();
 
 	if (active_child_state == NULL)
 	{
 		add <U> ();
-		//	!!! doesn't work yet
-		//	active_child_state = Set <State <T> > :: get_child <U> ();
+		active_child_state = Set <State <T> > :: template get_typed_child <U> ();
 	}
 
 	assert (active_child_state != NULL);
@@ -99,8 +97,7 @@ template <typename T> template <typename U> void State_Machine <T> ::
 	Object :: trace () << "add <" << U :: get_type_name () << "> ()" << endl;
 	assert (is_initialized ());
 
-	//	!!! doesn't work yet
-	//	assert (Set <State <T> > :: get_child <U> () == NULL);
+	assert (Set <State <T> > :: template get_typed_child <U> () == NULL);
 
 	add (* (new U (State <T> :: owner)) );
 }

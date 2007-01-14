@@ -23,6 +23,7 @@ namespace tsl
 			void set_scene_manager (Ogre :: SceneManager & new_scene_manager);
 			void set_mouse_position (pair <float, float> new_position);
 			bool render () const;
+			void show (string message);
 
 		private :
 			CEGUI :: OgreCEGUIRenderer * renderer;

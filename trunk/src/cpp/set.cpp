@@ -185,9 +185,15 @@ template <typename T> T * Set <T> ::
 #include "audio_engine.hpp"
 
 template class Set <Entity>;
-template NPC * Set <Entity> :: get_typed_child <NPC> () const;
 template class Set <Sector>;
-template Sector * Set <Sector> :: get_typed_child <Sector> () const;
-template Sector * Set <Sector> :: get_typed_child <Sector> (string name) const;
 //	template class Set <Sound>;
 template class Set <State <Character> >;
+
+template NPC * Set <Entity> :: get_typed_child <NPC> () const;
+
+template Dead_State * Set <State <Character> > :: get_typed_child <Dead_State> () const;
+template Fight_State * Set <State <Character> > :: get_typed_child <Fight_State> () const;
+template Peace_State * Set <State <Character> > :: get_typed_child <Peace_State> () const;
+template Sector * Set <Sector> :: get_typed_child <Sector> () const;
+
+template Sector * Set <Sector> :: get_typed_child <Sector> (string name) const;

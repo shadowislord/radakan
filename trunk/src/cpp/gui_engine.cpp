@@ -75,3 +75,10 @@ bool GUI_Engine ::
 
 	return true;
 }
+
+void GUI_Engine ::
+	show (string message)
+{
+	root_window -> getChild ("text") -> setText (message);
+	trace () << "new message: '" << message << "'" << endl;
+}

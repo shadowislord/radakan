@@ -174,6 +174,7 @@ string Character ::
 	assert (Character :: is_initialized ());
 
 	dead = true;
+	node -> setDirection (0, - 1, 0);
 
 	return * this + " died!";
 }

@@ -20,7 +20,7 @@ NPC ::
 		new_position,
 		new_node
 	),
-	State_Machine <Character> (this)
+	State_Machine <Character> (this -> to_type <Character> ())
 {
 	trace () << "NPC (" << get_name (* node) << ")" << endl;
 	assert (Character :: is_initialized ());

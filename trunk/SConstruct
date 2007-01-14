@@ -43,7 +43,7 @@ if not ( mode in [ "debug", "release" ] ):
    print "Error: expected debug or release, found: " + mode
    Exit(1)
 
-print "**** Compiling in " + mode + " mode..."
+print "Compiling in " + mode + " mode."
 
 env = Environment( ENV = os.environ )
 dev = Dev()

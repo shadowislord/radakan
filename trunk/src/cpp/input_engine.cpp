@@ -61,9 +61,6 @@ Input_Engine ::
 	mouse -> getMouseState () . width = window . getWidth ();
 	mouse -> getMouseState () . height = window . getHeight ();
 
-//	mouse . state . width = window . getWidth ();
-//	mouse . state . height = window . getHeight ();
-
 	assert (is_initialized ());
 }
 
@@ -153,6 +150,14 @@ bool Input_Engine ::
 	return false;
 }
 
+void Input_Engine ::
+	end_of_turn ()
+{
+	assert (is_initialized ());
+
+	relative_mouse_position = pair <float, float> (0, 0);
+}
+
 pair <float, float> Input_Engine ::
 	get_mouse_position (bool relative)
 	const
@@ -214,7 +219,7 @@ bool Input_Engine ::
 		error () << "OIS 1" << endl;
 
 		error () << "OIS 1.8" << endl;
-		int a = mouse_event . state . X . rel;
+		int a = mouse_event . state . X . rel;	//	!!!	This line makes TSL crash...
 		error () << "OIS: " << a << endl;
 		error () << "OIS 1.9" << endl;
 		relative_mouse_position = pair <float, float>

@@ -9,7 +9,7 @@ material Peaceful
 
 			texture_unit
 			{
-				texture spacesky.jpg
+				texture sky.jpg
 				scroll_anim 0.05 0
 			}
 		}

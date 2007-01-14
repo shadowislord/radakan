@@ -25,7 +25,7 @@ namespace tsl
 			virtual string think ();
 
 		protected:
-			State_Machine (T * new_owner);	//	using a reference gives type problems
+			State_Machine (T & new_owner);
 
 		private :
 			State <T> * active_child_state;

@@ -39,14 +39,14 @@ namespace tsl
 			Ogre :: SceneNode & copy_node (Ogre :: SceneNode & example);
 			Ogre :: SceneManager & get_scene_manager () const;
 
+			//	This can't be a Set <NPC>,
+			//	as the NPCs would be part of diffrent Set <T>s.
+			set <NPC *> npcs;
+
 		private :
 			Ogre :: SceneNode & create_entity_node (string name, string mesh_name, float scale);
 			Ogre :: SceneManager * scene_manager;
 			Ogre :: Camera * camera;
-
-			//	This can't be a Set <NPC>,
-			//	as the NPCs would be part of diffrent Set <T>s.
-			set <NPC *> npcs;	
 	};
 }
 
