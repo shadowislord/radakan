@@ -1,22 +1,27 @@
 #ifndef PEACE_STATE_HPP
 #define PEACE_STATE_HPP
 
-#include "state_machine.hpp"
-#include "character.hpp"
+#include "state.hpp"
 
 using namespace std;
 
 namespace tsl
 {
+	class NPC;
+
 	class Peace_State :
-		public State <Character>
+		public State <NPC>
 	{
 		public :
-			Peace_State (Character & new_owner);
+			Peace_State (NPC & new_owner);
 			virtual ~Peace_State ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
-			virtual string think ();
+			virtual string run ();
+	
+		private :
+			//	Copies are not allowed.
+			Peace_State (const Peace_State & peace_state);
 	};
 }
 

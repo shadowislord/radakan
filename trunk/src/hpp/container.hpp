@@ -30,6 +30,10 @@ namespace tsl
 			virtual float get_total_weight () const;
 			virtual bool add (Entity & entity);
 			virtual bool move_to (Entity & entity, Set <Entity> & other_set);
+		
+		private :
+			//	Copies are not allowed.
+			Container (const Container & container);
 	};
 }
 

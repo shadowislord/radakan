@@ -109,6 +109,10 @@ void Input_Engine ::
 	{
 //		handleNonBufferedKeys ();
 	}
+
+	//	'mouse -> capture ()' does nothing if the mouse didn't move this turn.
+	//	So we manually set the relative key position.
+	relative_mouse_position = pair <float, float> (0, 0);
 	mouse -> capture ();
 	if (! mouse -> buffered ())
 	{
@@ -148,14 +152,6 @@ bool Input_Engine ::
 		return true;
 	}
 	return false;
-}
-
-void Input_Engine ::
-	end_of_turn ()
-{
-	assert (is_initialized ());
-
-	relative_mouse_position = pair <float, float> (0, 0);
 }
 
 pair <float, float> Input_Engine ::

@@ -24,6 +24,7 @@ namespace tsl
 			string hit (Character & attacker, Character & defender);
 
 		private :
+			const int max_distance;
 			minstd_rand generator;
 			uniform_real <> uniform_real_distribution;
 			lognormal_distribution <> lognormal_real_distribution;

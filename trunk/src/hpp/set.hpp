@@ -8,7 +8,7 @@ using namespace std;
 namespace tsl
 {
 
-	///	Set &#60;T&#62; is a generic container, but every Object can't be in more then one Set &#60;T&#62; at once.
+	///	Set is a generic container, but every Object can't be in more then one Set at once.
 
 	template <typename T> class Set :
 		public virtual Object
@@ -23,11 +23,13 @@ namespace tsl
 			virtual bool contains (T & t, bool recursive) const;
 			virtual bool move_to (T & t, Set <T> & other_set);
 															//	true iff succes
-			//	returns a child of type U, if possible
+
+		protected:
+			//	These methods can take a while, in case of a large Set.
+			T * get_child (string name, bool recursive) const;
 			template <typename U> U * get_typed_child () const;
 			template <typename U> U * get_typed_child (string name) const;
 
-		protected:
 			//	These two methods make it very easy to get a pointer to each child:
 			T * get_child () const;
 			T * get_another_child () const;
@@ -35,8 +37,8 @@ namespace tsl
 		private:
 			set <T *> children;
 		
-			//	'mutable' added to allow change even if in a const Set <T>.
-			//	'typename' added to solve (MSV?) warning C4346.
+			//	'mutable' added to allow change even if in a const Set.
+			//	'typename' added to assure that const_iterator is a type. (MSV warning C4346)
 			mutable typename set <T *> :: const_iterator next_child;
 		};
 }

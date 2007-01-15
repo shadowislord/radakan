@@ -1,22 +1,27 @@
 #ifndef DEAD_STATE_HPP
 #define DEAD_STATE_HPP
 
-#include "state_machine.hpp"
-#include "character.hpp"
+#include "state.hpp"
 
 using namespace std;
 
 namespace tsl
 {
+	class NPC;
+
 	class Dead_State :
-		public State <Character>
+		public State <NPC>
 	{
 		public :
-			Dead_State (Character & new_owner);
+			Dead_State (NPC & new_owner);
 			virtual ~Dead_State ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
-			virtual string think ();
+			virtual string run ();
+	
+		private :
+			//	Copies are not allowed.
+			Dead_State (const Dead_State & dead_state);
 	};
 }
 

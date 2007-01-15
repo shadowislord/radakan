@@ -126,7 +126,7 @@ bool Character ::
 }
 
 void Character ::
-	run (float distance)
+	walk (float distance)
 {
 	assert (Character :: is_initialized ());
 

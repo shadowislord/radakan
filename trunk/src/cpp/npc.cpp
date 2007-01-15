@@ -20,19 +20,15 @@ NPC ::
 		new_position,
 		new_node
 	),
-	State_Machine <Character> (this -> to_type <Character> ())
+	State_Machine <NPC> (* this)
 {
 	trace () << "NPC (" << get_name (* node) << ")" << endl;
 	assert (Character :: is_initialized ());
-//	trace () << "NPC (" << get_name (* node) << ") A" << endl;
-	assert (State_Machine <Character> :: is_initialized ());
-//	trace () << "NPC (" << get_name (* node) << ") B" << endl;
+	assert (State_Machine <NPC> :: is_initialized ());
 
-	State_Machine <Character> :: add <Peace_State> ();
-//	trace () << "NPC (" << get_name (* node) << ") C" << endl;
+	State_Machine <NPC> :: add <Peace_State> ();
 
 	assert (is_initialized ());
-//	trace () << "NPC (" << get_name (* node) << ") E" << endl;
 }
 
 //  destructor
@@ -49,7 +45,7 @@ bool NPC ::
 	const
 {
 	assert (warn <NPC> (Character :: is_initialized ()));
-	assert (warn <NPC> (State_Machine <Character> :: is_initialized ()));
+	assert (warn <NPC> (State_Machine <NPC> :: is_initialized ()));
 	return true;
 }
 

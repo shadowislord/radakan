@@ -76,7 +76,10 @@ using namespace tsl;
 		cout << "Scattered Lands is set up." << endl;
 
 		cout << "Running Scattered Lands..." << endl;
-		game . run ();
+		while (! game . quit)
+		{
+			game . run ();
+		}
 		cout << "Scattered Lands is stopped." << endl;
 
 		cout << "Shutting down Scattered Lands..." << endl;

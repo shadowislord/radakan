@@ -47,14 +47,13 @@ namespace tsl
 			static string get_type_name ();
 			template <typename T> bool is_type () const;
 			template <typename T> T & to_type () const;
-			template <typename T> bool warn (bool initialization) const;
 			
 			ostream & debug () const;
 			ostream & trace () const;
 			ostream & error () const;
 
-			///	These methods should only be used by a Set &#60;T&#62;. Don't use them directly.
-			///	Use the Set &#60;T&#62; methods (add, contains & move_to) instead.
+			///	These methods should only be used by a Set. Don't use them directly.
+			///	Use the Set methods (add, contains & move_to) instead.
 			bool has_parent () const;
 			bool is_in (const Object & set) const;
 			void put_in (const Object & new_parent);
@@ -73,6 +72,11 @@ namespace tsl
 				Object ();
 			#endif
 			Object (string new_name);
+
+			//	This method is only used for debugging.
+			//	Example usage: assert (warn <Class> (object -> Class :: is_initialized ()));
+			//	In case of an assertion failure, you get an informative warning in the log.
+			template <typename T> bool warn (bool initialization) const;
 
 		private :
 			ostream & print (string message) const;

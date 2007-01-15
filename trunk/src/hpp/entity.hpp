@@ -46,7 +46,10 @@ namespace tsl
 			const float weight;		//	in kilograms
 			Ogre :: SceneNode * node;	//	create through Scene_Manager
 
-		private:
+		private :
+			//	Copies are not allowed.
+			Entity (const Entity & entity);
+			
 			btDefaultMotionState * get_motion_state () const;
 	};
 

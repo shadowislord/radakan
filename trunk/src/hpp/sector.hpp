@@ -18,22 +18,31 @@ using namespace std;
 
 namespace tsl
 {
+	class TSL;
 
 	///	Sector keeps track of all data in an in-game sector.
 
 	class Sector :
 		public Set <Entity>,
+		public State <TSL>,
 		public btDiscreteDynamicsWorld
 	{
 		public :
-			Sector (string new_name, Ogre :: SceneManager & new_scene_manager);
+			Sector
+			(
+				string new_name,
+				TSL & new_owner,
+				Ogre :: SceneManager & new_scene_manager
+			);
 			virtual ~Sector ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
 			
 			virtual bool add (Entity & entity);
 			virtual bool move_to (Entity & entity, Set <Entity> & other_set);
-			
+
+			virtual string run ();
+
 			void update (int milliseconds_passed);
 			Ogre :: Camera & get_camera () const;
 			Ogre :: SceneNode & copy_node (Ogre :: SceneNode & example);

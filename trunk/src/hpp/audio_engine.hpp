@@ -11,6 +11,8 @@
 	#include <audiere.h>
 #endif
 
+#include <OgreSingleton.h>
+
 using namespace std;
 
 namespace tsl
@@ -20,19 +22,19 @@ namespace tsl
 	class Sound :
 		public Object
 	{
-		public:
+		public :
 			//	protected constructor(s), see below
-			virtual ~Sound ()
-			{
-			}
+			virtual ~Sound ();
+			
 			//	pure virtual method
 			virtual void play () = 0;
 			
-		protected:
-			Sound (string file_name) :
-				Object (file_name)
-			{
-			}
+		protected :
+			Sound (string file_name);
+		
+		private :
+			//	Copies are not allowed.
+			Sound (const Sound & sound);
 	};
 
 #ifdef TSL_FMOD
@@ -40,22 +42,12 @@ namespace tsl
 	class Music_Module :
 		public Sound
 	{
-		public:
-			Music_Module (string file_name) :
-				Sound (file_name)
-			{
-				module = FMUSIC_LoadSong (file_name . c_str ());
-			}
-			~Music_Module ()
-			{
-				FMUSIC_FreeSong (module);
-			}
-			virtual void play ()
-			{
-				FMUSIC_PlaySong (module);
-			}
+		public :
+			Music_Module (string file_name);
+			~Music_Module ();
+			virtual void play ();
 			
-		private:
+		private :
 			FMUSIC_MODULE * module;
 	};
 #endif
@@ -64,36 +56,17 @@ namespace tsl
 	class Sound_Sample :
 		public Sound
 	{
-		public:
+		public :
 			#ifdef TSL_FMOD
-				Sound_Sample (string file_name) :
+				Sound_Sample (string file_name);
 			#else
-				Sound_Sample (string file_name, audiere :: AudioDevicePtr device) :
+				Sound_Sample (string file_name, audiere :: AudioDevicePtr device);
 			#endif
-				Sound (file_name)
-			{
-				#ifdef TSL_FMOD
-					sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
-				#else
-					sound = audiere :: OpenSound (device, file_name . c_str ());
-					if (! sound)
-					{
-						error () << "OpenSound (...) failed" << endl;
-    					abort ();
-					}
-				#endif
-			}
-			// These files are closed automatically
-			virtual void play ()
-			{
-				#ifdef TSL_FMOD
-					FSOUND_PlaySound (FSOUND_FREE, sample);
-				#else
-					sound -> play();
-				#endif
-			}
 
-		private:
+			// These files are closed automatically
+			virtual void play ();
+
+		private :
 			#ifdef TSL_FMOD
 				FSOUND_SAMPLE * sample;
 			#else
@@ -106,22 +79,12 @@ namespace tsl
 	class Sound_Stream :
 		public Sound
 	{
-		public:
-			Sound_Stream (string file_name) :
-				Sound (file_name)
-			{
-				stream = FSOUND_Stream_Open (file_name . c_str (), 0, 0, 0);
-			}
-			~Sound_Stream ()
-			{
-				FSOUND_Stream_Close (stream);
-			}
-			virtual void play ()
-			{
-				FSOUND_Stream_Play (FSOUND_FREE, stream);
-			}
+		public :
+			Sound_Stream (string file_name);
+			~Sound_Stream ();
+			virtual void play ();
 
-	private:
+	private :
 		FSOUND_STREAM * stream;
 	};
 #endif
@@ -129,62 +92,20 @@ namespace tsl
 	template class Set <Sound>;
 
 	class Audio_Engine :
-		private Set <Sound>
+		private Set <Sound>,
+		public Ogre :: Singleton <Audio_Engine>
 	{
-		public:
-			Audio_Engine () :
-				Object ("Audio engine"),
-				Set <Sound> ("Audio engine")
-			{
-				#ifdef TSL_FMOD
-					FSOUND_Init (44100, 32, 0);
-				#else
-					device = audiere :: OpenDevice ("");
-					if (! device)
-					{
-						error () << "OpenDevice () failed" << endl;
-						abort ();
-					}
-				#endif
-			}
-			~Audio_Engine ()
-			{
-				#ifdef TSL_FMOD
-					FSOUND_Close ();
-				#endif
-			}
-			void play ()
-			{
-				get_child () -> play ();
-			};
-			void load (string file_name)
-			{
-				assert (5 < file_name . size ());
-				string extension = file_name . substr (file_name . size () - 3);
-				if (extension == "ogg")
-				{
-					add ((new Sound_Sample (file_name
-						#ifndef TSL_FMOD
-							, device
-						#endif
-						)) -> to_type <Sound> ());
-				}
-				else if (extension == "mp3")
-				{
-					error () << "- We do not have the rights to use the .mp3 format. Please use the .ogg format instead." << endl;
-					abort ();
-				}
-				else
-				{
-					error () << "doesn't know the file format '" << extension << "'" << endl;
-					abort ();
-				}
-			}
+		public :
+			Audio_Engine ();
+			~Audio_Engine ();
+			void play ();
+			void load (string file_name);
 
-		#ifndef TSL_FMOD
-			private:
+		private :
+			bool silent;
+			#ifndef TSL_FMOD
 				audiere :: AudioDevicePtr device;
-		#endif
+			#endif
 	};
 }
 

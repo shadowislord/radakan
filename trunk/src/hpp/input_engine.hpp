@@ -33,8 +33,7 @@ namespace tsl
 			bool get_key (string key, bool reset);
 			bool get_mouse_button (string button, bool reset);
 			pair <float, float> get_mouse_position (bool relative) const;
-			void end_of_turn ();	//	this resets the relative mouse position
-			
+
 			static bool is_mouse_button (string button);
 			static const string left_mouse_button;
 			static const string middle_mouse_button;

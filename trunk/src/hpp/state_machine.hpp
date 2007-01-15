@@ -15,16 +15,21 @@ namespace tsl
 		public Set <State <T> >
 	{
 		public :
+			//	protected constructor, see below
 			virtual ~State_Machine ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
+
+			//	These methods works recursive.
+			virtual State <T> * get_active_state ();	//	Doesn't return NULL.
+			virtual void change_active_state (State <T> & state);
 			
 			template <typename U> void change_active_state ();
 			virtual bool add (State <T> & state);
 			template <typename U> void add ();
-			virtual string think ();
+			virtual string run ();
 
-		protected:
+		protected :
 			State_Machine (T & new_owner);
 
 		private :

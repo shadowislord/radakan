@@ -20,7 +20,7 @@ namespace tsl
 			static string get_type_name ();
 
 			//	pure virtual method
-			virtual string think () = 0;	//	change your current state
+			virtual string run () = 0;
 
 		protected:
 			State (T & new_owner);

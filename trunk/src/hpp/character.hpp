@@ -24,11 +24,11 @@ namespace tsl
 			bool has_weapon () const;
 			bool is_dead () const;
 			Weapon * get_weapon () const;
-			void run (float distance);
+			void walk (float distance);
 			void turn (float radian_angle);
 			virtual string die ();
 
-		protected:
+		protected :
 			Character
 			(
 				float new_volume,
@@ -38,6 +38,9 @@ namespace tsl
 			);
 
 		private :
+			//	Copies are not allowed.
+			Character (const Character & character);
+			
 			//	exp = experience
 			int agility_exp;
 			int beauty_exp;

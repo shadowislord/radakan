@@ -1,17 +1,15 @@
-#include "dead_state.hpp"
-#include "fight_state.hpp"
-#include "peace_state.hpp"
+#include "npc.hpp"
 
 using namespace std;
 using namespace tsl;
 
 //  constructor
 Fight_State ::
-	Fight_State (Character & new_owner) :
+	Fight_State (NPC & new_owner) :
 	Object (new_owner + "'s fight state"),
-	State <Character> (new_owner)
+	State <NPC> (new_owner)
 {
-	assert (State <Character> :: is_initialized ());
+	assert (State <NPC> :: is_initialized ());
 
 	assert (Fight_State :: is_initialized ());
 }
@@ -21,7 +19,8 @@ Fight_State ::
 	~Fight_State ()
 {
 	trace () << "~Fight_State ()" << endl;
-	assert (State <Character> :: is_initialized ());
+	
+	assert (State <NPC> :: is_initialized ());
 }
 
 //	virtual
@@ -29,7 +28,7 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	return State <Character> :: is_initialized () && (! owner . is_dead ());
+	return State <NPC> :: is_initialized () && (! owner . is_dead ());
 }
 
 //	static
@@ -41,13 +40,13 @@ string Fight_State ::
 
 //	virtual
 string Fight_State ::
-	think ()
+	run ()
 {
 	assert (is_initialized ());
 
 	if (! owner . has_weapon ())
 	{
-		owner . to_type <State_Machine <Character> > () . change_active_state <Peace_State> ();
+		owner . to_type <State_Machine <NPC> > () . change_active_state <Peace_State> ();
 		return owner + " says 'There's no point in being aggressive without a weapon.'";
 	}
 	else

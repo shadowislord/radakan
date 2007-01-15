@@ -1,6 +1,8 @@
 #ifndef NPC_HPP
 #define NPC_HPP
 
+#include "character.hpp"
+#include "state_machine.hpp"
 #include "dead_state.hpp"
 #include "fight_state.hpp"
 #include "peace_state.hpp"
@@ -11,7 +13,7 @@ namespace tsl
 {
 	class NPC :
 		public Character,
-		public State_Machine <Character>
+		public State_Machine <NPC>
 	{
 		public :
 			NPC
@@ -26,7 +28,7 @@ namespace tsl
 			static string get_type_name ();
 			virtual string die ();
 
-		private:
+		private :
 			NPC (const NPC & npc);
 	};
 }

@@ -1,15 +1,15 @@
-#include "dead_state.hpp"
+#include "npc.hpp"
 
 using namespace std;
 using namespace tsl;
 
 //  constructor
 Dead_State ::
-	Dead_State (Character & new_owner) :
+	Dead_State (NPC & new_owner) :
 	Object (new_owner + "'s dead state"),
-	State <Character> (new_owner)
+	State <NPC> (new_owner)
 {
-	assert (State <Character> :: is_initialized ());
+	assert (State <NPC> :: is_initialized ());
 
 	assert (Dead_State :: is_initialized ());
 }
@@ -19,7 +19,7 @@ Dead_State ::
 	~Dead_State ()
 {
 	trace () << "~Dead_State ()" << endl;
-	assert (State <Character> :: is_initialized ());
+	assert (State <NPC> :: is_initialized ());
 }
 
 //	virtual
@@ -27,7 +27,7 @@ bool Dead_State ::
 	is_initialized ()
 	const
 {
-	return State <Character> :: is_initialized ();
+	return State <NPC> :: is_initialized ();
 }
 
 //	static
@@ -39,7 +39,7 @@ string Dead_State ::
 
 //	virtual
 string Dead_State ::
-	think ()
+	run ()
 {
 	assert (is_initialized ());
 

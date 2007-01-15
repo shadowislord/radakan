@@ -77,9 +77,6 @@ template <typename T> bool Set <T> ::
 
 	bool result = (children . find (& t) != children . end ());
 
-	debug () << "a: " << bool_to_string (result) << ", b: " << bool_to_string (t . is_in (* this)) << endl;
-	assert (result == (t . is_in (* this)));
-
 	if ((! result) && recursive)
 	{
 		for (T * i = get_child (); i != NULL; i = get_another_child ())
@@ -94,6 +91,14 @@ template <typename T> bool Set <T> ::
 		}
 	}
 
+	if (result)
+	{
+		trace () << "contains " << t << endl;
+	}
+	else
+	{
+		trace () <<"doesn't contain " << t << endl;
+	}
 	return result;
 }
 
@@ -117,11 +122,39 @@ template <typename T> bool Set <T> ::
 	return false;
 }
 
+template <typename T> T * Set <T> ::
+	get_child (string name, bool recursive)
+	const
+{
+	trace () << "get_child <" << T :: get_type_name () << "> (" << name << ")" << endl;
+	assert (Set <T> :: is_initialized ());
+
+	for (T * i = get_child (); i != NULL; i = get_another_child ())
+	{
+		if (i -> compare (name) == 0)
+		{
+			return i;
+		}
+		else if (recursive)
+		{
+			if (i -> is_type <Set <T> > ())
+			{
+				T * result = i -> to_type <Set <T> > () . get_child (name, true);
+				if (result != NULL)
+				{
+					return result;
+				}
+			}
+		}
+	}
+	return NULL;
+}
+
 template <typename T> template <typename U> U * Set <T> ::
 	get_typed_child ()
 	const
 {
-	trace () << "get_child <" << T :: get_type_name () << ", " << U :: get_type_name () << "> ()" << endl;
+	trace () << "get_typed_child <" << T :: get_type_name () << ", " << U :: get_type_name () << "> ()" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	for (T * i = get_child (); i != NULL; i = get_another_child ())
@@ -138,7 +171,7 @@ template <typename T> template <typename U> U * Set <T> ::
 	get_typed_child (string name)
 	const
 {
-	trace () << "get_child <" << T :: get_type_name () << "> (" << name << ")" << endl;
+	trace () << "get_typed_child <" << T :: get_type_name () << "> (" << name << ")" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	for (T * i = get_child (); i != NULL; i = get_another_child ())
@@ -180,20 +213,24 @@ template <typename T> T * Set <T> ::
 	return * (next_child ++);
 }
 
-#include "sector.hpp"
-#include "state.hpp"
-#include "audio_engine.hpp"
+//	to avert linking errors:
+#include "play_state.hpp"
+#include "pause_state.hpp"
 
 template class Set <Entity>;
 template class Set <Sector>;
 //	template class Set <Sound>;
-template class Set <State <Character> >;
+template class Set <State <NPC> >;
+template class Set <State <TSL> >;
 
-template NPC * Set <Entity> :: get_typed_child <NPC> () const;
+//	using that method is way to slow to find npcs, use get_npcs () instead
+//	template NPC * Set <Entity> :: get_typed_child <NPC> () const;
 
-template Dead_State * Set <State <Character> > :: get_typed_child <Dead_State> () const;
-template Fight_State * Set <State <Character> > :: get_typed_child <Fight_State> () const;
-template Peace_State * Set <State <Character> > :: get_typed_child <Peace_State> () const;
+template Dead_State * Set <State <NPC> > :: get_typed_child <Dead_State> () const;
+template Fight_State * Set <State <NPC> > :: get_typed_child <Fight_State> () const;
+template Peace_State * Set <State <NPC> > :: get_typed_child <Peace_State> () const;
+template Play_State * Set <State <TSL> > :: get_typed_child <Play_State> () const;
+template Pause_State * Set <State <TSL> > :: get_typed_child <Pause_State> () const;
 template Sector * Set <Sector> :: get_typed_child <Sector> () const;
 
 template Sector * Set <Sector> :: get_typed_child <Sector> (string name) const;

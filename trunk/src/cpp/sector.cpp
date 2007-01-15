@@ -1,14 +1,18 @@
-#include "sector.hpp"
+#include "tsl.hpp"
 
 using namespace std;
 using namespace tsl;
 
 Sector ::
 	Sector
-		(string new_name,
-		Ogre :: SceneManager & new_scene_manager) :
+	(
+		string new_name,
+		TSL & new_owner,
+		Ogre :: SceneManager & new_scene_manager
+	) :
 	Object (new_name),
 	Set <Entity> (new_name),
+	State <TSL> (new_owner),
 	btDiscreteDynamicsWorld
 	(
 		new btCollisionDispatcher (),
@@ -31,6 +35,51 @@ Sector ::
 	Ogre :: SceneNode & groundNode = create_entity_node ("Ground","plane.mesh", 1);
 	dynamic_cast <Ogre :: Entity *> (groundNode . getAttachedObject (0)) -> setMaterialName ("TavernWalls");
 	groundNode . setOrientation (Ogre :: Quaternion (Ogre :: Radian (- Ogre :: Math :: HALF_PI), Ogre :: Vector3 :: UNIT_X));
+
+	if (Player :: getSingletonPtr () == NULL)
+	{
+		Player * player = new Player
+		(
+			80,
+			65,
+			btVector3 (100, 0, 200),
+			create_entity_node ("Player", "ninja.mesh", 0.1)
+		);
+
+		player -> add
+		(
+			* (new Container
+			(
+				true,
+				true,
+				true,
+				30,
+				3,
+				player -> get_position (),
+				create_entity_node ("Backpack", "bar.mesh", 1)
+			))
+		);
+
+		trace () << to_string (player) << "'s weight: "
+										<< player -> get_total_weight () << endl;
+		Weapon * sword = new Weapon
+				(1, 2, btVector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
+				create_entity_node ("Sword", "bar.mesh", 1));
+		trace () << to_string (sword) << "'s weight: " << sword -> get_total_weight () << endl;
+		player -> add (* sword);
+		
+		add (* player);
+	}
+
+	NPC * ninja = new NPC
+	(
+		80,
+		65,
+		btVector3 (120, 0, 30),
+		create_entity_node ("Ninja (" + * this + ")", "ninja.mesh", 0.1)
+	);
+	add (* ninja);
+	npcs . insert (ninja);
 
 	//	the tavern
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
@@ -97,51 +146,6 @@ Sector ::
 			add (* temp_tree);
 		}
 	}
-
-	if (Player :: getSingletonPtr () == NULL)
-	{
-		Player * player = new Player
-		(
-			80,
-			65,
-			btVector3 (100, 0, 200),
-			create_entity_node ("Player", "ninja.mesh", 0.1)
-		);
-
-		player -> add
-		(
-			* (new Container
-			(
-				true,
-				true,
-				true,
-				30,
-				3,
-				player -> get_position (),
-				create_entity_node ("Backpack", "bar.mesh", 1)
-			))
-		);
-
-		trace () << to_string (player) << "'s weight: "
-										<< player -> get_total_weight () << endl;
-		Weapon * sword = new Weapon
-				(1, 2, btVector3 (1, 0, 4), 3, 4, 5, 6, 7, 8,
-				create_entity_node ("Sword", "bar.mesh", 1));
-		trace () << to_string (sword) << "'s weight: " << sword -> get_total_weight () << endl;
-		player -> add (* sword);
-		
-		add (* player);
-	}
-
-	NPC * ninja = new NPC
-	(
-		80,
-		65,
-		btVector3 (120, 0, 30),
-		create_entity_node ("Ninja (" + * this + ")", "ninja.mesh", 0.1)
-	);
-	add (* ninja);
-	npcs . insert (ninja);
 
 	for (int i = 0; i < 200; i++)
 	{
@@ -231,6 +235,148 @@ bool Sector ::
 	return Set <Entity> :: move_to (entity, other_set);
 }
 
+string Sector ::
+	run ()
+{
+	assert (is_initialized ());
+
+	int time = 0;
+	while ((! owner . quit) && (owner . get_active_state () == this))
+	{
+		owner . timer -> reset ();
+
+		update (time);
+	
+		owner . input_engine -> capture ();
+		Ogre :: PlatformManager :: getSingletonPtr () -> messagePump (owner . window);
+
+		owner . gui_engine -> set_mouse_position (owner . input_engine -> get_mouse_position (false));
+		
+		//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
+		if (! owner . root -> renderOneFrame ()
+				|| ! owner . gui_engine -> render ()
+				|| Player :: getSingleton () . is_dead ()
+				|| owner . input_engine -> get_key ("Escape", false)
+				|| owner . window -> isClosed())
+		{
+			owner . quit = true;
+			break;
+		}
+
+		//	Handle movement
+		//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
+		if (owner . input_engine -> get_key ("e", false))
+		{
+			Player :: getSingleton () . walk (0.2 * time);
+		}
+		if (owner . input_engine -> get_key ("d", false))
+		{
+			Player :: getSingleton () . walk (- 0.1 * time);
+		}
+		if (owner . input_engine -> get_key ("s", false))
+		{
+			Player :: getSingleton () . turn (0.005 * time);
+		}
+		if (owner . input_engine -> get_key ("f", false))
+		{
+			Player :: getSingleton () . turn (- 0.005 * time);
+		}
+
+		//	hit
+		if (owner . input_engine -> get_key ("h", true))
+		{
+			NPC & npc = * * npcs . begin ();
+			if (! npc . is_dead ())
+			{
+				owner . gui_engine -> show (owner . battle_engine . hit (Player :: getSingleton (), npc));
+			}
+			else
+			{
+				owner . gui_engine -> show ("Mutilating a dead body is *not* nice.");
+			}
+		}
+		
+		//	move the weapon
+		if (owner . input_engine -> get_key ("m", true))
+		{
+			//	Memo to self (Tinus):
+			//	NPC npc = * * npcs . begin ();
+			//	that *copies* the NPC.
+			NPC & npc = * * npcs . begin ();
+			if (Player :: getSingleton () . has_weapon ())
+			{
+				Player :: getSingleton () . move_to (* Player :: getSingleton () . get_weapon (), npc);
+				assert (! Player :: getSingleton () . has_weapon ());
+				assert (npc . has_weapon ());
+				owner . gui_engine -> show ("You gave your weapon to the ninja.");
+			}
+			else if (npc . has_weapon ())
+			{
+				npc . Character :: move_to (* npc . get_weapon (), Player :: getSingleton ());
+				assert (Player :: getSingleton () . has_weapon ());
+				assert (! npc . has_weapon ());
+				owner . gui_engine -> show ("You took your weapon from the ninja.");
+			}
+			else
+			{
+				owner . gui_engine -> show ("Both you and the ninja don't have a weapon.");
+			}
+		}
+
+		if (owner . input_engine -> get_mouse_button
+							(owner . input_engine -> left_mouse_button, true))
+		{
+			owner . gui_engine -> show ("Left click - FPS: " + to_string (owner . window -> getAverageFPS ()));
+		}
+		
+		if (owner . input_engine -> get_mouse_button
+						(owner . input_engine -> middle_mouse_button, false))
+		{
+			float x_offset = owner . input_engine -> get_mouse_position (true) . first;
+
+			if (x_offset != 0)
+			{
+				x_offset = - 0.01 * x_offset;
+			
+				debug () << owner . input_engine -> middle_mouse_button << " - x offset: " <<  x_offset << endl;
+
+				Player :: getSingleton () . turn (x_offset);
+			}
+		}
+		
+		if (owner . input_engine -> get_mouse_button
+							(owner . input_engine -> right_mouse_button, true))
+		{
+			owner . gui_engine -> show ("Right click - trivia: there are 1961 trees in each forest.");
+		}
+		
+		if (owner . input_engine -> get_key ("1", true))
+		{
+			State <TSL> * sector = owner . get_child ("Sector 1", true);
+			assert (sector != NULL);
+			owner . change_active_state (* sector);
+			owner . gui_engine -> show ("Sector 1");
+		}
+		
+		if (owner . input_engine -> get_key ("2", true))
+		{
+			State <TSL> * sector = owner . get_child ("Sector 2", true);
+			assert (sector != NULL);
+			owner . change_active_state (* sector);
+			owner . gui_engine -> show ("Sector 2");
+		}
+
+		get_camera () . setPosition
+			(Player :: getSingleton () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
+		get_camera () . setOrientation
+			(Player :: getSingleton () . node -> getOrientation ());
+
+		time = owner . timer -> getMilliseconds ();
+	}
+	
+	return "";
+}
+
 void Sector ::
 	update (int milliseconds_passed)
 {
@@ -246,7 +392,7 @@ void Sector ::
 		npc = * i;
 		if (! npc -> is_dead ())
 		{
-			think = npc -> think ();
+			think = npc -> run ();
 			if (! think . empty ())
 			{
 				trace () << think << endl;
