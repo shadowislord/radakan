@@ -21,7 +21,7 @@ namespace tsl
 			static string get_type_name ();
 
 			//	These methods works recursive.
-			virtual State <T> * get_active_state ();	//	Doesn't return NULL.
+			virtual State <T> & get_active_state () const;	//	Doesn't return NULL.
 			virtual void change_active_state (State <T> & state);
 			
 			template <typename U> void change_active_state ();

@@ -2,6 +2,7 @@
 #define BATTLE_ENGINE_HPP
 
 #include "character.hpp"
+#include "singleton.hpp"
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
@@ -13,8 +14,7 @@ using namespace boost;
 namespace tsl
 {
 	class Battle_Engine :
-		public Object,
-		public Ogre :: Singleton <Battle_Engine>
+		public Singleton <Battle_Engine>
 	{
 		public :
 			Battle_Engine ();

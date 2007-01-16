@@ -3,11 +3,10 @@
 using namespace std;
 using namespace tsl;
 
-template <> GUI_Engine * Ogre :: Singleton <GUI_Engine> :: ms_Singleton = NULL;
-
 GUI_Engine ::
 	GUI_Engine (Ogre :: RenderWindow & window, string log_file_name) :
-	Object ("Gui engine")
+	Object ("Gui engine"),
+	Singleton <GUI_Engine> ("Gui engine")
 {
 	assert (Object :: is_initialized ());
 

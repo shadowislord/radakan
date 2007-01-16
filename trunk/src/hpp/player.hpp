@@ -2,6 +2,7 @@
 #define PLAYER_HPP
 
 #include "character.hpp"
+#include "singleton.hpp"
 
 using namespace std;
 
@@ -9,7 +10,7 @@ namespace tsl
 {
 	class Player :
 		public Character,
-		public Ogre :: Singleton <Player>
+		public Singleton <Player>
 	{
 		public :
 			Player

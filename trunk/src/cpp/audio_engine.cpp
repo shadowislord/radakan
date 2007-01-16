@@ -3,8 +3,6 @@
 using namespace std;
 using namespace tsl;
 
-template <> Audio_Engine * Ogre :: Singleton <Audio_Engine> :: ms_Singleton = NULL;
-
 Sound ::
 	Sound (string file_name) :
 	Object (file_name)
@@ -91,6 +89,7 @@ void Sound_Sample ::
 Audio_Engine ::
 	Audio_Engine () :
 	Object ("Audio engine"),
+	Singleton <Audio_Engine> ("Audio engine"),
 	Set <Sound> ("Audio engine")
 {
 	silent = false;
@@ -118,6 +117,21 @@ Audio_Engine ::
 			FSOUND_Close ();
 		#endif
 	}
+}
+
+//	virtual
+bool Audio_Engine ::
+	is_initialized ()
+	const
+{
+	return warn <Audio_Engine> (Singleton <Audio_Engine> :: is_initialized ());
+}
+
+//	static
+string Audio_Engine ::
+	get_type_name ()
+{
+	return "audio engine";
 }
 
 void Audio_Engine ::

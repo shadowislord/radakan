@@ -2,6 +2,7 @@
 #define AUDIO_ENGINE_HPP
 
 #include "set.hpp"
+#include "singleton.hpp"
 
 //	#define TSL_FMOD
 
@@ -10,8 +11,6 @@
 #else
 	#include <audiere.h>
 #endif
-
-#include <OgreSingleton.h>
 
 using namespace std;
 
@@ -92,12 +91,14 @@ namespace tsl
 	template class Set <Sound>;
 
 	class Audio_Engine :
-		private Set <Sound>,
-		public Ogre :: Singleton <Audio_Engine>
+		public Singleton <Audio_Engine>,
+		private Set <Sound>
 	{
 		public :
 			Audio_Engine ();
 			~Audio_Engine ();
+			virtual bool is_initialized () const;
+			static string get_type_name ();
 			void play ();
 			void load (string file_name);
 

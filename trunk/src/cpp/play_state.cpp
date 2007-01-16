@@ -11,11 +11,9 @@ Play_State ::
 {
 	assert (State_Machine <TSL> :: is_initialized ());
 
-	add (* (new Sector ("Sector 1", owner,
-				* owner . root -> createSceneManager (Ogre :: ST_GENERIC))) );
+	add (* (new Sector ("Sector 1", owner)));
 
-	add (* (new Sector ("Sector 2", owner,
-				* owner . root -> createSceneManager (Ogre :: ST_GENERIC))) );
+	add (* (new Sector ("Sector 2", owner)));
 
 
 	assert (Play_State :: is_initialized ());
@@ -50,21 +48,21 @@ void Play_State ::
 {
 	assert (state . is_type <Sector> ());
 	
-	if (& state != get_active_state ())
+	if (state != get_active_state ())
 	{
 		Sector * old_active_sector = owner . get_active_sector ();
 		assert (old_active_sector != NULL);
 		Sector & new_active_sector = state . to_type <Sector> ();
 	
 		//	Update player position:
-		old_active_sector -> move_to (Player :: getSingleton (), new_active_sector);
-		Player :: getSingleton () . node = & new_active_sector . copy_node (* Player :: getSingleton () . node);
+		old_active_sector -> move_to (Player :: get (), new_active_sector);
+		Player :: get () . node = & new_active_sector . copy_node (* Player :: get() . node);
 		
 		State_Machine <TSL> :: change_active_state (state);
 		assert (owner . get_active_sector () == & state);
 
 		//	Update camera & scene manager:
-		owner . root -> getRenderSystem () -> _getViewport () -> setCamera (& new_active_sector . get_camera ());
-		owner . gui_engine -> set_scene_manager (new_active_sector . get_scene_manager ());
+		owner . set_camera (new_active_sector . get_camera ());
+		GUI_Engine :: get () . set_scene_manager (new_active_sector . get_scene_manager ());
 	}
 }

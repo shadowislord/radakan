@@ -3,14 +3,14 @@
 using namespace std;
 using namespace tsl;
 
-template <> Input_Engine * Ogre :: Singleton <Input_Engine> :: ms_Singleton = NULL;
 const string Input_Engine :: left_mouse_button = "left";
 const string Input_Engine :: middle_mouse_button = "middle";
 const string Input_Engine :: right_mouse_button = "right";
 
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow & window) :
-	Object ("Input Engine")
+	Object ("Input Engine"),
+	Singleton <Input_Engine> ("Input Engine")
 {
 	assert (Object :: is_initialized ());
 

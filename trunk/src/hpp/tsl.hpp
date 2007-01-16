@@ -14,29 +14,32 @@ namespace tsl
 	///	TSL is the main class. It manages the eninges and the sectors.
 
 	class TSL :
-		public State_Machine <TSL>,
-		public Ogre :: Singleton <TSL>
+		public Singleton <TSL>,
+		public State_Machine <TSL>
 	{
-		friend class Play_State;
-		friend class Sector;
-	
 		public :
 			TSL (string tsl_path, string ogre_path);
 			~TSL ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
-			bool quit;
+
+			//	This returns NULL, if no sector is active.
+			Sector * get_active_sector () const;
+
+			bool render_frame () const;
+			Ogre :: SceneManager & new_scene_manager () const;
+			Ogre :: RenderWindow & get_window () const;
+			void set_camera (Ogre :: Camera & new_camera);
+
+			static string quit;
 
 		private :
-			//	This returns NULL, if no sector is active.
-			Sector * get_active_sector ();
 			
 			Ogre :: Root * root;
 			Ogre :: RenderWindow * window;
 			Battle_Engine battle_engine;
 			GUI_Engine * gui_engine;
 			Input_Engine * input_engine;
-			Ogre :: Timer * timer;
 			Audio_Engine * audio_engine;
 	};
 }

@@ -31,8 +31,7 @@ namespace tsl
 			Sector
 			(
 				string new_name,
-				TSL & new_owner,
-				Ogre :: SceneManager & new_scene_manager
+				TSL & new_owner
 			);
 			virtual ~Sector ();
 			virtual bool is_initialized () const;
@@ -54,8 +53,10 @@ namespace tsl
 
 		private :
 			Ogre :: SceneNode & create_entity_node (string name, string mesh_name, float scale);
-			Ogre :: SceneManager * scene_manager;
+			Ogre :: SceneManager & scene_manager;
 			Ogre :: Camera * camera;
+			Ogre :: Timer * timer;
+			Ogre :: RenderWindow & window;
 	};
 }
 

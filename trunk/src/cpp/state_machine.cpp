@@ -73,12 +73,14 @@ template <typename T> bool State_Machine <T> ::
 }
 
 //	virtual
-template <typename T> State <T> * State_Machine <T> ::
-	get_active_state ()
+template <typename T> State <T> & State_Machine <T> ::
+	get_active_state () const
 {
+	assert (is_initialized ());
+
 	if (active_child_state == NULL)
 	{
-		return this;
+		return * const_cast <State_Machine <T> *> (this);
 	}
 	if (active_child_state -> Object :: is_type <State_Machine <T> > ())
 	{
@@ -86,7 +88,7 @@ template <typename T> State <T> * State_Machine <T> ::
 			-> Object :: to_type <State_Machine <T> > ()
 			. get_active_state ();
 	}
-	return active_child_state;
+	return * active_child_state;
 }
 
 //	virtual

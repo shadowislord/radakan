@@ -7,8 +7,7 @@ Sector ::
 	Sector
 	(
 		string new_name,
-		TSL & new_owner,
-		Ogre :: SceneManager & new_scene_manager
+		TSL & new_owner
 	) :
 	Object (new_name),
 	Set <Entity> (new_name),
@@ -19,24 +18,25 @@ Sector ::
 		new btSimpleBroadphase (),
 		new btSequentialImpulseConstraintSolver ()
 	),
-	scene_manager (& new_scene_manager)
+	scene_manager (owner . new_scene_manager ()),
+	window (new_owner . get_window ())
 {
 	trace () << "Sector (" << new_name << ", ~new_scene_manager~)" << endl;
 	assert (Object :: is_initialized ());
 
-	camera = scene_manager -> createCamera ("Eyes");
+	camera = scene_manager . createCamera ("Eyes");
 	camera -> setNearClipDistance (5);
 	camera -> setFarClipDistance (2000);
 
 	//	!!!	This doesn't work somehow.
-	scene_manager -> setSkyDome (true, "Peaceful", 10, 5);
+	scene_manager . setSkyDome (true, "Peaceful", 10, 5);
 
 	//	the ground
 	Ogre :: SceneNode & groundNode = create_entity_node ("Ground","plane.mesh", 1);
 	dynamic_cast <Ogre :: Entity *> (groundNode . getAttachedObject (0)) -> setMaterialName ("TavernWalls");
 	groundNode . setOrientation (Ogre :: Quaternion (Ogre :: Radian (- Ogre :: Math :: HALF_PI), Ogre :: Vector3 :: UNIT_X));
 
-	if (Player :: getSingletonPtr () == NULL)
+	if (! Player :: is_instantiated ())
 	{
 		Player * player = new Player
 		(
@@ -79,7 +79,6 @@ Sector ::
 		create_entity_node ("Ninja (" + * this + ")", "ninja.mesh", 0.1)
 	);
 	add (* ninja);
-	npcs . insert (ninja);
 
 	//	the tavern
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (0, 0, 0),
@@ -117,7 +116,7 @@ Sector ::
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (- 700, 35, - 700),
 		create_entity_node ("Pine tree", "pine_tree_2.mesh", 1.5))));
 
-	//	forest of about 2000 trees
+	//	forest of 1961 trees
 	//	(30000 trees takes to long to load)
 	Entity * temp_tree = NULL;
 	for (int i = - 25; i <= 25; i++)
@@ -151,9 +150,9 @@ Sector ::
 	{
 		char name [50];
 		sprintf (name, "cluster_%d", i);
-		Ogre :: BillboardSet * bbs2 = scene_manager -> createBillboardSet (name, 1);
+		Ogre :: BillboardSet * bbs2 = scene_manager . createBillboardSet (name, 1);
 		bbs2 -> setBillboardRotationType (Ogre :: BBR_VERTEX);
-		Ogre :: SceneNode * bbsNode2 = scene_manager -> getRootSceneNode () -> createChildSceneNode ();
+		Ogre :: SceneNode * bbsNode2 = scene_manager . getRootSceneNode () -> createChildSceneNode ();
 
 		char type [50];
 		int ran = (int (Ogre :: Math :: RangeRandom (0, 1) * 100)) % 8 + 1;
@@ -171,6 +170,8 @@ Sector ::
 		bbsNode2 -> attachObject (bbs2);
 		bbsNode2 -> setPosition (px, 500, pz);
 	}
+
+	timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 
 	assert (is_initialized ());
 }
@@ -207,16 +208,14 @@ bool Sector ::
 	assert (is_initialized ());
 	assert (entity . is_initialized ());
 
-	#ifdef TSL_DEBUG
-		if (entity . is_type <NPC> ())
-		{
-			bool success = npcs . insert (& entity . to_type <NPC> ()) . second;
-			assert (success);
-		}
-		bool result = Set <Entity> :: add (entity);
-		assert (result);
-	#endif
-	
+	if (entity . is_type <NPC> ())
+	{
+		bool success = npcs . insert (& entity . to_type <NPC> ()) . second;
+		assert (success);
+	}
+	bool result = Set <Entity> :: add (entity);
+	assert (result);
+
 	addRigidBody (& entity);
 	
 	return true;
@@ -231,6 +230,11 @@ bool Sector ::
 	assert (other_set . is_initialized ());
 	
 	removeRigidBody (& entity);
+	
+	if (entity . is_type <NPC> ())
+	{
+		npcs . erase (& entity . to_type <NPC> ());
+	}
 
 	return Set <Entity> :: move_to (entity, other_set);
 }
@@ -241,140 +245,148 @@ string Sector ::
 	assert (is_initialized ());
 
 	int time = 0;
-	while ((! owner . quit) && (owner . get_active_state () == this))
+	while (& owner . get_active_state () == this)
 	{
-		owner . timer -> reset ();
+		timer -> reset ();
 
 		update (time);
 	
-		owner . input_engine -> capture ();
-		Ogre :: PlatformManager :: getSingletonPtr () -> messagePump (owner . window);
+		Input_Engine :: get () . capture ();
+		Ogre :: PlatformManager :: getSingleton () . messagePump (& window);
 
-		owner . gui_engine -> set_mouse_position (owner . input_engine -> get_mouse_position (false));
+		GUI_Engine :: get () . set_mouse_position
+						(Input_Engine :: get () . get_mouse_position (false));
 		
 		//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
-		if (! owner . root -> renderOneFrame ()
-				|| ! owner . gui_engine -> render ()
-				|| Player :: getSingleton () . is_dead ()
-				|| owner . input_engine -> get_key ("Escape", false)
-				|| owner . window -> isClosed())
+		if (! owner . render_frame ()
+				|| ! GUI_Engine :: get () . render ()
+				|| Player :: get () . is_dead ()
+				|| Input_Engine :: get () . get_key ("Escape", false)
+				|| window . isClosed())
 		{
-			owner . quit = true;
-			break;
+			return owner . quit;
 		}
 
 		//	Handle movement
 		//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
-		if (owner . input_engine -> get_key ("e", false))
+		if (Input_Engine :: get () . get_key ("e", false))
 		{
-			Player :: getSingleton () . walk (0.2 * time);
+			Player :: get () . walk (0.2 * time);
 		}
-		if (owner . input_engine -> get_key ("d", false))
+		if (Input_Engine :: get () . get_key ("d", false))
 		{
-			Player :: getSingleton () . walk (- 0.1 * time);
+			Player :: get () . walk (- 0.1 * time);
 		}
-		if (owner . input_engine -> get_key ("s", false))
+		if (Input_Engine :: get () . get_key ("s", false))
 		{
-			Player :: getSingleton () . turn (0.005 * time);
+			Player :: get () . turn (0.005 * time);
 		}
-		if (owner . input_engine -> get_key ("f", false))
+		if (Input_Engine :: get () . get_key ("f", false))
 		{
-			Player :: getSingleton () . turn (- 0.005 * time);
+			Player :: get () . turn (- 0.005 * time);
 		}
 
 		//	hit
-		if (owner . input_engine -> get_key ("h", true))
+		if (Input_Engine :: get () . get_key ("h", true))
 		{
 			NPC & npc = * * npcs . begin ();
 			if (! npc . is_dead ())
 			{
-				owner . gui_engine -> show (owner . battle_engine . hit (Player :: getSingleton (), npc));
+				GUI_Engine :: get () . show
+					(Battle_Engine :: get () . hit (Player :: get (), npc));
 			}
 			else
 			{
-				owner . gui_engine -> show ("Mutilating a dead body is *not* nice.");
+				GUI_Engine :: get () . show
+					("Mutilating a dead body is *not* nice.");
 			}
 		}
 		
 		//	move the weapon
-		if (owner . input_engine -> get_key ("m", true))
+		if (Input_Engine :: get () . get_key ("m", true))
 		{
 			//	Memo to self (Tinus):
-			//	NPC npc = * * npcs . begin ();
-			//	that *copies* the NPC.
+			//	NPC npc = * * npcs . begin ();  ->  that *copies* the NPC.
 			NPC & npc = * * npcs . begin ();
-			if (Player :: getSingleton () . has_weapon ())
+			if (Player :: get () . has_weapon ())
 			{
-				Player :: getSingleton () . move_to (* Player :: getSingleton () . get_weapon (), npc);
-				assert (! Player :: getSingleton () . has_weapon ());
+				Player :: get () . move_to (* Player :: get () . get_weapon (), npc);
+				assert (! Player :: get () . has_weapon ());
 				assert (npc . has_weapon ());
-				owner . gui_engine -> show ("You gave your weapon to the ninja.");
+				GUI_Engine :: get () . show
+										("You gave your weapon to the ninja.");
 			}
 			else if (npc . has_weapon ())
 			{
-				npc . Character :: move_to (* npc . get_weapon (), Player :: getSingleton ());
-				assert (Player :: getSingleton () . has_weapon ());
+				npc . Character :: move_to (* npc . get_weapon (), Player :: get ());
+				assert (Player :: get () . has_weapon ());
 				assert (! npc . has_weapon ());
-				owner . gui_engine -> show ("You took your weapon from the ninja.");
+				GUI_Engine :: get () . show
+									("You took your weapon from the ninja.");
 			}
 			else
 			{
-				owner . gui_engine -> show ("Both you and the ninja don't have a weapon.");
+				GUI_Engine :: get () . show
+								("Both you and the ninja don't have a weapon.");
 			}
 		}
 
-		if (owner . input_engine -> get_mouse_button
-							(owner . input_engine -> left_mouse_button, true))
+		if (Input_Engine :: get () . get_mouse_button
+						(Input_Engine :: get () . left_mouse_button, true))
 		{
-			owner . gui_engine -> show ("Left click - FPS: " + to_string (owner . window -> getAverageFPS ()));
+			GUI_Engine :: get () . show
+				("Left click - FPS: " + to_string (window . getAverageFPS ()));
 		}
 		
-		if (owner . input_engine -> get_mouse_button
-						(owner . input_engine -> middle_mouse_button, false))
+		if (Input_Engine :: get () . get_mouse_button
+						(Input_Engine :: get () . middle_mouse_button, false))
 		{
-			float x_offset = owner . input_engine -> get_mouse_position (true) . first;
+			float x_offset = Input_Engine :: get ()
+											. get_mouse_position (true) . first;
 
 			if (x_offset != 0)
 			{
 				x_offset = - 0.01 * x_offset;
 			
-				debug () << owner . input_engine -> middle_mouse_button << " - x offset: " <<  x_offset << endl;
+				debug () << Input_Engine :: get () . middle_mouse_button
+										<< " - x offset: " <<  x_offset << endl;
 
-				Player :: getSingleton () . turn (x_offset);
+				Player :: get () . turn (x_offset);
 			}
 		}
 		
-		if (owner . input_engine -> get_mouse_button
-							(owner . input_engine -> right_mouse_button, true))
+		if (Input_Engine :: get () . get_mouse_button
+						(Input_Engine :: get () . right_mouse_button, true))
 		{
-			owner . gui_engine -> show ("Right click - trivia: there are 1961 trees in each forest.");
+			GUI_Engine :: get () . show
+				("Right click - trivia: there are 1961 trees in each forest.");
 		}
 		
-		if (owner . input_engine -> get_key ("1", true))
+		if (Input_Engine :: get () . get_key ("1", true))
 		{
 			State <TSL> * sector = owner . get_child ("Sector 1", true);
 			assert (sector != NULL);
 			owner . change_active_state (* sector);
-			owner . gui_engine -> show ("Sector 1");
+			GUI_Engine :: get () . show ("Sector 1");
 		}
 		
-		if (owner . input_engine -> get_key ("2", true))
+		if (Input_Engine :: get () . get_key ("2", true))
 		{
 			State <TSL> * sector = owner . get_child ("Sector 2", true);
 			assert (sector != NULL);
 			owner . change_active_state (* sector);
-			owner . gui_engine -> show ("Sector 2");
+			GUI_Engine :: get () . show ("Sector 2");
 		}
 
-		get_camera () . setPosition
-			(Player :: getSingleton () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
-		get_camera () . setOrientation
-			(Player :: getSingleton () . node -> getOrientation ());
+		camera -> setPosition
+			(Player :: get () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
+		camera -> setOrientation
+			(Player :: get () . node -> getOrientation ());
 
-		time = owner . timer -> getMilliseconds ();
+		time = timer -> getMilliseconds ();
 	}
 	
-	return "";
+	return "continue";
 }
 
 void Sector ::
@@ -416,7 +428,7 @@ Ogre :: SceneManager & Sector ::
 {
 	assert (is_initialized ());
 
-	return * scene_manager;
+	return scene_manager;
 }
 
 Ogre :: SceneNode & Sector ::
@@ -425,7 +437,7 @@ Ogre :: SceneNode & Sector ::
 	assert (example . numAttachedObjects () == 1);
 	assert (example . getAttachedObject (0) != NULL);
 	
-	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode ()
+	Ogre :: SceneNode * node = scene_manager . getRootSceneNode ()
 													-> createChildSceneNode ();
 	
 	node -> attachObject (example . detachObject
@@ -441,10 +453,10 @@ Ogre :: SceneNode & Sector ::
 Ogre :: SceneNode & Sector ::
 	create_entity_node (string name, string mesh_name, float scale)
 {
-	Ogre :: SceneNode * node = scene_manager -> getRootSceneNode () ->
+	Ogre :: SceneNode * node = scene_manager . getRootSceneNode () ->
 													createChildSceneNode ();
 	
-	node -> attachObject (scene_manager -> createEntity (name, mesh_name));
+	node -> attachObject (scene_manager . createEntity (name, mesh_name));
 	
 	assert (node -> numAttachedObjects () == 1);
 	assert (node -> getAttachedObject (0) != NULL);

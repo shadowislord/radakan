@@ -1,19 +1,17 @@
 #ifndef GUI_ENGINE_HPP
 #define GUI_ENGINE_HPP
 
+#include "singleton.hpp"
 #include <OgreRenderWindow.h>
 #include <OgreCEGUIRenderer.h>
 #include <CEGUI.h>
-
-#include "object.hpp"
 
 using namespace std;
 
 namespace tsl
 {
 	class GUI_Engine :
-		public Object,
-		public Ogre :: Singleton <GUI_Engine>
+		public Singleton <GUI_Engine>
 	{
 		public :
 			GUI_Engine (Ogre :: RenderWindow & window, string log_file_name);

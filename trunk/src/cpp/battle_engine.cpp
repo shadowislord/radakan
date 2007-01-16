@@ -4,11 +4,10 @@ using namespace std;
 using namespace boost;
 using namespace tsl;
 
-template <> Battle_Engine * Ogre :: Singleton <Battle_Engine> :: ms_Singleton = NULL;
-
 Battle_Engine ::
 	Battle_Engine () :
 	Object ("Battle engine"),
+	Singleton <Battle_Engine> ("Battle engine"),
 	max_distance (25),
 	generator (42u),
 	uniform_real_distribution (0, 1),

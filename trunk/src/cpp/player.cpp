@@ -3,8 +3,6 @@
 using namespace std;
 using namespace tsl;
 
-template <> Player * Ogre :: Singleton <Player> :: ms_Singleton = NULL;
-
 //  constructor
 Player ::
 	Player
@@ -15,6 +13,7 @@ Player ::
 		Ogre :: SceneNode & new_node
 	) :
 	Object (get_name (new_node)),
+	Singleton <Player> (get_name (new_node)),
 	Character
 	(
 		new_volume,

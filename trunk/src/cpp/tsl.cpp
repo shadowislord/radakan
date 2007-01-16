@@ -6,11 +6,12 @@
 using namespace std;
 using namespace tsl;
 
-template <> TSL * Ogre :: Singleton <TSL> :: ms_Singleton = NULL;
+string TSL :: quit = "quit";
 
 TSL ::
 	TSL (string tsl_path, string ogre_path) :
 	Object ("TSL"),
+	Singleton <TSL> ("TSL"),
 	State_Machine <TSL> (* this)
 {
 	trace () << "TSL (" << tsl_path << ", " << ogre_path << ")" << endl;
@@ -113,9 +114,6 @@ TSL ::
 	//	new engine handler.
 	input_engine = new Input_Engine (* window);
 
-	timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
-
-	quit = false;
 }
 
 TSL ::
@@ -143,13 +141,47 @@ string TSL ::
 }
 
 Sector * TSL ::
-	get_active_sector ()
+	get_active_sector () const
 {
-	State <TSL> * active_state = get_active_state ();
-	debug () << "active state: " << * active_state << endl;
-	if (active_state -> is_type <Sector> ())
+	State <TSL> & active_state = get_active_state ();
+	
+	debug () << "active state: " << active_state << endl;
+	
+	if (active_state . is_type <Sector> ())
 	{
-		return & active_state -> to_type <Sector> ();
+		return & active_state . to_type <Sector> ();
 	}
 	return NULL;
+}
+
+bool TSL ::
+	render_frame () const
+{
+	assert (is_initialized ());
+
+	return root -> renderOneFrame ();
+}
+
+Ogre :: SceneManager & TSL ::
+	new_scene_manager () const
+{
+	assert (is_initialized ());
+
+	return * root -> createSceneManager (Ogre :: ST_GENERIC);
+}
+
+Ogre :: RenderWindow & TSL ::
+	get_window () const
+{
+	assert (is_initialized ());
+
+	return * window;
+}
+
+void TSL ::
+	set_camera (Ogre :: Camera & new_camera)
+{
+	assert (is_initialized ());
+
+	root -> getRenderSystem () -> _getViewport () -> setCamera (& new_camera);
 }

@@ -1,6 +1,8 @@
 #ifndef INPUT_ENGINE_HPP
 #define INPUT_ENGINE_HPP
 
+#include "singleton.hpp"
+
 #include <OgreRenderWindow.h>
 
 #include <OISInputManager.h>
@@ -8,8 +10,6 @@
 #include <OISMouse.h>
 #include <OISEvents.h>
 //	#include <OIS.h>
-
-#include "object.hpp"
 
 using namespace std;
 
@@ -19,8 +19,7 @@ namespace tsl
 	///	Input engine is responsible for recording player input.
 
 	class Input_Engine :
-		public Object,
-		public Ogre :: Singleton <Input_Engine>,
+		public Singleton <Input_Engine>,
 		private OIS :: KeyListener,
 		private OIS :: MouseListener
 	{

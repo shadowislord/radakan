@@ -24,9 +24,10 @@ namespace tsl
 			virtual bool move_to (T & t, Set <T> & other_set);
 															//	true iff succes
 
-		protected:
 			//	These methods can take a while, in case of a large Set.
 			T * get_child (string name, bool recursive) const;
+			
+		protected:
 			template <typename U> U * get_typed_child () const;
 			template <typename U> U * get_typed_child (string name) const;
 
