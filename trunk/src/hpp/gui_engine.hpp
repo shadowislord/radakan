@@ -20,10 +20,13 @@ namespace tsl
 			static string get_type_name ();
 			void set_scene_manager (Ogre :: SceneManager & new_scene_manager);
 			void set_mouse_position (pair <float, float> new_position);
+			void left_mouse_button_click ();
 			bool render () const;
 			void show (string message);
 
 		private :
+			bool handle_button (const CEGUI :: EventArgs & e);
+			
 			CEGUI :: OgreCEGUIRenderer * renderer;
 			CEGUI :: Window * root_window;
 			CEGUI :: System * system;

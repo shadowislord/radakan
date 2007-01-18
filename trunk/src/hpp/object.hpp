@@ -4,7 +4,7 @@
 #include <OgrePrerequisites.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-	#define TSL_WIN32
+	#define TSL_WIN
 	#define WIN32_LEAN_AND_MEAN
 	#include "windows.h"
 	#if _MSC_VER
@@ -45,8 +45,8 @@ namespace tsl
 			virtual ~Object ();
 			virtual bool is_initialized () const;
 			static string get_type_name ();
-			template <typename T> bool is_type () const;
-			template <typename T> T & to_type () const;
+			template <class T> bool is_type () const;
+			template <class T> T & to_type () const;
 			
 			ostream & debug () const;
 			ostream & trace () const;
@@ -67,7 +67,7 @@ namespace tsl
 
 		protected:
 			///	To avoid 'plain' Object instances, the constructor(s) is/are proteced.
-			#ifdef TSL_WIN32
+			#ifdef TSL_WIN
 				///	Some Windows compilers give an error otherwise.
 				Object ();
 			#endif
@@ -76,7 +76,7 @@ namespace tsl
 			//	This method is only used for debugging.
 			//	Example usage: assert (warn <Class> (object -> Class :: is_initialized ()));
 			//	In case of an assertion failure, you get an informative warning in the log.
-			template <typename T> bool warn (bool initialization) const;
+			template <class T> bool warn (bool initialization) const;
 
 		private :
 			ostream & print (string message) const;

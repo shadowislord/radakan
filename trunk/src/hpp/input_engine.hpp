@@ -43,8 +43,10 @@ namespace tsl
 			virtual bool keyReleased (const OIS :: KeyEvent & key_event);
 
 			virtual bool mouseMoved (const OIS :: MouseEvent & mouse_event);
-			virtual bool mousePressed (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
-			virtual bool mouseReleased (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
+			virtual bool mousePressed
+				(const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
+			virtual bool mouseReleased
+				(const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
 
 			map <string, bool> keys;
 			map <string, bool> mouse_buttons;

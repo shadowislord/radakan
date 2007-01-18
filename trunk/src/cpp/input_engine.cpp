@@ -21,7 +21,7 @@ Input_Engine ::
 
 	// Each operating system uses a different mechanism to
 	// refer to the main rendering window.
-	#ifdef TSL_WIN32
+	#ifdef TSL_WIN
 		window . getCustomAttribute ("HWND", & window_handle_temp);
 	#else
 		window . getCustomAttribute ("GLXWINDOW", & window_handle_temp);

@@ -9,7 +9,7 @@ using namespace std;
 namespace tsl
 {
 
-	template <typename T> class Singleton :
+	template <class T> class Singleton :
 		public virtual Object,
 		protected Ogre :: Singleton <T>
 	{

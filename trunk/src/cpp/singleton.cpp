@@ -3,10 +3,10 @@
 using namespace std;
 using namespace tsl;
 
-template <typename T> T * Ogre :: Singleton <T> :: ms_Singleton = NULL;
+template <class T> T * Ogre :: Singleton <T> :: ms_Singleton = NULL;
 
 //  constructor
-template <typename T> Singleton <T> ::
+template <class T> Singleton <T> ::
 	Singleton (string new_name) :
 	Object (new_name)
 {
@@ -17,7 +17,7 @@ template <typename T> Singleton <T> ::
 }
 
 //  destructor
-template <typename T> Singleton <T> ::
+template <class T> Singleton <T> ::
 	~Singleton ()
 {
 	trace () << "~Singleton <" << T :: get_type_name () << "> ()" << endl;
@@ -25,7 +25,7 @@ template <typename T> Singleton <T> ::
 }
 
 //	virtual
-template <typename T> bool Singleton <T> ::
+template <class T> bool Singleton <T> ::
 	is_initialized ()
 	const
 {
@@ -33,14 +33,14 @@ template <typename T> bool Singleton <T> ::
 }
 
 //	static
-template <typename T> string Singleton <T> ::
+template <class T> string Singleton <T> ::
 	get_type_name ()
 {
 	return "Singleton <" + T :: get_type_name () + ">";
 }
 
 //	static
-template <typename T> T & Singleton <T> ::
+template <class T> T & Singleton <T> ::
 	get ()
 {
 	assert (is_instantiated ());
@@ -49,7 +49,7 @@ template <typename T> T & Singleton <T> ::
 }
 
 //	static
-template <typename T> bool Singleton <T> ::
+template <class T> bool Singleton <T> ::
 	is_instantiated ()
 {
 	return Ogre :: Singleton <T> :: getSingletonPtr () != NULL;

@@ -10,7 +10,7 @@ namespace tsl
 
 	///	State is the abstract base class for all 'finite state machine'-states.
 
-	template <typename T> class State :
+	template <class T> class State :
 		public virtual Object
 	{
 		public :
@@ -21,6 +21,8 @@ namespace tsl
 
 			//	pure virtual method
 			virtual string run () = 0;
+			
+			static string nothing;
 
 		protected:
 			State (T & new_owner);

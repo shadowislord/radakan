@@ -43,6 +43,7 @@ string Play_State ::
 	return "play state";
 }
 
+//	virtual
 void Play_State ::
 	change_active_state (State <TSL> & state)
 {
@@ -50,16 +51,14 @@ void Play_State ::
 	
 	if (state != get_active_state ())
 	{
-		Sector * old_active_sector = owner . get_active_sector ();
-		assert (old_active_sector != NULL);
+		Sector & old_active_sector = get_active_state () . to_type <Sector> ();
 		Sector & new_active_sector = state . to_type <Sector> ();
 	
 		//	Update player position:
-		old_active_sector -> move_to (Player :: get (), new_active_sector);
+		old_active_sector . move_to (Player :: get (), new_active_sector);
 		Player :: get () . node = & new_active_sector . copy_node (* Player :: get() . node);
 		
 		State_Machine <TSL> :: change_active_state (state);
-		assert (owner . get_active_sector () == & state);
 
 		//	Update camera & scene manager:
 		owner . set_camera (new_active_sector . get_camera ());

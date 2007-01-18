@@ -42,7 +42,6 @@ namespace tsl
 
 			virtual string run ();
 
-			void update (int milliseconds_passed);
 			Ogre :: Camera & get_camera () const;
 			Ogre :: SceneNode & copy_node (Ogre :: SceneNode & example);
 			Ogre :: SceneManager & get_scene_manager () const;
@@ -55,8 +54,6 @@ namespace tsl
 			Ogre :: SceneNode & create_entity_node (string name, string mesh_name, float scale);
 			Ogre :: SceneManager & scene_manager;
 			Ogre :: Camera * camera;
-			Ogre :: Timer * timer;
-			Ogre :: RenderWindow & window;
 	};
 }
 

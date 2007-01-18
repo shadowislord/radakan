@@ -23,20 +23,21 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_type_name ();
 
-			//	This returns NULL, if no sector is active.
-			Sector * get_active_sector () const;
-
-			bool render_frame () const;
-			Ogre :: SceneManager & new_scene_manager () const;
-			Ogre :: RenderWindow & get_window () const;
+			virtual string run ();
 			void set_camera (Ogre :: Camera & new_camera);
+			float get_FPS () const;
+			Ogre :: SceneManager & new_scene_manager () const;
 
-			static string quit;
+			///	in milliseconds
+			int get_last_turn_lenght () const;
+
+			const string quit;
 
 		private :
-			
+			int last_turn_lenght;
 			Ogre :: Root * root;
 			Ogre :: RenderWindow * window;
+			Ogre :: Timer * turn_lenght_timer;
 			Battle_Engine battle_engine;
 			GUI_Engine * gui_engine;
 			Input_Engine * input_engine;

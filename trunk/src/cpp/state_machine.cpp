@@ -4,7 +4,7 @@ using namespace std;
 using namespace tsl;
 
 //  constructor
-template <typename T> State_Machine <T> ::
+template <class T> State_Machine <T> ::
 	State_Machine (T & new_owner) :
 	Object (new_owner + "'s state machine"),
 	State <T> (new_owner),
@@ -19,14 +19,14 @@ template <typename T> State_Machine <T> ::
 }
 
 //  destructor
-template <typename T> State_Machine <T> ::
+template <class T> State_Machine <T> ::
 	~State_Machine ()
 {
 	assert (State_Machine :: is_initialized ());
 }
 
 //	virtual
-template <typename T> bool State_Machine <T> ::
+template <class T> bool State_Machine <T> ::
 	is_initialized ()
 	const
 {
@@ -37,14 +37,14 @@ template <typename T> bool State_Machine <T> ::
 }
 
 //	static
-template <typename T> string State_Machine <T> ::
+template <class T> string State_Machine <T> ::
 	get_type_name ()
 {
 	return "state machine <" + T :: get_type_name () + ">";
 }
 
 //	virtual
-template <typename T> string State_Machine <T> ::
+template <class T> string State_Machine <T> ::
 	run ()
 {
 	assert (is_initialized ());
@@ -54,7 +54,7 @@ template <typename T> string State_Machine <T> ::
 }
 
 //	virtual
-template <typename T> bool State_Machine <T> ::
+template <class T> bool State_Machine <T> ::
 	add (State <T> & state)
 {
 	assert (is_initialized ());
@@ -73,7 +73,7 @@ template <typename T> bool State_Machine <T> ::
 }
 
 //	virtual
-template <typename T> State <T> & State_Machine <T> ::
+template <class T> State <T> & State_Machine <T> ::
 	get_active_state () const
 {
 	assert (is_initialized ());
@@ -92,7 +92,7 @@ template <typename T> State <T> & State_Machine <T> ::
 }
 
 //	virtual
-template <typename T> void State_Machine <T> ::
+template <class T> void State_Machine <T> ::
 	change_active_state (State <T> & state)
 {
 	Object :: trace () << "change_active_state (" << state << ")" << endl;
@@ -134,7 +134,7 @@ template <typename T> void State_Machine <T> ::
 }
 
 //virtual
-template <typename T> template <typename U> void State_Machine <T> ::
+template <class T> template <typename U> void State_Machine <T> ::
 	change_active_state ()
 {
 	Object :: trace () << "change_active_state <" << U :: get_type_name () << "> ()" << endl;
@@ -153,7 +153,7 @@ template <typename T> template <typename U> void State_Machine <T> ::
 	assert (active_child_state != NULL);
 }
 
-template <typename T> template <typename U> void State_Machine <T> ::
+template <class T> template <typename U> void State_Machine <T> ::
 	add ()
 {
 	Object :: trace () << "add <" << U :: get_type_name () << "> ()" << endl;
@@ -175,6 +175,8 @@ template class State_Machine <TSL>;
 template void State_Machine <NPC> :: change_active_state <Dead_State> ();
 template void State_Machine <NPC> :: change_active_state <Fight_State> ();
 template void State_Machine <NPC> :: change_active_state <Peace_State> ();
+template void State_Machine <TSL> :: change_active_state <Pause_State> ();
+template void State_Machine <TSL> :: change_active_state <Play_State> ();
 
 template void State_Machine <NPC> :: add <Dead_State> ();
 template void State_Machine <NPC> :: add <Fight_State> ();

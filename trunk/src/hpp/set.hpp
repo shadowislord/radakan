@@ -10,7 +10,7 @@ namespace tsl
 
 	///	Set is a generic container, but every Object can't be in more then one Set at once.
 
-	template <typename T> class Set :
+	template <class T> class Set :
 		public virtual Object
 	{
 		public :
@@ -28,8 +28,8 @@ namespace tsl
 			T * get_child (string name, bool recursive) const;
 			
 		protected:
-			template <typename U> U * get_typed_child () const;
-			template <typename U> U * get_typed_child (string name) const;
+			template <class U> U * get_typed_child () const;
+			template <class U> U * get_typed_child (string name) const;
 
 			//	These two methods make it very easy to get a pointer to each child:
 			T * get_child () const;

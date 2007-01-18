@@ -6,13 +6,12 @@
 using namespace std;
 using namespace tsl;
 
-string TSL :: quit = "quit";
-
 TSL ::
 	TSL (string tsl_path, string ogre_path) :
 	Object ("TSL"),
 	Singleton <TSL> ("TSL"),
-	State_Machine <TSL> (* this)
+	State_Machine <TSL> (* this),
+	quit ("quit")
 {
 	trace () << "TSL (" << tsl_path << ", " << ogre_path << ")" << endl;
 
@@ -91,35 +90,40 @@ TSL ::
 		#endif
 		abort ();
 	}
-	
+
 	window = root -> initialise (true, "The Scattered Lands");
+	gui_engine = new GUI_Engine (* window, tsl_path + "/log/cegui.txt");
 
 	Ogre :: MeshManager :: getSingleton (). createPlane ("plane.mesh", "custom", Ogre :: Plane (Ogre :: Vector3 :: UNIT_Z, Ogre :: Vector3 :: ZERO), 20000, 20000, 20, 20);
 
+	//	set default mipmap level (NB some APIs ignore this)
+	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);	
+
 	State_Machine <TSL> :: add <Play_State> ();
 
-	Sector * active_sector = get_active_sector ();
-	assert (active_sector != NULL);
+	assert (get_active_state () . is_type <Sector> ());
+	Sector & active_sector = get_active_state () . to_type <Sector> ();
 
 	root -> getRenderSystem () -> _setViewport
-					(window -> addViewport (& active_sector -> get_camera ()));
-
-	gui_engine = new GUI_Engine (* window, tsl_path + "/log/cegui.txt");
-	gui_engine -> set_scene_manager (active_sector -> get_scene_manager ());
-
-	//	Set default mipmap level (NB some APIs ignore this)
-	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
+			(window -> addViewport (& active_sector . get_camera ()));
+	gui_engine -> set_scene_manager (active_sector . get_scene_manager ());
 
 	//	This is the new input mechanism that is taking advantage of the
 	//	new engine handler.
 	input_engine = new Input_Engine (* window);
 
+	turn_lenght_timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
+	last_turn_lenght = 0;
+
+	assert (is_initialized ());
 }
 
 TSL ::
 	~TSL ()
 {
 	trace () << "~TSL ()" << endl;
+	assert (is_initialized ());
+	
 	delete gui_engine;
 	delete input_engine;
 	delete audio_engine;
@@ -140,26 +144,31 @@ string TSL ::
 	return "TSL";
 }
 
-Sector * TSL ::
-	get_active_sector () const
+string TSL ::
+	run ()
 {
-	State <TSL> & active_state = get_active_state ();
-	
-	debug () << "active state: " << active_state << endl;
-	
-	if (active_state . is_type <Sector> ())
+	//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
+	while
+	(
+		root -> renderOneFrame ()
+		&& gui_engine -> render ()
+		&& ! Player :: get () . is_dead ()
+		&& ! input_engine -> get_key ("Escape", false)
+		&& ! window -> isClosed ()
+		&& (State_Machine <TSL> :: run () != quit)
+	)
 	{
-		return & active_state . to_type <Sector> ();
+		input_engine -> capture ();
+		Ogre :: PlatformManager :: getSingleton () . messagePump (window);
+
+		gui_engine -> set_mouse_position
+				(input_engine -> get_mouse_position (false));
+
+		last_turn_lenght = turn_lenght_timer -> getMilliseconds ();
+		turn_lenght_timer -> reset ();
 	}
-	return NULL;
-}
 
-bool TSL ::
-	render_frame () const
-{
-	assert (is_initialized ());
-
-	return root -> renderOneFrame ();
+	return "bye";
 }
 
 Ogre :: SceneManager & TSL ::
@@ -170,12 +179,12 @@ Ogre :: SceneManager & TSL ::
 	return * root -> createSceneManager (Ogre :: ST_GENERIC);
 }
 
-Ogre :: RenderWindow & TSL ::
-	get_window () const
+float TSL ::
+	get_FPS () const
 {
 	assert (is_initialized ());
 
-	return * window;
+	return window -> getAverageFPS ();
 }
 
 void TSL ::
@@ -184,4 +193,10 @@ void TSL ::
 	assert (is_initialized ());
 
 	root -> getRenderSystem () -> _getViewport () -> setCamera (& new_camera);
+}
+
+int TSL ::
+	get_last_turn_lenght () const
+{
+	return last_turn_lenght;
 }

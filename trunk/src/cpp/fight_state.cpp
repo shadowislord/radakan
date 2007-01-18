@@ -51,6 +51,6 @@ string Fight_State ::
 	}
 	else
 	{
-		return owner + " looks for an ennemy.";
+		return State <NPC> :: nothing;
 	}
 }

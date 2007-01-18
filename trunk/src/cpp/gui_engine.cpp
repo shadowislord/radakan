@@ -12,9 +12,13 @@ GUI_Engine ::
 
 	renderer = new CEGUI :: OgreCEGUIRenderer (& window);
 
-//	CEGUI :: System :: setDefaultXMLParserName ("XercesParser");
-	system = new CEGUI :: System (renderer, CEGUI :: String (log_file_name) . data ());
-
+	#if CEGUI_VERSION_MINOR > 4
+		//	assuming cegui-0.5
+		system = new CEGUI :: System (renderer, NULL, NULL, NULL, "", log_file_name);
+	#else
+		system = new CEGUI :: System (renderer, CEGUI :: String (log_file_name) . data ());
+	#endif
+	
 	window_manager = & CEGUI :: WindowManager :: getSingleton ();
 
 	CEGUI :: Logger :: getSingleton () . setLoggingLevel (CEGUI :: Informative);
@@ -26,6 +30,19 @@ GUI_Engine ::
 
 	root_window = window_manager -> loadWindowLayout ("tsl.config");
 	system -> setGUISheet (root_window);
+
+	CEGUI :: Event :: Subscriber event_suscriber (& GUI_Engine :: handle_button, this);
+
+//	!!!	Somehow doesn't work...
+//	CEGUI :: GlobalEventSet :: getSingleton () . subscribeEvent
+//						(CEGUI :: PushButton :: EventClicked, event_suscriber);
+	
+	root_window -> getChild ("welcome-button") -> subscribeEvent
+						(CEGUI :: PushButton :: EventClicked, event_suscriber);
+	root_window -> getChild ("howdy-button2") -> subscribeEvent
+						(CEGUI :: PushButton :: EventClicked, event_suscriber);
+	root_window -> getChild ("quit-button") -> subscribeEvent
+						(CEGUI :: PushButton :: EventClicked, event_suscriber);
 
 	assert (is_initialized ());
 }
@@ -60,8 +77,14 @@ void GUI_Engine ::
 void GUI_Engine ::
 	set_mouse_position (pair <float, float> new_position)
 {
-	debug () << "new mouse position: " << new_position . first << " " << new_position . second << endl;
 	system -> injectMousePosition (new_position . first, new_position . second);
+}
+
+void GUI_Engine ::
+	left_mouse_button_click ()
+{
+	system -> injectMouseButtonDown (CEGUI :: LeftButton);
+	system -> injectMouseButtonUp (CEGUI :: LeftButton);
 }
 
 bool GUI_Engine ::
@@ -80,4 +103,22 @@ void GUI_Engine ::
 {
 	root_window -> getChild ("text") -> setText (message);
 	trace () << "new message: '" << message << "'" << endl;
+}
+
+bool GUI_Engine ::
+	handle_button (const CEGUI :: EventArgs & e)
+{
+	assert (is_initialized ());
+
+	CEGUI :: WindowEventArgs * event = (CEGUI :: WindowEventArgs *)(& e);
+	if (event == NULL)
+	{
+		show ("Unknown event type...");
+	}
+	else
+	{
+		show ("The '" + string (event -> window -> getText () . c_str ()) + "' button was clicked.");
+	}
+
+	return true;
 }

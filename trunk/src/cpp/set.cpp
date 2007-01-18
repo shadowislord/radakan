@@ -4,7 +4,7 @@ using namespace std;
 using namespace tsl;
 
 //  constructor
-template <typename T> Set <T> ::
+template <class T> Set <T> ::
 	Set (string new_name) :
 	Object (new_name)
 {
@@ -15,13 +15,13 @@ template <typename T> Set <T> ::
 }
 
 //  destructor
-template <typename T> Set <T> ::
+template <class T> Set <T> ::
 	~Set ()
 {
 	trace () << "~Set <" << T :: get_type_name () << "> ()" << endl;
 	assert (Set <T> :: is_initialized ());
 
-	for (typename set<T *> :: const_iterator i = children . begin (); i != children . end (); i ++)
+	for (class set<T *> :: const_iterator i = children . begin (); i != children . end (); i ++)
 	{
 		trace () << "deleting " << to_string (* i) << "..." << endl;
 		delete (* i);
@@ -29,11 +29,11 @@ template <typename T> Set <T> ::
 }
 
 //	virtual
-template <typename T> bool Set <T> ::
+template <class T> bool Set <T> ::
 	is_initialized ()
 	const
 {
-	for (typename set <T *> :: const_iterator i = children . begin ();
+	for (class set <T *> :: const_iterator i = children . begin ();
 							i != children . end (); i ++)
 	{
 		assert (warn <Set <T> > ((* i) -> T :: is_initialized ()));
@@ -43,14 +43,14 @@ template <typename T> bool Set <T> ::
 }
 
 //	static
-template <typename T> string Set <T> ::
+template <class T> string Set <T> ::
 	get_type_name ()
 {
 	return "Set <" + T :: get_type_name () + ">";
 }
 
 //	virtual
-template <typename T> bool Set <T> ::
+template <class T> bool Set <T> ::
 	add (T & t)
 {
 	trace () << "add <" << T :: get_type_name () << "> (" << t << ")" << endl;
@@ -68,7 +68,7 @@ template <typename T> bool Set <T> ::
 }
 
 //	virtual
-template <typename T> bool Set <T> ::
+template <class T> bool Set <T> ::
 	contains (T & t, bool recursive)
 	const
 {
@@ -103,7 +103,7 @@ template <typename T> bool Set <T> ::
 }
 
 //	virtual
-template <typename T> bool Set <T> ::
+template <class T> bool Set <T> ::
 	move_to (T & t, Set <T> & other_set)
 {
 	trace () << "move_to <" << T :: get_type_name () << "> (" << t << ", " << other_set << ")" << endl;
@@ -122,7 +122,7 @@ template <typename T> bool Set <T> ::
 	return false;
 }
 
-template <typename T> T * Set <T> ::
+template <class T> T * Set <T> ::
 	get_child (string name, bool recursive)
 	const
 {
@@ -150,7 +150,7 @@ template <typename T> T * Set <T> ::
 	return NULL;
 }
 
-template <typename T> template <typename U> U * Set <T> ::
+template <class T> template <class U> U * Set <T> ::
 	get_typed_child ()
 	const
 {
@@ -167,7 +167,7 @@ template <typename T> template <typename U> U * Set <T> ::
 	return NULL;
 }
 
-template <typename T> template <typename U> U * Set <T> ::
+template <class T> template <class U> U * Set <T> ::
 	get_typed_child (string name)
 	const
 {
@@ -184,7 +184,7 @@ template <typename T> template <typename U> U * Set <T> ::
 	return NULL;
 }
 
-template <typename T> T * Set <T> ::
+template <class T> T * Set <T> ::
 	get_child ()
 	const
 {
@@ -199,7 +199,7 @@ template <typename T> T * Set <T> ::
 	return * (next_child ++);
 }
 
-template <typename T> T * Set <T> ::
+template <class T> T * Set <T> ::
 	get_another_child ()
 	const
 {

@@ -51,6 +51,6 @@ string Peace_State ::
 	}
 	else
 	{
-		return owner + " stays calm.";
+		return State <NPC> :: nothing;
 	}
 }

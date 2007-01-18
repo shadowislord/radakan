@@ -3,8 +3,10 @@
 using namespace std;
 using namespace tsl;
 
+template <class T> string State <T> :: nothing = "nothing";
+
 //  constructor
-template <typename T> State <T> ::
+template <class T> State <T> ::
 	State (T & new_owner) :
 	Object (new_owner + "'s generic state"),
 	owner (new_owner)
@@ -16,7 +18,7 @@ template <typename T> State <T> ::
 }
 
 //  destructor
-template <typename T> State <T> ::
+template <class T> State <T> ::
 	~State ()
 {
 	trace () << "~State ()" << endl;
@@ -24,7 +26,7 @@ template <typename T> State <T> ::
 }
 
 //	virtual
-template <typename T> bool State <T> ::
+template <class T> bool State <T> ::
 	is_initialized ()
 	const
 {
@@ -33,7 +35,7 @@ template <typename T> bool State <T> ::
 }
 
 //	static
-template <typename T> string State <T> ::
+template <class T> string State <T> ::
 	get_type_name ()
 {
 	return "state";

@@ -177,7 +177,7 @@ ostream & Object ::
 	return cout << message << ": " << * this << " - ";
 }
 
-template <typename T> bool Object ::
+template <class T> bool Object ::
 	is_type ()
 	const
 {
@@ -187,7 +187,7 @@ template <typename T> bool Object ::
 	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
 }
 
-template <typename T> T & Object ::
+template <class T> T & Object ::
 	to_type ()
 	const
 {
@@ -198,7 +198,7 @@ template <typename T> T & Object ::
 	return * dynamic_cast <T *> (const_cast <Object *> (this));
 }
 
-template <typename T> bool Object ::
+template <class T> bool Object ::
 	warn (bool initialization)
 	const
 {
@@ -212,6 +212,16 @@ template <typename T> bool Object ::
 //	to avert linking errors:
 #include "play_state.hpp"
 #include "pause_state.hpp"
+
+template bool Object :: is_type <Container> () const;
+template bool Object :: is_type <NPC> () const;
+template bool Object :: is_type <Sector> () const;
+template bool Object :: is_type <Set <Entity> > () const;
+template bool Object :: is_type <Set <Sector> > () const;
+template bool Object :: is_type <Set <Sound> > () const;
+template bool Object :: is_type <Set <State <NPC> > > () const;
+template bool Object :: is_type <Set <State <TSL> > > () const;
+template bool Object :: is_type <Weapon> () const;
 
 template Character & Object :: to_type <Character> () const;
 template Container & Object :: to_type <Container> () const;
@@ -231,16 +241,6 @@ template Sound & Object :: to_type <Sound> () const;
 template State_Machine <NPC> & Object :: to_type <State_Machine <NPC> > () const;
 template State_Machine <TSL> & Object :: to_type <State_Machine <TSL> > () const;
 template Weapon & Object :: to_type <Weapon> () const;
-
-template bool Object :: is_type <Container> () const;
-template bool Object :: is_type <NPC> () const;
-template bool Object :: is_type <Sector> () const;
-template bool Object :: is_type <Set <Entity> > () const;
-template bool Object :: is_type <Set <Sector> > () const;
-template bool Object :: is_type <Set <Sound> > () const;
-template bool Object :: is_type <Set <State <NPC> > > () const;
-template bool Object :: is_type <Set <State <TSL> > > () const;
-template bool Object :: is_type <Weapon> () const;
 
 template bool Object :: warn <Audio_Engine> (bool initialization) const;
 template bool Object :: warn <Battle_Engine> (bool initialization) const;

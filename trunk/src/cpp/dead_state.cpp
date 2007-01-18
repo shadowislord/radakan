@@ -43,8 +43,5 @@ string Dead_State ::
 {
 	assert (is_initialized ());
 
-	error () << "- The deads can't think." << endl;
-	abort ();
-
-	return "The deads can't think.";
+	return State <NPC> :: nothing;
 }

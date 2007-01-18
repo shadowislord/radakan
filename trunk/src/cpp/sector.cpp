@@ -1,4 +1,4 @@
-#include "tsl.hpp"
+#include "pause_state.hpp"
 
 using namespace std;
 using namespace tsl;
@@ -18,10 +18,9 @@ Sector ::
 		new btSimpleBroadphase (),
 		new btSequentialImpulseConstraintSolver ()
 	),
-	scene_manager (owner . new_scene_manager ()),
-	window (new_owner . get_window ())
+	scene_manager (owner . new_scene_manager ())
 {
-	trace () << "Sector (" << new_name << ", ~new_scene_manager~)" << endl;
+	trace () << "Sector (" << new_name << ", " << new_owner << ")" << endl;
 	assert (Object :: is_initialized ());
 
 	camera = scene_manager . createCamera ("Eyes");
@@ -91,6 +90,8 @@ Sector ::
 		create_entity_node ("Table 2", "table.mesh", 1))));
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (26, 0, 97),
 		create_entity_node ("Table 3", "table.mesh", 1))));
+
+	//	'table2.mesh' is not textured yet.
 
 	//	These fences are not textured yet.
 	add (* (new Entity (false, true, true, 0, 0, btVector3 (126, 0, - 197),
@@ -171,8 +172,6 @@ Sector ::
 		bbsNode2 -> setPosition (px, 500, pz);
 	}
 
-	timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
-
 	assert (is_initialized ());
 }
 
@@ -242,175 +241,154 @@ bool Sector ::
 string Sector ::
 	run ()
 {
-	assert (is_initialized ());
-
-	int time = 0;
-	while (& owner . get_active_state () == this)
-	{
-		timer -> reset ();
-
-		update (time);
-	
-		Input_Engine :: get () . capture ();
-		Ogre :: PlatformManager :: getSingleton () . messagePump (& window);
-
-		GUI_Engine :: get () . set_mouse_position
-						(Input_Engine :: get () . get_mouse_position (false));
-		
-		//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
-		if (! owner . render_frame ()
-				|| ! GUI_Engine :: get () . render ()
-				|| Player :: get () . is_dead ()
-				|| Input_Engine :: get () . get_key ("Escape", false)
-				|| window . isClosed())
-		{
-			return owner . quit;
-		}
-
-		//	Handle movement
-		//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
-		if (Input_Engine :: get () . get_key ("e", false))
-		{
-			Player :: get () . walk (0.2 * time);
-		}
-		if (Input_Engine :: get () . get_key ("d", false))
-		{
-			Player :: get () . walk (- 0.1 * time);
-		}
-		if (Input_Engine :: get () . get_key ("s", false))
-		{
-			Player :: get () . turn (0.005 * time);
-		}
-		if (Input_Engine :: get () . get_key ("f", false))
-		{
-			Player :: get () . turn (- 0.005 * time);
-		}
-
-		//	hit
-		if (Input_Engine :: get () . get_key ("h", true))
-		{
-			NPC & npc = * * npcs . begin ();
-			if (! npc . is_dead ())
-			{
-				GUI_Engine :: get () . show
-					(Battle_Engine :: get () . hit (Player :: get (), npc));
-			}
-			else
-			{
-				GUI_Engine :: get () . show
-					("Mutilating a dead body is *not* nice.");
-			}
-		}
-		
-		//	move the weapon
-		if (Input_Engine :: get () . get_key ("m", true))
-		{
-			//	Memo to self (Tinus):
-			//	NPC npc = * * npcs . begin ();  ->  that *copies* the NPC.
-			NPC & npc = * * npcs . begin ();
-			if (Player :: get () . has_weapon ())
-			{
-				Player :: get () . move_to (* Player :: get () . get_weapon (), npc);
-				assert (! Player :: get () . has_weapon ());
-				assert (npc . has_weapon ());
-				GUI_Engine :: get () . show
-										("You gave your weapon to the ninja.");
-			}
-			else if (npc . has_weapon ())
-			{
-				npc . Character :: move_to (* npc . get_weapon (), Player :: get ());
-				assert (Player :: get () . has_weapon ());
-				assert (! npc . has_weapon ());
-				GUI_Engine :: get () . show
-									("You took your weapon from the ninja.");
-			}
-			else
-			{
-				GUI_Engine :: get () . show
-								("Both you and the ninja don't have a weapon.");
-			}
-		}
-
-		if (Input_Engine :: get () . get_mouse_button
-						(Input_Engine :: get () . left_mouse_button, true))
-		{
-			GUI_Engine :: get () . show
-				("Left click - FPS: " + to_string (window . getAverageFPS ()));
-		}
-		
-		if (Input_Engine :: get () . get_mouse_button
-						(Input_Engine :: get () . middle_mouse_button, false))
-		{
-			float x_offset = Input_Engine :: get ()
-											. get_mouse_position (true) . first;
-
-			if (x_offset != 0)
-			{
-				x_offset = - 0.01 * x_offset;
-			
-				debug () << Input_Engine :: get () . middle_mouse_button
-										<< " - x offset: " <<  x_offset << endl;
-
-				Player :: get () . turn (x_offset);
-			}
-		}
-		
-		if (Input_Engine :: get () . get_mouse_button
-						(Input_Engine :: get () . right_mouse_button, true))
-		{
-			GUI_Engine :: get () . show
-				("Right click - trivia: there are 1961 trees in each forest.");
-		}
-		
-		if (Input_Engine :: get () . get_key ("1", true))
-		{
-			State <TSL> * sector = owner . get_child ("Sector 1", true);
-			assert (sector != NULL);
-			owner . change_active_state (* sector);
-			GUI_Engine :: get () . show ("Sector 1");
-		}
-		
-		if (Input_Engine :: get () . get_key ("2", true))
-		{
-			State <TSL> * sector = owner . get_child ("Sector 2", true);
-			assert (sector != NULL);
-			owner . change_active_state (* sector);
-			GUI_Engine :: get () . show ("Sector 2");
-		}
-
-		camera -> setPosition
-			(Player :: get () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
-		camera -> setOrientation
-			(Player :: get () . node -> getOrientation ());
-
-		time = timer -> getMilliseconds ();
-	}
-	
-	return "continue";
-}
-
-void Sector ::
-	update (int milliseconds_passed)
-{
-	assert (is_initialized ());
-
-//	stepSimulation (milliseconds_passed / 1000000.f);
+	//	stepSimulation (milliseconds_passed / 1000000.f);
 	string think;
 
-	NPC * npc = NULL;
 	for (set <NPC *> :: const_iterator i = npcs . begin ();
-													i != npcs . end (); i ++)
+												i != npcs . end (); i ++)
 	{
-		npc = * i;
+		NPC * npc = * i;
 		if (! npc -> is_dead ())
 		{
 			think = npc -> run ();
-			if (! think . empty ())
+			if (think != State <NPC> :: nothing)
 			{
 				trace () << think << endl;
 			}
 		}
 	}
+
+	//	Handle movement
+	//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
+	if (Input_Engine :: get () . get_key ("e", false))
+	{
+		Player :: get () . walk (0.2 * owner . get_last_turn_lenght ());
+	}
+	if (Input_Engine :: get () . get_key ("d", false))
+	{
+		Player :: get () . walk (- 0.1 * owner . get_last_turn_lenght ());
+	}
+	if (Input_Engine :: get () . get_key ("s", false))
+	{
+		Player :: get () . turn (0.005 * owner . get_last_turn_lenght ());
+	}
+	if (Input_Engine :: get () . get_key ("f", false))
+	{
+		Player :: get () . turn (- 0.005 * owner . get_last_turn_lenght ());
+	}
+
+	//	pause
+	if (Input_Engine :: get () . get_key ("p", true))
+	{
+		owner . change_active_state <Pause_State> ();
+		GUI_Engine :: get () . show ("Game paused");
+	}
+
+	//	hit
+	if (Input_Engine :: get () . get_key ("h", true))
+	{
+		NPC & npc = * * npcs . begin ();
+		if (! npc . is_dead ())
+		{
+			GUI_Engine :: get () . show
+				(Battle_Engine :: get () . hit (Player :: get (), npc));
+		}
+		else
+		{
+			GUI_Engine :: get () . show
+				("Mutilating a dead body is *not* nice.");
+		}
+	}
+
+	//	move the weapon
+	if (Input_Engine :: get () . get_key ("m", true))
+	{
+		//	Memo to self (Tinus):
+		//	NPC npc = * * npcs . begin ();  ->  that *copies* the NPC.
+		NPC & npc = * * npcs . begin ();
+		if (Player :: get () . has_weapon ())
+		{
+			Player :: get () . move_to (* Player :: get () . get_weapon (), npc);
+			assert (! Player :: get () . has_weapon ());
+			assert (npc . has_weapon ());
+			GUI_Engine :: get () . show
+									("You gave your weapon to the ninja.");
+		}
+		else if (npc . has_weapon ())
+		{
+			npc . Character :: move_to (* npc . get_weapon (), Player :: get ());
+			assert (Player :: get () . has_weapon ());
+			assert (! npc . has_weapon ());
+			GUI_Engine :: get () . show
+								("You took your weapon from the ninja.");
+		}
+		else
+		{
+			GUI_Engine :: get () . show
+							("Both you and the ninja don't have a weapon.");
+		}
+	}
+
+	if (Input_Engine :: get () . get_mouse_button
+					(Input_Engine :: get () . left_mouse_button, true))
+	{
+		GUI_Engine :: get () . left_mouse_button_click ();
+	}
+
+	if (Input_Engine :: get () . get_mouse_button
+					(Input_Engine :: get () . middle_mouse_button, false))
+	{
+		float x_offset = Input_Engine :: get ()
+										. get_mouse_position (true) . first;
+
+		if (x_offset != 0)
+		{
+			x_offset = - 0.005 * owner . get_last_turn_lenght () * x_offset;
+
+			debug () << Input_Engine :: get () . middle_mouse_button
+									<< " - x offset: " <<  x_offset << endl;
+
+			Player :: get () . turn (x_offset);
+		}
+	}
+
+	if (Input_Engine :: get () . get_mouse_button
+					(Input_Engine :: get () . right_mouse_button, true))
+	{
+		if (0.1 < Ogre :: Math :: RangeRandom (0, 1))
+		{
+			GUI_Engine :: get () . show
+				("FPS: " + to_string (owner . get_FPS ()));
+		}
+		else
+		{
+			GUI_Engine :: get () . show
+				("Trivia: there are 1961 trees in each forest.");
+		}
+	}
+
+	if (Input_Engine :: get () . get_key ("1", true))
+	{
+		State <TSL> * sector = owner . get_child ("Sector 1", true);
+		assert (sector != NULL);
+		owner . change_active_state (* sector);
+		GUI_Engine :: get () . show ("Sector 1");
+	}
+
+	if (Input_Engine :: get () . get_key ("2", true))
+	{
+		State <TSL> * sector = owner . get_child ("Sector 2", true);
+		assert (sector != NULL);
+		owner . change_active_state (* sector);
+		GUI_Engine :: get () . show ("Sector 2");
+	}
+
+	camera -> setPosition
+		(Player :: get () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
+	camera -> setOrientation
+		(Player :: get () . node -> getOrientation ());
+	
+	return "continue";
 }
 
 Ogre :: Camera & Sector ::

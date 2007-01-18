@@ -10,7 +10,7 @@ namespace tsl
 
 	///	State_Machine is the abstract base class for all finite state machines.
 
-	template <typename T> class State_Machine :
+	template <class T> class State_Machine :
 		public State <T>,
 		public Set <State <T> >
 	{

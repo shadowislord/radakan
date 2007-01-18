@@ -7,12 +7,14 @@ using namespace tsl;
 	set <Object *> tsl :: objects;
 #endif
 
-#ifdef TSL_WIN32
+#ifdef TSL_WIN
 	INT WINAPI WinMain (HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
 #else
 	int main (int argc, char * argv [])
 #endif
 {
+	cout << "Preparing The Scattered Lands..." << endl;
+	
 	//	check for conflicting debug and trace flags
 	#ifdef TSL_TRACE
 		#ifndef TSL_DEBUG
@@ -21,11 +23,9 @@ using namespace tsl;
 		#endif
 	#endif
 
-	cout << "Setting up Scattered Lands..." << endl;
-
 	string tsl_path;
 	string ogre_path;
-	#ifdef TSL_WIN32
+	#ifdef TSL_WIN
 		tsl_path = strCmdLine;
 
 		if (tsl_path . empty ())
@@ -60,7 +60,6 @@ using namespace tsl;
 		//	Note: don't use 'cout' or 'cerr'.
 		cout . rdbuf ((new ofstream ((tsl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
 
-		cout << "Setting up Scattered Lands..." << endl;
 		cout << "tsl_path: " << tsl_path << endl;
 		cout << "ogre_path: " << ogre_path << endl;
 	#else
@@ -72,20 +71,20 @@ using namespace tsl;
 
 	try
 	{
+		cout << "Setting up The Scattered Lands..." << endl;
 		TSL game (tsl_path, ogre_path);
-		cout << "Scattered Lands is set up." << endl;
+		cout << "The Scattered Lands is set up." << endl;
 
-		cout << "Running Scattered Lands..." << endl;
-		while (game . run () != game . quit)
-		{}
-		cout << "Scattered Lands is stopped." << endl;
+		cout << "Running The Scattered Lands..." << endl;
+		game . run ();
+		cout << "The Scattered Lands is stopped." << endl;
 
-		cout << "Shutting down Scattered Lands..." << endl;
+		cout << "Shutting down The Scattered Lands..." << endl;
 		//	The game is automatically shut down here.
 	}
 	catch (Ogre :: Exception & e)
 	{
-		#ifdef TSL_WIN32
+		#ifdef TSL_WIN
 			MessageBox (NULL, e . getFullDescription () . c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		#else
 			cerr << "ERROR: " << e . getFullDescription () << endl;
@@ -101,7 +100,7 @@ using namespace tsl;
 		assert (objects . empty ());
 	#endif
 
-	cout << "Scattered Lands is shut down." << endl;
+	cout << "The Scattered Lands is shut down." << endl;
 
 	return 0;
 }

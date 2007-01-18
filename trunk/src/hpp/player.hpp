@@ -9,8 +9,8 @@ using namespace std;
 namespace tsl
 {
 	class Player :
-		public Character,
-		public Singleton <Player>
+		public Singleton <Player>,
+		public Character
 	{
 		public :
 			Player
