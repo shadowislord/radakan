@@ -18,10 +18,10 @@ namespace tsl
 			//	protected constructor, see below
 			virtual ~State_Machine ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 
 			//	These methods works recursive.
-			virtual State <T> & get_active_state () const;	//	Doesn't return NULL.
+			virtual State <T> & get_active_state () const;
 			virtual void change_active_state (State <T> & state);
 			
 			template <typename U> void change_active_state ();

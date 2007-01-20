@@ -31,7 +31,7 @@ namespace tsl
 				Ogre :: SceneNode & new_node);
 			virtual ~Entity ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			virtual float get_total_weight () const;
 
 			btQuaternion get_rotation () const;

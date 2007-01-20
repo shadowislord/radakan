@@ -40,9 +40,9 @@ bool Battle_Engine ::
 
 //	static
 string Battle_Engine ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "battle engine";
+	return "Battle_Engine";
 }
 
 string Battle_Engine ::

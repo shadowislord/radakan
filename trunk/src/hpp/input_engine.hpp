@@ -1,7 +1,7 @@
 #ifndef INPUT_ENGINE_HPP
 #define INPUT_ENGINE_HPP
 
-#include "singleton.hpp"
+#include "gui_engine.hpp"
 
 #include <OgreRenderWindow.h>
 
@@ -20,6 +20,7 @@ namespace tsl
 
 	class Input_Engine :
 		public Singleton <Input_Engine>,
+		public GUI_Listener,
 		private OIS :: KeyListener,
 		private OIS :: MouseListener
 	{
@@ -27,9 +28,10 @@ namespace tsl
 			Input_Engine (Ogre :: RenderWindow & window);
 			virtual ~Input_Engine ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			void capture ();
 			bool get_key (string key, bool reset);
+			bool get_gui_button (string button, bool reset);
 			bool get_mouse_button (string button, bool reset);
 			pair <float, float> get_mouse_position (bool relative) const;
 
@@ -38,6 +40,8 @@ namespace tsl
 			static const string middle_mouse_button;
 			static const string right_mouse_button;
 
+			virtual bool handle_gui_button (const CEGUI :: EventArgs & arguments);
+			
 		private :
 			virtual bool keyPressed (const OIS :: KeyEvent & key_event);
 			virtual bool keyReleased (const OIS :: KeyEvent & key_event);
@@ -48,8 +52,15 @@ namespace tsl
 			virtual bool mouseReleased
 				(const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
 
+			//	multiple keys can be pressed at once
 			map <string, bool> keys;
+			
+			//	multiple mouse buttons can be pressed at once
 			map <string, bool> mouse_buttons;
+			
+			//	only one gui button can be clicked at once
+			string gui_button;
+			
 			pair <float, float> relative_mouse_position;
 			pair <float, float> absolute_mouse_position;
 			string to_string (OIS :: MouseButtonID id);
@@ -58,7 +69,6 @@ namespace tsl
 			OIS :: Mouse * mouse;
 			OIS :: Keyboard * keyboard;
 			OIS :: InputManager * input_manager;
-
 	};
 }
 

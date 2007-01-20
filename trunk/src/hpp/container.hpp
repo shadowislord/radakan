@@ -26,7 +26,7 @@ namespace tsl
 				Ogre :: SceneNode & new_node);
 			virtual ~Container ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			virtual float get_total_weight () const;
 			virtual bool add (Entity & entity);
 			virtual bool move_to (Entity & entity, Set <Entity> & other_set);

@@ -2,7 +2,7 @@
 #define TSL_HPP
 
 #include "audio_engine.hpp"
-#include "gui_engine.hpp"
+#include "gui.hpp"
 #include "input_engine.hpp"
 #include "sector.hpp"
 
@@ -21,22 +21,24 @@ namespace tsl
 			TSL (string tsl_path, string ogre_path);
 			~TSL ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 
 			virtual string run ();
 			void set_camera (Ogre :: Camera & new_camera);
-			float get_FPS () const;
+			string get_FPS () const;
 			Ogre :: SceneManager & new_scene_manager () const;
 
 			///	in milliseconds
 			int get_last_turn_lenght () const;
 
+			const string go_on;
 			const string quit;
+
+			Ogre :: RenderWindow * window;
 
 		private :
 			int last_turn_lenght;
 			Ogre :: Root * root;
-			Ogre :: RenderWindow * window;
 			Ogre :: Timer * turn_lenght_timer;
 			Battle_Engine battle_engine;
 			GUI_Engine * gui_engine;

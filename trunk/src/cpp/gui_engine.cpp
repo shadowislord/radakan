@@ -4,9 +4,16 @@ using namespace std;
 using namespace tsl;
 
 GUI_Engine ::
-	GUI_Engine (Ogre :: RenderWindow & window, string log_file_name) :
+	GUI_Engine
+	(
+		Ogre :: RenderWindow & window,
+		string log_file_name,
+		GUI_Listener & new_gui_listener
+	) :
 	Object ("Gui engine"),
-	Singleton <GUI_Engine> ("Gui engine")
+	Singleton <GUI_Engine> ("Gui engine"),
+	State_Machine <GUI_Engine> (* this),
+	gui_listener (new_gui_listener)
 {
 	assert (Object :: is_initialized ());
 
@@ -18,7 +25,7 @@ GUI_Engine ::
 	#else
 		system = new CEGUI :: System (renderer, CEGUI :: String (log_file_name) . data ());
 	#endif
-	
+
 	window_manager = & CEGUI :: WindowManager :: getSingleton ();
 
 	CEGUI :: Logger :: getSingleton () . setLoggingLevel (CEGUI :: Informative);
@@ -27,22 +34,6 @@ GUI_Engine ::
 	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
 	system -> setDefaultFont ("BlueHighway-12");
-
-	root_window = window_manager -> loadWindowLayout ("tsl.config");
-	system -> setGUISheet (root_window);
-
-	CEGUI :: Event :: Subscriber event_suscriber (& GUI_Engine :: handle_button, this);
-
-//	!!!	Somehow doesn't work...
-//	CEGUI :: GlobalEventSet :: getSingleton () . subscribeEvent
-//						(CEGUI :: PushButton :: EventClicked, event_suscriber);
-	
-	root_window -> getChild ("welcome-button") -> subscribeEvent
-						(CEGUI :: PushButton :: EventClicked, event_suscriber);
-	root_window -> getChild ("howdy-button2") -> subscribeEvent
-						(CEGUI :: PushButton :: EventClicked, event_suscriber);
-	root_window -> getChild ("quit-button") -> subscribeEvent
-						(CEGUI :: PushButton :: EventClicked, event_suscriber);
 
 	assert (is_initialized ());
 }
@@ -63,62 +54,90 @@ bool GUI_Engine ::
 
 //	static
 string GUI_Engine ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "GUI engine";
+	return "GUI_Engine";
 }
 
 void GUI_Engine ::
 	set_scene_manager (Ogre :: SceneManager & new_scene_manager)
 {
+	assert (is_initialized ());
+
 	renderer -> setTargetSceneManager (& new_scene_manager);
 }
 
 void GUI_Engine ::
 	set_mouse_position (pair <float, float> new_position)
 {
+	assert (is_initialized ());
+
 	system -> injectMousePosition (new_position . first, new_position . second);
 }
 
 void GUI_Engine ::
 	left_mouse_button_click ()
 {
+	assert (is_initialized ());
+
 	system -> injectMouseButtonDown (CEGUI :: LeftButton);
 	system -> injectMouseButtonUp (CEGUI :: LeftButton);
 }
 
 bool GUI_Engine ::
 	render ()
-	const
 {
 	assert (is_initialized ());
 
+	get_active_state () . run ();
 	system -> renderGUI ();
 
 	return true;
 }
 
-void GUI_Engine ::
-	show (string message)
-{
-	root_window -> getChild ("text") -> setText (message);
-	trace () << "new message: '" << message << "'" << endl;
-}
-
-bool GUI_Engine ::
-	handle_button (const CEGUI :: EventArgs & e)
+GUI & GUI_Engine ::
+	create_gui (string configuration_file)
 {
 	assert (is_initialized ());
 
-	CEGUI :: WindowEventArgs * event = (CEGUI :: WindowEventArgs *)(& e);
-	if (event == NULL)
+	GUI & result =
+		* (
+			new GUI
+			(
+				* this,
+				* window_manager -> loadWindowLayout (configuration_file),
+				gui_listener
+			)
+		);
+
+	//	If this is the first gui, it's automatically used as active state.
+	add (result . to_type <State <GUI_Engine> > ());
+	if (get_active_state () == result)
 	{
-		show ("Unknown event type...");
-	}
-	else
-	{
-		show ("The '" + string (event -> window -> getText () . c_str ()) + "' button was clicked.");
+		system -> setGUISheet (& result . root_window);
 	}
 
-	return true;
+	return result;
+}
+
+void GUI_Engine ::
+	activate (GUI & gui)
+{
+	assert (is_initialized ());
+	assert (gui . is_initialized ());
+	assert (contains (gui, false));
+
+	if (get_active_state () != gui)
+	{
+		change_active_state (gui);
+		system -> setGUISheet (& gui . root_window);
+	}
+}
+
+string GUI_Engine ::
+	run ()
+{
+	assert (is_initialized ());
+
+	return nothing;
 }

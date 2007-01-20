@@ -33,9 +33,9 @@ bool Peace_State ::
 
 //	static
 string Peace_State ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "peace state";
+	return "Peace_State";
 }
 
 //	virtual

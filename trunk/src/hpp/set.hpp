@@ -17,7 +17,7 @@ namespace tsl
 			Set (string new_name);
 			virtual ~Set ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 
 			virtual bool add (T & t);						//	true iff succes
 			virtual bool contains (T & t, bool recursive) const;

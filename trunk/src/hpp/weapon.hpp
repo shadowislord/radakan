@@ -24,7 +24,7 @@ namespace tsl
 				Ogre :: SceneNode & new_node);
 			virtual ~Weapon ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 
 			bool broken;
 			float sharpness;	//	in percent

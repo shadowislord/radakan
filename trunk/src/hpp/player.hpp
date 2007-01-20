@@ -22,7 +22,7 @@ namespace tsl
 			);
 			virtual ~Player ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 	};
 }
 

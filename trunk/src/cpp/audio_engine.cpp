@@ -129,9 +129,9 @@ bool Audio_Engine ::
 
 //	static
 string Audio_Engine ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "audio engine";
+	return "Audio_Engine";
 }
 
 void Audio_Engine ::

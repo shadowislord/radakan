@@ -33,9 +33,9 @@ bool Fight_State ::
 
 //	static
 string Fight_State ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "fight state";
+	return "Fight_State";
 }
 
 //	virtual

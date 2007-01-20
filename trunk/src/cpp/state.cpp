@@ -11,7 +11,7 @@ template <class T> State <T> ::
 	Object (new_owner + "'s generic state"),
 	owner (new_owner)
 {
-	trace () << "State <" << T :: get_type_name () << "> (" << new_owner << ")" << endl;
+	trace () << get_class_name () << " (" << new_owner << ")" << endl;
 	assert (Object :: is_initialized ());
 	
 	assert (State <T> :: is_initialized ());
@@ -21,7 +21,7 @@ template <class T> State <T> ::
 template <class T> State <T> ::
 	~State ()
 {
-	trace () << "~State ()" << endl;
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (State <T> :: is_initialized ());
 }
 
@@ -36,12 +36,13 @@ template <class T> bool State <T> ::
 
 //	static
 template <class T> string State <T> ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "state";
+	return "State <" + T :: get_class_name () + ">";
 }
 
 #include "tsl.hpp"
 
+template class State <GUI_Engine>;
 template class State <NPC>;
 template class State <TSL>;

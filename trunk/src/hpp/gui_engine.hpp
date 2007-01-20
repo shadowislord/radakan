@@ -1,36 +1,44 @@
 #ifndef GUI_ENGINE_HPP
 #define GUI_ENGINE_HPP
 
+#include "gui.hpp"
+#include "state_machine.hpp"
 #include "singleton.hpp"
-#include <OgreRenderWindow.h>
-#include <OgreCEGUIRenderer.h>
-#include <CEGUI.h>
+#include "gui_listener.hpp"
 
 using namespace std;
 
 namespace tsl
 {
 	class GUI_Engine :
-		public Singleton <GUI_Engine>
+		public Singleton <GUI_Engine>,
+		public State_Machine <GUI_Engine>
 	{
 		public :
-			GUI_Engine (Ogre :: RenderWindow & window, string log_file_name);
+			GUI_Engine
+			(
+				Ogre :: RenderWindow & window,
+				string log_file_name,
+				GUI_Listener & new_gui_listener
+			);
 			virtual ~GUI_Engine ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
+			
 			void set_scene_manager (Ogre :: SceneManager & new_scene_manager);
 			void set_mouse_position (pair <float, float> new_position);
 			void left_mouse_button_click ();
-			bool render () const;
-			void show (string message);
+			bool render ();	//	!!!	should be const
+			void activate (GUI & gui);
+			GUI & create_gui (string configuration_file);
+			string run ();	//	does nothing
 
 		private :
-			bool handle_button (const CEGUI :: EventArgs & e);
-			
 			CEGUI :: OgreCEGUIRenderer * renderer;
-			CEGUI :: Window * root_window;
 			CEGUI :: System * system;
 			CEGUI :: WindowManager * window_manager;
+			
+			GUI_Listener & gui_listener;
 	};
 }
 

@@ -98,7 +98,7 @@ namespace tsl
 			Audio_Engine ();
 			~Audio_Engine ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			void play ();
 			void load (string file_name);
 

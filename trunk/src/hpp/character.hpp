@@ -17,7 +17,7 @@ namespace tsl
 			//	The constructor is protected, see below.
 			virtual ~Character ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			virtual float get_total_weight () const;
 			virtual bool add (Entity & entity);		//	true iff succes
 			virtual bool move_to (Entity & entity, Set <Entity> & other_set);

@@ -20,7 +20,7 @@ namespace tsl
 			Battle_Engine ();
 			virtual ~Battle_Engine ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			string hit (Character & attacker, Character & defender);
 
 		private :

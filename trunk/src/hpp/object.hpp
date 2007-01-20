@@ -44,7 +44,7 @@ namespace tsl
 			//	protected constructor(s), see below
 			virtual ~Object ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			template <class T> bool is_type () const;
 			template <class T> T & to_type () const;
 			

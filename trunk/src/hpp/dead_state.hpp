@@ -16,7 +16,7 @@ namespace tsl
 			Dead_State (NPC & new_owner);
 			virtual ~Dead_State ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			virtual string run ();
 	
 		private :

@@ -7,14 +7,14 @@ using namespace tsl;
 Play_State ::
 	Play_State (TSL & new_owner) :
 	Object (new_owner + "'s play state"),
-	State_Machine <TSL> (new_owner)
+	Singleton <Play_State> (new_owner + "'s play state"),
+	State_Machine <TSL> (new_owner),
+	gui (GUI_Engine :: get () . create_gui ("sector.cfg"))
 {
 	assert (State_Machine <TSL> :: is_initialized ());
 
-	add (* (new Sector ("Sector 1", owner)));
-
-	add (* (new Sector ("Sector 2", owner)));
-
+	add (* (new Sector ("Sector 1", owner, gui)));
+	add (* (new Sector ("Sector 2", owner, gui)));
 
 	assert (Play_State :: is_initialized ());
 }
@@ -38,9 +38,9 @@ bool Play_State ::
 
 //	static
 string Play_State ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "play state";
+	return "Play_State";
 }
 
 //	virtual

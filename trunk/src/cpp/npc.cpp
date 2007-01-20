@@ -51,7 +51,7 @@ bool NPC ::
 
 //	static
 string NPC ::
-	get_type_name ()
+	get_class_name ()
 {
 	return "NPC";
 }

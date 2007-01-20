@@ -10,7 +10,7 @@ template <class T> Singleton <T> ::
 	Singleton (string new_name) :
 	Object (new_name)
 {
-	trace () << "Singleton <" << T :: get_type_name () << "> (" << new_name << ")" << endl;
+	trace () << get_class_name () << " (" << new_name << ")" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (Singleton :: is_initialized ());
@@ -20,7 +20,7 @@ template <class T> Singleton <T> ::
 template <class T> Singleton <T> ::
 	~Singleton ()
 {
-	trace () << "~Singleton <" << T :: get_type_name () << "> ()" << endl;
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Singleton <T> :: is_initialized ());
 }
 
@@ -34,9 +34,9 @@ template <class T> bool Singleton <T> ::
 
 //	static
 template <class T> string Singleton <T> ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "Singleton <" + T :: get_type_name () + ">";
+	return "Singleton <" + T :: get_class_name () + ">";
 }
 
 //	static
@@ -55,11 +55,14 @@ template <class T> bool Singleton <T> ::
 	return Ogre :: Singleton <T> :: getSingletonPtr () != NULL;
 }
 
-#include "tsl.hpp"
+#include "menu_state.hpp"
+#include "play_state.hpp"
 
 template class Singleton <Audio_Engine>;
 template class Singleton <Battle_Engine>;
 template class Singleton <GUI_Engine>;
 template class Singleton <Input_Engine>;
+template class Singleton <Menu_State>;
+template class Singleton <Play_State>;
 template class Singleton <Player>;
 template class Singleton <TSL>;

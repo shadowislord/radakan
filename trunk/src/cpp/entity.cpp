@@ -60,9 +60,9 @@ bool Entity ::
 
 //	static
 string Entity ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "entity";
+	return "Entity";
 }
 
 //	virtual

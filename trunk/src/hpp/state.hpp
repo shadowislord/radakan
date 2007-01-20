@@ -17,7 +17,7 @@ namespace tsl
 			//	protected constructor, see below
 			virtual ~State ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 
 			//	pure virtual method
 			virtual string run () = 0;

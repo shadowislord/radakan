@@ -17,7 +17,7 @@ namespace tsl
 			//	virtual class, constructor protected
 			virtual ~Singleton ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 
 			static T & get ();
 			static bool is_instantiated ();

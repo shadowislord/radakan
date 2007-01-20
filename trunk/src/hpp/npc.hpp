@@ -25,7 +25,7 @@ namespace tsl
 			);
 			virtual ~NPC ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			virtual string die ();
 
 		private :

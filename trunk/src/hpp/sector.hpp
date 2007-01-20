@@ -2,6 +2,7 @@
 #define SECTOR_HPP
 
 #include "battle_engine.hpp"
+#include "gui_engine.hpp"
 #include "npc.hpp"
 #include "player.hpp"
 #include <Ogre.h>
@@ -31,11 +32,12 @@ namespace tsl
 			Sector
 			(
 				string new_name,
-				TSL & new_owner
+				TSL & new_owner,
+				GUI & new_gui
 			);
 			virtual ~Sector ();
 			virtual bool is_initialized () const;
-			static string get_type_name ();
+			static string get_class_name ();
 			
 			virtual bool add (Entity & entity);
 			virtual bool move_to (Entity & entity, Set <Entity> & other_set);
@@ -53,7 +55,8 @@ namespace tsl
 		private :
 			Ogre :: SceneNode & create_entity_node (string name, string mesh_name, float scale);
 			Ogre :: SceneManager & scene_manager;
-			Ogre :: Camera * camera;
+			Ogre :: Camera & camera;
+			GUI & gui;
 	};
 }
 

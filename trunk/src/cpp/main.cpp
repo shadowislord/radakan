@@ -82,12 +82,14 @@ using namespace tsl;
 		cout << "Shutting down The Scattered Lands..." << endl;
 		//	The game is automatically shut down here.
 	}
-	catch (Ogre :: Exception & e)
+	catch (Ogre :: Exception & exception)
 	{
 		#ifdef TSL_WIN
-			MessageBox (NULL, e . getFullDescription () . c_str (), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+			MessageBox
+				(NULL, exception . getFullDescription () . c_str (),
+				"An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		#else
-			cerr << "ERROR: " << e . getFullDescription () << endl;
+			cerr << "ERROR: " << exception . getFullDescription () << endl;
 		#endif
 	}
 

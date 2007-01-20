@@ -8,7 +8,7 @@ template <class T> Set <T> ::
 	Set (string new_name) :
 	Object (new_name)
 {
-	trace () << "Set <" << T :: get_type_name () << "> (" << new_name << ")" << endl;
+	trace () << get_class_name () << " (" << new_name << ")" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (Set <T> :: is_initialized ());
@@ -18,7 +18,7 @@ template <class T> Set <T> ::
 template <class T> Set <T> ::
 	~Set ()
 {
-	trace () << "~Set <" << T :: get_type_name () << "> ()" << endl;
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	for (class set<T *> :: const_iterator i = children . begin (); i != children . end (); i ++)
@@ -44,16 +44,16 @@ template <class T> bool Set <T> ::
 
 //	static
 template <class T> string Set <T> ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "Set <" + T :: get_type_name () + ">";
+	return "Set <" + T :: get_class_name () + ">";
 }
 
 //	virtual
 template <class T> bool Set <T> ::
 	add (T & t)
 {
-	trace () << "add <" << T :: get_type_name () << "> (" << t << ")" << endl;
+	trace () << "add <" << T :: get_class_name () << "> (" << t << ")" << endl;
 	assert (Set <T> :: is_initialized ());
 	assert (! t . has_parent ());
 
@@ -72,7 +72,7 @@ template <class T> bool Set <T> ::
 	contains (T & t, bool recursive)
 	const
 {
-	trace () << "contains <" << T :: get_type_name () << "> (" << t << ", " << bool_to_string (recursive) + ")" << endl;
+	trace () << "contains <" << T :: get_class_name () << "> (" << t << ", " << bool_to_string (recursive) + ")" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	bool result = (children . find (& t) != children . end ());
@@ -106,7 +106,7 @@ template <class T> bool Set <T> ::
 template <class T> bool Set <T> ::
 	move_to (T & t, Set <T> & other_set)
 {
-	trace () << "move_to <" << T :: get_type_name () << "> (" << t << ", " << other_set << ")" << endl;
+	trace () << "move_to <" << T :: get_class_name () << "> (" << t << ", " << other_set << ")" << endl;
 	assert (Set <T> :: is_initialized ());
 	assert (t . is_initialized ());
 	assert (other_set . is_initialized ());
@@ -126,7 +126,7 @@ template <class T> T * Set <T> ::
 	get_child (string name, bool recursive)
 	const
 {
-	trace () << "get_child <" << T :: get_type_name () << "> (" << name << ")" << endl;
+	trace () << "get_child <" << T :: get_class_name () << "> (" << name << ", " << bool_to_string (recursive) + ")" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	for (T * i = get_child (); i != NULL; i = get_another_child ())
@@ -154,7 +154,7 @@ template <class T> template <class U> U * Set <T> ::
 	get_typed_child ()
 	const
 {
-	trace () << "get_typed_child <" << T :: get_type_name () << ", " << U :: get_type_name () << "> ()" << endl;
+	trace () << "get_typed_child <" << T :: get_class_name () << ", " << U :: get_class_name () << "> ()" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	for (T * i = get_child (); i != NULL; i = get_another_child ())
@@ -171,7 +171,7 @@ template <class T> template <class U> U * Set <T> ::
 	get_typed_child (string name)
 	const
 {
-	trace () << "get_typed_child <" << T :: get_type_name () << "> (" << name << ")" << endl;
+	trace () << "get_typed_child <" << T :: get_class_name () << "> (" << name << ")" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	for (T * i = get_child (); i != NULL; i = get_another_child ())
@@ -188,7 +188,7 @@ template <class T> T * Set <T> ::
 	get_child ()
 	const
 {
-	trace () << "get_child <" << T :: get_type_name () << "> ()" << endl;
+	trace () << "get_child <" << T :: get_class_name () << "> ()" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	if (children . empty ())
@@ -203,7 +203,7 @@ template <class T> T * Set <T> ::
 	get_another_child ()
 	const
 {
-	trace () << "get_another_child <" << T :: get_type_name () << "> ()" << endl;
+	trace () << "get_another_child <" << T :: get_class_name () << "> ()" << endl;
 	assert (Set <T> :: is_initialized ());
 
 	if (next_child == children . end ())
@@ -215,11 +215,12 @@ template <class T> T * Set <T> ::
 
 //	to avert linking errors:
 #include "play_state.hpp"
-#include "pause_state.hpp"
+#include "menu_state.hpp"
 
 template class Set <Entity>;
 template class Set <Sector>;
 //	template class Set <Sound>;
+template class Set <State <GUI_Engine> >;
 template class Set <State <NPC> >;
 template class Set <State <TSL> >;
 
@@ -229,8 +230,8 @@ template class Set <State <TSL> >;
 template Dead_State * Set <State <NPC> > :: get_typed_child <Dead_State> () const;
 template Fight_State * Set <State <NPC> > :: get_typed_child <Fight_State> () const;
 template Peace_State * Set <State <NPC> > :: get_typed_child <Peace_State> () const;
+template Menu_State * Set <State <TSL> > :: get_typed_child <Menu_State> () const;
 template Play_State * Set <State <TSL> > :: get_typed_child <Play_State> () const;
-template Pause_State * Set <State <TSL> > :: get_typed_child <Pause_State> () const;
 template Sector * Set <Sector> :: get_typed_child <Sector> () const;
 
 template Sector * Set <Sector> :: get_typed_child <Sector> (string name) const;

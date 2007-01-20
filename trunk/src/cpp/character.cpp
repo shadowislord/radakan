@@ -53,9 +53,9 @@ bool Character ::
 
 //	static
 string Character ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "character";
+	return "Character";
 }
 
 //	virtual

@@ -58,7 +58,7 @@ bool Weapon ::
 
 //	static
 string Weapon ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "weapon";
+	return "Weapon";
 }

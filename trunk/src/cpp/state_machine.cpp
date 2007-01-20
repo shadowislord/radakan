@@ -10,7 +10,7 @@ template <class T> State_Machine <T> ::
 	State <T> (new_owner),
 	Set <State <T> > (new_owner + "'s state machine")
 {
-	Object :: trace () << "State_Machine <" << T :: get_type_name () << "> ()" << endl;
+	Object :: trace () << get_class_name () << " (" << new_owner << ")" << endl;
 	assert (Set <State <T> > :: is_initialized ());
 
 	active_child_state = NULL;
@@ -38,9 +38,9 @@ template <class T> bool State_Machine <T> ::
 
 //	static
 template <class T> string State_Machine <T> ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "state machine <" + T :: get_type_name () + ">";
+	return "State_Machine <" + T :: get_class_name () + ">";
 }
 
 //	virtual
@@ -137,7 +137,7 @@ template <class T> void State_Machine <T> ::
 template <class T> template <typename U> void State_Machine <T> ::
 	change_active_state ()
 {
-	Object :: trace () << "change_active_state <" << U :: get_type_name () << "> ()" << endl;
+	Object :: trace () << "change_active_state <" << U :: get_class_name () << "> ()" << endl;
 	assert (Object :: is_initialized ());
 
 	//	'template' added to assure that get_typed_child is a template method.
@@ -156,7 +156,7 @@ template <class T> template <typename U> void State_Machine <T> ::
 template <class T> template <typename U> void State_Machine <T> ::
 	add ()
 {
-	Object :: trace () << "add <" << U :: get_type_name () << "> ()" << endl;
+	Object :: trace () << "add <" << U :: get_class_name () << "> ()" << endl;
 	assert (is_initialized ());
 
 	//	'template' added to assure that get_typed_child is a template method.
@@ -166,20 +166,21 @@ template <class T> template <typename U> void State_Machine <T> ::
 }
 
 //	to avert linking errors:
-#include "pause_state.hpp"
+#include "menu_state.hpp"
 #include "play_state.hpp"
 
+template class State_Machine <GUI_Engine>;
 template class State_Machine <NPC>;
 template class State_Machine <TSL>;
 
 template void State_Machine <NPC> :: change_active_state <Dead_State> ();
 template void State_Machine <NPC> :: change_active_state <Fight_State> ();
+template void State_Machine <TSL> :: change_active_state <Menu_State> ();
 template void State_Machine <NPC> :: change_active_state <Peace_State> ();
-template void State_Machine <TSL> :: change_active_state <Pause_State> ();
 template void State_Machine <TSL> :: change_active_state <Play_State> ();
 
 template void State_Machine <NPC> :: add <Dead_State> ();
 template void State_Machine <NPC> :: add <Fight_State> ();
+template void State_Machine <TSL> :: add <Menu_State> ();
 template void State_Machine <NPC> :: add <Peace_State> ();
-template void State_Machine <TSL> :: add <Pause_State> ();
 template void State_Machine <TSL> :: add <Play_State> ();

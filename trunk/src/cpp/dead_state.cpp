@@ -32,9 +32,9 @@ bool Dead_State ::
 
 //	static
 string Dead_State ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "dead state";
+	return "Dead_State";
 }
 
 //	virtual

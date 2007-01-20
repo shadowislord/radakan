@@ -46,7 +46,7 @@ bool Player ::
 
 //	static
 string Player ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "player";
+	return "Player";
 }

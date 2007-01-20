@@ -10,7 +10,8 @@ const string Input_Engine :: right_mouse_button = "right";
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow & window) :
 	Object ("Input Engine"),
-	Singleton <Input_Engine> ("Input Engine")
+	Singleton <Input_Engine> ("Input Engine"),
+	GUI_Listener ()
 {
 	assert (Object :: is_initialized ());
 
@@ -94,9 +95,9 @@ bool Input_Engine ::
 
 //	static
 string Input_Engine ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "input engine";
+	return "Input_Engine";
 }
 
 void Input_Engine ::
@@ -105,18 +106,17 @@ void Input_Engine ::
 	assert (is_initialized ());
 
 	keyboard -> capture ();
-	if (! keyboard -> buffered ())
-	{
-//		handleNonBufferedKeys ();
-	}
 
 	//	'mouse -> capture ()' does nothing if the mouse didn't move this turn.
 	//	So we manually set the relative key position.
 	relative_mouse_position = pair <float, float> (0, 0);
 	mouse -> capture ();
-	if (! mouse -> buffered ())
+
+	gui_button = "nothing";	//	reset it, in case of a unhandeled button
+	GUI_Engine :: get () . set_mouse_position (get_mouse_position (false));
+	if (get_mouse_button (left_mouse_button, true))
 	{
-//		handleNonBufferedMouse ();
+		GUI_Engine :: get () . left_mouse_button_click ();
 	}
 }
 
@@ -131,6 +131,23 @@ bool Input_Engine ::
 		{
 			keys [key] = false;
 			trace () << "key '" << key << "' was reset." << endl;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Input_Engine ::
+	get_gui_button (string button, bool reset)
+{
+	assert (is_initialized ());
+
+	if (gui_button == button)
+	{
+		trace () << "GUI button '" << button << "' was pressed." << endl;
+		if (reset)
+		{
+			gui_button = "nothing";
 		}
 		return true;
 	}
@@ -166,6 +183,28 @@ pair <float, float> Input_Engine ::
 	}
 
 	return absolute_mouse_position;
+}
+
+bool Input_Engine ::
+	handle_gui_button (const CEGUI :: EventArgs & arguments)
+{
+	assert (is_initialized ());
+
+	CEGUI :: WindowEventArgs * window_event_arguments = (CEGUI :: WindowEventArgs *)(& arguments);
+	if (window_event_arguments == NULL)
+	{
+		GUI_Engine :: get () . get_active_state () . to_type <GUI> () . show
+													("Unknown event type...");
+	}
+	else
+	{
+		gui_button = window_event_arguments -> window -> getText () . c_str ();
+		
+		GUI_Engine :: get () . get_active_state () . to_type <GUI> () . show
+							("The '" + gui_button + "' button was clicked.");
+	}
+
+	return true;
 }
 
 //	virtual

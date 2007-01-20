@@ -1,4 +1,4 @@
-#include "pause_state.hpp"
+#include "menu_state.hpp"
 
 using namespace std;
 using namespace tsl;
@@ -7,7 +7,8 @@ Sector ::
 	Sector
 	(
 		string new_name,
-		TSL & new_owner
+		TSL & new_owner,
+		GUI & new_gui
 	) :
 	Object (new_name),
 	Set <Entity> (new_name),
@@ -18,14 +19,15 @@ Sector ::
 		new btSimpleBroadphase (),
 		new btSequentialImpulseConstraintSolver ()
 	),
-	scene_manager (owner . new_scene_manager ())
+	scene_manager (owner . new_scene_manager ()),
+	camera (* scene_manager . createCamera ("Eyes")),
+	gui (new_gui)
 {
 	trace () << "Sector (" << new_name << ", " << new_owner << ")" << endl;
 	assert (Object :: is_initialized ());
 
-	camera = scene_manager . createCamera ("Eyes");
-	camera -> setNearClipDistance (5);
-	camera -> setFarClipDistance (2000);
+	camera . setNearClipDistance (5);
+	camera . setFarClipDistance (2000);
 
 	//	!!!	This doesn't work somehow.
 	scene_manager . setSkyDome (true, "Peaceful", 10, 5);
@@ -180,9 +182,6 @@ Sector ::
 {
 	trace () << "~Sector ()" << endl;
 	assert (is_initialized ());
-
-	trace () << "deleting camera... " << int (camera) << endl;
-	delete camera;
 }
 
 //	virtual
@@ -195,9 +194,9 @@ bool Sector ::
 
 //	static
 string Sector ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "sector";
+	return "Sector";
 }
 
 //	virtual
@@ -278,30 +277,32 @@ string Sector ::
 	}
 
 	//	pause
-	if (Input_Engine :: get () . get_key ("p", true))
+	if (Input_Engine :: get () . get_key ("Escape", true)
+		|| Input_Engine :: get () . get_gui_button ("Menu", true))
 	{
-		owner . change_active_state <Pause_State> ();
-		GUI_Engine :: get () . show ("Game paused");
+		owner . change_active_state <Menu_State> ();
+		gui . show ("Menu (game paused)");
 	}
 
 	//	hit
-	if (Input_Engine :: get () . get_key ("h", true))
+	if (Input_Engine :: get () . get_key ("h", true)
+		|| Input_Engine :: get () . get_gui_button ("Hit", true))
 	{
 		NPC & npc = * * npcs . begin ();
 		if (! npc . is_dead ())
 		{
-			GUI_Engine :: get () . show
+			gui . show
 				(Battle_Engine :: get () . hit (Player :: get (), npc));
 		}
 		else
 		{
-			GUI_Engine :: get () . show
-				("Mutilating a dead body is *not* nice.");
+			gui . show ("Mutilating a dead body is *not* nice.");
 		}
 	}
 
 	//	move the weapon
-	if (Input_Engine :: get () . get_key ("m", true))
+	if (Input_Engine :: get () . get_key ("m", true)
+		|| Input_Engine :: get () . get_gui_button ("Move", true))
 	{
 		//	Memo to self (Tinus):
 		//	NPC npc = * * npcs . begin ();  ->  that *copies* the NPC.
@@ -311,7 +312,7 @@ string Sector ::
 			Player :: get () . move_to (* Player :: get () . get_weapon (), npc);
 			assert (! Player :: get () . has_weapon ());
 			assert (npc . has_weapon ());
-			GUI_Engine :: get () . show
+			gui . show
 									("You gave your weapon to the ninja.");
 		}
 		else if (npc . has_weapon ())
@@ -319,20 +320,14 @@ string Sector ::
 			npc . Character :: move_to (* npc . get_weapon (), Player :: get ());
 			assert (Player :: get () . has_weapon ());
 			assert (! npc . has_weapon ());
-			GUI_Engine :: get () . show
+			gui . show
 								("You took your weapon from the ninja.");
 		}
 		else
 		{
-			GUI_Engine :: get () . show
+			gui . show
 							("Both you and the ninja don't have a weapon.");
 		}
-	}
-
-	if (Input_Engine :: get () . get_mouse_button
-					(Input_Engine :: get () . left_mouse_button, true))
-	{
-		GUI_Engine :: get () . left_mouse_button_click ();
 	}
 
 	if (Input_Engine :: get () . get_mouse_button
@@ -357,13 +352,11 @@ string Sector ::
 	{
 		if (0.1 < Ogre :: Math :: RangeRandom (0, 1))
 		{
-			GUI_Engine :: get () . show
-				("FPS: " + to_string (owner . get_FPS ()));
+			gui . show (owner . get_FPS ());
 		}
 		else
 		{
-			GUI_Engine :: get () . show
-				("Trivia: there are 1961 trees in each forest.");
+			gui . show ("Trivia: there are 1961 trees in each forest.");
 		}
 	}
 
@@ -372,7 +365,7 @@ string Sector ::
 		State <TSL> * sector = owner . get_child ("Sector 1", true);
 		assert (sector != NULL);
 		owner . change_active_state (* sector);
-		GUI_Engine :: get () . show ("Sector 1");
+		gui . show ("Sector 1");
 	}
 
 	if (Input_Engine :: get () . get_key ("2", true))
@@ -380,15 +373,17 @@ string Sector ::
 		State <TSL> * sector = owner . get_child ("Sector 2", true);
 		assert (sector != NULL);
 		owner . change_active_state (* sector);
-		GUI_Engine :: get () . show ("Sector 2");
+		gui . show ("Sector 2");
 	}
 
-	camera -> setPosition
+	camera . setPosition
 		(Player :: get () . node -> getPosition () + Ogre :: Vector3 (0, 18, 0));
-	camera -> setOrientation
+	camera . setOrientation
 		(Player :: get () . node -> getOrientation ());
-	
-	return "continue";
+
+	GUI_Engine :: get () . activate (gui);
+
+	return owner . go_on;
 }
 
 Ogre :: Camera & Sector ::
@@ -397,7 +392,7 @@ Ogre :: Camera & Sector ::
 {
 	assert (is_initialized ());
 
-	return * camera;
+	return camera;
 }
 
 Ogre :: SceneManager & Sector ::

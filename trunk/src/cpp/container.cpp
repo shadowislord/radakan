@@ -47,9 +47,9 @@ bool Container ::
 
 //	static
 string Container ::
-	get_type_name ()
+	get_class_name ()
 {
-	return "container";
+	return "Container";
 }
 
 //	virtual
