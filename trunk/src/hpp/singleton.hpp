@@ -1,8 +1,8 @@
-#ifndef SINGLETON_HPP
-#define SINGLETON_HPP
+#ifndef TSL_SINGLETON_HPP
+#define TSL_SINGLETON_HPP
 
-#include "object.hpp"
 #include <OgreSingleton.h>
+#include "object.hpp"
 
 using namespace std;
 
@@ -23,8 +23,8 @@ namespace tsl
 			static bool is_instantiated ();
 
 		protected:
-			Singleton (string new_name);
+			Singleton ();
 	};
 }
 
-#endif	//	SINGLETON_HPP
+#endif	//	TSL_SINGLETON_HPP

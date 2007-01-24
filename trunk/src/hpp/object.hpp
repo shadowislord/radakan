@@ -1,15 +1,18 @@
-#ifndef OBJECT_HPP
-#define OBJECT_HPP
+#ifndef TSL_OBJECT_HPP
+#define TSL_OBJECT_HPP
 
 #include <OgrePrerequisites.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-	#define TSL_WIN
 	#define WIN32_LEAN_AND_MEAN
-	#include "windows.h"
+	
+	#include <windows.h>
+	
 	#if _MSC_VER
 		#pragma warning(disable: 4250)
 	#endif
+	
+	#define TSL_WIN
 #endif
 
 #include <cassert>
@@ -52,21 +55,25 @@ namespace tsl
 			ostream & trace () const;
 			ostream & error () const;
 
-			///	These methods should only be used by a Set. Don't use them directly.
-			///	Use the Set methods (add, contains & move_to) instead.
+			///	If possible, use the Disjoint_Set methods instead.
 			bool has_parent () const;
+
+			///	If possible, use the Disjoint_Set methods instead.
 			bool is_in (const Object & set) const;
+
+			///	If possible, use the Disjoint_Set methods instead.
 			void put_in (const Object & new_parent);
+
+			///	If possible, use the Disjoint_Set methods instead.
 			void remove_from (const Object & old_parent);
 
-			static string to_string (const Object * object);
 			static string bool_to_string (bool value);
 			static string to_string (float value);
-			static bool is_nan (float value);
-			static int to_int (string value);
+
+			static string nothing;
 
 		protected:
-			///	To avoid 'plain' Object instances, the constructor(s) is/are proteced.
+			///	To avoid plain Object instances, the constructor(s) is/are proteced.
 			#ifdef TSL_WIN
 				///	Some Windows compilers give an error otherwise.
 				Object ();
@@ -79,8 +86,8 @@ namespace tsl
 			template <class T> bool warn (bool initialization) const;
 
 		private :
-			ostream & print (string message) const;
-			const Object * parent;	//	the Set <T> in which the object is
+			ostream & print () const;
+			const Object * parent;	//	the Disjoint_Set in which the object is
 	};
 
 	#ifdef TSL_DEBUG
@@ -89,4 +96,4 @@ namespace tsl
 	#endif
 }
 
-#endif	//	OBJECT_HPP
+#endif	//	TSL_OBJECT_HPP

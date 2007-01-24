@@ -17,8 +17,8 @@ GUI_Listener ::
 GUI_Listener ::
 	~GUI_Listener ()
 {
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
-
 }
 
 //	virtual

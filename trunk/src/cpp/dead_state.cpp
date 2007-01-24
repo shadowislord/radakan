@@ -1,15 +1,24 @@
 #include "npc.hpp"
+#include "dead_state.hpp"
 
 using namespace std;
 using namespace tsl;
 
 //  constructor
 Dead_State ::
-	Dead_State (NPC & new_owner) :
-	Object (new_owner + "'s dead state"),
-	State <NPC> (new_owner)
+	Dead_State () :
+	Object ("dead state"),
+	orientation
+	(
+		* (new Ogre :: Quaternion
+		(
+			Ogre :: Radian (- Ogre :: Math :: HALF_PI),
+			Ogre :: Vector3 (1, 0, 0)
+		))
+	)
+	
 {
-	assert (State <NPC> :: is_initialized ());
+	assert (Algorithm <NPC> :: is_initialized ());
 
 	assert (Dead_State :: is_initialized ());
 }
@@ -18,8 +27,8 @@ Dead_State ::
 Dead_State ::
 	~Dead_State ()
 {
-	trace () << "~Dead_State ()" << endl;
-	assert (State <NPC> :: is_initialized ());
+	trace () << "~" << get_class_name () << " ()" << endl;
+	assert (Algorithm <NPC> :: is_initialized ());
 }
 
 //	virtual
@@ -27,7 +36,7 @@ bool Dead_State ::
 	is_initialized ()
 	const
 {
-	return State <NPC> :: is_initialized ();
+	return Algorithm <NPC> :: is_initialized ();
 }
 
 //	static
@@ -38,10 +47,12 @@ string Dead_State ::
 }
 
 //	virtual
-string Dead_State ::
-	run ()
+Algorithm <NPC> & Dead_State ::
+	transit (NPC & owner)
 {
 	assert (is_initialized ());
 
-	return State <NPC> :: nothing;
+	owner . get_representation () . node . setOrientation (orientation);
+
+	return * this;
 }

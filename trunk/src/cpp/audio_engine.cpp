@@ -88,9 +88,7 @@ void Sound_Sample ::
 
 Audio_Engine ::
 	Audio_Engine () :
-	Object ("Audio engine"),
-	Singleton <Audio_Engine> ("Audio engine"),
-	Set <Sound> ("Audio engine")
+	Object ("Audio engine")
 {
 	silent = false;
 
@@ -111,6 +109,8 @@ Audio_Engine ::
 Audio_Engine ::
 	~Audio_Engine ()
 {
+	assert (is_initialized ());
+	trace () << "~" << get_class_name () << " ()" << endl;
 	if (! silent)
 	{
 		#ifdef TSL_FMOD

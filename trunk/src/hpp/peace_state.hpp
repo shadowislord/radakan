@@ -1,7 +1,7 @@
-#ifndef PEACE_STATE_HPP
-#define PEACE_STATE_HPP
+#ifndef TSL_PEACE_STATE_HPP
+#define TSL_PEACE_STATE_HPP
 
-#include "state.hpp"
+#include "algorithm_state_machine.hpp"
 
 using namespace std;
 
@@ -10,14 +10,16 @@ namespace tsl
 	class NPC;
 
 	class Peace_State :
-		public State <NPC>
+		public Singleton <Peace_State>,
+		public Algorithm <NPC>
 	{
 		public :
-			Peace_State (NPC & new_owner);
+			Peace_State ();
 			virtual ~Peace_State ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			virtual string run ();
+			
+			virtual Algorithm <NPC> & transit (NPC & owner);
 	
 		private :
 			//	Copies are not allowed.
@@ -25,4 +27,4 @@ namespace tsl
 	};
 }
 
-#endif	//	PEACE_STATE_HPP
+#endif	//	TSL_PEACE_STATE_HPP

@@ -1,7 +1,7 @@
-#ifndef DEAD_STATE_HPP
-#define DEAD_STATE_HPP
+#ifndef TSL_DEAD_STATE_HPP
+#define TSL_DEAD_STATE_HPP
 
-#include "state.hpp"
+#include "algorithm.hpp"
 
 using namespace std;
 
@@ -10,19 +10,23 @@ namespace tsl
 	class NPC;
 
 	class Dead_State :
-		public State <NPC>
+		public Singleton <Dead_State>,
+		public Algorithm <NPC>
 	{
 		public :
-			Dead_State (NPC & new_owner);
+			Dead_State ();
 			virtual ~Dead_State ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			virtual string run ();
+			
+			virtual Algorithm <NPC> & transit (NPC & owner);
 	
 		private :
 			//	Copies are not allowed.
 			Dead_State (const Dead_State & dead_state);
+
+			Ogre :: Quaternion & orientation;
 	};
 }
 
-#endif	//	DEAD_STATE_HPP
+#endif	//	TSL_DEAD_STATE_HPP

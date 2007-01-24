@@ -6,25 +6,29 @@ using namespace tsl;
 //  constructor
 Container ::
 	Container
-		(bool new_movable,
-		bool new_solid,
-		bool new_visible,
+	(
+		string new_name,
+		string mesh_name,
 		float new_volume,
 		float new_weight,
-		btVector3 new_position,
-		Ogre :: SceneNode & new_node) :
-	Object (get_name (new_node)),
-	Entity
-		(new_movable,
-		new_solid,
-		new_visible,
+		bool new_mobile,
+		bool new_solid,
+		bool new_visible
+	) :
+	Object (new_name),
+	Item
+	(
+		new_name,
+		mesh_name,
 		new_volume,
 		new_weight,
-		new_position,
-		new_node),
-	Set <Entity> (get_name (new_node))
+		new_mobile,
+		new_solid,
+		new_visible
+	),
+	locked (false)
 {
-	assert (Set <Entity> :: is_initialized ());
+	assert (Item :: is_initialized () && Disjoint_Set <Item> :: is_initialized ());
 	
 	assert (is_initialized ());
 }
@@ -33,8 +37,8 @@ Container ::
 Container ::
 	~Container ()
 {
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
-
 }
 
 //	virtual
@@ -42,7 +46,7 @@ bool Container ::
 	is_initialized ()
 	const
 {
-	return Set <Entity> :: is_initialized ();
+	return Item :: is_initialized () && Disjoint_Set <Item> :: is_initialized ();
 }
 
 //	static
@@ -61,10 +65,9 @@ float Container ::
 	
 	float total_weight = weight;
 
-	for (Entity * i = get_child (); i != NULL; i = get_another_child ())
+	for (Item * i = get_child (); i != NULL; i = get_another_child ())
 	{
-		assert (i -> is_type <Container> ());
-		total_weight += i -> to_type <Container> () . get_total_weight ();
+		total_weight += i -> get_total_weight ();
 	}
 
 	return total_weight;
@@ -72,32 +75,51 @@ float Container ::
 
 //	virtual
 bool Container ::
-	add (Entity & entity)
+	add (Item & item)
 {
+	trace () << "add (" << item << ")" << endl;
 	assert (is_initialized ());
-	assert (entity . is_initialized ());
+	assert (item . is_initialized ());
+	assert (! locked);
+	
+	//	TODO: check the volume
 
-	bool result = Set <Entity> :: add (entity);
-	entity . node -> setVisible (false);
-	return result;
+	bool check = Disjoint_Set <Item> :: add (item);
+	assert (check);
+
+	return true;
 }
 
-//	virtual
-bool Container ::
-	move_to (Entity & entity, Set <Entity> & other_set)
+void Container ::
+	lock ()
 {
-	assert (is_initialized ());
-	assert (entity . is_initialized ());
-	assert (other_set . is_initialized ());
-	assert (contains (entity, false));
+	locked = true;
+}
 
-	//	Enitities inside a container are not visible. But when an enitity
-	//	is moved to a plain Set <Enitity>, is should be visible.
-	entity . node -> setVisible (true);
-	bool result = Set <Entity> :: move_to (entity, other_set);
-	if (! result)
-	{
-		entity . node -> setVisible (false);
-	}
-	return result;
+//	static
+Item & Container ::
+	create
+	(
+		string new_name,
+		string new_mesh_name,
+		float new_volume,
+		float new_weight,
+		bool new_mobile,
+		bool new_solid,
+		bool new_visible
+	)
+{
+	Item * temp =
+		new Container
+		(
+			new_name,
+			new_mesh_name,
+			new_volume,
+			new_weight,
+			new_mobile,
+			new_solid,
+			new_visible
+		);
+
+	return * temp;
 }

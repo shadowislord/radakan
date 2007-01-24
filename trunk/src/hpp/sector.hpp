@@ -1,10 +1,6 @@
-#ifndef SECTOR_HPP
-#define SECTOR_HPP
+#ifndef TSL_SECTOR_HPP
+#define TSL_SECTOR_HPP
 
-#include "battle_engine.hpp"
-#include "gui_engine.hpp"
-#include "npc.hpp"
-#include "player.hpp"
 #include <Ogre.h>
 #include <OgreKeyEvent.h>
 #include <OgreEventListeners.h>
@@ -15,6 +11,11 @@
 #include <BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 
+#include "battle_engine.hpp"
+#include "gui_engine.hpp"
+#include "npc.hpp"
+#include "player.hpp"
+
 using namespace std;
 
 namespace tsl
@@ -24,40 +25,49 @@ namespace tsl
 	///	Sector keeps track of all data in an in-game sector.
 
 	class Sector :
-		public Set <Entity>,
-		public State <TSL>,
+		public Disjoint_Set <Item>,
 		public btDiscreteDynamicsWorld
 	{
 		public :
-			Sector
-			(
-				string new_name,
-				TSL & new_owner,
-				GUI & new_gui
-			);
 			virtual ~Sector ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			
-			virtual bool add (Entity & entity);
-			virtual bool move_to (Entity & entity, Set <Entity> & other_set);
 
-			virtual string run ();
+			///	Don't use 'add' directely, use 'represent' instead.
+			virtual bool add (Item & item);
+			virtual bool move (Item & item, Disjoint_Set <Item> & destination);
+
+			static Sector & create
+			(
+				string new_name,
+				Ogre :: SceneManager & new_scene_manager
+			);
 
 			Ogre :: Camera & get_camera () const;
 			Ogre :: SceneNode & copy_node (Ogre :: SceneNode & example);
 			Ogre :: SceneManager & get_scene_manager () const;
 
-			//	This can't be a Set <NPC>,
-			//	as the NPCs would be part of diffrent Set <T>s.
+			//	This can't be a Disjoint_Set,
+			//	as the NPCs would be part of diffrent Disjoint_Sets.
 			set <NPC *> npcs;
+			
+		protected :
+			Sector
+			(
+				string new_name,
+				Ogre :: SceneManager & new_scene_manager
+			);
 
 		private :
-			Ogre :: SceneNode & create_entity_node (string name, string mesh_name, float scale);
+			Item & represent
+					(Item & item, float x, float y, float z, float scale = 1);
 			Ogre :: SceneManager & scene_manager;
+
+		public :
+			///	'camera' depends on 'scene_manager' at initialization,
+			///	this requires 'camera' to be below 'scene_manager' in this file.
 			Ogre :: Camera & camera;
-			GUI & gui;
 	};
 }
 
-#endif
+#endif	//	TSL_SECTOR_HPP

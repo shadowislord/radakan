@@ -1,5 +1,5 @@
-#ifndef MENU_STATE_HPP
-#define MENU_STATE_HPP
+#ifndef TSL_MENU_STATE_HPP
+#define TSL_MENU_STATE_HPP
 
 #include "tsl.hpp"
 
@@ -9,14 +9,15 @@ namespace tsl
 {
 	class Menu_State :
 		public Singleton <Menu_State>,
-		public State <TSL>
+		public Algorithm <TSL>
 	{
 		public :
-			Menu_State (TSL & new_owner);
+			Menu_State ();
 			virtual ~Menu_State ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			virtual string run ();
+			
+			virtual Algorithm <TSL> & transit (TSL & owner);
 	
 		private :
 			//	Copies are not allowed.
@@ -26,4 +27,4 @@ namespace tsl
 	};
 }
 
-#endif	//	MENU_STATE_HPP
+#endif	//	TSL_MENU_STATE_HPP

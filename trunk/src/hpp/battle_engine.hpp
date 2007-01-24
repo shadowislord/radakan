@@ -1,12 +1,12 @@
-#ifndef BATTLE_ENGINE_HPP
-#define BATTLE_ENGINE_HPP
+#ifndef TSL_BATTLE_ENGINE_HPP
+#define TSL_BATTLE_ENGINE_HPP
 
-#include "character.hpp"
-#include "singleton.hpp"
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/linear_congruential.hpp>
+
+#include "player.hpp"
 
 using namespace std;
 using namespace boost;
@@ -33,4 +33,4 @@ namespace tsl
 	};
 }
 
-#endif	//	BATTLE_ENGINE_HPP
+#endif	//	TSL_BATTLE_ENGINE_HPP

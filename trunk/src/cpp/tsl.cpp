@@ -1,6 +1,8 @@
-#include "tsl.hpp"
-#include "play_state.hpp"
 #include <algorithm>
+#include "tsl.hpp"
+#include "menu_state.hpp"
+#include "play_state.hpp"
+#include "quit_state.hpp"
 
 using namespace std;
 using namespace tsl;
@@ -8,8 +10,6 @@ using namespace tsl;
 TSL ::
 	TSL (string tsl_path, string ogre_path) :
 	Object ("TSL"),
-	Singleton <TSL> ("TSL"),
-	State_Machine <TSL> (* this),
 	go_on ("go on"),
 	quit ("quit")
 {
@@ -27,7 +27,7 @@ TSL ::
 			true
 		#endif
 		);
-	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg",tsl_path + "/data/ogre.cfg");
+	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg", tsl_path + "/data/ogre.cfg");
 	if (! root -> showConfigDialog ())
 	{
 		error () << " detected an Ogre configuration dialog problem." << endl;
@@ -103,10 +103,16 @@ TSL ::
 
 	gui_engine = new GUI_Engine (* window, tsl_path + "/log/cegui.txt", * input_engine);
 
-	State_Machine <TSL> :: add <Play_State> ();
+	new Menu_State ();
+	new Play_State ();
+	new Quit_State ();
 
-	assert (get_active_state () . is_type <Sector> ());
-	Sector & active_sector = get_active_state () . to_type <Sector> ();
+	Algorithm_State_Machine <TSL> :: set_active_state <Play_State> ();
+
+	assert (get_active_state () . is_type <Play_State> ());
+	assert (get_active_state () . is_type <Data_State_Machine <Sector> > ());
+	assert (get_active_state () . to_type <Data_State_Machine <Sector> > () . get_active_state () . is_type <Sector> ());
+	Sector & active_sector = get_active_state () . to_type <Data_State_Machine <Sector> > () . get_active_state () . to_type <Sector> ();
 
 	root -> getRenderSystem () -> _setViewport
 			(window -> addViewport (& active_sector . get_camera ()));
@@ -121,7 +127,7 @@ TSL ::
 TSL ::
 	~TSL ()
 {
-	trace () << "~TSL ()" << endl;
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 	
 	delete input_engine;
@@ -134,7 +140,10 @@ bool TSL ::
 	is_initialized ()
 	const
 {
-	return warn <TSL> (State_Machine <TSL> :: is_initialized ());
+	assert (warn <TSL> (Singleton <TSL> :: is_initialized ()));
+	assert (warn <TSL> (Algorithm_State_Machine <TSL> :: is_initialized ()));
+
+	return true;
 }
 
 //	static
@@ -144,13 +153,13 @@ string TSL ::
 	return "TSL";
 }
 
-string TSL ::
+void TSL ::
 	run ()
 {
 	//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
 	while
 	(
-		(State_Machine <TSL> :: run () == go_on)
+		! get_active_state () . is_type <Quit_State> ()
 		&& root -> renderOneFrame ()
 		&& gui_engine -> render ()
 		&& ! Player :: get () . is_dead ()
@@ -160,12 +169,11 @@ string TSL ::
 		input_engine -> capture ();
 		Ogre :: PlatformManager :: getSingleton () . messagePump (window);
 
+		Algorithm_State_Machine <TSL> :: run ();
+		
 		last_turn_lenght = turn_lenght_timer -> getMilliseconds ();
 		turn_lenght_timer -> reset ();
 	}
-
-	//	The return value doesn't really matter here.
-	return quit;
 }
 
 Ogre :: SceneManager & TSL ::
@@ -192,7 +200,7 @@ void TSL ::
 	root -> getRenderSystem () -> _getViewport () -> setCamera (& new_camera);
 }
 
-int TSL ::
+unsigned long TSL ::
 	get_last_turn_lenght () const
 {
 	return last_turn_lenght;

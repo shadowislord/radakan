@@ -1,7 +1,5 @@
-#ifndef INPUT_ENGINE_HPP
-#define INPUT_ENGINE_HPP
-
-#include "gui_engine.hpp"
+#ifndef TSL_INPUT_ENGINE_HPP
+#define TSL_INPUT_ENGINE_HPP
 
 #include <OgreRenderWindow.h>
 
@@ -10,6 +8,8 @@
 #include <OISMouse.h>
 #include <OISEvents.h>
 //	#include <OIS.h>
+
+#include "gui_engine.hpp"
 
 using namespace std;
 
@@ -72,4 +72,4 @@ namespace tsl
 	};
 }
 
-#endif	//	INPUT_ENGINE_HPP
+#endif	//	TSL_INPUT_ENGINE_HPP

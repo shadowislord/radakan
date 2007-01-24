@@ -10,7 +10,7 @@ const string Input_Engine :: right_mouse_button = "right";
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow & window) :
 	Object ("Input Engine"),
-	Singleton <Input_Engine> ("Input Engine"),
+	Singleton <Input_Engine> (),
 	GUI_Listener ()
 {
 	assert (Object :: is_initialized ());
@@ -68,6 +68,7 @@ Input_Engine ::
 Input_Engine ::
 	~Input_Engine ()
 {
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 
 	input_manager -> destroyInputObject (keyboard);
@@ -76,7 +77,7 @@ Input_Engine ::
 		//	assuming ois-0.7.2
 		input_manager -> destroyInputSystem ();
 	#else
-		//	!!! this gives a linking error
+		//	TODO: Solve the linking error caused by the next line.
 		//	input_manager -> destroyInputSystem (input_manager);
 	#endif
 
@@ -254,7 +255,10 @@ bool Input_Engine ::
 		error () << "OIS 1" << endl;
 
 		error () << "OIS 1.8" << endl;
-		int a = mouse_event . state . X . rel;	//	!!!	This line makes TSL crash...
+		
+		//	TODO: Solve the crash casued by the next line.
+		int a = mouse_event . state . X . rel;
+		
 		error () << "OIS: " << a << endl;
 		error () << "OIS 1.9" << endl;
 		relative_mouse_position = pair <float, float>

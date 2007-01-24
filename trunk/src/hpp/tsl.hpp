@@ -1,10 +1,10 @@
-#ifndef TSL_HPP
-#define TSL_HPP
+#ifndef TSL_TSL_HPP
+#define TSL_TSL_HPP
 
 #include "audio_engine.hpp"
-#include "gui.hpp"
+#include "battle_engine.hpp"
 #include "input_engine.hpp"
-#include "sector.hpp"
+#include "algorithm_state_machine.hpp"
 
 using namespace std;
 
@@ -15,7 +15,7 @@ namespace tsl
 
 	class TSL :
 		public Singleton <TSL>,
-		public State_Machine <TSL>
+		public Algorithm_State_Machine <TSL>
 	{
 		public :
 			TSL (string tsl_path, string ogre_path);
@@ -23,13 +23,13 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
-			virtual string run ();
+			void run ();
 			void set_camera (Ogre :: Camera & new_camera);
 			string get_FPS () const;
 			Ogre :: SceneManager & new_scene_manager () const;
 
 			///	in milliseconds
-			int get_last_turn_lenght () const;
+			unsigned long get_last_turn_lenght () const;
 
 			const string go_on;
 			const string quit;
@@ -37,7 +37,7 @@ namespace tsl
 			Ogre :: RenderWindow * window;
 
 		private :
-			int last_turn_lenght;
+			unsigned long last_turn_lenght;
 			Ogre :: Root * root;
 			Ogre :: Timer * turn_lenght_timer;
 			Battle_Engine battle_engine;
@@ -47,4 +47,4 @@ namespace tsl
 	};
 }
 
-#endif
+#endif	//	TSL_TSL_HPP

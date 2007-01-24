@@ -7,10 +7,10 @@ template <class T> T * Ogre :: Singleton <T> :: ms_Singleton = NULL;
 
 //  constructor
 template <class T> Singleton <T> ::
-	Singleton (string new_name) :
-	Object (new_name)
+	Singleton () :
+	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	trace () << get_class_name () << " (" << new_name << ")" << endl;
+	trace () << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (Singleton :: is_initialized ());
@@ -55,14 +55,22 @@ template <class T> bool Singleton <T> ::
 	return Ogre :: Singleton <T> :: getSingletonPtr () != NULL;
 }
 
+#include "dead_state.hpp"
+#include "fight_state.hpp"
 #include "menu_state.hpp"
+#include "peace_state.hpp"
 #include "play_state.hpp"
+#include "quit_state.hpp"
 
 template class Singleton <Audio_Engine>;
 template class Singleton <Battle_Engine>;
+template class Singleton <Dead_State>;
 template class Singleton <GUI_Engine>;
+template class Singleton <Fight_State>;
 template class Singleton <Input_Engine>;
 template class Singleton <Menu_State>;
+template class Singleton <Peace_State>;
 template class Singleton <Play_State>;
 template class Singleton <Player>;
+template class Singleton <Quit_State>;
 template class Singleton <TSL>;

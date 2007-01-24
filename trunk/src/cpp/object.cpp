@@ -5,15 +5,16 @@
 using namespace std;
 using namespace tsl;
 
+string Object :: nothing = "nothing";
+
 //  constructor
 Object ::
-	Object (string new_name)
+	Object (string new_name) :
+	string (new_name),
+	parent (NULL)
 {
 	assert (! new_name . empty ());
 	trace () << "Object (" << new_name << ")" << endl;
-	
-	assign (new_name);
-	parent = NULL;
 	
 	#ifdef TSL_TRACE
 		objects . insert (this);
@@ -33,7 +34,7 @@ Object ::
 Object ::
 	~Object ()
 {
-	trace () << "~Object ()" << endl;
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 	
 	#ifdef TSL_DEBUG
@@ -67,9 +68,9 @@ ostream & Object ::
 	const
 {
 	#ifdef TSL_DEBUG
-		return print ("debug");
+		return print ();
 	#else
-		return cout << "<#1>";
+		return cout;
 	#endif
 }
 
@@ -78,9 +79,9 @@ ostream & Object ::
 	const
 {
 	#ifdef TSL_TRACE
-		return print ("trace");
+		return print ();
 	#else
-		return cout << "<#2>";
+		return cout;
 	#endif
 }
 
@@ -129,16 +130,6 @@ void Object ::
 }
 
 string Object ::
-	to_string (const Object * object)
-{
-	if (object != NULL)
-	{
-		return * object;
-	}
-	return "NULL";
-}
-
-string Object ::
 	bool_to_string (bool value)
 {
 	if (value)
@@ -156,25 +147,10 @@ string Object ::
 	return oss.str ();
 }
 
-int Object ::
-	to_int (string value)
-{
-	istringstream iss (value);
-	int result;
-	iss >> result;	//	extract int from stream
-	return result;
-}
-
-bool Object ::
-	is_nan (float value)
-{
-	return (value != value);
-}
-
 ostream & Object ::
-	print (string message) const
+	print () const
 {
-	return cout << message << ": " << * this << " - ";
+	return cout << * this << ": ";
 }
 
 template <class T> bool Object ::
@@ -195,7 +171,8 @@ template <class T> T & Object ::
 	assert (is_initialized ());
 	assert (is_type <T> ());
 	
-	return * dynamic_cast <T *> (const_cast <Object *> (this));
+//	return * dynamic_cast <T *> (const_cast <Object *> (this));
+	return dynamic_cast <T &> (const_cast <Object &> (* this));
 }
 
 template <class T> bool Object ::
@@ -210,19 +187,23 @@ template <class T> bool Object ::
 }
 
 //	to avert linking errors:
-#include "play_state.hpp"
+#include "tsl.hpp"
+#include "dead_state.hpp"
+#include "fight_state.hpp"
 #include "menu_state.hpp"
+#include "peace_state.hpp"
+#include "play_state.hpp"
+#include "quit_state.hpp"
 
 template bool Object :: is_type <Container> () const;
 template bool Object :: is_type <NPC> () const;
 template bool Object :: is_type <Sector> () const;
-template bool Object :: is_type <Set <Entity> > () const;
-template bool Object :: is_type <Set <Sector> > () const;
-template bool Object :: is_type <Set <Sound> > () const;
-template bool Object :: is_type <Set <State <GUI_Engine> > > () const;
-template bool Object :: is_type <Set <State <NPC> > > () const;
-template bool Object :: is_type <Set <State <TSL> > > () const;
-template bool Object :: is_type <State_Machine <GUI_Engine> > () const;
+template bool Object :: is_type <Data_State_Machine <Sector> > () const;
+template bool Object :: is_type <Disjoint_Set <Item> > () const;
+template bool Object :: is_type <Disjoint_Set <Sector> > () const;
+template bool Object :: is_type <Disjoint_Set <Sound> > () const;
+template bool Object :: is_type <Quit_State> () const;
+template bool Object :: is_type <TSL> () const;
 template bool Object :: is_type <Weapon> () const;
 
 template Character & Object :: to_type <Character> () const;
@@ -231,53 +212,59 @@ template Dead_State & Object :: to_type <Dead_State> () const;
 template Fight_State & Object :: to_type <Fight_State> () const;
 template GUI & Object :: to_type <GUI> () const;
 template GUI_Engine & Object :: to_type <GUI_Engine> () const;
+template Item & Object :: to_type <Item> () const;
 template NPC & Object :: to_type <NPC> () const;
 template Menu_State & Object :: to_type <Menu_State> () const;
 template Peace_State & Object :: to_type <Peace_State> () const;
 template Play_State & Object :: to_type <Play_State> () const;
 template Sector & Object :: to_type <Sector> () const;
-template Set <Entity> & Object :: to_type <Set <Entity> > () const;
-template Set <Sector> & Object :: to_type <Set <Sector> > () const;
-template Set <Sound> & Object :: to_type <Set <Sound> > () const;
-template Set <State <GUI_Engine> > & Object :: to_type <Set <State <GUI_Engine> > > () const;
-template Set <State <NPC> > & Object :: to_type <Set <State <NPC> > > () const;
-template Set <State <TSL> > & Object :: to_type <Set <State <TSL> > > () const;
+template Data_State_Machine <Sector> & Object :: to_type <Data_State_Machine <Sector> > () const;
+template Disjoint_Set <GUI> & Object :: to_type <Disjoint_Set <GUI> > () const;
+template Disjoint_Set <Item> & Object :: to_type <Disjoint_Set <Item> > () const;
+template Disjoint_Set <Sector> & Object :: to_type <Disjoint_Set <Sector> > () const;
+template Disjoint_Set <Sound> & Object :: to_type <Disjoint_Set <Sound> > () const;
 template Sound & Object :: to_type <Sound> () const;
-template State <GUI_Engine> & Object :: to_type <State <GUI_Engine> > () const;
-template State_Machine <GUI_Engine> & Object :: to_type <State_Machine <GUI_Engine> > () const;
-template State_Machine <NPC> & Object :: to_type <State_Machine <NPC> > () const;
-template State_Machine <TSL> & Object :: to_type <State_Machine <TSL> > () const;
+template TSL & Object :: to_type <TSL> () const;
 template Weapon & Object :: to_type <Weapon> () const;
 
 template bool Object :: warn <Audio_Engine> (bool initialization) const;
+template bool Object :: warn <Algorithm <NPC> > (bool initialization) const;
+template bool Object :: warn <Algorithm <TSL> > (bool initialization) const;
+template bool Object :: warn <Algorithm_State_Machine <NPC> > (bool initialization) const;
+template bool Object :: warn <Algorithm_State_Machine <TSL> > (bool initialization) const;
 template bool Object :: warn <Battle_Engine> (bool initialization) const;
 template bool Object :: warn <Character> (bool initialization) const;
-template bool Object :: warn <Entity> (bool initialization) const;
+template bool Object :: warn <Data_State_Machine <GUI> > (bool initialization) const;
+template bool Object :: warn <Data_State_Machine <Sector> > (bool initialization) const;
+template bool Object :: warn <Disjoint_Set <GUI> > (bool initialization) const;
+template bool Object :: warn <Disjoint_Set <Item> > (bool initialization) const;
+template bool Object :: warn <Disjoint_Set <Sector> > (bool initialization) const;
+template bool Object :: warn <Disjoint_Set <Sound> > (bool initialization) const;
 template bool Object :: warn <GUI> (bool initialization) const;
 template bool Object :: warn <GUI_Engine> (bool initialization) const;
 template bool Object :: warn <GUI_Listener> (bool initialization) const;
 template bool Object :: warn <Input_Engine> (bool initialization) const;
+template bool Object :: warn <Item> (bool initialization) const;
+template bool Object :: warn <Multislot <Container> > (bool initialization) const;
+template bool Object :: warn <Multislot <Item> > (bool initialization) const;
 template bool Object :: warn <NPC> (bool initialization) const;
+template bool Object :: warn <Representation> (bool initialization) const;
 template bool Object :: warn <Sector> (bool initialization) const;
-template bool Object :: warn <Set <Entity> > (bool initialization) const;
-template bool Object :: warn <Set <Sector> > (bool initialization) const;
-template bool Object :: warn <Set <Sound> > (bool initialization) const;
-template bool Object :: warn <Set <State <GUI_Engine> > > (bool initialization) const;
-template bool Object :: warn <Set <State <NPC> > > (bool initialization) const;
-template bool Object :: warn <Set <State <TSL> > > (bool initialization) const;
 template bool Object :: warn <Singleton <Audio_Engine> > (bool initialization) const;
 template bool Object :: warn <Singleton <Battle_Engine> > (bool initialization) const;
 template bool Object :: warn <Singleton <GUI_Engine> > (bool initialization) const;
+template bool Object :: warn <Singleton <Dead_State> > (bool initialization) const;
+template bool Object :: warn <Singleton <Fight_State> > (bool initialization) const;
 template bool Object :: warn <Singleton <Input_Engine> > (bool initialization) const;
 template bool Object :: warn <Singleton <Menu_State> > (bool initialization) const;
+template bool Object :: warn <Singleton <Peace_State> > (bool initialization) const;
 template bool Object :: warn <Singleton <Play_State> > (bool initialization) const;
+template bool Object :: warn <Singleton <Quit_State> > (bool initialization) const;
 template bool Object :: warn <Singleton <Player> > (bool initialization) const;
 template bool Object :: warn <Singleton <TSL> > (bool initialization) const;
-template bool Object :: warn <State <GUI_Engine> > (bool initialization) const;
-template bool Object :: warn <State <NPC> > (bool initialization) const;
-template bool Object :: warn <State <TSL> > (bool initialization) const;
-template bool Object :: warn <State_Machine <GUI_Engine> > (bool initialization) const;
-template bool Object :: warn <State_Machine <NPC> > (bool initialization) const;
-template bool Object :: warn <State_Machine <TSL> > (bool initialization) const;
+template bool Object :: warn <State_Machine <Algorithm <NPC> > > (bool initialization) const;
+template bool Object :: warn <State_Machine <Algorithm <TSL> > > (bool initialization) const;
+template bool Object :: warn <State_Machine <GUI> > (bool initialization) const;
+template bool Object :: warn <State_Machine <Sector> > (bool initialization) const;
 template bool Object :: warn <TSL> (bool initialization) const;
 template bool Object :: warn <Weapon> (bool initialization) const;

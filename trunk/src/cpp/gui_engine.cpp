@@ -10,9 +10,7 @@ GUI_Engine ::
 		string log_file_name,
 		GUI_Listener & new_gui_listener
 	) :
-	Object ("Gui engine"),
-	Singleton <GUI_Engine> ("Gui engine"),
-	State_Machine <GUI_Engine> (* this),
+	Object ("GUI engine"),
 	gui_listener (new_gui_listener)
 {
 	assert (Object :: is_initialized ());
@@ -41,6 +39,7 @@ GUI_Engine ::
 GUI_Engine ::
 	~GUI_Engine ()
 {
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -89,7 +88,7 @@ bool GUI_Engine ::
 {
 	assert (is_initialized ());
 
-	get_active_state () . run ();
+	get_active_state () . update_message ();
 	system -> renderGUI ();
 
 	return true;
@@ -104,14 +103,15 @@ GUI & GUI_Engine ::
 		* (
 			new GUI
 			(
-				* this,
+				configuration_file,
 				* window_manager -> loadWindowLayout (configuration_file),
 				gui_listener
 			)
 		);
 
 	//	If this is the first gui, it's automatically used as active state.
-	add (result . to_type <State <GUI_Engine> > ());
+	add (result);
+	
 	if (get_active_state () == result)
 	{
 		system -> setGUISheet (& result . root_window);
@@ -125,19 +125,16 @@ void GUI_Engine ::
 {
 	assert (is_initialized ());
 	assert (gui . is_initialized ());
-	assert (contains (gui, false));
+	assert (contains (gui));
 
 	if (get_active_state () != gui)
 	{
-		change_active_state (gui);
+		trace () << "Changing to GUI: " << gui << endl;
+		set_active_state (gui);
 		system -> setGUISheet (& gui . root_window);
 	}
-}
-
-string GUI_Engine ::
-	run ()
-{
-	assert (is_initialized ());
-
-	return nothing;
+	else
+	{
+		trace () << "Changing to GUI '" << gui << "' is not necessairy." << endl;
+	}
 }

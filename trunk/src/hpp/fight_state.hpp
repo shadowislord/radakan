@@ -1,7 +1,7 @@
-#ifndef FIGHT_STATE_HPP
-#define FIGHT_STATE_HPP
+#ifndef TSL_FIGHT_STATE_HPP
+#define TSL_FIGHT_STATE_HPP
 
-#include "state.hpp"
+#include "algorithm.hpp"
 
 using namespace std;
 
@@ -10,14 +10,16 @@ namespace tsl
 	class NPC;
 
 	class Fight_State :
-		public State <NPC>
+		public Singleton <Fight_State>,
+		public Algorithm <NPC>
 	{
 		public :
-			Fight_State (NPC & new_owner);
+			Fight_State ();
 			virtual ~Fight_State ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			virtual string run ();
+			
+			virtual Algorithm <NPC> & transit (NPC & owner);
 	
 		private :
 			//	Copies are not allowed.
@@ -25,4 +27,4 @@ namespace tsl
 	};
 }
 
-#endif	//	FIGHT_STATE_HPP
+#endif	//	TSL_FIGHT_STATE_HPP

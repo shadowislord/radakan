@@ -5,16 +5,13 @@ using namespace tsl;
 
 //  constructor
 template <class T> State_Machine <T> ::
-	State_Machine (T & new_owner) :
-	Object (new_owner + "'s state machine"),
-	State <T> (new_owner),
-	Set <State <T> > (new_owner + "'s state machine")
+	State_Machine () :
+	Object ("The name doesn't matter as this class is an abstact class."),
+	active_child_state (NULL)
 {
-	Object :: trace () << get_class_name () << " (" << new_owner << ")" << endl;
-	assert (Set <State <T> > :: is_initialized ());
+	Object :: trace () << get_class_name () << " ()" << endl;
+	assert (Object :: is_initialized ());
 
-	active_child_state = NULL;
-	
 	assert (State_Machine <T> :: is_initialized ());
 }
 
@@ -22,7 +19,8 @@ template <class T> State_Machine <T> ::
 template <class T> State_Machine <T> ::
 	~State_Machine ()
 {
-	assert (State_Machine :: is_initialized ());
+	Object :: trace () << "~" << get_class_name () << " ()" << endl;
+	assert (State_Machine <T> :: is_initialized ());
 }
 
 //	virtual
@@ -30,10 +28,17 @@ template <class T> bool State_Machine <T> ::
 	is_initialized ()
 	const
 {
-	assert (Object :: warn <State_Machine <T> > (State <T> :: is_initialized ()));
-	assert (Object :: warn <State_Machine <T> > (Set <State <T> > :: is_initialized ()));
+	assert (Object :: warn <State_Machine <T> > (Object :: is_initialized ()));
+	assert
+	(
+		Object :: warn <State_Machine <T> >
+		(
+			(active_child_state == NULL)
+									|| active_child_state -> is_initialized ()
+		)
+	);
 
-	return (Object :: warn <State_Machine <T> > ((active_child_state == NULL) || active_child_state -> is_initialized ()));
+	return true;
 }
 
 //	static
@@ -44,143 +49,41 @@ template <class T> string State_Machine <T> ::
 }
 
 //	virtual
-template <class T> string State_Machine <T> ::
-	run ()
-{
-	assert (is_initialized ());
-	assert (active_child_state != NULL);
-	
-	return active_child_state -> run ();
-}
-
-//	virtual
 template <class T> bool State_Machine <T> ::
-	add (State <T> & state)
+	has_active_state () const
 {
 	assert (is_initialized ());
-	assert (state . is_initialized ());
 
-	bool result = Set <State <T> > :: add (state);
-
-	assert (result);
-
-	if (active_child_state == NULL)
-	{
-		active_child_state = & state;
-	}
-
-	return true;
+	return (active_child_state != NULL);
 }
 
 //	virtual
-template <class T> State <T> & State_Machine <T> ::
+template <class T> T & State_Machine <T> ::
 	get_active_state () const
 {
 	assert (is_initialized ());
+	assert (has_active_state ());
 
-	if (active_child_state == NULL)
-	{
-		return * const_cast <State_Machine <T> *> (this);
-	}
-	if (active_child_state -> Object :: is_type <State_Machine <T> > ())
-	{
-		return active_child_state
-			-> Object :: to_type <State_Machine <T> > ()
-			. get_active_state ();
-	}
 	return * active_child_state;
 }
 
 //	virtual
 template <class T> void State_Machine <T> ::
-	change_active_state (State <T> & state)
+	set_active_state (T & t)
 {
-	Object :: trace () << "change_active_state (" << state << ")" << endl;
+	Object :: trace () << "set_active_state (" << t << ")" << endl;
 	assert (State_Machine <T> :: is_initialized ());
-	assert (contains (state, true));
 
-	if (contains (state, false))
-	{
-		//	Object :: trace () << state << " is my child" << endl;
-		active_child_state = & state;
-	}
-	else
-	{
-		//	Object :: trace () << "Maybe " << state << " belongs to my children." << endl;
-		for (State <T> * i = Set <State <T> > :: get_child (); i != NULL;
-								i = Set <State <T> > :: get_another_child ())
-		{
-			if (i -> Object :: is_type <State_Machine <T> > ())
-			{
-				//	Object :: trace () << "Maybe " << state << " belongs to " << * i << endl;
-				State_Machine <T> & child_machine =
-								i -> Object :: to_type <State_Machine <T> > ();
-				if (child_machine . contains (state, true))
-				{
-					//	Object :: trace () << state << " belongs to " << * i << "!" << endl;
-					child_machine . change_active_state (state);
-					active_child_state = & child_machine;
-					
-					return;
-				}
-			}
-		}
-
-		Object :: error () << "could not find the parent state." << endl;
-		abort ();
-	}
-	
-	assert (active_child_state != NULL);
-}
-
-//virtual
-template <class T> template <typename U> void State_Machine <T> ::
-	change_active_state ()
-{
-	Object :: trace () << "change_active_state <" << U :: get_class_name () << "> ()" << endl;
-	assert (Object :: is_initialized ());
-
-	//	'template' added to assure that get_typed_child is a template method.
-	active_child_state = Set <State <T> > :: template get_typed_child <U> ();
-
-	if (active_child_state == NULL)
-	{
-		add <U> ();
-		//	'template' added to assure that get_typed_child is a template method.
-		active_child_state = Set <State <T> > :: template get_typed_child <U> ();
-	}
-
-	assert (active_child_state != NULL);
-}
-
-template <class T> template <typename U> void State_Machine <T> ::
-	add ()
-{
-	Object :: trace () << "add <" << U :: get_class_name () << "> ()" << endl;
-	assert (is_initialized ());
-
-	//	'template' added to assure that get_typed_child is a template method.
-	assert (Set <State <T> > :: template get_typed_child <U> () == NULL);
-
-	add (* (new U (State <T> :: owner)));
+	active_child_state = & t;
 }
 
 //	to avert linking errors:
-#include "menu_state.hpp"
-#include "play_state.hpp"
+#include "gui.hpp"
+#include "npc.hpp"
+#include "sector.hpp"
+#include "tsl.hpp"
 
-template class State_Machine <GUI_Engine>;
-template class State_Machine <NPC>;
-template class State_Machine <TSL>;
-
-template void State_Machine <NPC> :: change_active_state <Dead_State> ();
-template void State_Machine <NPC> :: change_active_state <Fight_State> ();
-template void State_Machine <TSL> :: change_active_state <Menu_State> ();
-template void State_Machine <NPC> :: change_active_state <Peace_State> ();
-template void State_Machine <TSL> :: change_active_state <Play_State> ();
-
-template void State_Machine <NPC> :: add <Dead_State> ();
-template void State_Machine <NPC> :: add <Fight_State> ();
-template void State_Machine <TSL> :: add <Menu_State> ();
-template void State_Machine <NPC> :: add <Peace_State> ();
-template void State_Machine <TSL> :: add <Play_State> ();
+template class State_Machine <Algorithm <NPC> >;
+template class State_Machine <Algorithm <TSL> >;
+template class State_Machine <GUI>;
+template class State_Machine <Sector>;

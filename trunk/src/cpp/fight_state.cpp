@@ -1,15 +1,16 @@
 #include "npc.hpp"
+#include "fight_state.hpp"
+#include "peace_state.hpp"
 
 using namespace std;
 using namespace tsl;
 
 //  constructor
 Fight_State ::
-	Fight_State (NPC & new_owner) :
-	Object (new_owner + "'s fight state"),
-	State <NPC> (new_owner)
+	Fight_State () :
+	Object ("fight state")
 {
-	assert (State <NPC> :: is_initialized ());
+	assert (Algorithm <NPC> :: is_initialized ());
 
 	assert (Fight_State :: is_initialized ());
 }
@@ -18,9 +19,8 @@ Fight_State ::
 Fight_State ::
 	~Fight_State ()
 {
-	trace () << "~Fight_State ()" << endl;
-	
-	assert (State <NPC> :: is_initialized ());
+	trace () << "~" << get_class_name () << " ()" << endl;
+	assert (Algorithm <NPC> :: is_initialized ());
 }
 
 //	virtual
@@ -28,7 +28,7 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	return State <NPC> :: is_initialized () && (! owner . is_dead ());
+	return Algorithm <NPC> :: is_initialized ();
 }
 
 //	static
@@ -39,18 +39,15 @@ string Fight_State ::
 }
 
 //	virtual
-string Fight_State ::
-	run ()
+Algorithm <NPC> & Fight_State ::
+	transit (NPC & owner)
 {
 	assert (is_initialized ());
 
-	if (! owner . has_weapon ())
+	if (! owner . hands . is_empty ())
 	{
-		owner . to_type <State_Machine <NPC> > () . change_active_state <Peace_State> ();
-		return owner + " says 'There's no point in being aggressive without a weapon.'";
+		return Peace_State :: get ();
 	}
-	else
-	{
-		return State <NPC> :: nothing;
-	}
+
+	return * this;
 }

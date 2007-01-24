@@ -1,14 +1,15 @@
-#ifndef CHARACTER_HPP
-#define CHARACTER_HPP
+#ifndef TSL_CHARACTER_HPP
+#define TSL_CHARACTER_HPP
 
-#include "container.hpp"
+#include "multislot.hpp"
+#include "weapon.hpp"
 
 using namespace std;
 
 namespace tsl
 {
 
-	///	Character contains all data of one in-game character.
+	///	Character is the abstract bace class of all in-game characters.
 
 	class Character :
 		public Container
@@ -18,30 +19,30 @@ namespace tsl
 			virtual ~Character ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			virtual float get_total_weight () const;
-			virtual bool add (Entity & entity);		//	true iff succes
-			virtual bool move_to (Entity & entity, Set <Entity> & other_set);
-			bool has_weapon () const;
-			bool is_dead () const;
-			Weapon * get_weapon () const;
-			void walk (float distance);
-			void turn (float radian_angle);
-			virtual string die ();
+			
+			virtual bool is_dead () const = 0;
+			virtual string die () = 0;
+
+			//	Multislot <Hat> & head;
+			//	Multislot <Shirt> & body;
+			Multislot <Container> & back;
+			//	Multislot <Bracer> & arms;
+			Multislot <Item> & hands;
+			//	Multislot <Pants> & legs;
+			//	Multislot <Shoe> & feet;
 
 		protected :
 			Character
 			(
+				string mesh_name,
 				float new_volume,
-				float new_weight,
-				btVector3 new_position,
-				Ogre :: SceneNode & new_node
+				float new_weight
 			);
 
 		private :
-			//	Copies are not allowed.
+			///	Copies are not allowed.
 			Character (const Character & character);
 			
-			//	exp = experience
 			int agility_exp;
 			int beauty_exp;
 			int constitution_exp;
@@ -50,11 +51,7 @@ namespace tsl
 			int quickness_exp;
 			int strength_exp;
 			int willpower_exp;
-		
-			bool dead;
-			Weapon * weapon;
-			Container * backpack;
 	};
 }
 
-#endif
+#endif	//	TSL_CHARACTER_HPP

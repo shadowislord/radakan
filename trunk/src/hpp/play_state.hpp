@@ -1,22 +1,30 @@
-#ifndef PLAY_STATE_HPP
-#define PLAY_STATE_HPP
+#ifndef TSL_PLAY_STATE_HPP
+#define TSL_PLAY_STATE_HPP
 
-#include "tsl.hpp"
+#include "algorithm.hpp"
+#include "data_state_machine.hpp"
+#include "sector.hpp"
+#include "gui.hpp"
 
 using namespace std;
 
 namespace tsl
 {
+	class TSL;
+
 	class Play_State :
 		public Singleton <Play_State>,
-		public State_Machine <TSL>
+		public Algorithm <TSL>,
+		public Data_State_Machine <Sector>
 	{
 		public :
-			Play_State (TSL & new_owner);
+			Play_State ();
 			virtual ~Play_State ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			virtual void change_active_state (State <TSL> & state);
+			
+			virtual void set_active_state (Sector & new_sector);
+			virtual Algorithm <TSL> & transit (TSL & owner);
 	
 		private :
 			//	Copies are not allowed.
@@ -26,4 +34,4 @@ namespace tsl
 	};
 }
 
-#endif	//	PLAY_STATE_HPP
+#endif	//	TSL_PLAY_STATE_HPP

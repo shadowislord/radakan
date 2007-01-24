@@ -1,5 +1,5 @@
-#ifndef PLAYER_HPP
-#define PLAYER_HPP
+#ifndef TSL_PLAYER_HPP
+#define TSL_PLAYER_HPP
 
 #include "character.hpp"
 #include "singleton.hpp"
@@ -13,17 +13,33 @@ namespace tsl
 		public Character
 	{
 		public :
-			Player
-			(
-				float new_volume,
-				float new_weight,
-				btVector3 new_position,
-				Ogre :: SceneNode & new_node
-			);
 			virtual ~Player ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
+
+			virtual bool is_dead () const;
+			virtual string die ();
+			
+			static Item & create
+			(
+				string new_name,
+				string mesh_name,
+				float new_volume,
+				float new_weight
+			);
+
+		protected :
+			Player
+			(
+				string new_name,
+				string mesh_name,
+				float new_volume,
+				float new_weight
+			);
+
+		private :
+			bool dead;
 	};
 }
 
-#endif	//	PLAYER_HPP
+#endif	//	TSL_PLAYER_HPP

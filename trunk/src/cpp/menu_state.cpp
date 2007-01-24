@@ -1,19 +1,18 @@
 #include "menu_state.hpp"
 #include "play_state.hpp"
+#include "quit_state.hpp"
 
 using namespace std;
 using namespace tsl;
 
 //  constructor
 Menu_State ::
-	Menu_State (TSL & new_owner) :
-	Object (new_owner + "'s menu state"),
-	Singleton <Menu_State> (new_owner + "'s menu state"),
-	State <TSL> (new_owner),
+	Menu_State () :
+	Object ("menu state"),
 	gui (GUI_Engine :: get () . create_gui ("menu.cfg"))
 {
 	trace () << "Menu_State ()" << endl;
-	assert (State <TSL> :: is_initialized ());
+	assert (Algorithm <TSL> :: is_initialized ());
 
 	assert (Menu_State :: is_initialized ());
 }
@@ -22,9 +21,9 @@ Menu_State ::
 Menu_State ::
 	~Menu_State ()
 {
-	trace () << "~Menu_State ()" << endl;
+	trace () << "~" << get_class_name () << " ()" << endl;
 
-	assert (State <TSL> :: is_initialized ());
+	assert (Algorithm <TSL> :: is_initialized ());
 }
 
 //	virtual
@@ -32,7 +31,7 @@ bool Menu_State ::
 	is_initialized ()
 	const
 {
-	return State <TSL> :: is_initialized ();
+	return Algorithm <TSL> :: is_initialized ();
 }
 
 //	static
@@ -43,8 +42,8 @@ string Menu_State ::
 }
 
 //	virtual
-string Menu_State ::
-	run ()
+Algorithm <TSL> & Menu_State ::
+	transit (TSL & owner)
 {
 	assert (is_initialized ());
 
@@ -52,14 +51,14 @@ string Menu_State ::
 	if (Input_Engine :: get () . get_key ("Escape", true)
 		|| Input_Engine :: get () . get_gui_button ("Return", true))
 	{
-		owner . change_active_state <Play_State> ();
+		owner . set_active_state <Play_State> ();
 		gui . show ("Game resumed");
 	}
 	
 	//	quit
 	if (Input_Engine :: get () . get_gui_button ("Quit", true))
 	{
-		return owner . quit;
+		return Quit_State :: get ();
 	}
 	
 	//	FPS
@@ -70,5 +69,5 @@ string Menu_State ::
 
 	GUI_Engine :: get () . activate (gui);
 
-	return owner . go_on;
+	return * this;
 }

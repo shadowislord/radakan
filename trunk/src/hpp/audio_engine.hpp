@@ -1,8 +1,5 @@
-#ifndef AUDIO_ENGINE_HPP
-#define AUDIO_ENGINE_HPP
-
-#include "set.hpp"
-#include "singleton.hpp"
+#ifndef TSL_AUDIO_ENGINE_HPP
+#define TSL_AUDIO_ENGINE_HPP
 
 //	#define TSL_FMOD
 
@@ -12,12 +9,15 @@
 	#include <audiere.h>
 #endif
 
+#include "disjoint_set.hpp"
+#include "singleton.hpp"
+
 using namespace std;
 
 namespace tsl
 {
 
-	/// Sound is the abstract base class for all sounds classes.
+	///	Sound is the abstract base class for all sounds classes.
 	class Sound :
 		public Object
 	{
@@ -37,7 +37,7 @@ namespace tsl
 	};
 
 #ifdef TSL_FMOD
-	// .MOD, .S3M, .XM, .IT, .MID, .RMI, .SGT, .FSB
+	///	.MOD, .S3M, .XM, .IT, .MID, .RMI, .SGT, .FSB
 	class Music_Module :
 		public Sound
 	{
@@ -51,7 +51,7 @@ namespace tsl
 	};
 #endif
 
-	// for static soundfiles, like .WAV, .MP2, .MP3, .OGG and .RAW
+	///	for static soundfiles, like .WAV, .MP2, .MP3, .OGG and .RAW
 	class Sound_Sample :
 		public Sound
 	{
@@ -74,7 +74,7 @@ namespace tsl
 	};
 
 #ifdef TSL_FMOD
-	// for streamed audio, like file, url and cd
+	///	for streamed audio, like file, url and cd
 	class Sound_Stream :
 		public Sound
 	{
@@ -88,11 +88,9 @@ namespace tsl
 	};
 #endif
 
-	template class Set <Sound>;
-
 	class Audio_Engine :
 		public Singleton <Audio_Engine>,
-		private Set <Sound>
+		private Disjoint_Set <Sound>
 	{
 		public :
 			Audio_Engine ();
@@ -110,4 +108,4 @@ namespace tsl
 	};
 }
 
-#endif
+#endif	//	TSL_AUDIO_ENGINE_HPP

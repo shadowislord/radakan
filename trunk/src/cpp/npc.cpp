@@ -1,4 +1,6 @@
 #include "npc.hpp"
+#include "peace_state.hpp"
+#include "dead_state.hpp"
 
 using namespace std;
 using namespace tsl;
@@ -7,36 +9,34 @@ using namespace tsl;
 NPC ::
 	NPC
 	(
+		string new_name,
+		string mesh_name,
 		float new_volume,
-		float new_weight,
-		btVector3 new_position,
-		Ogre :: SceneNode & new_node
+		float new_weight
 	) :
-	Object (get_name (new_node)),
+	Object (new_name),
 	Character
 	(
+		mesh_name,
 		new_volume,
-		new_weight,
-		new_position,
-		new_node
-	),
-	State_Machine <NPC> (* this)
+		new_weight
+	)
 {
-	trace () << "NPC (" << get_name (* node) << ")" << endl;
+	trace () << get_class_name () << " (" << new_name << ")" << endl;
 	assert (Character :: is_initialized ());
-	assert (State_Machine <NPC> :: is_initialized ());
 
-	State_Machine <NPC> :: add <Peace_State> ();
+	set_active_state <Peace_State> ();
 
 	assert (is_initialized ());
+	trace () << " is fully constructed (as NPC)." << endl;
 }
 
 //  destructor
 NPC ::
 	~NPC ()
 {
-	trace () << "~NPC ()" << endl;
-	assert (Object :: is_initialized ());
+	trace () << "~" << get_class_name () << " ()" << endl;
+	assert (NPC :: is_initialized ());
 }
 
 //	virtual
@@ -45,7 +45,6 @@ bool NPC ::
 	const
 {
 	assert (warn <NPC> (Character :: is_initialized ()));
-	assert (warn <NPC> (State_Machine <NPC> :: is_initialized ()));
 	return true;
 }
 
@@ -57,12 +56,41 @@ string NPC ::
 }
 
 //	virtual
+bool NPC ::
+	is_dead () const
+{
+	return get_active_state () . is_type <Dead_State> ();
+}
+
+//	virtual
 string NPC ::
 	die ()
 {
 	assert (NPC :: is_initialized ());
 
-	change_active_state <Dead_State> ();
+	set_active_state <Dead_State> ();
 
-	return Character :: die ();
+	return * this + " died!";
+}
+
+//	static
+Item & NPC ::
+	create
+	(
+		string new_name,
+		string new_mesh_name,
+		float new_volume,
+		float new_weight
+	)
+{
+	Item * temp =
+		new NPC
+		(
+			new_name,
+			new_mesh_name,
+			new_volume,
+			new_weight
+		);
+
+	return * temp;
 }

@@ -8,12 +8,11 @@ string GUI :: message;
 GUI ::
 	GUI
 	(
-		GUI_Engine & owner,
+		string new_name,
 		CEGUI :: Window & new_root,
 		GUI_Listener & gui_listener
 	) :
-	Object (new_root . getName () . c_str ()),
-	State <GUI_Engine> (owner),
+	Object (new_name),
 	root_window (new_root)
 {
 	assert (Object :: is_initialized ());
@@ -42,6 +41,7 @@ GUI ::
 GUI ::
 	~GUI ()
 {
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -70,7 +70,7 @@ void GUI ::
 }
 
 string GUI ::
-	run ()
+	update_message ()
 {
 	assert (is_initialized ());
 

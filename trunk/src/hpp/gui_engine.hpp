@@ -1,10 +1,9 @@
-#ifndef GUI_ENGINE_HPP
-#define GUI_ENGINE_HPP
+#ifndef TSL_GUI_ENGINE_HPP
+#define TSL_GUI_ENGINE_HPP
 
 #include "gui.hpp"
-#include "state_machine.hpp"
+#include "data_state_machine.hpp"
 #include "singleton.hpp"
-#include "gui_listener.hpp"
 
 using namespace std;
 
@@ -12,7 +11,7 @@ namespace tsl
 {
 	class GUI_Engine :
 		public Singleton <GUI_Engine>,
-		public State_Machine <GUI_Engine>
+		public Data_State_Machine <GUI>
 	{
 		public :
 			GUI_Engine
@@ -28,10 +27,12 @@ namespace tsl
 			void set_scene_manager (Ogre :: SceneManager & new_scene_manager);
 			void set_mouse_position (pair <float, float> new_position);
 			void left_mouse_button_click ();
-			bool render ();	//	!!!	should be const
+			
+			//	TODO: Make render () const.
+			bool render ();
+			
 			void activate (GUI & gui);
 			GUI & create_gui (string configuration_file);
-			string run ();	//	does nothing
 
 		private :
 			CEGUI :: OgreCEGUIRenderer * renderer;
@@ -42,4 +43,4 @@ namespace tsl
 	};
 }
 
-#endif	//	GUI_ENGINE_HPP
+#endif	//	TSL_GUI_ENGINE_HPP

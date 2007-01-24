@@ -1,24 +1,21 @@
-#ifndef GUI_HPP
-#define GUI_HPP
+#ifndef TSL_GUI_HPP
+#define TSL_GUI_HPP
 
-#include "gui_listener.hpp"
-#include "state.hpp"
 #include <OgreRenderWindow.h>
 #include <OgreCEGUIRenderer.h>
+#include "gui_listener.hpp"
 
 using namespace std;
 
 namespace tsl
 {
-	class GUI_Engine;
-
 	class GUI :
-		public State <GUI_Engine>
+		public virtual Object
 	{
 		public :
 			GUI
 			(
-				GUI_Engine & owner,
+				string new_name,
 				CEGUI :: Window & new_root,
 				GUI_Listener & gui_listener
 			);
@@ -26,7 +23,7 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			void show (string new_message);
-			string run ();	//	updates the message
+			string update_message ();	//	updates the message
 			CEGUI :: Window & root_window;
 
 		private :
@@ -35,4 +32,4 @@ namespace tsl
 	};
 }
 
-#endif	//	GUI_HPP
+#endif	//	TSL_GUI_HPP

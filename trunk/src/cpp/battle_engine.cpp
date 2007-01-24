@@ -7,7 +7,6 @@ using namespace tsl;
 Battle_Engine ::
 	Battle_Engine () :
 	Object ("Battle engine"),
-	Singleton <Battle_Engine> ("Battle engine"),
 	max_distance (25),
 	generator (42u),
 	uniform_real_distribution (0, 1),
@@ -26,7 +25,7 @@ Battle_Engine ::
 Battle_Engine ::
 	~Battle_Engine ()
 {
-	trace () << "~Battle_Engine ()" << endl;
+	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -53,23 +52,38 @@ string Battle_Engine ::
 
 	assert (! attacker . is_dead ());
 	assert (! defender . is_dead ());
-	
-	if (max_distance < (attacker . node -> getPosition () - defender . node -> getPosition ()) . length ())
+
+	float distance =
+		(
+			attacker . get_representation () . node . getPosition ()
+			- defender . get_representation () . node . getPosition ()
+		) . length ();
+		
+	if (max_distance < distance)
 	{
-		return "Target is out of range (" + to_string ((attacker . node -> getPosition () - defender . node -> getPosition ()) . length ()) + " > " + to_string (max_distance) + ")";
+		return "Target is out of range: " + to_string (distance) + " > "
+													+ to_string (max_distance);
 	}
 
 	float attack = 0;
 	float defense = 0;
 	
-	if (attacker . has_weapon ())
+	if (! attacker . hands . is_empty ())
 	{
-		attack = attacker . get_weapon () -> attack_rate * lognormal ();
+		Item & weapon = * attacker . hands . get_child ();
+		if (weapon . is_type <Weapon> ())
+		{
+			attack = weapon . to_type <Weapon> () . attack_rate * lognormal ();
+		}
 	}
 
-	if (defender . has_weapon ())
+	if (! defender . hands . is_empty ())
 	{
-		defense = defender . get_weapon () -> defense_rate * lognormal ();
+		Item & weapon = * defender . hands . get_child ();
+		if (weapon . is_type <Weapon> ())
+		{
+			defense = weapon . to_type <Weapon> () . defense_rate * lognormal ();
+		}
 	}
 
 	trace () << "Atack: " << attack << endl;

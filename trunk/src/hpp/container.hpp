@@ -1,40 +1,62 @@
-#ifndef CONTAINER_HPP
-#define CONTAINER_HPP
+#ifndef TSL_CONTAINER_HPP
+#define TSL_CONTAINER_HPP
 
 #include "weapon.hpp"
-#include "set.hpp"
+#include "disjoint_set.hpp"
 
 using namespace std;
 
 namespace tsl
 {
 
-	///	Container holds the data of one in-game container.
+	///	A Container is an Item that can contain other Items.
 
 	class Container :
-		public Entity,
-		public Set <Entity>
+		public Item,
+		public Disjoint_Set <Item>
 	{
 		public :
-			Container
-				(bool new_movable,
-				bool new_solid,
-				bool new_visible,
-				float new_volume,
-				float new_weight,
-				btVector3 new_position,
-				Ogre :: SceneNode & new_node);
 			virtual ~Container ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			virtual float get_total_weight () const;
-			virtual bool add (Entity & entity);
-			virtual bool move_to (Entity & entity, Set <Entity> & other_set);
-		
+
+			///	'add' returns false if I'm full.
+			virtual bool add (Item & item);
+
+			static Item & create
+			(
+				string new_name,
+				string mesh_name,
+				float new_volume,
+				float new_weight,
+				bool new_mobile = true,
+				bool new_solid = true,
+				bool new_visible = true
+			);
+
+			///	There's no unlock!
+			void lock ();
+
+		protected :
+			Container
+			(
+				string new_name,
+				string mesh_name,
+				float new_volume,
+				float new_weight,
+				bool new_mobile,
+				bool new_solid,
+				bool new_visible
+			);
+
 		private :
-			//	Copies are not allowed.
+			///	Copies are not allowed.
 			Container (const Container & container);
+
+			///	TODO check this variable
+			bool locked;
 	};
 }
 
-#endif
+#endif	//	TSL_CONTAINER_HPP

@@ -1,39 +1,65 @@
-#ifndef WEAPON_HPP
-#define WEAPON_HPP
+#ifndef TSL_WEAPON_HPP
+#define TSL_WEAPON_HPP
 
-#include "entity.hpp"
+#include "item.hpp"
 
 using namespace std;
 
 namespace tsl
 {
 	class Weapon :
-	public Entity
+	public Item
 	{
 		public :
-			Weapon
-				(float new_volume,
+			virtual ~Weapon ();
+			virtual bool is_initialized () const;
+			static string get_class_name ();
+
+			static Item & create
+			(
+				string new_name,
+				string mesh_name,
+				float new_volume,
 				float new_weight,
-				btVector3 new_position,
 				float new_sharpness,
 				float new_break_chance,
 				float new_speed,
 				float new_attack_rate,
 				float new_defense_rate,
-				float new_damage,
-				Ogre :: SceneNode & new_node);
-			virtual ~Weapon ();
-			virtual bool is_initialized () const;
-			static string get_class_name ();
+				float new_damage
+			);
 
 			bool broken;
-			float sharpness;	//	in percent
-			const float break_chance;	//	in percent, 0.01 % is realistic
-			const float speed;	//	weapon speed with character's speed 10
-			const float attack_rate;	//	the average attack with skill 10
-			const float defense_rate;	//	the average defense with skill 10
-			const float damage;	//	the average dmg when fully sharp
+			
+			///	in percent
+			float sharpness;
+
+			///	in percent, 0.01 % is realistic
+			const float break_chance;
+
+			const float speed;
+			
+			const float attack_rate;
+			const float defense_rate;
+
+			//	the average damage when fully sharp
+			const float damage;
+
+		protected :
+			Weapon
+			(
+				string new_name,
+				string mesh_name,
+				float new_volume,
+				float new_weight,
+				float new_sharpness,
+				float new_break_chance,
+				float new_speed,
+				float new_attack_rate,
+				float new_defense_rate,
+				float new_damage
+			);
 	};
 }
 
-#endif	//	WEAPON_HPP
+#endif	//	TSL_WEAPON_HPP

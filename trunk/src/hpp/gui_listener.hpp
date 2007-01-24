@@ -1,8 +1,8 @@
-#ifndef INPUT_LISTENER_HPP
-#define INPUT_LISTENER_HPP
+#ifndef TSL_INPUT_LISTENER_HPP
+#define TSL_INPUT_LISTENER_HPP
 
-#include "object.hpp"
 #include <CEGUI.h>
+#include "object.hpp"
 
 using namespace std;
 
@@ -27,4 +27,4 @@ namespace tsl
 	};
 }
 
-#endif	//	INPUT_LISTENER_HPP
+#endif	//	TSL_INPUT_LISTENER_HPP
