@@ -25,7 +25,8 @@ template <class T> Disjoint_Set <T> ::
 	for (class set <T *> :: const_iterator i = children . begin ();
 												i != children . end (); i ++)
 	{
-		trace () << "deleting " << * i << "..." << endl;
+		assert (* i != NULL);
+		trace () << "deleting " << * * i << "..." << endl;
 		delete * i;
 	}
 }
@@ -90,7 +91,7 @@ template <class T> bool Disjoint_Set <T> ::
 	contains (string name)
 	const
 {
-	trace () << "contains (" << name + ")" << endl;
+//	trace () << "contains (" << name << ")" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 
 	for (T * i = get_child (); i != NULL; i = get_another_child ())
@@ -146,7 +147,7 @@ template <class T> T * Disjoint_Set <T> ::
 	get_child ()
 	const
 {
-	trace () << "get_child ()" << endl;
+//	trace () << "get_child ()" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 
 	if (children . empty ())
@@ -161,7 +162,7 @@ template <class T> T * Disjoint_Set <T> ::
 	get_another_child ()
 	const
 {
-	trace () << "get_another_child ()" << endl;
+//	trace () << "get_another_child ()" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 
 	if (next_child == children . end ())

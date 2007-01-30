@@ -24,9 +24,9 @@ Character ::
 	),
 	//	head (Multislot <Hat> :: create (1)),
 	//	body (Multislot <Shirt> :: create (1)),
-	back (Multislot <Container> :: create (* this + "'s back", "bar.mesh", 0, 0, 1)),
+	back (Multislot <Container> :: create (* this + "'s back", "bar.mesh", 50, 0, 1)),
 	//	arms (Multislot <Bracer> :: create (2)),
-	hands (Multislot <Item> :: create (* this + "'s hands", "bar.mesh", 0, 0, 2))
+	hands (Multislot <Item> :: create (* this + "'s hands", "bar.mesh", 20, 0, 2))
 	//	legs (Multislot <Pants> :: create (1)),
 	//	feet (Multislot <Shoe> :: create (2))
 {
@@ -35,14 +35,16 @@ Character ::
 
 	//	Container :: add (head);
 	//	Container :: add (body);
-	Container :: add (back);
+	bool check = Container :: add (back);
+	assert (check);
 	//	Container :: add (arms);
-	Container :: add (hands);
+	check = Container :: add (hands);
+	assert (check);
 	//	Container :: add (legs);
 	//	Container :: add (feet);
 
 	//	Make sure no body parts are added anymore.
-	lock ();
+	seal ();
 
 	assert (is_initialized ());
 }

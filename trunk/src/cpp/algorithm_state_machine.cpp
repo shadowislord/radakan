@@ -45,18 +45,11 @@ template <class T> void Algorithm_State_Machine <T> ::
 	assert (is_initialized ());
 	assert (State_Machine <Algorithm <T> > :: has_active_state ());
 
-	Object :: trace () << "Old active state: " <<
-			State_Machine <Algorithm <T> > :: get_active_state () << endl;
-	
 	State_Machine <Algorithm <T> > :: set_active_state
 	(
 		State_Machine <Algorithm <T> > :: get_active_state () . transit
 													(Object :: to_type <T> ())
 	);
-	
-	Object :: trace () << "New active state: " <<
-			State_Machine <Algorithm <T> > :: get_active_state () << endl;
-	
 }
 
 //virtual

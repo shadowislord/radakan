@@ -9,9 +9,7 @@ using namespace tsl;
 
 TSL ::
 	TSL (string tsl_path, string ogre_path) :
-	Object ("TSL"),
-	go_on ("go on"),
-	quit ("quit")
+	Object ("TSL")
 {
 	trace () << "TSL (" << tsl_path << ", " << ogre_path << ")" << endl;
 
@@ -94,7 +92,6 @@ TSL ::
 	}
 
 	window = root -> initialise (true, "The Scattered Lands");
-	Ogre :: MeshManager :: getSingleton (). createPlane ("plane.mesh", "custom", Ogre :: Plane (Ogre :: Vector3 :: UNIT_Z, Ogre :: Vector3 :: ZERO), 20000, 20000, 20, 20);
 
 	//	set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);	
@@ -111,8 +108,7 @@ TSL ::
 
 	assert (get_active_state () . is_type <Play_State> ());
 	assert (get_active_state () . is_type <Data_State_Machine <Sector> > ());
-	assert (get_active_state () . to_type <Data_State_Machine <Sector> > () . get_active_state () . is_type <Sector> ());
-	Sector & active_sector = get_active_state () . to_type <Data_State_Machine <Sector> > () . get_active_state () . to_type <Sector> ();
+	Sector & active_sector = get_active_state () . to_type <Data_State_Machine <Sector> > () . get_active_state ();
 
 	root -> getRenderSystem () -> _setViewport
 			(window -> addViewport (& active_sector . get_camera ()));
@@ -159,7 +155,7 @@ void TSL ::
 	//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
 	while
 	(
-		! get_active_state () . is_type <Quit_State> ()
+		(get_active_state () != Quit_State :: get ())
 		&& root -> renderOneFrame ()
 		&& gui_engine -> render ()
 		&& ! Player :: get () . is_dead ()
@@ -173,6 +169,8 @@ void TSL ::
 		
 		last_turn_lenght = turn_lenght_timer -> getMilliseconds ();
 		turn_lenght_timer -> reset ();
+
+		turn ++;
 	}
 }
 

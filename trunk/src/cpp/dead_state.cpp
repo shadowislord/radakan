@@ -52,7 +52,7 @@ Algorithm <NPC> & Dead_State ::
 {
 	assert (is_initialized ());
 
-	owner . get_representation () . node . setOrientation (orientation);
+	owner . get_representation () . set_orientation (orientation);
 
 	return * this;
 }

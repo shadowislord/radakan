@@ -152,11 +152,12 @@ void Audio_Engine ::
 		string extension = file_name . substr (file_name . size () - 3);
 		if (extension == "ogg")
 		{
-			add ((new Sound_Sample (file_name
+			bool check = add ((new Sound_Sample (file_name
 			#ifndef TSL_FMOD
 				, device
 			#endif
 			)) -> to_type <Sound> ());
+			assert (check);
 		}
 		else if (extension == "mp3")
 		{

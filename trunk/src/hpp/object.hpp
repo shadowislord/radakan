@@ -28,7 +28,7 @@
 	//	TSL run with TSL_DEBUG will print usefull messages.
 	#define TSL_DEBUG
 	//	TSL run with TSL_TRACE will print all messages. Do not use it without TSL_DEBUG.
-	#define TSL_TRACE
+//	#define TSL_TRACE
 #endif
 
 using namespace std;
@@ -70,7 +70,7 @@ namespace tsl
 			static string bool_to_string (bool value);
 			static string to_string (float value);
 
-			static string nothing;
+			static unsigned long int turn;
 
 		protected:
 			///	To avoid plain Object instances, the constructor(s) is/are proteced.

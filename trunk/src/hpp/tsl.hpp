@@ -31,9 +31,6 @@ namespace tsl
 			///	in milliseconds
 			unsigned long get_last_turn_lenght () const;
 
-			const string go_on;
-			const string quit;
-
 			Ogre :: RenderWindow * window;
 
 		private :

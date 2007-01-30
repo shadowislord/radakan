@@ -6,9 +6,9 @@ using namespace tsl;
 //  constructor
 Quit_State ::
 	Quit_State () :
-	Object ("menu state")
+	Object ("quit state")
 {
-	trace () << "Quit_State ()" << endl;
+	trace () << get_class_name () << " ()" << endl;
 	assert (Algorithm <TSL> :: is_initialized ());
 
 	assert (Quit_State :: is_initialized ());

@@ -5,7 +5,7 @@
 using namespace std;
 using namespace tsl;
 
-string Object :: nothing = "nothing";
+unsigned long int Object :: turn = 0;
 
 //  constructor
 Object ::
@@ -16,7 +16,7 @@ Object ::
 	assert (! new_name . empty ());
 	trace () << "Object (" << new_name << ")" << endl;
 	
-	#ifdef TSL_TRACE
+	#ifdef TSL_DEBUG
 		objects . insert (this);
 
 		/*trace () << "So far, we have:" << endl;
@@ -150,14 +150,14 @@ string Object ::
 ostream & Object ::
 	print () const
 {
-	return cout << * this << ": ";
+	return cout << turn << " - " << * this << ": ";
 }
 
 template <class T> bool Object ::
 	is_type ()
 	const
 {
-	trace () << "is_type <" << T :: get_class_name () << "> ()" << endl;
+//	trace () << "is_type <" << T :: get_class_name () << "> ()" << endl;
 	assert (is_initialized ());
 	
 	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
@@ -167,7 +167,7 @@ template <class T> T & Object ::
 	to_type ()
 	const
 {
-	trace () << "to_type <" << T :: get_class_name () << "> ()" << endl;
+//	trace () << "to_type <" << T :: get_class_name () << "> ()" << endl;
 	assert (is_initialized ());
 	assert (is_type <T> ());
 	

@@ -28,26 +28,28 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
-			btQuaternion get_rotation () const;
-			void set_rotation (const btQuaternion & new_rotation);
-			btVector3 get_position () const;
-			void set_position (const btVector3 & new_position);
+			Ogre :: Quaternion get_orientation () const;
+			void set_orientation (const Ogre :: Quaternion & new_orientation);
+			Ogre :: Vector3 get_position () const;
+			void set_position (float x, float y, float z);
+			void set_scale (float scale);
 			void update_scene_node ();
+			Ogre :: Entity & get_entity () const;
 
 			void move (float distance);
 
 			///	turn horizontaly
 			void turn (float radian_angle);
 
-
 			Item & parent_item;
-			Ogre :: SceneNode & node;
 				
 		private :
 			//	Copies are not allowed.
 			Representation (const Representation & representation);
 			
-			btDefaultMotionState * get_motion_state () const;
+			btTransform & get_transformation () const;
+
+			Ogre :: SceneNode & node;
 	};
 
 	btVector3 & to_btVector3 (Ogre :: Vector3 old);

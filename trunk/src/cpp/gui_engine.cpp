@@ -48,7 +48,10 @@ bool GUI_Engine ::
 	is_initialized ()
 	const
 {
-	return warn <GUI_Engine> (Object :: is_initialized ());
+	assert (warn <GUI_Engine> (Singleton <GUI_Engine> :: is_initialized ()));
+	assert (warn <GUI_Engine> (Data_State_Machine <GUI> :: is_initialized ()));
+
+	return true;
 }
 
 //	static
@@ -110,7 +113,8 @@ GUI & GUI_Engine ::
 		);
 
 	//	If this is the first gui, it's automatically used as active state.
-	add (result);
+	bool check = add (result);
+	assert (check);
 	
 	if (get_active_state () == result)
 	{
@@ -132,9 +136,5 @@ void GUI_Engine ::
 		trace () << "Changing to GUI: " << gui << endl;
 		set_active_state (gui);
 		system -> setGUISheet (& gui . root_window);
-	}
-	else
-	{
-		trace () << "Changing to GUI '" << gui << "' is not necessairy." << endl;
 	}
 }

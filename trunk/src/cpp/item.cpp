@@ -63,7 +63,6 @@ float Item ::
 	get_total_weight ()
 	const
 {
-	trace () << "get_total_weight ()" << endl;
 	assert (Item :: is_initialized ());
 	
 	return weight;

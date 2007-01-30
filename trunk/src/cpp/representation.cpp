@@ -51,37 +51,49 @@ string Representation ::
 	return "Representation";
 }
 
-btQuaternion Representation ::
-	get_rotation  () const
+Ogre :: Quaternion Representation ::
+	get_orientation  () const
 {
 	assert (Representation :: is_initialized ());
 
-	return get_motion_state () -> m_graphicsWorldTrans . getRotation ();
+	return node . getOrientation ();
 }
 
 void Representation ::
-	set_rotation  (const btQuaternion & new_rotation)
+	set_orientation  (const Ogre :: Quaternion & new_orientation)
 {
 	assert (Representation :: is_initialized ());
 
-	get_motion_state () -> m_graphicsWorldTrans . setRotation (new_rotation);
+	btQuaternion q (new_orientation . x, new_orientation . y, new_orientation . z, new_orientation . w);
+	get_transformation () . setRotation (q);
+	
 	update_scene_node ();
 }
 
-btVector3 Representation ::
+Ogre :: Vector3 Representation ::
 	get_position () const
 {
 	assert (Representation :: is_initialized ());
 
-	return get_motion_state () -> m_graphicsWorldTrans . getOrigin ();
+	return node . getPosition ();
 }
 
 void Representation ::
-	set_position (const btVector3 & new_position)
+	set_scale (float scale)
 {
 	assert (Representation :: is_initialized ());
 
-	get_motion_state () -> m_graphicsWorldTrans . setOrigin (new_position);
+	//	TODO set the scale for bullet to.
+
+	node . setScale (scale, scale, scale);
+}
+
+void Representation ::
+	set_position (float x, float y, float z)
+{
+	assert (Representation :: is_initialized ());
+
+	get_transformation () . setOrigin (btVector3 (x, y, z));
 	
 //	This somehow doesn't do what it's supposed to do. (It doesn't change anything.)
 //	translate (new_position);
@@ -95,21 +107,19 @@ void Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	btVector3 origin = get_position ();
-	btQuaternion rot = get_motion_state () -> m_graphicsWorldTrans . getRotation ();
+	btVector3 origin = get_transformation () . getOrigin ();
+	btQuaternion rot = get_transformation () . getRotation ();
 	node . setPosition (origin . x (), origin . y (), origin . z ());
 	node . setOrientation (rot . getW (), rot . x (), rot . y (), rot . z ());
 }
 
 //	private
-btDefaultMotionState * Representation ::
-	get_motion_state () const
+btTransform & Representation ::
+	get_transformation () const
 {
 	assert (Representation :: is_initialized ());
 
-	btDefaultMotionState * result = dynamic_cast <btDefaultMotionState *> (const_cast <Representation *> (this) -> getMotionState ());
-	assert (result != NULL);
-	return result;
+	return dynamic_cast <btDefaultMotionState *> (const_cast <Representation *> (this) -> getMotionState ()) -> m_graphicsWorldTrans;
 }
 
 void Representation ::
@@ -117,25 +127,9 @@ void Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	trace () << "(absolute) position: (" << get_position () . getX () << ", " << get_position () . getY () << ", " << get_position () . getZ () << ")" << endl;
-
-	Ogre :: Quaternion r = Ogre :: Quaternion
-	(
-		get_rotation () . getW (),
-		get_rotation () . getX (),
-		get_rotation () . getY (),
-		get_rotation () . getZ ()
-	);
-	
-	Ogre :: Vector3 v = Ogre :: Vector3 (0, 0, - distance);
-
-	//	This is not some kind of multiplication, but the rotation of r applied to v.
-	//	Bullet seems to lack equivalent functionality.
-	Ogre :: Vector3 w = r * v;	
-	trace () << "new (relative) position: (" << w . x << ", " << w . y << ", " << w . z << ")" << endl;
-	set_position (get_position () + btVector3 (w . x, w . y, w . z));
-	trace () << "new (absolute) position: (" << get_position () . getX () << ", " << get_position () . getY () << ", " << get_position () . getZ () << ")" << endl;
-
+	Ogre :: Vector3 w = get_position () + get_orientation () * Ogre :: Vector3 (0, 0, - distance);
+	set_position (w . x, w . y, w . z);
+		
 	update_scene_node ();
 }
 
@@ -144,14 +138,15 @@ void Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	trace () << "(absolute) rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
+	set_orientation (get_orientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), Ogre :: Vector3 (0, 1, 0)));
+}
 
-//	trace () << "new (relative) rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
-	
-	set_rotation (get_rotation () * btQuaternion (btVector3 (0, 1, 0), radian_angle));
+Ogre :: Entity & Representation ::
+	get_entity () const
+{
+	assert (Representation :: is_initialized ());
 
-	trace () << "new (absolute) rotation: (" << get_rotation () . getX () << ", " << get_rotation () . getY () << ", " << get_rotation () . getZ () << ")" << endl;
-
+	return * dynamic_cast <Ogre :: Entity *> (node . getAttachedObject (0));
 }
 
 btVector3 & tsl :: to_btVector3 (Ogre :: Vector3 old)

@@ -49,10 +49,10 @@ Algorithm <TSL> & Menu_State ::
 
 	//	un-pause
 	if (Input_Engine :: get () . get_key ("Escape", true)
-		|| Input_Engine :: get () . get_gui_button ("Return", true))
+					|| Input_Engine :: get () . get_gui_button ("Return", true))
 	{
-		owner . set_active_state <Play_State> ();
 		gui . show ("Game resumed");
+		return Play_State :: get ();
 	}
 	
 	//	quit

@@ -25,14 +25,14 @@ Sector ::
 	camera . setNearClipDistance (5);
 	camera . setFarClipDistance (2000);
 
-	//	TODO: Make the next line work.
+	//	TODO make the next line work.
 	scene_manager . setSkyDome (true, "Peaceful", 10, 5);
 
 	//	the ground
-	Item & ground = represent (Item :: create ("Ground", "plane.mesh", 0, 0), 1, 0, 0, 0);
-	dynamic_cast <Ogre :: Entity *> (ground . get_representation () . node . getAttachedObject (0)) -> setMaterialName ("TavernWalls");
-	ground . get_representation () . node . setOrientation (Ogre :: Quaternion (Ogre :: Radian (- Ogre :: Math :: HALF_PI), Ogre :: Vector3 :: UNIT_X));
-
+	Item & ground = represent (Item :: create ("Ground", "test3-ground.mesh", 0, 0, false), 1000, - 50, 0);
+	ground . get_representation () . get_entity () . setMaterialName ("TavernWalls");
+	
+	//	the player
 	if (! Player :: is_instantiated ())
 	{
 		represent (Player :: create ("Player", "ninja.mesh", 80, 65), 100, 0, 200, 0.1);
@@ -57,7 +57,7 @@ Sector ::
 	represent (Item :: create ("Fence 4", "fences4.mesh", 0, 0, false), 426, 0, - 497, 0.3);
 	represent (Item :: create ("Fence 5", "fences5.mesh", 0, 0, false), 526, 0, - 597, 0.3);
 
-	#ifndef TSL_TRACE
+//	#ifndef TSL_TRACE
 		//	not textured
 		represent (Item :: create ("House", "house.mesh", 0, 0, false), 800, 0, 200, 0.4);
 		represent (Item :: create ("Wagon", "wagon.mesh", 0, 0), - 500, 0, - 500, 0.02);
@@ -89,7 +89,7 @@ Sector ::
 						3000 + 100 * j + Ogre :: Math :: RangeRandom (- 130, 130),
 						1.5
 					);
-					temp_tree -> get_representation () . node . setDirection (0, - 1, 0);
+					temp_tree -> get_representation () . set_orientation (Ogre :: Quaternion (Ogre :: Radian (- Ogre :: Math :: HALF_PI), Ogre :: Vector3 (1, 0, 0)));
 				}
 				else
 				{
@@ -111,7 +111,7 @@ Sector ::
 				}
 			}
 		}
-	#endif
+//	#endif
 
 	assert (is_initialized ());
 }
@@ -252,8 +252,8 @@ Item & Sector ::
 	
 	add (item);
 
-	item . get_representation () . node . setScale (scale, scale, scale);
-	item . get_representation () . node . setPosition (x, y, z);
+	item . get_representation () . set_position (x, y, z);
+	item . get_representation () . set_scale (scale);
 
 	return item;
 }

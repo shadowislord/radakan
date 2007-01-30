@@ -22,8 +22,10 @@ Play_State ::
 	new Fight_State ();
 	new Dead_State ();
 
-	add (Sector :: create ("Sector 1", TSL :: get () . new_scene_manager ()));
-	add (Sector :: create ("Sector 2", TSL :: get () . new_scene_manager ()));
+	bool check = add (Sector :: create ("Sector 1", TSL :: get () . new_scene_manager ()));
+	assert (check);
+	check = add (Sector :: create ("Sector 2", TSL :: get () . new_scene_manager ()));
+	assert (check);
 
 	assert (Play_State :: is_initialized ());
 }
@@ -42,13 +44,9 @@ bool Play_State ::
 	is_initialized ()
 	const
 {
-	trace () << get_class_name () << " :: is_initialized () A" << endl;
 	assert (Singleton <Play_State> :: is_initialized ());
-	trace () << get_class_name () << " :: is_initialized () B" << endl;
 	assert (Algorithm <TSL> :: is_initialized ());
-	trace () << get_class_name () << " :: is_initialized () C" << endl;
 	assert (State_Machine <Sector> :: is_initialized ());
-	trace () << get_class_name () << " :: is_initialized () D" << endl;
 	
 	return true;
 }
@@ -209,10 +207,10 @@ Algorithm <TSL> & Play_State ::
 	}
 
 	sector . camera . setPosition
-		(Player :: get () . get_representation () . node . getPosition ()
+		(Player :: get () . get_representation () . get_position ()
 												+ Ogre :: Vector3 (0, 18, 0));
 	sector . camera . setOrientation
-		(Player :: get () . get_representation () . node . getOrientation ());
+		(Player :: get () . get_representation () . get_orientation ());
 
 	GUI_Engine :: get () . activate (gui);
 

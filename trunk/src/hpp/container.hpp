@@ -35,8 +35,8 @@ namespace tsl
 				bool new_visible = true
 			);
 
-			///	There's no unlock!
-			void lock ();
+			///	There's no unseal!
+			void seal ();
 
 		protected :
 			Container
@@ -55,7 +55,7 @@ namespace tsl
 			Container (const Container & container);
 
 			///	TODO check this variable
-			bool locked;
+			bool sealed;
 	};
 }
 

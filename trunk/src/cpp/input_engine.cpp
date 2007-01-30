@@ -77,7 +77,7 @@ Input_Engine ::
 		//	assuming ois-0.7.2
 		input_manager -> destroyInputSystem ();
 	#else
-		//	TODO: Solve the linking error caused by the next line.
+		//	TODO solve the linking error caused by the next line.
 		//	input_manager -> destroyInputSystem (input_manager);
 	#endif
 
@@ -113,7 +113,7 @@ void Input_Engine ::
 	relative_mouse_position = pair <float, float> (0, 0);
 	mouse -> capture ();
 
-	gui_button = "nothing";	//	reset it, in case of a unhandeled button
+	gui_button = "";	//	reset it, in case of a unhandeled button
 	GUI_Engine :: get () . set_mouse_position (get_mouse_position (false));
 	if (get_mouse_button (left_mouse_button, true))
 	{
@@ -148,7 +148,7 @@ bool Input_Engine ::
 		trace () << "GUI button '" << button << "' was pressed." << endl;
 		if (reset)
 		{
-			gui_button = "nothing";
+			gui_button = "";
 		}
 		return true;
 	}
@@ -256,7 +256,7 @@ bool Input_Engine ::
 
 		error () << "OIS 1.8" << endl;
 		
-		//	TODO: Solve the crash casued by the next line.
+		//	TODO solve the crash casued by the next line.
 		int a = mouse_event . state . X . rel;
 		
 		error () << "OIS: " << a << endl;

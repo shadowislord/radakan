@@ -71,10 +71,20 @@ template <class T> T & State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	set_active_state (T & t)
 {
-	Object :: trace () << "set_active_state (" << t << ")" << endl;
+//	Object :: trace () << "set_active_state (" << t << ")" << endl;
 	assert (State_Machine <T> :: is_initialized ());
 
-	active_child_state = & t;
+	if (active_child_state != & t)
+	{
+		//	'get_name' is used here as 'active_child_state' could be NULL.
+		trace () << "the active changed ..." << endl;
+		if (active_child_state != NULL)
+		{
+			trace () << "... (from " << * active_child_state << ") ..." << endl;
+		}
+		trace () << "... to " << t << "." << endl;
+		active_child_state = & t;
+	}
 }
 
 //	to avert linking errors:

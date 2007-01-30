@@ -65,7 +65,8 @@ template <class T> bool Multislot <T> ::
 
 	if (item . is_type <T> ())
 	{
-		Container :: add (item . to_type <T> ());
+		bool check = Container :: add (item . to_type <T> ());
+		assert (check);
 		return true;
 	}
 
