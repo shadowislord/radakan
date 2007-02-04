@@ -5,8 +5,8 @@ using namespace tsl;
 
 //  constructor
 Representation ::
-	Representation (Item & new_item, Ogre :: SceneNode & new_node) :
-	Object ("anonymous representation"),
+	Representation (string item_name, Ogre :: SceneNode & new_node) :
+	Object (item_name + "'s representation"),
 	btRigidBody
 	(
 		1,
@@ -16,7 +16,7 @@ Representation ::
 		),
 		new btSphereShape (10)
 	),
-	parent_item (new_item),
+//	parent_item (new_parent_item),
 	node (new_node)
 {
 	assert (Object :: is_initialized ());
@@ -78,6 +78,30 @@ Ogre :: Vector3 Representation ::
 	return node . getPosition ();
 }
 
+Ogre :: Vector3 Representation ::
+	get_front_direction () const
+{
+	assert (Representation :: is_initialized ());
+
+	return get_orientation () * Ogre :: Vector3 (0, 0, 1);
+}
+
+Ogre :: Vector3 Representation ::
+	get_side_direction () const
+{
+	assert (Representation :: is_initialized ());
+
+	return get_orientation () * Ogre :: Vector3 (1, 0, 0);
+}
+
+Ogre :: Vector3 Representation ::
+	get_top_direction () const
+{
+	assert (Representation :: is_initialized ());
+
+	return get_orientation () * Ogre :: Vector3 (0, 1, 0);
+}
+
 void Representation ::
 	set_scale (float scale)
 {
@@ -127,18 +151,19 @@ void Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	Ogre :: Vector3 w = get_position () + get_orientation () * Ogre :: Vector3 (0, 0, - distance);
+	Ogre :: Vector3 w = get_position () - distance * get_front_direction ();
 	set_position (w . x, w . y, w . z);
 		
 	update_scene_node ();
 }
 
 void Representation ::
-	turn (float radian_angle)
+	turn (float radian_angle, Ogre :: Vector3 ax)
 {
+	debug () << "turn (" << radian_angle << ", (" << ax . x << ", " << ax . y << ", " << ax . z << "))" << endl;
 	assert (Representation :: is_initialized ());
 
-	set_orientation (get_orientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), Ogre :: Vector3 (0, 1, 0)));
+	set_orientation (get_orientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
 }
 
 Ogre :: Entity & Representation ::
@@ -152,4 +177,9 @@ Ogre :: Entity & Representation ::
 btVector3 & tsl :: to_btVector3 (Ogre :: Vector3 old)
 {
 	return * (new btVector3 (old . x, old . y, old . z));
+}
+
+Ogre :: Quaternion tsl :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)
+{
+	return Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax);
 }

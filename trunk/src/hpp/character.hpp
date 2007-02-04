@@ -23,7 +23,7 @@ namespace tsl
 			virtual bool is_dead () const = 0;
 			virtual string die () = 0;
 
-			//	Multislot <Hat> & head;
+			Item & head;
 			//	Multislot <Shirt> & body;
 			Multislot <Container> & back;
 			//	Multislot <Bracer> & arms;

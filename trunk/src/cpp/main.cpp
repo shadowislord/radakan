@@ -3,10 +3,6 @@
 using namespace std;
 using namespace tsl;
 
-#ifdef TSL_DEBUG
-	set <Object *> tsl :: objects;
-#endif
-
 #ifdef TSL_WIN
 	INT WINAPI WinMain (HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
 #else
@@ -94,12 +90,12 @@ using namespace tsl;
 	}
 
 	#ifdef TSL_DEBUG
-		for (set <Object *> :: const_iterator i = objects . begin ();
-													i != objects . end (); i ++)
+		for (set <Object *> :: const_iterator i = Object :: objects . begin ();
+										i != Object :: objects . end (); i ++)
 		{
 			cout << "Warning: " << * * i << " (" << * i << ") was not deleted." << endl;
 		}
-		assert (objects . empty ());
+		assert (Object :: objects . empty ());
 	#endif
 
 	cout << "The Scattered Lands is shut down." << endl;

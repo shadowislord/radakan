@@ -167,18 +167,18 @@ Algorithm <TSL> & Play_State ::
 	if (Input_Engine :: get () . get_mouse_button
 						(Input_Engine :: get () . middle_mouse_button, false))
 	{
-		float x_offset = Input_Engine :: get ()
-										. get_mouse_position (true) . first;
+		float x_offset = Input_Engine :: get () . get_mouse_position (true) . first;
+		float y_offset = Input_Engine :: get () . get_mouse_position (true) . second;
+
+		debug () << "offset: " << x_offset << ", " << y_offset << endl;
 
 		if (x_offset != 0)
 		{
 			x_offset = - 0.005 * owner . get_last_turn_lenght () * x_offset;
 
-			debug () << Input_Engine :: get () . middle_mouse_button
-										<< " - x offset: " <<  x_offset << endl;
-
 			Player :: get () . get_representation () . turn (x_offset);
 		}
+		vertical_camera_angle -= 0.001 * owner . get_last_turn_lenght () * y_offset;
 	}
 
 	if (Input_Engine :: get () . get_mouse_button
@@ -207,10 +207,20 @@ Algorithm <TSL> & Play_State ::
 	}
 
 	sector . camera . setPosition
-		(Player :: get () . get_representation () . get_position ()
-												+ Ogre :: Vector3 (0, 18, 0));
+	(
+		Player :: get () . get_representation () . get_position ()
+		+ Player :: get () . camera_distance
+		* Player :: get () . get_representation () . get_top_direction ()
+	);
 	sector . camera . setOrientation
-		(Player :: get () . get_representation () . get_orientation ());
+	(
+		make_quaternion
+		(
+			vertical_camera_angle,
+			Player :: get () . get_representation () . get_side_direction ()
+		)
+		* Player :: get () . get_representation () . get_orientation ()
+	);
 
 	GUI_Engine :: get () . activate (gui);
 

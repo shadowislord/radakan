@@ -57,7 +57,7 @@ Sector ::
 	represent (Item :: create ("Fence 4", "fences4.mesh", 0, 0, false), 426, 0, - 497, 0.3);
 	represent (Item :: create ("Fence 5", "fences5.mesh", 0, 0, false), 526, 0, - 597, 0.3);
 
-//	#ifndef TSL_TRACE
+	#ifndef TSL_TRACE
 		//	not textured
 		represent (Item :: create ("House", "house.mesh", 0, 0, false), 800, 0, 200, 0.4);
 		represent (Item :: create ("Wagon", "wagon.mesh", 0, 0), - 500, 0, - 500, 0.02);
@@ -89,7 +89,7 @@ Sector ::
 						3000 + 100 * j + Ogre :: Math :: RangeRandom (- 130, 130),
 						1.5
 					);
-					temp_tree -> get_representation () . set_orientation (Ogre :: Quaternion (Ogre :: Radian (- Ogre :: Math :: HALF_PI), Ogre :: Vector3 (1, 0, 0)));
+					temp_tree -> get_representation () . turn (- Ogre :: Math :: HALF_PI, Ogre :: Vector3 (1, 0, 0));
 				}
 				else
 				{
@@ -111,7 +111,7 @@ Sector ::
 				}
 			}
 		}
-//	#endif
+	#endif
 
 	assert (is_initialized ());
 }
@@ -222,27 +222,6 @@ Ogre :: SceneManager & Sector ::
 	assert (is_initialized ());
 
 	return scene_manager;
-}
-
-Ogre :: SceneNode & Sector ::
-	copy_node (Ogre :: SceneNode & example)
-{
-	assert (is_initialized ());
-
-	assert (example . numAttachedObjects () == 1);
-	assert (example . getAttachedObject (0) != NULL);
-	
-	Ogre :: SceneNode * node = scene_manager . getRootSceneNode ()
-													-> createChildSceneNode ();
-	
-	node -> attachObject (example . detachObject
-										(static_cast <unsigned short int> (0)));
-	node -> setPosition (example . getPosition ());
-	node -> setOrientation (example . getOrientation ());
-//	node -> setVisibility (example . getVisibility ());
-	node -> setScale (example . getScale ());
-	
-	return * node;
 }
 
 Item & Sector ::

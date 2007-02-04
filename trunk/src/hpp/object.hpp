@@ -28,7 +28,7 @@
 	//	TSL run with TSL_DEBUG will print usefull messages.
 	#define TSL_DEBUG
 	//	TSL run with TSL_TRACE will print all messages. Do not use it without TSL_DEBUG.
-//	#define TSL_TRACE
+	#define TSL_TRACE
 #endif
 
 using namespace std;
@@ -72,6 +72,11 @@ namespace tsl
 
 			static unsigned long int turn;
 
+			#ifdef TSL_DEBUG
+				//	This set is used to check if all objects were properly destructed.
+				static set <Object *> objects;
+			#endif
+
 		protected:
 			///	To avoid plain Object instances, the constructor(s) is/are proteced.
 			#ifdef TSL_WIN
@@ -89,11 +94,6 @@ namespace tsl
 			ostream & print () const;
 			const Object * parent;	//	the Disjoint_Set in which the object is
 	};
-
-	#ifdef TSL_DEBUG
-		//	This set is used to check if all objects were properly destructed.
-		extern set <Object *> objects;
-	#endif
 }
 
 #endif	//	TSL_OBJECT_HPP

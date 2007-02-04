@@ -22,6 +22,7 @@ Character ::
 		true,
 		true
 	),
+	head (Item :: create (* this + "'s head", "bar.mesh", 1, 1)),
 	//	head (Multislot <Hat> :: create (1)),
 	//	body (Multislot <Shirt> :: create (1)),
 	back (Multislot <Container> :: create (* this + "'s back", "bar.mesh", 50, 0, 1)),
@@ -33,9 +34,10 @@ Character ::
 	trace () << "Character (...)" << endl;
 	assert (Container :: is_initialized ());
 
-	//	Container :: add (head);
+	bool check = Container :: add (head);
+	assert (check);
 	//	Container :: add (body);
-	bool check = Container :: add (back);
+	check = Container :: add (back);
 	assert (check);
 	//	Container :: add (arms);
 	check = Container :: add (hands);

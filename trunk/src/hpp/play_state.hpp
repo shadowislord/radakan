@@ -31,6 +31,8 @@ namespace tsl
 			Play_State (const Play_State & play_state);
 			
 			GUI & gui;
+			
+			float vertical_camera_angle;
 	};
 }
 

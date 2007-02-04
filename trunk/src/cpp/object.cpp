@@ -7,6 +7,8 @@ using namespace tsl;
 
 unsigned long int Object :: turn = 0;
 
+set <Object *> Object :: objects;
+
 //  constructor
 Object ::
 	Object (string new_name) :

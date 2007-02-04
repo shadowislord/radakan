@@ -7,16 +7,7 @@ using namespace tsl;
 //  constructor
 Dead_State ::
 	Dead_State () :
-	Object ("dead state"),
-	orientation
-	(
-		* (new Ogre :: Quaternion
-		(
-			Ogre :: Radian (- Ogre :: Math :: HALF_PI),
-			Ogre :: Vector3 (1, 0, 0)
-		))
-	)
-	
+	Object ("dead state")
 {
 	assert (Algorithm <NPC> :: is_initialized ());
 
@@ -52,7 +43,7 @@ Algorithm <NPC> & Dead_State ::
 {
 	assert (is_initialized ());
 
-	owner . get_representation () . set_orientation (orientation);
+	owner . get_representation () . set_orientation (make_quaternion (- Ogre :: Math :: HALF_PI, owner . get_representation () . get_side_direction ()));
 
 	return * this;
 }

@@ -19,6 +19,7 @@ Player ::
 		new_volume,
 		new_weight
 	),
+	camera_distance (18),
 	dead (false)
 {
 	trace () << "Player (" << new_name << ")" << endl;

@@ -28,6 +28,8 @@ namespace tsl
 				float new_weight
 			);
 
+			unsigned int camera_distance;
+
 		protected :
 			Player
 			(

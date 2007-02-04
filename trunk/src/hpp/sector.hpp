@@ -2,8 +2,10 @@
 #define TSL_SECTOR_HPP
 
 #include <Ogre.h>
-#include <OgreKeyEvent.h>
-#include <OgreEventListeners.h>
+#if OGRE_VERSION_MINOR < 3
+	#include <OgreKeyEvent.h>
+	#include <OgreEventListeners.h>
+#endif
 #include <OgreStringConverter.h>
 #include <OgreException.h>
 
@@ -44,7 +46,6 @@ namespace tsl
 			);
 
 			Ogre :: Camera & get_camera () const;
-			Ogre :: SceneNode & copy_node (Ogre :: SceneNode & example);
 			Ogre :: SceneManager & get_scene_manager () const;
 
 			//	This can't be a Disjoint_Set,

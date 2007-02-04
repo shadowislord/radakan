@@ -24,8 +24,6 @@ namespace tsl
 		private :
 			//	Copies are not allowed.
 			Dead_State (const Dead_State & dead_state);
-
-			Ogre :: Quaternion & orientation;
 	};
 }
 
