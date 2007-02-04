@@ -14,7 +14,7 @@ using namespace tsl;
 #endif
 {
 	cout << "Preparing The Scattered Lands..." << endl;
-	
+
 	//	check for conflicting debug and trace flags
 	#ifdef TSL_TRACE
 		#ifndef TSL_DEBUG
@@ -37,7 +37,7 @@ using namespace tsl;
 		else
 		{
 			//	example arguments: C:/John/TSL~C:/OgreSDK
-			int spacePos = tsl_path . find ('~');
+			unsigned int spacePos = tsl_path . find ('~');
 			assert (spacePos != string :: npos);
 			ogre_path = tsl_path . substr (spacePos + 1, tsl_path . length ());
             tsl_path = tsl_path . substr (0, spacePos);

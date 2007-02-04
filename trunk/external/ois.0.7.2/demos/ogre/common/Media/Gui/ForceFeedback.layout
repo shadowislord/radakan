@@ -1,0 +1,234 @@
+<?xml version="1.0" ?>
+<GUILayout>
+<Window Type="DefaultWindow" Name="Root" >
+	<Property Name="Size" Value="w:1 h:1" />
+
+	<Window Type="WindowsLook/FrameWindow" Name="Main" >
+		<Property Name="Position" Value="x:0.0 y:0.0" />
+		<Property Name="Size" Value="w:0.5 h:0.3" />
+		<Property Name="Text" Value="Force Feedback Demo" />
+		<Property Name="SizingEnabled" Value="false" />
+		<Property Name="DragMovingEnabled" Value="False" />
+		<Property Name="CloseButtonEnabled" Value="False" />
+
+		<Window Type="WindowsLook/Button" Name="Quit" >
+			<Property Name="Position" Value="x:0.0 y:0.18" />
+			<Property Name="Size" Value="w:0.15 h:0.15" />
+			<Property Name="Text" Value="Quit" />
+		</Window>
+		<Window Type="WindowsLook/Button" Name="Create" >
+			<Property Name="Position" Value="x:0.17 y:0.18" />
+			<Property Name="Size" Value="w:0.15 h:0.15" />
+			<Property Name="Text" Value="Create" />
+		</Window>
+		<Window Type="WindowsLook/StaticText" Name="SupportedEffects" >
+			<Property Name="Position" Value="x:0.01 y:0.35" />
+			<Property Name="Size" Value="w:0.49 h:0.15" />
+			<Property Name="Text" Value="Supported Effects" />
+		</Window>
+		<Window Type="WindowsLook/Listbox" Name="SupportedEffectsList" >
+			<Property Name="Position" Value="x:0.01 y:0.49" />
+			<Property Name="Size" Value="w:0.49 h:0.45" />
+		</Window>
+
+		<Window Type="WindowsLook/Button" Name="Remove" >
+			<Property Name="Position" Value="x:0.51 y:0.18" />
+			<Property Name="Size" Value="w:0.15 h:0.15" />
+			<Property Name="Text" Value="Remove" />
+		</Window>
+		<Window Type="WindowsLook/StaticText" Name="EffectsLabel" >
+			<Property Name="Position" Value="x:0.51 y:0.35" />
+			<Property Name="Size" Value="w:0.3 h:0.15" />
+			<Property Name="Text" Value="Loaded Effects" />
+		</Window>
+		<Window Type="WindowsLook/Listbox" Name="EffectsList" >
+			<Property Name="Position" Value="x:0.51 y:0.49" />
+			<Property Name="Size" Value="w:0.3 h:0.45" />
+		</Window>
+
+		<Window Type="WindowsLook/StaticText" Name="Gain" >
+			<Property Name="Position" Value="x:0.85 y:0.35" />
+			<Property Name="Size" Value="w:0.13 h:0.15" />
+			<Property Name="Text" Value="Gain" />
+		</Window>
+		<Window Type="WindowsLook/Spinner" Name="GainLevel" >
+			<Property Name="Position" Value="x:0.85 y:0.51" />
+			<Property Name="Size" Value="w:0.12 h:0.2" />
+			<Property Name="CurrentValue" Value="1.0" />
+			<Property Name="StepSize" Value="0.1" />
+			<Property Name="MinimumValue" Value="0.0" />
+			<Property Name="MaximumValue" Value="1.0" />
+			<Property Name="TextInputMode" Value="FloatingPoint" />
+		</Window>
+	</Window>
+	<Window Type="WindowsLook/FrameWindow" Name="General" >
+		<Property Name="Position" Value="x:0.5 y:0.0" />
+		<Property Name="Size" Value="w:0.25 h:0.3" />
+		<Property Name="Text" Value="General Properties" />
+		<Property Name="Visible" Value="false" />
+		<Property Name="SizingEnabled" Value="false" />
+		<Property Name="DragMovingEnabled" Value="False" />
+		<Property Name="CloseButtonEnabled" Value="False" />
+
+		<Window Type="WindowsLook/StaticText" Name="TriggerButtonLable" >
+			<Property Name="Position" Value="x:0.01 y:0.18" />
+			<Property Name="Size" Value="w:0.49 h:0.13" />
+			<Property Name="Text" Value="T.B. N/I" />
+		</Window>
+		<Window Type="WindowsLook/Spinner" Name="TriggerButton" >
+			<Property Name="Position" Value="x:0.01 y:0.31" />
+			<Property Name="Size" Value="w:0.4 h:0.2" />
+			<Property Name="CurrentValue" Value="-1" />
+			<Property Name="StepSize" Value="1" />
+			<Property Name="MinimumValue" Value="-1" />
+			<Property Name="MaximumValue" Value="100" />
+		</Window>
+		<Window Type="WindowsLook/StaticText" Name="TriggerIntervalLable" >
+			<Property Name="Position" Value="x:0.5 y:0.18" />
+			<Property Name="Size" Value="w:0.49 h:0.13" />
+			<Property Name="Text" Value="T.I. N/I" />
+		</Window>
+		<Window Type="WindowsLook/Spinner" Name="TriggerInterval" >
+			<Property Name="Position" Value="x:0.5 y:0.31" />
+			<Property Name="Size" Value="w:0.4 h:0.2" />
+			<Property Name="CurrentValue" Value="500" />
+			<Property Name="StepSize" Value="500" />
+			<Property Name="MinimumValue" Value="0" />
+			<Property Name="MaximumValue" Value="10000" />
+		</Window>
+
+		<Window Type="WindowsLook/StaticText" Name="ReplayLengthLable" >
+			<Property Name="Position" Value="x:0.01 y:0.53" />
+			<Property Name="Size" Value="w:0.49 h:0.13" />
+			<Property Name="Text" Value="Length (sec)" />
+		</Window>
+		<Window Type="WindowsLook/Spinner" Name="ReplayLength" >
+			<Property Name="Position" Value="x:0.01 y:0.66" />
+			<Property Name="Size" Value="w:0.4 h:0.2" />
+			<Property Name="CurrentValue" Value="0" />
+			<Property Name="StepSize" Value="1" />
+			<Property Name="MinimumValue" Value="0" />
+			<Property Name="MaximumValue" Value="20" />
+		</Window>
+		<Window Type="WindowsLook/StaticText" Name="ReplayDelayLable" >
+			<Property Name="Position" Value="x:0.5 y:0.53" />
+			<Property Name="Size" Value="w:0.49 h:0.13" />
+			<Property Name="Text" Value="Delay (sec)" />
+		</Window>
+		<Window Type="WindowsLook/Spinner" Name="ReplayDelay" >
+			<Property Name="Position" Value="x:0.5 y:0.66" />
+			<Property Name="Size" Value="w:0.4 h:0.2" />
+			<Property Name="CurrentValue" Value="0" />
+			<Property Name="StepSize" Value="1" />
+			<Property Name="MinimumValue" Value="0" />
+			<Property Name="MaximumValue" Value="20" />
+		</Window>
+
+	</Window>
+	<Window Type="WindowsLook/FrameWindow" Name="Direction" >
+		<Property Name="Position" Value="x:0.75 y:0.0" />
+		<Property Name="Size" Value="w:0.25 h:0.3" />
+		<Property Name="Text" Value="Direction N/I" />
+		<Property Name="Visible" Value="false" />
+		<Property Name="SizingEnabled" Value="false" />
+		<Property Name="DragMovingEnabled" Value="False" />
+		<Property Name="CloseButtonEnabled" Value="False" />
+
+		<Window Type="WindowsLook/RadioButton" Name="North" >
+			<Property Name="Position" Value="x:.47 y:0.14" />
+			<Property Name="Size" Value="w:.2 h:0.2" />
+			<Property Name="Selected" Value="true" />
+		</Window>
+		<Window Type="WindowsLook/RadioButton" Name="South" >
+			<Property Name="Position" Value="x:.47 y:0.8" />
+			<Property Name="Size" Value="w:.2 h:0.2" />
+		</Window>
+		<Window Type="WindowsLook/RadioButton" Name="West" >
+			<Property Name="Position" Value="x:.17 y:0.5" />
+			<Property Name="Size" Value="w:.2 h:0.2" />
+		</Window>
+		<Window Type="WindowsLook/RadioButton" Name="East" >
+			<Property Name="Position" Value="x:.79 y:0.5" />
+			<Property Name="Size" Value="w:.2 h:0.2" />
+		</Window>
+		<Window Type="WindowsLook/RadioButton" Name="NorthWest" >
+			<Property Name="Position" Value="x:.26 y:0.27" />
+			<Property Name="Size" Value="w:.2 h:0.2" />
+		</Window>
+		<Window Type="WindowsLook/RadioButton" Name="NorthEast" >
+			<Property Name="Position" Value="x:.7 y:0.27" />
+			<Property Name="Size" Value="w:.2 h:0.2" />
+		</Window>
+		<Window Type="WindowsLook/RadioButton" Name="SouthWest" >
+			<Property Name="Position" Value="x:.26 y:0.72" />
+			<Property Name="Size" Value="w:.2 h:0.2" />
+		</Window>
+		<Window Type="WindowsLook/RadioButton" Name="SouthEast" >
+			<Property Name="Position" Value="x:.7 y:0.72" />
+			<Property Name="Size" Value="w:.2 h:0.2" />
+		</Window>
+	</Window>
+
+	<Window Type="WindowsLook/FrameWindow" Name="ConstantForm" >
+		<Property Name="Position" Value="x:0.0 y:0.35" />
+		<Property Name="Size" Value="w:0.5 h:0.6" />
+		<Property Name="Text" Value="Constant Settings" />
+		<Property Name="Visible" Value="false" />
+		<Property Name="SizingEnabled" Value="false" />
+		<Property Name="DragMovingEnabled" Value="False" />
+		<Property Name="CloseButtonEnabled" Value="False" />
+
+		<Window Type="WindowsLook/StaticText" Name="ConstantLevelLable" >
+			<Property Name="Position" Value="x:0.1 y:0.2" />
+			<Property Name="Size" Value="w:0.8 h:0.2" />
+			<Property Name="Text" Value="Constant Force (besides envelope) has only one setting for a magnitude level (-10k to +10k)." />
+			<Property Name="HorzFormatting" Value="WordWrapCentred" />
+		</Window>
+		<Window Type="WindowsLook/Spinner" Name="ConstantLevel" >
+			<Property Name="Position" Value="x:0.1 y:0.45" />
+			<Property Name="Size" Value="w:0.2 h:0.2" />
+			<Property Name="CurrentValue" Value="5000" />
+			<Property Name="StepSize" Value="500" />
+			<Property Name="MinimumValue" Value="-10000" />
+			<Property Name="MaximumValue" Value="10000" />
+		</Window>
+	</Window>
+	<Window Type="WindowsLook/FrameWindow" Name="RampForm" >
+		<Property Name="Position" Value="x:0.0 y:0.35" />
+		<Property Name="Size" Value="w:0.5 h:0.6" />
+		<Property Name="Text" Value="Ramp Settings" />
+		<Property Name="Visible" Value="false" />
+		<Property Name="SizingEnabled" Value="false" />
+		<Property Name="DragMovingEnabled" Value="False" />
+		<Property Name="CloseButtonEnabled" Value="False" />
+	</Window>
+	<Window Type="WindowsLook/FrameWindow" Name="PeriodicForm" >
+		<Property Name="Position" Value="x:0.0 y:0.35" />
+		<Property Name="Size" Value="w:0.5 h:0.6" />
+		<Property Name="Text" Value="Periodic Settings" />
+		<Property Name="Visible" Value="false" />
+		<Property Name="SizingEnabled" Value="false" />
+		<Property Name="DragMovingEnabled" Value="False" />
+		<Property Name="CloseButtonEnabled" Value="False" />
+	</Window>
+	<Window Type="WindowsLook/FrameWindow" Name="ConditionalForm" >
+		<Property Name="Position" Value="x:0.0 y:0.35" />
+		<Property Name="Size" Value="w:0.5 h:0.6" />
+		<Property Name="Text" Value="Conditional Settings" />
+		<Property Name="Visible" Value="false" />
+		<Property Name="SizingEnabled" Value="false" />
+		<Property Name="DragMovingEnabled" Value="False" />
+		<Property Name="CloseButtonEnabled" Value="False" />
+	</Window>
+
+	<Window Type="WindowsLook/FrameWindow" Name="EnvelopeForm" >
+		<Property Name="Position" Value="x:0.7 y:0.35" />
+		<Property Name="Size" Value="w:0.3 h:0.6" />
+		<Property Name="Text" Value="Envelope Settings" />
+		<Property Name="Visible" Value="false" />
+		<Property Name="SizingEnabled" Value="false" />
+		<Property Name="DragMovingEnabled" Value="False" />
+		<Property Name="CloseButtonEnabled" Value="False" />
+	</Window>
+</Window>
+</GUILayout>

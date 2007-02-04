@@ -34,7 +34,7 @@ Input_Engine ::
 	//	the system window.
 	param_list . insert (make_pair (string ("WINDOW"), window_handle . str ()));
 
-	input_manager = OIS :: InputManager :: createInputSystem (param_list);
+    input_manager = OIS :: InputManager :: createInputSystem (param_list);
 
 	//	The final parameter refers to "buffered".
 	keyboard = dynamic_cast <OIS :: Keyboard *>
@@ -200,7 +200,7 @@ bool Input_Engine ::
 	else
 	{
 		gui_button = window_event_arguments -> window -> getText () . c_str ();
-		
+
 		GUI_Engine :: get () . get_active_state () . to_type <GUI> () . show
 							("The '" + gui_button + "' button was clicked.");
 	}
@@ -243,7 +243,7 @@ bool Input_Engine ::
 	#ifdef TSL_DEBUG
 		pair <float, float> prev = absolute_mouse_position;
 	#endif
-	
+
 	#if OIS_VERSION_MAJOR < 1
 		//	assuming ois-0.7.2
 		relative_mouse_position = pair <float, float>
@@ -255,10 +255,10 @@ bool Input_Engine ::
 		error () << "OIS 1" << endl;
 
 		error () << "OIS 1.8" << endl;
-		
+
 		//	TODO solve the crash casued by the next line.
 		int a = mouse_event . state . X . rel;
-		
+
 		error () << "OIS: " << a << endl;
 		error () << "OIS 1.9" << endl;
 		relative_mouse_position = pair <float, float>
