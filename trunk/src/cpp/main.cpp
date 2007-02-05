@@ -20,7 +20,7 @@ using namespace tsl;
 	#endif
 
 	string tsl_path;
-	string ogre_path;
+	string ogre_media_path;
 	#ifdef TSL_WIN
 		tsl_path = strCmdLine;
 
@@ -32,16 +32,16 @@ using namespace tsl;
 		}
 		else
 		{
-			//	example arguments: C:/John/TSL~C:/OgreSDK
+			//	example arguments: C:/John/TSL~C:/OgreSDK/Samples/Media
 			unsigned int spacePos = tsl_path . find ('~');
 			assert (spacePos != string :: npos);
-			ogre_path = tsl_path . substr (spacePos + 1, tsl_path . length ());
+			ogre_media_path = tsl_path . substr (spacePos + 1, tsl_path . length ());
             tsl_path = tsl_path . substr (0, spacePos);
 		}
 	#else
-		//	example arguments: /home/john/tsl /usr/share/doc/ogre-1.2.4
+		//	example arguments: /home/john/tsl /usr/share/doc/ogre-1.2.4/Samples/Media
 		tsl_path = argv [argc - 2];
-		ogre_path = argv [argc - 1];
+		ogre_media_path = argv [argc - 1];
 	#endif
 
 	#ifdef TSL_DEBUG
@@ -53,11 +53,11 @@ using namespace tsl;
 		#endif
 
 		//	'cout' is redirected to a log file.
-		//	Note: don't use 'cout' or 'cerr'.
+		//	Don't use 'cout' or 'cerr'.
 		cout . rdbuf ((new ofstream ((tsl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
 
 		cout << "tsl_path: " << tsl_path << endl;
-		cout << "ogre_path: " << ogre_path << endl;
+		cout << "ogre_media_path: " << ogre_media_path << endl;
 	#else
 		cout << "debug mode: disabled." << endl;
 
@@ -68,7 +68,7 @@ using namespace tsl;
 	try
 	{
 		cout << "Setting up The Scattered Lands..." << endl;
-		TSL game (tsl_path, ogre_path);
+		TSL game (tsl_path, ogre_media_path);
 		cout << "The Scattered Lands is set up." << endl;
 
 		cout << "Running The Scattered Lands..." << endl;

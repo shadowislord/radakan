@@ -21,14 +21,7 @@ template <class T> Disjoint_Set <T> ::
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 
-	//	We can use 'get_child' and 'get_another_child' here.
-	for (class set <T *> :: const_iterator i = children . begin ();
-												i != children . end (); i ++)
-	{
-		assert (* i != NULL);
-		trace () << "deleting " << * * i << "..." << endl;
-		delete * i;
-	}
+	clear ();
 }
 
 //	virtual
@@ -170,6 +163,21 @@ template <class T> T * Disjoint_Set <T> ::
 		return NULL;
 	}
 	return * (next_child ++);
+}
+
+template <class T> void Disjoint_Set <T> ::
+	clear ()
+{
+	assert (Disjoint_Set <T> :: is_initialized ());
+
+	//	We can't use 'get_child' and 'get_another_child' here.
+	for (class set <T *> :: const_iterator i = children . begin ();
+												i != children . end (); i ++)
+	{
+		assert (* i != NULL);
+		trace () << "deleting " << * * i << "..." << endl;
+		delete * i;
+	}
 }
 
 //	to avert linking errors:

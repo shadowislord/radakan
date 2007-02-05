@@ -91,7 +91,9 @@ void Item ::
 {
 	assert (Item :: is_initialized ());
 	assert (has_representation ());
-	
+
+	delete representation;
+	//	'delete' doesn't seem to set to NULL automatically.
 	representation = NULL;
 }
 

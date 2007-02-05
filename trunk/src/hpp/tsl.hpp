@@ -37,10 +37,6 @@ namespace tsl
 			unsigned long last_turn_lenght;
 			Ogre :: Root * root;
 			Ogre :: Timer * turn_lenght_timer;
-			Battle_Engine battle_engine;
-			GUI_Engine * gui_engine;
-			Input_Engine * input_engine;
-			Audio_Engine * audio_engine;
 	};
 }
 

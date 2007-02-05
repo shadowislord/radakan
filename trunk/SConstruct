@@ -67,7 +67,6 @@ else:
                                 ]
                 )
 
-
 Export( "env", "dev", "mode")
 
 DoWork("audiere", mode, "external/audiere")
@@ -75,12 +74,10 @@ DoWork("audiere", mode, "external/audiere")
 DoWork("bullet", mode, "external/bullet")
 DoWork("lua", mode, "external/lua")
 DoWork("ogreode", mode, "external/ogreaddons/ogreode")
-DoWork("ois", mode, "external/ois-0.7.2")
-#~ DoWork("ois", mode, "external/ois-1-RC1")
+#~ DoWork("ois", mode, "external/ois-0.7.2")
+DoWork("ois", mode, "external/ois-1.0RC1")
 #~ DoWork("ois", mode, "external/ois-cvs/ois")
 DoWork("tsl", mode, "src")
 #~ DoWork("bulletcollision", mode, "external/bullet/BulletCollision")
 #~ DoWork("bulletdynamics", mode, "external/bullet/BulletDynamics")
-    
-                        
 

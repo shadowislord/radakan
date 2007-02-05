@@ -39,6 +39,9 @@ namespace tsl
 			///	Combine 'get_another_child' with 'get_child' to get a pointer to each child.
 			T * get_another_child () const;
 
+			///	Delete all children, usefull for destruction.
+			void clear ();
+
 		protected :
 			Disjoint_Set ();
 

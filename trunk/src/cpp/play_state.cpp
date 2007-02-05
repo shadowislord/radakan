@@ -18,9 +18,9 @@ Play_State ::
 	assert (Algorithm <TSL> :: is_initialized ());
 	assert (State_Machine <Sector> :: is_initialized ());
 
-	new Peace_State ();
-	new Fight_State ();
 	new Dead_State ();
+	new Fight_State ();
+	new Peace_State ();
 
 	bool check = add (Sector :: create ("Sector 1", TSL :: get () . new_scene_manager ()));
 	assert (check);
@@ -35,8 +35,13 @@ Play_State ::
 	~Play_State ()
 {
 	trace () << "~" << get_class_name () << " ()" << endl;
-	
 	assert (State_Machine <Sector> :: is_initialized ());
+
+	clear ();
+	
+	delete & Dead_State :: get ();
+	delete & Fight_State :: get ();
+	delete & Peace_State :: get ();
 }
 
 //	virtual
@@ -133,6 +138,13 @@ Algorithm <TSL> & Play_State ::
 		{
 			gui . show ("Mutilating a dead body is *not* nice.");
 		}
+	}
+	
+	//	dead
+	if (Player :: get () . is_dead ())
+	{
+		gui . show ("You died");
+		return Menu_State :: get ();
 	}
 
 	//	move the weapon

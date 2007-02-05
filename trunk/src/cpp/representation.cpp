@@ -32,7 +32,9 @@ Representation ::
 {
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Representation :: is_initialized ());
-	
+
+	node . removeAndDestroyAllChildren ();
+
 	assert (Object :: is_initialized ());
 }
 

@@ -7,7 +7,7 @@ project = "ois"
 #~ we need to set -mwindows as a compiler flag
 
 include_path        =   [
-                            "#external/ois/includes"
+                            "#external/ois-0.7.2/includes"
                         ]
 
 localenv.Append( CPPPATH = include_path)

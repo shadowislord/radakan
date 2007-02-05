@@ -8,14 +8,14 @@ using namespace std;
 using namespace tsl;
 
 TSL ::
-	TSL (string tsl_path, string ogre_path) :
+	TSL (string tsl_path, string ogre_media_path) :
 	Object ("TSL")
 {
-	trace () << "TSL (" << tsl_path << ", " << ogre_path << ")" << endl;
+	trace () << "TSL (" << tsl_path << ", " << ogre_media_path << ")" << endl;
 
-	audio_engine = new Audio_Engine ();
-	audio_engine -> load (tsl_path + "/data/sound/prelude_11.ogg");
-	audio_engine -> play ();
+	new Audio_Engine ();
+	Audio_Engine :: get () . load (tsl_path + "/data/sound/prelude_11.ogg");
+	Audio_Engine :: get () . play ();
 
 	//	Don't copy the log to the console. Store the log to a file, if debugging.
 	(new Ogre :: LogManager ()) -> createLog (tsl_path + "/log/ogre.txt", true, false,
@@ -67,13 +67,13 @@ TSL ::
 					(tsl_path + "/data/gui/scheme", "FileSystem", "gui", true);
 
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(ogre_path + "/Samples/Media/gui", "FileSystem", "gui", true);
+					(ogre_media_path + "/gui", "FileSystem", "gui", true);
 					
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(ogre_path + "/Samples/Media/fonts", "FileSystem", "gui", true);
+					(ogre_media_path + "/fonts", "FileSystem", "gui", true);
 
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(ogre_path + "/Samples/Media/models", "FileSystem", "models", true);
+					(ogre_media_path + "/models", "FileSystem", "models", true);
 
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
@@ -96,9 +96,9 @@ TSL ::
 	//	set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);	
 
-	input_engine = new Input_Engine (* window);
+	new Input_Engine (* window);
 
-	gui_engine = new GUI_Engine (* window, tsl_path + "/log/cegui.txt", * input_engine);
+	new GUI_Engine (* window, tsl_path + "/log/cegui.txt", Input_Engine :: get ());
 
 	new Menu_State ();
 	new Play_State ();
@@ -112,10 +112,12 @@ TSL ::
 
 	root -> getRenderSystem () -> _setViewport
 			(window -> addViewport (& active_sector . get_camera ()));
-	gui_engine -> set_scene_manager (active_sector . get_scene_manager ());
+	GUI_Engine :: get () . set_scene_manager (active_sector . get_scene_manager ());
 
 	turn_lenght_timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 	last_turn_lenght = 0;
+
+	new Battle_Engine (); 
 
 	assert (is_initialized ());
 }
@@ -125,10 +127,17 @@ TSL ::
 {
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
-	
-	delete input_engine;
-	delete audio_engine;
-	delete gui_engine;
+	trace () << "active state: " << get_active_state () << endl;
+	assert (get_active_state () == Quit_State :: get ());
+
+	delete & Input_Engine :: get ();
+	delete & Audio_Engine :: get ();
+	delete & GUI_Engine :: get ();
+	delete & Battle_Engine :: get ();
+
+	/*delete & Menu_State :: get ();
+	delete & Play_State :: get ();
+	delete & Quit_State :: get ();*/
 }
 
 //	virtual
@@ -152,17 +161,14 @@ string TSL ::
 void TSL ::
 	run ()
 {
-	//	Of course, the program should not quit when you die, but it should do *something*. To make sure the program does not crash later, it currently does shut down when you die.
-	while
-	(
-		(get_active_state () != Quit_State :: get ())
-		&& root -> renderOneFrame ()
-		&& gui_engine -> render ()
-		&& ! Player :: get () . is_dead ()
-		&& ! window -> isClosed ()
-	)
+	while (get_active_state () != Quit_State :: get ())
 	{
-		input_engine -> capture ();
+		bool check = root -> renderOneFrame ();
+		assert (check);
+		check = GUI_Engine :: get () . render ();
+		assert (check);
+	
+		Input_Engine :: get () . capture ();
 		Ogre :: PlatformManager :: getSingleton () . messagePump (window);
 
 		Algorithm_State_Machine <TSL> :: run ();
@@ -171,7 +177,14 @@ void TSL ::
 		turn_lenght_timer -> reset ();
 
 		turn ++;
+
+		if (window -> isClosed ())
+		{
+			Algorithm_State_Machine <TSL> :: set_active_state <Quit_State> ();
+		}
 	}
+	
+	assert (get_active_state () == Quit_State :: get ());
 }
 
 Ogre :: SceneManager & TSL ::
