@@ -36,12 +36,6 @@ Play_State ::
 {
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (State_Machine <Sector> :: is_initialized ());
-
-	clear ();
-	
-	delete & Dead_State :: get ();
-	delete & Fight_State :: get ();
-	delete & Peace_State :: get ();
 }
 
 //	virtual

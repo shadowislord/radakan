@@ -3,6 +3,9 @@
 #include "menu_state.hpp"
 #include "play_state.hpp"
 #include "quit_state.hpp"
+#include "dead_state.hpp"
+#include "fight_state.hpp"
+#include "peace_state.hpp"
 
 using namespace std;
 using namespace tsl;
@@ -135,9 +138,15 @@ TSL ::
 	delete & GUI_Engine :: get ();
 	delete & Battle_Engine :: get ();
 
-	/*delete & Menu_State :: get ();
+	unset_active_state ();
+
+	delete & Menu_State :: get ();
 	delete & Play_State :: get ();
-	delete & Quit_State :: get ();*/
+	delete & Quit_State :: get ();
+
+	delete & Dead_State :: get ();
+	delete & Fight_State :: get ();
+	delete & Peace_State :: get ();
 }
 
 //	virtual

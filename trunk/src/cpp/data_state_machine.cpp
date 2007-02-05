@@ -21,6 +21,8 @@ template <class T> Data_State_Machine <T> ::
 {
 	Object :: trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Data_State_Machine <T> :: is_initialized ());
+
+	State_Machine <T> :: unset_active_state ();
 }
 
 //	virtual
@@ -28,10 +30,13 @@ template <class T> bool Data_State_Machine <T> ::
 	is_initialized ()
 	const
 {
+	Object :: trace () << "Data_State_Machine: A" << endl;
 	assert (Object :: warn <Data_State_Machine <T> >
 								(State_Machine <T> :: is_initialized ()));
+	Object :: trace () << "Data_State_Machine: B" << endl;
 	assert (Object :: warn <Data_State_Machine <T> >
 								(Disjoint_Set <T> :: is_initialized ()));
+	Object :: trace () << "Data_State_Machine: C" << endl;
 
 	return true;
 }

@@ -1,7 +1,7 @@
 #ifndef TSL_REPRESENTATION_HPP
 #define TSL_REPRESENTATION_HPP
 
-#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
 #include <OgreEntity.h>
 
 #include <BulletCollision/CollisionShapes/btSphereShape.h>

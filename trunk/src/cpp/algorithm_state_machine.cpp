@@ -18,7 +18,9 @@ template <class T> Algorithm_State_Machine <T> ::
 template <class T> Algorithm_State_Machine <T> ::
 	~Algorithm_State_Machine ()
 {
-	assert (Algorithm_State_Machine :: is_initialized ());
+	assert (Algorithm_State_Machine <T> :: is_initialized ());
+
+	State_Machine <Algorithm <T> > :: unset_active_state ();
 }
 
 //	virtual

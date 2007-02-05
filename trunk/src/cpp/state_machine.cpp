@@ -7,7 +7,7 @@ using namespace tsl;
 template <class T> State_Machine <T> ::
 	State_Machine () :
 	Object ("The name doesn't matter as this class is an abstact class."),
-	active_child_state (NULL)
+	active_state (NULL)
 {
 	Object :: trace () << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
@@ -28,15 +28,18 @@ template <class T> bool State_Machine <T> ::
 	is_initialized ()
 	const
 {
+	Object :: trace () << "State_Machine: A" << endl;
 	assert (Object :: warn <State_Machine <T> > (Object :: is_initialized ()));
+	Object :: trace () << "State_Machine: B" << endl;
 	assert
 	(
 		Object :: warn <State_Machine <T> >
 		(
-			(active_child_state == NULL)
-									|| active_child_state -> is_initialized ()
+			(active_state == NULL)
+									|| active_state -> is_initialized ()
 		)
 	);
+	Object :: trace () << "State_Machine: C" << endl;
 
 	return true;
 }
@@ -54,7 +57,7 @@ template <class T> bool State_Machine <T> ::
 {
 	assert (is_initialized ());
 
-	return (active_child_state != NULL);
+	return (active_state != NULL);
 }
 
 //	virtual
@@ -64,7 +67,7 @@ template <class T> T & State_Machine <T> ::
 	assert (is_initialized ());
 	assert (has_active_state ());
 
-	return * active_child_state;
+	return * active_state;
 }
 
 //	virtual
@@ -74,17 +77,27 @@ template <class T> void State_Machine <T> ::
 //	Object :: trace () << "set_active_state (" << t << ")" << endl;
 	assert (State_Machine <T> :: is_initialized ());
 
-	if (active_child_state != & t)
+	if (active_state != & t)
 	{
-		//	'get_name' is used here as 'active_child_state' could be NULL.
+		//	'get_name' is used here as 'active_state' could be NULL.
 		trace () << "the active changed ..." << endl;
-		if (active_child_state != NULL)
+		if (active_state != NULL)
 		{
-			trace () << "... (from " << * active_child_state << ") ..." << endl;
+			trace () << "... (from " << * active_state << ") ..." << endl;
 		}
 		trace () << "... to " << t << "." << endl;
-		active_child_state = & t;
+		active_state = & t;
 	}
+}
+
+//	virtual
+template <class T> void State_Machine <T> ::
+	unset_active_state ()
+{
+	Object :: trace () << "unset_active_state ()" << endl;
+	assert (State_Machine <T> :: is_initialized ());
+
+	active_state = NULL;
 }
 
 //	to avert linking errors:

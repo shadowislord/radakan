@@ -194,6 +194,8 @@ bool Sector ::
 	removeRigidBody (& item . get_representation ());
 
 	item . remove_representation ();
+
+	assert (! scene_manager . hasEntity (Player :: get ()));
 	
 	if (item . is_type <NPC> ())
 	{

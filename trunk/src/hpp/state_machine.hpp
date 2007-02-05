@@ -21,12 +21,13 @@ namespace tsl
 			virtual bool has_active_state () const;
 			virtual T & get_active_state () const;
 			virtual void set_active_state (T & t);
+			virtual void unset_active_state ();
 
 		protected :
 			State_Machine ();
 
 		private :
-			T * active_child_state;
+			T * active_state;
 	};
 }
 

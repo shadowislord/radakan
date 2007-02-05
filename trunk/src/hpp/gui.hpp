@@ -27,6 +27,7 @@ namespace tsl
 			CEGUI :: Window & root_window;
 
 		private :
+			GUI (const GUI & gui);
 			CEGUI :: Window * text_window;
 			static string message;
 	};

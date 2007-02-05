@@ -33,7 +33,10 @@ Representation ::
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Representation :: is_initialized ());
 
-	node . removeAndDestroyAllChildren ();
+	int zero = 0;
+	node . getCreator () -> destroyMovableObject (node . detachObject (zero));
+	
+	assert (node . numAttachedObjects () == 0);
 
 	assert (Object :: is_initialized ());
 }
@@ -43,7 +46,10 @@ bool Representation ::
 	is_initialized ()
 	const
 {
-	return warn <Representation> (Object :: is_initialized ());
+	assert (warn <Representation> (Object :: is_initialized ()));
+	assert (node . numAttachedObjects () == 1);
+
+	return true;
 }
 
 //	static

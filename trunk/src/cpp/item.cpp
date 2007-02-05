@@ -39,6 +39,11 @@ Item ::
 {
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Item :: is_initialized ());
+
+	if (has_representation ())
+	{
+		remove_representation ();
+	}
 	
 	assert (Object :: is_initialized ());
 }

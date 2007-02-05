@@ -21,7 +21,7 @@ template <class T> Disjoint_Set <T> ::
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 
-	clear ();
+	delete_children ();
 }
 
 //	virtual
@@ -29,6 +29,7 @@ template <class T> bool Disjoint_Set <T> ::
 	is_initialized ()
 	const
 {
+	assert (warn <Disjoint_Set <T> > (Object :: is_initialized ()));
 	#ifdef TSL_TRACE
 		//	Don't use the 'get_child' & 'get_another_child' methods here,
 		//	as they both require me to be initialized.
@@ -39,7 +40,6 @@ template <class T> bool Disjoint_Set <T> ::
 		}
 	#endif
 	
-	assert (warn <Disjoint_Set <T> > (Object :: is_initialized ()));
 	return true;
 }
 
@@ -166,7 +166,7 @@ template <class T> T * Disjoint_Set <T> ::
 }
 
 template <class T> void Disjoint_Set <T> ::
-	clear ()
+	delete_children ()
 {
 	assert (Disjoint_Set <T> :: is_initialized ());
 
@@ -178,6 +178,8 @@ template <class T> void Disjoint_Set <T> ::
 		trace () << "deleting " << * * i << "..." << endl;
 		delete * i;
 	}
+
+	children . clear ();
 }
 
 //	to avert linking errors:

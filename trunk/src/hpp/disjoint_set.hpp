@@ -40,7 +40,7 @@ namespace tsl
 			T * get_another_child () const;
 
 			///	Delete all children, usefull for destruction.
-			void clear ();
+			void delete_children ();
 
 		protected :
 			Disjoint_Set ();
