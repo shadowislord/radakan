@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="OIS" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug">
 				<Option output="..\lib\libOIS_static_d.a" prefix_auto="0" extension_auto="0" />
@@ -90,268 +88,45 @@
 			<Add option="-DOIS_NONCLIENT_BUILD" />
 			<Add directory="..\includes" />
 			<Add directory="..\includes\win32" />
+			<Add directory="C:\Program Files\Microsoft DirectX SDK (October 2006)\Include" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
 			<Add option="-Wl,--add-stdcall-alias" />
 		</Linker>
-		<Unit filename="..\includes\OIS.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISConfig.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISEffect.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISEvents.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISException.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISForceFeedback.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISInputManager.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISInterface.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISJoyStick.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_DebugDll" />
-			<Option target="OIS_ReleaseDll" />
-		</Unit>
-		<Unit filename="..\includes\OISJoystick.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISKeyboard.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISMouse.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISObject.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\OISPrereqs.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\win32\Win32ForceFeedback.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\win32\Win32InputManager.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\win32\Win32JoyStick.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\win32\Win32KeyBoard.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\win32\Win32Mouse.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\includes\win32\Win32Prereqs.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\OISEffect.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\OISForceFeedback.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\OISInputManager.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\OISJoyStick.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\OISKeyboard.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\OISObject.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\win32\Win32ForceFeedback.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\win32\Win32InputManager.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\win32\Win32JoyStick.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\win32\Win32KeyBoard.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Unit filename="..\src\win32\Win32Mouse.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug" />
-			<Option target="Release" />
-			<Option target="OIS_ReleaseDll" />
-			<Option target="OIS_DebugDll" />
-		</Unit>
-		<Extensions />
+		<Unit filename="..\includes\OIS.h" />
+		<Unit filename="..\includes\OISConfig.h" />
+		<Unit filename="..\includes\OISEffect.h" />
+		<Unit filename="..\includes\OISEvents.h" />
+		<Unit filename="..\includes\OISException.h" />
+		<Unit filename="..\includes\OISForceFeedback.h" />
+		<Unit filename="..\includes\OISInputManager.h" />
+		<Unit filename="..\includes\OISInterface.h" />
+		<Unit filename="..\includes\OISJoyStick.h" />
+		<Unit filename="..\includes\OISJoystick.h" />
+		<Unit filename="..\includes\OISKeyboard.h" />
+		<Unit filename="..\includes\OISMouse.h" />
+		<Unit filename="..\includes\OISObject.h" />
+		<Unit filename="..\includes\OISPrereqs.h" />
+		<Unit filename="..\includes\win32\Win32ForceFeedback.h" />
+		<Unit filename="..\includes\win32\Win32InputManager.h" />
+		<Unit filename="..\includes\win32\Win32JoyStick.h" />
+		<Unit filename="..\includes\win32\Win32KeyBoard.h" />
+		<Unit filename="..\includes\win32\Win32Mouse.h" />
+		<Unit filename="..\includes\win32\Win32Prereqs.h" />
+		<Unit filename="..\src\OISEffect.cpp" />
+		<Unit filename="..\src\OISForceFeedback.cpp" />
+		<Unit filename="..\src\OISInputManager.cpp" />
+		<Unit filename="..\src\OISJoyStick.cpp" />
+		<Unit filename="..\src\OISKeyboard.cpp" />
+		<Unit filename="..\src\OISObject.cpp" />
+		<Unit filename="..\src\win32\Win32ForceFeedback.cpp" />
+		<Unit filename="..\src\win32\Win32InputManager.cpp" />
+		<Unit filename="..\src\win32\Win32JoyStick.cpp" />
+		<Unit filename="..\src\win32\Win32KeyBoard.cpp" />
+		<Unit filename="..\src\win32\Win32Mouse.cpp" />
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

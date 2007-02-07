@@ -5,13 +5,13 @@
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 	#define WIN32_LEAN_AND_MEAN
-	
+
 	#include <windows.h>
-	
+
 	#if _MSC_VER
 		#pragma warning(disable: 4250)
 	#endif
-	
+
 	#define TSL_WIN
 #endif
 
@@ -22,7 +22,7 @@
 #include <set>
 
 //	Uncomment the next line for release mode.
-//	#define NDEBUG
+#define NDEBUG
 
 #ifndef NDEBUG
 	//	TSL run with TSL_DEBUG will print usefull messages.
@@ -36,7 +36,7 @@ using namespace std;
 ///	The Scattered Lands namespace
 namespace tsl
 {
-	
+
 	///	Object is the universal abstract base class for all TSL classes.
 	///	All other files should (in)directly include this master include file.
 
@@ -50,7 +50,7 @@ namespace tsl
 			static string get_class_name ();
 			template <class T> bool is_type () const;
 			template <class T> T & to_type () const;
-			
+
 			ostream & debug () const;
 			ostream & trace () const;
 			ostream & error () const;

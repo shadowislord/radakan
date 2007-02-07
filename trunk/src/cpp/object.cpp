@@ -7,7 +7,9 @@ using namespace tsl;
 
 unsigned long int Object :: turn = 0;
 
+#ifdef TSL_DEBUG
 set <Object *> Object :: objects;
+#endif
 
 //  constructor
 Object ::
@@ -17,7 +19,7 @@ Object ::
 {
 	assert (! new_name . empty ());
 	trace () << "Object (" << new_name << ")" << endl;
-	
+
 	#ifdef TSL_DEBUG
 		objects . insert (this);
 
@@ -38,7 +40,7 @@ Object ::
 {
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
-	
+
 	#ifdef TSL_DEBUG
 		objects . erase (this);
 	#endif
@@ -99,7 +101,7 @@ bool Object ::
 	const
 {
 	assert (is_initialized ());
-	
+
 	return (parent != NULL);
 }
 
@@ -161,7 +163,7 @@ template <class T> bool Object ::
 {
 //	trace () << "is_type <" << T :: get_class_name () << "> ()" << endl;
 	assert (is_initialized ());
-	
+
 	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
 }
 
@@ -172,7 +174,7 @@ template <class T> T & Object ::
 //	trace () << "to_type <" << T :: get_class_name () << "> ()" << endl;
 	assert (is_initialized ());
 	assert (is_type <T> ());
-	
+
 //	return * dynamic_cast <T *> (const_cast <Object *> (this));
 	return dynamic_cast <T &> (const_cast <Object &> (* this));
 }

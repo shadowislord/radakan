@@ -252,22 +252,22 @@ bool Input_Engine ::
 		absolute_mouse_position = pair <float, float>
 				(mouse_event . state . abX, mouse_event . state . abY);
 	#else
-		error () << "OIS 1" << endl;
-
-		error () << "OIS 1.8" << endl;
-
-		//	TODO solve the crash casued by the next line.
-		int a = mouse_event . state . X . rel;
-
-		error () << "OIS: " << a << endl;
-		error () << "OIS 1.9" << endl;
+//		error () << "OIS 1" << endl;
+//
+//		error () << "OIS 1.8" << endl;
+//
+//		//	TODO solve the crash casued by the next line.
+//		int a = mouse_event . state . X . rel;
+//
+//		error () << "OIS: " << a << endl;
+//		error () << "OIS 1.9" << endl;
 		relative_mouse_position = pair <float, float>
 				(mouse_event . state . X . rel, mouse_event . state . Y . rel);
-		error () << "OIS 2" << endl;
-
+//		error () << "OIS 2" << endl;
+//
 		absolute_mouse_position = pair <float, float>
 				(mouse_event . state . X . abs, mouse_event . state . Y . abs);
-		error () << "OIS 3" << endl;
+//		error () << "OIS 3" << endl;
 	#endif
 
 //	The assertions below fail if you move the mouse outside the window.
