@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="OgreOde_Loader"
-	ProjectGUID=""
+	ProjectGUID="{EAC33AEC-9B1F-4727-B3E2-B40BF64BAE07}"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -62,12 +62,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreOde_Core_d.lib OgreOde_Prefab_d.lib OgreMain_d.lib tinyxmld.lib"
+				AdditionalDependencies="tinyxmld.lib OgreOde_Core_d.lib OgreOde_Prefab_d.lib OgreMain_d.lib"
 				OutputFile="$(OutDir)/OgreOde_Loader_d.dll"
 				Version="0.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\tinyxml\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\tinyxml\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/OgreOde_Loader_d.pdb"
 				SubSystem="2"
@@ -150,11 +150,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreOde_Core.lib OgreOde_Prefab.lib OgreMain.lib tinyxml.lib"
+				AdditionalDependencies="tinyxml.lib OgreOde_Core.lib OgreOde_Prefab.lib OgreMain.lib"
 				OutputFile="$(OutDir)/OgreOde_Loader.dll"
 				Version="0.1"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\tinyxml\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\..\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\tinyxml\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -208,11 +208,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\OgreOdeDotLoader.h"
+				RelativePath="..\..\include\OgreOde_LoaderPreReqs.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\OgreOde_LoaderPreReqs.h"
+				RelativePath="..\..\include\OgreOdeDotLoader.h"
 				>
 			</File>
 		</Filter>

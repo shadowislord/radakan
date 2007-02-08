@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;..\..\..\..\ode\include;..\..\..\..\include;..\..\..\..\prefab\include;..\..\..\..\..\OgreMain\include;..\..\..\..\..\Samples\Common\include"
+				AdditionalIncludeDirectories="..\..\include;..\..\..\..\ode\include;..\..\..\..\include;..\..\..\..\loader\include;..\..\..\..\prefab\include;..\..\..\..\..\OgreMain\include;..\..\..\..\..\Samples\Common\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib OgreOde_Core_d.lib OgreOde_Prefab_d.lib"
+				AdditionalDependencies="OgreMain_d.lib OgreOde_Core_d.lib OgreOde_Prefab_d.lib OgreOde_Loader_d.lib"
 				OutputFile="$(OutDir)/OgreOdeDemo_GranTurismOgre.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\..\OgreMain\lib\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\loader\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\..\OgreMain\lib\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/OgreOdeDemo_GranTurismOgre.pdb"
 				SubSystem="2"
@@ -127,7 +127,7 @@
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\..\include;..\..\..\..\ode\include;..\..\..\..\include;..\..\..\..\prefab\include;..\..\..\..\..\OgreMain\include;..\..\..\..\..\Samples\Common\include"
+				AdditionalIncludeDirectories="..\..\include;..\..\..\..\ode\include;..\..\..\..\include;..\..\..\..\loader\include;..\..\..\..\prefab\include;..\..\..\..\..\OgreMain\include;..\..\..\..\..\Samples\Common\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -151,10 +151,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib OgreOde_Core.lib OgreOde_Prefab.lib"
+				AdditionalDependencies="OgreMain.lib OgreOde_Core.lib OgreOde_Prefab.lib OgreOde_Loader.lib"
 				OutputFile="$(OutDir)/OgreOdeDemo_GranTurismOgre.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\..\OgreMain\lib\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\loader\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\..\OgreMain\lib\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

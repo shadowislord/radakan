@@ -28,10 +28,10 @@ AC_CHECK_HEADERS([ode/ode.h],,
 
 AC_ARG_WITH([samples],AC_HELP_STRING([--with-samples=[PATH]],
 	    [look for the ogre samples in PATH, default is
-	     /usr/share/doc/ogre-1.2.4/Samples/]),
+	     ../../../../../ogrenew/Samples/]),
 	     [samples=$withval],[samples=no])
 
-SAMPLES="/usr/share/doc/ogre-1.2.4/Samples"
+SAMPLES="../../../../../ogrenew/Samples"
 if test "x$samples" != "xno"
 then
 	SAMPLES="${samples}"
@@ -50,6 +50,7 @@ AC_CONFIG_FILES([Makefile
 	OgreOde_Loader.pc
 	loader/Makefile
 	loader/src/Makefile
+	loader/include/Makefile
 	demos/Makefile 
 	demos/SimpleScenes/Makefile 
 	demos/SimpleScenes/src/Makefile

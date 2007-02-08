@@ -27,6 +27,7 @@ scripts/VC8/OgreOde_Core_Source.vcproj
 
 demos/Media/*
 
+demos/SimpleScenes/Makefile.am
 demos/SimpleScenes/include/*
 demos/SimpleScenes/src/*
 demos/SimpleScenes/scripts/CodeBlocks/*
@@ -36,9 +37,10 @@ demos/SimpleScenes/scripts/VC6/*
 demos/SimpleScenes/scripts/VC7/*
 demos/SimpleScenes/scripts/VC7.1/*.vcproj
 demos/SimpleScenes/scripts/VC8/Demo_SimpleScenes_CVS.vcproj
-demos/SimpleScenes/scripts/VC8/Demo_SimpleScenes_Source.vcproj
 demos/SimpleScenes/scripts/VC8/Demo_SimpleScenes_SDK.vcproj
+demos/SimpleScenes/scripts/VC8/Demo_SimpleScenes_Source.vcproj
 
+demos/Landscape/Makefile.am
 demos/Landscape/include/*
 demos/Landscape/src/*
 demos/Landscape/scripts/CodeBlocks/*
@@ -48,9 +50,10 @@ demos/Landscape/scripts/VC6/*
 demos/Landscape/scripts/VC7/*
 demos/Landscape/scripts/VC7.1/*.vcproj
 demos/Landscape/scripts/VC8/Demo_Landscape_CVS.vcproj
-demos/Landscape/scripts/VC8/Demo_Landscape_Source.vcproj
 demos/Landscape/scripts/VC8/Demo_Landscape_SDK.vcproj
+demos/Landscape/scripts/VC8/Demo_Landscape_Source.vcproj
 
+demos/GranTurismOgre/Makefile.am
 demos/GranTurismOgre/include/*
 demos/GranTurismOgre/src/*
 demos/GranTurismOgre/scripts/CodeBlocks/*
@@ -60,9 +63,10 @@ demos/GranTurismOgre/scripts/VC6/*
 demos/GranTurismOgre/scripts/VC7/*
 demos/GranTurismOgre/scripts/VC7.1/*
 demos/GranTurismOgre/scripts/VC8/Demo_GranTurismOgre_CVS.vcproj
-demos/GranTurismOgre/scripts/VC8/Demo_GranTurismOgre_Source.vcproj
 demos/GranTurismOgre/scripts/VC8/Demo_GranTurismOgre_SDK.vcproj
+demos/GranTurismOgre/scripts/VC8/Demo_GranTurismOgre_Source.vcproj
 
+prefab/Makefile.am
 prefab/include/*
 prefab/src/*
 prefab/scripts/CodeBlocks/*
@@ -72,9 +76,10 @@ prefab/scripts/VC6/*
 prefab/scripts/VC7/*
 prefab/scripts/VC7.1/*
 prefab/scripts/VC8/OgreOde_Prefab_CVS.vcproj
-prefab/scripts/VC8/OgreOde_Prefab_Source.vcproj
 prefab/scripts/VC8/OgreOde_Prefab_SDK.vcproj
+prefab/scripts/VC8/OgreOde_Prefab_Source.vcproj
 
+loader/Makefile.am
 loader/include/*
 loader/src/*
 loader/scripts/CodeBlocks/*
@@ -83,9 +88,9 @@ loader/scripts/Mac/*
 loader/scripts/VC6/*
 loader/scripts/VC7/*
 loader/scripts/VC7.1/*
-loader/scripts/VC8/OgreOde_Prefab_CVS.vcproj
-loader/scripts/VC8/OgreOde_Prefab_Source.vcproj
-loader/scripts/VC8/OgreOde_Prefab_SDK.vcproj
+loader/scripts/VC8/OgreOde_Loader_CVS.vcproj
+loader/scripts/VC8/OgreOde_Loader_SDK.vcproj
+loader/scripts/VC8/OgreOde_Loader_Source.vcproj
 
 tinyxml/*.h
 tinyxml/*.cpp
@@ -94,13 +99,14 @@ tinyxml/tinyxml_lib_SDK.cbp
 tinyxml/tinyxml_lib.dsp
 tinyxml/tinyxml_lib.vcproj
 tinyxml/tinyxml_lib_vc8_CVS.vcproj
-tinyxml/tinyxml_lib_vc8_Source.vcproj
 tinyxml/tinyxml_lib_vc8_SDK.vcproj
+tinyxml/tinyxml_lib_vc8_Source.vcproj
 tinyxml/Makefile
 tinyxml/docs
 
 ode/tests/*
 ode/tools/*
+ode/GIMPACT/*
 ode/OPCODE/*
 ode/ode/*
 ode/include/*

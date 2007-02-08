@@ -214,6 +214,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\OgreOdeDebugContact.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\OgreOdeDebugObject.cpp"
 				>
 			</File>
@@ -273,6 +277,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\OgreOdeCollision.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\OgreOdeDebugContact.h"
 				>
 			</File>
 			<File

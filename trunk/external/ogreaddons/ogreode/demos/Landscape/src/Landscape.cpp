@@ -229,7 +229,7 @@ LandscapeFrameListener::LandscapeFrameListener(RenderWindow* win, Camera* cam,
         {   
             // Create the Ogre box
             String name = String("Box_") + StringConverter::toString(x) + "_" + StringConverter::toString(z);
-            Entity* box = mSceneMgr->createEntity(name,"Crate.mesh");
+            Entity* box = mSceneMgr->createEntity(name,"crate.mesh");
             box->setCastShadows(true);
 
             SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode(name);
