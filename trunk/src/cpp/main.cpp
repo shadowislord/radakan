@@ -14,9 +14,14 @@ using namespace tsl;
 	//	check for conflicting debug and trace flags
 	#ifdef TSL_TRACE
 		#ifndef TSL_DEBUG
-			error () << " detected conflicting TSL_DEBUG and TSL_TRACE flags." << endl;
+			cerr << "ERROR: conflicting TSL_DEBUG and TSL_TRACE flags detected." << endl;
 			abort ();
 		#endif
+	#endif
+
+	#if OIS_VERSION_MAJOR < 1
+		cerr << "ERROR: old version of OIS detected. Update to OIS-1.0-RC1 or later." << endl;
+		abort ();
 	#endif
 
 	string tsl_path;

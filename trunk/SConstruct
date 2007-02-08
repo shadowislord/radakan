@@ -71,7 +71,7 @@ Export( "env", "dev", "mode")
 
 DoWork("audiere", mode, "external/audiere")
 #~ DoWork("audiere-simple", mode, "external/audiere/examples/simple")
-DoWork("bullet", mode, "external/bullet")
+#~ DoWork("bullet", mode, "external/bullet")
 DoWork("lua", mode, "external/lua")
 DoWork("ogreode", mode, "external/ogreaddons/ogreode")
 #~ DoWork("ois", mode, "external/ois-0.7.2")

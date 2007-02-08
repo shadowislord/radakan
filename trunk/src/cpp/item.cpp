@@ -74,13 +74,13 @@ float Item ::
 }
 
 void Item ::
-	add_representation (Ogre :: SceneNode & node)
+	add_representation (Ogre :: SceneNode & node, OgreOde :: World * world)
 {
 	assert (Item :: is_initialized ());
 	assert (visible);
 	assert (! has_representation ());
 
-	representation = new Representation (* this, node);
+	representation = new Representation (* this, node, world);
 }
 
 bool Item ::

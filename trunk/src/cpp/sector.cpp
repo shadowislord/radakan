@@ -7,26 +7,20 @@ Sector ::
 	Sector
 	(
 		string new_name,
-		Ogre :: SceneManager & new_scene_manager
+		Ogre :: SceneManager & scene_manager
 	) :
 	Object (new_name),
-	btDiscreteDynamicsWorld
-	(
-		new btCollisionDispatcher (),
-		new btSimpleBroadphase (),
-		new btSequentialImpulseConstraintSolver ()
-	),
-	scene_manager (new_scene_manager),
-	camera (* scene_manager . createCamera (new_name + "'s camera"))
+	OgreOde :: World (& scene_manager),
+	camera (* getSceneManager () -> createCamera (new_name + "'s camera"))
 {
-	trace () << "Sector (" << new_name << ", ~new_scene_manager~)" << endl;
+	trace () << "Sector (" << new_name << ", ~scene_manager~)" << endl;
 	assert (Object :: is_initialized ());
 
 	camera . setNearClipDistance (5);
 	camera . setFarClipDistance (2000);
 
 	//	TODO make the next line work.
-	scene_manager . setSkyDome (true, "Peaceful", 10, 5);
+	getSceneManager () -> setSkyDome (true, "Peaceful", 10, 5);
 
 	//	the ground
 	Item & ground = represent (Item :: create ("Ground", "test3-ground.mesh", 0, 0, false), 1000, - 50, 0);
@@ -158,17 +152,15 @@ bool Sector ::
 	bool check = Disjoint_Set <Item> :: add (item);
 	assert (check);
 
-	Ogre :: SceneNode & node = * scene_manager . getRootSceneNode () ->
+	Ogre :: SceneNode & node = * getSceneManager () -> getRootSceneNode () ->
 													createChildSceneNode ();
 
-	node . attachObject (scene_manager . createEntity (item, item . mesh_name));
+	node . attachObject (getSceneManager () -> createEntity (item, item . mesh_name));
 	
 	assert (node . numAttachedObjects () == 1);
 	assert (node . getAttachedObject (0) != NULL);
-	item . add_representation (node);
+	item . add_representation (node, this);
 	
-	addRigidBody (& item . get_representation ());
-
 	if (item . is_type <NPC> ())
 	{
 		trace () << item << " will be added to the list of NPCs..." << endl;
@@ -191,11 +183,9 @@ bool Sector ::
 	assert (item . has_representation ());
 	assert (destination . is_initialized ());
 	
-	removeRigidBody (& item . get_representation ());
-
 	item . remove_representation ();
 
-	assert (! scene_manager . hasEntity (Player :: get ()));
+	assert (! getSceneManager () -> hasEntity (Player :: get ()));
 	
 	if (item . is_type <NPC> ())
 	{
@@ -215,15 +205,6 @@ Ogre :: Camera & Sector ::
 	assert (is_initialized ());
 
 	return camera;
-}
-
-Ogre :: SceneManager & Sector ::
-	get_scene_manager ()
-	const
-{
-	assert (is_initialized ());
-
-	return scene_manager;
 }
 
 Item & Sector ::

@@ -1,42 +1,38 @@
-release_libs =  [
+libs = [
                     "OIS",
                     "CEGUIBase",
-                    "OgreGUIRenderer",
+                    "CEGUIOgreRenderer",
                     "OgreMain",
-                    "bullet",
+#~                  "fmod",
+                    "vorbisfile",
+                    "vorbis",
+                    "ogg",
+                    "pthread"
                 ];
-                
-debug_libs  =   [                
-                    "OIS_d",
-                    "CEGUIBase_d",
-                    "OgreGUIRenderer_d",
-                    "OgreMain_d",
-                    "bullet_d",
-                ];   
-                        
-debug_libs_path     =   [
-                            "#bin/debug/obj/bullet",
-                            "c:/OgreSDK/bin/debug",
-                            "c:/OIS_SDK/libs/MinGW_stlport"
-                        ]
-                        
-release_libs_path   =   [
-                            "#bin/release/obj/bullet",
-                            "c:/OgreSDK/bin/debug",
-                            "c:/OIS_SDK/libs/MinGW_stlport"
-                        ]
-                        
+
+libs_path     =   [
+    "#bin/debug/obj/audiere",
+    "#bin/debug/obj/ogreode",
+#~  "/usr/lib/OGRE"
+    "/home/t/opt/ogre-1.2/OgreMain/lib"
+#~  "/home/t/opt/ogre-1.3/ogrenew/OgreMain/lib"
+    ]
+
 include_path        =   [
-                            "#src/hpp",
-                            "#src/imp",
-                            "c:/OgreSDK/include",
-                            "c:/OgreSDK/include/CEGUI",
-                            "c:/OgreSDK/samples/include",
-                            "c:/OIS_SDK/includes",
-                            "#external/bullet",
-                            "c:/Boost/include"
-                        ]
-                        
+    "#src/hpp",
+    "#src/imp",
+#~  "/usr/include/OGRE",
+    "/home/t/opt/ogre-1.2/OgreMain/include",
+    "/home/t/opt/ogre-1.2/Samples/Common/CEGUIRenderer/include",
+#~  "/home/t/opt/ogre-1.3/ogrenew/OgreMain/include",
+#~  "/home/t/opt/ogre-1.3/ogrenew/Samples/Common/CEGUIRenderer/include",
+    "/usr/include/CEGUI",
+    "#external/audiere/src",
+    "#external/ois-1.0RC1/includes",
+    "#external/ogreaddons/ogreode/include",
+    "/usr/include/boost"
+    ]
+
 Import( "env", "dev", "mode")
 localenv = env.Copy()
 
@@ -49,17 +45,29 @@ if sys.platform == "win32":
     localenv.Tool( "mingw" )
     localenv[ "CCFLAGS" ] += [ "-mwindows" ]
 
-localenv.Append( CPPPATH = include_path)
+localenv.Append( CPPPATH = include_path,
+				LIBPATH = libs_path)
 if mode == "release":
     localenv.Append (  
-                        LIBPATH = release_libs_path,
-                        LIBS    = release_libs                    
-                    )
+        LIBS = libs + [
+            "audiere",
+            "ogreode"
+            ]
+        )
 else:
     localenv.Append (  
-                        LIBPATH = debug_libs_path,
-                        LIBS    = debug_libs                   
-                    )
-    
+        LIBS = libs + [
+           "audiere_d",
+            "ogreode_d"
+           ],
+#~      CCFLAGS = [
+#~          "-W",
+#~          "-Wconversion",
+#~          "-Wshadow",
+#~          "-Wcast-qual",
+#~          "-Wwrite-strings"
+#~      ]
+    )
+
 tgt = localenv.Program(project, dev.DevGetSourceFiles( "cpp", [ "*.cpp" ] ) )
 localenv.Alias(project, tgt)

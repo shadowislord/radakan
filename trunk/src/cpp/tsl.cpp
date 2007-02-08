@@ -115,7 +115,7 @@ TSL ::
 
 	root -> getRenderSystem () -> _setViewport
 			(window -> addViewport (& active_sector . get_camera ()));
-	GUI_Engine :: get () . set_scene_manager (active_sector . get_scene_manager ());
+	GUI_Engine :: get () . set_scene_manager (* active_sector . getSceneManager ());
 
 	turn_lenght_timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 	last_turn_lenght = 0;

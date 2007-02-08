@@ -71,7 +71,7 @@ void Play_State ::
 
 		//	Update camera & scene manager:
 		TSL :: get () . set_camera (state . get_camera ());
-		GUI_Engine :: get () . set_scene_manager (state . get_scene_manager ());
+		GUI_Engine :: get () . set_scene_manager (* state . getSceneManager ());
 	}
 }
 

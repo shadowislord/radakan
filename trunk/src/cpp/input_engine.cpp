@@ -246,6 +246,8 @@ bool Input_Engine ::
 
 	#if OIS_VERSION_MAJOR < 1
 		//	assuming ois-0.7.2
+		abort ();
+		
 		relative_mouse_position = pair <float, float>
 				(mouse_event . state . relX, mouse_event . state . relY);
 

@@ -27,7 +27,7 @@ namespace tsl
 				bool new_visible = true
 			);
 
-			void add_representation (Ogre :: SceneNode & node);
+			void add_representation (Ogre :: SceneNode & node, OgreOde :: World * world);
 			bool has_representation () const;
 			void remove_representation ();
 			Representation & get_representation () const;

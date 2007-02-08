@@ -4,9 +4,7 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 
-#include <BulletCollision/CollisionShapes/btSphereShape.h>
-#include <BulletDynamics/Dynamics/btRigidBody.h>
-#include <LinearMath/btDefaultMotionState.h>
+#include <OgreOde_Core.h>
 
 #include "object.hpp"
 
@@ -20,10 +18,10 @@ namespace tsl
 
 	class Representation :
 		public virtual Object,
-		public btRigidBody
+		public OgreOde :: Body
 	{
 		public :
-			Representation (string item_name, /*Item & new_parent_item,*/ Ogre :: SceneNode & new_node);
+			Representation (string item_name, /*Item & new_parent_item,*/ Ogre :: SceneNode & new_node, OgreOde :: World * world);
 			virtual ~Representation ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
@@ -49,13 +47,10 @@ namespace tsl
 		private :
 			//	Copies are not allowed.
 			Representation (const Representation & representation);
-			
-			btTransform & get_transformation () const;
 
 			Ogre :: SceneNode & node;
 	};
 
-	btVector3 & to_btVector3 (Ogre :: Vector3 old);
 	Ogre :: Quaternion make_quaternion (float radian_angle, Ogre :: Vector3 ax);
 }
 

@@ -9,10 +9,6 @@
 #include <OgreStringConverter.h>
 #include <OgreException.h>
 
-#include <BulletCollision/BroadphaseCollision/btSimpleBroadphase.h>
-#include <BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
-#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
-
 #include "battle_engine.hpp"
 #include "gui_engine.hpp"
 #include "npc.hpp"
@@ -28,7 +24,7 @@ namespace tsl
 
 	class Sector :
 		public Disjoint_Set <Item>,
-		public btDiscreteDynamicsWorld
+		public OgreOde :: World
 	{
 		public :
 			virtual ~Sector ();
@@ -46,7 +42,6 @@ namespace tsl
 			);
 
 			Ogre :: Camera & get_camera () const;
-			Ogre :: SceneManager & get_scene_manager () const;
 
 			//	This can't be a Disjoint_Set,
 			//	as the NPCs would be part of diffrent Disjoint_Sets.
@@ -56,13 +51,12 @@ namespace tsl
 			Sector
 			(
 				string new_name,
-				Ogre :: SceneManager & new_scene_manager
+				Ogre :: SceneManager & scene_manager
 			);
 
 		private :
 			Item & represent
 					(Item & item, float x, float y, float z, float scale = 1);
-			Ogre :: SceneManager & scene_manager;
 
 		public :
 			///	'camera' depends on 'scene_manager' at initialization,
