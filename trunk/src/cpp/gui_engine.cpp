@@ -1,4 +1,6 @@
 #include "gui_engine.hpp"
+#include <CEGUIWindowManager.h>
+#include <CEGUISchemeManager.h>
 
 using namespace std;
 using namespace tsl;
@@ -70,11 +72,11 @@ void GUI_Engine ::
 }
 
 void GUI_Engine ::
-	set_mouse_position (pair <float, float> new_position)
+	set_mouse_position (const Ogre :: Vector3 & new_position)
 {
 	assert (is_initialized ());
 
-	system -> injectMousePosition (new_position . first, new_position . second);
+	system -> injectMousePosition (new_position . x, new_position . y);
 }
 
 void GUI_Engine ::

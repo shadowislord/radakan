@@ -25,7 +25,7 @@ namespace tsl
 			static string get_class_name ();
 			
 			void set_scene_manager (Ogre :: SceneManager & new_scene_manager);
-			void set_mouse_position (pair <float, float> new_position);
+			void set_mouse_position (const Ogre :: Vector3 & new_position);
 			void left_mouse_button_click ();
 			
 			//	TODO: Make render () const.

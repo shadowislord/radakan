@@ -1,3 +1,8 @@
+#ifndef TSL_WIN
+	#include <X11/Xlib.h>
+	void checkX11Events ();
+#endif
+
 #include "input_engine.hpp"
 
 using namespace std;
@@ -73,13 +78,9 @@ Input_Engine ::
 
 	input_manager -> destroyInputObject (keyboard);
 	input_manager -> destroyInputObject (mouse);
-	#if OIS_VERSION_MAJOR < 1
-		//	assuming ois-0.7.2
-		input_manager -> destroyInputSystem ();
-	#else
-		//	TODO solve the linking error caused by the next line.
-		//	input_manager -> destroyInputSystem (input_manager);
-	#endif
+	
+	//	TODO solve the linking error caused by the next line.
+	//	input_manager -> destroyInputSystem (input_manager);
 
 	//	Set to NULL so we can query if they have been initialised.
 	keyboard = NULL;
@@ -110,7 +111,7 @@ void Input_Engine ::
 
 	//	'mouse -> capture ()' does nothing if the mouse didn't move this turn.
 	//	So we manually set the relative key position.
-	relative_mouse_position = pair <float, float> (0, 0);
+	relative_mouse_position = Ogre :: Vector3 (0, 0, 0);
 	mouse -> capture ();
 
 	gui_button = "";	//	reset it, in case of a unhandeled button
@@ -172,7 +173,7 @@ bool Input_Engine ::
 	return false;
 }
 
-pair <float, float> Input_Engine ::
+const Ogre :: Vector3 & Input_Engine ::
 	get_mouse_position (bool relative)
 	const
 {
@@ -240,37 +241,11 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	#ifdef TSL_DEBUG
-		pair <float, float> prev = absolute_mouse_position;
-	#endif
-
-	#if OIS_VERSION_MAJOR < 1
-		//	assuming ois-0.7.2
-		abort ();
-		
-		relative_mouse_position = pair <float, float>
-				(mouse_event . state . relX, mouse_event . state . relY);
-
-		absolute_mouse_position = pair <float, float>
-				(mouse_event . state . abX, mouse_event . state . abY);
-	#else
-//		error () << "OIS 1" << endl;
-//
-//		error () << "OIS 1.8" << endl;
-//
-//		//	TODO solve the crash casued by the next line.
-//		int a = mouse_event . state . X . rel;
-//
-//		error () << "OIS: " << a << endl;
-//		error () << "OIS 1.9" << endl;
-		relative_mouse_position = pair <float, float>
-				(mouse_event . state . X . rel, mouse_event . state . Y . rel);
-//		error () << "OIS 2" << endl;
-//
-		absolute_mouse_position = pair <float, float>
-				(mouse_event . state . X . abs, mouse_event . state . Y . abs);
-//		error () << "OIS 3" << endl;
-	#endif
+	const OIS :: Axis & x = mouse_event . state . X;
+	const OIS :: Axis & y = mouse_event . state . Y;
+	const OIS :: Axis & z = mouse_event . state . Z;
+	absolute_mouse_position = Ogre :: Vector3 (x . abs, y . abs, z . abs);
+	relative_mouse_position = Ogre :: Vector3 (x . rel, y . rel, z . rel);
 
 //	The assertions below fail if you move the mouse outside the window.
 //	debug () << prev . first << " + " << relative_mouse_position . first << " ?= " <<  absolute_mouse_position . first << endl;

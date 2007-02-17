@@ -18,7 +18,7 @@ namespace tsl
 		public Algorithm_State_Machine <TSL>
 	{
 		public :
-			TSL (string tsl_path, string ogre_path);
+			TSL (string tsl_path, string ogre_media_path);
 			~TSL ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
@@ -29,7 +29,7 @@ namespace tsl
 			Ogre :: SceneManager & new_scene_manager () const;
 
 			///	in milliseconds
-			unsigned long get_last_turn_lenght () const;
+			const unsigned long & get_last_turn_lenght () const;
 
 			Ogre :: RenderWindow * window;
 

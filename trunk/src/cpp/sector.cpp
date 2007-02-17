@@ -19,12 +19,18 @@ Sector ::
 	camera . setNearClipDistance (5);
 	camera . setFarClipDistance (2000);
 
+	setShowDebugGeometries (true);
+
+	setGravity (Ogre :: Vector3 (0, - 9.81, 0));
+
 	//	TODO make the next line work.
 	getSceneManager () -> setSkyDome (true, "Peaceful", 10, 5);
 
 	//	the ground
 	Item & ground = represent (Item :: create ("Ground", "test3-ground.mesh", 0, 0, false), 1000, - 50, 0);
 	ground . get_representation () . get_entity () . setMaterialName ("TavernWalls");
+	//	to cancel out gravity...
+	ground . get_representation () . addForce (Ogre :: Vector3 (0, 9.81, 0));
 	
 	//	the player
 	if (! Player :: is_instantiated ())
@@ -155,7 +161,8 @@ bool Sector ::
 	Ogre :: SceneNode & node = * getSceneManager () -> getRootSceneNode () ->
 													createChildSceneNode ();
 
-	node . attachObject (getSceneManager () -> createEntity (item, item . mesh_name));
+	node . attachObject
+		(getSceneManager () -> createEntity (item + "'s entity", item . mesh_name));
 	
 	assert (node . numAttachedObjects () == 1);
 	assert (node . getAttachedObject (0) != NULL);
@@ -214,7 +221,7 @@ Item & Sector ::
 	
 	add (item);
 
-	item . get_representation () . set_position (x, y, z);
+	item . get_representation () . setPosition (Ogre :: Vector3 (x, y, z));
 	item . get_representation () . set_scale (scale);
 
 	return item;

@@ -220,7 +220,7 @@ void TSL ::
 	root -> getRenderSystem () -> _getViewport () -> setCamera (& new_camera);
 }
 
-unsigned long TSL ::
+const unsigned long & TSL ::
 	get_last_turn_lenght () const
 {
 	return last_turn_lenght;

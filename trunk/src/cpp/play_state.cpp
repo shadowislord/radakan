@@ -83,7 +83,7 @@ Algorithm <TSL> & Play_State ::
 
 	Sector & sector = get_active_state ();
 	
-	//	stepSimulation (milliseconds_passed / 1000000.f);
+	sector . quickStep (owner . get_last_turn_lenght ());
 
 	for (set <NPC *> :: const_iterator i = sector . npcs . begin ();
 											i != sector . npcs . end (); i ++)
@@ -173,16 +173,15 @@ Algorithm <TSL> & Play_State ::
 	if (Input_Engine :: get () . get_mouse_button
 						(Input_Engine :: get () . middle_mouse_button, false))
 	{
-		float x_offset = Input_Engine :: get () . get_mouse_position (true) . first;
-		float y_offset = Input_Engine :: get () . get_mouse_position (true) . second;
+		const float & x_offset = Input_Engine :: get () . get_mouse_position (true) . x;
+		const float & y_offset = Input_Engine :: get () . get_mouse_position (true) . y;
 
 		debug () << "offset: " << x_offset << ", " << y_offset << endl;
 
 		if (x_offset != 0)
 		{
-			x_offset = - 0.005 * owner . get_last_turn_lenght () * x_offset;
-
-			Player :: get () . get_representation () . turn (x_offset);
+			Player :: get () . get_representation () . turn
+						(- 0.005 * owner . get_last_turn_lenght () * x_offset);
 		}
 		vertical_camera_angle -= 0.001 * owner . get_last_turn_lenght () * y_offset;
 	}
@@ -214,7 +213,7 @@ Algorithm <TSL> & Play_State ::
 
 	sector . camera . setPosition
 	(
-		Player :: get () . get_representation () . get_position ()
+		Player :: get () . get_representation () . getPosition ()
 		+ Player :: get () . camera_distance
 		* Player :: get () . get_representation () . get_top_direction ()
 	);
@@ -225,7 +224,7 @@ Algorithm <TSL> & Play_State ::
 			vertical_camera_angle,
 			Player :: get () . get_representation () . get_side_direction ()
 		)
-		* Player :: get () . get_representation () . get_orientation ()
+		* Player :: get () . get_representation () . getOrientation ()
 	);
 
 	GUI_Engine :: get () . activate (gui);

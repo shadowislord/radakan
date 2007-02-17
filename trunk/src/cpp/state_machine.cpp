@@ -28,9 +28,7 @@ template <class T> bool State_Machine <T> ::
 	is_initialized ()
 	const
 {
-	Object :: trace () << "State_Machine: A" << endl;
 	assert (Object :: warn <State_Machine <T> > (Object :: is_initialized ()));
-	Object :: trace () << "State_Machine: B" << endl;
 	assert
 	(
 		Object :: warn <State_Machine <T> >
@@ -39,7 +37,6 @@ template <class T> bool State_Machine <T> ::
 									|| active_state -> is_initialized ()
 		)
 	);
-	Object :: trace () << "State_Machine: C" << endl;
 
 	return true;
 }

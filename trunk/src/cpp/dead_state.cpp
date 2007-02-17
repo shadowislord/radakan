@@ -43,7 +43,7 @@ Algorithm <NPC> & Dead_State ::
 {
 	assert (is_initialized ());
 
-	owner . get_representation () . set_orientation (make_quaternion (- Ogre :: Math :: HALF_PI, owner . get_representation () . get_side_direction ()));
+	owner . get_representation () . setOrientation (make_quaternion (- Ogre :: Math :: HALF_PI, owner . get_representation () . get_side_direction ()));
 
 	return * this;
 }

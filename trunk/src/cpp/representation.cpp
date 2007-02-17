@@ -11,7 +11,14 @@ Representation ::
 //	parent_item (new_parent_item),
 	node (new_node)
 {
+	trace () << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
+
+	node . attachObject (this);
+
+	geometry = new OgreOde :: SphereGeometry (10 /*size . x*/, world, world -> getDefaultSpace ());
+	geometry -> setBody (this);
+	get_entity () . setUserObject (geometry);
 
 	assert (Representation :: is_initialized ());
 }
@@ -23,9 +30,13 @@ Representation ::
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Representation :: is_initialized ());
 
+	node . detachObject (this);
+
+	assert (node . numAttachedObjects () == 1);
+
 	int zero = 0;
 	node . getCreator () -> destroyMovableObject (node . detachObject (zero));
-	
+
 	assert (node . numAttachedObjects () == 0);
 
 	assert (Object :: is_initialized ());
@@ -37,7 +48,7 @@ bool Representation ::
 	const
 {
 	assert (warn <Representation> (Object :: is_initialized ()));
-	assert (node . numAttachedObjects () == 1);
+	assert (node . numAttachedObjects () == 2);
 
 	return true;
 }
@@ -49,28 +60,12 @@ string Representation ::
 	return "Representation";
 }
 
-Ogre :: Quaternion Representation ::
-	get_orientation  () const
-{
-	assert (Representation :: is_initialized ());
-
-	return node . getOrientation ();
-}
-
-Ogre :: Vector3 Representation ::
-	get_position () const
-{
-	assert (Representation :: is_initialized ());
-
-	return node . getPosition ();
-}
-
 Ogre :: Vector3 Representation ::
 	get_front_direction () const
 {
 	assert (Representation :: is_initialized ());
 
-	return get_orientation () * Ogre :: Vector3 (0, 0, 1);
+	return getOrientation () * Ogre :: Vector3 (0, 0, 1);
 }
 
 Ogre :: Vector3 Representation ::
@@ -78,7 +73,7 @@ Ogre :: Vector3 Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	return get_orientation () * Ogre :: Vector3 (1, 0, 0);
+	return getOrientation () * Ogre :: Vector3 (1, 0, 0);
 }
 
 Ogre :: Vector3 Representation ::
@@ -86,7 +81,7 @@ Ogre :: Vector3 Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	return get_orientation () * Ogre :: Vector3 (0, 1, 0);
+	return getOrientation () * Ogre :: Vector3 (0, 1, 0);
 }
 
 void Representation ::
@@ -104,10 +99,10 @@ void Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	Ogre :: Vector3 w = get_position () - distance * get_front_direction ();
-	set_position (w . x, w . y, w . z);
-		
-	update_scene_node ();
+	setPosition (getPosition () - distance * get_front_direction ());
+	
+	debug () << "body position: (" << getPosition () . x << ", " << getPosition () . y << ", " << getPosition () . z << ")" << endl;
+	debug () << "node position: (" << node . getPosition () . x << ", " << node . getPosition () . y << ", " << node . getPosition () . z << ")" << endl;
 }
 
 void Representation ::
@@ -116,7 +111,7 @@ void Representation ::
 	debug () << "turn (" << radian_angle << ", (" << ax . x << ", " << ax . y << ", " << ax . z << "))" << endl;
 	assert (Representation :: is_initialized ());
 
-	set_orientation (get_orientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
+	setOrientation (getOrientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
 }
 
 Ogre :: Entity & Representation ::
@@ -124,6 +119,10 @@ Ogre :: Entity & Representation ::
 {
 	assert (Representation :: is_initialized ());
 
+	if (dynamic_cast <Ogre :: Entity *> (node . getAttachedObject (0)) == NULL)
+	{
+		return * dynamic_cast <Ogre :: Entity *> (node . getAttachedObject (1));
+	}
 	return * dynamic_cast <Ogre :: Entity *> (node . getAttachedObject (0));
 }
 

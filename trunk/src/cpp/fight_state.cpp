@@ -44,7 +44,7 @@ Algorithm <NPC> & Fight_State ::
 {
 	assert (is_initialized ());
 
-	if (! owner . hands . is_empty ())
+	if (owner . hands . is_empty ())
 	{
 		return Peace_State :: get ();
 	}

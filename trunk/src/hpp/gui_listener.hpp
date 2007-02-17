@@ -1,7 +1,7 @@
 #ifndef TSL_INPUT_LISTENER_HPP
 #define TSL_INPUT_LISTENER_HPP
 
-#include <CEGUI.h>
+#include <CEGUIWindow.h>
 #include "object.hpp"
 
 using namespace std;

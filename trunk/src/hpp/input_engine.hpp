@@ -21,8 +21,8 @@ namespace tsl
 	class Input_Engine :
 		public Singleton <Input_Engine>,
 		public GUI_Listener,
-		private OIS :: KeyListener,
-		private OIS :: MouseListener
+		public OIS :: KeyListener,
+		public OIS :: MouseListener
 	{
 		public :
 			Input_Engine (Ogre :: RenderWindow & window);
@@ -33,7 +33,7 @@ namespace tsl
 			bool get_key (string key, bool reset);
 			bool get_gui_button (string button, bool reset);
 			bool get_mouse_button (string button, bool reset);
-			pair <float, float> get_mouse_position (bool relative) const;
+			const Ogre :: Vector3 & get_mouse_position (bool relative) const;
 
 			static bool is_mouse_button (string button);
 			static const string left_mouse_button;
@@ -61,8 +61,8 @@ namespace tsl
 			//	only one gui button can be clicked at once
 			string gui_button;
 			
-			pair <float, float> relative_mouse_position;
-			pair <float, float> absolute_mouse_position;
+			Ogre :: Vector3 relative_mouse_position;
+			Ogre :: Vector3 absolute_mouse_position;
 			string to_string (OIS :: MouseButtonID id);
 			string convert (string key_value);
 			

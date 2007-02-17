@@ -1,4 +1,5 @@
 #include "gui.hpp"
+#include <CEGUIExceptions.h>
 
 using namespace std;
 using namespace tsl;

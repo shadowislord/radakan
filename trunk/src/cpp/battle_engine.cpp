@@ -55,8 +55,8 @@ string Battle_Engine ::
 
 	float distance =
 		(
-			attacker . get_representation () . get_position ()
-			- defender . get_representation () . get_position ()
+			attacker . get_representation () . getPosition ()
+			- defender . get_representation () . getPosition ()
 		) . length ();
 		
 	if (max_distance < distance)

@@ -30,13 +30,10 @@ template <class T> bool Data_State_Machine <T> ::
 	is_initialized ()
 	const
 {
-	Object :: trace () << "Data_State_Machine: A" << endl;
 	assert (Object :: warn <Data_State_Machine <T> >
 								(State_Machine <T> :: is_initialized ()));
-	Object :: trace () << "Data_State_Machine: B" << endl;
 	assert (Object :: warn <Data_State_Machine <T> >
 								(Disjoint_Set <T> :: is_initialized ()));
-	Object :: trace () << "Data_State_Machine: C" << endl;
 
 	return true;
 }
@@ -52,14 +49,10 @@ template <class T> string Data_State_Machine <T> ::
 template <class T> bool Data_State_Machine <T> ::
 	add (T & t)
 {
-	Object :: trace () << "add (" << t << ") A" << endl;
 	assert (is_initialized ());
-	Object :: trace () << "add (" << t << ") B" << endl;
 	assert (t . is_initialized ());
-	Object :: trace () << "add (" << t << ") C" << endl;
 
 	bool check = Disjoint_Set <T> :: add (t);
-	Object :: trace () << "add (" << t << ") D" << endl;
 	assert (check);
 
 	if (! State_Machine <T> :: has_active_state ())

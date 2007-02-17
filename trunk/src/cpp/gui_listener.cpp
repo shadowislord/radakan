@@ -1,4 +1,5 @@
 #include "gui_listener.hpp"
+#include <elements/CEGUIPushButton.h>
 
 using namespace std;
 using namespace tsl;
