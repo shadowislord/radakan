@@ -1,9 +1,9 @@
+#include "input_engine.hpp"
+
 #ifndef TSL_WIN
 	#include <X11/Xlib.h>
 	void checkX11Events ();
 #endif
-
-#include "input_engine.hpp"
 
 using namespace std;
 using namespace tsl;
