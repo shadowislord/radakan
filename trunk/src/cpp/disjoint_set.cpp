@@ -33,7 +33,7 @@ template <class T> bool Disjoint_Set <T> ::
 	#ifdef TSL_TRACE
 		//	Don't use the 'get_child' & 'get_another_child' methods here,
 		//	as they both require me to be initialized.
-		for (class set <T *> :: const_iterator i = children . begin ();
+		for (set <typedef T *> :: const_iterator i = children . begin ();
 													i != children . end (); i ++)
 		{
 			assert (warn <Disjoint_Set <T> > ((* i) -> T :: is_initialized ()));
@@ -171,7 +171,7 @@ template <class T> void Disjoint_Set <T> ::
 	assert (Disjoint_Set <T> :: is_initialized ());
 
 	//	We can't use 'get_child' and 'get_another_child' here.
-	for (class set <T *> :: const_iterator i = children . begin ();
+	for (set <typedef T *> :: const_iterator i = children . begin ();
 												i != children . end (); i ++)
 	{
 		assert (* i != NULL);

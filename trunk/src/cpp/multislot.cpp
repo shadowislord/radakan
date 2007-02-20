@@ -11,7 +11,7 @@ template <class T> Multislot <T> ::
 		string mesh_name,
 		float new_volume,
 		float new_weight,
-		unsigned int new_max
+		unsigned int new_max_length
 	) :
 	Object (new_name),
 	Container
@@ -24,7 +24,7 @@ template <class T> Multislot <T> ::
 		true,
 		true
 	),
-	max (new_max)
+	max_length (new_max_length)
 {
 	trace () << "Multislot (" << new_name << ")" << endl;
 	assert (Container :: is_initialized ());
@@ -81,7 +81,7 @@ template <class T> Multislot <T> & Multislot <T> ::
 		string new_mesh_name,
 		float new_volume,
 		float new_weight,
-		unsigned int new_max
+		unsigned int new_max_length
 	)
 {
 	Multislot <T> * temp =
@@ -91,7 +91,7 @@ template <class T> Multislot <T> & Multislot <T> ::
 			new_mesh_name,
 			new_volume,
 			new_weight,
-			new_max
+			new_max_length
 		);
 
 	return * temp;

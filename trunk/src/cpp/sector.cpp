@@ -70,7 +70,7 @@ Sector ::
 		Item * temp_tree = NULL;
 		for (int i = - 25; i <= 25; i++)
 		{
-			for (int j = int (- sqrt (625 - i * i)); j <= sqrt (625 - i * i); j++)
+			for (int j = int (- sqrt ((double)(625 - i * i)); j <= sqrt ((double)(625 - i * i); j++)
 			{
 				if (0.4 < Ogre :: Math :: RangeRandom (0, 1))
 				{
