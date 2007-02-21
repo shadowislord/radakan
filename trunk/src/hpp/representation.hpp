@@ -12,16 +12,15 @@ using namespace std;
 
 namespace tsl
 {
-	/*class Item; we'll need this later.*/
+	class Item;
 
 	///	Representation is the 3D representation of an Item.
-
 	class Representation :
 		public virtual Object,
 		public OgreOde :: Body
 	{
 		public :
-			Representation (string item_name, /*Item & new_parent_item,*/ Ogre :: SceneNode & new_node, OgreOde :: World * world);
+			Representation (Item & new_item, OgreOde :: World & world);
 			virtual ~Representation ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
@@ -38,14 +37,14 @@ namespace tsl
 			///	turn horizontaly
 			void turn (float radian_angle, Ogre :: Vector3 ax = Ogre :: Vector3 (0, 1, 0));
 
-			//	We will need this for 2D -> 3D convertion.
-			//	Item & parent_item;
+			//	We need this for 2D -> 3D convertion.
+			Item & item;
 				
 		private :
 			//	Copies are not allowed.
 			Representation (const Representation & representation);
 
-			Ogre :: SceneNode & node;
+			Ogre :: SceneNode * node;
 			OgreOde :: Geometry * geometry;
 	};
 

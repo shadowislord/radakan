@@ -2,6 +2,7 @@
 #define TSL_OBJECT_HPP
 
 #include <OgrePrerequisites.h>
+#include <OgreVector3.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 	#define WIN32_LEAN_AND_MEAN
@@ -67,12 +68,14 @@ namespace tsl
 			///	If possible, use the Disjoint_Set methods instead.
 			void remove_from (const Object & old_parent);
 
-			static string bool_to_string (bool value);
-			static string to_string (float value);
-
-			static unsigned long int turn;
+			static string bool_to_string (const bool value);
+			static string to_string (const float value);
+			static string to_string (const Ogre :: Vector3 & vector);
+			static float to_float (const string);
 
 			#ifdef TSL_DEBUG
+				static unsigned long int turn;
+
 				//	This set is used to check if all objects were properly destructed.
 				static set <Object *> objects;
 			#endif

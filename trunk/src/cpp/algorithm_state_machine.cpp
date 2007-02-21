@@ -69,7 +69,7 @@ template <class T> template <typename U> void Algorithm_State_Machine <T> ::
 #include "tsl.hpp"
 #include "dead_state.hpp"
 #include "peace_state.hpp"
-#include "play_state.hpp"
+#include "world.hpp"
 #include "menu_state.hpp"
 #include "quit_state.hpp"
 #include "fight_state.hpp"
@@ -81,5 +81,5 @@ template void Algorithm_State_Machine <NPC> :: set_active_state <Dead_State> ();
 template void Algorithm_State_Machine <NPC> :: set_active_state <Fight_State> ();
 template void Algorithm_State_Machine <TSL> :: set_active_state <Menu_State> ();
 template void Algorithm_State_Machine <NPC> :: set_active_state <Peace_State> ();
-template void Algorithm_State_Machine <TSL> :: set_active_state <Play_State> ();
+template void Algorithm_State_Machine <TSL> :: set_active_state <World> ();
 template void Algorithm_State_Machine <TSL> :: set_active_state <Quit_State> ();

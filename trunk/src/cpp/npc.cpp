@@ -12,14 +12,14 @@ NPC ::
 		string new_name,
 		string mesh_name,
 		float new_volume,
-		float new_weight
+		float new_mass
 	) :
 	Object (new_name),
 	Character
 	(
 		mesh_name,
 		new_volume,
-		new_weight
+		new_mass
 	)
 {
 	trace () << get_class_name () << " (" << new_name << ")" << endl;
@@ -80,7 +80,7 @@ Item & NPC ::
 		string new_name,
 		string new_mesh_name,
 		float new_volume,
-		float new_weight
+		float new_mass
 	)
 {
 	Item * temp =
@@ -89,7 +89,7 @@ Item & NPC ::
 			new_name,
 			new_mesh_name,
 			new_volume,
-			new_weight
+			new_mass
 		);
 
 	return * temp;

@@ -55,11 +55,15 @@ template <class T> bool Singleton <T> ::
 	return Ogre :: Singleton <T> :: getSingletonPtr () != NULL;
 }
 
+#include "audio_engine.hpp"
+#include "battle_engine.hpp"
 #include "dead_state.hpp"
 #include "fight_state.hpp"
+#include "gui_engine.hpp"
+#include "input_engine.hpp"
 #include "menu_state.hpp"
 #include "peace_state.hpp"
-#include "play_state.hpp"
+#include "world.hpp"
 #include "quit_state.hpp"
 
 template class Singleton <Audio_Engine>;
@@ -70,7 +74,7 @@ template class Singleton <Fight_State>;
 template class Singleton <Input_Engine>;
 template class Singleton <Menu_State>;
 template class Singleton <Peace_State>;
-template class Singleton <Play_State>;
 template class Singleton <Player>;
 template class Singleton <Quit_State>;
 template class Singleton <TSL>;
+template class Singleton <World>;

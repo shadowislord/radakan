@@ -10,7 +10,7 @@ Container ::
 		string new_name,
 		string mesh_name,
 		float new_volume,
-		float new_weight,
+		float new_mass,
 		bool new_mobile,
 		bool new_solid,
 		bool new_visible
@@ -21,7 +21,7 @@ Container ::
 		new_name,
 		mesh_name,
 		new_volume,
-		new_weight,
+		new_mass,
 		new_mobile,
 		new_solid,
 		new_visible
@@ -58,19 +58,19 @@ string Container ::
 
 //	virtual
 float Container ::
-	get_total_weight ()
+	get_total_mass ()
 	const
 {
 	assert (is_initialized ());
 	
-	float total_weight = weight;
+	float total_mass = mass;
 
 	for (Item * i = get_child (); i != NULL; i = get_another_child ())
 	{
-		total_weight += i -> get_total_weight ();
+		total_mass += i -> get_total_mass ();
 	}
 
-	return total_weight;
+	return total_mass;
 }
 
 //	virtual
@@ -115,7 +115,7 @@ Item & Container ::
 		string new_name,
 		string new_mesh_name,
 		float new_volume,
-		float new_weight,
+		float new_mass,
 		bool new_mobile,
 		bool new_solid,
 		bool new_visible
@@ -127,7 +127,7 @@ Item & Container ::
 			new_name,
 			new_mesh_name,
 			new_volume,
-			new_weight,
+			new_mass,
 			new_mobile,
 			new_solid,
 			new_visible

@@ -12,6 +12,7 @@ template <class T> Disjoint_Set <T> ::
 	assert (Object :: is_initialized ());
 
 	assert (Disjoint_Set <T> :: is_initialized ());
+	trace () << get_class_name () << " () finished" << endl;
 }
 
 //  destructor
@@ -33,8 +34,7 @@ template <class T> bool Disjoint_Set <T> ::
 	#ifdef TSL_TRACE
 		//	Don't use the 'get_child' & 'get_another_child' methods here,
 		//	as they both require me to be initialized.
-		for (set < T *> :: const_iterator i = children . begin ();
-													i != children . end (); i ++)
+		for (T_iterator i = children . begin (); i != children . end (); i ++)
 		{
 			assert (warn <Disjoint_Set <T> > ((* i) -> T :: is_initialized ()));
 		}
@@ -171,8 +171,7 @@ template <class T> void Disjoint_Set <T> ::
 	assert (Disjoint_Set <T> :: is_initialized ());
 
 	//	We can't use 'get_child' and 'get_another_child' here.
-	for (set < T *> :: const_iterator i = children . begin ();
-												i != children . end (); i ++)
+	for (T_iterator i = children . begin (); i != children . end (); i ++)
 	{
 		assert (* i != NULL);
 		trace () << "deleting " << * * i << "..." << endl;
@@ -184,10 +183,10 @@ template <class T> void Disjoint_Set <T> ::
 
 //	to avert linking errors:
 #include "gui.hpp"
-#include "sector.hpp"
+#include "tile.hpp"
 #include "audio_engine.hpp"
 
 template class Disjoint_Set <GUI>;
 template class Disjoint_Set <Item>;
-template class Disjoint_Set <Sector>;
+template class Disjoint_Set <Tile>;
 template class Disjoint_Set <Sound>;

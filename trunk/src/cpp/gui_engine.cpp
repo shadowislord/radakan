@@ -9,6 +9,7 @@ GUI_Engine ::
 	GUI_Engine
 	(
 		Ogre :: RenderWindow & window,
+		Ogre :: SceneManager & scene_manager,
 		string log_file_name,
 		GUI_Listener & new_gui_listener
 	) :
@@ -18,6 +19,7 @@ GUI_Engine ::
 	assert (Object :: is_initialized ());
 
 	renderer = new CEGUI :: OgreCEGUIRenderer (& window);
+	renderer -> setTargetSceneManager (& scene_manager);
 
 	#if CEGUI_VERSION_MINOR > 4
 		//	assuming cegui-0.5
@@ -61,14 +63,6 @@ string GUI_Engine ::
 	get_class_name ()
 {
 	return "GUI_Engine";
-}
-
-void GUI_Engine ::
-	set_scene_manager (Ogre :: SceneManager & new_scene_manager)
-{
-	assert (is_initialized ());
-
-	renderer -> setTargetSceneManager (& new_scene_manager);
 }
 
 void GUI_Engine ::

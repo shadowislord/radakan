@@ -20,6 +20,11 @@ Input_Engine ::
 {
 	assert (Object :: is_initialized ());
 
+	#if OIS_VERSION_MAJOR < 1
+		error () << "detected an old version of OIS (" << OIS_VERSION_MAJOR << "." << OIS_VERSION_MINOR << "." << OIS_VERSION_PATCH << "). Update to OIS-1.0-RC1 or later." << endl;
+		abort ();
+	#endif
+
 	OIS :: ParamList param_list;
 
 	size_t window_handle_temp = 0;

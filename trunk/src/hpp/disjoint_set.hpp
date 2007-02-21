@@ -48,10 +48,11 @@ namespace tsl
 		private :
 			set <T *> children;
 		
-			//	'mutable' added to allow change even if in a const Disjoint_Set.
 			//	'typename' added to assure that const_iterator is a type.
-			//mutable typename set <T *> :: const_iterator next_child;
+			//	'class' would give MSV problems.
 			typedef typename set <T *> :: const_iterator T_iterator;
+		
+			//	'mutable' added to allow change even if in a const Disjoint_Set.
 			mutable T_iterator next_child;
 		};
 }

@@ -100,10 +100,10 @@ template <class T> void State_Machine <T> ::
 //	to avert linking errors:
 #include "gui.hpp"
 #include "npc.hpp"
-#include "sector.hpp"
+#include "tile.hpp"
 #include "tsl.hpp"
 
 template class State_Machine <Algorithm <NPC> >;
 template class State_Machine <Algorithm <TSL> >;
 template class State_Machine <GUI>;
-template class State_Machine <Sector>;
+template class State_Machine <Tile>;

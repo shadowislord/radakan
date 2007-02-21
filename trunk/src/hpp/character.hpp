@@ -36,7 +36,7 @@ namespace tsl
 			(
 				string mesh_name,
 				float new_volume,
-				float new_weight
+				float new_mass
 			);
 
 		private :

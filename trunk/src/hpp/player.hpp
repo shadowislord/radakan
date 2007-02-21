@@ -25,10 +25,10 @@ namespace tsl
 				string new_name,
 				string mesh_name,
 				float new_volume,
-				float new_weight
+				float new_mass
 			);
 
-			unsigned int camera_distance;
+			float camera_distance;
 
 		protected :
 			Player
@@ -36,7 +36,7 @@ namespace tsl
 				string new_name,
 				string mesh_name,
 				float new_volume,
-				float new_weight
+				float new_mass
 			);
 
 		private :

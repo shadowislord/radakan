@@ -7,7 +7,7 @@ using namespace tsl;
 Battle_Engine ::
 	Battle_Engine () :
 	Object ("Battle engine"),
-	max_distance (25),
+	max_distance (1),
 	generator (42u),
 	uniform_real_distribution (0, 1),
 	lognormal_real_distribution (1.133, 0.5),

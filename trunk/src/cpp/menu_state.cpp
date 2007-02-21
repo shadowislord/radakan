@@ -1,6 +1,8 @@
 #include "menu_state.hpp"
-#include "play_state.hpp"
+#include "world.hpp"
 #include "quit_state.hpp"
+#include "gui_engine.hpp"
+#include "input_engine.hpp"
 
 using namespace std;
 using namespace tsl;
@@ -52,7 +54,7 @@ Algorithm <TSL> & Menu_State ::
 					|| Input_Engine :: get () . get_gui_button ("Return", true))
 	{
 		gui . show ("Game resumed");
-		return Play_State :: get ();
+		return World :: get ();
 	}
 	
 	//	quit

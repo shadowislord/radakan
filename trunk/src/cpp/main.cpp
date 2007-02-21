@@ -19,11 +19,6 @@ using namespace tsl;
 		#endif
 	#endif
 
-	#if OIS_VERSION_MAJOR < 1
-		cerr << "ERROR: old version of OIS detected. Update to OIS-1.0-RC1 or later." << endl;
-		abort ();
-	#endif
-
 	string tsl_path;
 	string ogre_media_path;
 	#ifdef TSL_WIN

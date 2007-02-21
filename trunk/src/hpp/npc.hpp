@@ -27,7 +27,7 @@ namespace tsl
 				string new_name,
 				string mesh_name,
 				float new_volume,
-				float new_weight
+				float new_mass
 			);
 
 		protected :
@@ -36,7 +36,7 @@ namespace tsl
 				string new_name,
 				string mesh_name,
 				float new_volume,
-				float new_weight
+				float new_mass
 			);
 
 		private :

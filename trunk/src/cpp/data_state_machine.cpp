@@ -88,7 +88,7 @@ template <class T> bool Data_State_Machine <T> ::
 
 //	to avert linking errors:
 #include "gui.hpp"
-#include "sector.hpp"
+#include "tile.hpp"
 
 template class Data_State_Machine <GUI>;
-template class Data_State_Machine <Sector>;
+template class Data_State_Machine <Tile>;

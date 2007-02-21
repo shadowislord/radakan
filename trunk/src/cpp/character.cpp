@@ -9,7 +9,7 @@ Character ::
 	(
 		string mesh_name,
 		float new_volume,
-		float new_weight
+		float new_mass
 	) :
 	Object ("The name doesn't matter as this class is an abstact class."),
 	Container
@@ -17,7 +17,7 @@ Character ::
 		"The name doesn't matter as this class is an abstact class.",
 		mesh_name,
 		new_volume,
-		new_weight,
+		new_mass,
 		true,
 		true,
 		true

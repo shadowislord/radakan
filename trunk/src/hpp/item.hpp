@@ -14,20 +14,20 @@ namespace tsl
 			virtual ~Item ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			virtual float get_total_weight () const;
+			virtual float get_total_mass () const;
 
 			static Item & create
 			(
 				string new_name,
 				string new_mesh_name,
 				float new_volume,
-				float new_weight,
+				float new_mass,
 				bool new_mobile = true,
 				bool new_solid = true,
 				bool new_visible = true
 			);
 
-			void add_representation (Ogre :: SceneNode & node, OgreOde :: World * world);
+			void add_representation (OgreOde :: World & world);
 			bool has_representation () const;
 			void remove_representation ();
 			Representation & get_representation () const;
@@ -38,7 +38,7 @@ namespace tsl
 			const float volume;
 			
 			///	in kilograms
-			const float weight;
+			const float mass;
 			
 			///	false means that the object is static
 			const bool mobile;
@@ -54,7 +54,7 @@ namespace tsl
 				string new_name,
 				string new_mesh_name,
 				float new_volume,
-				float new_weight,
+				float new_mass,
 				bool new_mobile,
 				bool new_solid,
 				bool new_visible

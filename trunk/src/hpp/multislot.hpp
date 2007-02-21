@@ -26,11 +26,11 @@ namespace tsl
 				string new_name,
 				string mesh_name,
 				float new_volume,
-				float new_weight,
-				unsigned int new_max_length
+				float new_mass,
+				unsigned int new_max_size
 			);
 
-			const unsigned int max_length;
+			const unsigned int max_size;
 			
 		protected :
 			Multislot
@@ -38,8 +38,8 @@ namespace tsl
 				string new_name,
 				string mesh_name,
 				float new_volume,
-				float new_weight,
-				unsigned int new_max_length
+				float new_mass,
+				unsigned int new_max_size
 			);
 
 		private :

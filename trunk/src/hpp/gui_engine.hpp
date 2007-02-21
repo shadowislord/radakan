@@ -5,6 +5,7 @@
 #include "data_state_machine.hpp"
 #include "singleton.hpp"
 
+
 using namespace std;
 
 namespace tsl
@@ -17,6 +18,7 @@ namespace tsl
 			GUI_Engine
 			(
 				Ogre :: RenderWindow & window,
+				Ogre :: SceneManager & scene_manager,
 				string log_file_name,
 				GUI_Listener & new_gui_listener
 			);
@@ -24,7 +26,6 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
-			void set_scene_manager (Ogre :: SceneManager & new_scene_manager);
 			void set_mouse_position (const Ogre :: Vector3 & new_position);
 			void left_mouse_button_click ();
 			

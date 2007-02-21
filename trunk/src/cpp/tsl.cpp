@@ -1,11 +1,13 @@
-#include <algorithm>
 #include "tsl.hpp"
 #include "menu_state.hpp"
-#include "play_state.hpp"
+#include "world.hpp"
 #include "quit_state.hpp"
 #include "dead_state.hpp"
 #include "fight_state.hpp"
 #include "peace_state.hpp"
+#include "audio_engine.hpp"
+#include "battle_engine.hpp"
+#include "input_engine.hpp"
 
 using namespace std;
 using namespace tsl;
@@ -101,21 +103,30 @@ TSL ::
 
 	new Input_Engine (* window);
 
-	new GUI_Engine (* window, tsl_path + "/log/cegui.txt", Input_Engine :: get ());
+	Ogre :: SceneManager * scene_manager = root -> createSceneManager (Ogre :: ST_GENERIC);
+	new GUI_Engine
+	(
+		* window,
+		* scene_manager,
+		tsl_path + "/log/cegui.txt", Input_Engine :: get ()
+	);
 
 	new Menu_State ();
-	new Play_State ();
 	new Quit_State ();
+	new World
+	(
+		GUI_Engine :: get () . create_gui ("sector.cfg"),
+		* scene_manager,
+		tsl_path
+	);
 
-	Algorithm_State_Machine <TSL> :: set_active_state <Play_State> ();
+	Ogre :: Camera * camera = scene_manager -> getCameraIterator () . getNext ();
+	assert (camera != NULL);
 
-	assert (get_active_state () . is_type <Play_State> ());
-	assert (get_active_state () . is_type <Data_State_Machine <Sector> > ());
-	Sector & active_sector = get_active_state () . to_type <Data_State_Machine <Sector> > () . get_active_state ();
+	Algorithm_State_Machine <TSL> :: set_active_state <World> ();
+	assert (get_active_state () . is_type <World> ());
 
-	root -> getRenderSystem () -> _setViewport
-			(window -> addViewport (& active_sector . get_camera ()));
-	GUI_Engine :: get () . set_scene_manager (* active_sector . getSceneManager ());
+	root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
 
 	turn_lenght_timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 	last_turn_lenght = 0;
@@ -141,7 +152,7 @@ TSL ::
 	unset_active_state ();
 
 	delete & Menu_State :: get ();
-	delete & Play_State :: get ();
+	delete & World :: get ();
 	delete & Quit_State :: get ();
 
 	delete & Dead_State :: get ();
@@ -194,14 +205,6 @@ void TSL ::
 	}
 	
 	assert (get_active_state () == Quit_State :: get ());
-}
-
-Ogre :: SceneManager & TSL ::
-	new_scene_manager () const
-{
-	assert (is_initialized ());
-
-	return * root -> createSceneManager (Ogre :: ST_GENERIC);
 }
 
 string TSL ::

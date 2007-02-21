@@ -10,16 +10,16 @@ Player ::
 		string new_name,
 		string mesh_name,
 		float new_volume,
-		float new_weight
+		float new_mass
 	) :
 	Object (new_name),
 	Character
 	(
 		mesh_name,
 		new_volume,
-		new_weight
+		new_mass
 	),
-	camera_distance (18),
+	camera_distance (0.72),
 	dead (false)
 {
 	trace () << "Player (" << new_name << ")" << endl;
@@ -80,7 +80,7 @@ Item & Player ::
 		string new_name,
 		string new_mesh_name,
 		float new_volume,
-		float new_weight
+		float new_mass
 	)
 {
 	Item * temp =
@@ -89,7 +89,7 @@ Item & Player ::
 			new_name,
 			new_mesh_name,
 			new_volume,
-			new_weight
+			new_mass
 		);
 
 	return * temp;

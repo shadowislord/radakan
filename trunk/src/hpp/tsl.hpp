@@ -1,10 +1,8 @@
 #ifndef TSL_TSL_HPP
 #define TSL_TSL_HPP
 
-#include "audio_engine.hpp"
-#include "battle_engine.hpp"
-#include "input_engine.hpp"
 #include "algorithm_state_machine.hpp"
+#include "representation.hpp"
 
 using namespace std;
 
@@ -26,7 +24,6 @@ namespace tsl
 			void run ();
 			void set_camera (Ogre :: Camera & new_camera);
 			string get_FPS () const;
-			Ogre :: SceneManager & new_scene_manager () const;
 
 			///	in milliseconds
 			const unsigned long & get_last_turn_lenght () const;

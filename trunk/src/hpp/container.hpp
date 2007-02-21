@@ -19,7 +19,7 @@ namespace tsl
 			virtual ~Container ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			virtual float get_total_weight () const;
+			virtual float get_total_mass () const;
 
 			///	'add' returns false if I'm full.
 			virtual bool add (Item & item);
@@ -29,7 +29,7 @@ namespace tsl
 				string new_name,
 				string mesh_name,
 				float new_volume,
-				float new_weight,
+				float new_mass,
 				bool new_mobile = true,
 				bool new_solid = true,
 				bool new_visible = true
@@ -44,7 +44,7 @@ namespace tsl
 				string new_name,
 				string mesh_name,
 				float new_volume,
-				float new_weight,
+				float new_mass,
 				bool new_mobile,
 				bool new_solid,
 				bool new_visible

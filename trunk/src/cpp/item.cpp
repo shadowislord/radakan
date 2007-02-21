@@ -10,7 +10,7 @@ Item ::
 		string new_name,
 		string new_mesh_name,
 		float new_volume,
-		float new_weight,
+		float new_mass,
 		bool new_mobile,
 		bool new_solid,
 		bool new_visible
@@ -18,14 +18,14 @@ Item ::
 	Object (new_name),
 	mesh_name (new_mesh_name),
 	volume (new_volume),
-	weight (new_weight),
+	mass (new_mass),
 	mobile (new_mobile),
 	solid (new_solid),
 	visible (new_visible),
 	representation (NULL)
 {
 	trace () << get_class_name () << " (" << * this << ", " << mesh_name
-		<< ", " << volume << ", " << weight << ", " << bool_to_string (mobile)
+		<< ", " << volume << ", " << mass << ", " << bool_to_string (mobile)
 		<< ", " << bool_to_string (solid) << ", " << bool_to_string (visible)
 		<< ")" << endl;
 	assert (Object :: is_initialized ());
@@ -53,7 +53,7 @@ bool Item ::
 	is_initialized ()
 	const
 {
-	return warn <Item> (Object :: is_initialized () && (0 <= volume) && (0 <= weight));
+	return warn <Item> (Object :: is_initialized () && (0 <= volume) && (0 <= mass));
 }
 
 //	static
@@ -65,22 +65,24 @@ string Item ::
 
 //	virtual
 float Item ::
-	get_total_weight ()
+	get_total_mass ()
 	const
 {
 	assert (Item :: is_initialized ());
 	
-	return weight;
+	return mass;
 }
 
 void Item ::
-	add_representation (Ogre :: SceneNode & node, OgreOde :: World * world)
+	add_representation (OgreOde :: World & world)
 {
+	trace () << "add_representation (~world~)" << endl;
 	assert (Item :: is_initialized ());
 	assert (visible);
 	assert (! has_representation ());
-
-	representation = new Representation (* this, node, world);
+	
+	representation = new Representation (* this, world);
+	representation -> setMass (OgreOde :: SphereMass (mass, 10 /*TODO set the right radius*/));
 }
 
 bool Item ::
@@ -118,7 +120,7 @@ Item & Item ::
 		string new_name,
 		string new_mesh_name,
 		float new_volume,
-		float new_weight,
+		float new_mass,
 		bool new_mobile,
 		bool new_solid,
 		bool new_visible
@@ -131,7 +133,7 @@ Item & Item ::
 				new_name,
 				new_mesh_name,
 				new_volume,
-				new_weight,
+				new_mass,
 				new_mobile,
 				new_solid,
 				new_visible

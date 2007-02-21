@@ -2,6 +2,7 @@
 #define TSL_MENU_STATE_HPP
 
 #include "tsl.hpp"
+#include "gui.hpp"
 
 using namespace std;
 
