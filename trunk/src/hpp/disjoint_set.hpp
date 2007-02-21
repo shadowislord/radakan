@@ -50,7 +50,9 @@ namespace tsl
 		
 			//	'mutable' added to allow change even if in a const Disjoint_Set.
 			//	'typename' added to assure that const_iterator is a type.
-			mutable typename set <T *> :: const_iterator next_child;
+			//mutable typename set <T *> :: const_iterator next_child;
+			typedef typename set <T *> :: const_iterator T_iterator;
+			mutable T_iterator next_child;
 		};
 }
 
