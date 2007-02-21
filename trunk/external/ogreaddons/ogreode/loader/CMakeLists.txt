@@ -5,8 +5,8 @@ find_package(Ode)
 
 set(SRC_FILES   "src/OgreOdeDotLoader.cpp")
 
-set(INCLUDE_DIRS    "${TSLRPG_SOURCE_FILES}/external/ogreaddons/ogreode/include"
-                    "${TSLRPG_SOURCE_FILES}/external/ogreaddons/ogreode/prefab/include"
+set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/include"
+                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
                     ${Ogre_INCLUDE_DIR}
                     ${Ode_INCLUDE_DIR})            
 

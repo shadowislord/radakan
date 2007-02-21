@@ -11,17 +11,19 @@ if(WIN32)
     find_path(Ogre_INCLUDE_DIR "Ogre.h"
         "D:/ScatteredLands/OgreSDK_1_2_5/include"
         "D:/ScatteredLands/OgreSDK/include" 
-        "C:/OgreSDK/include"
-)
+        "E:/Projects/ScatteredLands/OgreSDK/include" 
+    	"C:/OgreSDK/include")
 
     find_path(Ogre_LIB_RELEASE "OgreMain.lib" 
-       "D:/Projects/ScatteredLands/OgreSDK_1_2_5/lib"
+	    "D:/Projects/ScatteredLands/OgreSDK_1_2_5/lib"
         "D:/ScatteredLands/OgreSDK/lib" 
+        "E:/Projects/ScatteredLands/OgreSDK/lib" 
         "C:/OgreSDK/lib")
 
     find_path(Ogre_LIB_DEBUG "OgreMain_d.lib" 
-       "D:/Projects/ScatteredLands/OgreSDK_1_2_5/lib"
         "D:/ScatteredLands/OgreSDK/lib" 
+        "D:/ScatteredLands/OgreSDK_1_2_5/lib"
+        "E:/Projects/ScatteredLands/OgreSDK/lib" 
         "C:/OgreSDK/lib")
 
     if(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)

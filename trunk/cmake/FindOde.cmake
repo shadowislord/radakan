@@ -7,15 +7,18 @@
 
 if(WIN32)
     find_path(Ode_INCLUDE_DIR "Ode.h"
-        "D:/ScatteredLands/ode_0_8/include/Ode"        
-        "C:/ode/include")
+        "D:/ScatteredLands/ode_0_8/include/ode"        
+        "E:/Projects/ScatteredLands/ode-0.8/include/ode"        
+	    "C:/ode/include")
 
     find_path(Ode_LIB_RELEASE "ode.lib" 
         "D:/ScatteredLands/ode_0_8/lib/releaselib" 
+        "E:/Projects/ScatteredLands/ode-0.8/lib/releaselib"        
         "C:/ode/lib/releaselib")
 
     find_path(Ode_LIB_DEBUG "ode.lib" 
         "D:/ScatteredLands/ode_0_8/lib/debuglib" 
+        "E:/Projects/ScatteredLands/ode-0.8/lib/debuglib"        
         "C:/ode/lib/releaselib")
 
     set(Ode_FOUND 0)

@@ -1,1 +1,1 @@
-subdirs( "src" "loader" "prefab" "tinyxml" )
+subdirs( "src" "tinyxml" "prefab" "loader" )
