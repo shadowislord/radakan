@@ -1,0 +1,38 @@
+# - Test for Ode
+# Once loaded this will define
+#   Ode_FOUND        - system has Ode
+#   Ode_INCLUDE_DIR  - include directory for Ode
+#   Ode_LIB_RELEASE  - release library directory   
+#   Ode_LIB_DEBUG    - release library directory   
+
+if(WIN32)
+    find_path(Ode_INCLUDE_DIR "Ode.h"
+        "D:/ScatteredLands/ode_0_8/include/Ode"        
+        "C:/ode/include")
+
+    find_path(Ode_LIB_RELEASE "ode.lib" 
+        "D:/ScatteredLands/ode_0_8/lib/releaselib" 
+        "C:/ode/lib/releaselib")
+
+    find_path(Ode_LIB_DEBUG "ode.lib" 
+        "D:/ScatteredLands/ode_0_8/lib/debuglib" 
+        "C:/ode/lib/releaselib")
+
+    set(Ode_FOUND 0)
+
+    if(Ode_INCLUDE_DIR AND Ode_LIB_DEBUG AND Ode_LIB_RELEASE)
+        set(Ode_FOUND 1)
+    endif(Ode_INCLUDE_DIR AND Ode_LIB_DEBUG AND Ode_LIB_RELEASE)
+else(WIN32)
+endif(WIN32)
+
+if (Ode_FOUND)
+   if (NOT Ode_FIND_QUIETLY)
+      message(STATUS "Found Ode: ${Ode_LIBRARIES}")
+   endif (NOT Ode_FIND_QUIETLY)
+else (Ode_FOUND)
+   if (Ode_FIND_REQUIRED)
+      message(FATAL_ERROR "Could not find Ode")
+   endif (Ode_FIND_REQUIRED)
+endif (Ode_FOUND)
+
