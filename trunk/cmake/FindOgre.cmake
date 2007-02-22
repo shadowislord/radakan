@@ -30,6 +30,18 @@ if(WIN32)
         set(Ogre_FOUND "YES")
     endif(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)
 else(WIN32)
+    find_path(Ogre_INCLUDE_DIR "Ogre.h"
+        "/usr/include/OGRE")
+
+    find_path(Ogre_LIB_RELEASE "libOgreMain.so"
+	    "/usr/lib")
+
+    find_path(Ogre_LIB_DEBUG "libOgreMain.so" 
+        "/usr/lib")
+
+    if(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)
+        set(Ogre_FOUND "YES")
+    endif(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)
 endif(WIN32)
 
 if (Ogre_FOUND)
