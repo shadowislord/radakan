@@ -3,4 +3,5 @@ project(TSLRPG)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${TSLRPG_SOURCE_DIR}/cmake)
 
-subdirs( "external/ois-1.0RC1" "external/ogreaddons/ogreode" )
+subdirs( "external/ois-1.0RC1" "external/ode-0.8" "external/ogreaddons/ogreode" "src" )
+

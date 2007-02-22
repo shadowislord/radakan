@@ -4,6 +4,7 @@
 #   Ogre_INCLUDE_DIR  - include directory for Ogre
 #   Ogre_LIB_RELEASE  - release libraries directory
 #   Ogre_LIB_DEBUG    - debug libraries directory
+#   Ogre_SAMPLES_DIR  - debug libraries directory
 
 set(Ogre_FOUND "NO")
 
@@ -14,15 +15,21 @@ if(WIN32)
         "E:/Projects/ScatteredLands/OgreSDK/include" 
     	"C:/OgreSDK/include")
 
+    find_path(Ogre_SAMPLES_DIR "include/Bezier.h"
+        "D:/ScatteredLands/OgreSDK_1_2_5/samples"
+        "D:/ScatteredLands/OgreSDK/samples" 
+        "E:/Projects/ScatteredLands/OgreSDK/samples" 
+    	"C:/OgreSDK/samples")
+
     find_path(Ogre_LIB_RELEASE "OgreMain.lib" 
-	    "D:/Projects/ScatteredLands/OgreSDK_1_2_5/lib"
+	    "D:/ScatteredLands/OgreSDK_1_2_5/lib"
         "D:/ScatteredLands/OgreSDK/lib" 
         "E:/Projects/ScatteredLands/OgreSDK/lib" 
         "C:/OgreSDK/lib")
 
     find_path(Ogre_LIB_DEBUG "OgreMain_d.lib" 
-        "D:/ScatteredLands/OgreSDK/lib" 
         "D:/ScatteredLands/OgreSDK_1_2_5/lib"
+        "D:/ScatteredLands/OgreSDK/lib" 
         "E:/Projects/ScatteredLands/OgreSDK/lib" 
         "C:/OgreSDK/lib")
 
