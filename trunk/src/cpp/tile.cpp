@@ -6,14 +6,15 @@ using namespace tsl;
 const int Tile :: side_length (20);
 
 Tile ::
-	Tile (OgreOde :: World & new_world, Ogre :: Vector3 new_position, string tsl_path) :
-	Object (tsl_path + "/data/tile/tile_" + to_string (new_position . x) + "_" + to_string (new_position . z) + ".xml"),
-	position (new_position),
+	Tile (OgreOde :: World & new_world, pair <int, int> new_coordinates, string tsl_path) :
+	Object (tsl_path + "/data/tile/tile_" + to_string (new_coordinates . first) + "_" + to_string (new_coordinates . second) + ".xml"),
+	coordinates (new_coordinates),
+	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
 	world (new_world),
 	doc (new TiXmlDocument (string :: c_str ()))
 {
 
-	trace () << "Tile (~new_world~, " << to_string (position)<< ", " << tsl_path << ")" << endl;
+	trace () << "Tile (~new_world~, (" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ")" << endl;
 	
 	//	CEGUI-0.4.1 is linked to TinyXml-2.3.3, so we have to use that version.
 	assert (TIXML_MAJOR_VERSION == 2);
@@ -28,67 +29,19 @@ Tile ::
 	assert (! document . Error ());
 	TiXmlElement * root = document . RootElement ();
 	assert (root != NULL);
-	for (TiXmlElement * model = root -> FirstChildElement ("model");
-				model != NULL; model = model -> NextSiblingElement ("model"))
+	for (TiXmlElement * representation_xml = root -> FirstChildElement ("model");
+				representation_xml != NULL; representation_xml = representation_xml -> NextSiblingElement ("model"))
 	{
-		TiXmlElement * item = model -> FirstChildElement ("item");
-		if (item != NULL)
-		{
-			string name = item -> Attribute ("name");
-			string mesh = item -> Attribute ("mesh");
-			float volume = to_float (item -> Attribute ("volume"));
-			float mass = to_float (item -> Attribute ("mass"));
-			bool mobile = item -> Attribute ("mobile") == "true";
-			float x = to_float (model -> Attribute ("x"));
-			float y = to_float (model -> Attribute ("y"));
-			float z = to_float (model -> Attribute ("z"));
-			float scale = to_float (model -> Attribute ("scale"));
-
-			Representation & representation = represent
-			(
-				Item :: create
-				(
-					name, mesh, volume, mass, mobile
-//					,
-//					item -> Attribute ("solid") == "true",
-//					item -> Attribute ("visible") == "true"
-				),
-				x, y, z, scale
-			);
-
-			TiXmlElement * material = model -> FirstChildElement ("material");
-			if (material != NULL)
-			{
-				representation . get_entity () . setMaterialName
-											(material -> Attribute ("name"));
-			}
-			
-			TiXmlElement * gravity = model -> FirstChildElement ("gravity");
-			if (gravity != NULL)
-			{
-				representation . setAffectedByGravity
-								(gravity -> Attribute ("affected") == "true");
-			}
-		}
+		add_xml (* representation_xml);
 	}
 
-	//	the player
-	if (! Player :: is_instantiated ())
-	{
-		represent (Player :: create ("Player", "ninja.mesh", 80, 65), 0.5, 0, 0.5, 0.004);
-		assert (Player :: get () . has_representation ());
-		assert (contains (Player :: get ()));
-	}
-
-	represent (NPC :: create ("Ninja (" + * this + ")", "ninja.mesh", 80, 65), 4.8, 0, 1.2, 0.004);
-
-	#ifndef TSL_TRACE
+/*	#ifndef TSL_TRACE
 		//	not textured
-		represent (Item :: create ("House", "house.mesh", 0, 0, false), 32, 0, 8, 0.016);
-		represent (Item :: create ("Wagon", "wagon.mesh", 0, 0), - 20, 0, - 20, 0.0008);
-		represent (Item :: create ("Pot", "pot.mesh", 0, 0), - 22, 0, - 20, 0.0008);
-		represent (Item :: create ("Pot 2", "pot_2.mesh", 0, 0), - 24, 0, - 20, 0.0008);
-		represent (Item :: create ("Pine tree", "pine_tree_2.mesh", 0, 0, false), - 28, 1.4, - 28, 0.06);
+		represent (Item :: create ("House", "house.mesh", 0, 0, false), 42, 0, 18, 0.016);
+		represent (Item :: create ("Wagon", "wagon.mesh", 0, 0), - 10, 0, - 10, 0.0008);
+		represent (Item :: create ("Pot", "pot.mesh", 0, 0), - 12, 0, - 10, 0.0008);
+		represent (Item :: create ("Pot 2", "pot_2.mesh", 0, 0), - 14, 0, - 10, 0.0008);
+		represent (Item :: create ("Pine tree", "pine_tree_2.mesh", 0, 0, false), - 18, 1.4, - 18, 0.06);
 
 		//	forest of 1961 trees
 		//	(30000 trees takes to long to load)
@@ -109,9 +62,9 @@ Tile ::
 							0,
 							false
 						),
-						- 60 + 4 * i + Ogre :: Math :: RangeRandom (- 130, 130),
+						- 50 + 4 * i + Ogre :: Math :: RangeRandom (- 130, 130),
 						0,
-						120 + 4 * j + Ogre :: Math :: RangeRandom (- 130, 130),
+						110 + 4 * j + Ogre :: Math :: RangeRandom (- 130, 130),
 						0.06
 					);
 					temp_tree -> get_representation () . turn (- Ogre :: Math :: HALF_PI, Ogre :: Vector3 (1, 0, 0));
@@ -128,15 +81,15 @@ Tile ::
 							0,
 							false
 						),
-						- 60 + 4 * i + Ogre :: Math :: RangeRandom (- 130, 130),
+						- 50 + 4 * i + Ogre :: Math :: RangeRandom (- 130, 130),
 						3.84,
-						120 + 4 * j + Ogre :: Math :: RangeRandom (- 130, 130),
+						110 + 4 * j + Ogre :: Math :: RangeRandom (- 130, 130),
 						0.06
 					);
 				}
 			}
 		}
-	#endif
+	#endif*/
 
 	assert (is_initialized ());
 }
@@ -200,7 +153,7 @@ bool Tile ::
 	assert (item . has_representation ());
 	assert (destination . is_initialized ());
 
-	Ogre :: Vector3 position = item . get_representation () . getPosition (); 
+	Ogre :: Vector3 position = item . get_representation () . getPosition ();
 	Ogre :: Quaternion orientation = item . get_representation () . getOrientation ();
 	
 	item . remove_representation ();
@@ -225,23 +178,68 @@ Representation & Tile ::
 	trace () << "represent (" << item << ", " << x << ", " << y << ", " << z << ", " << scale << ")" << endl;
 	assert (is_initialized ());
 
-	trace () << "represent (" << item << ", " << x << ", " << y << ", " << z << ", " << scale << ") A" << endl;
 	item . append (" (" + * this + ")");
 	
-	trace () << "represent (" << item << ", " << x << ", " << y << ", " << z << ", " << scale << ") B" << endl;
 	add (item);
-
-	trace () << "represent (" << item << ", " << x << ", " << y << ", " << z << ", " << scale << ") C" << endl;
 
 	Representation & result = item . get_representation ();
 	
-	trace () << "represent (" << item << ", " << x << ", " << y << ", " << z << ", " << scale << ") D" << endl;
-
-	result . setPosition
-		(position	//	position of the tile
-		+ Ogre :: Vector3 (x, y, z)
-		+ side_length * Ogre :: Vector3 (0.5, 0, 0.5));
+	result . setPosition (position + Ogre :: Vector3 (x, y, z));
 	result . set_scale (scale);
 
 	return result;
+}
+
+void Tile ::
+	add_xml (TiXmlElement & element)
+{
+	trace () << "add_xml (~element~)" << endl;
+	assert (is_initialized ());
+
+	float x = to_float (element . Attribute ("x"));
+	float y = to_float (element . Attribute ("y"));
+	float z = to_float (element . Attribute ("z"));
+	float scale = to_float (element . Attribute ("scale"));
+
+	TiXmlElement * item_xml = element . FirstChildElement ();
+	//	I'm not sure why 'string' is necessairy here. --Tinus
+	assert ((item_xml -> Value () == string ("item")) || (item_xml -> Value () == string ("npc")));
+
+	string name = item_xml -> Attribute ("name");
+	string mesh = item_xml -> Attribute ("mesh");
+	float volume = to_float (item_xml -> Attribute ("volume"));
+	float mass = to_float (item_xml -> Attribute ("mass"));
+	bool mobile = item_xml -> Attribute ("mobile") == "true";
+	//	bool solid = item_xml -> Attribute ("solid") == "true";
+	//	bool visible = item_xml -> Attribute ("visible") == "true";
+
+	Item * item = NULL;
+	if (item_xml -> Value () == string ("item"))
+	{
+		item = & Item :: create (name, mesh, volume, mass, mobile);
+	}
+	else if (item_xml -> Value () == string ("npc"))
+	{
+		item = & NPC :: create (name, mesh, volume, mass);
+	}
+	else
+	{
+		error () << "didn't recognize xml tag name: " << item_xml -> Value () << endl;
+		abort ();
+	}
+	Representation & representation = represent (* item, x, y, z, scale);
+
+	TiXmlElement * material = element . FirstChildElement ("material");
+	if (material != NULL)
+	{
+		representation . get_entity () . setMaterialName
+									(material -> Attribute ("name"));
+	}
+
+	TiXmlElement * gravity = element . FirstChildElement ("gravity");
+	if (gravity != NULL)
+	{
+		representation . setAffectedByGravity
+						(gravity -> Attribute ("affected") == "true");
+	}
 }

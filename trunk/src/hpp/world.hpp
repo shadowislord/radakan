@@ -36,7 +36,7 @@ namespace tsl
 			float vertical_camera_angle;
 
 			//	The coordinates of a tile are expressed as (x, z).
-			map <Ogre :: Vector3, Tile *> tiles;
+			map <pair <int, int>, Tile *> tiles;
 
 			Ogre :: Camera & camera;
 

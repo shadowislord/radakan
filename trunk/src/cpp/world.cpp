@@ -28,7 +28,7 @@ World ::
 	assert (Algorithm <TSL> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
 
-	camera . setNearClipDistance (0.2);
+	camera . setNearClipDistance (0.01);
 	camera . setFarClipDistance (80);
 
 	setShowDebugGeometries (true);
@@ -49,14 +49,17 @@ World ::
 	{
 		for (int z = min_z; z <= max_z; z ++)
 		{
-			Ogre :: Vector3 position =
-							Tile :: side_length * Ogre :: Vector3 (x, 0, z);
-			trace () << "tile position: " << to_string (position) << endl;
-			tiles [position] = new Tile (* this, position, tsl_path);
-			bool check = add (* tiles [position]);
+			pair <int, int> coordinates (x, z);
+			trace () << "tile position: (" << x << ", " << z << ")" << endl;
+			tiles [coordinates] = new Tile (* this, coordinates, tsl_path);
+			bool check = add (* tiles [coordinates]);
 			assert (check);
 		}
 	}
+
+	tiles [pair <int, int> (0, 0)] -> add (Player :: create ("Player", "ninja.mesh", 80, 65));
+	Player :: get () . get_representation () . setPosition (Ogre :: Vector3 (10.5, 0, 10.5));
+	Player :: get () . get_representation () . set_scale (0.004);
 
 	assert (World :: is_initialized ());
 }
@@ -96,10 +99,10 @@ void World ::
 	
 	if (tile != get_active_state ())
 	{
+		gui . show (tile);
 		get_active_state () . move (Player :: get () . to_type <Item> (), tile);
 		
 		State_Machine <Tile> :: set_active_state (tile);
-		gui . show (tile);
 	}
 }
 
@@ -123,10 +126,9 @@ Algorithm <TSL> & World ::
 
 	for (Tile * tile = get_child (); tile != NULL; tile = get_another_child ())
 	{
-		for (set <NPC *> :: const_iterator i = tile -> npcs . begin ();
-												i != tile -> npcs . end (); i ++)
+		for (NPC_iterator npc = tile -> npcs . begin (); npc != tile -> npcs . end (); npc ++)
 		{
-			(* i) -> run ();
+			(* npc) -> run ();
 		}
 	}
 
@@ -153,8 +155,12 @@ Algorithm <TSL> & World ::
 	Ogre :: Vector3 position = Player :: get () . get_representation () . getPosition ();
 	int x = int (position . x) / Tile :: side_length;
 	int z = int (position . z) / Tile :: side_length;
+	assert (min_x <= x);
+	assert (x <= max_x);
+	assert (min_z <= z);
+	assert (z <= max_z);
 //	debug () << "tile at (" << x << ", 0, " << z << ")" << endl;
-	Tile * new_active_tile = tiles [Tile :: side_length * Ogre :: Vector3 (x, 0, z)];
+	Tile * new_active_tile = tiles [pair <int, int> (x, z)];
 	assert (new_active_tile != NULL);
 	set_active_state (* new_active_tile);
 

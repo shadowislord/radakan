@@ -37,13 +37,13 @@ namespace tsl
 			///	turn horizontaly
 			void turn (float radian_angle, Ogre :: Vector3 ax = Ogre :: Vector3 (0, 1, 0));
 
-			//	We need this for 2D -> 3D convertion.
-			Item & item;
-				
 		private :
 			//	Copies are not allowed.
 			Representation (const Representation & representation);
 
+			//	We need this for 2D -> 3D convertion.
+			Item & item;
+				
 			Ogre :: SceneNode * node;
 			OgreOde :: Geometry * geometry;
 	};

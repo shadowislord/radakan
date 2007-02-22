@@ -18,13 +18,16 @@ using namespace std;
 
 namespace tsl
 {
+	//	'typename' added to assure that const_iterator is a type.
+	//	'class' would give MSV problems.
+	typedef set <NPC *> :: const_iterator NPC_iterator;
 
 	///	A Tile is a square piece of a sector.
 	class Tile :
 		public Disjoint_Set <Item>
 	{
 		public :
-			Tile (OgreOde :: World & new_world, Ogre :: Vector3 new_position, string tsl_path);
+			Tile (OgreOde :: World & new_world, pair <int, int> new_coordinates, string tsl_path);
 			virtual ~Tile ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
@@ -33,6 +36,7 @@ namespace tsl
 			virtual bool add (Item & item);
 			virtual bool move (Item & item, Disjoint_Set <Item> & destination);
 
+			const pair <int, int> coordinates;
 			const Ogre :: Vector3 position;
 
 			static const int side_length;
@@ -44,6 +48,7 @@ namespace tsl
 		private :
 			Representation & represent
 					(Item & item, float x, float y, float z, float scale = 1);
+			void add_xml (TiXmlElement & element);
 
 			OgreOde :: World & world;
 
