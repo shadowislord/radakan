@@ -2,7 +2,10 @@
 find_package(Fmod)
 find_package(Ogre)
 find_package(Boost)
-find_package(DIrectX)
+
+if(WIN32)
+    find_package(DIrectX)
+endif(WIN32)
 
 file(GLOB_RECURSE SRC_FILES "${TSLRPG_SOURCE_DIR}/src/cpp" *.cpp)
 
