@@ -37,4 +37,3 @@ link_directories( ${LINK_DIRS} )
 add_library( ois ${SRC_FILES} )
 target_link_libraries( ois ${LIBS})  
 
-

@@ -5,6 +5,7 @@
 #   Ogre_LIB_RELEASE  - release libraries directory
 #   Ogre_LIB_DEBUG    - debug libraries directory
 #   Ogre_SAMPLES_DIR  - debug libraries directory
+#   Ogre_BIN_DIR      - ogre binary directory  
 
 set(Ogre_FOUND "NO")
 
@@ -20,6 +21,12 @@ if(WIN32)
         "D:/ScatteredLands/OgreSDK/samples" 
         "E:/Projects/ScatteredLands/OgreSDK/samples" 
     	"C:/OgreSDK/samples")
+
+    find_path(Ogre_BIN_DIR "release/ogremain.dll"
+        "D:/ScatteredLands/OgreSDK_1_2_5/bin"
+        "D:/ScatteredLands/OgreSDK/bin" 
+        "E:/Projects/ScatteredLands/OgreSDK/bin" 
+    	"C:/OgreSDK/bin")
 
     find_path(Ogre_LIB_RELEASE "OgreMain.lib" 
 	    "D:/ScatteredLands/OgreSDK_1_2_5/lib"

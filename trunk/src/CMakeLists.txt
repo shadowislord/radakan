@@ -2,6 +2,7 @@
 find_package(Fmod)
 find_package(Ogre)
 find_package(Boost)
+find_package(DIrectX)
 
 file(GLOB_RECURSE SRC_FILES "${TSLRPG_SOURCE_DIR}/src/cpp" *.cpp)
 
@@ -21,6 +22,7 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
 
 set(LINK_DIRS       ${Ogre_LIB_RELEASE} 
                     ${Fmod_LIB_RELEASE}
+                    ${DirectX_LIB_DIR}
                     ${TSLRPG_BINARY_DIR}/odeogre_core
                     ${TSLRPG_BINARY_DIR}/tinyxml
                     ${TSLRPG_BINARY_DIR}/prefab
@@ -28,7 +30,7 @@ set(LINK_DIRS       ${Ogre_LIB_RELEASE}
                     ${TSLRPG_BINARY_DIR}/ois)
 
 if(WIN32)
-    link_directories(  ${LINK_DIRS}  ${Directx_INCLUDE_DIr} ) 
+    link_directories(  ${LINK_DIRS}  ${Directx_INCLUDE_DIR} ) 
     add_executable( tslrpg WIN32 ${SRC_FILES} )
 else(WIN32)
     link_directories(  ${LINK_DIRS} )         
@@ -58,4 +60,5 @@ target_link_libraries( tslrpg   ${RELEASE_LIBS}
                                 ${DEBUG_LIBS} )
 
 
-
+install( TARGETS tslrpg DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
+install( TARGETS tslrpg DESTINATION ${TSLRPG_SOURCE_DIR}/bin/release CONFIGURATIONS Release )

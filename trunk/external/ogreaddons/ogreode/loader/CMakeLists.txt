@@ -24,4 +24,7 @@ target_link_libraries( loader   optimized   ${RELEASE_LIBS}
 
 if(WIN32)
     set_target_properties( loader PROPERTIES    DEFINE_SYMBOL "OGREODEEXPORT_Loader;_USRDL;_PRECOMP" )
-endif(WIN32)  
+endif(WIN32) 
+
+install( TARGETS loader DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
+install( TARGETS loader DESTINATION ${TSLRPG_SOURCE_DIR}/bin/release CONFIGURATIONS Release )

@@ -26,3 +26,6 @@ target_link_libraries( prefab   optimized   ${RELEASE_LIBS}
 if(WIN32)
     set_target_properties( prefab PROPERTIES DEFINE_SYMBOL "OGREODEEXPORT_PREFAB;_USRDL;_PRECOMP" )
 endif(WIN32)
+
+install( TARGETS prefab DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
+install( TARGETS prefab DESTINATION ${TSLRPG_SOURCE_DIR}/bin/release CONFIGURATIONS Release )
