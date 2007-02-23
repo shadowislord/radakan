@@ -25,14 +25,15 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
 
 set(LINK_DIRS       ${Ogre_LIB_RELEASE} 
                     ${Fmod_LIB_RELEASE}
-                    ${DirectX_LIB_DIR}
                     ${TSLRPG_BINARY_DIR}/odeogre_core
                     ${TSLRPG_BINARY_DIR}/tinyxml
                     ${TSLRPG_BINARY_DIR}/prefab
                     ${TSLRPG_BINARY_DIR}/loader                    
                     ${TSLRPG_BINARY_DIR}/ois)
+               
 
 if(WIN32)
+    set(LINK_DIRS ${LINK_DIRS} ${DirectX_LIB_DIR})
     link_directories(  ${LINK_DIRS}  ${Directx_INCLUDE_DIR} ) 
     add_executable( tslrpg WIN32 ${SRC_FILES} )
 else(WIN32)
