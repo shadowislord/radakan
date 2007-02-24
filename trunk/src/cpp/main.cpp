@@ -36,7 +36,7 @@ using namespace tsl;
 			unsigned int spacePos = tsl_path . find ('~');
 			assert (spacePos != string :: npos);
 			ogre_media_path = tsl_path . substr (spacePos + 1, tsl_path . length ());
-            tsl_path = tsl_path . substr (0, spacePos);
+                        tsl_path = tsl_path . substr (0, spacePos);
 		}
 	#else
 		//	example arguments: /home/john/tsl /usr/share/doc/ogre-1.2.4/Samples/Media

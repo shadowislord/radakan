@@ -8,6 +8,9 @@
 #include "menu_state.hpp"
 #include "world.hpp"
 
+#include "OgreOde_Core.h"
+//#include "OgreOde_Prefab.h"
+//#include "OgreOde_Loader.h"
 using namespace std;
 using namespace tsl;
 
@@ -18,11 +21,13 @@ const int World :: max_z = 1;
 
 //  constructor
 World ::
-	World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path) :
+	World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path,Ogre :: Root * root) :
 	Object ("world"),
 	OgreOde :: World (& scene_manager),
 	gui (new_gui),
-	camera (* scene_manager . createCamera ("world camera"))
+	camera (* scene_manager . createCamera ("world camera")),
+        time_step (3)   // raeez: If we set this to a normal value (say 0.1) we get sucked way too quickly to be able
+                        // to see what is going on
 {
 	assert (Singleton <World> :: is_initialized ());
 	assert (Algorithm <TSL> :: is_initialized ());
@@ -36,7 +41,7 @@ World ::
 	debug () << "ERP: " << getERP () << endl;
 	debug () << "CFM: " << getCFM () << endl;
 
-	setGravity (Ogre :: Vector3 (0, - 9.81, 0));
+	//setGravity (Ogre :: Vector3 (0, - 9.81, 0));
 
 	//	TODO make the next line work.
 	getSceneManager () -> setSkyDome (true, "Peaceful", 10, 5);
@@ -62,6 +67,21 @@ World ::
 	Player :: get () . get_representation () . set_scale (0.004);
 
 	assert (World :: is_initialized ());
+
+        // a few constants for our stepper
+        const Ogre::Real max_frame_time = Ogre::Real(1.0 / 4);
+        const Ogre::Real time_scale = Ogre::Real(1.0);
+        const Ogre::Real frame_rate = Ogre::Real(1.0 / 60);
+
+        // create our stepper
+        stepper = new OgreOde::ForwardFixedInterpolatedStepHandler (this, 
+            OgreOde::StepHandler::QuickStep, 
+            time_step,
+            frame_rate,
+            max_frame_time,
+            time_scale);
+
+         stepper->setAutomatic(OgreOde::StepHandler::AutoMode_PostFrame,root);
 }
 
 //  destructor
@@ -112,7 +132,7 @@ Algorithm <TSL> & World ::
 {
 	assert (is_initialized ());
 
-/*	Player :: get (). get_representation () . addForce (Ogre :: Vector3 (1, 1, 1));
+	/*Player :: get (). get_representation () . addForce (Ogre :: Vector3 (1, 1, 1));
 	cout << "force: " << Player :: get (). get_representation () . getForce () << endl;
 	const int steps = 10;
 	for (int i = 0; i < steps; i ++)
@@ -155,10 +175,22 @@ Algorithm <TSL> & World ::
 	Ogre :: Vector3 position = Player :: get () . get_representation () . getPosition ();
 	int x = int (position . x) / Tile :: side_length;
 	int z = int (position . z) / Tile :: side_length;
+        // We are being sucked somewhere by a force... this takes us out of possible space
+        // and causes the assertions below to fail. And of course if the assertions are failing
+       // it means we would be translated somewhere where there are no tiles.
+       // temporary measure of placing you back a notch only to be sucked ober and over and over again :)
 	assert (min_x <= x);
 	assert (x <= max_x);
+        if (min_x > x)
+        {
+            x = max_x;
+        }
 	assert (min_z <= z);
 	assert (z <= max_z);
+        if (min_z > z)
+        {
+            z = max_z;
+        }
 //	debug () << "tile at (" << x << ", 0, " << z << ")" << endl;
 	Tile * new_active_tile = tiles [pair <int, int> (x, z)];
 	assert (new_active_tile != NULL);

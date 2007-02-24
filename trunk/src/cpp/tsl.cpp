@@ -117,7 +117,8 @@ TSL ::
 	(
 		GUI_Engine :: get () . create_gui ("sector.cfg"),
 		* scene_manager,
-		tsl_path
+		tsl_path,
+		root
 	);
 
 	Ogre :: Camera * camera = scene_manager -> getCameraIterator () . getNext ();
@@ -134,6 +135,7 @@ TSL ::
 	new Battle_Engine (); 
 
 	assert (is_initialized ());
+
 }
 
 TSL ::
