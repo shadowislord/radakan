@@ -19,7 +19,7 @@ namespace tsl
 		public OgreOde :: World
 	{
 		public :
-			World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path);
+			World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path,Ogre :: Root * root);
 			virtual ~World ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
@@ -44,6 +44,10 @@ namespace tsl
 			static const int max_x;
 			static const int min_z;
 			static const int max_z;
+			
+			//both used by OgreOde::StepHandler:QuickStep
+			OgreOde::StepHandler * stepper;
+			Ogre::Real time_step;
 	};
 }
 

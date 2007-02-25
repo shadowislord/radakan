@@ -8,9 +8,6 @@
 #include "menu_state.hpp"
 #include "world.hpp"
 
-#include "OgreOde_Core.h"
-//#include "OgreOde_Prefab.h"
-//#include "OgreOde_Loader.h"
 using namespace std;
 using namespace tsl;
 
