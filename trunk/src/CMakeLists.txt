@@ -2,6 +2,8 @@
 find_package(Fmod)
 find_package(Ogre)
 find_package(Boost)
+find_package(Ogg)
+find_package(Vorbis)
 
 if(WIN32)
     find_package(DIrectX)
@@ -30,9 +32,9 @@ set(LINK_DIRS       ${Ogre_LIB_RELEASE}
                     ${TSLRPG_BINARY_DIR}/audiere
                     ${TSLRPG_BINARY_DIR}/tinyxml
                     ${TSLRPG_BINARY_DIR}/prefab
-                    ${TSLRPG_BINARY_DIR}/loader                    
+                    ${TSLRPG_BINARY_DIR}/loader
                     ${TSLRPG_BINARY_DIR}/ois)
-               
+
 
 if(WIN32)
     set(LINK_DIRS ${LINK_DIRS} ${DirectX_LIB_DIR})

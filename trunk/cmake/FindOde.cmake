@@ -32,7 +32,7 @@ if(WIN32)
         set(Ode_FOUND 1)
     endif(Ode_INCLUDE_DIR AND Ode_LIB_DEBUG AND Ode_LIB_RELEASE)
 else(WIN32)
-    find_path(Ode_INCLUDE_DIR "Ode.h" 
+    find_path(Ode_INCLUDE_DIR "ode.h"
         "/usr/include/ode")
 
     find_path(Ode_LIB_RELEASE "libode.so" 
