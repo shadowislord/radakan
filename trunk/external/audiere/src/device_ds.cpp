@@ -7,7 +7,6 @@
 #include "debug.h"
 #include "utility.h"
 
-
 namespace audiere {
 
   static const int DEFAULT_BUFFER_LENGTH = 1000;  // one second

@@ -129,7 +129,7 @@ target_link_libraries( audiere  optimized   ${RELEASE_LIBS}
                                 debug       ${DEBUG_LIBS} )
 
 if(WIN32)
-    set_target_properties( audiere PROPERTIES DEFINE_SYMBOL "AUDIERE_EXPORTS" COMPILE_FLAGS "-DWIN32_LEAN_AND_MEAN -DWIN32 -D_USRDL" )
+    set_target_properties( audiere PROPERTIES DEFINE_SYMBOL "AUDIERE_EXPORTS" COMPILE_FLAGS "-DWIN32_LEAN_AND_MEAN -DWIN32 -D_USRDL -DNOMINMAX" )
 endif(WIN32)
 
 install( TARGETS audiere DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
