@@ -6,8 +6,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${TSLRPG_SOURCE_DIR}/cmake)
 subdirs(    "external/ois-1.0RC1" 
             "external/ode-0.8" 
             "external/ogreaddons/ogreode" 
-            "external/libogg-1.1.3" 
-            "external/libvorbis-1.1.2" 
             "external/audiere" 
             "src" )
 
