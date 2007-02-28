@@ -5,9 +5,8 @@
 using namespace std;
 using namespace tsl;
 
-unsigned long int Object :: turn = 0;
-
 #ifdef TSL_DEBUG
+unsigned long int Object :: turn = 0;
 set <Object *> Object :: objects;
 #endif
 
@@ -164,13 +163,16 @@ float Object ::
 ostream & Object ::
 	print () const
 {
-	ostream & a = cout;
-	ostream & b = a << turn;
-	ostream & c = b << " - ";
-	ostream & d = c << * this;
-	ostream & e = d << ": ";
+	#ifdef TSL_DEBUG
+		ostream & a = cout;
+		ostream & b = a << turn;
+		ostream & c = b << " - ";
+		ostream & d = c << * this;
+		ostream & e = d << ": ";
+		return e;
+	#endif
 
-	return e;
+	return cout << "";
 //	return cout << turn << " - " << * this << ": ";
 }
 

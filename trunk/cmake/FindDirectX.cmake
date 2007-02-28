@@ -8,7 +8,8 @@ set(DirectX_FOUND "NO")
 
 if(WIN32)
     find_path(DirectX_INCLUDE_DIR "dinput.h"
-	"C:/Program Files/Microsoft DirectX SDK (October 2006)/Include"
+        "C:/Program Files/DirectX_SDK/Include"
+    	"C:/Program Files/Microsoft DirectX SDK (October 2006)/Include"
         "C:/Program Files/Microsoft DirectX SDK (February 2007)/Include"
         "C:/Program Files/Microsoft Visual Studio .NET 2003/Vc7/PlatformSDK/Include"
         "C:/Program Files/Microsoft DirectX SDK (February 2006)/Include"
@@ -16,7 +17,8 @@ if(WIN32)
         "C:/DXSDK/Include")
 
     find_path(DirectX_LIB_DIR "dinput8.lib"
-    	"C:/Program Files/Microsoft DirectX SDK (October 2006)/Lib/x86"
+        "C:/Program Files/DirectX_SDK/Lib/x86"
+        "C:/Program Files/Microsoft DirectX SDK (October 2006)/Lib/x86"
         "C:/Program Files/Microsoft DirectX SDK (February 2007)/Lib/x86"
         "C:/Program Files/Microsoft Visual Studio .NET 2003/Vc7/PlatformSDK/Lib"
         "C:/Program Files/Microsoft DirectX SDK (February 2006)/Lib"

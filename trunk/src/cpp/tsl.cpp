@@ -198,7 +198,9 @@ void TSL ::
 		last_turn_lenght = turn_lenght_timer -> getMilliseconds ();
 		turn_lenght_timer -> reset ();
 
-		turn ++;
+		#ifdef TSL_DEBUG
+			turn ++;
+		#endif
 
 		if (window -> isClosed ())
 		{

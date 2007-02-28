@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="OIS"
 	ProjectGUID="{9CC704CB-4956-4479-BDEC-57CBC03F700E}"
 	RootNamespace="OIS"
@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\includes"
+				AdditionalIncludeDirectories="..\includes;&quot;C:\Program Files\Microsoft DirectX SDK (February 2007)\Include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_STLP_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -70,6 +70,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="dxguid.lib dinput8.lib"
 				OutputFile="$(OutDir)/OIS_static_d.lib"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\Microsoft DirectX SDK (February 2007)\Lib\x86&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

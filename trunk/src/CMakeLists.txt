@@ -18,6 +18,7 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
                     "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/tinyxml-2.3.3"
                     ${Fmod_INCLUDE_DIR}
                     "${TSLRPG_SOURCE_DIR}/external/ois-1.0RC1/includes"
+                    "${TSLRPG_SOURCE_DIR}/external/audiere/include"
                     ${Ogre_INCLUDE_DIR}
                     ${Ogre_INCLUDE_DIR}/CEGUI
                     ${Ogre_SAMPLES_DIR}/include
@@ -26,6 +27,7 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
 set(LINK_DIRS       ${Ogre_LIB_RELEASE} 
                     ${Fmod_LIB_RELEASE}
                     ${TSLRPG_BINARY_DIR}/odeogre_core
+                    ${TSLRPG_BINARY_DIR}/audiere
                     ${TSLRPG_BINARY_DIR}/tinyxml
                     ${TSLRPG_BINARY_DIR}/prefab
                     ${TSLRPG_BINARY_DIR}/loader                    
@@ -51,7 +53,8 @@ set(DEBUG_LIBS  debug ogremain_d
                 debug prefab 
                 debug ogreode_core 
                 debug ois 
-                debug fmodvc)
+                debug fmodvc
+                debug audiere)
 set(RELEASE_LIBS    optimized ogremain 
                     optimized ceguibase 
                     optimized ogreguirenderer 
@@ -59,9 +62,16 @@ set(RELEASE_LIBS    optimized ogremain
                     optimized prefab 
                     optimized ogreode_core  
                     optimized ois  
-                    optimized fmodvc)
+                    optimized fmodvc
+                    optimized audiere)
 target_link_libraries( tslrpg   ${RELEASE_LIBS}
                                 ${DEBUG_LIBS} )
+
+if(MINGW)
+    set_target_properties( tslrpg PROPERTIES COMPILE_FLAGS "-DTSL_FMOD" )                            
+else(MINGW)
+    set_target_properties( tslrpg PROPERTIES COMPILE_FLAGS "/D TSL_FMOD" )                            
+endif(MINGW)
 
 
 install( TARGETS tslrpg DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
