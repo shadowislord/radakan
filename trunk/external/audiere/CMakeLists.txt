@@ -54,6 +54,8 @@ set(SRC_FILES
     "src/tone.cpp"
     "src/utility.cpp"
     "src/version.cpp"
+    "src/mpaudec/bits.c"
+    "src/mpaudec/mpaudec.c"
 )
 
 set( INCLUDE_DIRS "" )
@@ -65,7 +67,8 @@ if(WIN32)
                             "src/timer_win32.cpp"
                             "src/device_ds.cpp"
                             "src/device_ds_buffer.cpp"
-                            "src/device_ds_stream.cpp")
+                            "src/device_ds_stream.cpp"
+                            "src/device_mm.cpp")
 
     set( INCLUDE_DIRS   ${INCLUDE_DIRS}
                         ${DirectX_INCLUDE_DIR} )        
@@ -104,7 +107,8 @@ else(Vorbis_FOUND)
 endif(Vorbis_FOUND)
 
 set(INCLUDE_DIRS    ${INCLUDE_DIRS}
-                    "${TSLRPG_SOURCE_DIR}/external/audiere/src")            
+                    "${TSLRPG_SOURCE_DIR}/external/audiere/src"
+                    "${TSLRPG_SOURCE_DIR}/external/audiere/src/mpaudec")            
 
 if(WIN32)
     set(INCLUDE_DIRS    ${INCLUDE_DIRS}
@@ -122,8 +126,8 @@ set(DEBUG_LIBS      ogg vorbis )
 set(RELEASE_LIBS    ogg vorbis )
 
 if(WIN32)
-    set(DEBUG_LIBS    ${DEBUG_LIBS}  dsound )
-    set(RELEASE_LIBS  ${DEBUG_LIBS}  dsound )
+    set(DEBUG_LIBS    ${DEBUG_LIBS}  dsound dxguid Rpcrt4 winmm )
+    set(RELEASE_LIBS  ${DEBUG_LIBS}  dsound dxguid Rpcrt4 winmm )
 endif(WIN32)
 target_link_libraries( audiere  optimized   ${RELEASE_LIBS}
                                 debug       ${DEBUG_LIBS} )

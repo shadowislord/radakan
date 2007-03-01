@@ -4,6 +4,7 @@
 #   Fmod_INCLUDE_DIR  - include directory for Fmod
 #   Fmod_LIB_RELEASE  - release libraries directory
 #   Fmod_LIB_DEBUG    - debug libraries directory
+#   Fmod_BIN_DIR      - binary directory  
 
 set(Fmod_FOUND "NO")
 
@@ -22,6 +23,11 @@ if(WIN32)
         "D:/ScatteredLands/fmodapi375win/api/lib"
         "E:/Projects/ScatteredLands/fmodapi375win/api/lib"
         "C:/Fmod/api/lib")
+
+    find_path(Fmod_BIN_DIR "fmod.dll" 
+        "D:/ScatteredLands/fmodapi375win/api"
+        "E:/Projects/ScatteredLands/fmodapi375win/api"
+        "C:/Fmod/apib")
 
     if(Fmod_INCLUDE_DIR AND Fmod_LIB_RELEASE AND Fmod_LIB_DEBUG)
         set(Fmod_FOUND "YES")

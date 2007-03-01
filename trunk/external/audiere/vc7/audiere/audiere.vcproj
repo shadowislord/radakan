@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;../../third-party/vc6/include&quot;;&quot;C:\Program Files\Microsoft DirectX SDK (February 2007)\Include&quot;"
+				AdditionalIncludeDirectories="&quot;../../third-party/vc6/include&quot;;&quot;C:\Program Files\DirectX_SDK\Include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;AUDIERE_EXPORTS;NOMINMAX;WIN32_LEAN_AND_MEAN;STRICT;FLAC__NO_DLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

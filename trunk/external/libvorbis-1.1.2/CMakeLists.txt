@@ -20,6 +20,7 @@ set( SRC_FILES  "lib/analysis.c"
                 "lib/smallft.c"
                 "lib/synthesis.c"
                 "lib/window.c"
+                "lib/vorbisfile.c"
     )
 
 set( INCLUDE_DIRS   "${TSLRPG_SOURCE_DIR}/external/libvorbis-1.1.2/include"
