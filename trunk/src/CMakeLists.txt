@@ -25,7 +25,6 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
                     ${Ogre_INCLUDE_DIR}
                     ${CEGUI_INCLUDE_DIR}
                     ${Ogre_SAMPLES_DIR}/include
-                    ${Cegui_INCLUDE_DIR}
                     )
 if(USE_FMOD)                 
     set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Fmod_INCLUDE_DIR})
@@ -35,7 +34,6 @@ set(LINK_DIRS       ${Ogre_LIB_RELEASE}
                     ${Ogre_LIB_DEBUG}
                     ${CEGUI_LIB_RELEASE} 
                     ${CEGUI_LIB_DEBUG}
-                    ${Cegui_LIB_RELEASE}
                     ${TSLRPG_BINARY_DIR}/odeogre_core
                     ${TSLRPG_BINARY_DIR}/tinyxml
                     ${TSLRPG_BINARY_DIR}/prefab
@@ -81,8 +79,8 @@ if(USE_FMOD)
     else(WIN32)
     endif(WIN32)
 else(USE_FMOD)
-    set(DEBUG_LIBS ${DEBUG_LIBS}  audiere)
-    set(RELEASE_LIBS ${RELEASE_LIBS}  audiere)
+    set(DEBUG_LIBS ${DEBUG_LIBS}  debug audiere)
+    set(RELEASE_LIBS ${RELEASE_LIBS} optimized audiere)
 endif(USE_FMOD)
                 
 target_link_libraries( tslrpg   ${RELEASE_LIBS}
