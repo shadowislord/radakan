@@ -26,11 +26,6 @@ if(WIN32)
         "E:/Projects/ScatteredLands/ode-0.8/lib/debuglib"        
         "C:/ode/lib/releaselib")
 
-    set(Ode_FOUND 0)
-
-    if(Ode_INCLUDE_DIR AND Ode_LIB_DEBUG AND Ode_LIB_RELEASE)
-        set(Ode_FOUND 1)
-    endif(Ode_INCLUDE_DIR AND Ode_LIB_DEBUG AND Ode_LIB_RELEASE)
 else(WIN32)
     find_path(Ode_INCLUDE_DIR "ode.h"
         "/usr/include/ode")
@@ -40,13 +35,13 @@ else(WIN32)
 
     find_path(Ode_LIB_DEBUG "libode.so" 
         "/usr/lib")
-
-    set(Ode_FOUND 0)
-
-    if(Ode_INCLUDE_DIR AND Ode_LIB_DEBUG AND Ode_LIB_RELEASE)
-        set(Ode_FOUND 1)
-    endif(Ode_INCLUDE_DIR AND Ode_LIB_DEBUG AND Ode_LIB_RELEASE)
 endif(WIN32)
+
+set(Ode_FOUND 0)
+
+if(Ode_INCLUDE_DIR AND Ode_LIB_DEBUG AND Ode_LIB_RELEASE)
+	set(Ode_FOUND 1)
+endif(Ode_INCLUDE_DIR AND Ode_LIB_DEBUG AND Ode_LIB_RELEASE)
 
 if (Ode_FOUND)
    if (NOT Ode_FIND_QUIETLY)

@@ -52,12 +52,20 @@ if(WIN32)
                 "C:/OgreSDK/bin/debug")
         endif(MINGW)
     endif(MSVC80)
-
-    if(CEGUI_INCLUDE_DIR AND CEGUI_LIB_RELEASE AND CEGUI_LIB_DEBUG)
-        set(CEGUI_FOUND "YES")
-    endif(CEGUI_INCLUDE_DIR AND CEGUI_LIB_RELEASE AND CEGUI_LIB_DEBUG)
 else(WIN32)
+    find_path(CEGUI_INCLUDE_DIR "CEGUI.h"
+        "/usr/include/CEGUI")
+
+    find_path(CEGUI_LIB_RELEASE "libCEGUIBase.so"
+        "/usr/lib")
+
+    find_path(CEGUI_LIB_DEBUG "libCEGUIBase.so"
+        "/usr/lib")
 endif(WIN32)
+
+if(CEGUI_INCLUDE_DIR AND CEGUI_LIB_RELEASE AND CEGUI_LIB_DEBUG)
+	set(CEGUI_FOUND "YES")
+endif(CEGUI_INCLUDE_DIR AND CEGUI_LIB_RELEASE AND CEGUI_LIB_DEBUG)
 
 if (CEGUI_FOUND)
    if (NOT CEGUI_FIND_QUIETLY)
