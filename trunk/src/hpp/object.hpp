@@ -23,7 +23,7 @@
 #include <set>
 
 //	Uncomment the next line for release mode.
-#define NDEBUG
+//	#define NDEBUG
 
 #ifndef NDEBUG
 	//	TSL run with TSL_DEBUG will print usefull messages.

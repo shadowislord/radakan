@@ -12,12 +12,17 @@ using namespace std;
 
 namespace tsl
 {
+	const Ogre :: Vector3 zero (0, 0, 0);
+	const Ogre :: Vector3 x_axis (1, 0, 0);
+	const Ogre :: Vector3 y_axis (0, 1, 0);	//	upwards
+	const Ogre :: Vector3 z_axis (0, 0, 1);
+
 	class Item;
 
 	///	Representation is the 3D representation of an Item.
 	class Representation :
 		public virtual Object,
-		public OgreOde :: Body
+		public Ogre :: SceneNode
 	{
 		public :
 			Representation (Item & new_item, OgreOde :: World & world);
@@ -25,17 +30,21 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
+			bool is_mobile () const;
+
 			Ogre :: Vector3 get_front_direction () const;
 			Ogre :: Vector3 get_side_direction () const;
 			Ogre :: Vector3 get_top_direction () const;
-			Ogre :: Entity & get_entity () const;
 
+			float get_scale ();
 			void set_scale (float scale);
-			
-			void move (float distance);
+			void set_material (string name);
 
-			///	turn horizontaly
-			void turn (float radian_angle, Ogre :: Vector3 ax = Ogre :: Vector3 (0, 1, 0));
+			//	If no - or zero - ax specified, I'll move in my front direction.
+			void move (float distance, Ogre :: Vector3 ax = zero);
+
+			//	If no - or zero - ax specified, I'll turn around my top direction.
+			void turn (float radian_angle, Ogre :: Vector3 ax = zero);
 
 		private :
 			//	Copies are not allowed.
@@ -43,9 +52,10 @@ namespace tsl
 
 			//	We need this for 2D -> 3D convertion.
 			Item & item;
-				
-			Ogre :: SceneNode * node;
+
+			Ogre :: Entity * entity;
 			OgreOde :: Geometry * geometry;
+			OgreOde :: Body * body;
 	};
 
 	Ogre :: Quaternion make_quaternion (float radian_angle, Ogre :: Vector3 ax);

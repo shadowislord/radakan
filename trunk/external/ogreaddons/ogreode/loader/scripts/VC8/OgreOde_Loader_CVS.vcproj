@@ -67,18 +67,21 @@
 				Version="0.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\..\Ogrenew\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\tinyxml\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\..\Ogrenew\lib;&quot;..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\tinyxml\$(ConfigurationName)&quot;"
+				GenerateManifest="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/OgreOde_Loader_d.pdb"
 				SubSystem="2"
 				ImportLibrary="$(OutDir)/OgreOde_Loader_d.lib"
 				TargetMachine="1"
+				AllowIsolation="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
 			/>
 			<Tool
 				Name="VCManifestTool"
+				UseFAT32Workaround="true"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -154,7 +157,7 @@
 				OutputFile="$(OutDir)/OgreOde_Loader.dll"
 				Version="1.2"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\..\Ogrenew\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\tinyxml\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\..\Ogrenew\lib;&quot;..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\tinyxml\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -167,6 +170,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				UseFAT32Workaround="true"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

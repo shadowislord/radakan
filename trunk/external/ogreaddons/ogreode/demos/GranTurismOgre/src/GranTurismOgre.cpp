@@ -11,7 +11,6 @@ int main(int argc, char *argv[])
 {
     GranTurismOgreApplication app;
 
-    SET_TERM_HANDLER;
     
     try 
 	{
@@ -192,36 +191,36 @@ bool GranTurismOgreFrameListener::frameStarted(const FrameEvent& evt)
 	if (mTimeUntilNextToggle <= 0) 
 	{
 		// Switch debugging objects on or off
-		if (mInputDevice->isKeyDown(KC_E))
+		if (mKeyboard->isKeyDown(OIS::KC_E))
 		{
             _world->setShowDebugGeometries(!_world->getShowDebugGeometries());
 			mTimeUntilNextToggle = 0.5;
         }
         // Switch debugging Contacts on or off
-        if (mInputDevice->isKeyDown(KC_B))
+        if (mKeyboard->isKeyDown(OIS::KC_B))
         {
             _world->setShowDebugContact(!_world->getShowDebugContact());
             mTimeUntilNextToggle = 0.5;
         }
 
-		if(mInputDevice->isKeyDown(KC_N)) 
+		if(mKeyboard->isKeyDown(OIS::KC_N)) 
 		{
 			changeCar();
 			mTimeUntilNextToggle = 0.5;
 		}
 
-		if(mInputDevice->isKeyDown(KC_U)) 
+		if(mKeyboard->isKeyDown(OIS::KC_U)) 
 		{
 			_stepper->pause(false);
 			mTimeUntilNextToggle = 0.5;
 		}
-		if(mInputDevice->isKeyDown(KC_P)) 
+		if(mKeyboard->isKeyDown(OIS::KC_P)) 
 		{
 			_stepper->pause(true);
 			mTimeUntilNextToggle = 0.5;
 		}
 		// Change the drive mode between front, rear and 4wd
-		if ((mInputDevice->isKeyDown(KC_X)))
+        if ((mKeyboard->isKeyDown(OIS::KC_X)))
 		{
 			switch(_drive)
 			{
@@ -266,10 +265,10 @@ bool GranTurismOgreFrameListener::frameStarted(const FrameEvent& evt)
 	}
 	if(!_stepper->isPaused())
 	{
-		_vehicle->setInputs(mInputDevice->isKeyDown(KC_J),
-                            mInputDevice->isKeyDown(KC_L),
-                            mInputDevice->isKeyDown(KC_I),
-                            mInputDevice->isKeyDown(KC_K));
+		_vehicle->setInputs(mKeyboard->isKeyDown(OIS::KC_J),
+                            mKeyboard->isKeyDown(OIS::KC_L),
+                            mKeyboard->isKeyDown(OIS::KC_I),
+                            mKeyboard->isKeyDown(OIS::KC_K));
 		_vehicle->update(time);
 
 		// Thanks to Ahmed!

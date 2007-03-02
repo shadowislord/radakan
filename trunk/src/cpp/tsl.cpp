@@ -12,6 +12,8 @@
 using namespace std;
 using namespace tsl;
 
+const float maximal_turn_lenght = 0.1;
+
 TSL ::
 	TSL (string tsl_path, string ogre_media_path) :
 	Object ("TSL")
@@ -117,8 +119,7 @@ TSL ::
 	(
 		GUI_Engine :: get () . create_gui ("sector.cfg"),
 		* scene_manager,
-		tsl_path,
-		root
+		tsl_path
 	);
 
 	Ogre :: Camera * camera = scene_manager -> getCameraIterator () . getNext ();
@@ -185,6 +186,10 @@ void TSL ::
 {
 	while (get_active_state () != Quit_State :: get ())
 	{
+		#ifdef TSL_DEBUG
+			turn ++;
+		#endif
+
 		bool check = root -> renderOneFrame ();
 		assert (check);
 		check = GUI_Engine :: get () . render ();
@@ -194,13 +199,17 @@ void TSL ::
 		Ogre :: PlatformManager :: getSingleton () . messagePump (window);
 
 		Algorithm_State_Machine <TSL> :: run ();
-		
-		last_turn_lenght = turn_lenght_timer -> getMilliseconds ();
-		turn_lenght_timer -> reset ();
 
-		#ifdef TSL_DEBUG
-			turn ++;
-		#endif
+		last_turn_lenght = float (turn_lenght_timer -> getMilliseconds ()) / 1000;
+
+		if (maximal_turn_lenght < last_turn_lenght)
+		{
+			debug () << "Reducing the turn lenght from " << last_turn_lenght << " to " << maximal_turn_lenght << "..." << endl;
+			last_turn_lenght = maximal_turn_lenght;
+		}
+		debug () << "Turn lenght: " << last_turn_lenght << endl;
+
+		turn_lenght_timer -> reset ();
 
 		if (window -> isClosed ())
 		{
@@ -227,7 +236,7 @@ void TSL ::
 	root -> getRenderSystem () -> _getViewport () -> setCamera (& new_camera);
 }
 
-const unsigned long & TSL ::
+const float & TSL ::
 	get_last_turn_lenght () const
 {
 	return last_turn_lenght;

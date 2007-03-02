@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib OgreOde_Core_d.lib OgreOde_Prefab_d.lib OgreOde_Loader_d.lib"
+				AdditionalDependencies="OgreMain_d.lib ois_d.lib OgreOde_Core_d.lib OgreOde_Prefab_d.lib OgreOde_Loader_d.lib"
 				OutputFile="$(OutDir)/OgreOdeDemo_Landscape.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\..\..\Ogrenew\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\loader\lib\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\..\..\Ogrenew\lib;&quot;..\..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\loader\lib\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/OgreOdeDemo_Landscape.pdb"
 				SubSystem="2"
@@ -151,9 +151,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib OgreOde_Core.lib OgreOde_Prefab.lib OgreOde_Loader.lib"
+				AdditionalDependencies="OgreMain.lib  ois.lib OgreOde_Core.lib OgreOde_Prefab.lib OgreOde_Loader.lib"
 				OutputFile="$(OutDir)/OgreOdeDemo_Landscape.exe"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\..\..\Ogrenew\OgreMain\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\loader\lib\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\..\..\Ogrenew\lib;&quot;..\..\..\..\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\prefab\lib\$(ConfigurationName)&quot;;&quot;..\..\..\..\loader\lib\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

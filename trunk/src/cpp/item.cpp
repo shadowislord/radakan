@@ -82,7 +82,6 @@ void Item ::
 	assert (! has_representation ());
 	
 	representation = new Representation (* this, world);
-	representation -> setMass (OgreOde :: SphereMass (mass, 10 /*TODO set the right radius*/));
 }
 
 bool Item ::
@@ -98,9 +97,10 @@ void Item ::
 {
 	assert (Item :: is_initialized ());
 	assert (has_representation ());
+	assert (representation -> getCreator () != NULL);
 
 	delete representation;
-	//	'delete' doesn't seem to set to NULL automatically.
+//	representation -> getCreator () -> destroySceneNode (representation -> Ogre :: SceneNode :: getName ());
 	representation = NULL;
 }
 

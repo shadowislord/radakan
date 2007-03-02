@@ -14,15 +14,15 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/include"
 
 include_directories( ${INCLUDE_DIRS} )                
 link_directories(   ${Ogre_LIB_RELEASE} 
-                    ${TSLRPG_BINARY_DIR}/odeogre_core
+                    ${TSLRPG_BINARY_DIR}/ogreode_core
                     ${TSLRPG_BINARY_DIR}/prefab
                     ${TSLRPG_BINARY_DIR}/tinyxml)
 add_library( prefab SHARED ${SRC_FILES} )
 
-set(DEBUG_LIBS      ogremain_d ogreode_core tinyxml)
-set(RELEASE_LIBS    ogremain ogreode_core tinyxml)
-target_link_libraries( prefab   optimized   ${RELEASE_LIBS}
-                                debug       ${DEBUG_LIBS} )
+#	set(DEBUG_LIBS      OgreMain ogreode_core tinyxml)
+#	set(RELEASE_LIBS    OgreMain ogreode_core tinyxml)
+target_link_libraries( prefab OgreMain ogreode_core tinyxml)
+
 if(WIN32)
     set_target_properties( prefab PROPERTIES DEFINE_SYMBOL "OGREODEEXPORT_PREFAB;_USRDL;_PRECOMP" )
 endif(WIN32)

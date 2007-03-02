@@ -11,7 +11,7 @@ and ExampleFrameListener classes.
 
 // Include the OgreOde interface which includes Ogre itself
 #include "OgreOde_Core.h"
-#include "/home/t/opt/ogre-1.2/Samples/Common/include/ExampleApplication.h"
+#include "ExampleApplication.h"
 
 #if !(OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
     using namespace OIS;

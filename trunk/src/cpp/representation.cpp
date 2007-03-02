@@ -7,26 +7,44 @@ using namespace tsl;
 Representation ::
 	Representation (Item & new_item, OgreOde :: World & world) :
 	Object (new_item + "'s representation"),
-	OgreOde :: Body (& world, string :: data ()),
+	Ogre :: SceneNode (world . getSceneManager (), string :: data ()),
 	item (new_item)
 {
 	trace () << get_class_name () << " (" << new_item << ", ~world~)" << endl;
 	assert (Object :: is_initialized ());
 
-	node = world . getSceneManager () -> getRootSceneNode () -> createChildSceneNode ();
+	world . getSceneManager () -> getRootSceneNode () -> addChild (this);
 
-	Ogre :: Entity * entity = world . getSceneManager () -> createEntity
+	entity = world . getSceneManager () -> createEntity
 										(item + "'s entity", item . mesh_name);
-	node -> attachObject (entity);
+	attachObject (entity);
 	
-	assert (node -> numAttachedObjects () == 1);
-	assert (node -> getAttachedObject (0) != NULL);
+	assert (numAttachedObjects () == 1);
 	
-	node -> attachObject (this);
+	if (find ("Ground") != string :: npos)
+	{
+		OgreOde :: EntityInformer * ei = new OgreOde :: EntityInformer (entity, _getFullTransform ());
+		geometry = ei -> createStaticTriangleMesh (& world, world . getDefaultSpace ());
+		trace () << "A static triangle mesh was created for " << * this << "." << endl;
 
-	geometry = new OgreOde :: SphereGeometry (10 * Ogre :: Math :: RangeRandom (0.5, 1.5) /*size . x*/, & world, world . getDefaultSpace ());
-	geometry -> setBody (this);
-	get_entity () . setUserObject (geometry);
+		body = NULL;
+	}
+	else
+	{
+		body = new OgreOde :: Body (& world, string :: data ());
+
+		attachObject (body);
+
+		geometry = new OgreOde :: SphereGeometry (Ogre :: Math :: RangeRandom (0.5, 1.5), & world, world . getDefaultSpace ());
+//		geometry -> setOffsetPosition (Ogre :: Vector3 (0, 1.5, 0));
+		trace () << "A default sphere mesh was created for " << * this << "." << endl;
+
+		geometry -> setBody (body);
+
+		body -> setMass (OgreOde :: SphereMass (item . mass, 1 /*TODO set the right radius*/));
+
+	}
+	entity -> setUserObject (geometry);
 
 	assert (Representation :: is_initialized ());
 }
@@ -37,15 +55,33 @@ Representation ::
 {
 	trace () << "~" << get_class_name () << " ()" << endl;
 	assert (Representation :: is_initialized ());
+	trace () << "~" << get_class_name () << " () A" << endl;
+	
+	getParent () -> removeChild (this);
 
-	node -> detachObject (this);
-
-	assert (node -> numAttachedObjects () == 1);
+	trace () << "~" << get_class_name () << " () C" << endl;
+	if (is_mobile ())
+	{
+	trace () << "~" << get_class_name () << " () D" << endl;
+		detachObject (body);
+	trace () << "~" << get_class_name () << " () E" << endl;
+		delete body;
+	trace () << "~" << get_class_name () << " () F" << endl;
+		body = NULL;
+	trace () << "~" << get_class_name () << " () G" << endl;
+	}
+	trace () << "~" << get_class_name () << " () H" << endl;
+	
+	assert (numAttachedObjects () == 1);
+	trace () << "~" << get_class_name () << " () I" << endl;
 
 	int zero = 0;
-	node -> getCreator () -> destroyMovableObject (node -> detachObject (zero));
+	trace () << "~" << get_class_name () << " () J" << endl;
+	getCreator () -> destroyMovableObject (detachObject (zero));
+	trace () << "~" << get_class_name () << " () K" << endl;
 
-	assert (node -> numAttachedObjects () == 0);
+	assert (numAttachedObjects () == 0);
+	trace () << "~" << get_class_name () << " () L" << endl;
 
 	assert (Object :: is_initialized ());
 }
@@ -56,7 +92,8 @@ bool Representation ::
 	const
 {
 	assert (warn <Representation> (Object :: is_initialized ()));
-	assert (node -> numAttachedObjects () == 2);
+	assert (Ogre :: SceneNode :: numAttachedObjects () <= 2);
+	assert (Ogre :: SceneNode :: getParent () != NULL);
 
 	return true;
 }
@@ -68,12 +105,19 @@ string Representation ::
 	return "Representation";
 }
 
+bool Representation ::
+	is_mobile () const
+{
+	return (body != NULL);
+}
+
 Ogre :: Vector3 Representation ::
 	get_front_direction () const
 {
 	assert (Representation :: is_initialized ());
 
-	return getOrientation () * Ogre :: Vector3 (0, 0, 1);
+	//	notice the minus sign
+	return getOrientation () * - z_axis;
 }
 
 Ogre :: Vector3 Representation ::
@@ -81,7 +125,7 @@ Ogre :: Vector3 Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	return getOrientation () * Ogre :: Vector3 (1, 0, 0);
+	return getOrientation () * x_axis;
 }
 
 Ogre :: Vector3 Representation ::
@@ -89,7 +133,15 @@ Ogre :: Vector3 Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	return getOrientation () * Ogre :: Vector3 (0, 1, 0);
+	return getOrientation () * y_axis;
+}
+
+float Representation ::
+	get_scale ()
+{
+	assert (Representation :: is_initialized ());
+
+	return Ogre :: Math :: Sqrt (getScale () . squaredLength () / 3);
 }
 
 void Representation ::
@@ -97,22 +149,33 @@ void Representation ::
 {
 	assert (Representation :: is_initialized ());
 
-	//	TODO set the scale for bullet to.
+	//	TODO set the scale for OgreOde to.
 
-	node -> setScale (scale, scale, scale);
+	setScale (scale, scale, scale);
 }
 
 void Representation ::
-	move (float distance)
+	set_material (string name)
 {
 	assert (Representation :: is_initialized ());
 
-	setPosition (getPosition () - distance * get_front_direction ());
-	//	addForce (- distance * get_front_direction ());
+	entity -> setMaterialName (name);
+}
+
+void Representation ::
+	move (float distance, Ogre :: Vector3 ax)
+{
+	assert (Representation :: is_initialized ());
+
+	if (ax == zero)
+	{
+		ax = get_front_direction ();
+	}
+
+	setPosition (getPosition () + distance * ax);
+	//	addForce (distance * get_front_direction ());
 	
-	debug () << "new OgreOde :: Body position: " << to_string (getPosition ()) << endl;
-	debug () << "new Ode :: Body position: (" << dBodyGetPosition (_body) [0] << ", " << dBodyGetPosition (_body) [1] << ", " << dBodyGetPosition (_body) [2] << ")" << endl;
-	debug () << "new Ogre :: SceneNode position: " << to_string (node -> getPosition ()) << endl;
+	debug () << "new position: " << to_string (getPosition ()) << endl;
 }
 
 void Representation ::
@@ -121,19 +184,12 @@ void Representation ::
 	debug () << "turn (" << radian_angle << ", " << to_string (ax) << ")" << endl;
 	assert (Representation :: is_initialized ());
 
-	setOrientation (getOrientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
-}
-
-Ogre :: Entity & Representation ::
-	get_entity () const
-{
-	assert (Representation :: is_initialized ());
-
-	if (dynamic_cast <Ogre :: Entity *> (node -> getAttachedObject (0)) == NULL)
+	if (ax == zero)
 	{
-		return * dynamic_cast <Ogre :: Entity *> (node -> getAttachedObject (1));
+		ax = get_top_direction ();
 	}
-	return * dynamic_cast <Ogre :: Entity *> (node -> getAttachedObject (0));
+
+	setOrientation (getOrientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
 }
 
 Ogre :: Quaternion tsl :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)

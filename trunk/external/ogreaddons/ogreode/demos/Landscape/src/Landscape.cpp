@@ -28,8 +28,6 @@ int main(int argc, char *argv[])
 #endif
 {
     LandscapeApplication app;
-
-    SET_TERM_HANDLER;
     
     try 
 	{
@@ -352,37 +350,37 @@ bool LandscapeFrameListener::frameStarted(const FrameEvent& evt)
 	if (mTimeUntilNextToggle <= 0) 
 	{
 		// Switch debugging objects on or off
-		if (mInputDevice->isKeyDown(KC_E))
+		if (mKeyboard->isKeyDown(OIS::KC_E))
 		{
 			_world->setShowDebugGeometries(!_world->getShowDebugGeometries());
 			mTimeUntilNextToggle = 0.5;
         }
         // Switch debugging Contacts on or off
-        if (mInputDevice->isKeyDown(KC_B))
+        if (mKeyboard->isKeyDown(OIS::KC_B))
         {
             _world->setShowDebugContact(!_world->getShowDebugContact());
             mTimeUntilNextToggle = 0.5;
         }
 
 
-		if(mInputDevice->isKeyDown(KC_N)) 
+		if(mKeyboard->isKeyDown(OIS::KC_N)) 
 		{
 			changeCar();
 			mTimeUntilNextToggle = 0.5;
 		}
 
-		if(mInputDevice->isKeyDown(KC_U)) 
+		if(mKeyboard->isKeyDown(OIS::KC_U)) 
 		{
 			_stepper->pause(false);
 			mTimeUntilNextToggle = 0.5;
 		}
-		if(mInputDevice->isKeyDown(KC_P)) 
+        if(mKeyboard->isKeyDown(OIS::KC_P)) 
 		{
 			_stepper->pause(true);
 			mTimeUntilNextToggle = 0.5;
 		}
 		// Change the drive mode between front, rear and 4wd
-		if ((mInputDevice->isKeyDown(KC_X))&& _vehicle)
+		if ((mKeyboard->isKeyDown(OIS::KC_X)) && _vehicle)
 		{
 			switch(_drive)
 			{
@@ -428,7 +426,10 @@ bool LandscapeFrameListener::frameStarted(const FrameEvent& evt)
 
 	if(!_stepper->isPaused() && _vehicle)
 	{
-		_vehicle->setInputs(mInputDevice->isKeyDown(KC_J),mInputDevice->isKeyDown(KC_L),mInputDevice->isKeyDown(KC_I),mInputDevice->isKeyDown(KC_K));
+		_vehicle->setInputs(mKeyboard->isKeyDown(OIS::KC_J),
+                            mKeyboard->isKeyDown(OIS::KC_L),
+                            mKeyboard->isKeyDown(OIS::KC_I),
+                            mKeyboard->isKeyDown(OIS::KC_K));
 		_vehicle->update(time);
 	}
 
@@ -455,7 +456,7 @@ bool LandscapeFrameListener::frameStarted(const FrameEvent& evt)
         _average_num_query = _terrain->getNumQueries();
     _average_num_query = (_average_num_query*99 + _terrain->getNumQueries()) / 100;
    
-    mWindow->setDebugText(
+    mDebugText =(
         (_vehicle?"Vehicle Pos: " + StringConverter::toString(_vehicle->getSceneNode()->getPosition()):String("")) +
         " nQueries: " + StringConverter::toString(_average_num_query));
 

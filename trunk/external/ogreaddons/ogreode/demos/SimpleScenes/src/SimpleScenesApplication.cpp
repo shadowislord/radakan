@@ -32,8 +32,6 @@ int main(int argc,char* argv[])
 	// Create the application and try to run it
     SimpleScenesApplication app;
 
-    SET_TERM_HANDLER;
-
     try
 	{
 		app.go();

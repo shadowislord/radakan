@@ -143,14 +143,12 @@ Real World::getAutoSleepTime()
 //------------------------------------------------------------------------------------------------
 void World::setAutoSleepAverageSamplesCount(size_t time)
 {
-	//	This doesn't work!
-    //	!!!	dWorldSetAutoDisableAverageSamplesCount(_world, time);
+    dWorldSetAutoDisableAverageSamplesCount(_world, time);
 }
 //------------------------------------------------------------------------------------------------
 size_t World::getAutoSleepAverageSamplesCount()
 {
-	//	This doesn't work!
-    return 0; //	!!!	(Real)dWorldGetAutoDisableAverageSamplesCount(_world);
+    return (Real)dWorldGetAutoDisableAverageSamplesCount(_world);
 }
 //------------------------------------------------------------------------------------------------
 void World::setContactCorrectionVelocity(Real velocity)

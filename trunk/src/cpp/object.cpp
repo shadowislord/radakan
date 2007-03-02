@@ -6,8 +6,8 @@ using namespace std;
 using namespace tsl;
 
 #ifdef TSL_DEBUG
-unsigned long int Object :: turn = 0;
-set <Object *> Object :: objects;
+	unsigned long int Object :: turn = 0;
+	set <Object *> Object :: objects;
 #endif
 
 //  constructor
@@ -164,16 +164,10 @@ ostream & Object ::
 	print () const
 {
 	#ifdef TSL_DEBUG
-		ostream & a = cout;
-		ostream & b = a << turn;
-		ostream & c = b << " - ";
-		ostream & d = c << * this;
-		ostream & e = d << ": ";
-		return e;
+		return cout << turn << " - " << string :: data () << ": ";
+	#else
+		return cout << string :: data () << ": ";
 	#endif
-
-	return cout << "";
-//	return cout << turn << " - " << * this << ": ";
 }
 
 template <class T> bool Object ::

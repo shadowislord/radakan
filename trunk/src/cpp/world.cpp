@@ -15,16 +15,32 @@ const int World :: min_x = 0;
 const int World :: max_x = 2;
 const int World :: min_z = 0;
 const int World :: max_z = 1;
+const int World :: min_vertical_camera_angle = - 90;
+const int World :: max_vertical_camera_angle = 90;
+
+//	a few constants for our stepper
+const float max_frame_time = 0.1;
+const float time_scale = 1.0;
+
+//	raeez: If we set this to a normal value (say 0.1) we get sucked way too
+//	quickly to be able  to see what is going on
+const float time_step = 0.9;
 
 //  constructor
 World ::
-	World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path,Ogre :: Root * root) :
+	World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path) :
 	Object ("world"),
 	OgreOde :: World (& scene_manager),
+	OgreOde :: ExactVariableStepHandler
+	(
+		this,   //	TODO: don't use 'this' in the constructor.
+		OgreOde :: StepHandler :: QuickStep,
+		time_step,
+		max_frame_time,
+		time_scale
+	),
 	gui (new_gui),
-	camera (* scene_manager . createCamera ("world camera")),
-        time_step (3)   // raeez: If we set this to a normal value (say 0.1) we get sucked way too quickly to be able
-                        // to see what is going on
+	camera (* scene_manager . createCamera ("world camera"))
 {
 	assert (Singleton <World> :: is_initialized ());
 	assert (Algorithm <TSL> :: is_initialized ());
@@ -38,7 +54,7 @@ World ::
 	debug () << "ERP: " << getERP () << endl;
 	debug () << "CFM: " << getCFM () << endl;
 
-	//setGravity (Ogre :: Vector3 (0, - 9.81, 0));
+	setGravity (Ogre :: Vector3 (0, - 9.81, 0));
 
 	//	TODO make the next line work.
 	getSceneManager () -> setSkyDome (true, "Peaceful", 10, 5);
@@ -60,25 +76,10 @@ World ::
 	}
 
 	tiles [pair <int, int> (0, 0)] -> add (Player :: create ("Player", "ninja.mesh", 80, 65));
-	Player :: get () . get_representation () . setPosition (Ogre :: Vector3 (10.5, 0, 10.5));
+	Player :: get () . get_representation () . setPosition (Ogre :: Vector3 (10.5, 10, 10.5));
 	Player :: get () . get_representation () . set_scale (0.004);
 
 	assert (World :: is_initialized ());
-
-        // a few constants for our stepper
-        const Ogre::Real max_frame_time = Ogre::Real(1.0 / 4);
-        const Ogre::Real time_scale = Ogre::Real(1.0);
-        const Ogre::Real frame_rate = Ogre::Real(1.0 / 60);
-
-        // create our stepper
-        stepper = new OgreOde::ForwardFixedInterpolatedStepHandler (this, 
-            OgreOde::StepHandler::QuickStep, 
-            time_step,
-            frame_rate,
-            max_frame_time,
-            time_scale);
-
-         stepper->setAutomatic(OgreOde::StepHandler::AutoMode_PostFrame,root);
 }
 
 //  destructor
@@ -129,18 +130,6 @@ Algorithm <TSL> & World ::
 {
 	assert (is_initialized ());
 
-	/*Player :: get (). get_representation () . addForce (Ogre :: Vector3 (1, 1, 1));
-	cout << "force: " << Player :: get (). get_representation () . getForce () << endl;
-	const int steps = 10;
-	for (int i = 0; i < steps; i ++)
-	{
-		quickStep (1000 * owner . get_last_turn_lenght () / steps);
-		Player :: get (). get_representation () . addForce (Ogre :: Vector3 (0, - 9.81, 0));
-		cout << "force: " << Player :: get (). get_representation () . getForce () << endl;
-		Player :: get (). get_representation () . move (0);
-		
-	}*/
-
 	for (Tile * tile = get_child (); tile != NULL; tile = get_another_child ())
 	{
 		for (NPC_iterator npc = tile -> npcs . begin (); npc != tile -> npcs . end (); npc ++)
@@ -151,44 +140,35 @@ Algorithm <TSL> & World ::
 
 	//	Handle movement
 	//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
-	unsigned long turn_lenght = owner . get_last_turn_lenght ();
+	const float turn_lenght = owner . get_last_turn_lenght ();
 	if (Input_Engine :: get () . get_key ("e", false))
 	{
-		Player :: get () . get_representation () . move (0.008 * turn_lenght);
+		Player :: get () . get_representation () . move (8 * turn_lenght);
 	}
 	if (Input_Engine :: get () . get_key ("d", false))
 	{
-		Player :: get () . get_representation () . move (- 0.004 * turn_lenght);
+		Player :: get () . get_representation () . move (- 4 * turn_lenght);
 	}
 	if (Input_Engine :: get () . get_key ("s", false))
 	{
-		Player :: get () . get_representation () . turn (0.005 * turn_lenght);
+		Player :: get () . get_representation () . turn (5 * turn_lenght);
 	}
 	if (Input_Engine :: get () . get_key ("f", false))
 	{
-		Player :: get () . get_representation () . turn (- 0.005 * turn_lenght);
+		Player :: get () . get_representation () . turn (- 5 * turn_lenght);
 	}
 
 	Ogre :: Vector3 position = Player :: get () . get_representation () . getPosition ();
 	int x = int (position . x) / Tile :: side_length;
 	int z = int (position . z) / Tile :: side_length;
-        // We are being sucked somewhere by a force... this takes us out of possible space
-        // and causes the assertions below to fail. And of course if the assertions are failing
-       // it means we would be translated somewhere where there are no tiles.
-       // temporary measure of placing you back a notch only to be sucked ober and over and over again :)
+		// We are being sucked somewhere by a force... this takes us out of possible space
+		// and causes the assertions below to fail. And of course if the assertions are failing
+	   // it means we would be translated somewhere where there are no tiles.
+	   // temporary measure of placing you back a notch only to be sucked ober and over and over again :)
 	assert (min_x <= x);
 	assert (x <= max_x);
-        if (min_x > x)
-        {
-            x = max_x;
-        }
 	assert (min_z <= z);
 	assert (z <= max_z);
-        if (min_z > z)
-        {
-            z = max_z;
-        }
-//	debug () << "tile at (" << x << ", 0, " << z << ")" << endl;
 	Tile * new_active_tile = tiles [pair <int, int> (x, z)];
 	assert (new_active_tile != NULL);
 	set_active_state (* new_active_tile);
@@ -257,14 +237,23 @@ Algorithm <TSL> & World ::
 	{
 		const Ogre :: Vector3 & mouse_position = Input_Engine :: get () . get_mouse_position (true);
 
-		debug () << "offset: " << to_string (mouse_position)  << endl;
+		debug () << "mouse offset: " << to_string (mouse_position) << endl;
 
-		if (mouse_position .x != 0)
+		if (mouse_position . x != 0)
 		{
 			Player :: get () . get_representation () . turn
-						(- 0.005 * owner . get_last_turn_lenght () * mouse_position .x);
+						(- 5 * turn_lenght * mouse_position . x);
 		}
-		vertical_camera_angle -= 0.001 * owner . get_last_turn_lenght () * mouse_position . y;
+		vertical_camera_angle -= turn_lenght * mouse_position . y;
+
+		if (vertical_camera_angle < min_vertical_camera_angle)
+		{
+			vertical_camera_angle = min_vertical_camera_angle;
+		}
+		else if (max_vertical_camera_angle < vertical_camera_angle)
+		{
+			vertical_camera_angle = max_vertical_camera_angle;
+		}
 	}
 
 	if (Input_Engine :: get () . get_mouse_button
@@ -280,6 +269,15 @@ Algorithm <TSL> & World ::
 		}
 	}
 
+	Ogre :: Vector3 pre_position = Player :: get () . get_representation () . getPosition ();
+	OgreOde :: StepHandler :: step (turn_lenght);
+	OgreOde :: World :: synchronise ();
+	Ogre :: Vector3 displacement = Player :: get () . get_representation () . getPosition () - pre_position;
+	if (displacement != zero)
+	{
+		debug () << "Physics displacement: " << to_string (displacement) << endl;
+	}
+	
 	camera . setPosition
 	(
 		Player :: get () . get_representation () . getPosition ()

@@ -151,11 +151,13 @@ bool Input_Engine ::
 
 	if (gui_button == button)
 	{
-		trace () << "GUI button '" << button << "' was pressed." << endl;
+		string to_be = "is";
 		if (reset)
 		{
 			gui_button = "";
+			to_be = "was";
 		}
+		trace () << "GUI button '" << button << "' " << to_be << " pressed." << endl;
 		return true;
 	}
 	return false;
@@ -168,11 +170,13 @@ bool Input_Engine ::
 
 	if (mouse_buttons [button])
 	{
-		trace () << "Mouse button '" << button << "' was pressed." << endl;
+		string to_be = "is";
 		if (reset)
 		{
 			mouse_buttons [button] = false;
+			to_be = "was";
 		}
+		trace () << "Mouse button '" << button << "' " << to_be << " pressed." << endl;
 		return true;
 	}
 	return false;
@@ -222,7 +226,7 @@ bool Input_Engine ::
 
 	string key_string = convert (keyboard -> getAsString (key_event . key));
 	keys [key_string] = true;
-	trace () << "key '" << key_string << "' was pressed." << endl;
+	trace () << "key '" << key_string << "' is pressed." << endl;
 
 	return true;
 }

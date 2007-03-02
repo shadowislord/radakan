@@ -174,15 +174,20 @@ template <class T> void Disjoint_Set <T> ::
 {
 	assert (Disjoint_Set <T> :: is_initialized ());
 
+	const int initial_number_of_children = children . size ();
+
 	//	We can't use 'get_child' and 'get_another_child' here.
 
+	int child_number = 0;
 	for (typename set<T*> :: const_iterator i = children . begin (); i != children . end (); i ++)
 
 	for (T_iterator i = children . begin (); i != children . end (); i ++)
 
 	{
+		child_number ++;
+		assert (child_number <= initial_number_of_children);
 		assert (* i != NULL);
-		trace () << "deleting " << * * i << "..." << endl;
+		trace () << "deleting child " << child_number << " of " << initial_number_of_children << ": " << * * i << "..." << endl;
 		delete * i;
 	}
 

@@ -2,6 +2,7 @@
 find_package(Fmod)
 find_package(Ogre)
 find_package(Boost)
+find_package(Cegui)
 
 if(WIN32)
     find_package(DIrectX)
@@ -20,12 +21,14 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
                     "${TSLRPG_SOURCE_DIR}/external/ois-1.0RC1/includes"
                     "${TSLRPG_SOURCE_DIR}/external/audiere/include"
                     ${Ogre_INCLUDE_DIR}
-                    ${Ogre_INCLUDE_DIR}/CEGUI
+                    ${Ogre_INCLUDE_DIR}
                     ${Ogre_SAMPLES_DIR}/include
+                    ${Cegui_INCLUDE_DIR}
                     )
 
 set(LINK_DIRS       ${Ogre_LIB_RELEASE} 
                     ${Fmod_LIB_RELEASE}
+                    ${Cegui_LIB_RELEASE}
                     ${TSLRPG_BINARY_DIR}/odeogre_core
                     ${TSLRPG_BINARY_DIR}/audiere
                     ${TSLRPG_BINARY_DIR}/tinyxml

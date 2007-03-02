@@ -13,7 +13,7 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/external/ode-0.8/include"
 
 include_directories( ${INCLUDE_DIRS} )                
 link_directories(   ${Ogre_LIB_RELEASE} 
-                    ${TSLRPG_BINARY_DIR}/odeogre_core
+                    ${TSLRPG_BINARY_DIR}/ogreode_core
                     ${TSLRPG_BINARY_DIR}/tinyxml
                     ${TSLRPG_BINARY_DIR}/prefab)
 add_library( loader SHARED ${SRC_FILES} )

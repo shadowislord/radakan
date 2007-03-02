@@ -35,61 +35,61 @@ Tile ::
 		add_xml (* representation_xml);
 	}
 
-/*	#ifndef TSL_TRACE
-		//	not textured
-		represent (Item :: create ("House", "house.mesh", 0, 0, false), 42, 0, 18, 0.016);
-		represent (Item :: create ("Wagon", "wagon.mesh", 0, 0), - 10, 0, - 10, 0.0008);
-		represent (Item :: create ("Pot", "pot.mesh", 0, 0), - 12, 0, - 10, 0.0008);
-		represent (Item :: create ("Pot 2", "pot_2.mesh", 0, 0), - 14, 0, - 10, 0.0008);
-		represent (Item :: create ("Pine tree", "pine_tree_2.mesh", 0, 0, false), - 18, 1.4, - 18, 0.06);
-
+/*	if (root -> FirstChildElement ("forest") != NULL)
+	{
 		//	forest of 1961 trees
 		//	(30000 trees takes to long to load)
-		Item * temp_tree = NULL;
-		for (int i = - 25; i <= 25; i ++)
+		const int trees_one_a_line = 11;
+
+		float x;
+		const float y = 0;
+		float z;
+		const float scale = 0.06;
+		string tree_name;
+		
+		for (int i = 0; i < trees_one_a_line; i ++)
 		{
-			for (int j = int (- sqrt (625 - i * i)); j <= sqrt (625 - i * i); j ++)
+			for (int j = 0; j < trees_one_a_line; j ++)
 			{
+				x = side_length * i / trees_one_a_line + Ogre :: Math :: RangeRandom (0.5, 0.5);
+				z = side_length * j / trees_one_a_line + Ogre :: Math :: RangeRandom (0.5, 0.5);
+				tree_name = "Tree no. " + to_string (trees_one_a_line * i + j);
+
 				if (0.4 < Ogre :: Math :: RangeRandom (0, 1))
-				{
-					temp_tree = & represent
-					(
-						Item :: create
-						(
-							"Tree no. " + to_string (50 * i + j),
-							"tree.mesh",
-							0,
-							0,
-							false
-						),
-						- 50 + 4 * i + Ogre :: Math :: RangeRandom (- 130, 130),
-						0,
-						110 + 4 * j + Ogre :: Math :: RangeRandom (- 130, 130),
-						0.06
-					);
-					temp_tree -> get_representation () . turn (- Ogre :: Math :: HALF_PI, Ogre :: Vector3 (1, 0, 0));
-				}
-				else
 				{
 					represent
 					(
-						Item :: create
-						(
-							"Tree no. " + to_string (50 * i + j),
-							"pine_tree.mesh",
-							0,
-							0,
-							false
-						),
-						- 50 + 4 * i + Ogre :: Math :: RangeRandom (- 130, 130),
-						3.84,
-						110 + 4 * j + Ogre :: Math :: RangeRandom (- 130, 130),
-						0.06
+						Item :: create (tree_name, "tree.mesh", 0, 0, false),
+						x,
+						y,
+						z,
+						scale
+					) . turn (- Ogre :: Math :: HALF_PI, Ogre :: Vector3 (1, 0, 0));
+				}
+				else
+				{
+					Representation & pine_tree = represent
+					(
+						Item :: create (tree_name, "pine_tree.mesh", 0, 0, false),
+						x,
+						y,
+						z,
+						scale
 					);
+					pine_tree . move (4, pine_tree . get_top_direction ());
 				}
 			}
 		}
-	#endif*/
+	}*/
+
+	/*
+	//	not textured
+	represent (Item :: create ("House", "house.mesh", 0, 0, false), 42, 0, 18, 0.016);
+	represent (Item :: create ("Wagon", "wagon.mesh", 0, 0), - 10, 0, - 10, 0.0008);
+	represent (Item :: create ("Pot", "pot.mesh", 0, 0), - 12, 0, - 10, 0.0008);
+	represent (Item :: create ("Pot 2", "pot_2.mesh", 0, 0), - 14, 0, - 10, 0.0008);
+	represent (Item :: create ("Pine tree", "pine_tree_2.mesh", 0, 0, false), - 18, 1.4, - 18, 0.06);
+	*/
 
 	assert (is_initialized ());
 }
@@ -155,6 +155,7 @@ bool Tile ::
 
 	Ogre :: Vector3 position = item . get_representation () . getPosition ();
 	Ogre :: Quaternion orientation = item . get_representation () . getOrientation ();
+	float scale = item . get_representation () . get_scale ();
 	
 	item . remove_representation ();
 
@@ -168,6 +169,7 @@ bool Tile ::
 
 	item . get_representation () . setPosition (position);
 	item . get_representation () . setOrientation (orientation);
+	item . get_representation () . set_scale (scale);
 
 	return true;
 }
@@ -232,14 +234,6 @@ void Tile ::
 	TiXmlElement * material = element . FirstChildElement ("material");
 	if (material != NULL)
 	{
-		representation . get_entity () . setMaterialName
-									(material -> Attribute ("name"));
-	}
-
-	TiXmlElement * gravity = element . FirstChildElement ("gravity");
-	if (gravity != NULL)
-	{
-		representation . setAffectedByGravity
-						(gravity -> Attribute ("affected") == "true");
+		representation . set_material (material -> Attribute ("name"));
 	}
 }

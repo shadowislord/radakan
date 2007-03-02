@@ -15,17 +15,21 @@ namespace tsl
 	class World :
 		public Singleton <World>,
 		public Algorithm <TSL>,
-		public Data_State_Machine <Tile>,
-		public OgreOde :: World
+		private Data_State_Machine <Tile>,
+		private OgreOde :: World,
+		public OgreOde :: ExactVariableStepHandler
 	{
 		public :
-			World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path,Ogre :: Root * root);
+			World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path);
 			virtual ~World ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
 			virtual void set_active_state (Tile & tile);
 			virtual Algorithm <TSL> & transit (TSL & owner);
+
+			//	used by OgreOde :: StepHandler :: QuickStep
+			OgreOde :: StepHandler * stepper;
 
 		private :
 			//	Copies are not allowed.
@@ -44,10 +48,12 @@ namespace tsl
 			static const int max_x;
 			static const int min_z;
 			static const int max_z;
+
+			///	in degrees
+			static const int min_vertical_camera_angle;
 			
-			//both used by OgreOde::StepHandler:QuickStep
-			OgreOde::StepHandler * stepper;
-			Ogre::Real time_step;
+			///	in degrees
+			static const int max_vertical_camera_angle;
 	};
 }
 

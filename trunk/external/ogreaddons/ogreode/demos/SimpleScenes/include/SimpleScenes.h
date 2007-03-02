@@ -13,7 +13,8 @@ similar to this will be built into OgreOde.
 #include "OgreOde_Prefab.h"
 #include "OgreOde_Loader.h"
 
-#if (OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
+#if !(OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
+#include "OIS/ois.h"
 namespace OIS
 {
 	class Keyboard;

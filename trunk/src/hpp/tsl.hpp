@@ -25,13 +25,13 @@ namespace tsl
 			void set_camera (Ogre :: Camera & new_camera);
 			string get_FPS () const;
 
-			///	in milliseconds
-			const unsigned long & get_last_turn_lenght () const;
+			///	in seconds
+			const float & get_last_turn_lenght () const;
 
 			Ogre :: RenderWindow * window;
 
 		private :
-			unsigned long last_turn_lenght;
+			float last_turn_lenght;
 			Ogre :: Root * root;
 			Ogre :: Timer * turn_lenght_timer;
 	};

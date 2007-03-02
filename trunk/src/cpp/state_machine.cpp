@@ -76,14 +76,15 @@ template <class T> void State_Machine <T> ::
 
 	if (active_state != & t)
 	{
-		//	'get_name' is used here as 'active_state' could be NULL.
-		trace () << "the active changed ..." << endl;
+		string active_state_name = "NULL";
 		if (active_state != NULL)
 		{
-			trace () << "... (from " << * active_state << ") ..." << endl;
+			active_state_name =  * active_state;
 		}
-		trace () << "... to " << t << "." << endl;
+		
 		active_state = & t;
+		
+		debug () << "The active state changed from " << active_state_name << " to " << t << "." << endl;
 	}
 }
 
