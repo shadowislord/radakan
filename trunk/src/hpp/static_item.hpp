@@ -1,27 +1,20 @@
-#ifndef TSL_NPC_HPP
-#define TSL_NPC_HPP
+#ifndef TSL_STATIC_ITEM_HPP
+#define TSL_STATIC_ITEM_HPP
 
-#include "character.hpp"
-#include "algorithm_state_machine.hpp"
+#include "item.hpp"
 
 using namespace std;
 
 namespace tsl
 {
-	class NPC :
-		public Character,
-		public Algorithm_State_Machine <NPC>
+	class Static_Item :
+	public Item
 	{
 		public :
-			virtual ~NPC ();
+			virtual ~Static_Item ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
-			virtual bool is_dead () const;
-			virtual void die ();
-
-			void ai ();
-			
 			static Item & create
 			(
 				string new_name,
@@ -31,17 +24,14 @@ namespace tsl
 			);
 
 		protected :
-			NPC
+			Static_Item
 			(
 				string new_name,
 				string new_mesh_name,
 				float new_volume,
 				float new_mass
 			);
-
-		private :
-			NPC (const NPC & npc);
 	};
 }
 
-#endif	//	TSL_NPC_HPP
+#endif	//	TSL_STATIC_ITEM_HPP

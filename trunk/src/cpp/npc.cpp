@@ -10,32 +10,32 @@ NPC ::
 	NPC
 	(
 		string new_name,
-		string mesh_name,
+		string new_mesh_name,
 		float new_volume,
 		float new_mass
 	) :
 	Object (new_name),
 	Character
 	(
-		mesh_name,
+		new_mesh_name,
 		new_volume,
 		new_mass
 	)
 {
-	trace () << get_class_name () << " (" << new_name << ")" << endl;
+	log (TSL_DEBUG) << get_class_name () << " (" << new_name << ", ...)" << endl;
 	assert (Character :: is_initialized ());
 
 	set_active_state <Peace_State> ();
 
 	assert (is_initialized ());
-	trace () << " is fully constructed (as NPC)." << endl;
+	log (TSL_DEBUG) << " is fully constructed (as NPC)." << endl;
 }
 
 //  destructor
 NPC ::
 	~NPC ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (NPC :: is_initialized ());
 }
 
@@ -63,14 +63,14 @@ bool NPC ::
 }
 
 //	virtual
-string NPC ::
+void NPC ::
 	die ()
 {
 	assert (NPC :: is_initialized ());
 
 	set_active_state <Dead_State> ();
 
-	return * this + " died!";
+	log () << string :: data () << " died!";
 }
 
 //	static

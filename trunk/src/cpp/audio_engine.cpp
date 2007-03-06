@@ -98,8 +98,8 @@ Audio_Engine ::
 		device = audiere :: OpenDevice ("");
 		if (! device)
 		{
-			debug () << "OpenDevice () failed:" << endl;
-			debug () << "Silence!" << endl;
+			log () << "OpenDevice () failed:" << endl;
+			log () << "Silence!" << endl;
 
 			silent = true;
 		}
@@ -110,7 +110,7 @@ Audio_Engine ::
 	~Audio_Engine ()
 {
 	assert (is_initialized ());
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	if (! silent)
 	{
 		#ifdef TSL_FMOD

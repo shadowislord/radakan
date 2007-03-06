@@ -18,7 +18,7 @@ Dead_State ::
 Dead_State ::
 	~Dead_State ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (Algorithm <NPC> :: is_initialized ());
 }
 
@@ -43,7 +43,7 @@ Algorithm <NPC> & Dead_State ::
 {
 	assert (is_initialized ());
 
-	owner . get_representation () . setOrientation (make_quaternion (- Ogre :: Math :: HALF_PI, owner . get_representation () . get_side_direction ()));
+	owner . get_body () . setOrientation (make_quaternion (- Ogre :: Math :: HALF_PI, owner . get_body () . get_side_direction ()));
 
 	return * this;
 }

@@ -78,7 +78,7 @@ Input_Engine ::
 Input_Engine ::
 	~Input_Engine ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 
 	input_manager -> destroyInputObject (keyboard);
@@ -137,7 +137,7 @@ bool Input_Engine ::
 		if (reset)
 		{
 			keys [key] = false;
-			trace () << "key '" << key << "' was reset." << endl;
+			log (TSL_DEBUG) << "key '" << key << "' was reset." << endl;
 		}
 		return true;
 	}
@@ -157,7 +157,7 @@ bool Input_Engine ::
 			gui_button = "";
 			to_be = "was";
 		}
-		trace () << "GUI button '" << button << "' " << to_be << " pressed." << endl;
+		log (TSL_DEBUG) << "GUI button '" << button << "' " << to_be << " pressed." << endl;
 		return true;
 	}
 	return false;
@@ -176,7 +176,7 @@ bool Input_Engine ::
 			mouse_buttons [button] = false;
 			to_be = "was";
 		}
-		trace () << "Mouse button '" << button << "' " << to_be << " pressed." << endl;
+		log (TSL_DEBUG) << "Mouse button '" << button << "' " << to_be << " pressed." << endl;
 		return true;
 	}
 	return false;
@@ -204,15 +204,13 @@ bool Input_Engine ::
 	CEGUI :: WindowEventArgs * window_event_arguments = (CEGUI :: WindowEventArgs *)(& arguments);
 	if (window_event_arguments == NULL)
 	{
-		GUI_Engine :: get () . get_active_state () . to_type <GUI> () . show
-													("Unknown event type...");
+		show () << "Unknown event type...";
 	}
 	else
 	{
 		gui_button = window_event_arguments -> window -> getText () . c_str ();
 
-		GUI_Engine :: get () . get_active_state () . to_type <GUI> () . show
-							("The '" + gui_button + "' button was clicked.");
+		show () << "The '" << gui_button << "' button was clicked.";
 	}
 
 	return true;
@@ -226,7 +224,7 @@ bool Input_Engine ::
 
 	string key_string = convert (keyboard -> getAsString (key_event . key));
 	keys [key_string] = true;
-	trace () << "key '" << key_string << "' is pressed." << endl;
+	log (TSL_DEBUG) << "key '" << key_string << "' is pressed." << endl;
 
 	return true;
 }
@@ -239,7 +237,7 @@ bool Input_Engine ::
 
 	string key_string = convert (keyboard -> getAsString (key_event . key));
 	keys [key_string] = false;
-	trace () << "key '" << key_string << "' was released." << endl;
+	log (TSL_DEBUG) << "key '" << key_string << "' was released." << endl;
 
 	return true;
 }
@@ -257,9 +255,9 @@ bool Input_Engine ::
 	relative_mouse_position = Ogre :: Vector3 (x . rel, y . rel, z . rel);
 
 //	The assertions below fail if you move the mouse outside the window.
-//	debug () << prev . first << " + " << relative_mouse_position . first << " ?= " <<  absolute_mouse_position . first << endl;
+//	log (TSL_DEBUG) << prev . first << " + " << relative_mouse_position . first << " ?= " <<  absolute_mouse_position . first << endl;
 //	assert (prev . first + relative_mouse_position . first == absolute_mouse_position . first);
-//	debug () << prev . second << " + " << relative_mouse_position . second << " ?= " <<  absolute_mouse_position . second << endl;
+//	log (TSL_DEBUG) << prev . second << " + " << relative_mouse_position . second << " ?= " <<  absolute_mouse_position . second << endl;
 //	assert (prev . second + relative_mouse_position . second == absolute_mouse_position . second);
 
 	return true;
@@ -317,7 +315,7 @@ string Input_Engine ::
 	convert (string key)
 {
 	assert (is_initialized ());
-	trace () << "converting - in: " << key << endl;
+	log (TSL_DEBUG) << "converting - in: " << key << endl;
 
 	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		//	Convert capitals to lower-case:
@@ -384,6 +382,6 @@ string Input_Engine ::
 		}
 	#endif
 
-	trace () << "converting - out: " << key << endl;
+	log (TSL_DEBUG) << "converting - out: " << key << endl;
 	return key;
 }

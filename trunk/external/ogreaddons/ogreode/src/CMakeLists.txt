@@ -1,11 +1,12 @@
 #build prefab library
 
 find_package(Ogre)
+find_package(Ode)
 
 file(GLOB_RECURSE SRC_FILES "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/src" *.cpp)
 
 set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ode-0.8/include"
+                    "${Ode_INCLUDE_DIR}"
                     ${Ogre_INCLUDE_DIR})            
 
 include_directories( ${INCLUDE_DIRS} )                

@@ -8,7 +8,7 @@ Quit_State ::
 	Quit_State () :
 	Object ("quit state")
 {
-	trace () << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << get_class_name () << " ()" << endl;
 	assert (Algorithm <TSL> :: is_initialized ());
 
 	assert (Quit_State :: is_initialized ());
@@ -18,7 +18,7 @@ Quit_State ::
 Quit_State ::
 	~Quit_State ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 
 	assert (Algorithm <TSL> :: is_initialized ());
 }

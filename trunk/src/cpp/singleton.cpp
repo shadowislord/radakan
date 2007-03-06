@@ -10,7 +10,7 @@ template <class T> Singleton <T> ::
 	Singleton () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	trace () << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (Singleton :: is_initialized ());
@@ -20,7 +20,7 @@ template <class T> Singleton <T> ::
 template <class T> Singleton <T> ::
 	~Singleton ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (Singleton <T> :: is_initialized ());
 }
 

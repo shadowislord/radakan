@@ -8,7 +8,7 @@ Container ::
 	Container
 	(
 		string new_name,
-		string mesh_name,
+		string new_mesh_name,
 		float new_volume,
 		float new_mass,
 		bool new_mobile,
@@ -18,8 +18,7 @@ Container ::
 	Object (new_name),
 	Item
 	(
-		new_name,
-		mesh_name,
+		new_mesh_name,
 		new_volume,
 		new_mass,
 		new_mobile,
@@ -37,7 +36,7 @@ Container ::
 Container ::
 	~Container ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -77,7 +76,7 @@ float Container ::
 bool Container ::
 	add (Item & item)
 {
-	trace () << "add (" << item << ")" << endl;
+	log (TSL_DEBUG) << "add (" << item << ")" << endl;
 	assert (is_initialized ());
 	assert (item . is_initialized ());
 	assert (! sealed);

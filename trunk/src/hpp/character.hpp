@@ -2,6 +2,7 @@
 #define TSL_CHARACTER_HPP
 
 #include "multislot.hpp"
+#include "static_item.hpp"
 #include "weapon.hpp"
 
 using namespace std;
@@ -21,9 +22,9 @@ namespace tsl
 			static string get_class_name ();
 			
 			virtual bool is_dead () const = 0;
-			virtual string die () = 0;
+			virtual void die () = 0;
 
-			Item & head;
+			//	Item & head;
 			//	Multislot <Shirt> & body;
 			Multislot <Container> & back;
 			//	Multislot <Bracer> & arms;
@@ -34,7 +35,7 @@ namespace tsl
 		protected :
 			Character
 			(
-				string mesh_name,
+				string new_mesh_name,
 				float new_volume,
 				float new_mass
 			);

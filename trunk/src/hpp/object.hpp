@@ -26,10 +26,8 @@
 //	#define NDEBUG
 
 #ifndef NDEBUG
-	//	TSL run with TSL_DEBUG will print usefull messages.
+	//	TSL run with TSL_DEBUG will print debug messages.
 	#define TSL_DEBUG
-	//	TSL run with TSL_TRACE will print all messages. Do not use it without TSL_DEBUG.
-	#define TSL_TRACE
 #endif
 
 using namespace std;
@@ -52,8 +50,8 @@ namespace tsl
 			template <class T> bool is_type () const;
 			template <class T> T & to_type () const;
 
-			ostream & debug () const;
-			ostream & trace () const;
+			ostringstream & show (bool condition = true) const;
+			ostream & log (bool condition = true) const;
 			ostream & error () const;
 
 			///	If possible, use the Disjoint_Set methods instead.
@@ -73,6 +71,9 @@ namespace tsl
 			static string to_string (const Ogre :: Vector3 & vector);
 			static float to_float (const string);
 
+			///	The message shown in the GUI.
+			static ostringstream message;
+
 			#ifdef TSL_DEBUG
 				static unsigned long int turn;
 
@@ -87,15 +88,17 @@ namespace tsl
 				Object ();
 			#endif
 			Object (string new_name);
-
+			
 			//	This method is only used for debugging.
 			//	Example usage: assert (warn <Class> (object -> Class :: is_initialized ()));
 			//	In case of an assertion failure, you get an informative warning in the log.
 			template <class T> bool warn (bool initialization) const;
 
 		private :
-			ostream & print () const;
 			const Object * parent;	//	the Disjoint_Set in which the object is
+
+			/// for messages that should be ignored
+			static ostringstream the_void;
 	};
 }
 

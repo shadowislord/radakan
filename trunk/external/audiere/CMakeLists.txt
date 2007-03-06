@@ -31,15 +31,14 @@ endif(WIN32)
 
 set(SRC_FILES   
 	"src/basic_source.cpp"
-    "src/cd_null.cpp"
 	"src/debug.cpp"
 	"src/device.cpp"
     "src/device_mixer.cpp"
     "src/device_null.cpp"
     "src/dumb_resample.cpp"
     "src/file_ansi.cpp"
+    "src/input.cpp"
     "src/input_aiff.cpp"
-    "src/input_mp3.cpp"
     "src/input_ogg.cpp"
     "src/input_wav.cpp"
     "src/loop_point_source.cpp"
@@ -133,7 +132,9 @@ target_link_libraries( audiere  optimized   ${RELEASE_LIBS}
                                 debug       ${DEBUG_LIBS} )
 
 if(WIN32)
-    set_target_properties( audiere PROPERTIES DEFINE_SYMBOL "AUDIERE_EXPORTS" COMPILE_FLAGS "-DWIN32_LEAN_AND_MEAN -DWIN32 -D_USRDL -DNOMINMAX" )
+    set_target_properties( audiere PROPERTIES DEFINE_SYMBOL "AUDIERE_EXPORTS" COMPILE_FLAGS "-DWIN32_LEAN_AND_MEAN -DWIN32 -D_USRDL -DNOMINMAX -DNO_SPEEX -DNO_DUMB -DNO_FLAC -DNO_MP3" )
+else(WIN32)
+    set_target_properties( audiere PROPERTIES COMPILE_FLAGS "-DNO_SPEEX -DNO_DUMB -DNO_FLAC -DNO_MP3" )
 endif(WIN32)
 
 install( TARGETS audiere DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )

@@ -24,7 +24,7 @@ namespace tsl
 			static Multislot <T> & create
 			(
 				string new_name,
-				string mesh_name,
+				string new_mesh_name,
 				float new_volume,
 				float new_mass,
 				unsigned int new_max_size
@@ -36,7 +36,7 @@ namespace tsl
 			Multislot
 			(
 				string new_name,
-				string mesh_name,
+				string new_mesh_name,
 				float new_volume,
 				float new_mass,
 				unsigned int new_max_size

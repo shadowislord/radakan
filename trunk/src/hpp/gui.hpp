@@ -22,14 +22,12 @@ namespace tsl
 			virtual ~GUI ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			void show (string new_message);
-			string update_message ();	//	updates the message
+			void update_message ();	//	updates the message
 			CEGUI :: Window & root_window;
 
 		private :
 			GUI (const GUI & gui);
 			CEGUI :: Window * text_window;
-			static string message;
 	};
 }
 

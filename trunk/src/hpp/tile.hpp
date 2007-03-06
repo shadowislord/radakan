@@ -11,6 +11,7 @@
 
 #include "npc.hpp"
 #include "player.hpp"
+#include "static_item.hpp"
 
 #include <tinyxml.h>
 
@@ -32,7 +33,6 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
-			///	Don't use 'add' directely, use 'represent' instead.
 			virtual bool add (Item & item);
 			virtual bool move (Item & item, Disjoint_Set <Item> & destination);
 
@@ -46,8 +46,6 @@ namespace tsl
 			set <NPC *> npcs;
 
 		private :
-			Representation & represent
-					(Item & item, float x, float y, float z, float scale = 1);
 			void add_xml (TiXmlElement & element);
 
 			OgreOde :: World & world;

@@ -8,7 +8,7 @@ Weapon ::
 	Weapon
 	(
 		string new_name,
-		string mesh_name,
+		string new_mesh_name,
 		float new_volume,
 		float new_mass,
 		float new_sharpness,
@@ -21,8 +21,7 @@ Weapon ::
 	Object (new_name),
 	Item
 	(
-		new_name,
-		mesh_name,
+		new_mesh_name,
 		new_volume,
 		new_mass,
 		true,
@@ -47,7 +46,7 @@ Weapon ::
 Weapon ::
 	~Weapon ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -72,16 +71,16 @@ string Weapon ::
 Item & Weapon ::
 	create
 	(
-		string new_name,
-		string new_mesh_name,
-		float new_volume,
-		float new_mass,
-		float new_sharpness,
-		float new_break_chance,
-		float new_speed,
-		float new_attack_rate,
-		float new_defense_rate,
-		float new_damage
+				string new_name,
+				string new_mesh_name,
+				float new_volume,
+				float new_mass,
+				float new_sharpness,
+				float new_break_chance,
+				float new_speed,
+				float new_attack_rate,
+				float new_defense_rate,
+				float new_damage
 	)
 {
 	Item * temp =

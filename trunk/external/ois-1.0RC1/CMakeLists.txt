@@ -24,12 +24,22 @@ if(WIN32)
     set(LINK_DIRS ${LINK_DIRS} ${DirectX_LIB_DIR})
 
     set(SRC_FILES   ${SRC_FILES}
-                    "src/win32/Win32ForceFeedBack.cpp"
+                    "src/win32/Win32ForceFeedback.cpp"
                     "src/win32/Win32InputManager.cpp"
-                    "src/win32/Win32JoyStick.cpp"
-                    "src/win32/Win32KeyBoard.cpp"
+                    "src/win32/Win32Joystick.cpp"
+                    "src/win32/Win32Keyboard.cpp"
                     "src/win32/Win32Mouse.cpp")
-                    
+
+else(WIN32)
+    set(SRC_FILES   ${SRC_FILES}
+                    "src/linux/EventHelpers.cpp"
+                    "src/linux/LinuxForceFeedback.cpp"
+                    "src/linux/LinuxInputManager.cpp"
+                    "src/linux/LinuxJoyStickEvents.cpp"
+                    "src/linux/LinuxKeyboard.cpp"
+                    "src/linux/LinuxMouse.cpp")
+
+    set(LIBS ${LIBS} dl Xaw)
 endif(WIN32)
 
 include_directories( ${INCLUDE_DIR} )

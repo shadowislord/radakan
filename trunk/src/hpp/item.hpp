@@ -1,14 +1,15 @@
 #ifndef TSL_ITEM_HPP
 #define TSL_ITEM_HPP
 
-#include "representation.hpp"
+#include "body.hpp"
+#include "observable.hpp"
 
 using namespace std;
 
 namespace tsl
 {
 	class Item :
-		public virtual Object
+		public Observable <Body>
 	{
 		public :
 			virtual ~Item ();
@@ -16,24 +17,11 @@ namespace tsl
 			static string get_class_name ();
 			virtual float get_total_mass () const;
 
-			static Item & create
-			(
-				string new_name,
-				string new_mesh_name,
-				float new_volume,
-				float new_mass,
-				bool new_mobile = true,
-				bool new_solid = true,
-				bool new_visible = true
-			);
+			void set_body (OgreOde :: World & world);
+			bool has_body () const;
+			void remove_body ();
+			Body & get_body () const;
 
-			void add_representation (OgreOde :: World & world);
-			bool has_representation () const;
-			void remove_representation ();
-			Representation & get_representation () const;
-
-			const string mesh_name;
-			
 			///	in litres
 			const float volume;
 			
@@ -48,10 +36,13 @@ namespace tsl
 			
 			const bool visible;
 
+			Ogre :: Entity & entity;
+
+			static Ogre :: SceneManager * scene_manager;
+
 		protected :
 			Item
 			(
-				string new_name,
 				string new_mesh_name,
 				float new_volume,
 				float new_mass,
@@ -63,9 +54,9 @@ namespace tsl
 		private :
 			//	Copies are not allowed.
 			Item (const Item & item);
-			
+
 			///	can be NULL
-			Representation * representation;
+			Body * body;
 	};
 }
 

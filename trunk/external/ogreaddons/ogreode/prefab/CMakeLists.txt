@@ -1,6 +1,7 @@
 #build prefab library
 
 find_package(Ogre)
+find_package(Ode)
 
 set(SRC_FILES   "src/OgreOdeObject.cpp"
                 "src/OgreOdePrefabObject.cpp"

@@ -21,7 +21,7 @@ namespace tsl
 			virtual ~Battle_Engine ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			string hit (Character & attacker, Character & defender);
+			void hit (Character & attacker, Character & defender);
 
 		private :
 			const int max_distance;

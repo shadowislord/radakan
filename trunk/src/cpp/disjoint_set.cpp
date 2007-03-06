@@ -8,18 +8,18 @@ template <class T> Disjoint_Set <T> ::
 	Disjoint_Set () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	trace () << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (Disjoint_Set <T> :: is_initialized ());
-	trace () << get_class_name () << " () finished" << endl;
+	log (TSL_DEBUG) << get_class_name () << " () finished" << endl;
 }
 
 //  destructor
 template <class T> Disjoint_Set <T> ::
 	~Disjoint_Set ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 
 	delete_children ();
@@ -66,13 +66,12 @@ template <class T> bool Disjoint_Set <T> ::
 template <class T> bool Disjoint_Set <T> ::
 	add (T & t)
 {
-	trace () << "add (" << t << ")" << endl;
+	log (TSL_DEBUG) << "add (" << t << ")" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 	assert (! t . has_parent ());
 
-	debug () << t << " will be added..." << endl;
 	t . put_in (* this);
-	debug () << t << " was added." << endl;
+	log (TSL_DEBUG) << t << " was added." << endl;
 
 	//	'second' means we're interested in if it worked or not.
 	//	'first' would give a iterator to the item.
@@ -88,7 +87,7 @@ template <class T> bool Disjoint_Set <T> ::
 	contains (string name)
 	const
 {
-//	trace () << "contains (" << name << ")" << endl;
+//	log (TSL_DEBUG) << "contains (" << name << ")" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 
 	for (T * i = get_child (); i != NULL; i = get_another_child ())
@@ -106,7 +105,7 @@ template <class T> bool Disjoint_Set <T> ::
 template <class T> bool Disjoint_Set <T> ::
 	move (T & t, Disjoint_Set <T> & destination)
 {
-	trace () << "move (" << t << ", " << destination << ")" << endl;
+	log (TSL_DEBUG) << "move (" << t << ", " << destination << ")" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 	assert (t . is_initialized ());
 	assert (destination . is_initialized ());
@@ -124,7 +123,7 @@ template <class T> T & Disjoint_Set <T> ::
 	get_child (string name)
 	const
 {
-	trace () << "get_child (" << name << ")" << endl;
+	log (TSL_DEBUG) << "get_child (" << name << ")" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 	assert (contains (name));
 
@@ -144,7 +143,7 @@ template <class T> T * Disjoint_Set <T> ::
 	get_child ()
 	const
 {
-//	trace () << "get_child ()" << endl;
+//	log (TSL_DEBUG) << "get_child ()" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 
 	if (children . empty ())
@@ -159,7 +158,7 @@ template <class T> T * Disjoint_Set <T> ::
 	get_another_child ()
 	const
 {
-//	trace () << "get_another_child ()" << endl;
+//	log (TSL_DEBUG) << "get_another_child ()" << endl;
 	assert (Disjoint_Set <T> :: is_initialized ());
 
 	if (next_child == children . end ())
@@ -187,7 +186,7 @@ template <class T> void Disjoint_Set <T> ::
 		child_number ++;
 		assert (child_number <= initial_number_of_children);
 		assert (* i != NULL);
-		trace () << "deleting child " << child_number << " of " << initial_number_of_children << ": " << * * i << "..." << endl;
+		log (TSL_DEBUG) << "deleting child " << child_number << " of " << initial_number_of_children << ": " << * * i << "..." << endl;
 		delete * i;
 	}
 

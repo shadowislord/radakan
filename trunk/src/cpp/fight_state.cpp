@@ -19,7 +19,7 @@ Fight_State ::
 Fight_State ::
 	~Fight_State ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (Algorithm <NPC> :: is_initialized ());
 }
 

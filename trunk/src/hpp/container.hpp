@@ -42,7 +42,7 @@ namespace tsl
 			Container
 			(
 				string new_name,
-				string mesh_name,
+				string new_mesh_name,
 				float new_volume,
 				float new_mass,
 				bool new_mobile,

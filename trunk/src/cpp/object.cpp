@@ -10,14 +10,17 @@ using namespace tsl;
 	set <Object *> Object :: objects;
 #endif
 
+ostringstream Object :: message;
+ostringstream Object :: the_void;
+
 //  constructor
 Object ::
 	Object (string new_name) :
 	string (new_name),
 	parent (NULL)
 {
+	log (TSL_DEBUG) << "Object (" << new_name << ")" << endl;
 	assert (! new_name . empty ());
-	trace () << "Object (" << new_name << ")" << endl;
 
 	#ifdef TSL_DEBUG
 		objects . insert (this);
@@ -30,7 +33,7 @@ Object ::
 Object ::
 	~Object ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 
 	#ifdef TSL_DEBUG
@@ -58,34 +61,39 @@ string Object ::
 	return "Object";
 }
 
-//	virtual
-ostream & Object ::
-	debug ()
-	const
+ostringstream & Object ::
+	show (bool condition) const
 {
-	#ifdef TSL_DEBUG
-		return print ();
-	#else
-		return cout;
-	#endif
+	if (condition)
+	{
+		message . clear ();
+		return message;
+	}
+
+	the_void . clear ();
+	return the_void;
 }
 
 ostream & Object ::
-	trace ()
-	const
+	log (bool condition) const
 {
-	#ifdef TSL_TRACE
-		return print ();
-	#else
-		return cout;
-	#endif
+	if (condition)
+	{
+		cout << endl;
+		cout << "(turn " << turn << ")" << endl;
+		cout << "'" << string :: data () << "' reports: " << endl;
+		return cout << "\t";
+	}
+	
+	the_void . clear ();
+	return the_void;
 }
 
 ostream & Object ::
 	error ()
 	const
 {
-	return cerr << "ERROR: '" << * this << "' (" << this << ") ";
+	return log () << "An error occurred: ";
 }
 
 bool Object ::
@@ -109,7 +117,7 @@ bool Object ::
 void Object ::
 	put_in (const Object & new_parent)
 {
-	trace () << "put_in (" << new_parent << ")" << endl;
+	log (TSL_DEBUG) << "put_in (" << new_parent << ")" << endl;
 	assert (Object :: is_initialized ());
 	assert (! has_parent ());
 
@@ -160,21 +168,11 @@ float Object ::
 	return result;
 }
 
-ostream & Object ::
-	print () const
-{
-	#ifdef TSL_DEBUG
-		return cout << turn << " - " << string :: data () << ": ";
-	#else
-		return cout << string :: data () << ": ";
-	#endif
-}
-
 template <class T> bool Object ::
 	is_type ()
 	const
 {
-//	trace () << "is_type <" << T :: get_class_name () << "> ()" << endl;
+//	log (TSL_DEBUG) << "is_type <" << T :: get_class_name () << "> ()" << endl;
 	assert (is_initialized ());
 
 	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
@@ -184,7 +182,7 @@ template <class T> T & Object ::
 	to_type ()
 	const
 {
-//	trace () << "to_type <" << T :: get_class_name () << "> ()" << endl;
+//	log (TSL_DEBUG) << "to_type <" << T :: get_class_name () << "> ()" << endl;
 	assert (is_initialized ());
 	assert (is_type <T> ());
 
@@ -198,7 +196,7 @@ template <class T> bool Object ::
 {
 	if (! initialization)
 	{
-		error () << " is not fully initialized as " << T :: get_class_name () << "!" << endl;
+		error () << "I'm not fully initialized as " << T :: get_class_name () << "!" << endl;
 	}
 	return initialization;
 }
@@ -217,37 +215,39 @@ template <class T> bool Object ::
 #include "world.hpp"
 
 template bool Object :: is_type <Container> () const;
-template bool Object :: is_type <NPC> () const;
-template bool Object :: is_type <Tile> () const;
 template bool Object :: is_type <Data_State_Machine <Tile> > () const;
 template bool Object :: is_type <Disjoint_Set <Item> > () const;
 template bool Object :: is_type <Disjoint_Set <Tile> > () const;
 template bool Object :: is_type <Disjoint_Set <Sound> > () const;
+template bool Object :: is_type <NPC> () const;
+template bool Object :: is_type <Observable <Body> > () const;
 template bool Object :: is_type <Quit_State> () const;
+template bool Object :: is_type <Tile> () const;
 template bool Object :: is_type <TSL> () const;
 template bool Object :: is_type <Weapon> () const;
 
 template Character & Object :: to_type <Character> () const;
 template Container & Object :: to_type <Container> () const;
 template Dead_State & Object :: to_type <Dead_State> () const;
+template Data_State_Machine <Tile> & Object :: to_type <Data_State_Machine <Tile> > () const;
+template Disjoint_Set <GUI> & Object :: to_type <Disjoint_Set <GUI> > () const;
+template Disjoint_Set <Item> & Object :: to_type <Disjoint_Set <Item> > () const;
+template Disjoint_Set <Tile> & Object :: to_type <Disjoint_Set <Tile> > () const;
+template Disjoint_Set <Sound> & Object :: to_type <Disjoint_Set <Sound> > () const;
 template Fight_State & Object :: to_type <Fight_State> () const;
 template GUI & Object :: to_type <GUI> () const;
 template GUI_Engine & Object :: to_type <GUI_Engine> () const;
 template Item & Object :: to_type <Item> () const;
 template NPC & Object :: to_type <NPC> () const;
 template Menu_State & Object :: to_type <Menu_State> () const;
+template Observable <Body> & Object :: to_type <Observable <Body> > () const;
 template Object & Object :: to_type <Object> () const;
 template Peace_State & Object :: to_type <Peace_State> () const;
-template World & Object :: to_type <World> () const;
-template Tile & Object :: to_type <Tile> () const;
-template Data_State_Machine <Tile> & Object :: to_type <Data_State_Machine <Tile> > () const;
-template Disjoint_Set <GUI> & Object :: to_type <Disjoint_Set <GUI> > () const;
-template Disjoint_Set <Item> & Object :: to_type <Disjoint_Set <Item> > () const;
-template Disjoint_Set <Tile> & Object :: to_type <Disjoint_Set <Tile> > () const;
-template Disjoint_Set <Sound> & Object :: to_type <Disjoint_Set <Sound> > () const;
 template Sound & Object :: to_type <Sound> () const;
+template Tile & Object :: to_type <Tile> () const;
 template TSL & Object :: to_type <TSL> () const;
 template Weapon & Object :: to_type <Weapon> () const;
+template World & Object :: to_type <World> () const;
 
 template bool Object :: warn <Audio_Engine> (bool initialization) const;
 template bool Object :: warn <Algorithm <NPC> > (bool initialization) const;
@@ -255,6 +255,7 @@ template bool Object :: warn <Algorithm <TSL> > (bool initialization) const;
 template bool Object :: warn <Algorithm_State_Machine <NPC> > (bool initialization) const;
 template bool Object :: warn <Algorithm_State_Machine <TSL> > (bool initialization) const;
 template bool Object :: warn <Battle_Engine> (bool initialization) const;
+template bool Object :: warn <Body> (bool initialization) const;
 template bool Object :: warn <Character> (bool initialization) const;
 template bool Object :: warn <Data_State_Machine <GUI> > (bool initialization) const;
 template bool Object :: warn <Data_State_Machine <Tile> > (bool initialization) const;
@@ -270,7 +271,8 @@ template bool Object :: warn <Item> (bool initialization) const;
 template bool Object :: warn <Multislot <Container> > (bool initialization) const;
 template bool Object :: warn <Multislot <Item> > (bool initialization) const;
 template bool Object :: warn <NPC> (bool initialization) const;
-template bool Object :: warn <Representation> (bool initialization) const;
+template bool Object :: warn <Observable <Body> > (bool initialization) const;
+template bool Object :: warn <Observer <Body> > (bool initialization) const;
 template bool Object :: warn <Tile> (bool initialization) const;
 template bool Object :: warn <Singleton <Audio_Engine> > (bool initialization) const;
 template bool Object :: warn <Singleton <Battle_Engine> > (bool initialization) const;
@@ -288,5 +290,6 @@ template bool Object :: warn <State_Machine <Algorithm <NPC> > > (bool initializ
 template bool Object :: warn <State_Machine <Algorithm <TSL> > > (bool initialization) const;
 template bool Object :: warn <State_Machine <GUI> > (bool initialization) const;
 template bool Object :: warn <State_Machine <Tile> > (bool initialization) const;
+template bool Object :: warn <Static_Item> (bool initialization) const;
 template bool Object :: warn <TSL> (bool initialization) const;
 template bool Object :: warn <Weapon> (bool initialization) const;

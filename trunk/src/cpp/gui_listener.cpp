@@ -18,7 +18,7 @@ GUI_Listener ::
 GUI_Listener ::
 	~GUI_Listener ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 

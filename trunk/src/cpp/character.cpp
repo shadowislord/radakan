@@ -7,7 +7,7 @@ using namespace tsl;
 Character ::
 	Character
 	(
-		string mesh_name,
+		string new_mesh_name,
 		float new_volume,
 		float new_mass
 	) :
@@ -15,14 +15,14 @@ Character ::
 	Container
 	(
 		"The name doesn't matter as this class is an abstact class.",
-		mesh_name,
+		new_mesh_name,
 		new_volume,
 		new_mass,
 		true,
 		true,
 		true
 	),
-	head (Item :: create (* this + "'s head", "bar.mesh", 1, 1)),
+	//	head (Static_Item :: create (* this + "'s head", "bar.mesh", 1, 1)),
 	//	head (Multislot <Hat> :: create (1)),
 	//	body (Multislot <Shirt> :: create (1)),
 	back (Multislot <Container> :: create (* this + "'s back", "bar.mesh", 50, 0, 1)),
@@ -31,11 +31,11 @@ Character ::
 	//	legs (Multislot <Pants> :: create (1)),
 	//	feet (Multislot <Shoe> :: create (2))
 {
-	trace () << "Character (...)" << endl;
+	log (TSL_DEBUG) << "Character (...)" << endl;
 	assert (Container :: is_initialized ());
 
-	bool check = Container :: add (head);
-	assert (check);
+	bool check/* = Container :: add (head)*/;
+	/*assert (check);*/
 	//	Container :: add (body);
 	check = Container :: add (back);
 	assert (check);
@@ -55,7 +55,7 @@ Character ::
 Character ::
 	~Character ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (Character :: is_initialized ());
 }
 

@@ -8,7 +8,7 @@ template <class T> Multislot <T> ::
 	Multislot
 	(
 		string new_name,
-		string mesh_name,
+		string new_mesh_name,
 		float new_volume,
 		float new_mass,
 		unsigned int new_max_size
@@ -17,7 +17,7 @@ template <class T> Multislot <T> ::
 	Container
 	(
 		new_name,
-		mesh_name,
+		new_mesh_name,
 		new_volume,
 		new_mass,
 		true,
@@ -26,7 +26,7 @@ template <class T> Multislot <T> ::
 	),
 	max_size (new_max_size)
 {
-	trace () << "Multislot (" << new_name << ")" << endl;
+	log (TSL_DEBUG) << "Multislot (" << new_name << ", ...)" << endl;
 	assert (Container :: is_initialized ());
 
 	assert (is_initialized ());
@@ -36,7 +36,7 @@ template <class T> Multislot <T> ::
 template <class T> Multislot <T> ::
 	~Multislot ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (Container :: is_initialized ());
 }
 
@@ -61,7 +61,7 @@ template <class T> bool Multislot <T> ::
 {
 	assert (is_initialized ());
 	assert (item . is_initialized ());
-	assert (! item . has_representation ());
+	assert (! item . has_body ());
 
 	if (item . is_type <T> ())
 	{

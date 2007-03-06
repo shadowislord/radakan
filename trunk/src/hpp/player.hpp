@@ -18,7 +18,7 @@ namespace tsl
 			static string get_class_name ();
 
 			virtual bool is_dead () const;
-			virtual string die ();
+			virtual void die ();
 			
 			static Item & create
 			(
@@ -34,7 +34,7 @@ namespace tsl
 			Player
 			(
 				string new_name,
-				string mesh_name,
+				string new_mesh_name,
 				float new_volume,
 				float new_mass
 			);

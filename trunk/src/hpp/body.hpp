@@ -1,12 +1,12 @@
-#ifndef TSL_REPRESENTATION_HPP
-#define TSL_REPRESENTATION_HPP
+#ifndef TSL_BODY_HPP
+#define TSL_BODY_HPP
 
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 
 #include <OgreOde_Core.h>
 
-#include "object.hpp"
+#include "observable.hpp"
 
 using namespace std;
 
@@ -19,14 +19,20 @@ namespace tsl
 
 	class Item;
 
-	///	Representation is the 3D representation of an Item.
-	class Representation :
-		public virtual Object,
+	///	Body is the 3D representation of an Item.
+	class Body :
+		public Observable <Body>,
 		public Ogre :: SceneNode
 	{
 		public :
-			Representation (Item & new_item, OgreOde :: World & world);
-			virtual ~Representation ();
+   Body
+			(
+				Ogre :: SceneManager & scene_manager,
+				Observable <Body> & observer,
+				Ogre :: Entity & new_entity,
+				OgreOde :: Geometry & new_geometry
+			);
+			virtual ~Body ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
@@ -48,17 +54,16 @@ namespace tsl
 
 		private :
 			//	Copies are not allowed.
-			Representation (const Representation & representation);
+			Body (const Body & body);
 
-			//	We need this for 2D -> 3D convertion.
-			Item & item;
-
-			Ogre :: Entity * entity;
-			OgreOde :: Geometry * geometry;
+			Ogre :: Entity & entity;
+			OgreOde :: Geometry & geometry;
 			OgreOde :: Body * body;
+
+			const Ogre :: Node * root_node;
 	};
 
 	Ogre :: Quaternion make_quaternion (float radian_angle, Ogre :: Vector3 ax);
 }
 
-#endif	//	TSL_REPRESENTATION_HPP
+#endif	//	TSL_BODY_HPP

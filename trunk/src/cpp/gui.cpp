@@ -4,8 +4,6 @@
 using namespace std;
 using namespace tsl;
 
-string GUI :: message;
-
 GUI ::
 	GUI
 	(
@@ -42,7 +40,7 @@ GUI ::
 GUI ::
 	~GUI ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -63,22 +61,12 @@ string GUI ::
 }
 
 void GUI ::
-	show (string new_message)
-{
-	assert (is_initialized ());
-
-	message = new_message;
-}
-
-string GUI ::
 	update_message ()
 {
 	assert (is_initialized ());
 
-	if (text_window -> getText () . c_str () != message)
+	if (text_window -> getText () . c_str () != message . str ())
 	{
-		text_window -> setText (message);
+		text_window -> setText (message . str ());
 	}
-	
-	return message;
 }

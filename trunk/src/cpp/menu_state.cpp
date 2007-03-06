@@ -13,7 +13,7 @@ Menu_State ::
 	Object ("menu state"),
 	gui (GUI_Engine :: get () . create_gui ("menu.cfg"))
 {
-	trace () << "Menu_State ()" << endl;
+	log (TSL_DEBUG) << "Menu_State ()" << endl;
 	assert (Algorithm <TSL> :: is_initialized ());
 
 	assert (Menu_State :: is_initialized ());
@@ -23,7 +23,7 @@ Menu_State ::
 Menu_State ::
 	~Menu_State ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 
 	assert (Algorithm <TSL> :: is_initialized ());
 }
@@ -53,7 +53,7 @@ Algorithm <TSL> & Menu_State ::
 	if (Input_Engine :: get () . get_key ("Escape", true)
 					|| Input_Engine :: get () . get_gui_button ("Return", true))
 	{
-		gui . show ("Game resumed");
+		show () << "Game resumed";
 		return World :: get ();
 	}
 	
@@ -66,7 +66,7 @@ Algorithm <TSL> & Menu_State ::
 	//	FPS
 	if (Input_Engine :: get () . get_gui_button ("Statistics", true))
 	{
-		gui . show (owner . get_FPS ());
+		show () << owner . get_FPS ();
 	}
 
 	GUI_Engine :: get () . activate (gui);

@@ -2,7 +2,7 @@
 #define TSL_TSL_HPP
 
 #include "algorithm_state_machine.hpp"
-#include "representation.hpp"
+#include "body.hpp"
 
 using namespace std;
 

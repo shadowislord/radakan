@@ -18,7 +18,7 @@ TSL ::
 	TSL (string tsl_path, string ogre_media_path) :
 	Object ("TSL")
 {
-	trace () << "TSL (" << tsl_path << ", " << ogre_media_path << ")" << endl;
+	log (TSL_DEBUG) << "TSL (" << tsl_path << ", " << ogre_media_path << ")" << endl;
 
 	new Audio_Engine ();
 	Audio_Engine :: get () . load (tsl_path + "/data/sound/prelude_11.ogg");
@@ -142,9 +142,9 @@ TSL ::
 TSL ::
 	~TSL ()
 {
-	trace () << "~" << get_class_name () << " ()" << endl;
+	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
-	trace () << "active state: " << get_active_state () << endl;
+	log (TSL_DEBUG) << "active state: " << get_active_state () << endl;
 	assert (get_active_state () == Quit_State :: get ());
 
 	delete & Input_Engine :: get ();
@@ -204,10 +204,10 @@ void TSL ::
 
 		if (maximal_turn_lenght < last_turn_lenght)
 		{
-			debug () << "Reducing the turn lenght from " << last_turn_lenght << " to " << maximal_turn_lenght << "..." << endl;
+			log (TSL_DEBUG) << "Reducing the turn lenght from " << last_turn_lenght << " to " << maximal_turn_lenght << "..." << endl;
 			last_turn_lenght = maximal_turn_lenght;
 		}
-		debug () << "Turn lenght: " << last_turn_lenght << endl;
+		log (TSL_DEBUG) << "Turn lenght: " << last_turn_lenght << endl;
 
 		turn_lenght_timer -> reset ();
 
