@@ -1,3 +1,4 @@
+#include "body.hpp"
 #include "npc.hpp"
 #include "dead_state.hpp"
 
@@ -18,7 +19,7 @@ Dead_State ::
 Dead_State ::
 	~Dead_State ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Algorithm <NPC> :: is_initialized ());
 }
 
@@ -43,7 +44,7 @@ Algorithm <NPC> & Dead_State ::
 {
 	assert (is_initialized ());
 
-	owner . get_body () . setOrientation (make_quaternion (- Ogre :: Math :: HALF_PI, owner . get_body () . get_side_direction ()));
+	owner . get_body () . node . setOrientation (make_quaternion (- Ogre :: Math :: HALF_PI, owner . get_body () . get_side_direction ()));
 
 	return * this;
 }

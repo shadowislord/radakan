@@ -15,6 +15,8 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
+			virtual OgreOde :: Geometry & create_geometry ();
+			
 			static Item & create
 			(
 				string new_name,

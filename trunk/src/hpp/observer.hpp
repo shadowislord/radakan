@@ -1,4 +1,4 @@
-#ifndef TSL_OBSERVER_HPP
+/*#ifndef TSL_OBSERVER_HPP
 #define TSL_OBSERVER_HPP
 
 #include "object.hpp"
@@ -16,9 +16,11 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
+			virtual void call (string message) = 0;
+			
 		protected:
 			Observer ();
 	};
 }
 
-#endif	//	TSL_OBSERVER_HPP
+#endif	//	TSL_OBSERVER_HPP*/

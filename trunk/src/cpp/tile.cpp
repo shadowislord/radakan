@@ -6,15 +6,13 @@ using namespace tsl;
 const int Tile :: side_length (20);
 
 Tile ::
-	Tile (OgreOde :: World & new_world, pair <int, int> new_coordinates, string tsl_path) :
+	Tile (pair <int, int> new_coordinates, string tsl_path) :
 	Object (tsl_path + "/data/tile/tile_" + to_string (new_coordinates . first) + "_" + to_string (new_coordinates . second) + ".xml"),
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
-	world (new_world),
 	doc (new TiXmlDocument (string :: c_str ()))
 {
-
-	log (TSL_DEBUG) << "Tile (~new_world~, (" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ")" << endl;
+	log (debugging) << get_class_name () << " :: " << get_class_name () << " ((" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ")" << endl;
 	
 	//	CEGUI-0.4.1 is linked to TinyXml-2.3.3, so we have to use that version.
 	assert (TIXML_MAJOR_VERSION == 2);
@@ -93,14 +91,14 @@ Tile ::
 
 	assert (is_initialized ());
 
-	log (TSL_DEBUG) << "Tile (~new_world~, (" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ") V" << endl;
+	log (debugging) << "Tile ((" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ") V" << endl;
 
 }
 
 Tile ::
 	~Tile ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << get_class_name () << " :: ~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -109,7 +107,7 @@ bool Tile ::
 	is_initialized ()
 	const
 {
-	assert (warn <Tile> (Disjoint_Set <Item> :: is_initialized ()));
+	assert (warn <Tile> (Disjoint_Set <Body> :: is_initialized ()));
 
 	return true;
 }
@@ -123,23 +121,23 @@ string Tile ::
 
 //	virtual
 bool Tile ::
-	add (Item & item)
+	add (Body & body)
 {
+	log (debugging) << get_class_name () << " :: add (" << body << ")" << endl;
 	assert (is_initialized ());
-	assert (item . is_initialized ());
-	assert (item . has_body ());
-	assert (! contains (item));
+	assert (body . is_initialized ());
+	assert (! contains (body));
 
-	bool check = Disjoint_Set <Item> :: add (item);
+	bool check = Disjoint_Set <Body> :: add (body);
 	assert (check);
 
-	if (item . is_type <NPC> ())
+	if (body . item . is_type <NPC> ())
 	{
-		log (TSL_DEBUG) << item << " will be added to the list of NPCs..." << endl;
-		bool check = npcs . insert (& item . to_type <NPC> ()) . second;
+		log (debugging) << body . item << " will be added to the list of NPCs..." << endl;
+		bool check = npcs . insert (& body . item . to_type <NPC> ()) . second;
 		assert (check);
 		
-		log (TSL_DEBUG) << item << " was added to the list of NPCs." << endl;
+		log (debugging) << body . item << " was added to the list of NPCs." << endl;
 	}
 	
 	return true;
@@ -147,21 +145,20 @@ bool Tile ::
 
 //	virtual
 bool Tile ::
-	move (Item & item, Disjoint_Set <Item> & destination)
+	move (Body & body, Disjoint_Set <Body> & destination)
 {
-	log (TSL_DEBUG) << "move (" << item << ", " << destination << ")" << endl;
+	log (debugging) << get_class_name () << " :: move (" << body << ", " << destination << ")" << endl;
 	assert (is_initialized ());
-	assert (item . is_initialized ());
-	assert (item . has_body ());
-	assert (contains (item));
+	assert (body . is_initialized ());
+	assert (contains (body));
 	assert (destination . is_initialized ());
 
-	if (item . is_type <NPC> ())
+	if (body . item . is_type <NPC> ())
 	{
-		npcs . erase (& item . to_type <NPC> ());
+		npcs . erase (& body . item . to_type <NPC> ());
 	}
 
-	bool check = Disjoint_Set <Item> :: move (item, destination);
+	bool check = Disjoint_Set <Body> :: move (body, destination);
 	assert (check);
 
 	return true;
@@ -170,7 +167,7 @@ bool Tile ::
 void Tile ::
 	add_xml (TiXmlElement & element)
 {
-	log (TSL_DEBUG) << "add_xml (~element~)" << endl;
+	log (debugging) << get_class_name () << " :: add_xml (~element~)" << endl;
 	assert (is_initialized ());
 
 	float x = to_float (element . Attribute ("x"));
@@ -180,27 +177,25 @@ void Tile ::
 
 	TiXmlElement * item_xml = element . FirstChildElement ();
 	
-	//	I'm not sure why 'string' is necessairy here. --Tinus
-	assert ((item_xml -> Value () == string ("item")) || (item_xml -> Value () == string ("npc")));
-
-	string name = item_xml -> Attribute ("name") + string (" (") + * this + ")";
+	string name = item_xml -> Attribute ("name") + string (" ") + to_string (position);
 	string mesh = item_xml -> Attribute ("mesh");
 	float volume = to_float (item_xml -> Attribute ("volume"));
 	float mass = to_float (item_xml -> Attribute ("mass"));
-	bool mobile = item_xml -> Attribute ("mobile") == string ("true");
 	//	bool solid = item_xml -> Attribute ("solid") == string ("true");
 	//	bool visible = item_xml -> Attribute ("visible") == string ("true");
 
 	Item * item = NULL;
-	if (item_xml -> Value () == string ("item"))
+	if (item_xml -> Value () == string ("static_item"))
 	{
-		assert (! mobile);
 		item = & Static_Item :: create (name, mesh, volume, mass);
 	}
 	else if (item_xml -> Value () == string ("npc"))
 	{
-		assert (mobile);
 		item = & NPC :: create (name, mesh, volume, mass);
+	}
+	else if (item_xml -> Value () == string ("player"))
+	{
+		item = & Player :: create (name, mesh, volume, mass);
 	}
 	else
 	{
@@ -208,14 +203,10 @@ void Tile ::
 		abort ();
 	}
 
-	item -> set_body (world);
-	add (* item);
+	Body & body = * new Body (* item, position + Ogre :: Vector3 (x, y, z), scale);
+	add (body);
 
-	assert (item -> has_body ());
-	Body & body = item -> get_body ();
-	
-	body . setPosition (position + Ogre :: Vector3 (x, y, z));
-	body . set_scale (scale);
+	//	TODO re-enable assert ((position + Ogre :: Vector3 (x, y, z) - body . getPosition ()) . length () < 0.01);
 
 	TiXmlElement * material = element . FirstChildElement ("material");
 	if (material != NULL)

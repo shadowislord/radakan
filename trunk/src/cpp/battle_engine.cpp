@@ -14,7 +14,7 @@ Battle_Engine ::
 	uniform (generator, uniform_real_distribution),
 	lognormal (generator, lognormal_real_distribution)
 {
-	log (TSL_DEBUG) << "Battle_Engine ()" << endl;
+	log (debugging) << "Battle_Engine ()" << endl;
 	assert (Object :: is_initialized ());
 
 	generator . seed (static_cast <unsigned int> (time (0)));
@@ -25,7 +25,7 @@ Battle_Engine ::
 Battle_Engine ::
 	~Battle_Engine ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -47,7 +47,7 @@ string Battle_Engine ::
 void Battle_Engine ::
 	hit (Character & attacker, Character & defender)
 {
-	log (TSL_DEBUG) << "hit (" << attacker << ", " << defender << ")" << endl;
+	log (debugging) << "hit (" << attacker << ", " << defender << ")" << endl;
 	assert (is_initialized ());
 
 	assert (! attacker . is_dead ());
@@ -55,10 +55,10 @@ void Battle_Engine ::
 
 	float distance =
 		(
-			attacker . get_body () . getPosition ()
-			- defender . get_body () . getPosition ()
+			attacker . get_body () . node . getPosition ()
+			- defender . get_body () . node . getPosition ()
 		) . length ();
-		
+	
 	if (max_distance < distance)
 	{
 		show () << "Target is out of range: " << to_string (distance) << " > "
@@ -86,8 +86,8 @@ void Battle_Engine ::
 		}
 	}
 
-	log (TSL_DEBUG) << "Atack: " << attack << endl;
-	log (TSL_DEBUG) << "Defense: " << defense << endl;
+	log (debugging) << "Atack: " << attack << endl;
+	log (debugging) << "Defense: " << defense << endl;
 
 	if (defense < attack)	//	Hit
 	{

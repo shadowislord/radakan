@@ -1,4 +1,4 @@
-#include "observer.hpp"
+/*#include "observer.hpp"
 
 using namespace std;
 using namespace tsl;
@@ -8,7 +8,7 @@ template <class T> Observer <T> ::
 	Observer () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	log (TSL_DEBUG) << get_class_name () << " ()" << endl;
+	log (debugging) << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
 	
 	assert (Observer <T> :: is_initialized ());
@@ -18,7 +18,7 @@ template <class T> Observer <T> ::
 template <class T> Observer <T> ::
 	~Observer ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Observer <T> :: is_initialized ());
 }
 
@@ -37,6 +37,6 @@ template <class T> string Observer <T> ::
 	return "Observer <" + T :: get_class_name () + ">";
 }
 
-#include "body.hpp"
+#include "item.hpp"
 
-template class Observer <Body>;
+template class Observer <Item>;*/

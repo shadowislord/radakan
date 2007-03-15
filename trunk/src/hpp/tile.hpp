@@ -9,6 +9,7 @@
 #include <OgreStringConverter.h>
 #include <OgreException.h>
 
+#include "body.hpp"
 #include "npc.hpp"
 #include "player.hpp"
 #include "static_item.hpp"
@@ -25,16 +26,16 @@ namespace tsl
 
 	///	A Tile is a square piece of a sector.
 	class Tile :
-		public Disjoint_Set <Item>
+		public Disjoint_Set <Body>
 	{
 		public :
-			Tile (OgreOde :: World & new_world, pair <int, int> new_coordinates, string tsl_path);
+			Tile (pair <int, int> new_coordinates, string tsl_path);
 			virtual ~Tile ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
-			virtual bool add (Item & item);
-			virtual bool move (Item & item, Disjoint_Set <Item> & destination);
+			virtual bool add (Body & body);
+			virtual bool move (Body & body, Disjoint_Set <Body> & destination);
 
 			const pair <int, int> coordinates;
 			const Ogre :: Vector3 position;
@@ -47,8 +48,6 @@ namespace tsl
 
 		private :
 			void add_xml (TiXmlElement & element);
-
-			OgreOde :: World & world;
 
 			TiXmlDocument * doc;
 	};

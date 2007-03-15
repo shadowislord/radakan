@@ -5,11 +5,12 @@
 #include "data_state_machine.hpp"
 #include "singleton.hpp"
 
-
 using namespace std;
 
 namespace tsl
 {
+	class Input_Engine;
+
 	class GUI_Engine :
 		public Singleton <GUI_Engine>,
 		public Data_State_Machine <GUI>

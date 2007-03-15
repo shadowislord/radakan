@@ -24,8 +24,7 @@ Container ::
 		new_mobile,
 		new_solid,
 		new_visible
-	),
-	sealed (false)
+	)
 {
 	assert (Item :: is_initialized () && Disjoint_Set <Item> :: is_initialized ());
 	
@@ -36,7 +35,7 @@ Container ::
 Container ::
 	~Container ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -73,14 +72,34 @@ float Container ::
 }
 
 //	virtual
+OgreOde :: Geometry & Container ::
+	create_geometry ()
+{
+	assert (is_initialized ());
+	assert (! has_body ());
+	
+	OgreOde :: Geometry * geometry;
+
+	OgreOde :: Body * body = new OgreOde :: Body (& Environment :: get (), string :: data ());
+
+	geometry = new OgreOde :: SphereGeometry (Ogre :: Math :: RangeRandom (0.5, 1.5), & Environment :: get (), Environment :: get () . getDefaultSpace ());
+	log (debugging) << "A default sphere mesh was created for " << string :: data () << "." << endl;
+
+	geometry -> setBody (body);
+
+	body -> setMass (OgreOde :: SphereMass (mass, 1 /*TODO set the right radius*/));
+
+	return * geometry;
+}
+
+//	virtual
 bool Container ::
 	add (Item & item)
 {
-	log (TSL_DEBUG) << "add (" << item << ")" << endl;
+	log (debugging) << "add (" << item << ")" << endl;
 	assert (is_initialized ());
 	assert (item . is_initialized ());
-	assert (! sealed);
-	
+	assert (! is_sealed ());
 	assert (is_initialized ());
 	
 	float total_volume = 0;
@@ -99,12 +118,6 @@ bool Container ::
 	assert (check);
 
 	return true;
-}
-
-void Container ::
-	seal ()
-{
-	sealed = true;
 }
 
 //	static

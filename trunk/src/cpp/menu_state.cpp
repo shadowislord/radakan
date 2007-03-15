@@ -13,7 +13,7 @@ Menu_State ::
 	Object ("menu state"),
 	gui (GUI_Engine :: get () . create_gui ("menu.cfg"))
 {
-	log (TSL_DEBUG) << "Menu_State ()" << endl;
+	log (debugging) << "Menu_State ()" << endl;
 	assert (Algorithm <TSL> :: is_initialized ());
 
 	assert (Menu_State :: is_initialized ());
@@ -23,7 +23,7 @@ Menu_State ::
 Menu_State ::
 	~Menu_State ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 
 	assert (Algorithm <TSL> :: is_initialized ());
 }

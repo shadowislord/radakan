@@ -35,6 +35,7 @@ using namespace std;
 ///	The Scattered Lands namespace
 namespace tsl
 {
+	const Ogre :: Vector3 zero_vector (0, 0, 0);
 
 	///	Object is the universal abstract base class for all TSL classes.
 	///	All other files should (in)directly include this master include file.
@@ -50,9 +51,11 @@ namespace tsl
 			template <class T> bool is_type () const;
 			template <class T> T & to_type () const;
 
-			ostringstream & show (bool condition = true) const;
+			stringstream & show (bool condition = true) const;
 			ostream & log (bool condition = true) const;
 			ostream & error () const;
+
+			static const bool debugging;
 
 			///	If possible, use the Disjoint_Set methods instead.
 			bool has_parent () const;
@@ -72,7 +75,7 @@ namespace tsl
 			static float to_float (const string);
 
 			///	The message shown in the GUI.
-			static ostringstream message;
+			static stringstream message;
 
 			#ifdef TSL_DEBUG
 				static unsigned long int turn;
@@ -98,7 +101,7 @@ namespace tsl
 			const Object * parent;	//	the Disjoint_Set in which the object is
 
 			/// for messages that should be ignored
-			static ostringstream the_void;
+			static stringstream the_abyss;
 	};
 }
 

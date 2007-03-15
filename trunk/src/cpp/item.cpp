@@ -3,8 +3,6 @@
 using namespace std;
 using namespace tsl;
 
-Ogre :: SceneManager * Item :: scene_manager = NULL;
-
 //  constructor
 Item ::
 	Item
@@ -22,15 +20,19 @@ Item ::
 	mobile (new_mobile),
 	solid (new_solid),
 	visible (new_visible),
-	entity (* scene_manager -> createEntity
+	entity (* Environment :: get () . getSceneManager () -> createEntity
 										(* this + "'s entity", new_mesh_name)),
 	body (NULL)
 {
-	log (TSL_DEBUG) << get_class_name () << " (" << string :: data () << ", "
+	log (debugging) << get_class_name () << " (" << string :: data () << ", "
 		<< volume << ", " << mass << ", " << bool_to_string (mobile) << ", "
 		<< bool_to_string (solid) << ", " << bool_to_string (visible) << ")"
 		<< endl;
 	assert (Object :: is_initialized ());
+	assert (warn <Item> (Environment :: is_instantiated ()));
+	assert (warn <Item> (Environment :: get () . is_initialized ()));
+	assert (warn <Item> (0 <= volume));
+	assert (warn <Item> (0 <= mass));
 
 	assert (Item :: is_initialized ());
 }
@@ -39,7 +41,7 @@ Item ::
 Item ::
 	~Item ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Item :: is_initialized ());
 
 	if (has_body ())
@@ -55,15 +57,12 @@ bool Item ::
 	is_initialized ()
 	const
 {
-	log (TSL_DEBUG) << get_class_name () << " :: is_initialized ()" << endl;
+//	log (debugging) << get_class_name () << " :: is_initialized ()" << endl;
 	assert (warn <Item> (Object :: is_initialized ()));
-	log (TSL_DEBUG) << get_class_name () << " :: is_initialized () A" << endl;
-	assert (warn <Item> (scene_manager != NULL));
-	log (TSL_DEBUG) << get_class_name () << " :: is_initialized () B" << endl;
+	assert (warn <Item> (Environment :: is_instantiated ()));
+	assert (warn <Item> (Environment :: get () . is_initialized ()));
 	assert (warn <Item> (0 <= volume));
-	log (TSL_DEBUG) << get_class_name () << " :: is_initialized () C" << endl;
 	assert (warn <Item> (0 <= mass));
-	log (TSL_DEBUG) << get_class_name () << " :: is_initialized () D" << endl;
 	
 	return true;
 }
@@ -86,34 +85,15 @@ float Item ::
 }
 
 void Item ::
-	set_body (OgreOde :: World & world)
+	set_body (Body & new_body)
 {
-	log (TSL_DEBUG) << "add_body (~world~)" << endl;
+	//	log (debugging) << "set_body ()" << endl;
 	assert (Item :: is_initialized ());
-	assert (visible);
 	assert (! has_body ());
 
-	OgreOde :: Geometry * geometry;
+	body = & new_body;
 
-	if (find ("Ground") != string :: npos)
-	{
-		OgreOde :: EntityInformer * ei = new OgreOde :: EntityInformer (& entity, Ogre :: Matrix4 ());
-		geometry = ei -> createStaticTriangleMesh (& world, world . getDefaultSpace ());
-		log (TSL_DEBUG) << "A static triangle mesh was created for " << string :: data () << "." << endl;
-	}
-	else
-	{
-		OgreOde :: Body * body = new OgreOde :: Body (& world, string :: data ());
-
-		geometry = new OgreOde :: SphereGeometry (Ogre :: Math :: RangeRandom (0.5, 1.5), & world, world . getDefaultSpace ());
-		log (TSL_DEBUG) << "A default sphere mesh was created for " << string :: data () << "." << endl;
-
-		geometry -> setBody (body);
-
-		body -> setMass (OgreOde :: SphereMass (mass, 1 /*TODO set the right radius*/));
-	}
-
-	body = new Body (* scene_manager, Object :: to_type <Observable <Body> > (), entity, * geometry);
+	assert (is_initialized ());
 }
 
 bool Item ::
@@ -129,10 +109,7 @@ void Item ::
 {
 	assert (Item :: is_initialized ());
 	assert (has_body ());
-	assert (body -> getCreator () != NULL);
-
-	delete body;
-//	body -> getCreator () -> destroySceneNode (body -> Ogre :: SceneNode :: getName ());
+	
 	body = NULL;
 }
 

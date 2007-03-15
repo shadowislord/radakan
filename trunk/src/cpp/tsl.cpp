@@ -9,6 +9,8 @@
 #include "battle_engine.hpp"
 #include "input_engine.hpp"
 
+#include <OgreColourValue.h>
+
 using namespace std;
 using namespace tsl;
 
@@ -18,20 +20,14 @@ TSL ::
 	TSL (string tsl_path, string ogre_media_path) :
 	Object ("TSL")
 {
-	log (TSL_DEBUG) << "TSL (" << tsl_path << ", " << ogre_media_path << ")" << endl;
+	log (debugging) << "TSL (" << tsl_path << ", " << ogre_media_path << ")" << endl;
 
 	new Audio_Engine ();
 	Audio_Engine :: get () . load (tsl_path + "/data/sound/prelude_11.ogg");
 	Audio_Engine :: get () . play ();
 
 	//	Don't copy the log to the console. Store the log to a file, if debugging.
-	(new Ogre :: LogManager ()) -> createLog (tsl_path + "/log/ogre.txt", true, false,
-		#ifdef TSL_DEBUG
-			false
-		#else
-			true
-		#endif
-		);
+	(new Ogre :: LogManager ()) -> createLog (tsl_path + "/log/ogre.txt", true, false, ! debugging);
 	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg", tsl_path + "/data/ogre.cfg");
 	if (! root -> showConfigDialog ())
 	{
@@ -113,14 +109,10 @@ TSL ::
 		tsl_path + "/log/cegui.txt", Input_Engine :: get ()
 	);
 
+	new Environment (* scene_manager, Ogre :: Vector3 (0, - 9.81, 0));
+	new World (GUI_Engine :: get () . create_gui ("sector.cfg"), tsl_path);
 	new Menu_State ();
 	new Quit_State ();
-	new World
-	(
-		GUI_Engine :: get () . create_gui ("sector.cfg"),
-		* scene_manager,
-		tsl_path
-	);
 
 	Ogre :: Camera * camera = scene_manager -> getCameraIterator () . getNext ();
 	assert (camera != NULL);
@@ -129,6 +121,7 @@ TSL ::
 	assert (get_active_state () . is_type <World> ());
 
 	root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
+	root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Green);
 
 	turn_lenght_timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 	last_turn_lenght = 0;
@@ -136,15 +129,14 @@ TSL ::
 	new Battle_Engine (); 
 
 	assert (is_initialized ());
-
 }
 
 TSL ::
 	~TSL ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
-	log (TSL_DEBUG) << "active state: " << get_active_state () << endl;
+	log (debugging) << "active state: " << get_active_state () << endl;
 	assert (get_active_state () == Quit_State :: get ());
 
 	delete & Input_Engine :: get ();
@@ -157,6 +149,7 @@ TSL ::
 	delete & Menu_State :: get ();
 	delete & World :: get ();
 	delete & Quit_State :: get ();
+	delete & Environment :: get ();
 
 	delete & Dead_State :: get ();
 	delete & Fight_State :: get ();
@@ -198,17 +191,19 @@ void TSL ::
 		Input_Engine :: get () . capture ();
 		Ogre :: PlatformManager :: getSingleton () . messagePump (window);
 
+		log (debugging) << "Turn lenth (part one): " << float (turn_lenght_timer -> getMilliseconds ()) / 1000 << endl;
+
 		Algorithm_State_Machine <TSL> :: run ();
 
 		last_turn_lenght = float (turn_lenght_timer -> getMilliseconds ()) / 1000;
 
+		show () << "Turn lenght: " << last_turn_lenght;
+
 		if (maximal_turn_lenght < last_turn_lenght)
 		{
-			log (TSL_DEBUG) << "Reducing the turn lenght from " << last_turn_lenght << " to " << maximal_turn_lenght << "..." << endl;
+			log (debugging) << "Reducing the turn lenght from " << last_turn_lenght << " to " << maximal_turn_lenght << "..." << endl;
 			last_turn_lenght = maximal_turn_lenght;
 		}
-		log (TSL_DEBUG) << "Turn lenght: " << last_turn_lenght << endl;
-
 		turn_lenght_timer -> reset ();
 
 		if (window -> isClosed ())

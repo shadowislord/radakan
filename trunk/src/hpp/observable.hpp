@@ -1,8 +1,7 @@
-#ifndef TSL_OBSERVABLE_HPP
+/*#ifndef TSL_OBSERVABLE_HPP
 #define TSL_OBSERVABLE_HPP
 
 #include "observer.hpp"
-#include "disjoint_set.hpp"
 
 using namespace std;
 
@@ -17,9 +16,11 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
+			Observer <T> * observer;
+
 		protected :
 			Observable ();
 	};
 }
 
-#endif	//	TSL_OBSERVABLE_HPP
+#endif	//	TSL_OBSERVABLE_HPP*/

@@ -110,7 +110,7 @@ Audio_Engine ::
 	~Audio_Engine ()
 {
 	assert (is_initialized ());
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	if (! silent)
 	{
 		#ifdef TSL_FMOD

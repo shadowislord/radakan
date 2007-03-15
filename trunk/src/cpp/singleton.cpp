@@ -5,22 +5,20 @@ using namespace tsl;
 
 template <class T> T * Ogre :: Singleton <T> :: ms_Singleton = NULL;
 
-//  constructor
 template <class T> Singleton <T> ::
 	Singleton () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	log (TSL_DEBUG) << get_class_name () << " ()" << endl;
+	log (debugging) << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (Singleton :: is_initialized ());
 }
 
-//  destructor
 template <class T> Singleton <T> ::
 	~Singleton ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Singleton <T> :: is_initialized ());
 }
 
@@ -69,6 +67,7 @@ template <class T> bool Singleton <T> ::
 template class Singleton <Audio_Engine>;
 template class Singleton <Battle_Engine>;
 template class Singleton <Dead_State>;
+template class Singleton <Environment>;
 template class Singleton <GUI_Engine>;
 template class Singleton <Fight_State>;
 template class Singleton <Input_Engine>;

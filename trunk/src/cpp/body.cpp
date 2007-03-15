@@ -5,39 +5,46 @@ using namespace tsl;
 
 //  constructor
 Body ::
-	Body
-	(
-		Ogre :: SceneManager & scene_manager,
-		Observable <Body> & observer,
-		Ogre :: Entity & new_entity,
-		OgreOde :: Geometry & new_geometry
-	) :
-	Object (observer + "'s body"),
-	Ogre :: SceneNode (& scene_manager, string :: data ()),
-	entity (new_entity),
-	geometry (new_geometry),
-	root_node (scene_manager . getRootSceneNode ())
+	Body (Item & new_item, Ogre :: Vector3 position, float scale) :
+	Object (new_item + "'s body"),
+	Disjoint_Set <Item> (1),
+	item (new_item),
+	node (* Environment :: get () . root_node . createChildSceneNode (string :: data ())),
+	entity (item . entity),
+	geometry (item . create_geometry ())
 {
-	log (TSL_DEBUG) << get_class_name () << " (~scene_manager~, " << observer << ", ~new_entity~, ~new_geometry~)" << endl;
-	assert (Object :: is_initialized ());
+	log (debugging) << get_class_name () << " (" << new_item << ", " << to_string (position) << ", " << scale << ")" << endl;
+	assert (Disjoint_Set <Item> :: is_initialized ());
 
-	scene_manager . getRootSceneNode () -> addChild (this);
-	Ogre :: SceneNode :: setParent (scene_manager . getRootSceneNode ());
+	Disjoint_Set <Item> :: add (item);
+	seal ();
 
-	attachObject (& entity);
+//	Environment :: get () . root_node . addChild (this);
+
+	node . setPosition (position);
+	node . setScale (scale, scale, scale);
+	node . attachObject (& entity);
+
+	assert (node . numAttachedObjects () == 1);
 	
-	assert (numAttachedObjects () == 1);
-	
-	entity . setUserObject (& geometry);
-
 	body = geometry . getBody ();
+
+	entity . setUserObject (& geometry);
 
 	if (body != NULL)
 	{
-		attachObject (body);
+		log (debugging) << "I'm a mobile body." << endl;
+
+		node . attachObject (body);
+	}
+	else
+	{
+		log (debugging) << "I'm a static body." << endl;
+
+		geometry . setUserObject (& entity);
 	}
 
-	/*TODO observer -> ...*/
+	item . set_body (* this);
 
 	assert (Body :: is_initialized ());
 }
@@ -46,37 +53,28 @@ Body ::
 Body ::
 	~Body ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Body :: is_initialized ());
-	log (TSL_DEBUG) << "~" << get_class_name () << " () A" << endl;
 	
-	getParent () -> removeChild (Ogre :: Node :: getName ());
+	item . remove_body ();
+	
+	node . getParent () -> removeChild (node . getName ());
 
-	log (TSL_DEBUG) << "~" << get_class_name () << " () C" << endl;
 	if (is_mobile ())
 	{
-	log (TSL_DEBUG) << "~" << get_class_name () << " () D" << endl;
-		detachObject (body);
-	log (TSL_DEBUG) << "~" << get_class_name () << " () E" << endl;
+		node . detachObject (body);
 		delete body;
-	log (TSL_DEBUG) << "~" << get_class_name () << " () F" << endl;
 		body = NULL;
-	log (TSL_DEBUG) << "~" << get_class_name () << " () G" << endl;
 	}
-	log (TSL_DEBUG) << "~" << get_class_name () << " () H" << endl;
 	
-	assert (numAttachedObjects () == 1);
-	log (TSL_DEBUG) << "~" << get_class_name () << " () I" << endl;
+	assert (node . numAttachedObjects () == 1);
 
-	int zero = 0;
-	log (TSL_DEBUG) << "~" << get_class_name () << " () J" << endl;
-	getCreator () -> destroyMovableObject (detachObject (zero));
-	log (TSL_DEBUG) << "~" << get_class_name () << " () K" << endl;
+	unsigned int zero = 0;
+	node . getCreator () -> destroyMovableObject (node . detachObject (zero));
 
-	assert (numAttachedObjects () == 0);
-	log (TSL_DEBUG) << "~" << get_class_name () << " () L" << endl;
+	assert (node . numAttachedObjects () == 0);
 
-	assert (Object :: is_initialized ());
+	assert (Disjoint_Set <Item> :: is_initialized ());
 }
 
 //	virtual
@@ -84,9 +82,25 @@ bool Body ::
 	is_initialized ()
 	const
 {
-	assert (warn <Body> (Object :: is_initialized ()));
-	assert (Ogre :: SceneNode :: getParent () == root_node);
-	assert (Ogre :: SceneNode :: numAttachedObjects () <= 2);
+	assert (warn <Body> (Disjoint_Set <Item> :: is_initialized ()));
+	assert (is_sealed ());
+	assert (item . has_body ());
+	assert (node . getParent () == & Environment :: get () . root_node);
+	assert (node . numAttachedObjects () <= 2);
+
+	log (debugging) << "Position: " << to_string (node . getPosition ()) << endl;
+	log (debugging) << "Geometry position: " << to_string (geometry . getPosition ()) << endl;
+	if (body != NULL)
+	{
+		log (debugging) << "Body position: " << to_string (body -> getPosition ()) << endl;
+	}
+	
+	//	TODO re-enable assert ((node . getPosition () - geometry . getPosition ()) . length () < 0.01);
+	if (body != NULL)
+	{
+		//	TODO re-enable assert ((body -> getPosition () - node . getPosition ()) . length () < 0.01);
+		//	TODO re-enable assert ((body -> getPosition () - geometry . getPosition ()) . length () < 0.01);
+	}
 
 	return true;
 }
@@ -96,6 +110,27 @@ string Body ::
 	get_class_name ()
 {
 	return "Body";
+}
+
+//	virtual
+bool Body ::
+	add (Item & item)
+{
+	assert (Body :: is_initialized ());
+	assert (item . is_initialized ());
+
+	return false;
+}
+
+//	virtual
+bool Body ::
+	move (Item & item, Disjoint_Set <Item> & destination)
+{
+	assert (Body :: is_initialized ());
+	assert (item . is_initialized ());
+	assert (destination . is_initialized ());
+	
+	return false;
 }
 
 bool Body ::
@@ -110,7 +145,7 @@ Ogre :: Vector3 Body ::
 	assert (Body :: is_initialized ());
 
 	//	notice the minus sign
-	return getOrientation () * - z_axis;
+	return node . getOrientation () * - z_axis;
 }
 
 Ogre :: Vector3 Body ::
@@ -118,7 +153,7 @@ Ogre :: Vector3 Body ::
 {
 	assert (Body :: is_initialized ());
 
-	return getOrientation () * x_axis;
+	return node . getOrientation () * x_axis;
 }
 
 Ogre :: Vector3 Body ::
@@ -126,25 +161,7 @@ Ogre :: Vector3 Body ::
 {
 	assert (Body :: is_initialized ());
 
-	return getOrientation () * y_axis;
-}
-
-float Body ::
-	get_scale ()
-{
-	assert (Body :: is_initialized ());
-
-	return Ogre :: Math :: Sqrt (getScale () . squaredLength () / 3);
-}
-
-void Body ::
-	set_scale (float scale)
-{
-	assert (Body :: is_initialized ());
-
-	//	TODO set the scale for OgreOde to.
-
-	setScale (scale, scale, scale);
+	return node . getOrientation () * y_axis;
 }
 
 void Body ::
@@ -159,30 +176,33 @@ void Body ::
 	move (float distance, Ogre :: Vector3 ax)
 {
 	assert (Body :: is_initialized ());
+	assert (is_mobile ());
 
-	if (ax == zero)
+	if (ax == zero_vector)
 	{
 		ax = get_front_direction ();
 	}
 
-	setPosition (getPosition () + distance * ax);
-	//	addForce (distance * get_front_direction ());
+	body -> setPosition (node . getPosition () + distance * ax);
+	//	body -> addForce (1000 * distance * ax);
 	
-	log (TSL_DEBUG) << "new position: " << to_string (getPosition ()) << endl;
+	log (debugging) << "new position: " << to_string (node . getPosition ()) << endl;
 }
 
 void Body ::
 	turn (float radian_angle, Ogre :: Vector3 ax)
 {
-	log (TSL_DEBUG) << "turn (" << radian_angle << ", " << to_string (ax) << ")" << endl;
+	log (debugging) << "turn (" << radian_angle << ", " << to_string (ax) << ")" << endl;
 	assert (Body :: is_initialized ());
+	assert (is_mobile ());
 
-	if (ax == zero)
+	if (ax == zero_vector)
 	{
 		ax = get_top_direction ();
 	}
 
-	setOrientation (getOrientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
+	body -> setOrientation (node . getOrientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
+	//	body -> addTorque (100 * radian_angle * ax);
 }
 
 Ogre :: Quaternion tsl :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)

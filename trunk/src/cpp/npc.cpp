@@ -22,20 +22,20 @@ NPC ::
 		new_mass
 	)
 {
-	log (TSL_DEBUG) << get_class_name () << " (" << new_name << ", ...)" << endl;
+	log (debugging) << get_class_name () << " (" << new_name << ", ...)" << endl;
 	assert (Character :: is_initialized ());
 
 	set_active_state <Peace_State> ();
 
 	assert (is_initialized ());
-	log (TSL_DEBUG) << " is fully constructed (as NPC)." << endl;
+	log (debugging) << " is fully constructed (as NPC)." << endl;
 }
 
 //  destructor
 NPC ::
 	~NPC ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (NPC :: is_initialized ());
 }
 

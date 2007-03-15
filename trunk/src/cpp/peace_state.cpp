@@ -19,7 +19,7 @@ Peace_State ::
 Peace_State ::
 	~Peace_State ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	
 	assert (Algorithm <NPC> :: is_initialized ());
 }

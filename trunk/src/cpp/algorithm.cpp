@@ -8,7 +8,7 @@ template <class T> Algorithm <T> ::
 	Algorithm () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	log (TSL_DEBUG) << get_class_name () << " ()" << endl;
+	log (debugging) << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
 	
 	assert (Algorithm <T> :: is_initialized ());
@@ -18,7 +18,7 @@ template <class T> Algorithm <T> ::
 template <class T> Algorithm <T> ::
 	~Algorithm ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Algorithm <T> :: is_initialized ());
 }
 

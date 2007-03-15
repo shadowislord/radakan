@@ -24,6 +24,8 @@ namespace tsl
 			///	'add' returns false if I'm full.
 			virtual bool add (Item & item);
 
+			virtual OgreOde :: Geometry & create_geometry ();
+			
 			static Item & create
 			(
 				string new_name,
@@ -34,9 +36,6 @@ namespace tsl
 				bool new_solid = true,
 				bool new_visible = true
 			);
-
-			///	There's no unseal!
-			void seal ();
 
 		protected :
 			Container
@@ -53,9 +52,6 @@ namespace tsl
 		private :
 			///	Copies are not allowed.
 			Container (const Container & container);
-
-			///	TODO check this variable
-			bool sealed;
 	};
 }
 

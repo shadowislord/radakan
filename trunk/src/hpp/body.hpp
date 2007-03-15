@@ -1,56 +1,51 @@
 #ifndef TSL_BODY_HPP
 #define TSL_BODY_HPP
 
-#include <OgreSceneManager.h>
-#include <OgreEntity.h>
-
-#include <OgreOde_Core.h>
-
-#include "observable.hpp"
+#include "disjoint_set.hpp"
+#include "environment.hpp"
+#include "item.hpp"
 
 using namespace std;
 
 namespace tsl
 {
-	const Ogre :: Vector3 zero (0, 0, 0);
 	const Ogre :: Vector3 x_axis (1, 0, 0);
 	const Ogre :: Vector3 y_axis (0, 1, 0);	//	upwards
 	const Ogre :: Vector3 z_axis (0, 0, 1);
 
-	class Item;
-
 	///	Body is the 3D representation of an Item.
 	class Body :
-		public Observable <Body>,
-		public Ogre :: SceneNode
+		public Disjoint_Set <Item>
 	{
 		public :
-   Body
-			(
-				Ogre :: SceneManager & scene_manager,
-				Observable <Body> & observer,
-				Ogre :: Entity & new_entity,
-				OgreOde :: Geometry & new_geometry
-			);
+			Body (Item & new_item, Ogre :: Vector3 position, float scale);
 			virtual ~Body ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
+			///	'add' always returns 'false'.
+			virtual bool add (Item & item);
+			
+			///	'move' always returns 'false'.
+			virtual bool move (Item & item, Disjoint_Set <Item> & destination);
+
 			bool is_mobile () const;
 
 			Ogre :: Vector3 get_front_direction () const;
 			Ogre :: Vector3 get_side_direction () const;
 			Ogre :: Vector3 get_top_direction () const;
 
-			float get_scale ();
 			void set_scale (float scale);
 			void set_material (string name);
 
 			//	If no - or zero - ax specified, I'll move in my front direction.
-			void move (float distance, Ogre :: Vector3 ax = zero);
+			void move (float distance, Ogre :: Vector3 ax = zero_vector);
 
 			//	If no - or zero - ax specified, I'll turn around my top direction.
-			void turn (float radian_angle, Ogre :: Vector3 ax = zero);
+			void turn (float radian_angle, Ogre :: Vector3 ax = zero_vector);
+
+			Item & item;
+			Ogre :: SceneNode & node;
 
 		private :
 			//	Copies are not allowed.
@@ -58,9 +53,9 @@ namespace tsl
 
 			Ogre :: Entity & entity;
 			OgreOde :: Geometry & geometry;
-			OgreOde :: Body * body;
 
-			const Ogre :: Node * root_node;
+			///	only for movable items
+			OgreOde :: Body * body;
 	};
 
 	Ogre :: Quaternion make_quaternion (float radian_angle, Ogre :: Vector3 ax);

@@ -8,6 +8,8 @@ using namespace std;
 
 namespace tsl
 {
+	class GUI;
+	
 	class GUI_Listener :
 		public virtual Object
 	{

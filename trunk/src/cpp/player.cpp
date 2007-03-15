@@ -22,14 +22,14 @@ Player ::
 	camera_distance (0.72),
 	dead (false)
 {
-	log (TSL_DEBUG) << "Player (" << new_name << ", ...)" << endl;
+	log (debugging) << "Player (" << new_name << ", ...)" << endl;
 	assert (Character :: is_initialized ());
 
-/*	bool check = back . add (Container :: create ("Backbpack", "bar.mesh", 30, 3));
+	bool check = back . add (Container :: create ("Backbpack", "bar.mesh", 30, 3));
 	assert (check);
 
 	check = hands . add (Weapon :: create ("Sword", "bar.mesh", 1, 2, 3, 4, 5, 6, 7, 8));
-	assert (check);*/
+	assert (check);
 
 	assert (is_initialized ());
 }
@@ -38,7 +38,7 @@ Player ::
 Player ::
 	~Player ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
 }
 

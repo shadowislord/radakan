@@ -8,7 +8,7 @@ template <class T> Algorithm_State_Machine <T> ::
 	Algorithm_State_Machine () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	Object :: log (TSL_DEBUG) << get_class_name () << " ()" << endl;
+	Object :: log (Object :: debugging) << get_class_name () << " ()" << endl;
 	assert (State_Machine <Algorithm <T> > :: is_initialized ());
 
 	assert (Algorithm_State_Machine <T> :: is_initialized ());
@@ -58,7 +58,7 @@ template <class T> void Algorithm_State_Machine <T> ::
 template <class T> template <typename U> void Algorithm_State_Machine <T> ::
 	set_active_state ()
 {
-	Object :: log (TSL_DEBUG) << "set_active_state <" << U :: get_class_name () << "> ()" << endl;
+	Object :: log (Object :: debugging) << "set_active_state <" << U :: get_class_name () << "> ()" << endl;
 	assert (Algorithm_State_Machine <T> :: is_initialized ());
 	assert (U :: is_instantiated ());
 	

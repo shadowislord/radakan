@@ -42,8 +42,18 @@ namespace tsl
 			///	Delete all children, usefull for destruction.
 			void delete_children ();
 
+			static int unlimited;
+
+			const int maximal_size;
+
+			///	When sealed, no more children can be added or moved away.
+			///	There's no unseal!
+			void seal ();
+
+			bool is_sealed () const;
+
 		protected :
-			Disjoint_Set ();
+			Disjoint_Set (int new_maximal_size = unlimited);
 
 		private :
 			set <T *> children;
@@ -54,6 +64,9 @@ namespace tsl
 		
 			//	'mutable' added to allow change even if in a const Disjoint_Set.
 			mutable T_iterator next_child;
+
+			///	TODO check this variable
+			bool sealed;
 		};
 }
 

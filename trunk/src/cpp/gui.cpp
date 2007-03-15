@@ -40,7 +40,7 @@ GUI ::
 GUI ::
 	~GUI ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -65,8 +65,13 @@ void GUI ::
 {
 	assert (is_initialized ());
 
-	if (text_window -> getText () . c_str () != message . str ())
+	if (! message . str () . empty ())
 	{
+		log (debugging) << "Message: " << message . str () << endl;
+	
 		text_window -> setText (message . str ());
+
+		//	flush the message:
+		message . str ("");
 	}
 }

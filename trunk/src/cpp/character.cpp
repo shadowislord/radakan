@@ -31,7 +31,7 @@ Character ::
 	//	legs (Multislot <Pants> :: create (1)),
 	//	feet (Multislot <Shoe> :: create (2))
 {
-	log (TSL_DEBUG) << "Character (...)" << endl;
+	log (debugging) << "Character (...)" << endl;
 	assert (Container :: is_initialized ());
 
 	bool check/* = Container :: add (head)*/;
@@ -55,7 +55,7 @@ Character ::
 Character ::
 	~Character ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Character :: is_initialized ());
 }
 
@@ -72,4 +72,25 @@ string Character ::
 	get_class_name ()
 {
 	return "Character";
+}
+
+//	virtual
+OgreOde :: Geometry & Character ::
+	create_geometry ()
+{
+	assert (is_initialized ());
+	assert (! has_body ());
+	
+	OgreOde :: Geometry * geometry;
+
+	OgreOde :: Body * body = new OgreOde :: Body (& Environment :: get (), string :: data ());
+
+	geometry = new OgreOde :: SphereGeometry (Ogre :: Math :: RangeRandom (0.5, 1.5), & Environment :: get (), Environment :: get () . getDefaultSpace ());
+	log (debugging) << "A default sphere mesh was created for " << string :: data () << "." << endl;
+
+	geometry -> setBody (body);
+
+	body -> setMass (OgreOde :: SphereMass (mass, Ogre :: Math :: Pow (volume, 0.333)));
+
+	return * geometry;
 }

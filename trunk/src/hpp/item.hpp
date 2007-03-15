@@ -1,15 +1,18 @@
 #ifndef TSL_ITEM_HPP
 #define TSL_ITEM_HPP
 
-#include "body.hpp"
-#include "observable.hpp"
+#include "environment.hpp"
+
+#include <OgreEntity.h>
 
 using namespace std;
 
 namespace tsl
 {
+	class Body;
+
 	class Item :
-		public Observable <Body>
+		public virtual Object
 	{
 		public :
 			virtual ~Item ();
@@ -17,8 +20,13 @@ namespace tsl
 			static string get_class_name ();
 			virtual float get_total_mass () const;
 
-			void set_body (OgreOde :: World & world);
+			virtual OgreOde :: Geometry & create_geometry () = 0;
+
+			///	Don't use this method, use 'new Body (...);' instead.
+			void set_body (Body & new_body);
 			bool has_body () const;
+			
+			///	Don't use this method, use 'delete body;' instead.
 			void remove_body ();
 			Body & get_body () const;
 
@@ -37,8 +45,6 @@ namespace tsl
 			const bool visible;
 
 			Ogre :: Entity & entity;
-
-			static Ogre :: SceneManager * scene_manager;
 
 		protected :
 			Item

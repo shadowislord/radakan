@@ -21,69 +21,55 @@ const int World :: max_vertical_camera_angle = 90;
 //	a few constants for our stepper
 const float max_frame_time = 0.1;
 const float time_scale = 1.0;
-
-//	raeez: If we set this to a normal value (say 0.1) we get sucked way too
-//	quickly to be able  to see what is going on
-const float time_step = 0.9;
+const float time_step = 0.1;
 
 //  constructor
 World ::
-	World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path) :
+	World (GUI & new_gui, string tsl_path) :
 	Object ("world"),
-	OgreOde :: World (& scene_manager),
 	OgreOde :: ExactVariableStepHandler
 	(
-		this,   //	TODO: don't use 'this' in the constructor.
+		& Environment :: get (),
 		OgreOde :: StepHandler :: QuickStep,
 		time_step,
 		max_frame_time,
 		time_scale
 	),
 	gui (new_gui),
-	camera (* scene_manager . createCamera ("world camera"))
+	camera (* Environment :: get () . getSceneManager () -> createCamera ("world camera"))
 {
-	log (TSL_DEBUG) << get_class_name () << " (" << new_gui << "~scene_manager~, " << tsl_path << ")" << endl;
+	log (debugging) << get_class_name () << " (" << new_gui << "~scene_manager~, " << tsl_path << ")" << endl;
 	assert (Singleton <World> :: is_initialized ());
 	assert (Algorithm <TSL> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
+	assert (Environment :: is_instantiated ());
+	assert (Environment :: get () . is_initialized ());
 
-	camera . setNearClipDistance (0.01);
+	camera . setNearClipDistance (0.001);
 	camera . setFarClipDistance (80);
-
-	setShowDebugGeometries (true);
-
-	log (TSL_DEBUG) << "ERP: " << getERP () << endl;
-	log (TSL_DEBUG) << "CFM: " << getCFM () << endl;
-
-	setGravity (Ogre :: Vector3 (0, - 9.81, 0));
-
-	//	TODO make the next line work.
-	getSceneManager () -> setSkyDome (true, "Peaceful", 10, 5);
 
 	new Dead_State ();
 	new Fight_State ();
 	new Peace_State ();
-
-	Item :: scene_manager = getSceneManager ();
 
 	for (int x = min_x; x <= max_x; x ++)
 	{
 		for (int z = min_z; z <= max_z; z ++)
 		{
 			pair <int, int> coordinates (x, z);
-			log (TSL_DEBUG) << "tile position: (" << x << ", " << z << ")" << endl;
-			log (TSL_DEBUG) << get_class_name () << " (" << new_gui << "~scene_manager~, " << tsl_path << ") F" << endl;
-			tiles [coordinates] = new Tile (* this, coordinates, tsl_path);
-			log (TSL_DEBUG) << get_class_name () << " (" << new_gui << "~scene_manager~, " << tsl_path << ") G" << endl;
-			log (TSL_DEBUG) << * tiles [coordinates] << endl;
-			log (TSL_DEBUG) << get_class_name () << " (" << new_gui << "~scene_manager~, " << tsl_path << ") H" << endl;
+			log (debugging) << "tile position: (" << x << ", " << z << ")" << endl;
+			tiles [coordinates] = new Tile (coordinates, tsl_path);
+			log (debugging) << * tiles [coordinates] << endl;
 			bool check = add (* tiles [coordinates]);
-			log (TSL_DEBUG) << get_class_name () << " (" << new_gui << "~scene_manager~, " << tsl_path << ") I" << endl;
 			assert (check);
 		}
 	}
+	
+	assert (Player :: is_instantiated ());
 
 	set_active_state (* tiles [pair <int, int> (0, 0)]);
+
+	Environment :: get () . setCollisionListener (this);
 
 	assert (World :: is_initialized ());
 }
@@ -92,8 +78,10 @@ World ::
 World ::
 	~World ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (State_Machine <Tile> :: is_initialized ());
+
+	assert (World :: is_initialized ());
 }
 
 //	virtual
@@ -101,10 +89,10 @@ bool World ::
 	is_initialized ()
 	const
 {
+//	Object :: log (debugging) << get_class_name () << " :: is_initialized ()" << endl;
 	assert (Singleton <World> :: is_initialized ());
 	assert (Algorithm <TSL> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
-	assert (Item :: scene_manager == to_type <World> () . getSceneManager ());
 
 	return true;
 }
@@ -120,24 +108,19 @@ string World ::
 void World ::
 	set_active_state (Tile & tile)
 {
+	assert (is_initialized ());
 	assert (tile . is_type <Tile> ());
 	
 	if (tile != get_active_state ())
 	{
 		show () << "current tile:" << tile;
-		
-		if (Player :: is_instantiated ())
+
+		if (! tile . contains (Player :: get () . get_body ()))
 		{
-			get_active_state () . move (Player :: get () . to_type <Item> (), tile);
+			assert (get_active_state () . contains (Player :: get () . get_body ()));
+			get_active_state () . move (Player :: get () . get_body (), tile);
 		}
-		else
-		{
-			tile . add (Player :: create ("Player", "ninja.mesh", 80, 65));
-			Player :: get () . get_body () . setPosition
-											(Ogre :: Vector3 (10.5, 4, 10.5));
-			Player :: get () . get_body () . set_scale (0.004);
-		}
-		
+
 		State_Machine <Tile> :: set_active_state (tile);
 	}
 }
@@ -176,15 +159,10 @@ Algorithm <TSL> & World ::
 		Player :: get () . get_body () . turn (- 5 * turn_lenght);
 	}
 
-	Ogre :: Vector3 position = Player :: get () . get_body () . getPosition ();
+	Ogre :: Vector3 position = Player :: get () . get_body () . node . getPosition ();
 
 	int x = int (floor (position . x / Tile :: side_length));
 	int z = int (floor (position . z / Tile :: side_length));
-	log (TSL_DEBUG) << "position: " << to_string (position) << " -> (" << x << ", " << z << ")" << endl;
-	// We are being sucked somewhere by a force... this takes us out of possible space
-	// and causes the assertions below to fail. And of course if the assertions are failing
-	// it means we would be translated somewhere where there are no tiles.
-	// temporary measure of placing you back a notch only to be sucked ober and over and over again :)
 	assert (Tile :: side_length * min_x <= x);
 	assert (x < Tile :: side_length * (max_x + 1));
 	assert (Tile :: side_length * min_z < z);
@@ -257,7 +235,7 @@ Algorithm <TSL> & World ::
 	{
 		const Ogre :: Vector3 & mouse_position = Input_Engine :: get () . get_mouse_position (true);
 
-		log (TSL_DEBUG) << "mouse offset: " << to_string (mouse_position) << endl;
+		log (debugging) << "mouse offset: " << to_string (mouse_position) << endl;
 
 		if (mouse_position . x != 0)
 		{
@@ -289,18 +267,23 @@ Algorithm <TSL> & World ::
 		}
 	}
 
-	Ogre :: Vector3 pre_position = Player :: get () . get_body () . getPosition ();
-	OgreOde :: StepHandler :: step (turn_lenght);
-	OgreOde :: World :: synchronise ();
-	Ogre :: Vector3 displacement = Player :: get () . get_body () . getPosition () - pre_position;
-	if (displacement != zero)
+	Ogre :: Vector3 pre_position = Player :: get () . get_body () . node . getPosition ();
+//	OgreOde :: StepHandler :: step (turn_lenght);
+	Environment :: get () . getDefaultSpace () -> collide ();
+	Environment :: get () . step (turn_lenght);
+	Environment :: get () . updateDrawState ();
+	Environment :: get () . synchronise ();
+	Environment :: get () . clearContacts ();
+
+	Ogre :: Vector3 displacement = Player :: get () . get_body () . node . getPosition () - pre_position;
+	if (displacement != zero_vector)
 	{
-		log (TSL_DEBUG) << "Physics displacement: " << to_string (displacement) << endl;
+		log (debugging) << "Physics displacement: " << to_string (displacement) << endl;
 	}
 	
 	camera . setPosition
 	(
-		Player :: get () . get_body () . getPosition ()
+		Player :: get () . get_body () . node . getPosition ()
 		+ Player :: get () . get_body () . get_top_direction ()
 		* (Player :: get () . camera_distance
 			- Input_Engine :: get () . get_mouse_position (false) . z / 100)
@@ -312,10 +295,33 @@ Algorithm <TSL> & World ::
 			vertical_camera_angle,
 			Player :: get () . get_body () . get_side_direction ()
 		)
-		* Player :: get () . get_body () . getOrientation ()
+		* Player :: get () . get_body () . node . getOrientation ()
 	);
 
 	GUI_Engine :: get () . activate (gui);
 
 	return * this;
+}
+
+bool World ::
+	collision (OgreOde :: Contact * contact)
+{
+	show () << "collision! ";
+
+	// Check for collisions between things that are connected and ignore them
+	OgreOde :: Geometry * const g1 = contact -> getFirstGeometry ();
+	OgreOde :: Geometry * const g2 = contact -> getSecondGeometry ();
+
+	if (g1 && g2)
+	{
+		const OgreOde :: Body * const b1 = g1 -> getBody ();
+		const OgreOde :: Body * const  b2 = g2 -> getBody ();
+	}
+
+	// Set the friction at the contact
+	contact -> setCoulombFriction (OgreOde :: Utility :: Infinity);
+	contact -> setBouncyness (0.1);
+
+	// Yes, this collision is valid
+	return true;
 }

@@ -1,12 +1,13 @@
-#include "observable.hpp"
+/*#include "observable.hpp"
 
 using namespace std;
 using namespace tsl;
 
 //  constructor
 template <class T> Observable <T> ::
-	Observable () :
-	Object ("The name doesn't matter as this class is an abstact class.")
+	Observable (Observer <Body> & new_observer) :
+	Object ("The name doesn't matter as this class is an abstact class."),
+	observer (NULL)
 {
 	Object :: log (TSL_DEBUG) << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
@@ -41,6 +42,6 @@ template <class T> string Observable <T> ::
 }
 
 //	to avert linking errors:
-#include "body.hpp"
+#include "item.hpp"
 
-template class Observable <Body>;
+template class Observable <Item>;*/

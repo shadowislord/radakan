@@ -21,6 +21,8 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
+			virtual OgreOde :: Geometry & create_geometry ();
+			
 			virtual bool is_dead () const = 0;
 			virtual void die () = 0;
 

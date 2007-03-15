@@ -43,7 +43,7 @@ GUI_Engine ::
 GUI_Engine ::
 	~GUI_Engine ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -129,7 +129,7 @@ void GUI_Engine ::
 
 	if (get_active_state () != gui)
 	{
-		log (TSL_DEBUG) << "Changing to GUI: " << gui << endl;
+		log (debugging) << "Changing to GUI: " << gui << endl;
 		set_active_state (gui);
 		system -> setGUISheet (& gui . root_window);
 	}

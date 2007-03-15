@@ -26,7 +26,7 @@ template <class T> Multislot <T> ::
 	),
 	max_size (new_max_size)
 {
-	log (TSL_DEBUG) << "Multislot (" << new_name << ", ...)" << endl;
+	log (debugging) << "Multislot (" << new_name << ", ...)" << endl;
 	assert (Container :: is_initialized ());
 
 	assert (is_initialized ());
@@ -36,7 +36,7 @@ template <class T> Multislot <T> ::
 template <class T> Multislot <T> ::
 	~Multislot ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Container :: is_initialized ());
 }
 

@@ -2,7 +2,7 @@
 	
 	<!-- the ground -->
 	<model x="10" y="-1" z="10" scale="0.004">
-		<item name="Ground" mesh="test3-ground.mesh" volume="0" mass="10" mobile="false" solid="true" visible="true" />
+		<static_item name="Ground" mesh="test3-ground.mesh" volume="0" mass="10" solid="true" visible="true" />
 		<material name="TavernWalls" />
 		<gravity affected="false" />
 	</model>
@@ -11,6 +11,6 @@
 	
 	<!-- the NPC -->
 	<model x="14.8" y="0" z="11.2" scale="0.004">
-		<npc name="Ninja" mesh="ninja.mesh" volume="80" mass="65" mobile="true" solid="true" visible="true" />
+		<npc name="Ninja" mesh="ninja.mesh" volume="80" mass="65" solid="true" visible="true" />
 	</model>
 </tile>

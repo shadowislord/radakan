@@ -9,7 +9,7 @@ template <class T> State_Machine <T> ::
 	Object ("The name doesn't matter as this class is an abstact class."),
 	active_state (NULL)
 {
-	log (TSL_DEBUG) << get_class_name () << " ()" << endl;
+	log (debugging) << get_class_name () << " ()" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (State_Machine <T> :: is_initialized ());
@@ -19,7 +19,7 @@ template <class T> State_Machine <T> ::
 template <class T> State_Machine <T> ::
 	~State_Machine ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (State_Machine <T> :: is_initialized ());
 }
 
@@ -71,7 +71,7 @@ template <class T> T & State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	set_active_state (T & t)
 {
-//	Object :: log (TSL_DEBUG) << "set_active_state (" << t << ")" << endl;
+//	Object :: log (debugging) << "set_active_state (" << t << ")" << endl;
 	assert (State_Machine <T> :: is_initialized ());
 
 	if (active_state != & t)
@@ -84,7 +84,7 @@ template <class T> void State_Machine <T> ::
 		
 		active_state = & t;
 		
-		log (TSL_DEBUG) << "The active state changed from " << active_state_name << " to " << t << "." << endl;
+		log (debugging) << "The active state changed from " << active_state_name << " to " << t << "." << endl;
 	}
 }
 
@@ -92,7 +92,7 @@ template <class T> void State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	unset_active_state ()
 {
-	log (TSL_DEBUG) << "unset_active_state ()" << endl;
+	log (debugging) << "unset_active_state ()" << endl;
 	assert (State_Machine <T> :: is_initialized ());
 
 	active_state = NULL;

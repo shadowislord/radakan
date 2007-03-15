@@ -8,10 +8,13 @@ using namespace tsl;
 #ifdef TSL_DEBUG
 	unsigned long int Object :: turn = 0;
 	set <Object *> Object :: objects;
+	const bool Object :: debugging = true;
+#else
+	const bool Object :: debugging = false;
 #endif
 
-ostringstream Object :: message;
-ostringstream Object :: the_void;
+stringstream Object :: message;
+stringstream Object :: the_abyss;
 
 //  constructor
 Object ::
@@ -19,7 +22,7 @@ Object ::
 	string (new_name),
 	parent (NULL)
 {
-	log (TSL_DEBUG) << "Object (" << new_name << ")" << endl;
+	log (debugging) << "Object (" << new_name << ")" << endl;
 	assert (! new_name . empty ());
 
 	#ifdef TSL_DEBUG
@@ -33,7 +36,7 @@ Object ::
 Object ::
 	~Object ()
 {
-	log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (is_initialized ());
 
 	#ifdef TSL_DEBUG
@@ -61,17 +64,16 @@ string Object ::
 	return "Object";
 }
 
-ostringstream & Object ::
+stringstream & Object ::
 	show (bool condition) const
 {
 	if (condition)
 	{
-		message . clear ();
 		return message;
 	}
 
-	the_void . clear ();
-	return the_void;
+	the_abyss . str ("");
+	return the_abyss;
 }
 
 ostream & Object ::
@@ -79,14 +81,18 @@ ostream & Object ::
 {
 	if (condition)
 	{
-		cout << endl;
-		cout << "(turn " << turn << ")" << endl;
-		cout << "'" << string :: data () << "' reports: " << endl;
-		return cout << "\t";
+		#ifdef TSL_DEBUG
+			cout << endl;
+			cout << "(turn " << turn << ")" << endl;
+			cout << "'" << string :: data () << "' reports: " << endl;
+			return cout << "\t";
+		#else
+			return cout;
+		#endif
 	}
 	
-	the_void . clear ();
-	return the_void;
+	the_abyss . str ("");
+	return the_abyss;
 }
 
 ostream & Object ::
@@ -117,7 +123,7 @@ bool Object ::
 void Object ::
 	put_in (const Object & new_parent)
 {
-	log (TSL_DEBUG) << "put_in (" << new_parent << ")" << endl;
+	log (debugging) << "put_in (" << new_parent << ")" << endl;
 	assert (Object :: is_initialized ());
 	assert (! has_parent ());
 
@@ -172,7 +178,7 @@ template <class T> bool Object ::
 	is_type ()
 	const
 {
-//	log (TSL_DEBUG) << "is_type <" << T :: get_class_name () << "> ()" << endl;
+//	log (debugging) << "is_type <" << T :: get_class_name () << "> ()" << endl;
 	assert (is_initialized ());
 
 	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
@@ -182,7 +188,7 @@ template <class T> T & Object ::
 	to_type ()
 	const
 {
-//	log (TSL_DEBUG) << "to_type <" << T :: get_class_name () << "> ()" << endl;
+//	log (debugging) << "to_type <" << T :: get_class_name () << "> ()" << endl;
 	assert (is_initialized ());
 	assert (is_type <T> ());
 
@@ -220,7 +226,6 @@ template bool Object :: is_type <Disjoint_Set <Item> > () const;
 template bool Object :: is_type <Disjoint_Set <Tile> > () const;
 template bool Object :: is_type <Disjoint_Set <Sound> > () const;
 template bool Object :: is_type <NPC> () const;
-template bool Object :: is_type <Observable <Body> > () const;
 template bool Object :: is_type <Quit_State> () const;
 template bool Object :: is_type <Tile> () const;
 template bool Object :: is_type <TSL> () const;
@@ -240,7 +245,6 @@ template GUI_Engine & Object :: to_type <GUI_Engine> () const;
 template Item & Object :: to_type <Item> () const;
 template NPC & Object :: to_type <NPC> () const;
 template Menu_State & Object :: to_type <Menu_State> () const;
-template Observable <Body> & Object :: to_type <Observable <Body> > () const;
 template Object & Object :: to_type <Object> () const;
 template Peace_State & Object :: to_type <Peace_State> () const;
 template Sound & Object :: to_type <Sound> () const;
@@ -260,9 +264,11 @@ template bool Object :: warn <Character> (bool initialization) const;
 template bool Object :: warn <Data_State_Machine <GUI> > (bool initialization) const;
 template bool Object :: warn <Data_State_Machine <Tile> > (bool initialization) const;
 template bool Object :: warn <Disjoint_Set <GUI> > (bool initialization) const;
+template bool Object :: warn <Disjoint_Set <Body> > (bool initialization) const;
 template bool Object :: warn <Disjoint_Set <Item> > (bool initialization) const;
 template bool Object :: warn <Disjoint_Set <Tile> > (bool initialization) const;
 template bool Object :: warn <Disjoint_Set <Sound> > (bool initialization) const;
+template bool Object :: warn <Environment> (bool initialization) const;
 template bool Object :: warn <GUI> (bool initialization) const;
 template bool Object :: warn <GUI_Engine> (bool initialization) const;
 template bool Object :: warn <GUI_Listener> (bool initialization) const;
@@ -271,11 +277,10 @@ template bool Object :: warn <Item> (bool initialization) const;
 template bool Object :: warn <Multislot <Container> > (bool initialization) const;
 template bool Object :: warn <Multislot <Item> > (bool initialization) const;
 template bool Object :: warn <NPC> (bool initialization) const;
-template bool Object :: warn <Observable <Body> > (bool initialization) const;
-template bool Object :: warn <Observer <Body> > (bool initialization) const;
 template bool Object :: warn <Tile> (bool initialization) const;
 template bool Object :: warn <Singleton <Audio_Engine> > (bool initialization) const;
 template bool Object :: warn <Singleton <Battle_Engine> > (bool initialization) const;
+template bool Object :: warn <Singleton <Environment> > (bool initialization) const;
 template bool Object :: warn <Singleton <GUI_Engine> > (bool initialization) const;
 template bool Object :: warn <Singleton <Dead_State> > (bool initialization) const;
 template bool Object :: warn <Singleton <Fight_State> > (bool initialization) const;

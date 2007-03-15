@@ -16,11 +16,11 @@ namespace tsl
 		public Singleton <World>,
 		public Algorithm <TSL>,
 		private Data_State_Machine <Tile>,
-		private OgreOde :: World,
-		public OgreOde :: ExactVariableStepHandler
+		public OgreOde :: ExactVariableStepHandler,
+		public OgreOde :: CollisionListener
 	{
 		public :
-			World (GUI & new_gui, Ogre :: SceneManager & scene_manager, string tsl_path);
+			World (GUI & new_gui, string tsl_path);
 			virtual ~World ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
@@ -28,13 +28,14 @@ namespace tsl
 			virtual void set_active_state (Tile & tile);
 			virtual Algorithm <TSL> & transit (TSL & owner);
 
-			//	used by OgreOde :: StepHandler :: QuickStep
-			OgreOde :: StepHandler * stepper;
+			///	Called by OgreOde whenever a collision occurs,
+			///	so that we can modify the contact parameters.
+			virtual bool collision (OgreOde :: Contact * contact);
 
 		private :
 			//	Copies are not allowed.
 			World (const World & World);
-			
+
 			GUI & gui;
 			
 			float vertical_camera_angle;
@@ -44,6 +45,7 @@ namespace tsl
 
 			Ogre :: Camera & camera;
 
+			//	This are the tile position limits, not the item position limits!
 			static const int min_x;
 			static const int max_x;
 			static const int min_z;
