@@ -1,0 +1,18 @@
+material attack/Material_2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.8 0.8 0.8 1
+			specular 0.5 0.5 0.5 98.0784
+			emissive 0 0 0
+
+			texture_unit
+			{
+				texture attack.bmp
+			}
+		}
+	}
+}
