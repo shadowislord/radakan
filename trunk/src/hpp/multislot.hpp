@@ -25,7 +25,7 @@ namespace tsl
 			(
 				string new_name,
 				string new_mesh_name,
-				float new_volume,
+				Ogre :: Vector3 new_size,
 				float new_mass,
 				unsigned int new_max_size
 			);
@@ -37,7 +37,7 @@ namespace tsl
 			(
 				string new_name,
 				string new_mesh_name,
-				float new_volume,
+				Ogre :: Vector3 new_size,
 				float new_mass,
 				unsigned int new_max_size
 			);

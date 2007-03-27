@@ -42,9 +42,15 @@ Body ::
 		log (debugging) << "I'm a static body." << endl;
 
 		geometry . setUserObject (& entity);
+		geometry . setPosition (position);
 	}
 
 	item . set_body (* this);
+
+	if (! item . solid)
+	{
+		geometry . disable ();
+	}
 
 	assert (Body :: is_initialized ());
 }
@@ -201,7 +207,7 @@ void Body ::
 		ax = get_top_direction ();
 	}
 
-	body -> setOrientation (node . getOrientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
+	body -> setOrientation (body -> getOrientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
 	//	body -> addTorque (100 * radian_angle * ax);
 }
 

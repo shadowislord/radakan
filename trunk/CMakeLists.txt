@@ -7,13 +7,11 @@ option( USE_FMOD "Toggle usage of Fmod On / Off " )
 
 if(NOT USE_FMOD)
     subdirs(    "external/ois-1.0RC1" 
-                "external/ode-0.8" 
                 "external/ogreaddons/ogreode" 
                 "external/audiere" 
                 "src" )
 else( NOT USE_FMOD )
     subdirs(    "external/ois-1.0RC1" 
-                "external/ode-0.8" 
                 "external/ogreaddons/ogreode" 
                 "src" )
 endif(NOT USE_FMOD)

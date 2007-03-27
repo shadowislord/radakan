@@ -9,7 +9,7 @@ template <class T> Multislot <T> ::
 	(
 		string new_name,
 		string new_mesh_name,
-		float new_volume,
+		Ogre :: Vector3 new_size,
 		float new_mass,
 		unsigned int new_max_size
 	) :
@@ -18,7 +18,7 @@ template <class T> Multislot <T> ::
 	(
 		new_name,
 		new_mesh_name,
-		new_volume,
+		new_size,
 		new_mass,
 		true,
 		true,
@@ -65,9 +65,7 @@ template <class T> bool Multislot <T> ::
 
 	if (item . is_type <T> ())
 	{
-		bool check = Container :: add (item . to_type <T> ());
-		assert (check);
-		return true;
+		return Container :: add (item . to_type <T> ());
 	}
 
 	return false;
@@ -79,7 +77,7 @@ template <class T> Multislot <T> & Multislot <T> ::
 	(
 		string new_name,
 		string new_mesh_name,
-		float new_volume,
+		Ogre :: Vector3 new_size,
 		float new_mass,
 		unsigned int new_max_size
 	)
@@ -89,7 +87,7 @@ template <class T> Multislot <T> & Multislot <T> ::
 		(
 			new_name,
 			new_mesh_name,
-			new_volume,
+			new_size,
 			new_mass,
 			new_max_size
 		);

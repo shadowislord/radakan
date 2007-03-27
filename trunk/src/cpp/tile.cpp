@@ -6,11 +6,16 @@ using namespace tsl;
 const int Tile :: side_length (20);
 
 Tile ::
-	Tile (pair <int, int> new_coordinates, string tsl_path) :
-	Object (tsl_path + "/data/tile/tile_" + to_string (new_coordinates . first) + "_" + to_string (new_coordinates . second) + ".xml"),
+	Tile (pair <int, int> new_coordinates, string new_tsl_path) :
+	Object
+	(
+		"tile_" + to_string (new_coordinates . first) + "_" + to_string (new_coordinates . second)
+	),
+	OgreOde :: SimpleSpace (& Environment :: get (), Environment :: get () . getDefaultSpace ()),
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
-	doc (new TiXmlDocument (string :: c_str ()))
+	tsl_path (new_tsl_path),
+	doc ((tsl_path + "/data/tile/" + string :: c_str () + ".xml") . c_str ())
 {
 	log (debugging) << get_class_name () << " :: " << get_class_name () << " ((" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ")" << endl;
 	
@@ -21,17 +26,7 @@ Tile ::
 
 	assert (Object :: is_initialized ());
 
-	TiXmlDocument & document = * doc;
-	bool check = document . LoadFile ();
-	assert (check);
-	assert (! document . Error ());
-	TiXmlElement * root = document . RootElement ();
-	assert (root != NULL);
-	for (TiXmlElement * body_xml = root -> FirstChildElement ("model");
-				body_xml != NULL; body_xml = body_xml -> NextSiblingElement ("model"))
-	{
-		add_xml (* body_xml);
-	}
+	load_xml_file (doc);
 
 /*	if (root -> FirstChildElement ("forest") != NULL)
 	{
@@ -89,6 +84,9 @@ Tile ::
 	represent (Item :: create ("Pine tree", "pine_tree_2.mesh", 0, 0, false), - 18, 1.4, - 18, 0.06);
 	*/
 
+	//	set a floor
+	new OgreOde :: InfinitePlaneGeometry (Ogre :: Plane (y_axis, 0), & Environment :: get (), this);
+
 	assert (is_initialized ());
 
 	log (debugging) << "Tile ((" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ") V" << endl;
@@ -139,6 +137,12 @@ bool Tile ::
 		
 		log (debugging) << body . item << " was added to the list of NPCs." << endl;
 	}
+
+	if (body . geometry . getSpace () != NULL)
+	{
+		body . geometry . getSpace () -> removeGeometry (body . geometry);
+	}
+	OgreOde :: Space :: addGeometry (body . geometry);
 	
 	return true;
 }
@@ -165,10 +169,17 @@ bool Tile ::
 }
 
 void Tile ::
-	add_xml (TiXmlElement & element)
+	load_xml (TiXmlElement & element)
 {
-	log (debugging) << get_class_name () << " :: add_xml (~element~)" << endl;
+	log (debugging) << get_class_name () << " :: load_xml (~element~)" << endl;
 	assert (is_initialized ());
+
+	if (element . Value () == string ("include"))
+	{
+		TiXmlDocument document ((tsl_path + "/data/tile/" + element . Attribute ("name") + ".xml") . c_str ());
+		load_xml_file (document);
+		return;
+	}
 
 	float x = to_float (element . Attribute ("x"));
 	float y = to_float (element . Attribute ("y"));
@@ -179,15 +190,24 @@ void Tile ::
 	
 	string name = item_xml -> Attribute ("name") + string (" ") + to_string (position);
 	string mesh = item_xml -> Attribute ("mesh");
-	float volume = to_float (item_xml -> Attribute ("volume"));
 	float mass = to_float (item_xml -> Attribute ("mass"));
-	//	bool solid = item_xml -> Attribute ("solid") == string ("true");
+	bool solid = item_xml -> Attribute ("solid") == string ("true");
 	//	bool visible = item_xml -> Attribute ("visible") == string ("true");
+
+	Ogre :: Vector3 volume;
+	TiXmlElement * volume_element = item_xml -> FirstChildElement ("volume");
+	assert (volume_element != NULL);
+	volume = Ogre :: Vector3
+	(
+		to_float (volume_element -> Attribute ("x")),
+		to_float (volume_element -> Attribute ("y")),
+		to_float (volume_element -> Attribute ("z"))
+	);
 
 	Item * item = NULL;
 	if (item_xml -> Value () == string ("static_item"))
 	{
-		item = & Static_Item :: create (name, mesh, volume, mass);
+		item = & Static_Item :: create (name, mesh, volume, mass, solid);
 	}
 	else if (item_xml -> Value () == string ("npc"))
 	{
@@ -212,5 +232,23 @@ void Tile ::
 	if (material != NULL)
 	{
 		body . set_material (material -> Attribute ("name"));
+	}
+}
+
+void Tile ::
+	load_xml_file (TiXmlDocument & document)
+{
+	log (debugging) << get_class_name () << " :: load_xml_file (~document~)" << endl;
+	assert (is_initialized ());
+
+	bool check = document . LoadFile ();
+	assert (check);
+	assert (! document . Error ());
+	TiXmlElement * root = document . RootElement ();
+
+	for (TiXmlElement * body_xml = root -> FirstChildElement ();
+				body_xml != NULL; body_xml = body_xml -> NextSiblingElement ())
+	{
+		load_xml (* body_xml);
 	}
 }

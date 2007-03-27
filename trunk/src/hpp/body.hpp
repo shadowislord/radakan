@@ -46,13 +46,13 @@ namespace tsl
 
 			Item & item;
 			Ogre :: SceneNode & node;
+			OgreOde :: Geometry & geometry;
 
 		private :
 			//	Copies are not allowed.
 			Body (const Body & body);
 
 			Ogre :: Entity & entity;
-			OgreOde :: Geometry & geometry;
 
 			///	only for movable items
 			OgreOde :: Body * body;

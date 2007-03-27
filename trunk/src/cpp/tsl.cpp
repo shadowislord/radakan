@@ -121,7 +121,7 @@ TSL ::
 	assert (get_active_state () . is_type <World> ());
 
 	root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
-	root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Green);
+	root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
 
 	turn_lenght_timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 	last_turn_lenght = 0;
@@ -197,7 +197,7 @@ void TSL ::
 
 		last_turn_lenght = float (turn_lenght_timer -> getMilliseconds ()) / 1000;
 
-		show () << "Turn lenght: " << last_turn_lenght;
+		//	show () << "Turn lenght: " << last_turn_lenght;
 
 		if (maximal_turn_lenght < last_turn_lenght)
 		{

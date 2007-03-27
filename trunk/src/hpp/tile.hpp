@@ -26,10 +26,11 @@ namespace tsl
 
 	///	A Tile is a square piece of a sector.
 	class Tile :
-		public Disjoint_Set <Body>
+		public Disjoint_Set <Body>,
+		public OgreOde :: SimpleSpace
 	{
 		public :
-			Tile (pair <int, int> new_coordinates, string tsl_path);
+			Tile (pair <int, int> new_coordinates, string new_tsl_path);
 			virtual ~Tile ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
@@ -47,9 +48,12 @@ namespace tsl
 			set <NPC *> npcs;
 
 		private :
-			void add_xml (TiXmlElement & element);
+			void load_xml (TiXmlElement & element);
+			void load_xml_file (TiXmlDocument & document);
 
-			TiXmlDocument * doc;
+			string tsl_path;
+
+			TiXmlDocument doc;
 	};
 }
 

@@ -44,7 +44,5 @@ Algorithm <NPC> & Dead_State ::
 {
 	assert (is_initialized ());
 
-	owner . get_body () . node . setOrientation (make_quaternion (- Ogre :: Math :: HALF_PI, owner . get_body () . get_side_direction ()));
-
 	return * this;
 }

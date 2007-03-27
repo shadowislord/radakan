@@ -9,7 +9,7 @@ Container ::
 	(
 		string new_name,
 		string new_mesh_name,
-		float new_volume,
+		Ogre :: Vector3 new_size,
 		float new_mass,
 		bool new_mobile,
 		bool new_solid,
@@ -19,7 +19,7 @@ Container ::
 	Item
 	(
 		new_mesh_name,
-		new_volume,
+		new_size,
 		new_mass,
 		new_mobile,
 		new_solid,
@@ -72,27 +72,6 @@ float Container ::
 }
 
 //	virtual
-OgreOde :: Geometry & Container ::
-	create_geometry ()
-{
-	assert (is_initialized ());
-	assert (! has_body ());
-	
-	OgreOde :: Geometry * geometry;
-
-	OgreOde :: Body * body = new OgreOde :: Body (& Environment :: get (), string :: data ());
-
-	geometry = new OgreOde :: SphereGeometry (Ogre :: Math :: RangeRandom (0.5, 1.5), & Environment :: get (), Environment :: get () . getDefaultSpace ());
-	log (debugging) << "A default sphere mesh was created for " << string :: data () << "." << endl;
-
-	geometry -> setBody (body);
-
-	body -> setMass (OgreOde :: SphereMass (mass, 1 /*TODO set the right radius*/));
-
-	return * geometry;
-}
-
-//	virtual
 bool Container ::
 	add (Item & item)
 {
@@ -106,10 +85,10 @@ bool Container ::
 
 	for (Item * i = get_child (); i != NULL; i = get_another_child ())
 	{
-		total_volume += i -> volume;
+		total_volume += i -> get_volume ();
 	}
 	
-	if (total_volume + item . volume > volume)
+	if (total_volume + item . get_volume () > get_volume ())
 	{
 		return false;
 	}
@@ -126,7 +105,7 @@ Item & Container ::
 	(
 		string new_name,
 		string new_mesh_name,
-		float new_volume,
+		Ogre :: Vector3 new_size,
 		float new_mass,
 		bool new_mobile,
 		bool new_solid,
@@ -138,7 +117,7 @@ Item & Container ::
 		(
 			new_name,
 			new_mesh_name,
-			new_volume,
+			new_size,
 			new_mass,
 			new_mobile,
 			new_solid,

@@ -21,8 +21,6 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
-			virtual OgreOde :: Geometry & create_geometry ();
-			
 			virtual bool is_dead () const = 0;
 			virtual void die () = 0;
 
@@ -38,7 +36,7 @@ namespace tsl
 			Character
 			(
 				string new_mesh_name,
-				float new_volume,
+				Ogre :: Vector3 new_volume,
 				float new_mass
 			);
 

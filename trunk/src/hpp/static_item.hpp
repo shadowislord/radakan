@@ -21,8 +21,10 @@ namespace tsl
 			(
 				string new_name,
 				string new_mesh_name,
-				float new_volume,
-				float new_mass
+				Ogre :: Vector3 new_size,
+				float new_mass,
+				bool new_solid = true,
+				bool new_visible = true
 			);
 
 		protected :
@@ -30,8 +32,10 @@ namespace tsl
 			(
 				string new_name,
 				string new_mesh_name,
-				float new_volume,
-				float new_mass
+				Ogre :: Vector3 new_size,
+				float new_mass,
+				bool new_solid = true,
+				bool new_visible = true
 			);
 	};
 }

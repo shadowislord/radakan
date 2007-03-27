@@ -11,14 +11,14 @@ NPC ::
 	(
 		string new_name,
 		string new_mesh_name,
-		float new_volume,
+		Ogre :: Vector3 new_size,
 		float new_mass
 	) :
 	Object (new_name),
 	Character
 	(
 		new_mesh_name,
-		new_volume,
+		new_size,
 		new_mass
 	)
 {
@@ -67,6 +67,7 @@ void NPC ::
 	die ()
 {
 	assert (NPC :: is_initialized ());
+	assert (has_body ());
 
 	set_active_state <Dead_State> ();
 
@@ -79,7 +80,7 @@ Item & NPC ::
 	(
 		string new_name,
 		string new_mesh_name,
-		float new_volume,
+		Ogre :: Vector3 new_size,
 		float new_mass
 	)
 {
@@ -88,7 +89,7 @@ Item & NPC ::
 		(
 			new_name,
 			new_mesh_name,
-			new_volume,
+			new_size,
 			new_mass
 		);
 

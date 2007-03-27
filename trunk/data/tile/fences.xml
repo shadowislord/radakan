@@ -1,0 +1,33 @@
+<fences>
+	<!-- five fences -->
+	<model x="18" y="0" z="1" scale="0.012">
+		<static_item name="Fence 1" mesh="fences1.mesh" mass="10" solid="true" visible="true">
+			<volume x="2" y="1" z="0.3"/>
+		</static_item>
+		<material name="Wood_Walnut" />
+	</model>
+	<model x="14" y="0" z="1" scale="0.012">
+		<static_item name="Fence 2" mesh="fences2.mesh" mass="10" solid="true" visible="true">
+			<volume x="2" y="1" z="0.3"/>
+		</static_item>
+		<material name="Wood_Walnut" />
+	</model>
+	<model x="10" y="0" z="1" scale="0.012">
+		<static_item name="Fence 3" mesh="fences3.mesh" mass="10" solid="true" visible="true">
+			<volume x="2" y="1" z="0.3"/>
+		</static_item>
+		<material name="Wood_Walnut" />
+	</model>
+	<model x="6" y="0" z="1" scale="0.012">
+		<static_item name="Fence 4" mesh="fences4.mesh" mass="10" solid="true" visible="true">
+			<volume x="2" y="1" z="0.3"/>
+		</static_item>
+		<material name="Wood_Walnut" />
+	</model>
+	<model x="2" y="0" z="1" scale="0.012">
+		<static_item name="Fence 5" mesh="fences5.mesh" mass="10" solid="true" visible="true">
+			<volume x="2" y="1" z="0.3"/>
+		</static_item>
+		<material name="Wood_Walnut" />
+	</model>
+</fences>

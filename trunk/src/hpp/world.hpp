@@ -51,11 +51,11 @@ namespace tsl
 			static const int min_z;
 			static const int max_z;
 
-			///	in degrees
-			static const int min_vertical_camera_angle;
+			///	in radians
+			static const float min_vertical_camera_angle;
 			
-			///	in degrees
-			static const int max_vertical_camera_angle;
+			///	in radians
+			static const float max_vertical_camera_angle;
 	};
 }
 

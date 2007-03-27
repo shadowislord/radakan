@@ -15,8 +15,8 @@ const int World :: min_x = - 1;
 const int World :: max_x = 2;
 const int World :: min_z = - 1;
 const int World :: max_z = 1;
-const int World :: min_vertical_camera_angle = - 90;
-const int World :: max_vertical_camera_angle = 90;
+const float World :: min_vertical_camera_angle = - Ogre :: Math :: HALF_PI;
+const float World :: max_vertical_camera_angle = Ogre :: Math :: HALF_PI;
 
 //	a few constants for our stepper
 const float max_frame_time = 0.1;
@@ -158,6 +158,12 @@ Algorithm <TSL> & World ::
 	{
 		Player :: get () . get_body () . turn (- 5 * turn_lenght);
 	}
+	//	jump & reset your orientation
+	if (Input_Engine :: get () . get_key ("space", false))
+	{
+		Player :: get () . get_body () . geometry . getBody () -> setOrientation (Ogre :: Quaternion (1, 0, 0, 0));
+		Player :: get () . get_body () . move (1, y_axis);
+	}
 
 	Ogre :: Vector3 position = Player :: get () . get_body () . node . getPosition ();
 
@@ -165,7 +171,7 @@ Algorithm <TSL> & World ::
 	int z = int (floor (position . z / Tile :: side_length));
 	assert (Tile :: side_length * min_x <= x);
 	assert (x < Tile :: side_length * (max_x + 1));
-	assert (Tile :: side_length * min_z < z);
+	assert (Tile :: side_length * min_z <= z);
 	assert (z < Tile :: side_length * (max_z + 1));
 	Tile * new_active_tile = tiles [pair <int, int> (x, z)];
 	assert (new_active_tile != NULL);
@@ -242,7 +248,7 @@ Algorithm <TSL> & World ::
 			Player :: get () . get_body () . turn
 						(- 5 * turn_lenght * mouse_position . x);
 		}
-		vertical_camera_angle -= turn_lenght * mouse_position . y;
+		vertical_camera_angle -= turn_lenght * mouse_position . y / 3;
 
 		if (vertical_camera_angle < min_vertical_camera_angle)
 		{
@@ -268,9 +274,11 @@ Algorithm <TSL> & World ::
 	}
 
 	Ogre :: Vector3 pre_position = Player :: get () . get_body () . node . getPosition ();
-//	OgreOde :: StepHandler :: step (turn_lenght);
-	Environment :: get () . getDefaultSpace () -> collide ();
-	Environment :: get () . step (turn_lenght);
+	
+	//	This line caused (?) an enourmous slowdown:
+	get_active_state () . collide ();
+	
+	Environment :: get () . step (0.1);
 	Environment :: get () . updateDrawState ();
 	Environment :: get () . synchronise ();
 	Environment :: get () . clearContacts ();
@@ -306,22 +314,79 @@ Algorithm <TSL> & World ::
 bool World ::
 	collision (OgreOde :: Contact * contact)
 {
-	show () << "collision! ";
-
 	// Check for collisions between things that are connected and ignore them
-	OgreOde :: Geometry * const g1 = contact -> getFirstGeometry ();
-	OgreOde :: Geometry * const g2 = contact -> getSecondGeometry ();
+	OgreOde :: Geometry * g1 = contact -> getFirstGeometry ();
+	OgreOde :: Geometry * g2 = contact -> getSecondGeometry ();
 
-	if (g1 && g2)
+	if ((g1 == NULL) || (g2 == NULL))
 	{
-		const OgreOde :: Body * const b1 = g1 -> getBody ();
-		const OgreOde :: Body * const  b2 = g2 -> getBody ();
+		return false;
+	}
+	
+	contact -> setCoulombFriction (0.5);
+	contact -> setBouncyness (0);
+
+	log () << "collision: " << g1 -> getClass () << " " << g2 -> getClass () << endl;
+	return true;
+	
+	OgreOde :: Body * b1 = g1 -> getBody ();
+	OgreOde :: Body * b2 = g2 -> getBody ();
+
+	if ((b1 != NULL) && (b2 != NULL))
+	{
+		log () << "body-body collision: " << b1 -> getName () << " and " << b2 -> getName () << endl;
+		log () << "body position: " << b1 -> getPosition () << endl;
+		log () << "body position: " << b2 -> getPosition () << endl;
+		log () << "geometry position: " << g1 -> getPosition () << endl;
+		log () << "geometry position: " << g2 -> getPosition () << endl;
+
+		// Set the friction at the contact
+		contact -> setCoulombFriction (0.5);
+		contact -> setBouncyness (0);
+		return true;
+	}
+	else if ((b1 == NULL) && (b2 == NULL))
+	{
+		return false;
+	}
+	
+	//	there can only be one ground geometry
+	if
+	(
+		(
+			(g1 -> getClass () == OgreOde :: Geometry :: Class_TriangleMesh)
+			|| (g1 -> getClass () == OgreOde :: Geometry :: Class_InfinitePlane)
+		)
+		!=
+		(
+			(g2 -> getClass () != OgreOde :: Geometry :: Class_TriangleMesh)
+			|| (g2 -> getClass () != OgreOde :: Geometry :: Class_InfinitePlane)
+		)
+	)
+	{
+		return false;
 	}
 
-	// Set the friction at the contact
-	contact -> setCoulombFriction (OgreOde :: Utility :: Infinity);
-	contact -> setBouncyness (0.1);
+	if
+	(
+		(g1 -> getClass () == OgreOde :: Geometry :: Class_TriangleMesh)
+		|| (g1 -> getClass () == OgreOde :: Geometry :: Class_InfinitePlane)
+	)
+	{
+		//	swap everything
+		
+		OgreOde :: Geometry * temp = g2;
+		g2 = g1;
+		g1 = temp;
 
-	// Yes, this collision is valid
+		b1 = b2;
+	}
+
+	log () << "body-ground collision: " << b1 -> getName () << endl;
+	log () << "body position: " << b1 -> getPosition () << endl;
+	log () << "geometry position: " << g1 -> getPosition () << endl;
+	log () << "geometry position: " << g2 -> getPosition () << endl;
+	contact -> setCoulombFriction (0.5);
+	contact -> setBouncyness (0);
 	return true;
 }

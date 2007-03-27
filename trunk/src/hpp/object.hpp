@@ -22,6 +22,8 @@
 #include <string>
 #include <set>
 
+#include <boost/utility.hpp>
+
 //	Uncomment the next line for release mode.
 //	#define NDEBUG
 
@@ -41,7 +43,8 @@ namespace tsl
 	///	All other files should (in)directly include this master include file.
 
 	class Object :
-		public string
+		public string,
+		public boost :: noncopyable
 	{
 		public :
 			//	protected constructor(s), see below

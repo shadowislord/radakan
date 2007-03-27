@@ -1,55 +1,7 @@
 <tile>
 
-	<!-- the ground -->
-	<model x="10" y="-1" z="10" scale="0.004">
-		<static_item name="Ground" mesh="test3-ground.mesh" volume="0" mass="10" solid="true" visible="true" />
-		<material name="TavernWalls" />
-		<gravity affected="false" />
-	</model>
+	<include name="base"/>
+	<include name="tavern"/>
+	<include name="fences"/>
 
-	<!-- the tavern -->
-	<model x="10" y="0" z="10" scale="0.04">
-		<static_item name="Tavern" mesh="tavern.mesh" volume="0" mass="10" solid="true" visible="true" />
-	</model>
-	<model x="10" y="0" z="10" scale="0.04">
-		<static_item name="Bar" mesh="bar.mesh" volume="0" mass="10" solid="true" visible="true" />
-	</model>
-	<model x="14.64" y="0" z="10.68" scale="0.04">
-		<static_item name="Table 1" mesh="table.mesh" volume="0" mass="10" solid="true" visible="true" />
-	</model>
-	<model x="14.64" y="0" z="12.28" scale="0.04">
-		<static_item name="Table 2" mesh="table.mesh" volume="0" mass="10" solid="true" visible="true" />
-	</model>
-	<model x="11.004" y="0" z="13.88" scale="0.04">
-		<static_item name="Table 3" mesh="table.mesh" volume="0" mass="10" solid="true" visible="true" />
-	</model>
-
-	<!-- 'table2.mesh' is not textured yet. -->
-
-	<!-- the NPC -->
-	<model x="14.8" y="0" z="11.2" scale="0.004">
-		<npc name="Ninja" mesh="ninja.mesh" volume="80" mass="65" solid="true" visible="true" />
-	</model>
-
-	<!-- five fences -->
-	<model x="18" y="0" z="1" scale="0.012">
-		<static_item name="Fence 1" mesh="fences1.mesh" volume="0" mass="10" solid="true" visible="true" />
-		<material name="Wood_Walnut" />
-	</model>
-	<model x="14" y="0" z="1" scale="0.012">
-		<static_item name="Fence 2" mesh="fences2.mesh" volume="0" mass="10" solid="true" visible="true" />
-		<material name="Wood_Walnut" />
-	</model>
-	<model x="10" y="0" z="1" scale="0.012">
-		<static_item name="Fence 3" mesh="fences3.mesh" volume="0" mass="10" solid="true" visible="true" />
-		<material name="Wood_Walnut" />
-	</model>
-	<model x="6" y="0" z="1" scale="0.012">
-		<static_item name="Fence 4" mesh="fences4.mesh" volume="0" mass="10" solid="true" visible="true" />
-		<material name="Wood_Walnut" />
-	</model>
-	<model x="2" y="0" z="1" scale="0.012">
-		<static_item name="Fence 5" mesh="fences5.mesh" volume="0" mass="10" solid="true" visible="true" />
-		<material name="Wood_Walnut" />
-	</model>
 </tile>

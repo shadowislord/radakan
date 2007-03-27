@@ -15,13 +15,11 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
-			virtual OgreOde :: Geometry & create_geometry ();
-			
 			static Item & create
 			(
 				string new_name,
 				string new_mesh_name,
-				float new_volume,
+				Ogre :: Vector3 new_size,
 				float new_mass,
 				float new_sharpness,
 				float new_break_chance,
@@ -52,7 +50,7 @@ namespace tsl
 			(
 				string new_name,
 				string new_mesh_name,
-				float new_volume,
+				Ogre :: Vector3 new_size,
 				float new_mass,
 				float new_sharpness,
 				float new_break_chance,

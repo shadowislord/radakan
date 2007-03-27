@@ -24,13 +24,11 @@ namespace tsl
 			///	'add' returns false if I'm full.
 			virtual bool add (Item & item);
 
-			virtual OgreOde :: Geometry & create_geometry ();
-			
 			static Item & create
 			(
 				string new_name,
 				string mesh_name,
-				float new_volume,
+				Ogre :: Vector3 new_size,
 				float new_mass,
 				bool new_mobile = true,
 				bool new_solid = true,
@@ -42,7 +40,7 @@ namespace tsl
 			(
 				string new_name,
 				string new_mesh_name,
-				float new_volume,
+				Ogre :: Vector3 new_size,
 				float new_mass,
 				bool new_mobile,
 				bool new_solid,

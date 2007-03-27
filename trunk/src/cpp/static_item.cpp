@@ -9,18 +9,20 @@ Static_Item ::
 	(
 		string new_name,
 		string new_mesh_name,
-		float new_volume,
-		float new_mass
+		Ogre :: Vector3 new_size,
+		float new_mass,
+		bool new_solid,
+		bool new_visible
 	) :
 	Object (new_name),
 	Item
 	(
 		new_mesh_name,
-		new_volume,
+		new_size,
 		new_mass,
 		false,
-		true,
-		true
+		new_solid,
+		new_visible
 	)
 {
 	assert (Item :: is_initialized ());
@@ -58,21 +60,13 @@ OgreOde :: Geometry & Static_Item ::
 	assert (is_initialized ());
 	assert (! has_body ());
 	
-	OgreOde :: Geometry * geometry;
-
 	if (find ("Ground") != string :: npos)
 	{
-		OgreOde :: EntityInformer * ei = new OgreOde :: EntityInformer (& entity, Ogre :: Matrix4 ());
-		geometry = ei -> createStaticTriangleMesh (& Environment :: get (), Environment :: get () . getDefaultSpace ());
-		log (debugging) << "A static triangle mesh was created for " << string :: data () << "." << endl;
+		OgreOde :: EntityInformer ei (& entity);
+		return * ei . createStaticTriangleMesh (& Environment :: get (), Environment :: get () . getDefaultSpace ());
 	}
-	else
-	{
-		geometry = new OgreOde :: SphereGeometry (Ogre :: Math :: RangeRandom (0.5, 1.5), & Environment :: get (), Environment :: get () . getDefaultSpace ());
-		log (debugging) << "A default sphere mesh was created for " << string :: data () << "." << endl;
-	}
-
-	return * geometry;
+	
+	return Item :: create_geometry ();
 }
 
 //	static
@@ -81,8 +75,10 @@ Item & Static_Item ::
 	(
 		string new_name,
 		string new_mesh_name,
-		float new_volume,
-		float new_mass
+		Ogre :: Vector3 new_size,
+		float new_mass,
+		bool new_solid,
+		bool new_visible
 	)
 {
 	Item * temp =
@@ -90,8 +86,10 @@ Item & Static_Item ::
 		(
 			new_name,
 			new_mesh_name,
-			new_volume,
-			new_mass
+			new_size,
+			new_mass,
+			new_solid,
+			new_visible
 		);
 
 	return * temp;
