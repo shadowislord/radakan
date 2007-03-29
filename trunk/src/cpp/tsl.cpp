@@ -109,8 +109,12 @@ TSL ::
 		tsl_path + "/log/cegui.txt", Input_Engine :: get ()
 	);
 
-	new Environment (* scene_manager, Ogre :: Vector3 (0, - 9.81, 0));
-	new World (GUI_Engine :: get () . create_gui ("sector.cfg"), tsl_path);
+	new World
+	(
+		* scene_manager,
+		GUI_Engine :: get () . create_gui ("sector.cfg"),
+		tsl_path
+	);
 	new Menu_State ();
 	new Quit_State ();
 
@@ -126,8 +130,6 @@ TSL ::
 	turn_lenght_timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 	last_turn_lenght = 0;
 
-	new Battle_Engine (); 
-
 	assert (is_initialized ());
 }
 
@@ -142,7 +144,6 @@ TSL ::
 	delete & Input_Engine :: get ();
 	delete & Audio_Engine :: get ();
 	delete & GUI_Engine :: get ();
-	delete & Battle_Engine :: get ();
 
 	unset_active_state ();
 
@@ -197,7 +198,7 @@ void TSL ::
 
 		last_turn_lenght = float (turn_lenght_timer -> getMilliseconds ()) / 1000;
 
-		//	show () << "Turn lenght: " << last_turn_lenght;
+		log () << "Turn lenght: " << last_turn_lenght;
 
 		if (maximal_turn_lenght < last_turn_lenght)
 		{

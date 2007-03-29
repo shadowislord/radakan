@@ -88,9 +88,6 @@ Tile ::
 	new OgreOde :: InfinitePlaneGeometry (Ogre :: Plane (y_axis, 0), & Environment :: get (), this);
 
 	assert (is_initialized ());
-
-	log (debugging) << "Tile ((" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ") V" << endl;
-
 }
 
 Tile ::

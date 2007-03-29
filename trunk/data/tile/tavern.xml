@@ -4,7 +4,7 @@
 			<volume x="10" y="3" z="10"/>
 		</static_item>
 	</model>
-	<model x="12" y="0" z="12" scale="0.04">
+	<model x="10" y="0" z="10" scale="0.04">
 		<static_item name="Bar" mesh="bar.mesh" mass="10" solid="true" visible="true">
 			<volume x="3.5" y="1" z="3.5"/>
 		</static_item>

@@ -94,13 +94,6 @@ bool Body ::
 	assert (node . getParent () == & Environment :: get () . root_node);
 	assert (node . numAttachedObjects () <= 2);
 
-	log (debugging) << "Position: " << to_string (node . getPosition ()) << endl;
-	log (debugging) << "Geometry position: " << to_string (geometry . getPosition ()) << endl;
-	if (body != NULL)
-	{
-		log (debugging) << "Body position: " << to_string (body -> getPosition ()) << endl;
-	}
-	
 	//	TODO re-enable assert ((node . getPosition () - geometry . getPosition ()) . length () < 0.01);
 	if (body != NULL)
 	{
@@ -179,36 +172,49 @@ void Body ::
 }
 
 void Body ::
-	move (float distance, Ogre :: Vector3 ax)
+	move (float top_speed, float turn_length)
 {
 	assert (Body :: is_initialized ());
 	assert (is_mobile ());
+	assert (Ogre :: Math :: Abs (top_speed) <= 1);
+	assert (0 <= turn_length);
 
-	if (ax == zero_vector)
-	{
-		ax = get_front_direction ();
-	}
-
-	body -> setPosition (node . getPosition () + distance * ax);
-	//	body -> addForce (1000 * distance * ax);
+	log (debugging) << "Position: " << to_string (body -> getPosition ()) << endl;
+	log (debugging) << "Speed: " << to_string (body -> getPointWorldVelocity (body -> getPosition ())) << endl;
 	
-	log (debugging) << "new position: " << to_string (node . getPosition ()) << endl;
+	log (debugging) << "current force: " << to_string (body -> getForce ()) << endl;
+	
+	body -> setForce (200 * (top_speed * get_front_direction () - body -> getLinearVelocity ()));
+	
+	log (debugging) << "new force: " << to_string (body -> getForce ()) << endl;
 }
 
 void Body ::
-	turn (float radian_angle, Ogre :: Vector3 ax)
+	turn (float top_radian_angle_speed, float turn_length, Ogre :: Vector3 ax)
 {
-	log (debugging) << "turn (" << radian_angle << ", " << to_string (ax) << ")" << endl;
 	assert (Body :: is_initialized ());
 	assert (is_mobile ());
+	assert (Ogre :: Math :: Abs (top_radian_angle_speed) <= 1);
+	assert (0 <= turn_length);
 
 	if (ax == zero_vector)
 	{
 		ax = get_top_direction ();
 	}
 
-	body -> setOrientation (body -> getOrientation () * Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax));
-	//	body -> addTorque (100 * radian_angle * ax);
+	body -> setTorque (10 * (top_radian_angle_speed * ax - body -> getAngularVelocity ()));
+}
+
+void Body ::
+	reset ()
+{
+	log (debugging) << "reset ()" << endl;
+	assert (Body :: is_initialized ());
+	assert (is_mobile ());
+
+	body -> setOrientation (Ogre :: Quaternion (1, 0, 0, 0));
+	body -> setPosition (body -> getPosition () + y_axis * (2 - body -> getPosition () . y));
+	body -> setForce (zero_vector);
 }
 
 Ogre :: Quaternion tsl :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)

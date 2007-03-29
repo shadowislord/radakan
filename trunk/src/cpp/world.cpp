@@ -1,5 +1,4 @@
 #include "tsl.hpp"
-#include "battle_engine.hpp"
 #include "dead_state.hpp"
 #include "fight_state.hpp"
 #include "peace_state.hpp"
@@ -25,25 +24,26 @@ const float time_step = 0.1;
 
 //  constructor
 World ::
-	World (GUI & new_gui, string tsl_path) :
+	World (Ogre :: SceneManager & scene_manager, GUI & new_gui, string tsl_path) :
 	Object ("world"),
+	Environment (scene_manager, Ogre :: Vector3 (0, - 9.81, 0)),
 	OgreOde :: ExactVariableStepHandler
 	(
-		& Environment :: get (),
+		this,
 		OgreOde :: StepHandler :: QuickStep,
 		time_step,
 		max_frame_time,
 		time_scale
 	),
 	gui (new_gui),
-	camera (* Environment :: get () . getSceneManager () -> createCamera ("world camera"))
+	camera (* getSceneManager () -> createCamera ("world camera"))
 {
 	log (debugging) << get_class_name () << " (" << new_gui << "~scene_manager~, " << tsl_path << ")" << endl;
 	assert (Singleton <World> :: is_initialized ());
 	assert (Algorithm <TSL> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
-	assert (Environment :: is_instantiated ());
-	assert (Environment :: get () . is_initialized ());
+	assert (Environment :: is_initialized ());
+	assert (Battle_Engine :: is_initialized ());
 
 	camera . setNearClipDistance (0.001);
 	camera . setFarClipDistance (80);
@@ -69,7 +69,7 @@ World ::
 
 	set_active_state (* tiles [pair <int, int> (0, 0)]);
 
-	Environment :: get () . setCollisionListener (this);
+	setCollisionListener (this);
 
 	assert (World :: is_initialized ());
 }
@@ -79,9 +79,13 @@ World ::
 	~World ()
 {
 	log (debugging) << "~" << get_class_name () << " ()" << endl;
-	assert (State_Machine <Tile> :: is_initialized ());
-
 	assert (World :: is_initialized ());
+
+	assert (Singleton <World> :: is_initialized ());
+	assert (Algorithm <TSL> :: is_initialized ());
+	assert (State_Machine <Tile> :: is_initialized ());
+	assert (Environment :: is_initialized ());
+	assert (Battle_Engine :: is_initialized ());
 }
 
 //	virtual
@@ -93,6 +97,8 @@ bool World ::
 	assert (Singleton <World> :: is_initialized ());
 	assert (Algorithm <TSL> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
+	assert (Environment :: is_initialized ());
+	assert (Battle_Engine :: is_initialized ());
 
 	return true;
 }
@@ -141,28 +147,35 @@ Algorithm <TSL> & World ::
 
 	//	Handle movement
 	//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
+
 	const float turn_lenght = owner . get_last_turn_lenght ();
+	
+	float top_speed = 0;
 	if (Input_Engine :: get () . get_key ("e", false))
 	{
-		Player :: get () . get_body () . move (8 * turn_lenght);
+		top_speed = 1;
 	}
-	if (Input_Engine :: get () . get_key ("d", false))
+	else if (Input_Engine :: get () . get_key ("d", false))
 	{
-		Player :: get () . get_body () . move (- 4 * turn_lenght);
+		top_speed = - 0.5;
 	}
+	Player :: get () . get_body () . move (top_speed, turn_lenght);
+	
+	float top_angular_speed = 0;
 	if (Input_Engine :: get () . get_key ("s", false))
 	{
-		Player :: get () . get_body () . turn (5 * turn_lenght);
+		top_angular_speed = 1;
 	}
-	if (Input_Engine :: get () . get_key ("f", false))
+	else if (Input_Engine :: get () . get_key ("f", false))
 	{
-		Player :: get () . get_body () . turn (- 5 * turn_lenght);
+		top_angular_speed = - 1;
 	}
-	//	jump & reset your orientation
+	Player :: get () . get_body () . turn (top_angular_speed, turn_lenght);
+	
+	//	reset your orientation
 	if (Input_Engine :: get () . get_key ("space", false))
 	{
-		Player :: get () . get_body () . geometry . getBody () -> setOrientation (Ogre :: Quaternion (1, 0, 0, 0));
-		Player :: get () . get_body () . move (1, y_axis);
+		Player :: get () . get_body () . reset ();
 	}
 
 	Ogre :: Vector3 position = Player :: get () . get_body () . node . getPosition ();
@@ -192,7 +205,7 @@ Algorithm <TSL> & World ::
 		NPC & npc = * * get_active_state () . npcs . begin ();
 		if (! npc . is_dead ())
 		{
-			Battle_Engine :: get () . hit (Player :: get (), npc);
+			Battle_Engine :: hit (Player :: get (), npc);
 		}
 		else
 		{
@@ -246,7 +259,7 @@ Algorithm <TSL> & World ::
 		if (mouse_position . x != 0)
 		{
 			Player :: get () . get_body () . turn
-						(- 5 * turn_lenght * mouse_position . x);
+						(- Ogre :: Math :: Sign (mouse_position . x), /*Ogre :: Math :: Abs (mouse_position . x) * */turn_lenght);
 		}
 		vertical_camera_angle -= turn_lenght * mouse_position . y / 3;
 
@@ -275,13 +288,12 @@ Algorithm <TSL> & World ::
 
 	Ogre :: Vector3 pre_position = Player :: get () . get_body () . node . getPosition ();
 	
-	//	This line caused (?) an enourmous slowdown:
 	get_active_state () . collide ();
 	
-	Environment :: get () . step (0.1);
-	Environment :: get () . updateDrawState ();
-	Environment :: get () . synchronise ();
-	Environment :: get () . clearContacts ();
+	OgreOde :: World :: step (0.02);
+	updateDrawState ();
+	synchronise ();
+	clearContacts ();
 
 	Ogre :: Vector3 displacement = Player :: get () . get_body () . node . getPosition () - pre_position;
 	if (displacement != zero_vector)
@@ -323,10 +335,10 @@ bool World ::
 		return false;
 	}
 	
-	contact -> setCoulombFriction (0.5);
+	contact -> setCoulombFriction (0.8);
 	contact -> setBouncyness (0);
 
-	log () << "collision: " << g1 -> getClass () << " " << g2 -> getClass () << endl;
+//	log () << "collision: " << g1 -> getClass () << " " << g2 -> getClass () << endl;
 	return true;
 	
 	OgreOde :: Body * b1 = g1 -> getBody ();

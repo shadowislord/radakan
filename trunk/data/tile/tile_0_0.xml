@@ -5,7 +5,7 @@
 	<include name="fences"/>
 
 	<!-- the Player -->
-	<model x="10.5" y="0" z="2.5" scale="0.004">
+	<model x="10.5" y="2" z="2.5" scale="0.004">
 		<player name="Player" mesh="ninja.mesh" mass="65" solid="true" visible="true">
 			<volume x="0.6" y="2" z="0.3"/>
 		</player>

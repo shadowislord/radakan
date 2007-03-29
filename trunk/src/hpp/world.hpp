@@ -2,6 +2,7 @@
 #define TSL_World_HPP
 
 #include "algorithm.hpp"
+#include "battle_engine.hpp"
 #include "data_state_machine.hpp"
 #include "tile.hpp"
 #include "gui.hpp"
@@ -15,15 +16,20 @@ namespace tsl
 	class World :
 		public Singleton <World>,
 		public Algorithm <TSL>,
+		private Environment,
 		private Data_State_Machine <Tile>,
-		public OgreOde :: ExactVariableStepHandler,
+		private Battle_Engine,
+		public OgreOde :: ExactVariableStepHandler,	//	somehow things don't work without
 		public OgreOde :: CollisionListener
 	{
 		public :
-			World (GUI & new_gui, string tsl_path);
+			World (Ogre :: SceneManager & scene_manager, GUI & new_gui, string tsl_path);
 			virtual ~World ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
+
+			using Singleton <World> :: get;
+			using Singleton <World> :: is_instantiated;
 			
 			virtual void set_active_state (Tile & tile);
 			virtual Algorithm <TSL> & transit (TSL & owner);
@@ -56,6 +62,8 @@ namespace tsl
 			
 			///	in radians
 			static const float max_vertical_camera_angle;
+
+			map <Body *, float> temporary_forces;
 	};
 }
 

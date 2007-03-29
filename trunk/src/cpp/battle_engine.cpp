@@ -63,6 +63,7 @@ void Battle_Engine ::
 	{
 		show () << "Target is out of range: " << to_string (distance) << " > "
 													<< to_string (max_distance);
+		return;
 	}
 
 	float attack = 0;
@@ -92,7 +93,7 @@ void Battle_Engine ::
 	if (defense < attack)	//	Hit
 	{
 		
-		defender . get_body () . turn (- Ogre :: Math :: HALF_PI, defender . get_body () . get_side_direction ());
+		defender . get_body () . turn (- Ogre :: Math :: HALF_PI, 1, defender . get_body () . get_side_direction ());
 
 		defender . die ();
 	}

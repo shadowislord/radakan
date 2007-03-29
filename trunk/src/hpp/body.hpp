@@ -38,11 +38,14 @@ namespace tsl
 			void set_scale (float scale);
 			void set_material (string name);
 
-			//	If no - or zero - ax specified, I'll move in my front direction.
-			void move (float distance, Ogre :: Vector3 ax = zero_vector);
+			//	I'll move in my front direction.
+			void move (float top_speed, float turn_length);
 
 			//	If no - or zero - ax specified, I'll turn around my top direction.
-			void turn (float radian_angle, Ogre :: Vector3 ax = zero_vector);
+			void turn (float top_radian_angle_speed, float turn_length, Ogre :: Vector3 ax = zero_vector);
+
+			//	Reset the orientation.
+			void reset ();
 
 			Item & item;
 			Ogre :: SceneNode & node;
