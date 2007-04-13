@@ -45,7 +45,7 @@ template <class T> bool Multislot <T> ::
 	is_initialized ()
 	const
 {
-	return warn <Multislot <T> > (Container :: is_initialized ());
+	return Container :: is_initialized ();
 }
 
 //	static

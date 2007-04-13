@@ -36,7 +36,7 @@ template <class T> bool Disjoint_Set <T> ::
 	is_initialized ()
 	const
 {
-	assert (warn <Disjoint_Set <T> > (Object :: is_initialized ()));
+	assert (Object :: is_initialized ());
 	assert (unlimited < 0);
 	assert ((maximal_size == unlimited) || (0 <= maximal_size));
 	assert (children . size () <= maximal_size);
@@ -48,7 +48,7 @@ template <class T> bool Disjoint_Set <T> ::
 
 	for (T_iterator i = children . begin (); i != children . end (); i ++)
 	{
-		assert (warn <Disjoint_Set <T> > ((* i) -> T :: is_initialized ()));
+		assert ((* i) -> T :: is_initialized ());
 	}
 	*/
 

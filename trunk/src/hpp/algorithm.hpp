@@ -1,5 +1,5 @@
-#ifndef TSL_STATE_HPP
-#define TSL_STATE_HPP
+#ifndef TSL_ALGORITHM_HPP
+#define TSL_ALGORITHM_HPP
 
 #include "singleton.hpp"
 
@@ -19,12 +19,20 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
-			///	pure virtual method
-			virtual Algorithm <T> & transit (T & owner) = 0;
+			virtual Algorithm <T> & transit (T & owner);
 
-		protected:
-			Algorithm ();
+			///	First recursively transit the anchestors and then me.
+			Algorithm <T> & full_transit (T & owner);
+
+			virtual void enter (T & owner);
+			virtual void exit (T & owner);
+
+		protected :
+			Algorithm (Algorithm <T> * new_parent = NULL);
+
+		private :
+			Algorithm <T> * parent;
 	};
 }
 
-#endif	//	TSL_STATE_HPP
+#endif	//	TSL_ALGORITHM_HPP

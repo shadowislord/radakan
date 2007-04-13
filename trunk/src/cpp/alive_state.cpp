@@ -1,23 +1,24 @@
-#include "npc.hpp"
+#include "alive_state.hpp"
 #include "fight_state.hpp"
-#include "peace_state.hpp"
+#include "npc.hpp"
+#include "tsl.hpp"
 
 using namespace std;
 using namespace tsl;
 
 //  constructor
-Peace_State ::
-	Peace_State () :
-	Object ("peace state")
+Alive_State ::
+	Alive_State () :
+	Object ("alive state")
 {
 	assert (Algorithm <NPC> :: is_initialized ());
 
-	assert (Peace_State :: is_initialized ());
+	assert (Alive_State :: is_initialized ());
 }
 
 //  destructor
-Peace_State ::
-	~Peace_State ()
+Alive_State ::
+	~Alive_State ()
 {
 	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	
@@ -25,7 +26,7 @@ Peace_State ::
 }
 
 //	virtual
-bool Peace_State ::
+bool Alive_State ::
 	is_initialized ()
 	const
 {
@@ -35,22 +36,27 @@ bool Peace_State ::
 }
 
 //	static
-string Peace_State ::
+string Alive_State ::
 	get_class_name ()
 {
-	return "Peace_State";
+	return "Alive_State";
 }
 
 //	virtual
-Algorithm <NPC> & Peace_State ::
+Algorithm <NPC> & Alive_State ::
 	transit (NPC & owner)
 {
 	assert (is_initialized ());
+	
+	const float turn_lenght = TSL :: get () . get_last_turn_lenght ();
+	
+	owner . get_body () . move (0, turn_lenght);
+	owner . get_body () . turn (0, turn_lenght);
 	
 	if (! owner . hands . is_empty ())
 	{
 		return Fight_State :: get ();
 	}
 
-	return * this;
+	return owner . get_active_state ();
 }

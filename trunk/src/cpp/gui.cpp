@@ -49,8 +49,8 @@ bool GUI ::
 	is_initialized ()
 	const
 {
-	assert (warn <GUI> (Object :: is_initialized ()));
-	return warn <GUI> (text_window != NULL);
+	assert (Object :: is_initialized ());
+	return text_window != NULL;
 }
 
 //	static

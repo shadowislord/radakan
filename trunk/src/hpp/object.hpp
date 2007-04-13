@@ -95,11 +95,6 @@ namespace tsl
 			#endif
 			Object (string new_name);
 			
-			//	This method is only used for debugging.
-			//	Example usage: assert (warn <Class> (object -> Class :: is_initialized ()));
-			//	In case of an assertion failure, you get an informative warning in the log.
-			template <class T> bool warn (bool initialization) const;
-
 		private :
 			const Object * parent;	//	the Disjoint_Set in which the object is
 

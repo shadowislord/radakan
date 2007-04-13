@@ -37,12 +37,3 @@ string Dead_State ::
 {
 	return "Dead_State";
 }
-
-//	virtual
-Algorithm <NPC> & Dead_State ::
-	transit (NPC & owner)
-{
-	assert (is_initialized ());
-
-	return * this;
-}

@@ -28,15 +28,8 @@ template <class T> bool State_Machine <T> ::
 	is_initialized ()
 	const
 {
-	assert (Object :: warn <State_Machine <T> > (Object :: is_initialized ()));
-	assert
-	(
-		Object :: warn <State_Machine <T> >
-		(
-			(active_state == NULL)
-									|| active_state -> is_initialized ()
-		)
-	);
+	assert (Object :: is_initialized ());
+	assert ((active_state == NULL) || active_state -> is_initialized ());
 
 	return true;
 }

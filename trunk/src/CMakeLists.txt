@@ -66,9 +66,9 @@ set(DEBUG_LIBS  debug OgreMain
                 debug prefab
                 debug ogreode_core 
                 debug ois) 
-set(RELEASE_LIBS    optimized ogremain
-                    optimized ceguibase 
-                    optimized ogreguirenderer 
+set(RELEASE_LIBS    optimized OgreMain
+                    optimized CEGUIBase 
+                    optimized CEGUIOgreRenderer 
                     optimized audiere
                     optimized ogg
                     optimized vorbis

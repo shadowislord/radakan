@@ -3,6 +3,7 @@
 
 #include "state_machine.hpp"
 #include "algorithm.hpp"
+#include <stack>
 
 using namespace std;
 
@@ -17,13 +18,14 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
-			///	'set_active_state' requires U to be instantiated already.
-			template <typename U> void set_active_state ();
-			
 			virtual void run ();
+			
+			void recall_previous_state ();
 
 		protected :
 			Algorithm_State_Machine ();
+
+			stack <Algorithm <T> *> history;
 	};
 }
 

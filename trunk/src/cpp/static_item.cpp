@@ -43,7 +43,7 @@ bool Static_Item ::
 	is_initialized ()
 	const
 {
-	return warn <Static_Item> (Item :: is_initialized ());
+	return Item :: is_initialized ();
 }
 
 //	static
@@ -60,11 +60,13 @@ OgreOde :: Geometry & Static_Item ::
 	assert (is_initialized ());
 	assert (! has_body ());
 	
+	/*	TODO solve the run-time error that this results in
 	if (find ("Ground") != string :: npos)
 	{
 		OgreOde :: EntityInformer ei (& entity);
 		return * ei . createStaticTriangleMesh (& Environment :: get (), Environment :: get () . getDefaultSpace ());
 	}
+	*/
 	
 	return Item :: create_geometry ();
 }

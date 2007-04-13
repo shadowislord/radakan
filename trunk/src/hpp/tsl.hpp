@@ -33,7 +33,7 @@ namespace tsl
 		private :
 			float last_turn_lenght;
 			Ogre :: Root * root;
-			Ogre :: Timer * turn_lenght_timer;
+			Ogre :: Timer turn_lenght_timer;
 	};
 }
 

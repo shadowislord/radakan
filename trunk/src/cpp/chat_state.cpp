@@ -1,4 +1,5 @@
 #include "npc.hpp"
+#include "chat_state.hpp"
 #include "fight_state.hpp"
 #include "alive_state.hpp"
 
@@ -6,26 +7,26 @@ using namespace std;
 using namespace tsl;
 
 //  constructor
-Fight_State ::
-	Fight_State () :
-	Object ("fight state"),
+Chat_State ::
+	Chat_State () :
+	Object ("chat state"),
 	Algorithm <NPC> (& Alive_State :: get ())
 {
 	assert (Algorithm <NPC> :: is_initialized ());
 
-	assert (Fight_State :: is_initialized ());
+	assert (Chat_State :: is_initialized ());
 }
 
 //  destructor
-Fight_State ::
-	~Fight_State ()
+Chat_State ::
+	~Chat_State ()
 {
 	log (debugging) << "~" << get_class_name () << " ()" << endl;
 	assert (Algorithm <NPC> :: is_initialized ());
 }
 
 //	virtual
-bool Fight_State ::
+bool Chat_State ::
 	is_initialized ()
 	const
 {
@@ -33,14 +34,14 @@ bool Fight_State ::
 }
 
 //	static
-string Fight_State ::
+string Chat_State ::
 	get_class_name ()
 {
-	return "Fight_State";
+	return "Chat_State";
 }
 
 //	virtual
-Algorithm <NPC> & Fight_State ::
+Algorithm <NPC> & Chat_State ::
 	transit (NPC & owner)
 {
 	assert (is_initialized ());

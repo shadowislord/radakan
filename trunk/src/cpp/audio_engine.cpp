@@ -124,7 +124,7 @@ bool Audio_Engine ::
 	is_initialized ()
 	const
 {
-	return warn <Audio_Engine> (Singleton <Audio_Engine> :: is_initialized ());
+	return Singleton <Audio_Engine> :: is_initialized ();
 }
 
 //	static

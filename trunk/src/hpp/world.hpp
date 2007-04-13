@@ -23,7 +23,7 @@ namespace tsl
 		public OgreOde :: CollisionListener
 	{
 		public :
-			World (Ogre :: SceneManager & scene_manager, GUI & new_gui, string tsl_path);
+			World (Ogre :: SceneManager & scene_manager, string tsl_path);
 			virtual ~World ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
@@ -42,6 +42,8 @@ namespace tsl
 			//	Copies are not allowed.
 			World (const World & World);
 
+			void enter (TSL & owner);
+			
 			GUI & gui;
 			
 			float vertical_camera_angle;
@@ -62,8 +64,6 @@ namespace tsl
 			
 			///	in radians
 			static const float max_vertical_camera_angle;
-
-			map <Body *, float> temporary_forces;
 	};
 }
 

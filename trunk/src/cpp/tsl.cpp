@@ -4,7 +4,7 @@
 #include "quit_state.hpp"
 #include "dead_state.hpp"
 #include "fight_state.hpp"
-#include "peace_state.hpp"
+#include "alive_state.hpp"
 #include "audio_engine.hpp"
 #include "battle_engine.hpp"
 #include "input_engine.hpp"
@@ -106,13 +106,12 @@ TSL ::
 	(
 		* window,
 		* scene_manager,
-		tsl_path + "/log/cegui.txt", Input_Engine :: get ()
+		tsl_path + "/log/cegui.txt"
 	);
 
 	new World
 	(
 		* scene_manager,
-		GUI_Engine :: get () . create_gui ("sector.cfg"),
 		tsl_path
 	);
 	new Menu_State ();
@@ -121,13 +120,12 @@ TSL ::
 	Ogre :: Camera * camera = scene_manager -> getCameraIterator () . getNext ();
 	assert (camera != NULL);
 
-	Algorithm_State_Machine <TSL> :: set_active_state <World> ();
+	Algorithm_State_Machine <TSL> :: set_active_state (World :: get ());
 	assert (get_active_state () . is_type <World> ());
 
 	root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
 	root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
 
-	turn_lenght_timer = Ogre :: PlatformManager :: getSingleton () . createTimer ();
 	last_turn_lenght = 0;
 
 	assert (is_initialized ());
@@ -150,11 +148,10 @@ TSL ::
 	delete & Menu_State :: get ();
 	delete & World :: get ();
 	delete & Quit_State :: get ();
-	delete & Environment :: get ();
 
+	delete & Alive_State :: get ();
 	delete & Dead_State :: get ();
 	delete & Fight_State :: get ();
-	delete & Peace_State :: get ();
 }
 
 //	virtual
@@ -162,8 +159,8 @@ bool TSL ::
 	is_initialized ()
 	const
 {
-	assert (warn <TSL> (Singleton <TSL> :: is_initialized ()));
-	assert (warn <TSL> (Algorithm_State_Machine <TSL> :: is_initialized ()));
+	assert (Singleton <TSL> :: is_initialized ());
+	assert (Algorithm_State_Machine <TSL> :: is_initialized ());
 
 	return true;
 }
@@ -190,13 +187,13 @@ void TSL ::
 		assert (check);
 	
 		Input_Engine :: get () . capture ();
-		Ogre :: PlatformManager :: getSingleton () . messagePump (window);
+		Ogre :: WindowEventUtilities :: messagePump ();
 
-		log (debugging) << "Turn lenth (part one): " << float (turn_lenght_timer -> getMilliseconds ()) / 1000 << endl;
+		log (debugging) << "Turn lenth (part one): " << float (turn_lenght_timer . getMilliseconds ()) / 1000 << endl;
 
 		Algorithm_State_Machine <TSL> :: run ();
 
-		last_turn_lenght = float (turn_lenght_timer -> getMilliseconds ()) / 1000;
+		last_turn_lenght = float (turn_lenght_timer . getMilliseconds ()) / 1000;
 
 		log () << "Turn lenght: " << last_turn_lenght;
 
@@ -205,11 +202,11 @@ void TSL ::
 			log (debugging) << "Reducing the turn lenght from " << last_turn_lenght << " to " << maximal_turn_lenght << "..." << endl;
 			last_turn_lenght = maximal_turn_lenght;
 		}
-		turn_lenght_timer -> reset ();
+		turn_lenght_timer . reset ();
 
 		if (window -> isClosed ())
 		{
-			Algorithm_State_Machine <TSL> :: set_active_state <Quit_State> ();
+			Algorithm_State_Machine <TSL> :: set_active_state (Quit_State :: get ());
 		}
 	}
 	

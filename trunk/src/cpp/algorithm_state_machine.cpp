@@ -28,7 +28,8 @@ template <class T> bool Algorithm_State_Machine <T> ::
 	is_initialized ()
 	const
 {
-	assert (Object :: warn <Algorithm_State_Machine <T> > (State_Machine <Algorithm <T> > :: is_initialized ()));
+	assert (State_Machine <Algorithm <T> > :: is_initialized ());
+//	assert (Object :: is_type <T> ());
 
 	return true;
 }
@@ -47,39 +48,37 @@ template <class T> void Algorithm_State_Machine <T> ::
 	assert (is_initialized ());
 	assert (State_Machine <Algorithm <T> > :: has_active_state ());
 
-	State_Machine <Algorithm <T> > :: set_active_state
-	(
-		State_Machine <Algorithm <T> > :: get_active_state () . transit
-													(Object :: to_type <T> ())
-	);
+	Algorithm <T> & old_state = State_Machine <Algorithm <T> > :: get_active_state ();
+
+	T & owner = Object :: to_type <T> (); 
+
+	Algorithm <T> & new_state = old_state . full_transit (owner);
+	
+	if (old_state != new_state)
+	{
+		old_state . exit (owner);
+		if (history . empty () || (history . top () != & old_state))
+		{
+			history . push (& old_state);
+		}
+		State_Machine <Algorithm <T> > :: set_active_state (new_state);
+		new_state . enter (owner);
+	}
 }
 
-//virtual
-template <class T> template <typename U> void Algorithm_State_Machine <T> ::
-	set_active_state ()
+template <class T> void Algorithm_State_Machine <T> ::
+	recall_previous_state ()
 {
-	Object :: log (Object :: debugging) << "set_active_state <" << U :: get_class_name () << "> ()" << endl;
-	assert (Algorithm_State_Machine <T> :: is_initialized ());
-	assert (U :: is_instantiated ());
-	
-	State_Machine <Algorithm <T> > :: set_active_state (U :: get ());
+	assert (is_initialized ());
+	assert (! history . empty ());
+
+	State_Machine <Algorithm <T> > :: set_active_state (* history . top ());
+	history . pop ();
 }
 
 //	to avert linking errors:
 #include "tsl.hpp"
-#include "dead_state.hpp"
-#include "peace_state.hpp"
-#include "world.hpp"
-#include "menu_state.hpp"
-#include "quit_state.hpp"
-#include "fight_state.hpp"
+#include "npc.hpp"
 
 template class Algorithm_State_Machine <NPC>;
 template class Algorithm_State_Machine <TSL>;
-
-template void Algorithm_State_Machine <NPC> :: set_active_state <Dead_State> ();
-template void Algorithm_State_Machine <NPC> :: set_active_state <Fight_State> ();
-template void Algorithm_State_Machine <TSL> :: set_active_state <Menu_State> ();
-template void Algorithm_State_Machine <NPC> :: set_active_state <Peace_State> ();
-template void Algorithm_State_Machine <TSL> :: set_active_state <World> ();
-template void Algorithm_State_Machine <TSL> :: set_active_state <Quit_State> ();

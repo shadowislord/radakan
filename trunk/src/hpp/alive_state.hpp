@@ -1,5 +1,5 @@
-#ifndef TSL_PEACE_STATE_HPP
-#define TSL_PEACE_STATE_HPP
+#ifndef TSL_ALIVE_STATE_HPP
+#define TSL_ALIVE_STATE_HPP
 
 #include "algorithm_state_machine.hpp"
 
@@ -9,13 +9,13 @@ namespace tsl
 {
 	class NPC;
 
-	class Peace_State :
-		public Singleton <Peace_State>,
+	class Alive_State :
+		public Singleton <Alive_State>,
 		public Algorithm <NPC>
 	{
 		public :
-			Peace_State ();
-			virtual ~Peace_State ();
+			Alive_State ();
+			virtual ~Alive_State ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
@@ -23,8 +23,8 @@ namespace tsl
 	
 		private :
 			//	Copies are not allowed.
-			Peace_State (const Peace_State & peace_state);
+			Alive_State (const Alive_State & alive_state);
 	};
 }
 
-#endif	//	TSL_PEACE_STATE_HPP
+#endif	//	TSL_ALIVE_STATE_HPP

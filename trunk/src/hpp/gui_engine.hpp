@@ -20,8 +20,7 @@ namespace tsl
 			(
 				Ogre :: RenderWindow & window,
 				Ogre :: SceneManager & scene_manager,
-				string log_file_name,
-				GUI_Listener & new_gui_listener
+				string log_file_name
 			);
 			virtual ~GUI_Engine ();
 			virtual bool is_initialized () const;
@@ -39,9 +38,6 @@ namespace tsl
 		private :
 			CEGUI :: OgreCEGUIRenderer * renderer;
 			CEGUI :: System * system;
-			CEGUI :: WindowManager * window_manager;
-			
-			GUI_Listener & gui_listener;
 	};
 }
 

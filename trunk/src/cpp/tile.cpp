@@ -102,7 +102,7 @@ bool Tile ::
 	is_initialized ()
 	const
 {
-	assert (warn <Tile> (Disjoint_Set <Body> :: is_initialized ()));
+	assert (Disjoint_Set <Body> :: is_initialized ());
 
 	return true;
 }

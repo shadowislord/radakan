@@ -10,33 +10,29 @@ GUI_Engine ::
 	(
 		Ogre :: RenderWindow & window,
 		Ogre :: SceneManager & scene_manager,
-		string log_file_name,
-		GUI_Listener & new_gui_listener
+		string log_file_name
 	) :
-	Object ("GUI engine"),
-	gui_listener (new_gui_listener)
+	Object ("GUI engine")
 {
-	assert (Object :: is_initialized ());
+	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ")" << endl;
+	assert (GUI_Listener :: is_instantiated ());
+	assert (Singleton <GUI_Engine> :: is_initialized ());
+	assert (Data_State_Machine <GUI> :: is_initialized ());
 
-	renderer = new CEGUI :: OgreCEGUIRenderer (& window);
-	renderer -> setTargetSceneManager (& scene_manager);
+	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") A" << endl;
+	renderer = new CEGUI :: OgreCEGUIRenderer (& window, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, & scene_manager);
 
-	#if CEGUI_VERSION_MINOR > 4
-		//	assuming cegui-0.5
-		system = new CEGUI :: System (renderer, NULL, NULL, NULL, "", log_file_name);
-	#else
-		system = new CEGUI :: System (renderer, CEGUI :: String (log_file_name) . data ());
-	#endif
+	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") BC" << endl;
+	system = new CEGUI :: System (renderer, NULL, NULL, NULL, "", log_file_name);
 
-	window_manager = & CEGUI :: WindowManager :: getSingleton ();
-
-	CEGUI :: Logger :: getSingleton () . setLoggingLevel (CEGUI :: Informative);
-
+	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") D" << endl;
 	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
 	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
+	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") F" << endl;
 	system -> setDefaultFont ("BlueHighway-12");
 
+	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") G" << endl;
 	assert (is_initialized ());
 }
 
@@ -52,8 +48,9 @@ bool GUI_Engine ::
 	is_initialized ()
 	const
 {
-	assert (warn <GUI_Engine> (Singleton <GUI_Engine> :: is_initialized ()));
-	assert (warn <GUI_Engine> (Data_State_Machine <GUI> :: is_initialized ()));
+	assert (GUI_Listener :: is_instantiated ());
+	assert (Singleton <GUI_Engine> :: is_initialized ());
+	assert (Data_State_Machine <GUI> :: is_initialized ());
 
 	return true;
 }
@@ -103,8 +100,8 @@ GUI & GUI_Engine ::
 			new GUI
 			(
 				configuration_file,
-				* window_manager -> loadWindowLayout (configuration_file),
-				gui_listener
+				* CEGUI :: WindowManager :: getSingleton () . loadWindowLayout (configuration_file),
+				GUI_Listener :: get ()
 			)
 		);
 

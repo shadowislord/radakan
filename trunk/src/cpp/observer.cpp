@@ -27,7 +27,7 @@ template <class T> bool Observer <T> ::
 	is_initialized ()
 	const
 {
-	return warn <Observer <T> > (Object :: is_initialized ());
+	return Object :: is_initialized ();
 }
 
 //	static

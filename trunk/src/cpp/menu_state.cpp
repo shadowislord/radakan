@@ -53,23 +53,33 @@ Algorithm <TSL> & Menu_State ::
 	if (Input_Engine :: get () . get_key ("Escape", true)
 					|| Input_Engine :: get () . get_gui_button ("Return", true))
 	{
-		show () << "Game resumed";
+		log () << "Game resumed" << endl;
+		
 		return World :: get ();
 	}
-	
+
 	//	quit
 	if (Input_Engine :: get () . get_gui_button ("Quit", true))
 	{
 		return Quit_State :: get ();
 	}
-	
+
 	//	FPS
 	if (Input_Engine :: get () . get_gui_button ("Statistics", true))
 	{
 		show () << owner . get_FPS ();
 	}
+	
+	return owner . get_active_state ();
+}
+
+//	virtual
+void Menu_State ::
+	enter (TSL & owner)
+{
+	assert (is_initialized ());
 
 	GUI_Engine :: get () . activate (gui);
-
-	return * this;
+	
+	show () << "Menu (game paused)";
 }

@@ -31,10 +31,8 @@ template <class T> bool Data_State_Machine <T> ::
 	const
 {
 //	Object :: log (Object :: debugging) << get_class_name () << " :: is_initialized ()" << endl;
-	assert (Object :: warn <Data_State_Machine <T> >
-								(State_Machine <T> :: is_initialized ()));
-	assert (Object :: warn <Data_State_Machine <T> >
-								(Disjoint_Set <T> :: is_initialized ()));
+	assert (State_Machine <T> :: is_initialized ());
+	assert (Disjoint_Set <T> :: is_initialized ());
 
 	return true;
 }

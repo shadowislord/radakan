@@ -19,9 +19,10 @@ namespace tsl
 			virtual ~Quit_State ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
+
+			using Algorithm <TSL> :: enter;
+			using Algorithm <TSL> :: exit;
 			
-			virtual Algorithm <TSL> & transit (TSL & owner);
-	
 		private :
 			//	Copies are not allowed.
 			Quit_State (const Quit_State & menu_state);

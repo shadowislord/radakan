@@ -37,12 +37,3 @@ string Quit_State ::
 {
 	return "Quit_State";
 }
-
-//	virtual
-Algorithm <TSL> & Quit_State ::
-	transit (TSL & owner)
-{
-	assert (is_initialized ());
-
-	return * this;
-}

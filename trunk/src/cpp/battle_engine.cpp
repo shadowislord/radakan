@@ -34,7 +34,7 @@ bool Battle_Engine ::
 	is_initialized ()
 	const
 {
-	return warn <Battle_Engine> (Object :: is_initialized ());
+	return Object :: is_initialized ();
 }
 
 //	static

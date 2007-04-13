@@ -15,7 +15,6 @@ using namespace std;
 
 namespace tsl
 {
-
 	///	Input engine is responsible for recording player input.
 
 	class Input_Engine :
@@ -29,13 +28,19 @@ namespace tsl
 			virtual ~Input_Engine ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
+			
+			using Singleton <Input_Engine> :: get;
+			using Singleton <Input_Engine> :: is_instantiated;
+
 			void capture ();
 			bool get_key (string key, bool reset);
 			bool get_gui_button (string button, bool reset);
 			bool get_mouse_button (string button, bool reset);
-			const Ogre :: Vector3 & get_mouse_position (bool relative) const;
-
+			const Ogre :: Vector3 & get_mouse_position (bool relative = absolute) const;
 			static bool is_mouse_button (string button);
+			
+			static const bool absolute;
+			static const bool relative;
 			static const string left_mouse_button;
 			static const string middle_mouse_button;
 			static const string right_mouse_button;

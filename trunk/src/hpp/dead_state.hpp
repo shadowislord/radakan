@@ -19,8 +19,6 @@ namespace tsl
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 			
-			virtual Algorithm <NPC> & transit (NPC & owner);
-	
 		private :
 			//	Copies are not allowed.
 			Dead_State (const Dead_State & dead_state);

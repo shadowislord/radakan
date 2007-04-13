@@ -29,12 +29,12 @@ Item ::
 		<< bool_to_string (solid) << ", " << bool_to_string (visible) << ")"
 		<< endl;
 	assert (Object :: is_initialized ());
-	assert (warn <Item> (Environment :: is_instantiated ()));
-	assert (warn <Item> (Environment :: get () . is_initialized ()));
-	assert (warn <Item> (0 <= size . x));
-	assert (warn <Item> (0 <= size . y));
-	assert (warn <Item> (0 <= size . z));
-	assert (warn <Item> (0 <= mass));
+	assert (Environment :: is_instantiated ());
+	assert (Environment :: get () . is_initialized ());
+	assert (0 <= size . x);
+	assert (0 <= size . y);
+	assert (0 <= size . z);
+	assert (0 <= mass);
 
 	assert (Item :: is_initialized ());
 }
@@ -60,13 +60,13 @@ bool Item ::
 	const
 {
 //	log (debugging) << get_class_name () << " :: is_initialized ()" << endl;
-	assert (warn <Item> (Object :: is_initialized ()));
-	assert (warn <Item> (Environment :: is_instantiated ()));
-	assert (warn <Item> (Environment :: get () . is_initialized ()));
-	assert (warn <Item> (0 <= size . x));
-	assert (warn <Item> (0 <= size . y));
-	assert (warn <Item> (0 <= size . z));
-	assert (warn <Item> (0 <= mass));
+	assert (Object :: is_initialized ());
+	assert (Environment :: is_instantiated ());
+	assert (Environment :: get () . is_initialized ());
+	assert (0 <= size . x);
+	assert (0 <= size . y);
+	assert (0 <= size . z);
+	assert (0 <= mass);
 	
 	return true;
 }

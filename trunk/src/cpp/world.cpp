@@ -1,7 +1,7 @@
 #include "tsl.hpp"
 #include "dead_state.hpp"
 #include "fight_state.hpp"
-#include "peace_state.hpp"
+#include "alive_state.hpp"
 #include "gui.hpp"
 #include "input_engine.hpp"
 #include "menu_state.hpp"
@@ -24,7 +24,7 @@ const float time_step = 0.1;
 
 //  constructor
 World ::
-	World (Ogre :: SceneManager & scene_manager, GUI & new_gui, string tsl_path) :
+	World (Ogre :: SceneManager & scene_manager, string tsl_path) :
 	Object ("world"),
 	Environment (scene_manager, Ogre :: Vector3 (0, - 9.81, 0)),
 	OgreOde :: ExactVariableStepHandler
@@ -35,10 +35,10 @@ World ::
 		max_frame_time,
 		time_scale
 	),
-	gui (new_gui),
+	gui (GUI_Engine :: get () . create_gui ("sector.cfg")),
 	camera (* getSceneManager () -> createCamera ("world camera"))
 {
-	log (debugging) << get_class_name () << " (" << new_gui << "~scene_manager~, " << tsl_path << ")" << endl;
+	log (debugging) << get_class_name () << " (~scene_manager~, " << tsl_path << ")" << endl;
 	assert (Singleton <World> :: is_initialized ());
 	assert (Algorithm <TSL> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
@@ -48,9 +48,9 @@ World ::
 	camera . setNearClipDistance (0.001);
 	camera . setFarClipDistance (80);
 
+	new Alive_State ();
 	new Dead_State ();
 	new Fight_State ();
-	new Peace_State ();
 
 	for (int x = min_x; x <= max_x; x ++)
 	{
@@ -194,7 +194,6 @@ Algorithm <TSL> & World ::
 	if (Input_Engine :: get () . get_key ("Escape", true)
 					|| Input_Engine :: get () . get_gui_button ("Menu", true))
 	{
-		show () << "Menu (game paused)";
 		return Menu_State :: get ();
 	}
 
@@ -203,20 +202,21 @@ Algorithm <TSL> & World ::
 					|| Input_Engine :: get () . get_gui_button ("Hit", true))
 	{
 		NPC & npc = * * get_active_state () . npcs . begin ();
-		if (! npc . is_dead ())
+		if (npc . is_dead ())
 		{
-			Battle_Engine :: hit (Player :: get (), npc);
+			show () << "Mutilating a dead body is *not* nice.";
 		}
 		else
 		{
-			show () << "Mutilating a dead body is *not* nice.";
+			Battle_Engine :: hit (Player :: get (), npc);
 		}
 	}
 	
 	//	dead
 	if (Player :: get () . is_dead ())
 	{
-		show () << "You died";
+		log () << "You died" << endl;
+		
 		return Menu_State :: get ();
 	}
 
@@ -252,7 +252,7 @@ Algorithm <TSL> & World ::
 	if (Input_Engine :: get () . get_mouse_button
 						(Input_Engine :: get () . middle_mouse_button, false))
 	{
-		const Ogre :: Vector3 & mouse_position = Input_Engine :: get () . get_mouse_position (true);
+		const Ogre :: Vector3 & mouse_position = Input_Engine :: get () . get_mouse_position (Input_Engine :: relative);
 
 		log (debugging) << "mouse offset: " << to_string (mouse_position) << endl;
 
@@ -286,27 +286,19 @@ Algorithm <TSL> & World ::
 		}
 	}
 
-	Ogre :: Vector3 pre_position = Player :: get () . get_body () . node . getPosition ();
-	
 	get_active_state () . collide ();
 	
-	OgreOde :: World :: step (0.02);
+	OgreOde :: World :: step (0.03);
 	updateDrawState ();
 	synchronise ();
 	clearContacts ();
 
-	Ogre :: Vector3 displacement = Player :: get () . get_body () . node . getPosition () - pre_position;
-	if (displacement != zero_vector)
-	{
-		log (debugging) << "Physics displacement: " << to_string (displacement) << endl;
-	}
-	
 	camera . setPosition
 	(
 		Player :: get () . get_body () . node . getPosition ()
 		+ Player :: get () . get_body () . get_top_direction ()
 		* (Player :: get () . camera_distance
-			- Input_Engine :: get () . get_mouse_position (false) . z / 100)
+			- Input_Engine :: get () . get_mouse_position () . z / 100)
 	);
 	camera . setOrientation
 	(
@@ -318,9 +310,13 @@ Algorithm <TSL> & World ::
 		* Player :: get () . get_body () . node . getOrientation ()
 	);
 
-	GUI_Engine :: get () . activate (gui);
+	return owner . get_active_state ();
+}
 
-	return * this;
+void World ::
+	enter (TSL & owner)
+{
+	GUI_Engine :: get () . activate (gui);
 }
 
 bool World ::

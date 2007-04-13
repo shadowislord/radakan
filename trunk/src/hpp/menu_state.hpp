@@ -24,6 +24,8 @@ namespace tsl
 			//	Copies are not allowed.
 			Menu_State (const Menu_State & menu_state);
 
+			void enter (TSL & owner);
+			
 			GUI & gui;
 	};
 }

@@ -64,7 +64,7 @@ bool Character ::
 	is_initialized ()
 	const
 {
-	return warn <Character> (Container :: is_initialized ());
+	return Container :: is_initialized ();
 }
 
 //	static

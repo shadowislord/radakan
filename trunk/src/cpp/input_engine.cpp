@@ -1,4 +1,5 @@
 #include "input_engine.hpp"
+#include <OgreStringConverter.h>
 
 #ifndef TSL_WIN
 	#include <X11/Xlib.h>
@@ -8,6 +9,8 @@
 using namespace std;
 using namespace tsl;
 
+const bool Input_Engine :: absolute = false;
+const bool Input_Engine :: relative = true;
 const string Input_Engine :: left_mouse_button = "left";
 const string Input_Engine :: middle_mouse_button = "middle";
 const string Input_Engine :: right_mouse_button = "right";
@@ -18,6 +21,7 @@ Input_Engine ::
 	Singleton <Input_Engine> (),
 	GUI_Listener ()
 {
+	log (debugging) << get_class_name () << " (~window~)" << endl;
 	assert (Object :: is_initialized ());
 
 	#if OIS_VERSION_MAJOR < 1
@@ -25,24 +29,14 @@ Input_Engine ::
 		abort ();
 	#endif
 
-	OIS :: ParamList param_list;
+	unsigned long window_handle;
 
-	size_t window_handle_temp = 0;
-	ostringstream window_handle;
-
-	// Each operating system uses a different mechanism to
-	// refer to the main rendering window.
-	#ifdef TSL_WIN
-		window . getCustomAttribute ("HWND", & window_handle_temp);
-	#else
-		window . getCustomAttribute ("GLXWINDOW", & window_handle_temp);
-	#endif
-
-	window_handle << window_handle_temp;
+	window . getCustomAttribute ("WINDOW", & window_handle);
 
 	//	The input/output system needs to know how to interact with
 	//	the system window.
-	param_list . insert (make_pair (string ("WINDOW"), window_handle . str ()));
+	OIS :: ParamList param_list;
+	param_list . insert (make_pair (string ("WINDOW"), Ogre :: StringConverter :: toString (window_handle)));
 
     input_manager = OIS :: InputManager :: createInputSystem (param_list);
 
@@ -97,7 +91,7 @@ bool Input_Engine ::
 	is_initialized ()
 	const
 {
-	return warn <Input_Engine> (Object :: is_initialized () && (input_manager != NULL) && (mouse != NULL) && (keyboard != NULL));
+	return Object :: is_initialized () && (input_manager != NULL) && (mouse != NULL) && (keyboard != NULL);
 }
 
 //	static
@@ -120,7 +114,7 @@ void Input_Engine ::
 	mouse -> capture ();
 
 	gui_button = "";	//	reset it, in case of a unhandeled button
-	GUI_Engine :: get () . set_mouse_position (get_mouse_position (false));
+	GUI_Engine :: get () . set_mouse_position (get_mouse_position ());
 	if (get_mouse_button (left_mouse_button, true))
 	{
 		GUI_Engine :: get () . left_mouse_button_click ();

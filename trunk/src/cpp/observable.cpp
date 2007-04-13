@@ -28,8 +28,7 @@ template <class T> bool Observable <T> ::
 	is_initialized ()
 	const
 {
-	assert (Object :: warn <Observable <T> >
-						(Object :: is_initialized ()));
+	assert (Object :: is_initialized ());
 
 	return true;
 }

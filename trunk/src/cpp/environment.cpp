@@ -17,7 +17,7 @@ Environment	::
 	log (debugging) << "CFM: " << getCFM () << endl;
 
 	//	TODO make the next line work.
-	getSceneManager () -> setSkyDome (true, "Peaceful", 10, 5);
+	//	getSceneManager () -> setSkyDome (true, "Peaceful", 10, 5);
 }
 
 Environment ::
@@ -33,7 +33,7 @@ bool Environment ::
 	is_initialized ()
 	const
 {
-	return warn <Environment> (Object :: is_initialized ());
+	return Object :: is_initialized ();
 }
 
 //	static

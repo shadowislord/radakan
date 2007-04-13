@@ -55,9 +55,9 @@ bool Weapon ::
 	is_initialized ()
 	const
 {
-	return warn <Weapon> (Item :: is_initialized () && (0 < break_chance)
+	return Item :: is_initialized () && (0 < break_chance)
 	&& (break_chance < 100)  && (0 < sharpness) && (sharpness < 100)
-	&& (0 < speed) && (0 < attack_rate) && (0 < defense_rate) && (0 < damage));
+	&& (0 < speed) && (0 < attack_rate) && (0 < defense_rate) && (0 < damage);
 }
 
 //	static

@@ -2,7 +2,7 @@
 #define TSL_INPUT_LISTENER_HPP
 
 #include <CEGUIWindow.h>
-#include "object.hpp"
+#include "singleton.hpp"
 
 using namespace std;
 
@@ -11,7 +11,7 @@ namespace tsl
 	class GUI;
 	
 	class GUI_Listener :
-		public virtual Object
+		public Singleton <GUI_Listener>
 	{
 		public :
 			GUI_Listener ();
@@ -24,8 +24,8 @@ namespace tsl
 			
 			virtual bool handle_gui_button (const CEGUI :: EventArgs & arguments) = 0;
 
-		private:
-			CEGUI :: Event :: Subscriber event_suscriber;
+		private :
+			CEGUI :: Event :: Subscriber subscriber;
 	};
 }
 

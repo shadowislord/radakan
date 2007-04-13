@@ -88,7 +88,7 @@ bool Body ::
 	is_initialized ()
 	const
 {
-	assert (warn <Body> (Disjoint_Set <Item> :: is_initialized ()));
+	assert (Disjoint_Set <Item> :: is_initialized ());
 	assert (is_sealed ());
 	assert (item . has_body ());
 	assert (node . getParent () == & Environment :: get () . root_node);
@@ -214,6 +214,7 @@ void Body ::
 
 	body -> setOrientation (Ogre :: Quaternion (1, 0, 0, 0));
 	body -> setPosition (body -> getPosition () + y_axis * (2 - body -> getPosition () . y));
+	body -> setLinearVelocity (zero_vector);
 	body -> setForce (zero_vector);
 }
 

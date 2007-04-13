@@ -20,8 +20,6 @@ namespace tsl
 			virtual bool is_dead () const;
 			virtual void die ();
 
-			void ai ();
-			
 			static Item & create
 			(
 				string new_name,

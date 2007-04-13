@@ -1,5 +1,5 @@
 #include "npc.hpp"
-#include "peace_state.hpp"
+#include "alive_state.hpp"
 #include "dead_state.hpp"
 
 using namespace std;
@@ -25,7 +25,7 @@ NPC ::
 	log (debugging) << get_class_name () << " (" << new_name << ", ...)" << endl;
 	assert (Character :: is_initialized ());
 
-	set_active_state <Peace_State> ();
+	set_active_state (Alive_State :: get ());
 
 	assert (is_initialized ());
 	log (debugging) << " is fully constructed (as NPC)." << endl;
@@ -44,7 +44,7 @@ bool NPC ::
 	is_initialized ()
 	const
 {
-	assert (warn <NPC> (Character :: is_initialized ()));
+	assert (Character :: is_initialized ());
 	return true;
 }
 
@@ -69,7 +69,7 @@ void NPC ::
 	assert (NPC :: is_initialized ());
 	assert (has_body ());
 
-	set_active_state <Dead_State> ();
+	set_active_state (Dead_State :: get ());
 
 	log () << string :: data () << " died!";
 }
