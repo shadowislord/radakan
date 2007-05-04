@@ -20,7 +20,7 @@ GUI_Engine ::
 	assert (Data_State_Machine <GUI> :: is_initialized ());
 
 	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") A" << endl;
-	renderer = new CEGUI :: OgreCEGUIRenderer (& window, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, & scene_manager);
+	renderer = new CEGUI :: OgreCEGUIRenderer (& window, Ogre :: RENDER_QUEUE_OVERLAY, false, 0, & scene_manager);
 
 	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") BC" << endl;
 	system = new CEGUI :: System (renderer, NULL, NULL, NULL, "", log_file_name);
@@ -79,15 +79,13 @@ void GUI_Engine ::
 	system -> injectMouseButtonUp (CEGUI :: LeftButton);
 }
 
-bool GUI_Engine ::
+void GUI_Engine ::
 	render ()
+	const
 {
 	assert (is_initialized ());
 
-	get_active_state () . update_message ();
 	system -> renderGUI ();
-
-	return true;
 }
 
 GUI & GUI_Engine ::
@@ -100,8 +98,7 @@ GUI & GUI_Engine ::
 			new GUI
 			(
 				configuration_file,
-				* CEGUI :: WindowManager :: getSingleton () . loadWindowLayout (configuration_file),
-				GUI_Listener :: get ()
+				* CEGUI :: WindowManager :: getSingleton () . loadWindowLayout (configuration_file)
 			)
 		);
 

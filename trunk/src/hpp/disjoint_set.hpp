@@ -65,7 +65,6 @@ namespace tsl
 			//	'mutable' added to allow change even if in a const Disjoint_Set.
 			mutable T_iterator next_child;
 
-			///	TODO check this variable
 			bool sealed;
 		};
 }

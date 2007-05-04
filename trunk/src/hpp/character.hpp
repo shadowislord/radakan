@@ -24,6 +24,8 @@ namespace tsl
 			virtual bool is_dead () const = 0;
 			virtual void die () = 0;
 
+			Movable_Body & get_movable_body () const;
+
 			//	Item & head;
 			//	Multislot <Shirt> & body;
 			Multislot <Container> & back;
@@ -41,9 +43,6 @@ namespace tsl
 			);
 
 		private :
-			///	Copies are not allowed.
-			Character (const Character & character);
-			
 			int agility_exp;
 			int beauty_exp;
 			int constitution_exp;

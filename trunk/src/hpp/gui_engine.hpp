@@ -29,13 +29,14 @@ namespace tsl
 			void set_mouse_position (const Ogre :: Vector3 & new_position);
 			void left_mouse_button_click ();
 			
-			//	TODO: Make render () const.
-			bool render ();
+			void render () const;
 			
 			void activate (GUI & gui);
 			GUI & create_gui (string configuration_file);
 
 		private :
+			//	TODO solve the problems that occur when renderer is a plain object
+			//	instead of a pointer.
 			CEGUI :: OgreCEGUIRenderer * renderer;
 			CEGUI :: System * system;
 	};

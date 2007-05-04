@@ -161,12 +161,12 @@ void Audio_Engine ::
 		}
 		else if (extension == "mp3")
 		{
-			error () << "- We do not have the rights to use the .mp3 format. Please use the .ogg format instead." << endl;
+			error () << "We do not have the rights to use the .mp3 format. Please use the .ogg format instead." << endl;
 			abort ();
 		}
 		else
 		{
-			error () << "doesn't know the file format '" << extension << "'" << endl;
+			error () << "Unknown file format '" << extension << "'" << endl;
 			abort ();
 		}
 	}

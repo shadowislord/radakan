@@ -37,3 +37,12 @@ string Dead_State ::
 {
 	return "Dead_State";
 }
+
+//	virtual
+void Dead_State ::
+	enter (NPC & owner)
+{
+	assert (is_initialized ());
+
+	owner . get_movable_body () . turn (300, 1, owner . get_body () . get_side_direction ());
+}

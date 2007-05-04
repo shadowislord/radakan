@@ -36,7 +36,7 @@ World ::
 		time_scale
 	),
 	gui (GUI_Engine :: get () . create_gui ("sector.cfg")),
-	camera (* getSceneManager () -> createCamera ("world camera"))
+	camera (* scene_manager . createCamera ("world camera"))
 {
 	log (debugging) << get_class_name () << " (~scene_manager~, " << tsl_path << ")" << endl;
 	assert (Singleton <World> :: is_initialized ());
@@ -66,6 +66,8 @@ World ::
 	}
 	
 	assert (Player :: is_instantiated ());
+
+	player_body = & Player :: get () . get_movable_body ();
 
 	set_active_state (* tiles [pair <int, int> (0, 0)]);
 
@@ -121,10 +123,10 @@ void World ::
 	{
 		show () << "current tile:" << tile;
 
-		if (! tile . contains (Player :: get () . get_body ()))
+		if (! tile . contains (* player_body))
 		{
-			assert (get_active_state () . contains (Player :: get () . get_body ()));
-			get_active_state () . move (Player :: get () . get_body (), tile);
+			assert (get_active_state () . contains (* player_body));
+			get_active_state () . move (* player_body, tile);
 		}
 
 		State_Machine <Tile> :: set_active_state (tile);
@@ -159,7 +161,7 @@ Algorithm <TSL> & World ::
 	{
 		top_speed = - 0.5;
 	}
-	Player :: get () . get_body () . move (top_speed, turn_lenght);
+	player_body -> move (top_speed, turn_lenght);
 	
 	float top_angular_speed = 0;
 	if (Input_Engine :: get () . get_key ("s", false))
@@ -170,15 +172,15 @@ Algorithm <TSL> & World ::
 	{
 		top_angular_speed = - 1;
 	}
-	Player :: get () . get_body () . turn (top_angular_speed, turn_lenght);
+	player_body -> turn (top_angular_speed, turn_lenght);
 	
 	//	reset your orientation
 	if (Input_Engine :: get () . get_key ("space", false))
 	{
-		Player :: get () . get_body () . reset ();
+		player_body -> reset ();
 	}
 
-	Ogre :: Vector3 position = Player :: get () . get_body () . node . getPosition ();
+	Ogre :: Vector3 position = player_body -> node . getPosition ();
 
 	int x = int (floor (position . x / Tile :: side_length));
 	int z = int (floor (position . z / Tile :: side_length));
@@ -224,8 +226,6 @@ Algorithm <TSL> & World ::
 	if (Input_Engine :: get () . get_key ("m", true)
 					|| Input_Engine :: get () . get_gui_button ("Move", true))
 	{
-		//	Memo to self (Tinus):
-		//	NPC npc = ...;  ->  that *copies* the NPC.
 		NPC & npc = * * get_active_state () . npcs . begin ();
 		if (! Player :: get () . hands . is_empty ())
 		{
@@ -258,7 +258,7 @@ Algorithm <TSL> & World ::
 
 		if (mouse_position . x != 0)
 		{
-			Player :: get () . get_body () . turn
+			player_body -> turn
 						(- Ogre :: Math :: Sign (mouse_position . x), /*Ogre :: Math :: Abs (mouse_position . x) * */turn_lenght);
 		}
 		vertical_camera_angle -= turn_lenght * mouse_position . y / 3;
@@ -286,17 +286,20 @@ Algorithm <TSL> & World ::
 		}
 	}
 
-	get_active_state () . collide ();
+	for (Tile * tile = get_child (); tile != NULL; tile = get_another_child ())
+	{
+		tile -> collide ();
+	}
 	
-	OgreOde :: World :: step (0.03);
+	OgreOde :: World :: step (0.1);
 	updateDrawState ();
 	synchronise ();
 	clearContacts ();
 
 	camera . setPosition
 	(
-		Player :: get () . get_body () . node . getPosition ()
-		+ Player :: get () . get_body () . get_top_direction ()
+		player_body -> node . getPosition ()
+		+ player_body -> get_top_direction ()
 		* (Player :: get () . camera_distance
 			- Input_Engine :: get () . get_mouse_position () . z / 100)
 	);
@@ -305,9 +308,9 @@ Algorithm <TSL> & World ::
 		make_quaternion
 		(
 			vertical_camera_angle,
-			Player :: get () . get_body () . get_side_direction ()
+			player_body -> get_side_direction ()
 		)
-		* Player :: get () . get_body () . node . getOrientation ()
+		* player_body -> node . getOrientation ()
 	);
 
 	return owner . get_active_state ();

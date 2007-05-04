@@ -99,7 +99,8 @@ ostream & Object ::
 	error ()
 	const
 {
-	return log () << "An error occurred: ";
+	log () << "An error occurred:";
+	return cout << "\t";
 }
 
 bool Object ::
@@ -217,6 +218,7 @@ template bool Object :: is_type <Disjoint_Set <Item> > () const;
 template bool Object :: is_type <Disjoint_Set <Tile> > () const;
 template bool Object :: is_type <Disjoint_Set <Sound> > () const;
 template bool Object :: is_type <Item> () const;
+template bool Object :: is_type <Movable_Body> () const;
 template bool Object :: is_type <NPC> () const;
 template bool Object :: is_type <Quit_State> () const;
 template bool Object :: is_type <Tile> () const;
@@ -238,6 +240,7 @@ template GUI_Engine & Object :: to_type <GUI_Engine> () const;
 template Item & Object :: to_type <Item> () const;
 template NPC & Object :: to_type <NPC> () const;
 template Menu_State & Object :: to_type <Menu_State> () const;
+template Movable_Body & Object :: to_type <Movable_Body> () const;
 template Object & Object :: to_type <Object> () const;
 template Sound & Object :: to_type <Sound> () const;
 template Tile & Object :: to_type <Tile> () const;

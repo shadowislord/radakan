@@ -1,18 +1,17 @@
-material abc/Def
-{
-    technique
-    {
-        pass
-        {
-            ambient 1.0 1.0 1.0
-            diffuse 0.439216 0.439216 0.439216
-            specular 0.9 0.9 0.9 20000.0
-            emissive 0.0 0.0 0.0
-            texture_unit
-            {
-                texture player.jpg
-            }
-        }
-    }
-}
 
+material material abc/Def
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture player.jpg -1
+			}
+		}
+
+	}
+
+}

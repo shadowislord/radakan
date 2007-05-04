@@ -18,10 +18,8 @@ namespace tsl
 			virtual ~Dead_State ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
-			
-		private :
-			//	Copies are not allowed.
-			Dead_State (const Dead_State & dead_state);
+
+			virtual void enter (NPC & owner);
 	};
 }
 

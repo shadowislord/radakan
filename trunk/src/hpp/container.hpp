@@ -3,6 +3,7 @@
 
 #include "weapon.hpp"
 #include "disjoint_set.hpp"
+#include "movable_body.hpp"
 
 using namespace std;
 
@@ -46,10 +47,6 @@ namespace tsl
 				bool new_solid,
 				bool new_visible
 			);
-
-		private :
-			///	Copies are not allowed.
-			Container (const Container & container);
 	};
 }
 

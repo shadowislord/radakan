@@ -60,9 +60,6 @@ namespace tsl
 			);
 
 		private :
-			//	Copies are not allowed.
-			Item (const Item & item);
-
 			///	can be NULL
 			Body * body;
 	};

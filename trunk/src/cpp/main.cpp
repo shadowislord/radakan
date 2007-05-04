@@ -14,7 +14,7 @@ using namespace tsl;
 	//	check for conflicting debug and trace flags
 	#ifdef TSL_TRACE
 		#ifndef TSL_DEBUG
-			cerr << "ERROR: conflicting TSL_DEBUG and TSL_TRACE flags detected." << endl;
+			cerr << "Error: conflicting TSL_DEBUG and TSL_TRACE flags detected." << endl;
 			abort ();
 		#endif
 	#endif
@@ -22,24 +22,22 @@ using namespace tsl;
 	string tsl_path;
 	string ogre_media_path;
 	#ifdef TSL_WIN
+		//	example arguments: C:/John/TSL~C:/OgreSDK/Samples/Media
 		tsl_path = strCmdLine;
-
 		if (tsl_path . empty ())
 		{
 			TCHAR buffer [MAX_PATH];
 			GetCurrentDirectory (MAX_PATH, buffer);
 			tsl_path = buffer;
 		}
-		else
-		{
-			//	example arguments: C:/John/TSL~C:/OgreSDK/Samples/Media
-			unsigned int spacePos = tsl_path . find ('~');
-			assert (spacePos != string :: npos);
-			ogre_media_path = tsl_path . substr (spacePos + 1, tsl_path . length ());
-                        tsl_path = tsl_path . substr (0, spacePos);
-		}
+
+		unsigned int spacePos = tsl_path . find ('~');
+		assert (spacePos != string :: npos);	//	did you pass the arguments correctly?
+		ogre_media_path = tsl_path . substr (spacePos + 1, tsl_path . length ());
+		tsl_path = tsl_path . substr (0, spacePos);
 	#else
-		//	example arguments: /home/john/tsl /usr/share/doc/ogre-1.2.4/Samples/Media
+		//	example arguments: /home/john/tsl /usr/share/doc/ogre-1.4.0/Samples/Media
+		assert (2 <= argc);	//	did you pass the arguments correctly?
 		tsl_path = argv [argc - 2];
 		ogre_media_path = argv [argc - 1];
 	#endif

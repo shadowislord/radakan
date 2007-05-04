@@ -1,13 +1,13 @@
 <base>
 
 	<!-- the ground -->
-	<model x="10" y="0" z="10" scale="0.004">
+	<!--model x="10" y="0" z="10" scale="0.004">
 		<static_item name="Ground" mesh="test3-ground.mesh" mass="10" solid="true" visible="true">
 			<volume x="20" y="5" z="20"/>
 		</static_item>
 		<material name="TavernWalls" />
 		<gravity affected="false" />
-	</model>
+	</model-->
 
 	<!-- the NPC -->
 	<model x="14.8" y="2" z="11.2" scale="0.004">

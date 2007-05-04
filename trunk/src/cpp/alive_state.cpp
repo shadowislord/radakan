@@ -50,8 +50,8 @@ Algorithm <NPC> & Alive_State ::
 	
 	const float turn_lenght = TSL :: get () . get_last_turn_lenght ();
 	
-	owner . get_body () . move (0, turn_lenght);
-	owner . get_body () . turn (0, turn_lenght);
+	owner . get_movable_body () . move (0, turn_lenght);
+	owner . get_movable_body () . turn (0, turn_lenght);
 	
 	if (! owner . hands . is_empty ())
 	{

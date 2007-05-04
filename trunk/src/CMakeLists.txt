@@ -20,8 +20,7 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
                     "${Ode_INCLUDE_DIR}"
                     "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/include"
                     "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/loader/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/tinyxml-2.3.3"
+                    "${TSLRPG_SOURCE_DIR}/external/tinyxml-2.5.2"
                     "${TSLRPG_SOURCE_DIR}/external/ois-1.0RC1/includes"
                     "${TSLRPG_SOURCE_DIR}/external/audiere/src"
                     ${Ogre_INCLUDE_DIR}
@@ -52,7 +51,7 @@ else(WIN32)
     add_executable( tslrpg ${SRC_FILES} )
 endif(WIN32)                
 
-include_directories( ${INCLUDE_DIRS} )                
+include_directories( ${INCLUDE_DIRS} )
 
 
 set(DEBUG_LIBS  debug OgreMain

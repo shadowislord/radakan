@@ -73,3 +73,10 @@ string Character ::
 {
 	return "Character";
 }
+
+Movable_Body & Character ::
+	get_movable_body ()
+	const
+{
+	return get_body () . to_type <Movable_Body> ();
+}

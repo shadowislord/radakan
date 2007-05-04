@@ -1,4 +1,5 @@
 #include "item.hpp"
+#include "body.hpp"
 
 using namespace std;
 using namespace tsl;

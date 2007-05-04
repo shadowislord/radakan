@@ -50,10 +50,12 @@ namespace tsl
 		private :
 			void load_xml (TiXmlElement & element);
 			void load_xml_file (TiXmlDocument & document);
+			Body & create_body (Item & item, Ogre :: Vector3 position, float scale);
 
-			string tsl_path;
+			const string tsl_path;
 
 			TiXmlDocument doc;
+
 	};
 }
 

@@ -41,10 +41,6 @@ namespace tsl
 				float new_mass,
 				unsigned int new_max_size
 			);
-
-		private :
-			///	Copies are not allowed.
-			Multislot (const Multislot & multislot);
 	};
 }
 

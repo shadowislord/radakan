@@ -20,10 +20,6 @@ namespace tsl
 			static string get_class_name ();
 			
 			virtual Algorithm <NPC> & transit (NPC & owner);
-	
-		private :
-			//	Copies are not allowed.
-			Alive_State (const Alive_State & alive_state);
 	};
 }
 

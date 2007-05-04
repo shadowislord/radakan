@@ -1,13 +1,14 @@
 
-material house/01_-_Default
+material material house/01_-_Default
 {
 	technique
 	{
 		pass
 		{
-			ambient 0.588235 0.588235 0.588235 1
-			diffuse 0.588235 0.588235 0.588235 1
-			cull_hardware none
+
+			texture_unit
+			{
+			}
 		}
 
 	}

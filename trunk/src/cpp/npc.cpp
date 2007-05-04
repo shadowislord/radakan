@@ -28,7 +28,7 @@ NPC ::
 	set_active_state (Alive_State :: get ());
 
 	assert (is_initialized ());
-	log (debugging) << " is fully constructed (as NPC)." << endl;
+	log (debugging) << "I'm fully constructed (as NPC)." << endl;
 }
 
 //  destructor

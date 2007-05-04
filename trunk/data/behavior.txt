@@ -1,87 +1,84 @@
 <behaviour>
-	<state val="start">
-		<options>
-			<option nod="true"/>
-			<option say="Hello."/>
-			<option say="Greetings, my name is ${name}." effect="like" />
-			<option shout="You there!" effect="fear"/>
-		</options>
-		<condition>
-			<if val="like">
-				<reaction say="What can I do for you?"/>
-			</if>
-			<elseif val="fear">
-				<reaction say="Please don't kill me."/>
-			</elseif>
-			<else>
-				<reaction say="Hello."/>
-			</else>
-		</condition>
-	</state>
-	<state val="running">
-		<state val="where (blacksmith)">
+	<state name="talking">
+		<state val="greet">
+			<options>
+				<option nod="true"/>
+				<option say="Hello."/>
+				<option say="Greetings, my name is ${name}." effect="like" />
+				<option shout="You there!" effect="fear"/>
+			</options>
+			<reactions>
+				<if val="like">
+					<reaction say="What can I do for you?"/>
+				</if>
+				<elseif val="fear">
+					<reaction say="Please don't kill me."/>
+				</elseif>
+				<else>
+					<reaction say="Hello."/>
+				</else>
+			</reactions>
+		</state>
+		<state name="where is the blacksmith?">
 			<options>
 				<option say="Where can I find the blacksmith, please?"/>
 				<option say="Tell me where the blacksmth is. Now!" effect="fear"/>
 			</options>
-			<condition>
+			<reactions>
 				<if val="fear">
 					<reaction say="At the market place, next to the temple."/>
 				</if>
 				<else>
 					<reaction say="You can find him at the market place, next to the temple."/>
 				</else>
-			</condition>
+			</reactions>
 		</state>
-		<state val="Robbing">
+		<state name="robbing">
 			<options>
 				<option say="Give me that shiny dagger." effect="fear"/>
 			</options>
-			<condition>
+			<reactions>
 				<if val="fear">
 					<reaction say="Of course..."/>
 				</if>
 				<else>
 					<reaction shout="Help, a thief!"/>
 				</else>
+			</reactions>
+		</state>
+		<state name="howdy?">
+			<options>
+				<if val="like">
+					<option say="Something wrong?"/>
+				</if>
+			</options>
+			<reactions>
+				<reaction say="Yes, I just have been robbed..." knowledge="robbers"/>
+			</reactions>
+			<options>
+				<option say="Don't worry. I'll handle those robbers."/>
+			</options>
+		</state>
+		<state name="solved">
+			<options>
+				<if val="know (robbers) and have (dagger)">
+					<option say="Here, your dagger" effect="like"/>
+				</if>
+			</options>
+			<reactions>
+				<reaction say="Thank you so much..."/>
+			</reactions>
+		</state>
+		<state name="bye">
+			<options>
+				<option say="Bye."/>
+				<option action="Walk away without saying a word." effect="weird"/>
+			</options>
+			<condition>
+				<if val="not fear">
+					<reaction say="Bye." condition="if (not fear)"/>
+				</if>
 			</condition>
 		</state>
-		<condition>
-			<if val="like">
-				<state val="Howdy">
-					<options>
-						<option say="Something wrong?"/>
-					</options>
-					<reactions>
-						<reaction say="Yes, I just have been robbed..." knowledge="robbers"/>
-					</reactions>
-					<options>
-						<option say="Don't worry. I'll handle those robbers."/>
-					</options>
-				</state>
-			</if>
-		</condition>
-		<condition>
-			<if val="know (robbers) and have (dagger)">
-				<state val="solved">
-					<options>
-						<option say="Here, your dagger" effect="like"/>
-					</options>
-					<reactions>
-						<reaction say="Thank you so much..."/>
-					</reactions>
-				</state>
-			</if>
-		</condition>
-	</state>
-	<state val="end">
-		<options>
-			<option say="Bye."/>
-		</options>
-		<condition>
-			<if val="not fear">
-				<reaction say="Bye." condition="if (not fear)"/>
-			</if>
-		</condition>
 	</state>
 </behaviour>

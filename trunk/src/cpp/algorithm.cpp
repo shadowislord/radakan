@@ -66,7 +66,7 @@ template <class T> Algorithm <T> & Algorithm <T> ::
 	
 	if (parent != NULL)
 	{
-		parental_result_state = & parent -> transit (owner);
+		parental_result_state = & parent -> full_transit (owner);
 	}
 	
 	if (parental_result_state != this)

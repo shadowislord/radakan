@@ -22,10 +22,6 @@ namespace tsl
 
 			using Algorithm <TSL> :: enter;
 			using Algorithm <TSL> :: exit;
-			
-		private :
-			//	Copies are not allowed.
-			Quit_State (const Quit_State & menu_state);
 	};
 }
 

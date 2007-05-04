@@ -11,7 +11,8 @@ Environment	::
 {
 	setGravity (new_gravity);
 
-	setShowDebugGeometries (true);
+	//	The following line causes an error in Ogre.
+	//	setShowDebugGeometries (true);
 
 	log (debugging) << "ERP: " << getERP () << endl;
 	log (debugging) << "CFM: " << getCFM () << endl;

@@ -15,15 +15,10 @@ Tile ::
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
 	tsl_path (new_tsl_path),
-	doc ((tsl_path + "/data/tile/" + string :: c_str () + ".xml") . c_str ())
+	doc (tsl_path + "/data/tile/" + string :: c_str () + ".xml")
 {
 	log (debugging) << get_class_name () << " :: " << get_class_name () << " ((" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ")" << endl;
 	
-	//	CEGUI-0.4.1 is linked to TinyXml-2.3.3, so we have to use that version.
-	assert (TIXML_MAJOR_VERSION == 2);
-	assert (TIXML_MINOR_VERSION == 3);
-	assert (TIXML_PATCH_VERSION == 3);
-
 	assert (Object :: is_initialized ());
 
 	load_xml_file (doc);
@@ -135,11 +130,7 @@ bool Tile ::
 		log (debugging) << body . item << " was added to the list of NPCs." << endl;
 	}
 
-	if (body . geometry . getSpace () != NULL)
-	{
-		body . geometry . getSpace () -> removeGeometry (body . geometry);
-	}
-	OgreOde :: Space :: addGeometry (body . geometry);
+	body . set_space (* this);
 	
 	return true;
 }
@@ -171,13 +162,18 @@ void Tile ::
 	log (debugging) << get_class_name () << " :: load_xml (~element~)" << endl;
 	assert (is_initialized ());
 
-	if (element . Value () == string ("include"))
+	log (debugging) << "element value: " << element . ValueStr () << endl;
+	if (element . ValueStr () == string ("include"))
 	{
-		TiXmlDocument document ((tsl_path + "/data/tile/" + element . Attribute ("name") + ".xml") . c_str ());
+		TiXmlDocument document (tsl_path + "/data/tile/" + element . Attribute ("name") + ".xml");
 		load_xml_file (document);
 		return;
 	}
 
+//	float x = to_float (element . Attribute ("x"));
+/*	double x;
+	element . Attribute ("x", & x);
+	log (debugging) << "x: " << x << endl;*/
 	float x = to_float (element . Attribute ("x"));
 	float y = to_float (element . Attribute ("y"));
 	float z = to_float (element . Attribute ("z"));
@@ -202,25 +198,25 @@ void Tile ::
 	);
 
 	Item * item = NULL;
-	if (item_xml -> Value () == string ("static_item"))
+	if (item_xml -> ValueStr () == string ("static_item"))
 	{
 		item = & Static_Item :: create (name, mesh, volume, mass, solid);
 	}
-	else if (item_xml -> Value () == string ("npc"))
+	else if (item_xml -> ValueStr () == string ("npc"))
 	{
 		item = & NPC :: create (name, mesh, volume, mass);
 	}
-	else if (item_xml -> Value () == string ("player"))
+	else if (item_xml -> ValueStr () == string ("player"))
 	{
 		item = & Player :: create (name, mesh, volume, mass);
 	}
 	else
 	{
-		error () << "didn't recognize xml tag name: " << item_xml -> Value () << endl;
+		error () << "Unrecognizable xml tag name: " << item_xml -> ValueStr () << endl;
 		abort ();
 	}
 
-	Body & body = * new Body (* item, position + Ogre :: Vector3 (x, y, z), scale);
+	Body & body = create_body (* item, position + Ogre :: Vector3 (x, y, z), scale);
 	add (body);
 
 	//	TODO re-enable assert ((position + Ogre :: Vector3 (x, y, z) - body . getPosition ()) . length () < 0.01);
@@ -247,5 +243,22 @@ void Tile ::
 				body_xml != NULL; body_xml = body_xml -> NextSiblingElement ())
 	{
 		load_xml (* body_xml);
+	}
+	log (debugging) << "Tile loaded" << endl;
+}
+
+Body & Tile ::
+	create_body (Item & item, Ogre :: Vector3 position, float scale)
+{
+	log (debugging) << get_class_name () << " :: create_body (" << item << ", " << to_string (position) << ", " << scale << ")" << endl;
+	OgreOde :: Geometry & geometry = item . create_geometry ();
+	OgreOde :: Body * body = geometry . getBody ();
+	if (body == NULL)
+	{
+		return * (new Body (item, position, scale, geometry));
+	}
+	else
+	{
+		return * (new Movable_Body (item, position, scale, geometry, * body));
 	}
 }

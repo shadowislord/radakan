@@ -30,10 +30,6 @@ namespace tsl
 			
 		protected :
 			Sound (string file_name);
-		
-		private :
-			//	Copies are not allowed.
-			Sound (const Sound & sound);
 	};
 
 #ifdef TSL_FMOD

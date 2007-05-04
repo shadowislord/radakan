@@ -6,7 +6,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/linear_congruential.hpp>
 
-#include "body.hpp"
+#include "movable_body.hpp"
 #include "player.hpp"
 
 using namespace std;

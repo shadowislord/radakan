@@ -155,6 +155,7 @@ template <class T> T & Disjoint_Set <T> ::
 		}
 	}
 
+	error () << "Child not found." << endl;
 	abort ();
 	return * get_child ();
 }

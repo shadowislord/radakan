@@ -8,8 +8,7 @@ GUI ::
 	GUI
 	(
 		string new_name,
-		CEGUI :: Window & new_root,
-		GUI_Listener & gui_listener
+		CEGUI :: Window & new_root
 	) :
 	Object (new_name),
 	root_window (new_root)
@@ -28,11 +27,12 @@ GUI ::
 		}
 		catch (CEGUI :: UnknownObjectException & exception)
 		{
+			error () << "Unknown CEGUI exception." << endl;
 			abort ();
 		}
 	}
 
-	gui_listener . subscribe (root_window);
+	GUI_Listener :: get () . subscribe (root_window);
 
 	assert (is_initialized ());
 }

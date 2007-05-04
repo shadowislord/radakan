@@ -92,9 +92,6 @@ void Battle_Engine ::
 
 	if (defense < attack)	//	Hit
 	{
-		
-		defender . get_body () . turn (- Ogre :: Math :: HALF_PI, 1, defender . get_body () . get_side_direction ());
-
 		defender . die ();
 	}
 	else

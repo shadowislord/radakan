@@ -8,15 +8,13 @@ using namespace std;
 namespace tsl
 {
 	class Static_Item :
-	public Item
+		public Item
 	{
 		public :
 			virtual ~Static_Item ();
 			virtual bool is_initialized () const;
 			static string get_class_name ();
 
-			virtual OgreOde :: Geometry & create_geometry ();
-			
 			static Item & create
 			(
 				string new_name,

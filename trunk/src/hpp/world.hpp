@@ -39,9 +39,6 @@ namespace tsl
 			virtual bool collision (OgreOde :: Contact * contact);
 
 		private :
-			//	Copies are not allowed.
-			World (const World & World);
-
 			void enter (TSL & owner);
 			
 			GUI & gui;
@@ -64,6 +61,8 @@ namespace tsl
 			
 			///	in radians
 			static const float max_vertical_camera_angle;
+
+			Movable_Body * player_body;
 	};
 }
 

@@ -2,7 +2,7 @@
 #define TSL_GUI_HPP
 
 #include <OgreRenderWindow.h>
-#include <OgreCEGUIRenderer.h>
+#include "/home/t/opt/ogre-1.4/Samples/Common/CEGUIRenderer/include/OgreCEGUIRenderer.h"
 #include "gui_listener.hpp"
 
 using namespace std;
@@ -16,8 +16,7 @@ namespace tsl
 			GUI
 			(
 				string new_name,
-				CEGUI :: Window & new_root,
-				GUI_Listener & gui_listener
+				CEGUI :: Window & new_root
 			);
 			virtual ~GUI ();
 			virtual bool is_initialized () const;

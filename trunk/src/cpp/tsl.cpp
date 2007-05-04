@@ -18,7 +18,8 @@ const float maximal_turn_lenght = 0.1;
 
 TSL ::
 	TSL (string tsl_path, string ogre_media_path) :
-	Object ("TSL")
+	Object ("TSL"),
+	last_turn_lenght (0)
 {
 	log (debugging) << "TSL (" << tsl_path << ", " << ogre_media_path << ")" << endl;
 
@@ -31,7 +32,7 @@ TSL ::
 	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg", tsl_path + "/data/ogre.cfg");
 	if (! root -> showConfigDialog ())
 	{
-		error () << " detected an Ogre configuration dialog problem." << endl;
+		error () << "An Ogre configuration dialog problem occurred." << endl;
 		abort ();
 	}
 
@@ -81,52 +82,34 @@ TSL ::
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
 
-	}	// End of try statement
+		window = root -> initialise (true, "The Scattered Lands");
+
+		//	set default mipmap level (NB some APIs ignore this)
+		Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);	
+
+		new Input_Engine (* window);
+
+		Ogre :: SceneManager & scene_manager = * root -> createSceneManager (Ogre :: ST_GENERIC);
+		new GUI_Engine (* window, scene_manager, tsl_path + "/log/cegui.txt");
+
+		new World (scene_manager, tsl_path);
+		new Menu_State ();
+		new Quit_State ();
+
+		Algorithm_State_Machine <TSL> :: set_active_state (World :: get ());
+		assert (get_active_state () . is_type <World> ());
+
+		Ogre :: Camera * camera = scene_manager . getCameraIterator () . getNext ();
+		assert (camera != NULL);
+
+		root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
+		root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
+	}	// try
 	catch (Ogre :: Exception & exception)
 	{
-		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-			MessageBox
-				(NULL, exception . getFullDescription () . c_str (),
-				"An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-		#else
-			error () << "detected an exception: " << exception . getFullDescription () << endl;
-		#endif
+		error () << "Exception: " << exception . getFullDescription () << endl;
 		abort ();
 	}
-
-	window = root -> initialise (true, "The Scattered Lands");
-
-	//	set default mipmap level (NB some APIs ignore this)
-	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);	
-
-	new Input_Engine (* window);
-
-	Ogre :: SceneManager * scene_manager = root -> createSceneManager (Ogre :: ST_GENERIC);
-	new GUI_Engine
-	(
-		* window,
-		* scene_manager,
-		tsl_path + "/log/cegui.txt"
-	);
-
-	new World
-	(
-		* scene_manager,
-		tsl_path
-	);
-	new Menu_State ();
-	new Quit_State ();
-
-	Ogre :: Camera * camera = scene_manager -> getCameraIterator () . getNext ();
-	assert (camera != NULL);
-
-	Algorithm_State_Machine <TSL> :: set_active_state (World :: get ());
-	assert (get_active_state () . is_type <World> ());
-
-	root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
-	root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
-
-	last_turn_lenght = 0;
 
 	assert (is_initialized ());
 }
@@ -139,9 +122,9 @@ TSL ::
 	log (debugging) << "active state: " << get_active_state () << endl;
 	assert (get_active_state () == Quit_State :: get ());
 
+	delete & GUI_Engine :: get ();
 	delete & Input_Engine :: get ();
 	delete & Audio_Engine :: get ();
-	delete & GUI_Engine :: get ();
 
 	unset_active_state ();
 
@@ -183,9 +166,9 @@ void TSL ::
 
 		bool check = root -> renderOneFrame ();
 		assert (check);
-		check = GUI_Engine :: get () . render ();
-		assert (check);
-	
+		GUI_Engine :: get () . get_active_state () . update_message ();
+		GUI_Engine :: get () . render ();
+
 		Input_Engine :: get () . capture ();
 		Ogre :: WindowEventUtilities :: messagePump ();
 

@@ -53,24 +53,6 @@ string Static_Item ::
 	return "Static_Item";
 }
 
-//	virtual
-OgreOde :: Geometry & Static_Item ::
-	create_geometry ()
-{
-	assert (is_initialized ());
-	assert (! has_body ());
-	
-	/*	TODO solve the run-time error that this results in
-	if (find ("Ground") != string :: npos)
-	{
-		OgreOde :: EntityInformer ei (& entity);
-		return * ei . createStaticTriangleMesh (& Environment :: get (), Environment :: get () . getDefaultSpace ());
-	}
-	*/
-	
-	return Item :: create_geometry ();
-}
-
 //	static
 Item & Static_Item ::
 	create

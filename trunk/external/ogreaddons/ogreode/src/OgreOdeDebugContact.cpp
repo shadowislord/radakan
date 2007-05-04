@@ -183,7 +183,7 @@ namespace OgreOde
                 mpMaterial->load();
 
             mpMaterial->setDepthCheckEnabled(!mOnTop);
-            mpMaterial->setDepthBias(!mOnTop);
+//            mpMaterial->setDepthBias(!mOnTop);	doesn't work with eihort
             mpMaterial->setDepthWriteEnabled(mOnTop);
             mpMaterial->setLightingEnabled(false);
             mNeedUpdate = true;
@@ -254,7 +254,7 @@ namespace OgreOde
         if( mOnTop != show && !mpMaterial.isNull() )
         {
             mOnTop = show;
-            mpMaterial->setDepthBias(!mOnTop);
+//            mpMaterial->setDepthBias(!mOnTop);	doesn't work with eihort
             mpMaterial->setDepthCheckEnabled(!mOnTop);
             mpMaterial->setDepthWriteEnabled(mOnTop);
         }
@@ -383,7 +383,7 @@ namespace OgreOde
 
             Real horiz_height = mpFont->getGlyphAspectRatio(*i);
             Real u1, u2, v1, v2; 
-            mpFont->getGlyphTexCoords(*i, u1, v1, u2, v2);
+//            mpFont->getGlyphTexCoords(*i, u1, v1, u2, v2);	doesn't work with eihort
 
             // each vert is (x, y, z, u, v)
             //-------------------------------------------------------------------------------------
