@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	template <class T> class Algorithm_State_Machine :
 		public State_Machine <Algorithm <T> >
@@ -16,7 +16,8 @@ namespace tsl
 			//	protected constructor, see below
 			virtual ~Algorithm_State_Machine ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			virtual void run ();
 			

@@ -7,13 +7,31 @@
 #endif
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
 
-const bool Input_Engine :: absolute = false;
-const bool Input_Engine :: relative = true;
-const string Input_Engine :: left_mouse_button = "left";
-const string Input_Engine :: middle_mouse_button = "middle";
-const string Input_Engine :: right_mouse_button = "right";
+//	static
+const string Input_Engine ::
+	class_name ("Input_Engine");
+
+//	static
+const bool Input_Engine ::
+	absolute (false);
+	
+//	static
+const bool Input_Engine ::
+	relative (true);
+	
+//	static
+const string Input_Engine ::
+	left_mouse_button ("left");
+	
+//	static
+const string Input_Engine ::
+	middle_mouse_button ("middle");
+	
+//	static
+const string Input_Engine ::
+	right_mouse_button ("right");
 
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow & window) :
@@ -21,11 +39,11 @@ Input_Engine ::
 	Singleton <Input_Engine> (),
 	GUI_Listener ()
 {
-	log (debugging) << get_class_name () << " (~window~)" << endl;
+	log (debugging) << class_name << " (~window~)" << endl;
 	assert (Object :: is_initialized ());
 
 	#if OIS_VERSION_MAJOR < 1
-		error () << "detected an old version of OIS (" << OIS_VERSION_MAJOR << "." << OIS_VERSION_MINOR << "." << OIS_VERSION_PATCH << "). Update to OIS-1.0-RC1 or later." << endl;
+		error () << "An old version of OIS (" << OIS_VERSION_MAJOR << "." << OIS_VERSION_MINOR << "." << OIS_VERSION_PATCH << ") was detected. Update to OIS-1.0-RC1 or later." << endl;
 		abort ();
 	#endif
 
@@ -72,7 +90,7 @@ Input_Engine ::
 Input_Engine ::
 	~Input_Engine ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 
 	input_manager -> destroyInputObject (keyboard);
@@ -91,14 +109,16 @@ bool Input_Engine ::
 	is_initialized ()
 	const
 {
-	return Object :: is_initialized () && (input_manager != NULL) && (mouse != NULL) && (keyboard != NULL);
-}
+	assert (Object :: is_initialized ());
+	assert (input_manager != NULL);
+	assert (mouse != NULL);
+	assert (keyboard != NULL);
+	assert (absolute == ! relative);
+	assert (left_mouse_button != middle_mouse_button);
+	assert (right_mouse_button != left_mouse_button);
+	assert (middle_mouse_button != right_mouse_button);
 
-//	static
-string Input_Engine ::
-	get_class_name ()
-{
-	return "Input_Engine";
+	return true;
 }
 
 void Input_Engine ::
@@ -198,13 +218,13 @@ bool Input_Engine ::
 	CEGUI :: WindowEventArgs * window_event_arguments = (CEGUI :: WindowEventArgs *)(& arguments);
 	if (window_event_arguments == NULL)
 	{
-		show () << "Unknown event type...";
+		show ("Unknown event type...");
 	}
 	else
 	{
 		gui_button = window_event_arguments -> window -> getText () . c_str ();
 
-		show () << "The '" << gui_button << "' button was clicked.";
+		show ("The '" + gui_button + "' button was clicked.");
 	}
 
 	return true;

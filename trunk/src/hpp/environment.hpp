@@ -7,7 +7,7 @@
 
 #include <OgreOde_Core.h>
 
-namespace tsl
+namespace TSL
 {
 	class Environment :
 		public Singleton <Environment>,
@@ -18,7 +18,8 @@ namespace tsl
 			Environment (Ogre :: SceneManager & scene_manager, Ogre :: Vector3 new_gravity);
 			virtual ~Environment ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			Ogre :: SceneNode & root_node;
 	};

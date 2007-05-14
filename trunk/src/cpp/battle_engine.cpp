@@ -2,7 +2,11 @@
 
 using namespace std;
 using namespace boost;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Battle_Engine ::
+	class_name ("Battle_Engine");
 
 Battle_Engine ::
 	Battle_Engine () :
@@ -25,7 +29,7 @@ Battle_Engine ::
 Battle_Engine ::
 	~Battle_Engine ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -35,13 +39,6 @@ bool Battle_Engine ::
 	const
 {
 	return Object :: is_initialized ();
-}
-
-//	static
-string Battle_Engine ::
-	get_class_name ()
-{
-	return "Battle_Engine";
 }
 
 void Battle_Engine ::
@@ -61,8 +58,8 @@ void Battle_Engine ::
 	
 	if (max_distance < distance)
 	{
-		show () << "Target is out of range: " << to_string (distance) << " > "
-													<< to_string (max_distance);
+		show ("Target is out of range: "
+			+ to_string (distance) + " > " + to_string (max_distance));
 		return;
 	}
 
@@ -96,6 +93,6 @@ void Battle_Engine ::
 	}
 	else
 	{
-		show () << attacker << " missed!";
+		show (attacker + " missed!");
 	}
 }

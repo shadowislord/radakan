@@ -1,7 +1,11 @@
 #include "algorithm.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+template <class T> const string Algorithm <T> ::
+	class_name ("Algorithm <" + T :: class_name + ">");
 
 //  constructor
 template <class T> Algorithm <T> ::
@@ -9,7 +13,7 @@ template <class T> Algorithm <T> ::
 	Object ("The name doesn't matter as this class is an abstact class."),
 	parent (new_parent)
 {
-	log (debugging) << get_class_name () << " ()" << endl;
+	log (debugging) << class_name << " ()" << endl;
 	assert (Object :: is_initialized ());
 	if (parent != NULL)
 	{
@@ -23,7 +27,7 @@ template <class T> Algorithm <T> ::
 template <class T> Algorithm <T> ::
 	~Algorithm ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Algorithm <T> :: is_initialized ());
 }
 
@@ -39,13 +43,6 @@ template <class T> bool Algorithm <T> ::
 	}
 
 	return true;
-}
-
-//	static
-template <class T> string Algorithm <T> ::
-	get_class_name ()
-{
-	return "Algorithm <" + T :: get_class_name () + ">";
 }
 
 //	virtual
@@ -91,8 +88,8 @@ template <class T> void Algorithm <T> ::
 	assert (is_initialized ());
 }
 
+#include "game.hpp"
 #include "npc.hpp"
-#include "tsl.hpp"
 
+template class Algorithm <Game>;
 template class Algorithm <NPC>;
-template class Algorithm <TSL>;

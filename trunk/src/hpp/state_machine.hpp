@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 
 	///	State_Machine is the abstract base class for all state machines.
@@ -16,7 +16,8 @@ namespace tsl
 			//	protected constructor, see below
 			virtual ~State_Machine ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			virtual bool has_active_state () const;
 			virtual T & get_active_state () const;

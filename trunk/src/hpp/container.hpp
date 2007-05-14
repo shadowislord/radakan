@@ -2,28 +2,29 @@
 #define TSL_CONTAINER_HPP
 
 #include "weapon.hpp"
-#include "disjoint_set.hpp"
+#include "set.hpp"
 #include "movable_body.hpp"
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 
 	///	A Container is an Item that can contain other Items.
-
 	class Container :
 		public Item,
-		public Disjoint_Set <Item>
+		public Set <Item>
 	{
 		public :
 			virtual ~Container ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
-			virtual float get_total_mass () const;
-
+			
+			static const string class_name;
+			
 			///	'add' returns false if I'm full.
 			virtual bool add (Item & item);
+
+			virtual float get_total_mass () const;
 
 			static Item & create
 			(

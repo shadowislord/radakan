@@ -4,7 +4,11 @@
 #include "alive_state.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Chat_State ::
+	class_name ("Chat_State");
 
 //  constructor
 Chat_State ::
@@ -21,7 +25,7 @@ Chat_State ::
 Chat_State ::
 	~Chat_State ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Algorithm <NPC> :: is_initialized ());
 }
 
@@ -31,13 +35,6 @@ bool Chat_State ::
 	const
 {
 	return Algorithm <NPC> :: is_initialized ();
-}
-
-//	static
-string Chat_State ::
-	get_class_name ()
-{
-	return "Chat_State";
 }
 
 //	virtual

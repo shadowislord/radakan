@@ -3,7 +3,11 @@
 #include "alive_state.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Fight_State ::
+	class_name ("Fight_State");
 
 //  constructor
 Fight_State ::
@@ -20,7 +24,7 @@ Fight_State ::
 Fight_State ::
 	~Fight_State ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Algorithm <NPC> :: is_initialized ());
 }
 
@@ -30,13 +34,6 @@ bool Fight_State ::
 	const
 {
 	return Algorithm <NPC> :: is_initialized ();
-}
-
-//	static
-string Fight_State ::
-	get_class_name ()
-{
-	return "Fight_State";
 }
 
 //	virtual

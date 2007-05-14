@@ -2,7 +2,11 @@
 #include "body.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Item ::
+	class_name ("Item");
 
 //  constructor
 Item ::
@@ -25,7 +29,7 @@ Item ::
 										(* this + "'s entity", new_mesh_name)),
 	body (NULL)
 {
-	log (debugging) << get_class_name () << " (" << string :: data () << ", "
+	log (debugging) << class_name << " (" << string :: data () << ", "
 		<< to_string (size) << ", " << mass << ", " << bool_to_string (mobile) << ", "
 		<< bool_to_string (solid) << ", " << bool_to_string (visible) << ")"
 		<< endl;
@@ -44,7 +48,7 @@ Item ::
 Item ::
 	~Item ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Item :: is_initialized ());
 
 	if (has_body ())
@@ -60,7 +64,7 @@ bool Item ::
 	is_initialized ()
 	const
 {
-//	log (debugging) << get_class_name () << " :: is_initialized ()" << endl;
+//	log (debugging) << class_name << " :: is_initialized ()" << endl;
 	assert (Object :: is_initialized ());
 	assert (Environment :: is_instantiated ());
 	assert (Environment :: get () . is_initialized ());
@@ -70,13 +74,6 @@ bool Item ::
 	assert (0 <= mass);
 	
 	return true;
-}
-
-//	static
-string Item ::
-	get_class_name ()
-{
-	return "Item";
 }
 
 //	virtual

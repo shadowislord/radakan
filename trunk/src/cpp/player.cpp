@@ -1,7 +1,11 @@
 #include "player.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Player ::
+	class_name ("Player");
 
 //  constructor
 Player ::
@@ -38,7 +42,7 @@ Player ::
 Player ::
 	~Player ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Object :: is_initialized ());
 }
 
@@ -48,13 +52,6 @@ bool Player ::
 	const
 {
 	return Character :: is_initialized ();
-}
-
-//	static
-string Player ::
-	get_class_name ()
-{
-	return "Player";
 }
 
 //	virtual
@@ -70,7 +67,7 @@ void Player ::
 {
 	dead = true;
 
-	log () << string :: data () << " died!";
+	show ("Your character died!");
 }
 
 //	static

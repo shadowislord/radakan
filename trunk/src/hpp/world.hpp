@@ -9,13 +9,13 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
-	class TSL;
+	class Game;
 
 	class World :
 		public Singleton <World>,
-		public Algorithm <TSL>,
+		public Algorithm <Game>,
 		private Environment,
 		private Data_State_Machine <Tile>,
 		private Battle_Engine,
@@ -26,20 +26,22 @@ namespace tsl
 			World (Ogre :: SceneManager & scene_manager, string tsl_path);
 			virtual ~World ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			using Singleton <World> :: get;
 			using Singleton <World> :: is_instantiated;
+			using Singleton <World> :: destruct;
 			
 			virtual void set_active_state (Tile & tile);
-			virtual Algorithm <TSL> & transit (TSL & owner);
+			virtual Algorithm <Game> & transit (Game & owner);
 
 			///	Called by OgreOde whenever a collision occurs,
 			///	so that we can modify the contact parameters.
 			virtual bool collision (OgreOde :: Contact * contact);
 
 		private :
-			void enter (TSL & owner);
+			void enter (Game & owner);
 			
 			GUI & gui;
 			

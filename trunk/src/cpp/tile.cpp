@@ -1,9 +1,15 @@
 #include "tile.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
 
-const int Tile :: side_length (20);
+//	static
+const string Tile ::
+	class_name ("Tile");
+
+//	static
+const int Tile ::
+	side_length (20);
 
 Tile ::
 	Tile (pair <int, int> new_coordinates, string new_tsl_path) :
@@ -17,7 +23,7 @@ Tile ::
 	tsl_path (new_tsl_path),
 	doc (tsl_path + "/data/tile/" + string :: c_str () + ".xml")
 {
-	log (debugging) << get_class_name () << " :: " << get_class_name () << " ((" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ")" << endl;
+	log (debugging) << class_name << " :: " << class_name << " ((" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ")" << endl;
 	
 	assert (Object :: is_initialized ());
 
@@ -88,7 +94,7 @@ Tile ::
 Tile ::
 	~Tile ()
 {
-	log (debugging) << get_class_name () << " :: ~" << get_class_name () << " ()" << endl;
+	log (debugging) << class_name << " :: ~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -97,34 +103,27 @@ bool Tile ::
 	is_initialized ()
 	const
 {
-	assert (Disjoint_Set <Body> :: is_initialized ());
+	assert (Set <Body> :: is_initialized ());
 
 	return true;
-}
-
-//	static
-string Tile ::
-	get_class_name ()
-{
-	return "Tile";
 }
 
 //	virtual
 bool Tile ::
 	add (Body & body)
 {
-	log (debugging) << get_class_name () << " :: add (" << body << ")" << endl;
+	log (debugging) << class_name << " :: add (" << body << ")" << endl;
 	assert (is_initialized ());
 	assert (body . is_initialized ());
 	assert (! contains (body));
 
-	bool check = Disjoint_Set <Body> :: add (body);
+	bool check = Set <Body> :: add (body);
 	assert (check);
 
 	if (body . item . is_type <NPC> ())
 	{
 		log (debugging) << body . item << " will be added to the list of NPCs..." << endl;
-		bool check = npcs . insert (& body . item . to_type <NPC> ()) . second;
+		bool check = npcs . add (body . item . to_type <NPC> ());
 		assert (check);
 		
 		log (debugging) << body . item << " was added to the list of NPCs." << endl;
@@ -137,20 +136,21 @@ bool Tile ::
 
 //	virtual
 bool Tile ::
-	move (Body & body, Disjoint_Set <Body> & destination)
+	move (Body & body, Set <Body> & destination)
 {
-	log (debugging) << get_class_name () << " :: move (" << body << ", " << destination << ")" << endl;
+	log (debugging) << class_name << " :: move (" << body << ", " << destination << ")" << endl;
 	assert (is_initialized ());
 	assert (body . is_initialized ());
 	assert (contains (body));
 	assert (destination . is_initialized ());
+	assert (destination . is_type <Tile> ());
 
 	if (body . item . is_type <NPC> ())
 	{
-		npcs . erase (& body . item . to_type <NPC> ());
+		npcs . move (body . item . to_type <NPC> (), destination . to_type <Tile> () . npcs);
 	}
 
-	bool check = Disjoint_Set <Body> :: move (body, destination);
+	bool check = Set <Body> :: move (body, destination);
 	assert (check);
 
 	return true;
@@ -159,7 +159,7 @@ bool Tile ::
 void Tile ::
 	load_xml (TiXmlElement & element)
 {
-	log (debugging) << get_class_name () << " :: load_xml (~element~)" << endl;
+	log (debugging) << class_name << " :: load_xml (~element~)" << endl;
 	assert (is_initialized ());
 
 	log (debugging) << "element value: " << element . ValueStr () << endl;
@@ -231,7 +231,7 @@ void Tile ::
 void Tile ::
 	load_xml_file (TiXmlDocument & document)
 {
-	log (debugging) << get_class_name () << " :: load_xml_file (~document~)" << endl;
+	log (debugging) << class_name << " :: load_xml_file (~document~)" << endl;
 	assert (is_initialized ());
 
 	bool check = document . LoadFile ();
@@ -250,7 +250,7 @@ void Tile ::
 Body & Tile ::
 	create_body (Item & item, Ogre :: Vector3 position, float scale)
 {
-	log (debugging) << get_class_name () << " :: create_body (" << item << ", " << to_string (position) << ", " << scale << ")" << endl;
+	log (debugging) << class_name << " :: create_body (" << item << ", " << to_string (position) << ", " << scale << ")" << endl;
 	OgreOde :: Geometry & geometry = item . create_geometry ();
 	OgreOde :: Body * body = geometry . getBody ();
 	if (body == NULL)

@@ -1,13 +1,13 @@
 #ifndef TSL_BODY_HPP
 #define TSL_BODY_HPP
 
-#include "disjoint_set.hpp"
+#include "set.hpp"
 #include "environment.hpp"
 #include "item.hpp"
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	const Ogre :: Vector3 x_axis (1, 0, 0);
 	const Ogre :: Vector3 y_axis (0, 1, 0);	//	upwards
@@ -15,13 +15,14 @@ namespace tsl
 
 	///	Body is the 3D representation of an Item.
 	class Body :
-		public Disjoint_Set <Item>
+		public Set <Item>
 	{
 		public :
 			Body (Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry);
 			virtual ~Body ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 			
 			Ogre :: Vector3 get_front_direction () const;
 			Ogre :: Vector3 get_side_direction () const;

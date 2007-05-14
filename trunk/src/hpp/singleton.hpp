@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 
 	template <class T> class Singleton :
@@ -17,12 +17,15 @@ namespace tsl
 			//	virtual class, constructor protected
 			virtual ~Singleton ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			static T & get ();
 			static bool is_instantiated ();
 
-		protected:
+			static void destruct ();
+
+		protected :
 			Singleton ();
 	};
 }

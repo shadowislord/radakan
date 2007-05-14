@@ -1,7 +1,11 @@
 #include "static_item.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Static_Item ::
+	class_name ("Static_Item");
 
 //  constructor
 Static_Item ::
@@ -34,7 +38,7 @@ Static_Item ::
 Static_Item ::
 	~Static_Item ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -44,13 +48,6 @@ bool Static_Item ::
 	const
 {
 	return Item :: is_initialized ();
-}
-
-//	static
-string Static_Item ::
-	get_class_name ()
-{
-	return "Static_Item";
 }
 
 //	static

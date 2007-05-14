@@ -1,15 +1,21 @@
 #include "singleton.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
 
-template <class T> T * Ogre :: Singleton <T> :: ms_Singleton = NULL;
+//	static
+template <class T> T * Ogre :: Singleton <T> ::
+	ms_Singleton (NULL);
+
+//	static
+template <class T> const string Singleton <T> ::
+	class_name ("Singleton <" + T :: class_name + ">");
 
 template <class T> Singleton <T> ::
 	Singleton () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	log (debugging) << get_class_name () << " ()" << endl;
+//	log (debugging) << class_name << " ()" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (Singleton :: is_initialized ());
@@ -18,8 +24,10 @@ template <class T> Singleton <T> ::
 template <class T> Singleton <T> ::
 	~Singleton ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Singleton <T> :: is_initialized ());
+
+	assert (Object :: is_initialized ());
 }
 
 //	virtual
@@ -28,13 +36,6 @@ template <class T> bool Singleton <T> ::
 	const
 {
 	return Object :: is_initialized ();
-}
-
-//	static
-template <class T> string Singleton <T> ::
-	get_class_name ()
-{
-	return "Singleton <" + T :: get_class_name () + ">";
 }
 
 //	static
@@ -51,6 +52,14 @@ template <class T> bool Singleton <T> ::
 	is_instantiated ()
 {
 	return Ogre :: Singleton <T> :: getSingletonPtr () != NULL;
+}
+
+template <class T> void Singleton <T> ::
+	destruct ()
+{
+	assert (is_instantiated ());
+	
+	delete & get ();
 }
 
 #include "audio_engine.hpp"
@@ -71,12 +80,13 @@ template class Singleton <Battle_Engine>;
 template class Singleton <Chat_State>;
 template class Singleton <Dead_State>;
 template class Singleton <Environment>;
+template class Singleton <Game>;
 template class Singleton <GUI_Engine>;
 template class Singleton <GUI_Listener>;
 template class Singleton <Fight_State>;
 template class Singleton <Input_Engine>;
+template class Singleton <Log>;
 template class Singleton <Menu_State>;
 template class Singleton <Player>;
 template class Singleton <Quit_State>;
-template class Singleton <TSL>;
 template class Singleton <World>;

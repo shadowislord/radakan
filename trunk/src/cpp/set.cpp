@@ -1,38 +1,43 @@
-#include "disjoint_set.hpp"
+#include "set.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+template <class T> const string Set <T> ::
+	class_name ("Set <" + T :: class_name + ">");
 
 //	This could have been any number (strictly) below 0.
-template <class T> int Disjoint_Set <T> :: unlimited = - 10;
+template <class T> const int Set <T> ::
+	unlimited = - 10;
 
 //  constructor
-template <class T> Disjoint_Set <T> ::
-	Disjoint_Set (int new_maximal_size) :
-	Object ("The name doesn't matter as this class is an abstact class."),
+template <class T> Set <T> ::
+	Set (int new_maximal_size, string name) :
+	Object (name),
 	maximal_size (new_maximal_size),
 	sealed (false)
 {
-	log (debugging) << get_class_name () << " (" << new_maximal_size << ")" << endl;
+	log (debugging) << class_name << " (" << new_maximal_size << ")" << endl;
 	assert (Object :: is_initialized ());
 	assert ((new_maximal_size == unlimited) || (0 <= new_maximal_size));
 
-	assert (Disjoint_Set <T> :: is_initialized ());
-	log (debugging) << get_class_name () << " () finished" << endl;
+	assert (Set <T> :: is_initialized ());
+	log (debugging) << class_name << " () finished" << endl;
 }
 
 //  destructor
-template <class T> Disjoint_Set <T> ::
-	~Disjoint_Set ()
+template <class T> Set <T> ::
+	~Set ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
-	assert (Disjoint_Set <T> :: is_initialized ());
+	log (debugging) << "~" << class_name << " ()" << endl;
+	assert (Set <T> :: is_initialized ());
 
 	delete_children ();
 }
 
 //	virtual
-template <class T> bool Disjoint_Set <T> ::
+template <class T> bool Set <T> ::
 	is_initialized ()
 	const
 {
@@ -44,8 +49,6 @@ template <class T> bool Disjoint_Set <T> ::
 	/*
 	//	Don't use the 'get_child' & 'get_another_child' methods here,
 	//	as they both require me to be initialized.
-	for (typename set<T*> :: const_iterator i = children . begin (); i != children . end (); i ++)
-
 	for (T_iterator i = children . begin (); i != children . end (); i ++)
 	{
 		assert ((* i) -> T :: is_initialized ());
@@ -55,29 +58,22 @@ template <class T> bool Disjoint_Set <T> ::
 	return true;
 }
 
-//	static
-template <class T> string Disjoint_Set <T> ::
-	get_class_name ()
-{
-	return "Disjoint_Set <" + T :: get_class_name () + ">";
-}
-
-template <class T> bool Disjoint_Set <T> ::
+template <class T> bool Set <T> ::
 	is_empty () const
 {
-	assert (Disjoint_Set <T> :: is_initialized ());
+	assert (Set <T> :: is_initialized ());
 
 	return children . empty ();
 }
 
 //	virtual
-template <class T> bool Disjoint_Set <T> ::
+template <class T> bool Set <T> ::
 	add (T & t)
 {
 	log (debugging) << "add (" << t << ")" << endl;
-	assert (Disjoint_Set <T> :: is_initialized ());
+	assert (Set <T> :: is_initialized ());
 	assert (! sealed);
-	assert (! t . has_parent ());
+	assert (! t . has_parent (T :: class_name));
 
 	if ((maximal_size != unlimited) && (children . size () == maximal_size))
 	{
@@ -85,7 +81,7 @@ template <class T> bool Disjoint_Set <T> ::
 		return false;
 	}
 
-	t . put_in (* this);
+	t . put_in (* this, T :: class_name);
 	log (debugging) << t << " was added." << endl;
 
 	//	'second' means we're interested in if it worked or not.
@@ -93,17 +89,17 @@ template <class T> bool Disjoint_Set <T> ::
 	bool check = children . insert (& t) . second;
 	assert (check);
 	
-	assert (Disjoint_Set <T> :: is_initialized ());
+	assert (Set <T> :: is_initialized ());
 	return true;
 }
 
 //	virtual
-template <class T> bool Disjoint_Set <T> ::
+template <class T> bool Set <T> ::
 	contains (string name)
 	const
 {
 //	log (debugging) << "contains (" << name << ")" << endl;
-	assert (Disjoint_Set <T> :: is_initialized ());
+	assert (Set <T> :: is_initialized ());
 
 	for (T * i = get_child (); i != NULL; i = get_another_child ())
 	{
@@ -117,34 +113,44 @@ template <class T> bool Disjoint_Set <T> ::
 }
 
 //	virtual
-template <class T> bool Disjoint_Set <T> ::
-	move (T & t, Disjoint_Set <T> & destination)
+template <class T> bool Set <T> ::
+	move (T & t, Set <T> & destination)
 {
 	log (debugging) << "move (" << t << ", " << destination << ")" << endl;
-	assert (Disjoint_Set <T> :: is_initialized ());
+	assert (Set <T> :: is_initialized ());
 	assert (t . is_initialized ());
 	assert (destination . is_initialized ());
 	assert (! sealed);
 	assert (contains (t));
 
-	t . remove_from (* this);
+	t . remove_from (* this, T :: class_name);
 	if (destination . add (t))
 	{
-		children . erase (& t);
+		drop (t);
 
 		return true;
 	}
-	t . put_in (* this);
+	t . put_in (* this, T :: class_name);
 	
 	return false;
 }
 
-template <class T> T & Disjoint_Set <T> ::
+template <class T> void Set <T> ::
+	drop (T & t)
+{
+	assert (Set <T> :: is_initialized ());
+	assert (! sealed);
+	assert (t . is_in (* this, T :: class_name));
+
+	children . erase (& t);
+}
+
+template <class T> T & Set <T> ::
 	get_child (string name)
 	const
 {
 	log (debugging) << "get_child (" << name << ")" << endl;
-	assert (Disjoint_Set <T> :: is_initialized ());
+	assert (Set <T> :: is_initialized ());
 	assert (contains (name));
 
 	for (T * i = get_child (); i != NULL; i = get_another_child ())
@@ -160,12 +166,12 @@ template <class T> T & Disjoint_Set <T> ::
 	return * get_child ();
 }
 
-template <class T> T * Disjoint_Set <T> ::
+template <class T> T * Set <T> ::
 	get_child ()
 	const
 {
 //	log (debugging) << "get_child ()" << endl;
-	assert (Disjoint_Set <T> :: is_initialized ());
+	assert (Set <T> :: is_initialized ());
 
 	if (children . empty ())
 	{
@@ -175,12 +181,12 @@ template <class T> T * Disjoint_Set <T> ::
 	return * (next_child ++);
 }
 
-template <class T> T * Disjoint_Set <T> ::
+template <class T> T * Set <T> ::
 	get_another_child ()
 	const
 {
 //	log (debugging) << "get_another_child ()" << endl;
-	assert (Disjoint_Set <T> :: is_initialized ());
+	assert (Set <T> :: is_initialized ());
 
 	if (next_child == children . end ())
 	{
@@ -189,36 +195,42 @@ template <class T> T * Disjoint_Set <T> ::
 	return * (next_child ++);
 }
 
-template <class T> void Disjoint_Set <T> ::
+template <class T> void Set <T> ::
 	delete_children ()
 {
-	assert (Disjoint_Set <T> :: is_initialized ());
+	assert (Set <T> :: is_initialized ());
+	assert (! sealed);
 
 	const int initial_number_of_children = children . size ();
 
 	//	We can't use 'get_child' and 'get_another_child' here.
 
 	int child_number = 0;
-	for (T_iterator i = children . begin (); i != children . end (); i ++)
-
+	for (T_iterator i = children . begin (); i != children . end ();
+		i = children . begin ())
 	{
 		child_number ++;
 		assert (child_number <= initial_number_of_children);
 		assert (* i != NULL);
-		log (debugging) << "deleting child " << child_number << " of " << initial_number_of_children << ": " << * * i << "..." << endl;
-		delete * i;
+		log (debugging) << "deleting child " << child_number << " of "
+			<< initial_number_of_children << ": " << * * i << "..." << endl;
+		drop (* * i);
+		if ((* i) -> is_orphan ())
+		{
+			delete *i;
+		}
 	}
 
-	children . clear ();
+	assert (children . empty ());
 }
 
-template <class T> void Disjoint_Set <T> ::
+template <class T> void Set <T> ::
 	seal ()
 {
 	sealed = true;
 }
 
-template <class T> bool Disjoint_Set <T> ::
+template <class T> bool Set <T> ::
 	is_sealed () const
 {
 	return sealed;
@@ -229,8 +241,10 @@ template <class T> bool Disjoint_Set <T> ::
 #include "tile.hpp"
 #include "audio_engine.hpp"
 
-template class Disjoint_Set <GUI>;
-template class Disjoint_Set <Body>;
-template class Disjoint_Set <Item>;
-template class Disjoint_Set <Tile>;
-template class Disjoint_Set <Sound>;
+template class Set <Body>;
+template class Set <GUI>;
+template class Set <Item>;
+template class Set <Object>;
+template class Set <NPC>;
+template class Set <Sound>;
+template class Set <Tile>;

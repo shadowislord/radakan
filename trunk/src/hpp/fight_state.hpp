@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	class NPC;
 
@@ -17,7 +17,8 @@ namespace tsl
 			Fight_State ();
 			virtual ~Fight_State ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 			
 			virtual Algorithm <NPC> & transit (NPC & owner);
 	};

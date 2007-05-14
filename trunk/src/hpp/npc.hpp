@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	class NPC :
 		public Character,
@@ -15,7 +15,8 @@ namespace tsl
 		public :
 			virtual ~NPC ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			virtual bool is_dead () const;
 			virtual void die ();

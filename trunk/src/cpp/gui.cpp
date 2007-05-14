@@ -2,7 +2,11 @@
 #include <CEGUIExceptions.h>
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string GUI ::
+	class_name ("GUI");
 
 GUI ::
 	GUI
@@ -40,7 +44,7 @@ GUI ::
 GUI ::
 	~GUI ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -53,25 +57,13 @@ bool GUI ::
 	return text_window != NULL;
 }
 
-//	static
-string GUI ::
-	get_class_name ()
-{
-	return "GUI";
-}
-
+//	virtual
 void GUI ::
-	update_message ()
+	call (const string & type, const string & message)
 {
 	assert (is_initialized ());
+	assert (type == "show");
+	assert (! message . empty ());
 
-	if (! message . str () . empty ())
-	{
-		log (debugging) << "Message: " << message . str () << endl;
-	
-		text_window -> setText (message . str ());
-
-		//	flush the message:
-		message . str ("");
-	}
+	text_window -> setText (message);
 }

@@ -9,12 +9,12 @@
 	#include <audiere.h>
 #endif
 
-#include "disjoint_set.hpp"
+#include "set.hpp"
 #include "singleton.hpp"
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 
 	///	Sound is the abstract base class for all sounds classes.
@@ -86,13 +86,15 @@ namespace tsl
 
 	class Audio_Engine :
 		public Singleton <Audio_Engine>,
-		private Disjoint_Set <Sound>
+		private Set <Sound>
 	{
 		public :
 			Audio_Engine ();
 			~Audio_Engine ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
+			
 			void play ();
 			void load (string file_name);
 

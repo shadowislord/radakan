@@ -6,22 +6,23 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
-	class TSL;
+	class Game;
 
 	class Quit_State :
 		public Singleton <Quit_State>,
-		public Algorithm <TSL>
+		public Algorithm <Game>
 	{
 		public :
 			Quit_State ();
 			virtual ~Quit_State ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
-			using Algorithm <TSL> :: enter;
-			using Algorithm <TSL> :: exit;
+			using Algorithm <Game> :: enter;
+			using Algorithm <Game> :: exit;
 	};
 }
 

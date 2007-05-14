@@ -1,26 +1,47 @@
-#include "tsl.hpp"
 #include "dead_state.hpp"
 #include "fight_state.hpp"
 #include "alive_state.hpp"
+#include "game.hpp"
 #include "gui.hpp"
 #include "input_engine.hpp"
 #include "menu_state.hpp"
 #include "world.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
 
-const int World :: min_x = - 1;
-const int World :: max_x = 2;
-const int World :: min_z = - 1;
-const int World :: max_z = 1;
-const float World :: min_vertical_camera_angle = - Ogre :: Math :: HALF_PI;
-const float World :: max_vertical_camera_angle = Ogre :: Math :: HALF_PI;
+//	static
+const string World ::
+	class_name ("World");
+
+//	static
+const int World ::
+	min_x (- 1);
+	
+//	static
+const int World ::
+	max_x (2);
+	
+//	static
+const int World ::
+	min_z (- 1);
+	
+//	static
+const int World ::
+	max_z (1);
+	
+//	static
+const float World ::
+	min_vertical_camera_angle (- Ogre :: Math :: HALF_PI);
+	
+//	static
+const float World ::
+	max_vertical_camera_angle (Ogre :: Math :: HALF_PI);
 
 //	a few constants for our stepper
-const float max_frame_time = 0.1;
-const float time_scale = 1.0;
-const float time_step = 0.1;
+const float max_frame_time (0.1);
+const float time_scale (1.0);
+const float time_step (0.1);
 
 //  constructor
 World ::
@@ -38,9 +59,9 @@ World ::
 	gui (GUI_Engine :: get () . create_gui ("sector.cfg")),
 	camera (* scene_manager . createCamera ("world camera"))
 {
-	log (debugging) << get_class_name () << " (~scene_manager~, " << tsl_path << ")" << endl;
+	log (debugging) << class_name << " (~scene_manager~, " << tsl_path << ")" << endl;
 	assert (Singleton <World> :: is_initialized ());
-	assert (Algorithm <TSL> :: is_initialized ());
+	assert (Algorithm <Game> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
 	assert (Environment :: is_initialized ());
 	assert (Battle_Engine :: is_initialized ());
@@ -80,11 +101,11 @@ World ::
 World ::
 	~World ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (World :: is_initialized ());
 
 	assert (Singleton <World> :: is_initialized ());
-	assert (Algorithm <TSL> :: is_initialized ());
+	assert (Algorithm <Game> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
 	assert (Environment :: is_initialized ());
 	assert (Battle_Engine :: is_initialized ());
@@ -95,21 +116,14 @@ bool World ::
 	is_initialized ()
 	const
 {
-//	Object :: log (debugging) << get_class_name () << " :: is_initialized ()" << endl;
+//	Object :: log (debugging) << class_name << " :: is_initialized ()" << endl;
 	assert (Singleton <World> :: is_initialized ());
-	assert (Algorithm <TSL> :: is_initialized ());
+	assert (Algorithm <Game> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
 	assert (Environment :: is_initialized ());
 	assert (Battle_Engine :: is_initialized ());
 
 	return true;
-}
-
-//	static
-string World ::
-	get_class_name ()
-{
-	return "World";
 }
 
 //	virtual
@@ -121,7 +135,7 @@ void World ::
 	
 	if (tile != get_active_state ())
 	{
-		show () << "current tile:" << tile;
+		show ("current tile: " + tile);
 
 		if (! tile . contains (* player_body))
 		{
@@ -134,16 +148,17 @@ void World ::
 }
 
 //	virtual
-Algorithm <TSL> & World ::
-	transit (TSL & owner)
+Algorithm <Game> & World ::
+	transit (Game & owner)
 {
 	assert (is_initialized ());
 
 	for (Tile * tile = get_child (); tile != NULL; tile = get_another_child ())
 	{
-		for (NPC_iterator npc = tile -> npcs . begin (); npc != tile -> npcs . end (); npc ++)
+		for (NPC * npc = tile -> npcs . get_child (); npc != NULL;
+			npc = tile -> npcs . get_another_child ())
 		{
-			(* npc) -> run ();
+			npc -> run ();	//	run the AI
 		}
 	}
 
@@ -203,10 +218,10 @@ Algorithm <TSL> & World ::
 	if (Input_Engine :: get () . get_key ("h", true)
 					|| Input_Engine :: get () . get_gui_button ("Hit", true))
 	{
-		NPC & npc = * * get_active_state () . npcs . begin ();
+		NPC & npc = * get_active_state () . npcs . get_child ();
 		if (npc . is_dead ())
 		{
-			show () << "Mutilating a dead body is *not* nice.";
+			show ("Mutilating a dead body is *not* nice.");
 		}
 		else
 		{
@@ -217,8 +232,6 @@ Algorithm <TSL> & World ::
 	//	dead
 	if (Player :: get () . is_dead ())
 	{
-		log () << "You died" << endl;
-		
 		return Menu_State :: get ();
 	}
 
@@ -226,14 +239,14 @@ Algorithm <TSL> & World ::
 	if (Input_Engine :: get () . get_key ("m", true)
 					|| Input_Engine :: get () . get_gui_button ("Move", true))
 	{
-		NPC & npc = * * get_active_state () . npcs . begin ();
+		NPC & npc = * get_active_state () . npcs . get_child ();
 		if (! Player :: get () . hands . is_empty ())
 		{
 			assert (! Player :: get () . hands . is_empty ());
 			Player :: get () . hands . move (* Player :: get () . hands . get_child (), npc . hands);
 			assert (Player :: get () . hands . is_empty ());
 			assert (! npc . hands . is_empty ());
-			show () << "You gave your weapon to the ninja.";
+			show ("You gave your weapon to the ninja.");
 		}
 		else if (! npc . hands . is_empty ())
 		{
@@ -241,11 +254,11 @@ Algorithm <TSL> & World ::
 			npc . hands . move (* npc . hands . get_child (), Player :: get () . hands);
 			assert (npc . hands . is_empty ());
 			assert (! Player :: get () . hands . is_empty ());
-			show () << "You took your weapon from the ninja.";
+			show ("You took your weapon from the ninja.");
 		}
 		else
 		{
-			show () << "Both you and the ninja don't have a weapon.";
+			show ("Both you and the ninja don't have a weapon.");
 		}
 	}
 
@@ -270,19 +283,6 @@ Algorithm <TSL> & World ::
 		else if (max_vertical_camera_angle < vertical_camera_angle)
 		{
 			vertical_camera_angle = max_vertical_camera_angle;
-		}
-	}
-
-	if (Input_Engine :: get () . get_mouse_button
-							(Input_Engine :: get () . right_mouse_button, true))
-	{
-		if (0.1 < Ogre :: Math :: RangeRandom (0, 1))
-		{
-			show () << owner . get_FPS ();
-		}
-		else
-		{
-			show () << "Trivia: there were 1961 trees in each forest.";
 		}
 	}
 
@@ -317,7 +317,7 @@ Algorithm <TSL> & World ::
 }
 
 void World ::
-	enter (TSL & owner)
+	enter (Game & owner)
 {
 	GUI_Engine :: get () . activate (gui);
 }

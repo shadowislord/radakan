@@ -2,8 +2,11 @@
 #include <elements/CEGUIPushButton.h>
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
 
+//	static
+const string GUI_Listener ::
+	class_name ("GUI_Listener");
 
 GUI_Listener ::
 	GUI_Listener () :
@@ -18,7 +21,7 @@ GUI_Listener ::
 GUI_Listener ::
 	~GUI_Listener ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -28,13 +31,6 @@ bool GUI_Listener ::
 	const
 {
 	return Singleton <GUI_Listener> :: is_initialized ();
-}
-
-//	static
-string GUI_Listener ::
-	get_class_name ()
-{
-	return "GUI_Listener";
 }
 
 void GUI_Listener ::

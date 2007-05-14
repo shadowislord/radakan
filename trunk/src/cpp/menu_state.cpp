@@ -5,7 +5,11 @@
 #include "input_engine.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Menu_State ::
+	class_name ("Menu_State");
 
 //  constructor
 Menu_State ::
@@ -14,7 +18,7 @@ Menu_State ::
 	gui (GUI_Engine :: get () . create_gui ("menu.cfg"))
 {
 	log (debugging) << "Menu_State ()" << endl;
-	assert (Algorithm <TSL> :: is_initialized ());
+	assert (Algorithm <Game> :: is_initialized ());
 
 	assert (Menu_State :: is_initialized ());
 }
@@ -23,9 +27,9 @@ Menu_State ::
 Menu_State ::
 	~Menu_State ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 
-	assert (Algorithm <TSL> :: is_initialized ());
+	assert (Algorithm <Game> :: is_initialized ());
 }
 
 //	virtual
@@ -33,19 +37,12 @@ bool Menu_State ::
 	is_initialized ()
 	const
 {
-	return Algorithm <TSL> :: is_initialized ();
-}
-
-//	static
-string Menu_State ::
-	get_class_name ()
-{
-	return "Menu_State";
+	return Algorithm <Game> :: is_initialized ();
 }
 
 //	virtual
-Algorithm <TSL> & Menu_State ::
-	transit (TSL & owner)
+Algorithm <Game> & Menu_State ::
+	transit (Game & owner)
 {
 	assert (is_initialized ());
 
@@ -67,7 +64,7 @@ Algorithm <TSL> & Menu_State ::
 	//	FPS
 	if (Input_Engine :: get () . get_gui_button ("Statistics", true))
 	{
-		show () << owner . get_FPS ();
+		show (owner . get_FPS ());
 	}
 	
 	return owner . get_active_state ();
@@ -75,11 +72,11 @@ Algorithm <TSL> & Menu_State ::
 
 //	virtual
 void Menu_State ::
-	enter (TSL & owner)
+	enter (Game & owner)
 {
 	assert (is_initialized ());
 
 	GUI_Engine :: get () . activate (gui);
 	
-	show () << "Menu (game paused)";
+	show ("Menu (game paused)");
 }

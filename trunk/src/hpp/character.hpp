@@ -7,11 +7,10 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 
 	///	Character is the abstract bace class of all in-game characters.
-
 	class Character :
 		public Container
 	{
@@ -19,7 +18,8 @@ namespace tsl
 			//	The constructor is protected, see below.
 			virtual ~Character ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 			
 			virtual bool is_dead () const = 0;
 			virtual void die () = 0;

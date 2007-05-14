@@ -12,7 +12,7 @@
 using namespace std;
 using namespace boost;
 
-namespace tsl
+namespace TSL
 {
 	class Battle_Engine :
 		public Singleton <Battle_Engine>
@@ -21,7 +21,9 @@ namespace tsl
 			Battle_Engine ();
 			virtual ~Battle_Engine ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
+			
 			void hit (Character & attacker, Character & defender);
 
 		private :

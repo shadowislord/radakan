@@ -35,13 +35,16 @@
 using namespace std;
 
 ///	The Scattered Lands namespace
-namespace tsl
+namespace TSL
 {
 	const Ogre :: Vector3 zero_vector (0, 0, 0);
 
+	#ifdef TSL_DEBUG
+		template <class T> class Set;
+	#endif
+
 	///	Object is the universal abstract base class for all TSL classes.
 	///	All other files should (in)directly include this master include file.
-
 	class Object :
 		public string,
 		public boost :: noncopyable
@@ -50,41 +53,42 @@ namespace tsl
 			//	protected constructor(s), see below
 			virtual ~Object ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
+			
 			template <class T> bool is_type () const;
 			template <class T> T & to_type () const;
 
-			stringstream & show (bool condition = true) const;
+			void show (string message, bool condition = true) const;
 			ostream & log (bool condition = true) const;
 			ostream & error () const;
 
 			static const bool debugging;
 
-			///	If possible, use the Disjoint_Set methods instead.
-			bool has_parent () const;
+			bool is_orphan () const;
 
-			///	If possible, use the Disjoint_Set methods instead.
-			bool is_in (const Object & set) const;
+			///	If possible, use the Set methods instead.
+			bool has_parent (const string & context) const;
 
-			///	If possible, use the Disjoint_Set methods instead.
-			void put_in (const Object & new_parent);
+			///	If possible, use the Set methods instead.
+			bool is_in (const Object & set, const string & context) const;
 
-			///	If possible, use the Disjoint_Set methods instead.
-			void remove_from (const Object & old_parent);
+			///	If possible, use the Set methods instead.
+			void put_in (const Object & new_parent, const string & context);
+
+			///	If possible, use the Set methods instead.
+			void remove_from (const Object & old_parent, const string & context);
 
 			static string bool_to_string (const bool value);
 			static string to_string (const float value);
 			static string to_string (const Ogre :: Vector3 & vector);
 			static float to_float (const string);
 
-			///	The message shown in the GUI.
-			static stringstream message;
-
 			#ifdef TSL_DEBUG
 				static unsigned long int turn;
 
 				//	This set is used to check if all objects were properly destructed.
-				static set <Object *> objects;
+/*				static Set <Object> objects;*/
 			#endif
 
 		protected:
@@ -94,12 +98,10 @@ namespace tsl
 				Object ();
 			#endif
 			Object (string new_name);
-			
-		private :
-			const Object * parent;	//	the Disjoint_Set in which the object is
 
-			/// for messages that should be ignored
-			static stringstream the_abyss;
+		private :
+			///	One 'parent' per context is allowed.
+			map <const string *, const Object *> parents;
 	};
 }
 

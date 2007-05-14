@@ -1,15 +1,18 @@
-/*#include "observable.hpp"
+#include "observable.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+template <class T> const string Observable <T> ::
+	class_name ("Observable <" + T :: class_name + ">");
 
 //  constructor
 template <class T> Observable <T> ::
-	Observable (Observer <Body> & new_observer) :
-	Object ("The name doesn't matter as this class is an abstact class."),
-	observer (NULL)
+	Observable () :
+	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	Object :: log (TSL_DEBUG) << get_class_name () << " ()" << endl;
+	Object :: log (debugging) << class_name << " ()" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (Observable <T> :: is_initialized ());
@@ -19,8 +22,10 @@ template <class T> Observable <T> ::
 template <class T> Observable <T> ::
 	~Observable ()
 {
-	Object :: log (TSL_DEBUG) << "~" << get_class_name () << " ()" << endl;
+	Object :: log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Observable <T> :: is_initialized ());
+	
+	assert (Object :: is_initialized ());
 }
 
 //	virtual
@@ -33,14 +38,7 @@ template <class T> bool Observable <T> ::
 	return true;
 }
 
-//	static
-template <class T> string Observable <T> ::
-	get_class_name ()
-{
-	return "Observable <" + T :: get_class_name () + ">";
-}
-
 //	to avert linking errors:
-#include "item.hpp"
+#include "log.hpp"
 
-template class Observable <Item>;*/
+template class Observable <Log>;

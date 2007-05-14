@@ -1,7 +1,7 @@
-#include "tsl.hpp"
+#include "game.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
 
 #ifdef TSL_WIN
 	INT WINAPI WinMain (HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
@@ -14,7 +14,7 @@ using namespace tsl;
 	//	check for conflicting debug and trace flags
 	#ifdef TSL_TRACE
 		#ifndef TSL_DEBUG
-			cerr << "Error: conflicting TSL_DEBUG and TSL_TRACE flags detected." << endl;
+			cerr << "Conflicting TSL_DEBUG and TSL_TRACE flags detected." << endl;
 			abort ();
 		#endif
 	#endif
@@ -66,7 +66,7 @@ using namespace tsl;
 	try
 	{
 		cout << "Setting up The Scattered Lands..." << endl;
-		TSL game (tsl_path, ogre_media_path);
+		Game game (tsl_path, ogre_media_path);
 		cout << "The Scattered Lands is set up." << endl;
 
 		cout << "Running The Scattered Lands..." << endl;
@@ -83,17 +83,17 @@ using namespace tsl;
 				(NULL, exception . getFullDescription () . c_str (),
 				"An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		#else
-			cerr << "ERROR: " << exception . getFullDescription () << endl;
+			cerr << "Exception: " << exception . getFullDescription () << endl;
 		#endif
 	}
 
 	#ifdef TSL_DEBUG
-		for (set <Object *> :: const_iterator i = Object :: objects . begin ();
-										i != Object :: objects . end (); i ++)
+/*		for (Object * i = Object :: objects . get_child (); i != NULL;
+			i = Object :: objects . get_another_child ())
 		{
-			cout << "Warning: " << * * i << " (" << * i << ") was not deleted." << endl;
+			cout << "Warning: " << * i << " (" << i << ") was not deleted." << endl;
 		}
-		assert (Object :: objects . empty ());
+		assert (Object :: objects . is_empty ());*/
 	#endif
 
 	cout << "The Scattered Lands is shut down." << endl;

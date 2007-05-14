@@ -1,21 +1,25 @@
 #include "body.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Body ::
+	class_name ("Body");
 
 //  constructor
 Body ::
 	Body (Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry) :
 	Object (new_item + "'s body"),
-	Disjoint_Set <Item> (1),
+	Set <Item> (1),
 	item (new_item),
 	node (* Environment :: get () . root_node . createChildSceneNode (string :: data ())),
 	geometry (new_geometry)
 {
-	log (debugging) << get_class_name () << " (" << new_item << ", " << to_string (position) << ", " << scale << ")" << endl;
-	assert (Disjoint_Set <Item> :: is_initialized ());
+	log (debugging) << class_name << " (" << new_item << ", " << to_string (position) << ", " << scale << ")" << endl;
+	assert (Set <Item> :: is_initialized ());
 
-	Disjoint_Set <Item> :: add (item);
+	Set <Item> :: add (item);
 	seal ();
 
 //	Environment :: get () . root_node . addChild (this);
@@ -50,7 +54,7 @@ Body ::
 Body ::
 	~Body ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Body :: is_initialized ());
 	
 	item . remove_body ();
@@ -64,7 +68,7 @@ Body ::
 
 	assert (node . numAttachedObjects () == 0);
 
-	assert (Disjoint_Set <Item> :: is_initialized ());
+	assert (Set <Item> :: is_initialized ());
 }
 
 //	virtual
@@ -72,7 +76,7 @@ bool Body ::
 	is_initialized ()
 	const
 {
-	assert (Disjoint_Set <Item> :: is_initialized ());
+	assert (Set <Item> :: is_initialized ());
 	assert (is_sealed ());
 	assert (item . has_body ());
 	assert (node . getParent () == & Environment :: get () . root_node);
@@ -81,13 +85,6 @@ bool Body ::
 	//	TODO re-enable assert ((node . getPosition () - geometry . getPosition ()) . length () < 0.01);
 
 	return true;
-}
-
-//	static
-string Body ::
-	get_class_name ()
-{
-	return "Body";
 }
 
 Ogre :: Vector3 Body ::
@@ -134,7 +131,7 @@ void Body ::
 	new_space . addGeometry (geometry);
 }
 
-Ogre :: Quaternion tsl :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)
+Ogre :: Quaternion TSL :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)
 {
 	return Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax);
 }

@@ -3,7 +3,11 @@
 #include "dead_state.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string NPC ::
+	class_name ("NPC");
 
 //  constructor
 NPC ::
@@ -22,7 +26,7 @@ NPC ::
 		new_mass
 	)
 {
-	log (debugging) << get_class_name () << " (" << new_name << ", ...)" << endl;
+	log (debugging) << class_name << " (" << new_name << ", ...)" << endl;
 	assert (Character :: is_initialized ());
 
 	set_active_state (Alive_State :: get ());
@@ -35,7 +39,7 @@ NPC ::
 NPC ::
 	~NPC ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (NPC :: is_initialized ());
 }
 
@@ -46,13 +50,6 @@ bool NPC ::
 {
 	assert (Character :: is_initialized ());
 	return true;
-}
-
-//	static
-string NPC ::
-	get_class_name ()
-{
-	return "NPC";
 }
 
 //	virtual
@@ -70,8 +67,6 @@ void NPC ::
 	assert (has_body ());
 
 	set_active_state (Dead_State :: get ());
-
-	log () << string :: data () << " died!";
 }
 
 //	static

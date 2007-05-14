@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	class Body;
 
@@ -17,7 +17,9 @@ namespace tsl
 		public :
 			virtual ~Item ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
+			
 			virtual float get_total_mass () const;
 
 			virtual OgreOde :: Geometry & create_geometry ();

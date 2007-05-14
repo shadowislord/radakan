@@ -1,7 +1,11 @@
 #include "container.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Container ::
+	class_name ("Container");
 
 //  constructor
 Container ::
@@ -26,7 +30,7 @@ Container ::
 		new_visible
 	)
 {
-	assert (Item :: is_initialized () && Disjoint_Set <Item> :: is_initialized ());
+	assert (Item :: is_initialized () && Set <Item> :: is_initialized ());
 	
 	assert (is_initialized ());
 }
@@ -35,7 +39,7 @@ Container ::
 Container ::
 	~Container ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -44,14 +48,7 @@ bool Container ::
 	is_initialized ()
 	const
 {
-	return Item :: is_initialized () && Disjoint_Set <Item> :: is_initialized ();
-}
-
-//	static
-string Container ::
-	get_class_name ()
-{
-	return "Container";
+	return Item :: is_initialized () && Set <Item> :: is_initialized ();
 }
 
 //	virtual
@@ -93,7 +90,7 @@ bool Container ::
 		return false;
 	}
 
-	bool check = Disjoint_Set <Item> :: add (item);
+	bool check = Set <Item> :: add (item);
 	assert (check);
 
 	return true;

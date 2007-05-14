@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	class Static_Item :
 		public Item
@@ -13,7 +13,8 @@ namespace tsl
 		public :
 			virtual ~Static_Item ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			static Item & create
 			(

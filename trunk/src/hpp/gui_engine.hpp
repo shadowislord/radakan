@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	class Input_Engine;
 
@@ -24,7 +24,8 @@ namespace tsl
 			);
 			virtual ~GUI_Engine ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 			
 			void set_mouse_position (const Ogre :: Vector3 & new_position);
 			void left_mouse_button_click ();

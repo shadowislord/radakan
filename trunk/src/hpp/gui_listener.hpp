@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	class GUI;
 	
@@ -17,7 +17,8 @@ namespace tsl
 			GUI_Listener ();
 			virtual ~GUI_Listener ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			///	searches recursively for button windows
 			void subscribe (CEGUI :: Window & window);

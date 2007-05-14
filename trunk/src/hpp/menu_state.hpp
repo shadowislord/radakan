@@ -1,27 +1,28 @@
 #ifndef TSL_MENU_STATE_HPP
 #define TSL_MENU_STATE_HPP
 
-#include "tsl.hpp"
+#include "game.hpp"
 #include "gui.hpp"
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	class Menu_State :
 		public Singleton <Menu_State>,
-		public Algorithm <TSL>
+		public Algorithm <Game>
 	{
 		public :
 			Menu_State ();
 			virtual ~Menu_State ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
 			
-			virtual Algorithm <TSL> & transit (TSL & owner);
+			static const string class_name;
+			
+			virtual Algorithm <Game> & transit (Game & owner);
 	
 		private :
-			void enter (TSL & owner);
+			void enter (Game & owner);
 			
 			GUI & gui;
 	};

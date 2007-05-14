@@ -1,4 +1,4 @@
-#include "tsl.hpp"
+#include "game.hpp"
 #include "menu_state.hpp"
 #include "world.hpp"
 #include "quit_state.hpp"
@@ -12,16 +12,20 @@
 #include <OgreColourValue.h>
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
 
-const float maximal_turn_lenght = 0.1;
+//	static
+const string Game ::
+	class_name ("Game");
 
-TSL ::
-	TSL (string tsl_path, string ogre_media_path) :
-	Object ("TSL"),
+Game ::
+	Game (string tsl_path, string ogre_media_path) :
+	Object ("Game"),
 	last_turn_lenght (0)
 {
-	log (debugging) << "TSL (" << tsl_path << ", " << ogre_media_path << ")" << endl;
+	log (debugging) << "Game (" << tsl_path << ", " << ogre_media_path << ")" << endl;
+
+	new Log ();
 
 	new Audio_Engine ();
 	Audio_Engine :: get () . load (tsl_path + "/data/sound/prelude_11.ogg");
@@ -96,7 +100,7 @@ TSL ::
 		new Menu_State ();
 		new Quit_State ();
 
-		Algorithm_State_Machine <TSL> :: set_active_state (World :: get ());
+		Algorithm_State_Machine <Game> :: set_active_state (World :: get ());
 		assert (get_active_state () . is_type <World> ());
 
 		Ogre :: Camera * camera = scene_manager . getCameraIterator () . getNext ();
@@ -114,48 +118,43 @@ TSL ::
 	assert (is_initialized ());
 }
 
-TSL ::
-	~TSL ()
+Game ::
+	~Game ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 	log (debugging) << "active state: " << get_active_state () << endl;
 	assert (get_active_state () == Quit_State :: get ());
 
-	delete & GUI_Engine :: get ();
-	delete & Input_Engine :: get ();
-	delete & Audio_Engine :: get ();
+	GUI_Engine :: destruct ();
+	Input_Engine :: destruct ();
+	Audio_Engine :: destruct ();
 
 	unset_active_state ();
 
-	delete & Menu_State :: get ();
-	delete & World :: get ();
-	delete & Quit_State :: get ();
+	Menu_State :: destruct ();
+	World :: destruct ();
+	Quit_State :: destruct ();
 
-	delete & Alive_State :: get ();
-	delete & Dead_State :: get ();
-	delete & Fight_State :: get ();
+	Alive_State :: destruct ();
+	Dead_State :: destruct ();
+	Fight_State :: destruct ();
+	
+	Log :: destruct ();
 }
 
 //	virtual
-bool TSL ::
+bool Game ::
 	is_initialized ()
 	const
 {
-	assert (Singleton <TSL> :: is_initialized ());
-	assert (Algorithm_State_Machine <TSL> :: is_initialized ());
+	assert (Singleton <Game> :: is_initialized ());
+	assert (Algorithm_State_Machine <Game> :: is_initialized ());
 
 	return true;
 }
 
-//	static
-string TSL ::
-	get_class_name ()
-{
-	return "TSL";
-}
-
-void TSL ::
+void Game ::
 	run ()
 {
 	while (get_active_state () != Quit_State :: get ())
@@ -166,37 +165,33 @@ void TSL ::
 
 		bool check = root -> renderOneFrame ();
 		assert (check);
-		GUI_Engine :: get () . get_active_state () . update_message ();
 		GUI_Engine :: get () . render ();
 
 		Input_Engine :: get () . capture ();
 		Ogre :: WindowEventUtilities :: messagePump ();
 
-		log (debugging) << "Turn lenth (part one): " << float (turn_lenght_timer . getMilliseconds ()) / 1000 << endl;
-
-		Algorithm_State_Machine <TSL> :: run ();
+		Algorithm_State_Machine <Game> :: run ();
 
 		last_turn_lenght = float (turn_lenght_timer . getMilliseconds ()) / 1000;
 
-		log () << "Turn lenght: " << last_turn_lenght;
+		log () << "Turn lenght: " << last_turn_lenght << endl;
 
-		if (maximal_turn_lenght < last_turn_lenght)
-		{
-			log (debugging) << "Reducing the turn lenght from " << last_turn_lenght << " to " << maximal_turn_lenght << "..." << endl;
-			last_turn_lenght = maximal_turn_lenght;
-		}
+//		if (maximal_turn_lenght < last_turn_lenght)
+//		{
+//			last_turn_lenght = maximal_turn_lenght;
+//		}
 		turn_lenght_timer . reset ();
 
 		if (window -> isClosed ())
 		{
-			Algorithm_State_Machine <TSL> :: set_active_state (Quit_State :: get ());
+			Algorithm_State_Machine <Game> :: set_active_state (Quit_State :: get ());
 		}
 	}
 	
 	assert (get_active_state () == Quit_State :: get ());
 }
 
-string TSL ::
+string Game ::
 	get_FPS () const
 {
 	assert (is_initialized ());
@@ -204,7 +199,7 @@ string TSL ::
 	return "FPS: " + to_string (window -> getAverageFPS ());
 }
 
-void TSL ::
+void Game ::
 	set_camera (Ogre :: Camera & new_camera)
 {
 	assert (is_initialized ());
@@ -212,7 +207,7 @@ void TSL ::
 	root -> getRenderSystem () -> _getViewport () -> setCamera (& new_camera);
 }
 
-const float & TSL ::
+const float & Game ::
 	get_last_turn_lenght () const
 {
 	return last_turn_lenght;

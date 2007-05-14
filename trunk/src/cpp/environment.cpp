@@ -1,7 +1,11 @@
 #include "environment.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Environment ::
+	class_name ("Environment");
 
 Environment	::
 	Environment (Ogre :: SceneManager & scene_manager, Ogre :: Vector3 new_gravity) :
@@ -24,7 +28,7 @@ Environment	::
 Environment ::
 	~Environment ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Environment :: is_initialized ());
 }
 
@@ -35,11 +39,4 @@ bool Environment ::
 	const
 {
 	return Object :: is_initialized ();
-}
-
-//	static
-string Environment ::
-	get_class_name ()
-{
-	return "Environment";
 }

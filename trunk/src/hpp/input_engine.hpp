@@ -13,7 +13,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	///	Input engine is responsible for recording player input.
 
@@ -27,10 +27,12 @@ namespace tsl
 			Input_Engine (Ogre :: RenderWindow & window);
 			virtual ~Input_Engine ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
 			
+			static const string class_name;
+
 			using Singleton <Input_Engine> :: get;
 			using Singleton <Input_Engine> :: is_instantiated;
+			using Singleton <Input_Engine> :: destruct;
 
 			void capture ();
 			bool get_key (string key, bool reset);

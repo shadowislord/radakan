@@ -4,13 +4,15 @@
 #include <OgreRenderWindow.h>
 #include "/home/t/opt/ogre-1.4/Samples/Common/CEGUIRenderer/include/OgreCEGUIRenderer.h"
 #include "gui_listener.hpp"
+#include "log.hpp"
+#include "observer.hpp"
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	class GUI :
-		public virtual Object
+		public Observer <Log>
 	{
 		public :
 			GUI
@@ -20,12 +22,14 @@ namespace tsl
 			);
 			virtual ~GUI ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
-			void update_message ();	//	updates the message
+			
+			static const string class_name;
+			
 			CEGUI :: Window & root_window;
 
+			virtual void call (const string & type, const string & message);
+
 		private :
-			GUI (const GUI & gui);
 			CEGUI :: Window * text_window;
 	};
 }

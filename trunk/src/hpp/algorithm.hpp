@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 
 	///	Algorithm is the abstract base class for all algorithms.
@@ -17,7 +17,8 @@ namespace tsl
 			//	protected constructor, see below
 			virtual ~Algorithm ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			virtual Algorithm <T> & transit (T & owner);
 

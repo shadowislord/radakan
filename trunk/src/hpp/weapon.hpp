@@ -5,15 +5,16 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 	class Weapon :
-	public Item
+		public Item
 	{
 		public :
 			virtual ~Weapon ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			static Item & create
 			(

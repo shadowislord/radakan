@@ -1,7 +1,11 @@
 #include "multislot.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+template <class T> const string Multislot <T> ::
+	class_name ("Multislot <" + T :: class_name + ">");
 
 //  constructor
 template <class T> Multislot <T> ::
@@ -36,7 +40,7 @@ template <class T> Multislot <T> ::
 template <class T> Multislot <T> ::
 	~Multislot ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Container :: is_initialized ());
 }
 
@@ -46,13 +50,6 @@ template <class T> bool Multislot <T> ::
 	const
 {
 	return Container :: is_initialized ();
-}
-
-//	static
-template <class T> string Multislot <T> ::
-	get_class_name ()
-{
-	return "Multislot <" + T :: get_class_name () + ">";
 }
 
 //	virtual

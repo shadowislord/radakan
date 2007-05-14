@@ -1,25 +1,26 @@
-#ifndef TSL_TSL_HPP
-#define TSL_TSL_HPP
+#ifndef TSL_GAME_HPP
+#define TSL_GAME_HPP
 
 #include "algorithm_state_machine.hpp"
 #include "body.hpp"
+#include "log.hpp"
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 
-	///	TSL is the main class. It manages the eninges and the sectors.
-
-	class TSL :
-		public Singleton <TSL>,
-		public Algorithm_State_Machine <TSL>
+	///	Game is the main class. It manages the eninges and the sectors.
+	class Game :
+		public Singleton <Game>,
+		public Algorithm_State_Machine <Game>
 	{
 		public :
-			TSL (string tsl_path, string ogre_media_path);
-			~TSL ();
+			Game (string tsl_path, string ogre_media_path);
+			~Game ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			void run ();
 			void set_camera (Ogre :: Camera & new_camera);
@@ -37,4 +38,4 @@ namespace tsl
 	};
 }
 
-#endif	//	TSL_TSL_HPP
+#endif	// TSL_GAME_HPP

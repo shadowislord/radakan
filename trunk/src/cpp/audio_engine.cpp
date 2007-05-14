@@ -1,7 +1,7 @@
 #include "audio_engine.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
 
 Sound ::
 	Sound (string file_name) :
@@ -86,6 +86,10 @@ void Sound_Sample ::
 	}
 #endif
 
+//	static
+const string Audio_Engine ::
+	class_name ("Audio_Engine");
+
 Audio_Engine ::
 	Audio_Engine () :
 	Object ("Audio engine")
@@ -110,7 +114,7 @@ Audio_Engine ::
 	~Audio_Engine ()
 {
 	assert (is_initialized ());
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	if (! silent)
 	{
 		#ifdef TSL_FMOD
@@ -125,13 +129,6 @@ bool Audio_Engine ::
 	const
 {
 	return Singleton <Audio_Engine> :: is_initialized ();
-}
-
-//	static
-string Audio_Engine ::
-	get_class_name ()
-{
-	return "Audio_Engine";
 }
 
 void Audio_Engine ::

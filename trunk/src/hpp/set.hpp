@@ -1,23 +1,24 @@
-#ifndef TSL_DISJOINT_SET_HPP
-#define TSL_DISJOINT_SET_HPP
+#ifndef TSL_SET_HPP
+#define TSL_SET_HPP
 
 #include "object.hpp"
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 
-	///	An Object can't be inside more then one Disjoint_Set at once.
-	///	A Disjoint_Set cannot contain multiple Objects with the same name.
-	template <class T> class Disjoint_Set :
+	///	An Object can't be inside more then one Set at once in a certain context.
+	///	A Set cannot contain multiple Objects with the same name.
+	template <class T> class Set :
 		public virtual Object
 	{
 		public :
-			//	protected constructor, see below
-			virtual ~Disjoint_Set ();
+			Set (int new_maximal_size = unlimited, string name = "anonymous set");
+			virtual ~Set ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 
 			bool is_empty () const;
 
@@ -28,7 +29,9 @@ namespace tsl
 			
 			///	'move' returns true on success.
 			///	'move' assumes that t is one of my children.
-			virtual bool move (T & t, Disjoint_Set <T> & destination);
+			virtual bool move (T & t, Set <T> & destination);
+
+			void drop (T & t);
 
 			///	'get_child' assumes that I have a child with that name.
 			T & get_child (string name) const;
@@ -42,7 +45,7 @@ namespace tsl
 			///	Delete all children, usefull for destruction.
 			void delete_children ();
 
-			static int unlimited;
+			static const int unlimited;
 
 			const int maximal_size;
 
@@ -52,17 +55,14 @@ namespace tsl
 
 			bool is_sealed () const;
 
-		protected :
-			Disjoint_Set (int new_maximal_size = unlimited);
-
 		private :
 			set <T *> children;
-		
+
 			//	'typename' added to assure that const_iterator is a type.
 			//	'class' would give MSV problems.
 			typedef typename set <T *> :: const_iterator T_iterator;
 		
-			//	'mutable' added to allow change even if in a const Disjoint_Set.
+			//	'mutable' added to allow change even if in a const Set.
 			mutable T_iterator next_child;
 
 			bool sealed;

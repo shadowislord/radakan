@@ -1,7 +1,11 @@
 #include "weapon.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Weapon ::
+	class_name ("Weapon");
 
 //  constructor
 Weapon ::
@@ -46,7 +50,7 @@ Weapon ::
 Weapon ::
 	~Weapon ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -58,13 +62,6 @@ bool Weapon ::
 	return Item :: is_initialized () && (0 < break_chance)
 	&& (break_chance < 100)  && (0 < sharpness) && (sharpness < 100)
 	&& (0 < speed) && (0 < attack_rate) && (0 < defense_rate) && (0 < damage);
-}
-
-//	static
-string Weapon ::
-	get_class_name ()
-{
-	return "Weapon";
 }
 
 //	static

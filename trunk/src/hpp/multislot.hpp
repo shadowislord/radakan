@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace tsl
+namespace TSL
 {
 
 	///	A Multislot can contain a limited number of objects of a specific class.
@@ -17,7 +17,8 @@ namespace tsl
 			//	The constructor is protected, see below.
 			virtual ~Multislot ();
 			virtual bool is_initialized () const;
-			static string get_class_name ();
+			
+			static const string class_name;
 			
 			virtual bool add (Item & item);
 

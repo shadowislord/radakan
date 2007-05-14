@@ -1,7 +1,11 @@
 #include "state_machine.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+template <class T> const string State_Machine <T> ::
+	class_name ("State_Machine <" + T :: class_name + ">");
 
 //  constructor
 template <class T> State_Machine <T> ::
@@ -9,7 +13,7 @@ template <class T> State_Machine <T> ::
 	Object ("The name doesn't matter as this class is an abstact class."),
 	active_state (NULL)
 {
-	log (debugging) << get_class_name () << " ()" << endl;
+	log (debugging) << class_name << " ()" << endl;
 	assert (Object :: is_initialized ());
 
 	assert (State_Machine <T> :: is_initialized ());
@@ -19,7 +23,7 @@ template <class T> State_Machine <T> ::
 template <class T> State_Machine <T> ::
 	~State_Machine ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (State_Machine <T> :: is_initialized ());
 }
 
@@ -32,13 +36,6 @@ template <class T> bool State_Machine <T> ::
 	assert ((active_state == NULL) || active_state -> is_initialized ());
 
 	return true;
-}
-
-//	static
-template <class T> string State_Machine <T> ::
-	get_class_name ()
-{
-	return "State_Machine <" + T :: get_class_name () + ">";
 }
 
 //	virtual
@@ -92,12 +89,12 @@ template <class T> void State_Machine <T> ::
 }
 
 //	to avert linking errors:
+#include "game.hpp"
 #include "gui.hpp"
 #include "npc.hpp"
 #include "tile.hpp"
-#include "tsl.hpp"
 
+template class State_Machine <Algorithm <Game> >;
 template class State_Machine <Algorithm <NPC> >;
-template class State_Machine <Algorithm <TSL> >;
 template class State_Machine <GUI>;
 template class State_Machine <Tile>;

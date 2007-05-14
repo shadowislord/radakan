@@ -1,7 +1,11 @@
 #include "character.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Character ::
+	class_name ("Character");
 
 //  constructor
 Character ::
@@ -55,7 +59,7 @@ Character ::
 Character ::
 	~Character ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Character :: is_initialized ());
 }
 
@@ -65,13 +69,6 @@ bool Character ::
 	const
 {
 	return Container :: is_initialized ();
-}
-
-//	static
-string Character ::
-	get_class_name ()
-{
-	return "Character";
 }
 
 Movable_Body & Character ::

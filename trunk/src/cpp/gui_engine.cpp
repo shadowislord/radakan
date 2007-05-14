@@ -3,7 +3,11 @@
 #include <CEGUISchemeManager.h>
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string GUI_Engine ::
+	class_name ("GUI_Engine");
 
 GUI_Engine ::
 	GUI_Engine
@@ -14,32 +18,32 @@ GUI_Engine ::
 	) :
 	Object ("GUI engine")
 {
-	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ")" << endl;
+	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ")" << endl;
 	assert (GUI_Listener :: is_instantiated ());
 	assert (Singleton <GUI_Engine> :: is_initialized ());
 	assert (Data_State_Machine <GUI> :: is_initialized ());
 
-	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") A" << endl;
+	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") A" << endl;
 	renderer = new CEGUI :: OgreCEGUIRenderer (& window, Ogre :: RENDER_QUEUE_OVERLAY, false, 0, & scene_manager);
 
-	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") BC" << endl;
+	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") BC" << endl;
 	system = new CEGUI :: System (renderer, NULL, NULL, NULL, "", log_file_name);
 
-	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") D" << endl;
+	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") D" << endl;
 	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
 	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
-	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") F" << endl;
+	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") F" << endl;
 	system -> setDefaultFont ("BlueHighway-12");
 
-	log (debugging) << get_class_name () << " (~window~, ~scene_manager~, " << log_file_name << ") G" << endl;
+	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") G" << endl;
 	assert (is_initialized ());
 }
 
 GUI_Engine ::
 	~GUI_Engine ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (is_initialized ());
 }
 
@@ -53,13 +57,6 @@ bool GUI_Engine ::
 	assert (Data_State_Machine <GUI> :: is_initialized ());
 
 	return true;
-}
-
-//	static
-string GUI_Engine ::
-	get_class_name ()
-{
-	return "GUI_Engine";
 }
 
 void GUI_Engine ::

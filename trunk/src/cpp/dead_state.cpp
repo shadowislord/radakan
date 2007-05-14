@@ -3,7 +3,11 @@
 #include "dead_state.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+const string Dead_State ::
+	class_name ("Dead_State");
 
 //  constructor
 Dead_State ::
@@ -19,7 +23,7 @@ Dead_State ::
 Dead_State ::
 	~Dead_State ()
 {
-	log (debugging) << "~" << get_class_name () << " ()" << endl;
+	log (debugging) << "~" << class_name << " ()" << endl;
 	assert (Algorithm <NPC> :: is_initialized ());
 }
 
@@ -31,18 +35,13 @@ bool Dead_State ::
 	return Algorithm <NPC> :: is_initialized ();
 }
 
-//	static
-string Dead_State ::
-	get_class_name ()
-{
-	return "Dead_State";
-}
-
 //	virtual
 void Dead_State ::
 	enter (NPC & owner)
 {
 	assert (is_initialized ());
 
-	owner . get_movable_body () . turn (300, 1, owner . get_body () . get_side_direction ());
+	owner . get_movable_body () . turn (10000, 1, owner . get_body () . get_side_direction ());
+
+	show (owner + " died.");
 }

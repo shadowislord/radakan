@@ -1,14 +1,18 @@
 #include "algorithm_state_machine.hpp"
 
 using namespace std;
-using namespace tsl;
+using namespace TSL;
+
+//	static
+template <class T> const string Algorithm_State_Machine <T> ::
+	class_name ("Algorithm_State_Machine <" + T :: class_name + ">");
 
 //  constructor
 template <class T> Algorithm_State_Machine <T> ::
 	Algorithm_State_Machine () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	Object :: log (Object :: debugging) << get_class_name () << " ()" << endl;
+	Object :: log (Object :: debugging) << class_name << " ()" << endl;
 	assert (State_Machine <Algorithm <T> > :: is_initialized ());
 
 	assert (Algorithm_State_Machine <T> :: is_initialized ());
@@ -34,13 +38,6 @@ template <class T> bool Algorithm_State_Machine <T> ::
 	return true;
 }
 
-//	static
-template <class T> string Algorithm_State_Machine <T> ::
-	get_class_name ()
-{
-	return "Algorithm_State_Machine <" + T :: get_class_name () + ">";
-}
-
 //	virtual
 template <class T> void Algorithm_State_Machine <T> ::
 	run ()
@@ -57,10 +54,7 @@ template <class T> void Algorithm_State_Machine <T> ::
 	if (old_state != new_state)
 	{
 		old_state . exit (owner);
-		if (history . empty () || (history . top () != & old_state))
-		{
-			history . push (& old_state);
-		}
+		history . push (& old_state);
 		State_Machine <Algorithm <T> > :: set_active_state (new_state);
 		new_state . enter (owner);
 	}
@@ -77,8 +71,8 @@ template <class T> void Algorithm_State_Machine <T> ::
 }
 
 //	to avert linking errors:
-#include "tsl.hpp"
+#include "game.hpp"
 #include "npc.hpp"
 
+template class Algorithm_State_Machine <Game>;
 template class Algorithm_State_Machine <NPC>;
-template class Algorithm_State_Machine <TSL>;
