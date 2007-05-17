@@ -15,7 +15,7 @@ namespace TSL
 			virtual ~Observer ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			virtual void call (const string & type, const string & message) = 0;
 			

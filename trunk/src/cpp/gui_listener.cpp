@@ -1,4 +1,5 @@
 #include "gui_listener.hpp"
+#include "log.hpp"
 #include <elements/CEGUIPushButton.h>
 
 using namespace std;
@@ -6,7 +7,10 @@ using namespace TSL;
 
 //	static
 const string GUI_Listener ::
-	class_name ("GUI_Listener");
+	get_class_name ()
+{
+	return "GUI_Listener";
+}
 
 GUI_Listener ::
 	GUI_Listener () :
@@ -21,7 +25,7 @@ GUI_Listener ::
 GUI_Listener ::
 	~GUI_Listener ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <GUI_Listener> (me, "~");
 	assert (is_initialized ());
 }
 

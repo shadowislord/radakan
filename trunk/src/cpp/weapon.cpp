@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "weapon.hpp"
 
 using namespace std;
@@ -5,7 +6,10 @@ using namespace TSL;
 
 //	static
 const string Weapon ::
-	class_name ("Weapon");
+	get_class_name ()
+{
+	return "Weapon";
+}
 
 //  constructor
 Weapon ::
@@ -50,7 +54,7 @@ Weapon ::
 Weapon ::
 	~Weapon ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Weapon> (me, "~");
 	assert (is_initialized ());
 }
 

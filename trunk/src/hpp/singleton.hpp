@@ -18,7 +18,7 @@ namespace TSL
 			virtual ~Singleton ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			static T & get ();
 			static bool is_instantiated ();

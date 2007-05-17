@@ -1,5 +1,5 @@
-#ifndef TSL_BODY_HPP
-#define TSL_BODY_HPP
+#ifndef TSL_MODEL_HPP
+#define TSL_MODEL_HPP
 
 #include "set.hpp"
 #include "environment.hpp"
@@ -13,16 +13,16 @@ namespace TSL
 	const Ogre :: Vector3 y_axis (0, 1, 0);	//	upwards
 	const Ogre :: Vector3 z_axis (0, 0, 1);
 
-	///	Body is the 3D representation of an Item.
-	class Body :
+	///	Model is the 3D representation of an Item.
+	class Model :
 		public Set <Item>
 	{
 		public :
-			Body (Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry);
-			virtual ~Body ();
+			Model (Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry);
+			virtual ~Model ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			Ogre :: Vector3 get_front_direction () const;
 			Ogre :: Vector3 get_side_direction () const;
@@ -43,4 +43,4 @@ namespace TSL
 	Ogre :: Quaternion make_quaternion (float radian_angle, Ogre :: Vector3 ax);
 }
 
-#endif	//	TSL_BODY_HPP
+#endif	//	TSL_MODEL_HPP

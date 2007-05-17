@@ -1,19 +1,23 @@
-#include "npc.hpp"
-#include "fight_state.hpp"
 #include "alive_state.hpp"
+#include "fight_state.hpp"
+#include "log.hpp"
+#include "npc.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 const string Fight_State ::
-	class_name ("Fight_State");
+	get_class_name ()
+{
+	return "Fight_State";
+}
 
 //  constructor
 Fight_State ::
 	Fight_State () :
 	Object ("fight state"),
-	Algorithm <NPC> (& Alive_State :: get ())
+	Algorithm <NPC> (Alive_State :: get ())
 {
 	assert (Algorithm <NPC> :: is_initialized ());
 
@@ -24,7 +28,7 @@ Fight_State ::
 Fight_State ::
 	~Fight_State ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Fight_State> (me, "~");
 	assert (Algorithm <NPC> :: is_initialized ());
 }
 
@@ -33,7 +37,10 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	return Algorithm <NPC> :: is_initialized ();
+	assert (Algorithm <NPC> :: is_initialized ());
+	assert (Singleton <Fight_State> :: is_initialized ());
+	
+	return true;
 }
 
 //	virtual

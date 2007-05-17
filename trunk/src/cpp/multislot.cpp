@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "multislot.hpp"
 
 using namespace std;
@@ -5,7 +6,10 @@ using namespace TSL;
 
 //	static
 template <class T> const string Multislot <T> ::
-	class_name ("Multislot <" + T :: class_name + ">");
+	get_class_name ()
+{
+	return "Multislot <" + T :: get_class_name () + ">";
+}
 
 //  constructor
 template <class T> Multislot <T> ::
@@ -15,7 +19,7 @@ template <class T> Multislot <T> ::
 		string new_mesh_name,
 		Ogre :: Vector3 new_size,
 		float new_mass,
-		unsigned int new_max_size
+		int new_max_size
 	) :
 	Object (new_name),
 	Container
@@ -26,11 +30,11 @@ template <class T> Multislot <T> ::
 		new_mass,
 		true,
 		true,
-		true
-	),
-	max_size (new_max_size)
+		true,
+		new_max_size
+	)
 {
-	log (debugging) << "Multislot (" << new_name << ", ...)" << endl;
+	Log :: trace <Multislot> (me, "");
 	assert (Container :: is_initialized ());
 
 	assert (is_initialized ());
@@ -40,7 +44,7 @@ template <class T> Multislot <T> ::
 template <class T> Multislot <T> ::
 	~Multislot ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Multislot> (me, "~");
 	assert (Container :: is_initialized ());
 }
 
@@ -58,7 +62,7 @@ template <class T> bool Multislot <T> ::
 {
 	assert (is_initialized ());
 	assert (item . is_initialized ());
-	assert (! item . has_body ());
+	assert (! item . has_model ());
 
 	if (item . is_type <T> ())
 	{
@@ -76,7 +80,7 @@ template <class T> Multislot <T> & Multislot <T> ::
 		string new_mesh_name,
 		Ogre :: Vector3 new_size,
 		float new_mass,
-		unsigned int new_max_size
+		int new_max_size
 	)
 {
 	Multislot <T> * temp =

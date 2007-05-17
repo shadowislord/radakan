@@ -3,7 +3,7 @@
 
 #include "weapon.hpp"
 #include "set.hpp"
-#include "movable_body.hpp"
+#include "movable_model.hpp"
 
 using namespace std;
 
@@ -19,7 +19,7 @@ namespace TSL
 			virtual ~Container ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			///	'add' returns false if I'm full.
 			virtual bool add (Item & item);
@@ -34,7 +34,8 @@ namespace TSL
 				float new_mass,
 				bool new_mobile = true,
 				bool new_solid = true,
-				bool new_visible = true
+				bool new_visible = true,
+				int new_maximal_size = Set <Item> :: unlimited
 			);
 
 		protected :
@@ -46,7 +47,8 @@ namespace TSL
 				float new_mass,
 				bool new_mobile,
 				bool new_solid,
-				bool new_visible
+				bool new_visible,
+				int new_maximal_size
 			);
 	};
 }

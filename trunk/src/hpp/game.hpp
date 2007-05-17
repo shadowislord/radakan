@@ -2,7 +2,7 @@
 #define TSL_GAME_HPP
 
 #include "algorithm_state_machine.hpp"
-#include "body.hpp"
+#include "model.hpp"
 #include "log.hpp"
 
 using namespace std;
@@ -17,10 +17,10 @@ namespace TSL
 	{
 		public :
 			Game (string tsl_path, string ogre_media_path);
-			~Game ();
+			virtual ~Game ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			void run ();
 			void set_camera (Ogre :: Camera & new_camera);

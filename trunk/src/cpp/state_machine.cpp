@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "state_machine.hpp"
 
 using namespace std;
@@ -5,7 +6,10 @@ using namespace TSL;
 
 //	static
 template <class T> const string State_Machine <T> ::
-	class_name ("State_Machine <" + T :: class_name + ">");
+	get_class_name ()
+{
+	return "State_Machine <" + T :: get_class_name () + ">";
+}
 
 //  constructor
 template <class T> State_Machine <T> ::
@@ -13,7 +17,7 @@ template <class T> State_Machine <T> ::
 	Object ("The name doesn't matter as this class is an abstact class."),
 	active_state (NULL)
 {
-	log (debugging) << class_name << " ()" << endl;
+	Log :: trace <State_Machine <T> > (me);
 	assert (Object :: is_initialized ());
 
 	assert (State_Machine <T> :: is_initialized ());
@@ -23,7 +27,7 @@ template <class T> State_Machine <T> ::
 template <class T> State_Machine <T> ::
 	~State_Machine ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <State_Machine <T> > (me, "~");
 	assert (State_Machine <T> :: is_initialized ());
 }
 
@@ -42,7 +46,8 @@ template <class T> bool State_Machine <T> ::
 template <class T> bool State_Machine <T> ::
 	has_active_state () const
 {
-	assert (is_initialized ());
+	//	Log :: trace <State_Machine <T> > (me, "has_active_state");
+	assert (State_Machine <T> :: is_initialized ());
 
 	return (active_state != NULL);
 }
@@ -51,7 +56,7 @@ template <class T> bool State_Machine <T> ::
 template <class T> T & State_Machine <T> ::
 	get_active_state () const
 {
-	assert (is_initialized ());
+	assert (State_Machine <T> :: is_initialized ());
 	assert (has_active_state ());
 
 	return * active_state;
@@ -59,12 +64,12 @@ template <class T> T & State_Machine <T> ::
 
 //	virtual
 template <class T> void State_Machine <T> ::
-	set_active_state (T & t)
+	set_active_state (T & new_state)
 {
-//	Object :: log (debugging) << "set_active_state (" << t << ")" << endl;
+	Log :: trace <State_Machine <T> > (me, "set_active_state", new_state);
 	assert (State_Machine <T> :: is_initialized ());
 
-	if (active_state != & t)
+	if (active_state != & new_state)	//	This also works for NULL.
 	{
 		string active_state_name = "NULL";
 		if (active_state != NULL)
@@ -72,9 +77,9 @@ template <class T> void State_Machine <T> ::
 			active_state_name =  * active_state;
 		}
 		
-		active_state = & t;
+		active_state = & new_state;
 		
-		log (debugging) << "The active state changed from " << active_state_name << " to " << t << "." << endl;
+		Log :: log (me) << "The active state changed from " << active_state_name << " to " << new_state << "." << endl;
 	}
 }
 
@@ -82,7 +87,7 @@ template <class T> void State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	unset_active_state ()
 {
-	log (debugging) << "unset_active_state ()" << endl;
+	Log :: trace <State_Machine <T> > (me, "unset_active_state");
 	assert (State_Machine <T> :: is_initialized ());
 
 	active_state = NULL;

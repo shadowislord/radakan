@@ -1,24 +1,37 @@
 #include "algorithm.hpp"
+#include "log.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 template <class T> const string Algorithm <T> ::
-	class_name ("Algorithm <" + T :: class_name + ">");
+	get_class_name ()
+{
+	return "Algorithm <" + T :: get_class_name () + ">";
+}
 
 //  constructor
 template <class T> Algorithm <T> ::
-	Algorithm (Algorithm <T> * new_parent) :
+	Algorithm () :
+	Object ("The name doesn't matter as this class is an abstact class."),
+	parent (* this)
+{
+	Log :: trace <Algorithm <T> > (me, "");
+	assert (Object :: is_initialized ());
+
+	assert (Algorithm <T> :: is_initialized ());
+}
+
+//  constructor
+template <class T> Algorithm <T> ::
+	Algorithm (Algorithm <T> & new_parent) :
 	Object ("The name doesn't matter as this class is an abstact class."),
 	parent (new_parent)
 {
-	log (debugging) << class_name << " ()" << endl;
+	Log :: trace <Algorithm <T> > (me, "", new_parent);
 	assert (Object :: is_initialized ());
-	if (parent != NULL)
-	{
-		assert (parent -> is_initialized ());
-	}
+	assert (new_parent . is_initialized ());
 	
 	assert (Algorithm <T> :: is_initialized ());
 }
@@ -27,7 +40,7 @@ template <class T> Algorithm <T> ::
 template <class T> Algorithm <T> ::
 	~Algorithm ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Algorithm <T> > (me, "~");
 	assert (Algorithm <T> :: is_initialized ());
 }
 
@@ -37,9 +50,9 @@ template <class T> bool Algorithm <T> ::
 	const
 {
 	assert (Object :: is_initialized ());
-	if (parent != NULL)
+	if (parent != * this)
 	{
-		assert (parent -> is_initialized ());
+		assert (parent . is_initialized ());
 	}
 
 	return true;
@@ -59,16 +72,14 @@ template <class T> Algorithm <T> & Algorithm <T> ::
 {
 	assert (is_initialized ());
 
-	Algorithm <T> * parental_result_state = this;
-	
-	if (parent != NULL)
+	if (parent != * this)
 	{
-		parental_result_state = & parent -> full_transit (owner);
-	}
+		Algorithm <T> & parental_result_state = parent . full_transit (owner);
 	
-	if (parental_result_state != this)
-	{
-		return * parental_result_state;
+		if (parental_result_state != * this)
+		{
+			return parental_result_state;
+		}
 	}
 
 	return transit (owner);
@@ -78,6 +89,7 @@ template <class T> Algorithm <T> & Algorithm <T> ::
 template <class T> void Algorithm <T> ::
 	enter (T & owner)
 {
+	Log :: trace <Algorithm <T> > (me, "enter", owner);
 	assert (is_initialized ());
 }
 
@@ -85,6 +97,7 @@ template <class T> void Algorithm <T> ::
 template <class T> void Algorithm <T> ::
 	exit (T & owner)
 {
+	Log :: trace <Algorithm <T> > (me, "exit", owner);
 	assert (is_initialized ());
 }
 

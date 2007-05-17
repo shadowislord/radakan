@@ -1,22 +1,22 @@
-#ifndef TSL_MOVABLE_BODY_HPP
-#define TSL_MOVABLE_BODY_HPP
+#ifndef TSL_MOVABLE_MODEL_HPP
+#define TSL_MOVABLE_MODEL_HPP
 
-#include "body.hpp"
+#include "model.hpp"
 
 using namespace std;
 
 namespace TSL
 {
 	
-	class Movable_Body :
-		public Body
+	class Movable_Model :
+		public Model
 	{
 		public :
-			Movable_Body (Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry, OgreOde :: Body & new_body);
-			virtual ~Movable_Body ();
+			Movable_Model (Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry, OgreOde :: Body & new_body);
+			virtual ~Movable_Model ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			//	I'll move in my front direction.
 			void move (float top_speed, float turn_length);

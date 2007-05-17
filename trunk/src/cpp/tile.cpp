@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "tile.hpp"
 
 using namespace std;
@@ -5,7 +6,10 @@ using namespace TSL;
 
 //	static
 const string Tile ::
-	class_name ("Tile");
+	get_class_name ()
+{
+	return "Tile";
+}
 
 //	static
 const int Tile ::
@@ -21,9 +25,10 @@ Tile ::
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
 	tsl_path (new_tsl_path),
-	doc (tsl_path + "/data/tile/" + string :: c_str () + ".xml")
+	npcs (my + "NPCs"),
+	doc (tsl_path + "/data/tile/" + me + ".xml")
 {
-	log (debugging) << class_name << " :: " << class_name << " ((" << to_string (new_coordinates . first) << ", " << to_string (new_coordinates . second) << "), " << tsl_path << ")" << endl;
+	Log :: trace <Tile> (me, "", " (" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")", tsl_path);
 	
 	assert (Object :: is_initialized ());
 
@@ -62,7 +67,7 @@ Tile ::
 				}
 				else
 				{
-					Body & pine_tree = represent
+					Model & pine_tree = represent
 					(
 						Item :: create (tree_name, "pine_tree.mesh", 0, 0, false),
 						x,
@@ -94,7 +99,7 @@ Tile ::
 Tile ::
 	~Tile ()
 {
-	log (debugging) << class_name << " :: ~" << class_name << " ()" << endl;
+	Log :: trace <Tile> (me, "~");
 	assert (is_initialized ());
 }
 
@@ -103,54 +108,54 @@ bool Tile ::
 	is_initialized ()
 	const
 {
-	assert (Set <Body> :: is_initialized ());
+	assert (Set <Model> :: is_initialized ());
 
 	return true;
 }
 
 //	virtual
 bool Tile ::
-	add (Body & body)
+	add (Model & model)
 {
-	log (debugging) << class_name << " :: add (" << body << ")" << endl;
+	Log :: trace <Tile> (me, "add", model);
 	assert (is_initialized ());
-	assert (body . is_initialized ());
-	assert (! contains (body));
+	assert (model . is_initialized ());
+	assert (! contains (model));
 
-	bool check = Set <Body> :: add (body);
+	bool check = Set <Model> :: add (model);
 	assert (check);
 
-	if (body . item . is_type <NPC> ())
+	if (model . item . is_type <NPC> ())
 	{
-		log (debugging) << body . item << " will be added to the list of NPCs..." << endl;
-		bool check = npcs . add (body . item . to_type <NPC> ());
+		Log :: log (me) << model . item << " will be added to the list of NPCs..." << endl;
+		bool check = npcs . add (model . item . to_type <NPC> ());
 		assert (check);
 		
-		log (debugging) << body . item << " was added to the list of NPCs." << endl;
+		Log :: log (me) << model . item << " was added to the list of NPCs." << endl;
 	}
 
-	body . set_space (* this);
+	model . set_space (* this);
 	
 	return true;
 }
 
 //	virtual
 bool Tile ::
-	move (Body & body, Set <Body> & destination)
+	move (Model & model, Set <Model> & destination)
 {
-	log (debugging) << class_name << " :: move (" << body << ", " << destination << ")" << endl;
+	Log :: trace <Tile> (me, "move", model, destination);
 	assert (is_initialized ());
-	assert (body . is_initialized ());
-	assert (contains (body));
+	assert (model . is_initialized ());
+	assert (contains (model));
 	assert (destination . is_initialized ());
 	assert (destination . is_type <Tile> ());
 
-	if (body . item . is_type <NPC> ())
+	if (model . item . is_type <NPC> ())
 	{
-		npcs . move (body . item . to_type <NPC> (), destination . to_type <Tile> () . npcs);
+		npcs . drop (model . item . to_type <NPC> ());
 	}
 
-	bool check = Set <Body> :: move (body, destination);
+	bool check = Set <Model> :: move (model, destination);
 	assert (check);
 
 	return true;
@@ -159,10 +164,10 @@ bool Tile ::
 void Tile ::
 	load_xml (TiXmlElement & element)
 {
-	log (debugging) << class_name << " :: load_xml (~element~)" << endl;
+	Log :: trace <Tile> (me, "load_xml", "~element~");
 	assert (is_initialized ());
 
-	log (debugging) << "element value: " << element . ValueStr () << endl;
+	Log :: log (me) << "element value: " << element . ValueStr () << endl;
 	if (element . ValueStr () == string ("include"))
 	{
 		TiXmlDocument document (tsl_path + "/data/tile/" + element . Attribute ("name") + ".xml");
@@ -173,7 +178,7 @@ void Tile ::
 //	float x = to_float (element . Attribute ("x"));
 /*	double x;
 	element . Attribute ("x", & x);
-	log (debugging) << "x: " << x << endl;*/
+	Log :: log (me) << "x: " << x << endl;*/
 	float x = to_float (element . Attribute ("x"));
 	float y = to_float (element . Attribute ("y"));
 	float z = to_float (element . Attribute ("z"));
@@ -212,26 +217,26 @@ void Tile ::
 	}
 	else
 	{
-		error () << "Unrecognizable xml tag name: " << item_xml -> ValueStr () << endl;
+		Log :: error (me) << "Unrecognizable xml tag name: " << item_xml -> ValueStr () << endl;
 		abort ();
 	}
 
-	Body & body = create_body (* item, position + Ogre :: Vector3 (x, y, z), scale);
-	add (body);
+	Model & model = create_model (* item, position + Ogre :: Vector3 (x, y, z), scale);
+	add (model);
 
-	//	TODO re-enable assert ((position + Ogre :: Vector3 (x, y, z) - body . getPosition ()) . length () < 0.01);
+	//	TODO re-enable assert ((position + Ogre :: Vector3 (x, y, z) - model . getPosition ()) . length () < 0.01);
 
 	TiXmlElement * material = element . FirstChildElement ("material");
 	if (material != NULL)
 	{
-		body . set_material (material -> Attribute ("name"));
+		model . set_material (material -> Attribute ("name"));
 	}
 }
 
 void Tile ::
 	load_xml_file (TiXmlDocument & document)
 {
-	log (debugging) << class_name << " :: load_xml_file (~document~)" << endl;
+	Log :: trace <Tile> (me, "load_xml_file", "~document~");
 	assert (is_initialized ());
 
 	bool check = document . LoadFile ();
@@ -239,26 +244,26 @@ void Tile ::
 	assert (! document . Error ());
 	TiXmlElement * root = document . RootElement ();
 
-	for (TiXmlElement * body_xml = root -> FirstChildElement ();
-				body_xml != NULL; body_xml = body_xml -> NextSiblingElement ())
+	for (TiXmlElement * model_xml = root -> FirstChildElement ();
+				model_xml != NULL; model_xml = model_xml -> NextSiblingElement ())
 	{
-		load_xml (* body_xml);
+		load_xml (* model_xml);
 	}
-	log (debugging) << "Tile loaded" << endl;
+	Log :: log (me) << "Tile loaded" << endl;
 }
 
-Body & Tile ::
-	create_body (Item & item, Ogre :: Vector3 position, float scale)
+Model & Tile ::
+	create_model (Item & item, Ogre :: Vector3 position, float scale)
 {
-	log (debugging) << class_name << " :: create_body (" << item << ", " << to_string (position) << ", " << scale << ")" << endl;
+	Log :: trace <Tile> (me, "create_model", item, to_string (position), to_string (scale));
 	OgreOde :: Geometry & geometry = item . create_geometry ();
 	OgreOde :: Body * body = geometry . getBody ();
 	if (body == NULL)
 	{
-		return * (new Body (item, position, scale, geometry));
+		return * (new Model (item, position, scale, geometry));
 	}
 	else
 	{
-		return * (new Movable_Body (item, position, scale, geometry, * body));
+		return * (new Movable_Model (item, position, scale, geometry, * body));
 	}
 }

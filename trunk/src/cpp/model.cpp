@@ -1,22 +1,26 @@
-#include "body.hpp"
+#include "log.hpp"
+#include "model.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
-const string Body ::
-	class_name ("Body");
+const string Model ::
+	get_class_name ()
+{
+	return "Model";
+}
 
 //  constructor
-Body ::
-	Body (Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry) :
-	Object (new_item + "'s body"),
-	Set <Item> (1),
+Model ::
+	Model (Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry) :
+	Object (new_item + "'s model"),
+	Set <Item> ("", 1),
 	item (new_item),
 	node (* Environment :: get () . root_node . createChildSceneNode (string :: data ())),
 	geometry (new_geometry)
 {
-	log (debugging) << class_name << " (" << new_item << ", " << to_string (position) << ", " << scale << ")" << endl;
+	Log :: trace <Model> (me, "", new_item, to_string (position), to_string (scale));
 	assert (Set <Item> :: is_initialized ());
 
 	Set <Item> :: add (item);
@@ -34,51 +38,50 @@ Body ::
 
 	if (geometry . getBody () == NULL)
 	{
-		log (debugging) << "I'm a static body." << endl;
+		Log :: log (me) << "I'm a static model." << endl;
 
 		geometry . setUserObject (& item . entity);
 		geometry . setPosition (position);
 	}
 
-	item . set_body (* this);
+	item . set_model (* this);
 
 	if (! item . solid)
 	{
 		geometry . disable ();
 	}
 
-	assert (Body :: is_initialized ());
+	assert (Model :: is_initialized ());
 }
 
 //  destructor
-Body ::
-	~Body ()
+Model ::
+	~Model ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
-	assert (Body :: is_initialized ());
-	
-	item . remove_body ();
-	
-	node . getParent () -> removeChild (node . getName ());
+	Log :: trace <Model> (me, "~");
+	assert (Model :: is_initialized ());
 
+	item . remove_model ();
+	
 	assert (node . numAttachedObjects () == 1);
 
-	unsigned int zero = 0;
-	node . getCreator () -> destroyMovableObject (node . detachObject (zero));
+	Environment :: get () . getSceneManager () -> destroyMovableObject (& item . entity);
 
 	assert (node . numAttachedObjects () == 0);
+
+	node . getParent () -> removeChild (node . getName ());
 
 	assert (Set <Item> :: is_initialized ());
 }
 
 //	virtual
-bool Body ::
+bool Model ::
 	is_initialized ()
 	const
 {
 	assert (Set <Item> :: is_initialized ());
 	assert (is_sealed ());
-	assert (item . has_body ());
+	assert (item . has_model ());
 	assert (node . getParent () == & Environment :: get () . root_node);
 	assert (node . numAttachedObjects () <= 2);
 
@@ -87,40 +90,40 @@ bool Body ::
 	return true;
 }
 
-Ogre :: Vector3 Body ::
+Ogre :: Vector3 Model ::
 	get_front_direction () const
 {
-	assert (Body :: is_initialized ());
+	assert (Model :: is_initialized ());
 
 	//	notice the minus sign
 	return node . getOrientation () * - z_axis;
 }
 
-Ogre :: Vector3 Body ::
+Ogre :: Vector3 Model ::
 	get_side_direction () const
 {
-	assert (Body :: is_initialized ());
+	assert (Model :: is_initialized ());
 
 	return node . getOrientation () * x_axis;
 }
 
-Ogre :: Vector3 Body ::
+Ogre :: Vector3 Model ::
 	get_top_direction () const
 {
-	assert (Body :: is_initialized ());
+	assert (Model :: is_initialized ());
 
 	return node . getOrientation () * y_axis;
 }
 
-void Body ::
+void Model ::
 	set_material (string name)
 {
-	assert (Body :: is_initialized ());
+	assert (Model :: is_initialized ());
 
 	item . entity . setMaterialName (name);
 }
 
-void Body ::
+void Model ::
 	set_space (OgreOde :: Space & new_space)
 {
 	OgreOde :: Space * old_space = geometry . getSpace ();

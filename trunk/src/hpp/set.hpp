@@ -10,40 +10,35 @@ namespace TSL
 
 	///	An Object can't be inside more then one Set at once in a certain context.
 	///	A Set cannot contain multiple Objects with the same name.
+	///	Set elements add the set as one of their dependencies.
 	template <class T> class Set :
 		public virtual Object
 	{
 		public :
-			Set (int new_maximal_size = unlimited, string name = "anonymous set");
+			Set (string name = "", int new_maximal_size = unlimited);
 			virtual ~Set ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			bool is_empty () const;
 
 			///	'add' returns true on success.
 			virtual bool add (T & t);
 			
-			virtual bool contains (string name) const;
+			virtual bool contains (T & t) const;
 			
 			///	'move' returns true on success.
 			///	'move' assumes that t is one of my children.
 			virtual bool move (T & t, Set <T> & destination);
 
-			void drop (T & t);
+			void drop (T & t, bool stay = false);
 
-			///	'get_child' assumes that I have a child with that name.
-			T & get_child (string name) const;
-			
 			///	Combine 'get_child' with 'get_another_child' to get a pointer to each child.
 			T * get_child () const;
 			
 			///	Combine 'get_another_child' with 'get_child' to get a pointer to each child.
 			T * get_another_child () const;
-
-			///	Delete all children, usefull for destruction.
-			void delete_children ();
 
 			static const int unlimited;
 

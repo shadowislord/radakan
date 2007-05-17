@@ -6,7 +6,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/linear_congruential.hpp>
 
-#include "movable_body.hpp"
+#include "movable_model.hpp"
 #include "player.hpp"
 
 using namespace std;
@@ -22,7 +22,7 @@ namespace TSL
 			virtual ~Battle_Engine ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			void hit (Character & attacker, Character & defender);
 

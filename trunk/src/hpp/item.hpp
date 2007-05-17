@@ -9,7 +9,7 @@ using namespace std;
 
 namespace TSL
 {
-	class Body;
+	class Model;
 
 	class Item :
 		public virtual Object
@@ -18,19 +18,19 @@ namespace TSL
 			virtual ~Item ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			virtual float get_total_mass () const;
 
 			virtual OgreOde :: Geometry & create_geometry ();
 
 			///	Don't use this method directely, use 'new Body (...);' if possible.
-			void set_body (Body & new_body);
-			bool has_body () const;
+			void set_model (Model & new_model);
+			bool has_model () const;
 			
-			///	Don't use this method directely, use 'delete body;' if possible.
-			void remove_body ();
-			Body & get_body () const;
+			///	Don't use this method directely, use 'delete model;' if possible.
+			void remove_model ();
+			Model & get_model () const;
 
 			float get_volume () const;
 
@@ -63,7 +63,7 @@ namespace TSL
 
 		private :
 			///	can be NULL
-			Body * body;
+			Model * model;
 	};
 }
 

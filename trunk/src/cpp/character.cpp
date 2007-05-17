@@ -1,11 +1,15 @@
 #include "character.hpp"
+#include "log.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 const string Character ::
-	class_name ("Character");
+	get_class_name ()
+{
+	return "Character";
+}
 
 //  constructor
 Character ::
@@ -24,18 +28,19 @@ Character ::
 		new_mass,
 		true,
 		true,
-		true
+		true,
+		Set <Item> :: unlimited
 	),
 	//	head (Static_Item :: create (* this + "'s head", "bar.mesh", 1, 1)),
 	//	head (Multislot <Hat> :: create (1)),
 	//	body (Multislot <Shirt> :: create (1)),
-	back (Multislot <Container> :: create (* this + "'s back", "bar.mesh", Ogre :: Vector3 (0.5, 0.5, 0.3), 0, 1)),
+	back (Multislot <Container> :: create (my + "back", "bar.mesh", Ogre :: Vector3 (0.5, 0.5, 0.3), 0, 1)),
 	//	arms (Multislot <Bracer> :: create (2)),
-	hands (Multislot <Item> :: create (* this + "'s hands", "bar.mesh", Ogre :: Vector3 (1, 0.3, 0.3), 0, 2))
+	hands (Multislot <Item> :: create (my + "hands", "bar.mesh", Ogre :: Vector3 (1, 0.3, 0.3), 0, 2))
 	//	legs (Multislot <Pants> :: create (1)),
 	//	feet (Multislot <Shoe> :: create (2))
 {
-	log (debugging) << "Character (...)" << endl;
+	Log :: trace <Character> (me, "", new_mesh_name, to_string (new_size), to_string (new_mass));
 	assert (Container :: is_initialized ());
 
 	bool check/* = Container :: add (head)*/;
@@ -59,7 +64,7 @@ Character ::
 Character ::
 	~Character ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Character> (me, "~");
 	assert (Character :: is_initialized ());
 }
 
@@ -71,9 +76,9 @@ bool Character ::
 	return Container :: is_initialized ();
 }
 
-Movable_Body & Character ::
-	get_movable_body ()
+Movable_Model & Character ::
+	get_movable_model ()
 	const
 {
-	return get_body () . to_type <Movable_Body> ();
+	return get_model () . to_type <Movable_Model> ();
 }

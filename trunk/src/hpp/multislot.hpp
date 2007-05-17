@@ -9,7 +9,6 @@ namespace TSL
 {
 
 	///	A Multislot can contain a limited number of objects of a specific class.
-
 	template <class T> class Multislot :
 		public Container
 	{
@@ -18,7 +17,7 @@ namespace TSL
 			virtual ~Multislot ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			virtual bool add (Item & item);
 
@@ -28,11 +27,9 @@ namespace TSL
 				string new_mesh_name,
 				Ogre :: Vector3 new_size,
 				float new_mass,
-				unsigned int new_max_size
+				int new_max_size
 			);
 
-			const unsigned int max_size;
-			
 		protected :
 			Multislot
 			(
@@ -40,7 +37,7 @@ namespace TSL
 				string new_mesh_name,
 				Ogre :: Vector3 new_size,
 				float new_mass,
-				unsigned int new_max_size
+				int new_max_size
 			);
 	};
 }

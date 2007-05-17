@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "singleton.hpp"
 
 using namespace std;
@@ -9,22 +10,25 @@ template <class T> T * Ogre :: Singleton <T> ::
 
 //	static
 template <class T> const string Singleton <T> ::
-	class_name ("Singleton <" + T :: class_name + ">");
+	get_class_name ()
+{
+	return "Singleton <" + T :: get_class_name () + ">";
+}
 
 template <class T> Singleton <T> ::
 	Singleton () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-//	log (debugging) << class_name << " ()" << endl;
+	Log :: trace <Singleton <T> > (me);
 	assert (Object :: is_initialized ());
 
-	assert (Singleton :: is_initialized ());
+	assert (Singleton <T> :: is_initialized ());
 }
 
 template <class T> Singleton <T> ::
 	~Singleton ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Singleton <T> > (me, "~");
 	assert (Singleton <T> :: is_initialized ());
 
 	assert (Object :: is_initialized ());
@@ -35,7 +39,9 @@ template <class T> bool Singleton <T> ::
 	is_initialized ()
 	const
 {
-	return Object :: is_initialized ();
+	assert (Object :: is_initialized ());
+
+	return true;
 }
 
 //	static
@@ -54,6 +60,7 @@ template <class T> bool Singleton <T> ::
 	return Ogre :: Singleton <T> :: getSingletonPtr () != NULL;
 }
 
+//	static
 template <class T> void Singleton <T> ::
 	destruct ()
 {

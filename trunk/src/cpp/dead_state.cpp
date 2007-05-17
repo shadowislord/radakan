@@ -1,4 +1,5 @@
-#include "body.hpp"
+#include "log.hpp"
+#include "model.hpp"
 #include "npc.hpp"
 #include "dead_state.hpp"
 
@@ -7,7 +8,10 @@ using namespace TSL;
 
 //	static
 const string Dead_State ::
-	class_name ("Dead_State");
+	get_class_name ()
+{
+	return "Dead_State";
+}
 
 //  constructor
 Dead_State ::
@@ -23,8 +27,10 @@ Dead_State ::
 Dead_State ::
 	~Dead_State ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Dead_State> (me, "~");
 	assert (Algorithm <NPC> :: is_initialized ());
+
+	assert (Algorithm <NPC> :: is_initialized ());	
 }
 
 //	virtual
@@ -39,9 +45,10 @@ bool Dead_State ::
 void Dead_State ::
 	enter (NPC & owner)
 {
+	Log :: trace <Dead_State> (me, "enter", owner);
 	assert (is_initialized ());
 
-	owner . get_movable_body () . turn (10000, 1, owner . get_body () . get_side_direction ());
+	owner . get_movable_model () . turn (1, 10, owner . get_model () . get_side_direction ());
 
-	show (owner + " died.");
+	Log :: show (owner + " died.");
 }

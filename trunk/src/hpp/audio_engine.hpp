@@ -4,6 +4,7 @@
 //	#define TSL_FMOD
 
 #ifdef TSL_FMOD
+	//	We're using FMOD version 3.
 	#include <fmod.h>
 #else
 	#include <audiere.h>
@@ -90,10 +91,10 @@ namespace TSL
 	{
 		public :
 			Audio_Engine ();
-			~Audio_Engine ();
+			virtual ~Audio_Engine ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			void play ();
 			void load (string file_name);

@@ -17,7 +17,7 @@ namespace TSL
 			virtual ~Menu_State ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			virtual Algorithm <Game> & transit (Game & owner);
 	

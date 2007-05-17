@@ -1,18 +1,23 @@
 #include "algorithm_state_machine.hpp"
+#include "log.hpp"
+#include "speech_state.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 template <class T> const string Algorithm_State_Machine <T> ::
-	class_name ("Algorithm_State_Machine <" + T :: class_name + ">");
+	get_class_name ()
+{
+	return "Algorithm_State_Machine <" + T :: get_class_name () + ">";
+}
 
 //  constructor
 template <class T> Algorithm_State_Machine <T> ::
 	Algorithm_State_Machine () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	Object :: log (Object :: debugging) << class_name << " ()" << endl;
+	Log :: trace <Algorithm_State_Machine <T> > (this -> me, "");
 	assert (State_Machine <Algorithm <T> > :: is_initialized ());
 
 	assert (Algorithm_State_Machine <T> :: is_initialized ());
@@ -22,6 +27,7 @@ template <class T> Algorithm_State_Machine <T> ::
 template <class T> Algorithm_State_Machine <T> ::
 	~Algorithm_State_Machine ()
 {
+	Log :: trace <Algorithm_State_Machine <T> > (this -> me, "~");
 	assert (Algorithm_State_Machine <T> :: is_initialized ());
 
 	State_Machine <Algorithm <T> > :: unset_active_state ();
@@ -45,19 +51,40 @@ template <class T> void Algorithm_State_Machine <T> ::
 	assert (is_initialized ());
 	assert (State_Machine <Algorithm <T> > :: has_active_state ());
 
-	Algorithm <T> & old_state = State_Machine <Algorithm <T> > :: get_active_state ();
+	set_active_state
+	(
+		State_Machine <Algorithm <T> > :: get_active_state ()
+			. full_transit (get_owner ())
+	);
+}
 
-	T & owner = Object :: to_type <T> (); 
-
-	Algorithm <T> & new_state = old_state . full_transit (owner);
-	
-	if (old_state != new_state)
+//	virtual
+template <class T> void Algorithm_State_Machine <T> ::
+	set_active_state (Algorithm <T> & new_state)
+{
+	if (State_Machine <Algorithm <T> > :: has_active_state ())
 	{
-		old_state . exit (owner);
-		history . push (& old_state);
-		State_Machine <Algorithm <T> > :: set_active_state (new_state);
-		new_state . enter (owner);
+		Algorithm <T> & old_state = State_Machine <Algorithm <T> > :: get_active_state ();
+
+		if (old_state == new_state)
+		{
+			return;
+		}
+	
+		old_state . exit (get_owner ());
+		State_Machine <Algorithm <T> > :: unset_active_state ();
+		if (old_state . Object :: is_type <Speech_State> ())
+		{
+			delete & old_state;
+		}
+		else
+		{
+			history . push (& old_state);
+		}
 	}
+	
+	State_Machine <Algorithm <T> > :: set_active_state (new_state);
+	new_state . enter (get_owner ());
 }
 
 template <class T> void Algorithm_State_Machine <T> ::
@@ -68,6 +95,15 @@ template <class T> void Algorithm_State_Machine <T> ::
 
 	State_Machine <Algorithm <T> > :: set_active_state (* history . top ());
 	history . pop ();
+}
+
+template <class T> T & Algorithm_State_Machine <T> ::
+	get_owner ()
+	const
+{
+	assert (is_initialized ());
+
+	return Object :: to_type <T> ();
 }
 
 //	to avert linking errors:

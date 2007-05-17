@@ -17,11 +17,11 @@ namespace TSL
 			virtual ~State_Machine ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			virtual bool has_active_state () const;
 			virtual T & get_active_state () const;
-			virtual void set_active_state (T & t);
+			virtual void set_active_state (T & new_state);
 			virtual void unset_active_state ();
 
 		protected :

@@ -17,9 +17,10 @@ namespace TSL
 			virtual ~Algorithm_State_Machine ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			virtual void run ();
+			virtual void set_active_state (Algorithm <T> & new_state);
 			
 			void recall_previous_state ();
 
@@ -27,6 +28,9 @@ namespace TSL
 			Algorithm_State_Machine ();
 
 			stack <Algorithm <T> *> history;
+
+		private :
+			T & get_owner () const;
 	};
 }
 

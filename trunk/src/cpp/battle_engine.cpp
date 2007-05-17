@@ -1,4 +1,5 @@
 #include "battle_engine.hpp"
+#include "log.hpp"
 
 using namespace std;
 using namespace boost;
@@ -6,7 +7,10 @@ using namespace TSL;
 
 //	static
 const string Battle_Engine ::
-	class_name ("Battle_Engine");
+	get_class_name ()
+{
+	return "Battle_Engine";
+}
 
 Battle_Engine ::
 	Battle_Engine () :
@@ -18,7 +22,7 @@ Battle_Engine ::
 	uniform (generator, uniform_real_distribution),
 	lognormal (generator, lognormal_real_distribution)
 {
-	log (debugging) << "Battle_Engine ()" << endl;
+	Log :: trace <Battle_Engine> (me);
 	assert (Object :: is_initialized ());
 
 	generator . seed (static_cast <unsigned int> (time (0)));
@@ -29,7 +33,7 @@ Battle_Engine ::
 Battle_Engine ::
 	~Battle_Engine ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Battle_Engine> (me, "~");
 	assert (is_initialized ());
 }
 
@@ -44,21 +48,26 @@ bool Battle_Engine ::
 void Battle_Engine ::
 	hit (Character & attacker, Character & defender)
 {
-	log (debugging) << "hit (" << attacker << ", " << defender << ")" << endl;
+	Log :: trace <Battle_Engine> (me, "hit", attacker, defender);
 	assert (is_initialized ());
 
 	assert (! attacker . is_dead ());
-	assert (! defender . is_dead ());
+
+	if (defender . is_dead ())
+	{
+		Log :: show ("Mutilating " + defender + "'s dead body is *not* nice.");
+		return;
+	}
 
 	float distance =
 		(
-			attacker . get_body () . node . getPosition ()
-			- defender . get_body () . node . getPosition ()
+			attacker . get_model () . node . getPosition ()
+			- defender . get_model () . node . getPosition ()
 		) . length ();
 	
 	if (max_distance < distance)
 	{
-		show ("Target is out of range: "
+		Log :: show ("Target is out of range: "
 			+ to_string (distance) + " > " + to_string (max_distance));
 		return;
 	}
@@ -84,8 +93,8 @@ void Battle_Engine ::
 		}
 	}
 
-	log (debugging) << "Atack: " << attack << endl;
-	log (debugging) << "Defense: " << defense << endl;
+	Log :: log (me) << "Atack: " << attack << endl;
+	Log :: log (me) << "Defense: " << defense << endl;
 
 	if (defense < attack)	//	Hit
 	{
@@ -93,6 +102,6 @@ void Battle_Engine ::
 	}
 	else
 	{
-		show (attacker + " missed!");
+		Log :: show (attacker + " missed!");
 	}
 }

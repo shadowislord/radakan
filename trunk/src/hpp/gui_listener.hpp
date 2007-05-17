@@ -18,7 +18,7 @@ namespace TSL
 			virtual ~GUI_Listener ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			///	searches recursively for button windows
 			void subscribe (CEGUI :: Window & window);

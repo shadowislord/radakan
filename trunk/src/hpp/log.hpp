@@ -17,15 +17,22 @@ namespace TSL
 			virtual ~Log ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
-			ostream & error (const Object & logger) const;
-			ostream & log (const Object & logger, bool condition = true) const;
-			void show (string message, bool condition = true) const;
-
-		private :
-			/// for messages that should be ignored
-			ostream the_abyss;
+			static ostream & error (const Object & logger);
+			static ostream & log (const Object & logger);
+			static void show (string message);
+			template <class T> static void trace
+			(
+				const Object & logger,
+				string method = "",
+				string argument_1 = "",
+				string argument_2 = "",
+				string argument_3 = "",
+				string argument_4 = "",
+				string argument_5 = "",
+				string argument_6 = ""
+			);
 	};
 }
 

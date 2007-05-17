@@ -1,11 +1,15 @@
 #include "environment.hpp"
+#include "log.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 const string Environment ::
-	class_name ("Environment");
+	get_class_name ()
+{
+	return "Environment";
+}
 
 Environment	::
 	Environment (Ogre :: SceneManager & scene_manager, Ogre :: Vector3 new_gravity) :
@@ -18,8 +22,8 @@ Environment	::
 	//	The following line causes an error in Ogre.
 	//	setShowDebugGeometries (true);
 
-	log (debugging) << "ERP: " << getERP () << endl;
-	log (debugging) << "CFM: " << getCFM () << endl;
+	Log :: log (me) << "ERP: " << getERP () << endl;
+	Log :: log (me) << "CFM: " << getCFM () << endl;
 
 	//	TODO make the next line work.
 	//	getSceneManager () -> setSkyDome (true, "Peaceful", 10, 5);
@@ -28,7 +32,7 @@ Environment	::
 Environment ::
 	~Environment ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Environment> (me, "~");
 	assert (Environment :: is_initialized ());
 }
 

@@ -25,8 +25,8 @@ namespace TSL
 			virtual ~GUI_Engine ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
-			
+			static const string get_class_name ();
+						
 			void set_mouse_position (const Ogre :: Vector3 & new_position);
 			void left_mouse_button_click ();
 			

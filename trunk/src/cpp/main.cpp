@@ -11,14 +11,6 @@ using namespace TSL;
 {
 	cout << "Preparing The Scattered Lands..." << endl;
 
-	//	check for conflicting debug and trace flags
-	#ifdef TSL_TRACE
-		#ifndef TSL_DEBUG
-			cerr << "Conflicting TSL_DEBUG and TSL_TRACE flags detected." << endl;
-			abort ();
-		#endif
-	#endif
-
 	string tsl_path;
 	string ogre_media_path;
 	#ifdef TSL_WIN
@@ -44,15 +36,12 @@ using namespace TSL;
 
 	#ifdef TSL_DEBUG
 		cout << "debug mode: enabled." << endl;
-		#ifdef TSL_TRACE
-			cout << "trace mode: enabled." << endl;
-		#else
-			cout << "trace mode: disabled." << endl;
-		#endif
 
 		//	'cout' is redirected to a log file.
-		//	Don't use 'cout' or 'cerr'.
+		//	Don't use 'clog' or 'cerr'.
 		cout . rdbuf ((new ofstream ((tsl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
+		cerr . rdbuf (cout . rdbuf ());
+		clog . rdbuf (cout . rdbuf ());
 
 		cout << "tsl_path: " << tsl_path << endl;
 		cout << "ogre_media_path: " << ogre_media_path << endl;
@@ -88,12 +77,12 @@ using namespace TSL;
 	}
 
 	#ifdef TSL_DEBUG
-/*		for (Object * i = Object :: objects . get_child (); i != NULL;
+		for (Object * i = Object :: objects . get_child (); i != NULL;
 			i = Object :: objects . get_another_child ())
 		{
 			cout << "Warning: " << * i << " (" << i << ") was not deleted." << endl;
 		}
-		assert (Object :: objects . is_empty ());*/
+		assert (Object :: objects . is_empty ());
 	#endif
 
 	cout << "The Scattered Lands is shut down." << endl;

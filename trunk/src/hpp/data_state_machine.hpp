@@ -17,7 +17,7 @@ namespace TSL
 			virtual ~Data_State_Machine ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			///	can only set to a child
 			virtual void set_active_state (T & t);

@@ -19,12 +19,12 @@ namespace TSL
 			virtual ~Character ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			virtual bool is_dead () const = 0;
 			virtual void die () = 0;
 
-			Movable_Body & get_movable_body () const;
+			Movable_Model & get_movable_model () const;
 
 			//	Item & head;
 			//	Multislot <Shirt> & body;

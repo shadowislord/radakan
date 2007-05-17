@@ -14,7 +14,7 @@ namespace TSL
 			virtual ~Weapon ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			static Item & create
 			(

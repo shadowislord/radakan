@@ -1,13 +1,14 @@
-#include "game.hpp"
-#include "menu_state.hpp"
-#include "world.hpp"
-#include "quit_state.hpp"
-#include "dead_state.hpp"
-#include "fight_state.hpp"
-#include "alive_state.hpp"
 #include "audio_engine.hpp"
 #include "battle_engine.hpp"
+#include "chat_state.hpp"
+#include "dead_state.hpp"
+#include "game.hpp"
+#include "fight_state.hpp"
 #include "input_engine.hpp"
+#include "log.hpp"
+#include "menu_state.hpp"
+#include "quit_state.hpp"
+#include "world.hpp"
 
 #include <OgreColourValue.h>
 
@@ -16,14 +17,17 @@ using namespace TSL;
 
 //	static
 const string Game ::
-	class_name ("Game");
+	get_class_name ()
+{
+	return "Game";
+}
 
 Game ::
 	Game (string tsl_path, string ogre_media_path) :
 	Object ("Game"),
 	last_turn_lenght (0)
 {
-	log (debugging) << "Game (" << tsl_path << ", " << ogre_media_path << ")" << endl;
+	Log :: trace <Game> (me, "", tsl_path, ogre_media_path);
 
 	new Log ();
 
@@ -36,7 +40,7 @@ Game ::
 	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg", tsl_path + "/data/ogre.cfg");
 	if (! root -> showConfigDialog ())
 	{
-		error () << "An Ogre configuration dialog problem occurred." << endl;
+		Log :: error (me) << "An Ogre configuration dialog problem occurred." << endl;
 		abort ();
 	}
 
@@ -111,7 +115,7 @@ Game ::
 	}	// try
 	catch (Ogre :: Exception & exception)
 	{
-		error () << "Exception: " << exception . getFullDescription () << endl;
+		Log :: error (me) << "Exception: " << exception . getFullDescription () << endl;
 		abort ();
 	}
 
@@ -121,25 +125,26 @@ Game ::
 Game ::
 	~Game ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Game> (me, "~");
 	assert (is_initialized ());
-	log (debugging) << "active state: " << get_active_state () << endl;
+	Log :: log (me) << "active state: " << get_active_state () << endl;
 	assert (get_active_state () == Quit_State :: get ());
-
-	GUI_Engine :: destruct ();
-	Input_Engine :: destruct ();
-	Audio_Engine :: destruct ();
 
 	unset_active_state ();
 
 	Menu_State :: destruct ();
-	World :: destruct ();
 	Quit_State :: destruct ();
+	World :: destruct ();
 
+	Chat_State :: destruct ();
+	Fight_State :: destruct ();
 	Alive_State :: destruct ();
 	Dead_State :: destruct ();
-	Fight_State :: destruct ();
 	
+	GUI_Engine :: destruct ();
+	Input_Engine :: destruct ();
+	Audio_Engine :: destruct ();
+
 	Log :: destruct ();
 }
 
@@ -174,7 +179,7 @@ void Game ::
 
 		last_turn_lenght = float (turn_lenght_timer . getMilliseconds ()) / 1000;
 
-		log () << "Turn lenght: " << last_turn_lenght << endl;
+		Log :: log (me) << "Turn lenght: " << last_turn_lenght << endl;
 
 //		if (maximal_turn_lenght < last_turn_lenght)
 //		{

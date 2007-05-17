@@ -1,11 +1,15 @@
 #include "container.hpp"
+#include "log.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 const string Container ::
-	class_name ("Container");
+	get_class_name ()
+{
+	return "Container";
+}
 
 //  constructor
 Container ::
@@ -17,7 +21,8 @@ Container ::
 		float new_mass,
 		bool new_mobile,
 		bool new_solid,
-		bool new_visible
+		bool new_visible,
+		int new_maximal_size
 	) :
 	Object (new_name),
 	Item
@@ -28,7 +33,8 @@ Container ::
 		new_mobile,
 		new_solid,
 		new_visible
-	)
+	),
+	Set <Item> ("", new_maximal_size)
 {
 	assert (Item :: is_initialized () && Set <Item> :: is_initialized ());
 	
@@ -39,7 +45,7 @@ Container ::
 Container ::
 	~Container ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Container> (me, "~");
 	assert (is_initialized ());
 }
 
@@ -72,7 +78,7 @@ float Container ::
 bool Container ::
 	add (Item & item)
 {
-	log (debugging) << "add (" << item << ")" << endl;
+	Log :: trace <Container> (me, "add", item);
 	assert (is_initialized ());
 	assert (item . is_initialized ());
 	assert (! is_sealed ());
@@ -106,7 +112,8 @@ Item & Container ::
 		float new_mass,
 		bool new_mobile,
 		bool new_solid,
-		bool new_visible
+		bool new_visible,
+		int new_maximal_size
 	)
 {
 	Item * temp =
@@ -118,7 +125,8 @@ Item & Container ::
 			new_mass,
 			new_mobile,
 			new_solid,
-			new_visible
+			new_visible,
+			new_maximal_size
 		);
 
 	return * temp;

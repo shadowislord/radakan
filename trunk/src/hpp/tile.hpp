@@ -9,7 +9,7 @@
 #include <OgreStringConverter.h>
 #include <OgreException.h>
 
-#include "body.hpp"
+#include "model.hpp"
 #include "npc.hpp"
 #include "player.hpp"
 #include "static_item.hpp"
@@ -26,7 +26,7 @@ namespace TSL
 
 	///	A Tile is a square piece of a sector.
 	class Tile :
-		public Set <Body>,
+		public Set <Model>,
 		public OgreOde :: SimpleSpace
 	{
 		public :
@@ -34,10 +34,10 @@ namespace TSL
 			virtual ~Tile ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
-
-			virtual bool add (Body & body);
-			virtual bool move (Body & body, Set <Body> & destination);
+			static const string get_class_name ();
+			
+			virtual bool add (Model & model);
+			virtual bool move (Model & model, Set <Model> & destination);
 
 			const pair <int, int> coordinates;
 			const Ogre :: Vector3 position;
@@ -49,7 +49,7 @@ namespace TSL
 		private :
 			void load_xml (TiXmlElement & element);
 			void load_xml_file (TiXmlDocument & document);
-			Body & create_body (Item & item, Ogre :: Vector3 position, float scale);
+			Model & create_model (Item & item, Ogre :: Vector3 position, float scale);
 
 			const string tsl_path;
 

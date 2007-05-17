@@ -1,18 +1,22 @@
 #include "data_state_machine.hpp"
+#include "log.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 template <class T> const string Data_State_Machine <T> ::
-	class_name ("Data_State_Machine <" + T :: class_name + ">");
+	get_class_name ()
+{
+	return "Data_State_Machine <" + T :: get_class_name () + ">";
+}
 
 //  constructor
 template <class T> Data_State_Machine <T> ::
 	Data_State_Machine () :
-	Object ("The name doesn't matter as this class is an abstact class.")
+	Object ("The nathis -> me doesn't matter as this class is an abstact class.")
 {
-	Object :: log (Object :: debugging) << class_name << " ()" << endl;
+	Log :: trace <Data_State_Machine <T> > (this -> me, "");
 	assert (State_Machine <T> :: is_initialized ());
 	assert (Set <T> :: is_initialized ());
 
@@ -23,7 +27,7 @@ template <class T> Data_State_Machine <T> ::
 template <class T> Data_State_Machine <T> ::
 	~Data_State_Machine ()
 {
-	Object :: log (Object :: debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Data_State_Machine <T> > (this -> me, "~");
 	assert (Data_State_Machine <T> :: is_initialized ());
 
 	State_Machine <T> :: unset_active_state ();
@@ -34,7 +38,7 @@ template <class T> bool Data_State_Machine <T> ::
 	is_initialized ()
 	const
 {
-//	Object :: log (Object :: debugging) << class_name << " :: is_initialized ()" << endl;
+	//	Log :: trace <Data_State_Machine <T> > (this -> me, "is_initialized");
 	assert (State_Machine <T> :: is_initialized ());
 	assert (Set <T> :: is_initialized ());
 
@@ -45,23 +49,23 @@ template <class T> bool Data_State_Machine <T> ::
 template <class T> bool Data_State_Machine <T> ::
 	add (T & t)
 {
-	Object :: log (Object :: debugging) << class_name << " :: add (" << t << ")" << endl;
+	Log :: trace <Data_State_Machine <T> > (this -> me, "add", t);
 	assert (is_initialized ());
-	Object :: log (Object :: debugging) << "add (" << t << ") AA" << endl;
+	Log :: trace <Data_State_Machine <T> > (this -> me, "add", t, "A");
 	assert (t . is_initialized ());
 
-	Object :: log (Object :: debugging) << "add (" << t << ") A" << endl;
+	Log :: trace <Data_State_Machine <T> > (this -> me, "add", t, "B");
 	bool check = Set <T> :: add (t);
 	assert (check);
 
-	Object :: log (Object :: debugging) << "add (" << t << ") B" << endl;
+	Log :: trace <Data_State_Machine <T> > (this -> me, "add", t, "C");
 	
 	if (! State_Machine <T> :: has_active_state ())
 	{
 		State_Machine <T> :: set_active_state (t);
 	}
 
-	Object :: log (Object :: debugging) << "add (" << t << ") C" << endl;
+	Log :: trace <Data_State_Machine <T> > (this -> me, "add", t, "D");
 	
 	return true;
 }
@@ -70,7 +74,7 @@ template <class T> bool Data_State_Machine <T> ::
 template <class T> void Data_State_Machine <T> ::
 	set_active_state (T & t)
 {
-	Object :: log (Object :: debugging) << "set_active_state (" << t << ")" << endl;
+	Log :: trace <Data_State_Machine <T> > (this -> me, "set_active_state", t);
 	assert (Data_State_Machine <T> :: is_initialized ());
 	assert (contains (t));
 
@@ -81,7 +85,7 @@ template <class T> void Data_State_Machine <T> ::
 template <class T> bool Data_State_Machine <T> ::
 	move (T & t, Set <T> & destination)
 {
-	Object :: log (Object :: debugging) << "move (" << t << ", " << destination << ")" << endl;
+	Log :: trace <Data_State_Machine <T> > (this -> me, "move", t, destination);
 	assert (Data_State_Machine <T> :: is_initialized ());
 	assert (destination . Set <T> :: is_initialized ());
 	assert (contains (t));

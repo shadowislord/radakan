@@ -2,6 +2,7 @@
 #define TSL_OBSERVABLE_HPP
 
 #include "observer.hpp"
+#include "set.hpp"
 
 using namespace std;
 
@@ -15,9 +16,9 @@ namespace TSL
 			virtual ~Observable ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
-			list <Observer <T> *> observers;
+			Set <Observer <T> > observers;
 			
 		protected :
 			Observable ();

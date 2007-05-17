@@ -28,8 +28,8 @@ namespace TSL
 			virtual ~Input_Engine ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
-
+			static const string get_class_name ();
+			
 			using Singleton <Input_Engine> :: get;
 			using Singleton <Input_Engine> :: is_instantiated;
 			using Singleton <Input_Engine> :: destruct;

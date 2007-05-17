@@ -1,15 +1,19 @@
-#include "menu_state.hpp"
-#include "world.hpp"
-#include "quit_state.hpp"
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
+#include "log.hpp"
+#include "menu_state.hpp"
+#include "quit_state.hpp"
+#include "world.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 const string Menu_State ::
-	class_name ("Menu_State");
+	get_class_name ()
+{
+	return "Menu_State";
+}
 
 //  constructor
 Menu_State ::
@@ -17,7 +21,7 @@ Menu_State ::
 	Object ("menu state"),
 	gui (GUI_Engine :: get () . create_gui ("menu.cfg"))
 {
-	log (debugging) << "Menu_State ()" << endl;
+	Log :: trace <Menu_State> (me);
 	assert (Algorithm <Game> :: is_initialized ());
 
 	assert (Menu_State :: is_initialized ());
@@ -27,7 +31,7 @@ Menu_State ::
 Menu_State ::
 	~Menu_State ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Menu_State> (me, "~");
 
 	assert (Algorithm <Game> :: is_initialized ());
 }
@@ -50,7 +54,7 @@ Algorithm <Game> & Menu_State ::
 	if (Input_Engine :: get () . get_key ("Escape", true)
 					|| Input_Engine :: get () . get_gui_button ("Return", true))
 	{
-		log () << "Game resumed" << endl;
+		Log :: log (me) << "Game resumed" << endl;
 		
 		return World :: get ();
 	}
@@ -64,7 +68,7 @@ Algorithm <Game> & Menu_State ::
 	//	FPS
 	if (Input_Engine :: get () . get_gui_button ("Statistics", true))
 	{
-		show (owner . get_FPS ());
+		Log :: show (owner . get_FPS ());
 	}
 	
 	return owner . get_active_state ();
@@ -78,5 +82,5 @@ void Menu_State ::
 
 	GUI_Engine :: get () . activate (gui);
 	
-	show ("Menu (game paused)");
+	Log :: show ("Menu (game paused)");
 }

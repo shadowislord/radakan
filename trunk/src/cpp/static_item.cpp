@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "static_item.hpp"
 
 using namespace std;
@@ -5,7 +6,10 @@ using namespace TSL;
 
 //	static
 const string Static_Item ::
-	class_name ("Static_Item");
+	get_class_name ()
+{
+	return "Static_Item";
+}
 
 //  constructor
 Static_Item ::
@@ -38,7 +42,7 @@ Static_Item ::
 Static_Item ::
 	~Static_Item ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Static_Item> (me, "~");
 	assert (is_initialized ());
 }
 

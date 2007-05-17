@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "player.hpp"
 
 using namespace std;
@@ -5,7 +6,10 @@ using namespace TSL;
 
 //	static
 const string Player ::
-	class_name ("Player");
+	get_class_name ()
+{
+	return "Player";
+}
 
 //  constructor
 Player ::
@@ -26,7 +30,7 @@ Player ::
 	camera_distance (0.72),
 	dead (false)
 {
-	log (debugging) << "Player (" << new_name << ", ...)" << endl;
+	Log :: trace <Player> (me, "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 	assert (Character :: is_initialized ());
 
 	bool check = back . add (Container :: create ("Backbpack", "bar.mesh", Ogre :: Vector3 (0.3, 0.5, 0.2), 3));
@@ -42,7 +46,7 @@ Player ::
 Player ::
 	~Player ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Player> (me, "");
 	assert (Object :: is_initialized ());
 }
 
@@ -65,9 +69,10 @@ bool Player ::
 void Player ::
 	die ()
 {
+	assert (is_initialized ());
 	dead = true;
 
-	show ("Your character died!");
+	Log :: show ("Your character died!");
 }
 
 //	static

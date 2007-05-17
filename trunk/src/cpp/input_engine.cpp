@@ -1,4 +1,5 @@
 #include "input_engine.hpp"
+#include "log.hpp"
 #include <OgreStringConverter.h>
 
 #ifndef TSL_WIN
@@ -11,7 +12,10 @@ using namespace TSL;
 
 //	static
 const string Input_Engine ::
-	class_name ("Input_Engine");
+	get_class_name ()
+{
+	return "Input_Engine";
+}
 
 //	static
 const bool Input_Engine ::
@@ -39,11 +43,13 @@ Input_Engine ::
 	Singleton <Input_Engine> (),
 	GUI_Listener ()
 {
-	log (debugging) << class_name << " (~window~)" << endl;
+	Log :: trace <Input_Engine> (me, "", "~window~");
 	assert (Object :: is_initialized ());
 
 	#if OIS_VERSION_MAJOR < 1
-		error () << "An old version of OIS (" << OIS_VERSION_MAJOR << "." << OIS_VERSION_MINOR << "." << OIS_VERSION_PATCH << ") was detected. Update to OIS-1.0-RC1 or later." << endl;
+		Log :: error (me) << "An old version of OIS (" << OIS_VERSION_MAJOR
+			<< "." << OIS_VERSION_MINOR << "." << OIS_VERSION_PATCH
+			<< ") was detected. Update to OIS-1.0-RC1 or later." << endl;
 		abort ();
 	#endif
 
@@ -90,7 +96,7 @@ Input_Engine ::
 Input_Engine ::
 	~Input_Engine ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Input_Engine> (me, "~");
 	assert (is_initialized ());
 
 	input_manager -> destroyInputObject (keyboard);
@@ -151,7 +157,7 @@ bool Input_Engine ::
 		if (reset)
 		{
 			keys [key] = false;
-			log (debugging) << "key '" << key << "' was reset." << endl;
+			Log :: log (me) << "key '" << key << "' was reset." << endl;
 		}
 		return true;
 	}
@@ -171,7 +177,7 @@ bool Input_Engine ::
 			gui_button = "";
 			to_be = "was";
 		}
-		log (debugging) << "GUI button '" << button << "' " << to_be << " pressed." << endl;
+		Log :: log (me) << "GUI button '" << button << "' " << to_be << " pressed." << endl;
 		return true;
 	}
 	return false;
@@ -190,7 +196,7 @@ bool Input_Engine ::
 			mouse_buttons [button] = false;
 			to_be = "was";
 		}
-		log (debugging) << "Mouse button '" << button << "' " << to_be << " pressed." << endl;
+		Log :: log (me) << "Mouse button '" << button << "' " << to_be << " pressed." << endl;
 		return true;
 	}
 	return false;
@@ -218,13 +224,13 @@ bool Input_Engine ::
 	CEGUI :: WindowEventArgs * window_event_arguments = (CEGUI :: WindowEventArgs *)(& arguments);
 	if (window_event_arguments == NULL)
 	{
-		show ("Unknown event type...");
+		Log :: show ("Unknown event type...");
 	}
 	else
 	{
 		gui_button = window_event_arguments -> window -> getText () . c_str ();
 
-		show ("The '" + gui_button + "' button was clicked.");
+		Log :: show ("The '" + gui_button + "' button was clicked.");
 	}
 
 	return true;
@@ -238,7 +244,7 @@ bool Input_Engine ::
 
 	string key_string = convert (keyboard -> getAsString (key_event . key));
 	keys [key_string] = true;
-	log (debugging) << "key '" << key_string << "' is pressed." << endl;
+	Log :: log (me) << "key '" << key_string << "' is pressed." << endl;
 
 	return true;
 }
@@ -251,7 +257,7 @@ bool Input_Engine ::
 
 	string key_string = convert (keyboard -> getAsString (key_event . key));
 	keys [key_string] = false;
-	log (debugging) << "key '" << key_string << "' was released." << endl;
+	Log :: log (me) << "key '" << key_string << "' was released." << endl;
 
 	return true;
 }
@@ -269,9 +275,9 @@ bool Input_Engine ::
 	relative_mouse_position = Ogre :: Vector3 (x . rel, y . rel, z . rel);
 
 //	The assertions below fail if you move the mouse outside the window.
-//	log (debugging) << prev . first << " + " << relative_mouse_position . first << " ?= " <<  absolute_mouse_position . first << endl;
+//	Log :: log (me) << prev . first << " + " << relative_mouse_position . first << " ?= " <<  absolute_mouse_position . first << endl;
 //	assert (prev . first + relative_mouse_position . first == absolute_mouse_position . first);
-//	log (debugging) << prev . second << " + " << relative_mouse_position . second << " ?= " <<  absolute_mouse_position . second << endl;
+//	Log :: log (me) << prev . second << " + " << relative_mouse_position . second << " ?= " <<  absolute_mouse_position . second << endl;
 //	assert (prev . second + relative_mouse_position . second == absolute_mouse_position . second);
 
 	return true;
@@ -329,7 +335,7 @@ string Input_Engine ::
 	convert (string key)
 {
 	assert (is_initialized ());
-	log (debugging) << "converting - in: " << key << endl;
+	Log :: log (me) << "converting - in: " << key << endl;
 
 	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		//	Convert capitals to lower-case:
@@ -396,6 +402,6 @@ string Input_Engine ::
 		}
 	#endif
 
-	log (debugging) << "converting - out: " << key << endl;
+	Log :: log (me) << "converting - out: " << key << endl;
 	return key;
 }

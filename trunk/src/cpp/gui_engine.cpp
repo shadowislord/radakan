@@ -7,7 +7,10 @@ using namespace TSL;
 
 //	static
 const string GUI_Engine ::
-	class_name ("GUI_Engine");
+	get_class_name ()
+{
+	return "GUI_Engine";
+}
 
 GUI_Engine ::
 	GUI_Engine
@@ -18,32 +21,32 @@ GUI_Engine ::
 	) :
 	Object ("GUI engine")
 {
-	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ")" << endl;
+	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name);
 	assert (GUI_Listener :: is_instantiated ());
 	assert (Singleton <GUI_Engine> :: is_initialized ());
 	assert (Data_State_Machine <GUI> :: is_initialized ());
 
-	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") A" << endl;
+	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "A");
 	renderer = new CEGUI :: OgreCEGUIRenderer (& window, Ogre :: RENDER_QUEUE_OVERLAY, false, 0, & scene_manager);
 
-	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") BC" << endl;
+	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "B");
 	system = new CEGUI :: System (renderer, NULL, NULL, NULL, "", log_file_name);
 
-	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") D" << endl;
+	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "C");
 	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
 	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
-	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") F" << endl;
+	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "D");
 	system -> setDefaultFont ("BlueHighway-12");
 
-	log (debugging) << class_name << " (~window~, ~scene_manager~, " << log_file_name << ") G" << endl;
+	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "E");
 	assert (is_initialized ());
 }
 
 GUI_Engine ::
 	~GUI_Engine ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <GUI_Engine> (me, "~");
 	assert (is_initialized ());
 }
 
@@ -120,7 +123,7 @@ void GUI_Engine ::
 
 	if (get_active_state () != gui)
 	{
-		log (debugging) << "Changing to GUI: " << gui << endl;
+		Log :: log (me) << "Changing to GUI: " << gui << endl;
 		set_active_state (gui);
 		system -> setGUISheet (& gui . root_window);
 	}

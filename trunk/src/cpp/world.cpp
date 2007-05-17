@@ -1,10 +1,10 @@
 #include "dead_state.hpp"
 #include "fight_state.hpp"
-#include "alive_state.hpp"
 #include "game.hpp"
 #include "gui.hpp"
 #include "input_engine.hpp"
 #include "menu_state.hpp"
+#include "speech_state.hpp"
 #include "world.hpp"
 
 using namespace std;
@@ -12,7 +12,10 @@ using namespace TSL;
 
 //	static
 const string World ::
-	class_name ("World");
+	get_class_name ()
+{
+	return "World";
+}
 
 //	static
 const int World ::
@@ -59,7 +62,7 @@ World ::
 	gui (GUI_Engine :: get () . create_gui ("sector.cfg")),
 	camera (* scene_manager . createCamera ("world camera"))
 {
-	log (debugging) << class_name << " (~scene_manager~, " << tsl_path << ")" << endl;
+	Log :: trace <World> (me, "", "~scene_manager~", tsl_path);
 	assert (Singleton <World> :: is_initialized ());
 	assert (Algorithm <Game> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
@@ -70,6 +73,7 @@ World ::
 	camera . setFarClipDistance (80);
 
 	new Alive_State ();
+	new Chat_State ();
 	new Dead_State ();
 	new Fight_State ();
 
@@ -78,9 +82,9 @@ World ::
 		for (int z = min_z; z <= max_z; z ++)
 		{
 			pair <int, int> coordinates (x, z);
-			log (debugging) << "tile position: (" << x << ", " << z << ")" << endl;
+			Log :: log (me) << "tile position: (" << x << ", " << z << ")" << endl;
 			tiles [coordinates] = new Tile (coordinates, tsl_path);
-			log (debugging) << * tiles [coordinates] << endl;
+			Log :: log (me) << * tiles [coordinates] << endl;
 			bool check = add (* tiles [coordinates]);
 			assert (check);
 		}
@@ -88,7 +92,7 @@ World ::
 	
 	assert (Player :: is_instantiated ());
 
-	player_body = & Player :: get () . get_movable_body ();
+	player_model = & Player :: get () . get_movable_model ();
 
 	set_active_state (* tiles [pair <int, int> (0, 0)]);
 
@@ -101,7 +105,7 @@ World ::
 World ::
 	~World ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <World> (me, "~");
 	assert (World :: is_initialized ());
 
 	assert (Singleton <World> :: is_initialized ());
@@ -116,7 +120,7 @@ bool World ::
 	is_initialized ()
 	const
 {
-//	Object :: log (debugging) << class_name << " :: is_initialized ()" << endl;
+//	Log :: trace <World> (me, "is_initialized");
 	assert (Singleton <World> :: is_initialized ());
 	assert (Algorithm <Game> :: is_initialized ());
 	assert (State_Machine <Tile> :: is_initialized ());
@@ -135,12 +139,12 @@ void World ::
 	
 	if (tile != get_active_state ())
 	{
-		show ("current tile: " + tile);
+		Log :: show ("current tile: " + tile);
 
-		if (! tile . contains (* player_body))
+		if (! tile . contains (* player_model))
 		{
-			assert (get_active_state () . contains (* player_body));
-			get_active_state () . move (* player_body, tile);
+			assert (get_active_state () . contains (* player_model));
+			get_active_state () . move (* player_model, tile);
 		}
 
 		State_Machine <Tile> :: set_active_state (tile);
@@ -176,7 +180,7 @@ Algorithm <Game> & World ::
 	{
 		top_speed = - 0.5;
 	}
-	player_body -> move (top_speed, turn_lenght);
+	player_model -> move (top_speed, turn_lenght);
 	
 	float top_angular_speed = 0;
 	if (Input_Engine :: get () . get_key ("s", false))
@@ -187,15 +191,15 @@ Algorithm <Game> & World ::
 	{
 		top_angular_speed = - 1;
 	}
-	player_body -> turn (top_angular_speed, turn_lenght);
+	player_model -> turn (top_angular_speed, turn_lenght);
 	
 	//	reset your orientation
 	if (Input_Engine :: get () . get_key ("space", false))
 	{
-		player_body -> reset ();
+		player_model -> reset ();
 	}
 
-	Ogre :: Vector3 position = player_body -> node . getPosition ();
+	Ogre :: Vector3 position = player_model -> node . getPosition ();
 
 	int x = int (floor (position . x / Tile :: side_length));
 	int z = int (floor (position . z / Tile :: side_length));
@@ -218,14 +222,20 @@ Algorithm <Game> & World ::
 	if (Input_Engine :: get () . get_key ("h", true)
 					|| Input_Engine :: get () . get_gui_button ("Hit", true))
 	{
+		Battle_Engine :: hit (Player :: get (), * get_active_state () . npcs . get_child ());
+	}
+	
+	//	chat
+	if (Input_Engine :: get () . get_key ("c", true))
+	{
 		NPC & npc = * get_active_state () . npcs . get_child ();
 		if (npc . is_dead ())
 		{
-			show ("Mutilating a dead body is *not* nice.");
+			Log :: show ("You can't talk with the dead.");
 		}
 		else
 		{
-			Battle_Engine :: hit (Player :: get (), npc);
+			npc . set_active_state (Speech_State :: create ("Hello world!"));
 		}
 	}
 	
@@ -246,7 +256,7 @@ Algorithm <Game> & World ::
 			Player :: get () . hands . move (* Player :: get () . hands . get_child (), npc . hands);
 			assert (Player :: get () . hands . is_empty ());
 			assert (! npc . hands . is_empty ());
-			show ("You gave your weapon to the ninja.");
+			Log :: show ("You gave your weapon to the ninja.");
 		}
 		else if (! npc . hands . is_empty ())
 		{
@@ -254,11 +264,11 @@ Algorithm <Game> & World ::
 			npc . hands . move (* npc . hands . get_child (), Player :: get () . hands);
 			assert (npc . hands . is_empty ());
 			assert (! Player :: get () . hands . is_empty ());
-			show ("You took your weapon from the ninja.");
+			Log :: show ("You took your weapon from the ninja.");
 		}
 		else
 		{
-			show ("Both you and the ninja don't have a weapon.");
+			Log :: show ("Both you and the ninja don't have a weapon.");
 		}
 	}
 
@@ -267,11 +277,11 @@ Algorithm <Game> & World ::
 	{
 		const Ogre :: Vector3 & mouse_position = Input_Engine :: get () . get_mouse_position (Input_Engine :: relative);
 
-		log (debugging) << "mouse offset: " << to_string (mouse_position) << endl;
+		Log :: log (me) << "mouse offset: " << to_string (mouse_position) << endl;
 
 		if (mouse_position . x != 0)
 		{
-			player_body -> turn
+			player_model -> turn
 						(- Ogre :: Math :: Sign (mouse_position . x), /*Ogre :: Math :: Abs (mouse_position . x) * */turn_lenght);
 		}
 		vertical_camera_angle -= turn_lenght * mouse_position . y / 3;
@@ -298,8 +308,8 @@ Algorithm <Game> & World ::
 
 	camera . setPosition
 	(
-		player_body -> node . getPosition ()
-		+ player_body -> get_top_direction ()
+		player_model -> node . getPosition ()
+		+ player_model -> get_top_direction ()
 		* (Player :: get () . camera_distance
 			- Input_Engine :: get () . get_mouse_position () . z / 100)
 	);
@@ -308,9 +318,9 @@ Algorithm <Game> & World ::
 		make_quaternion
 		(
 			vertical_camera_angle,
-			player_body -> get_side_direction ()
+			player_model -> get_side_direction ()
 		)
-		* player_body -> node . getOrientation ()
+		* player_model -> node . getOrientation ()
 	);
 
 	return owner . get_active_state ();
@@ -337,7 +347,7 @@ bool World ::
 	contact -> setCoulombFriction (0.8);
 	contact -> setBouncyness (0);
 
-//	log () << "collision: " << g1 -> getClass () << " " << g2 -> getClass () << endl;
+//	Log :: log (me) << "collision: " << g1 -> getClass () << " " << g2 -> getClass () << endl;
 	return true;
 	
 	OgreOde :: Body * b1 = g1 -> getBody ();
@@ -345,11 +355,11 @@ bool World ::
 
 	if ((b1 != NULL) && (b2 != NULL))
 	{
-		log () << "body-body collision: " << b1 -> getName () << " and " << b2 -> getName () << endl;
-		log () << "body position: " << b1 -> getPosition () << endl;
-		log () << "body position: " << b2 -> getPosition () << endl;
-		log () << "geometry position: " << g1 -> getPosition () << endl;
-		log () << "geometry position: " << g2 -> getPosition () << endl;
+		Log :: log (me) << "model-model collision: " << b1 -> getName () << " and " << b2 -> getName () << endl;
+		Log :: log (me) << "model position: " << b1 -> getPosition () << endl;
+		Log :: log (me) << "model position: " << b2 -> getPosition () << endl;
+		Log :: log (me) << "geometry position: " << g1 -> getPosition () << endl;
+		Log :: log (me) << "geometry position: " << g2 -> getPosition () << endl;
 
 		// Set the friction at the contact
 		contact -> setCoulombFriction (0.5);
@@ -393,10 +403,10 @@ bool World ::
 		b1 = b2;
 	}
 
-	log () << "body-ground collision: " << b1 -> getName () << endl;
-	log () << "body position: " << b1 -> getPosition () << endl;
-	log () << "geometry position: " << g1 -> getPosition () << endl;
-	log () << "geometry position: " << g2 -> getPosition () << endl;
+	Log :: log (me) << "model-ground collision: " << b1 -> getName () << endl;
+	Log :: log (me) << "model position: " << b1 -> getPosition () << endl;
+	Log :: log (me) << "geometry position: " << g1 -> getPosition () << endl;
+	Log :: log (me) << "geometry position: " << g2 -> getPosition () << endl;
 	contact -> setCoulombFriction (0.5);
 	contact -> setBouncyness (0);
 	return true;

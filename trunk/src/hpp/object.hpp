@@ -39,6 +39,11 @@ namespace TSL
 {
 	const Ogre :: Vector3 zero_vector (0, 0, 0);
 
+	string bool_to_string (const bool & value);
+	string to_string (const float & value);
+	string to_string (const Ogre :: Vector3 & vector);
+	float to_float (const string & value);
+
 	#ifdef TSL_DEBUG
 		template <class T> class Set;
 	#endif
@@ -54,42 +59,28 @@ namespace TSL
 			virtual ~Object ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			template <class T> bool is_type () const;
 			template <class T> T & to_type () const;
 
-			void show (string message, bool condition = true) const;
-			ostream & log (bool condition = true) const;
-			ostream & error () const;
-
 			static const bool debugging;
 
-			bool is_orphan () const;
+			void remember (const Object & dependency, const string context);
 
-			///	If possible, use the Set methods instead.
-			bool has_parent (const string & context) const;
-
-			///	If possible, use the Set methods instead.
-			bool is_in (const Object & set, const string & context) const;
-
-			///	If possible, use the Set methods instead.
-			void put_in (const Object & new_parent, const string & context);
-
-			///	If possible, use the Set methods instead.
-			void remove_from (const Object & old_parent, const string & context);
-
-			static string bool_to_string (const bool value);
-			static string to_string (const float value);
-			static string to_string (const Ogre :: Vector3 & vector);
-			static float to_float (const string);
+			///	I will self-destruct, when I forget my last dependency.
+			///	Set 'stay' to 'true' to force me to not self-destruct.
+			void forget (const Object & dependency, const string context, bool stay = false);
 
 			#ifdef TSL_DEBUG
 				static unsigned long int turn;
 
 				//	This set is used to check if all objects were properly destructed.
-/*				static Set <Object> objects;*/
+				static Set <Object> objects;
 			#endif
+
+			Object & me;
+			const string my;
 
 		protected:
 			///	To avoid plain Object instances, the constructor(s) is/are proteced.
@@ -100,8 +91,11 @@ namespace TSL
 			Object (string new_name);
 
 		private :
-			///	One 'parent' per context is allowed.
-			map <const string *, const Object *> parents;
+			bool has_dependency (const string context) const;
+			bool does_depend (const Object & candidate, const string context) const;
+
+			///	Only one dependency is allowed per context.
+			map <const string, const Object *> dependencies;
 	};
 }
 

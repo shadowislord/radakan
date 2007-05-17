@@ -16,7 +16,7 @@ namespace TSL
 			virtual ~NPC ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			virtual bool is_dead () const;
 			virtual void die ();

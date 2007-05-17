@@ -27,7 +27,7 @@ namespace TSL
 			virtual ~World ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			using Singleton <World> :: get;
 			using Singleton <World> :: is_instantiated;
@@ -64,7 +64,7 @@ namespace TSL
 			///	in radians
 			static const float max_vertical_camera_angle;
 
-			Movable_Body * player_body;
+			Movable_Model * player_model;
 	};
 }
 

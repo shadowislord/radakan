@@ -1,12 +1,16 @@
 #include "item.hpp"
-#include "body.hpp"
+#include "log.hpp"
+#include "model.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 const string Item ::
-	class_name ("Item");
+	get_class_name ()
+{
+	return "Item";
+}
 
 //  constructor
 Item ::
@@ -26,13 +30,20 @@ Item ::
 	solid (new_solid),
 	visible (new_visible),
 	entity (* Environment :: get () . getSceneManager () -> createEntity
-										(* this + "'s entity", new_mesh_name)),
-	body (NULL)
+										(my + "entity", new_mesh_name)),
+	model (NULL)
 {
-	log (debugging) << class_name << " (" << string :: data () << ", "
-		<< to_string (size) << ", " << mass << ", " << bool_to_string (mobile) << ", "
-		<< bool_to_string (solid) << ", " << bool_to_string (visible) << ")"
-		<< endl;
+	Log :: trace <Item>
+	(
+		me,
+		"",
+		new_mesh_name,
+		to_string (size),
+		to_string (mass),
+		bool_to_string (mobile),
+		bool_to_string (solid),
+		bool_to_string (visible)
+	);
 	assert (Object :: is_initialized ());
 	assert (Environment :: is_instantiated ());
 	assert (Environment :: get () . is_initialized ());
@@ -48,12 +59,12 @@ Item ::
 Item ::
 	~Item ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Item> (me, "~");
 	assert (Item :: is_initialized ());
 
-	if (has_body ())
+	if (has_model ())
 	{
-		remove_body ();
+		remove_model ();
 	}
 	
 	assert (Object :: is_initialized ());
@@ -64,7 +75,7 @@ bool Item ::
 	is_initialized ()
 	const
 {
-//	log (debugging) << class_name << " :: is_initialized ()" << endl;
+	//	Log :: trace <Item> (me, "is_initialized");
 	assert (Object :: is_initialized ());
 	assert (Environment :: is_instantiated ());
 	assert (Environment :: get () . is_initialized ());
@@ -87,41 +98,43 @@ float Item ::
 }
 
 void Item ::
-	set_body (Body & new_body)
+	set_model (Model & new_model)
 {
-	//	log (debugging) << "set_body ()" << endl;
+	//	Log :: trace <Item> (me, "set_model", new_model);
 	assert (Item :: is_initialized ());
-	assert (! has_body ());
+	assert (! has_model ());
 
-	body = & new_body;
+	model = & new_model;
 
 	assert (is_initialized ());
 }
 
 bool Item ::
-	has_body () const
+	has_model () const
 {
 	assert (Item :: is_initialized ());
 	
-	return (body != NULL);
+	return (model != NULL);
 }
 
 void Item ::
-	remove_body ()
+	remove_model ()
 {
 	assert (Item :: is_initialized ());
-	assert (has_body ());
+	assert (has_model ());
+
+	//	The body deletes the item, not the other way around.
 	
-	body = NULL;
+	model = NULL;
 }
 
-Body & Item ::
-	get_body () const
+Model & Item ::
+	get_model () const
 {
 	assert (Item :: is_initialized ());
-	assert (has_body ());
+	assert (has_model ());
 	
-	return * body;
+	return * model;
 }
 
 //	virtual
@@ -129,7 +142,7 @@ OgreOde :: Geometry & Item ::
 	create_geometry ()
 {
 	assert (is_initialized ());
-	assert (! has_body ());
+	assert (! has_model ());
 
 	OgreOde :: Geometry * geometry = new OgreOde :: BoxGeometry (size, & Environment :: get (), Environment :: get () . getDefaultSpace ());
 

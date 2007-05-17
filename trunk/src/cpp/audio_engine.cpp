@@ -1,4 +1,5 @@
 #include "audio_engine.hpp"
+#include "log.hpp"
 
 using namespace std;
 using namespace TSL;
@@ -49,7 +50,7 @@ Sound_Sample ::
 		sound = audiere :: OpenSound (device, file_name . c_str ());
 		if (! sound)
 		{
-			error () << "OpenSound (...) failed" << endl;
+			Log :: error (me) << "OpenSound (...) failed" << endl;
 			abort ();
 		}
 	#endif
@@ -88,7 +89,10 @@ void Sound_Sample ::
 
 //	static
 const string Audio_Engine ::
-	class_name ("Audio_Engine");
+	get_class_name ()
+{
+	return "Audio_Engine";
+}
 
 Audio_Engine ::
 	Audio_Engine () :
@@ -102,8 +106,8 @@ Audio_Engine ::
 		device = audiere :: OpenDevice ("");
 		if (! device)
 		{
-			log () << "OpenDevice () failed:" << endl;
-			log () << "Silence!" << endl;
+			Log :: log (me) << "OpenDevice () failed:" << endl;
+			Log :: log (me) << "Silence!" << endl;
 
 			silent = true;
 		}
@@ -114,7 +118,7 @@ Audio_Engine ::
 	~Audio_Engine ()
 {
 	assert (is_initialized ());
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Audio_Engine> (me, "~");
 	if (! silent)
 	{
 		#ifdef TSL_FMOD
@@ -158,12 +162,12 @@ void Audio_Engine ::
 		}
 		else if (extension == "mp3")
 		{
-			error () << "We do not have the rights to use the .mp3 format. Please use the .ogg format instead." << endl;
+			Log :: error (me) << "We do not have the rights to use the .mp3 format. Please use the .ogg format instead." << endl;
 			abort ();
 		}
 		else
 		{
-			error () << "Unknown file format '" << extension << "'" << endl;
+			Log :: error (me) << "Unknown file format '" << extension << "'" << endl;
 			abort ();
 		}
 	}

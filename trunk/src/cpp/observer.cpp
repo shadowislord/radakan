@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "observer.hpp"
 
 using namespace std;
@@ -5,14 +6,17 @@ using namespace TSL;
 
 //	static
 template <class T> const string Observer <T> ::
-	class_name ("Observer <" + T :: class_name + ">");
+	get_class_name ()
+{
+	return "Observer <" + T :: get_class_name () + ">";
+}
 
 //  constructor
 template <class T> Observer <T> ::
 	Observer () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	log (debugging) << class_name << " ()" << endl;
+	Log :: trace <Observer <T> > (me);
 	assert (Object :: is_initialized ());
 	
 	assert (Observer <T> :: is_initialized ());
@@ -22,7 +26,7 @@ template <class T> Observer <T> ::
 template <class T> Observer <T> ::
 	~Observer ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Observer <T> > (me, "~");
 	assert (Observer <T> :: is_initialized ());
 }
 

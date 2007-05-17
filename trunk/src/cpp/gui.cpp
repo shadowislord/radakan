@@ -6,7 +6,10 @@ using namespace TSL;
 
 //	static
 const string GUI ::
-	class_name ("GUI");
+	get_class_name ()
+{
+	return "GUI";
+}
 
 GUI ::
 	GUI
@@ -31,12 +34,14 @@ GUI ::
 		}
 		catch (CEGUI :: UnknownObjectException & exception)
 		{
-			error () << "Unknown CEGUI exception." << endl;
+			Log :: error (me) << "Unknown CEGUI exception." << endl;
 			abort ();
 		}
 	}
 
 	GUI_Listener :: get () . subscribe (root_window);
+
+	Log :: get () . observers . add (* this);
 
 	assert (is_initialized ());
 }
@@ -44,7 +49,7 @@ GUI ::
 GUI ::
 	~GUI ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <GUI> (me, "~");
 	assert (is_initialized ());
 }
 

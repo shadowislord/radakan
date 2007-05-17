@@ -18,7 +18,7 @@ namespace TSL
 			virtual ~Algorithm ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 
 			virtual Algorithm <T> & transit (T & owner);
 
@@ -29,10 +29,11 @@ namespace TSL
 			virtual void exit (T & owner);
 
 		protected :
-			Algorithm (Algorithm <T> * new_parent = NULL);
+			Algorithm ();
+			Algorithm (Algorithm <T> & new_parent);
 
 		private :
-			Algorithm <T> * parent;
+			Algorithm <T> & parent;
 	};
 }
 

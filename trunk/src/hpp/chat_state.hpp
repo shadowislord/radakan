@@ -1,7 +1,7 @@
 #ifndef TSL_CHAT_STATE_HPP
 #define TSL_CHAT_STATE_HPP
 
-#include "algorithm.hpp"
+#include "alive_state.hpp"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ namespace TSL
 			virtual ~Chat_State ();
 			virtual bool is_initialized () const;
 			
-			static const string class_name;
+			static const string get_class_name ();
 			
 			virtual Algorithm <NPC> & transit (NPC & owner);
 	};

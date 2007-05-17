@@ -1,13 +1,17 @@
-#include "npc.hpp"
 #include "alive_state.hpp"
 #include "dead_state.hpp"
+#include "log.hpp"
+#include "npc.hpp"
 
 using namespace std;
 using namespace TSL;
 
 //	static
 const string NPC ::
-	class_name ("NPC");
+	get_class_name ()
+{
+	return "NPC";
+}
 
 //  constructor
 NPC ::
@@ -26,20 +30,20 @@ NPC ::
 		new_mass
 	)
 {
-	log (debugging) << class_name << " (" << new_name << ", ...)" << endl;
+	Log :: trace <NPC> (me, "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 	assert (Character :: is_initialized ());
 
 	set_active_state (Alive_State :: get ());
 
 	assert (is_initialized ());
-	log (debugging) << "I'm fully constructed (as NPC)." << endl;
+	Log :: log (me) << "I'm fully constructed (as NPC)." << endl;
 }
 
 //  destructor
 NPC ::
 	~NPC ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <NPC> (me, "~");
 	assert (NPC :: is_initialized ());
 }
 
@@ -64,7 +68,7 @@ void NPC ::
 	die ()
 {
 	assert (NPC :: is_initialized ());
-	assert (has_body ());
+	assert (has_model ());
 
 	set_active_state (Dead_State :: get ());
 }

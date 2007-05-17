@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "quit_state.hpp"
 
 using namespace std;
@@ -5,15 +6,17 @@ using namespace TSL;
 
 //	static
 const string Quit_State ::
-	class_name ("Quit_State");
-
+	get_class_name ()
+{
+	return "Quit_State";
+}
 
 //  constructor
 Quit_State ::
 	Quit_State () :
 	Object ("quit state")
 {
-	log (debugging) << class_name << " ()" << endl;
+	Log :: trace <Quit_State> (me);
 	assert (Algorithm <Game> :: is_initialized ());
 
 	assert (Quit_State :: is_initialized ());
@@ -23,7 +26,7 @@ Quit_State ::
 Quit_State ::
 	~Quit_State ()
 {
-	log (debugging) << "~" << class_name << " ()" << endl;
+	Log :: trace <Quit_State> (me, "~");
 
 	assert (Algorithm <Game> :: is_initialized ());
 }
