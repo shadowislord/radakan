@@ -1,5 +1,5 @@
 #include "log.hpp"
-#include "set.hpp"
+#include "tracker.hpp"
 
 using namespace std;
 using namespace TSL;
@@ -51,14 +51,6 @@ const string Object ::
 
 #ifdef TSL_DEBUG
 	//	static
-	unsigned long int Object ::
-		turn (0);
-
-	//	static
-	Set <Object> Object ::
-		objects ("objects", Set <Object> :: unlimited);
-	
-	//	static
 	const bool Object ::
 		debugging (true);
 
@@ -68,6 +60,14 @@ const string Object ::
 		debugging (false);
 #endif
 
+//	static
+const Object Object ::
+	update ("update (static)");
+
+//	static
+const Object Object ::
+	terminate ("terminate (static)");
+
 //  constructor
 Object ::
 	Object (string new_name) :
@@ -75,17 +75,14 @@ Object ::
 	me (* this),
 	my (me + "'s ")
 {
-	Log :: trace <Object> (me, "", new_name);
+	Engines :: Log :: trace <Object> (me, "", new_name);
 	assert (! new_name . empty ());
 
-	#ifdef TSL_DEBUG
-		if (* this != objects)
-		{
-			objects . add (me);
-			assert (has_dependency (Object :: get_class_name ()));
-			assert (does_depend (objects, Object :: get_class_name ()));
-		}
-	#endif
+	if (Engines :: Tracker :: is_instantiated ())
+	{
+		Engines :: Tracker :: get () . add (me);
+		assert (does_depend (Engines :: Tracker :: get ()));
+	}
 
 	assert (Object :: is_initialized ());
 }
@@ -94,17 +91,16 @@ Object ::
 Object ::
 	~Object ()
 {
-	Log :: trace <Object> (me, "~");
+	Engines :: Log :: trace <Object> (me, "~");
 	assert (is_initialized ());
-
-	#ifdef TSL_DEBUG
-		if (* this != objects)
-		{
-			objects . drop (* this);
-		}
-	#endif
-
-	Log :: log (me) << "Farewell..." << endl;
+	
+	for (set <const Object *> :: const_iterator i = dependencies . begin ();
+		i != dependencies . end (); i ++)
+	{
+		const_cast <Object *> (* i) -> drop_implicit_dependency (me);
+	}
+	
+	Engines :: Log :: log (me) << "Farewell..." << endl;
 }
 
 //	virtual
@@ -112,97 +108,84 @@ bool Object ::
 	is_initialized ()
 	const
 {
-	//	Log :: trace <Object> (me, "is_initialized");
+	//	Engines :: Log :: trace <Object> (me, "is_initialized");
 	//	checks for empty string
 	assert (! empty ());
 	
-	#ifdef TSL_DEBUG
-		if (* this != objects)
-		{
-			//	This slows down the game to much.
-			//	assert (is_in (objects, Object :: get_class_name ()));
-		}
-	#endif
-	
 	return true;
-}
-
-bool Object ::
-	has_dependency (const string context)
-	const
-{
-	Log :: trace <Object> (me, "has_dependency", context);
-	//	assert (is_initialized ());
-
-	return (dependencies . find (context) != dependencies . end ());
 }
 
 //	private
 bool Object ::
-	does_depend (const Object & candidate, const string context)
+	does_depend (const Object & candidate)
 	const
 {
-	Log :: trace <Object> (me, "does_depend", candidate, context);
-	//	assert (is_initialized ());
-	assert (has_dependency (context));
-	assert (* dependencies . find (context) -> second == candidate);
-
-	return true;
-}
-
-void Object ::
-	remember (const Object & dependency, const string context)
-{
-	Log :: trace <Object> (me, "remember", dependency, context);
+	Engines :: Log :: trace <Object> (me, "does_depend", candidate);
 	//	assert (Object :: is_initialized ());
-	assert (! has_dependency (context));
 
-	dependencies [context] = & dependency;
+	return (dependencies . find (& candidate) != dependencies . end ());
 }
 
 void Object ::
-	forget (const Object & dependency, const string context, bool stay)
+	remember (Object & dependency)
 {
-	Log :: trace <Object> (me, "forget", dependency, context, bool_to_string (stay));
+	Engines :: Log :: trace <Object> (me, "remember", dependency);
+	//	assert (Object :: is_initialized ());
+
+	bool check = dependencies . insert (& dependency) . second;
+	assert (check);
+}
+
+void Object ::
+	forget (const Object & dependency, bool stay)
+{
+	Engines :: Log :: trace <Object> (me, "forget", dependency, bool_to_string (stay));
 	assert (is_initialized ());
-	assert (does_depend (dependency, context));
+	assert (does_depend (dependency));
 
-	dependencies . erase (context);
+	dependencies . erase (& dependency);
 
-	#ifdef TSL_DEBUG
-		if (context == Object :: get_class_name ())
-		{
-			assert (dependency == objects);
-			Log :: log (me) << "I will not self-delete twice." << endl;
-	
-			return;
-		}
-	#endif
+	if (dependency == Engines :: Tracker :: get ())
+	{
+		Engines :: Log :: log (me) << "I will not self-delete twice." << endl;
+
+		return;
+	}
 
 	//	Am I an orphan? 'objects' (debug only) is ignored here.
 	if (dependencies . size () == (debugging ? 1 : 0))
 	{
 		if (stay)
 		{
-			Log :: log (me) << "I have no more dependencies, but I'm forced to stay." << endl;
+			Engines :: Log :: log (me) << "I have no more dependencies, but I'm forced to stay." << endl;
 		}
 		else
 		{
-			Log :: log (me) << "I have no more dependencies and will self-delete." << endl;
+			Engines :: Log :: log (me) << "I have no more dependencies and will self-delete." << endl;
 			delete this;
 		}
 	}
 	else
 	{
-		Log :: log (me) << "I have another dependency and will not self-delete." << endl;
+		Engines :: Log :: log (me) << "I have another dependency and will not self-delete." << endl;
 	}
+}
+
+//	virtual
+void Object ::
+	drop_implicit_dependency (const Object & dependency)
+{
+	assert (is_initialized ());
+
+	Engines :: Log :: error (me) << "Unknown implicit dependency '" << dependency << "'." << endl;
+	abort ();
 }
 
 template <class T> bool Object ::
 	is_type ()
 	const
 {
-//	Log :: trace <Object> (me, "is_type", "<" + T :: get_class_name () + ">");
+//	Engines :: Log :: trace <Object> (me, "is_type", "<" + T :: get_class_name () + ">");
 	assert (is_initialized ());
 
 	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
@@ -212,7 +195,7 @@ template <class T> T & Object ::
 	to_type ()
 	const
 {
-//	Log :: trace <Object> (me, "to_type", "<" + T :: get_class_name () + ">");
+//	Engines :: Log :: trace <Object> (me, "to_type", "<" + T :: get_class_name () + ">");
 	assert (is_initialized ());
 	assert (is_type <T> ());
 
@@ -220,54 +203,120 @@ template <class T> T & Object ::
 }
 
 //	to avert linking errors:
+#include "alive_state.hpp"
 #include "audio_engine.hpp"
-#include "battle_engine.hpp"
 #include "chat_state.hpp"
+#include "conversation_message.hpp"
 #include "dead_state.hpp"
 #include "fight_state.hpp"
 #include "game.hpp"
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "menu_state.hpp"
-#include "alive_state.hpp"
+#include "play_state.hpp"
 #include "quit_state.hpp"
-#include "speech_state.hpp"
 #include "world.hpp"
 
-template bool Object :: is_type <Container> () const;
-template bool Object :: is_type <Data_State_Machine <Tile> > () const;
-template bool Object :: is_type <Dead_State> () const;
-template bool Object :: is_type <Set <Item> > () const;
-template bool Object :: is_type <Set <Tile> > () const;
-template bool Object :: is_type <Set <Sound> > () const;
-template bool Object :: is_type <Game> () const;
-template bool Object :: is_type <Item> () const;
-template bool Object :: is_type <Movable_Model> () const;
-template bool Object :: is_type <NPC> () const;
-template bool Object :: is_type <Quit_State> () const;
-template bool Object :: is_type <Speech_State> () const;
-template bool Object :: is_type <Tile> () const;
-template bool Object :: is_type <Weapon> () const;
+template bool Object ::
+	is_type <Algorithms :: Dead_State> () const;
+template bool Object ::
+	is_type <Algorithms :: Play_State> () const;
+template bool Object ::
+	is_type <Algorithms :: Quit_State> () const;
+template bool Object ::
+	is_type <Engines :: Game> () const;
+template bool Object ::
+	is_type <Engines :: Log> () const;
+template bool Object ::
+	is_type <Items :: Container> () const;
+template bool Object ::
+	is_type <Items :: Item> () const;
+template bool Object ::
+	is_type <Items :: NPC> () const;
+template bool Object ::
+	is_type <Items :: Weapon> () const;
+template bool Object ::
+	is_type <Messages :: Conversation_Message> () const;
+template bool Object ::
+	is_type <Model> () const;
+template bool Object ::
+	is_type <Observer <Algorithms :: Play_State> > () const;
+template bool Object ::
+	is_type <Observer <Engines :: Log> > () const;
+template bool Object ::
+	is_type <Observer <GUI> > () const;
+template bool Object ::
+	is_type <Observer <Items :: Character> > () const;
+template bool Object ::
+	is_type <Set <Items :: Item> > () const;
+template bool Object ::
+	is_type <Set <Tile> > () const;
+template bool Object ::
+	is_type <Set <Sound> > () const;
+template bool Object ::
+	is_type <State_Machines :: Data_State_Machine <Tile> > () const;
+template bool Object ::
+	is_type <Movable_Model> () const;
+template bool Object ::
+	is_type <Tile> () const;
 
-template Alive_State & Object :: to_type <Alive_State> () const;
-template Character & Object :: to_type <Character> () const;
-template Container & Object :: to_type <Container> () const;
-template Dead_State & Object :: to_type <Dead_State> () const;
-template Data_State_Machine <Tile> & Object :: to_type <Data_State_Machine <Tile> > () const;
-template Set <GUI> & Object :: to_type <Set <GUI> > () const;
-template Set <Item> & Object :: to_type <Set <Item> > () const;
-template Set <Tile> & Object :: to_type <Set <Tile> > () const;
-template Set <Sound> & Object :: to_type <Set <Sound> > () const;
-template Fight_State & Object :: to_type <Fight_State> () const;
-template Game & Object :: to_type <Game> () const;
-template GUI & Object :: to_type <GUI> () const;
-template GUI_Engine & Object :: to_type <GUI_Engine> () const;
-template Item & Object :: to_type <Item> () const;
-template NPC & Object :: to_type <NPC> () const;
-template Menu_State & Object :: to_type <Menu_State> () const;
-template Movable_Model & Object :: to_type <Movable_Model> () const;
-template Object & Object :: to_type <Object> () const;
-template Sound & Object :: to_type <Sound> () const;
-template Tile & Object :: to_type <Tile> () const;
-template Weapon & Object :: to_type <Weapon> () const;
-template World & Object :: to_type <World> () const;
+template Algorithms :: Alive_State & Object ::
+	to_type <Algorithms :: Alive_State> () const;
+template Algorithms :: Dead_State & Object ::
+	to_type <Algorithms :: Dead_State> () const;
+template Algorithms :: Fight_State & Object ::
+	to_type <Algorithms :: Fight_State> () const;
+template Algorithms :: Menu_State & Object ::
+	to_type <Algorithms :: Menu_State> () const;
+template Algorithms :: Play_State & Object ::
+	to_type <Algorithms :: Play_State> () const;
+template Engines :: Game & Object ::
+	to_type <Engines :: Game> () const;
+template Engines :: GUI_Engine & Object ::
+	to_type <Engines :: GUI_Engine> () const;
+template Engines :: Log & Object ::
+	to_type <Engines :: Log> () const;
+template GUI & Object ::
+	to_type <GUI> () const;
+template Items :: Character & Object ::
+	to_type <Items :: Character> () const;
+template Items :: Container & Object ::
+	to_type <Items :: Container> () const;
+template Items :: Item & Object ::
+	to_type <Items :: Item> () const;
+template Items :: NPC & Object ::
+	to_type <Items :: NPC> () const;
+template Items :: Weapon & Object ::
+	to_type <Items :: Weapon> () const;
+template Messages :: Conversation_Message & Object ::
+	to_type <Messages :: Conversation_Message> () const;
+template Model & Object ::
+	to_type <Model> () const;
+template Observer <Algorithms :: Play_State> & Object ::
+	to_type <Observer <Algorithms :: Play_State> > () const;
+template Observer <Engines :: Log> & Object ::
+	to_type <Observer <Engines :: Log> > () const;
+template Observer <GUI> & Object ::
+	to_type <Observer <GUI> > () const;
+template Observer <Items :: Character> & Object ::
+	to_type <Observer <Items :: Character> > () const;
+template Set <GUI> & Object ::
+	to_type <Set <GUI> > () const;
+template Set <Items :: Item> & Object ::
+	to_type <Set <Items :: Item> > () const;
+template Set <Tile> & Object ::
+	to_type <Set <Tile> > () const;
+template Set <Sound> & Object ::
+	to_type <Set <Sound> > () const;
+template State_Machines :: Data_State_Machine <Tile> & Object ::
+	to_type <State_Machines :: Data_State_Machine <Tile> > () const;
+template Movable_Model & Object ::
+	to_type <Movable_Model> () const;
+template Object & Object ::
+	to_type <Object> () const;
+template Sound & Object ::
+	to_type <Sound> () const;
+template Tile & Object ::
+	to_type <Tile> () const;
+template World & Object ::
+	to_type <World> () const;

@@ -3,6 +3,7 @@
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Algorithms;
 
 //	static
 template <class T> const string Algorithm <T> ::
@@ -17,8 +18,9 @@ template <class T> Algorithm <T> ::
 	Object ("The name doesn't matter as this class is an abstact class."),
 	parent (* this)
 {
-	Log :: trace <Algorithm <T> > (me, "");
-	assert (Object :: is_initialized ());
+	Engines :: Log :: trace <Algorithm <T> > (me, "");
+	
+	//	Do nothing.
 
 	assert (Algorithm <T> :: is_initialized ());
 }
@@ -29,9 +31,10 @@ template <class T> Algorithm <T> ::
 	Object ("The name doesn't matter as this class is an abstact class."),
 	parent (new_parent)
 {
-	Log :: trace <Algorithm <T> > (me, "", new_parent);
-	assert (Object :: is_initialized ());
+	Engines :: Log :: trace <Algorithm <T> > (me, "", new_parent);
 	assert (new_parent . is_initialized ());
+
+	//	Do nothing.
 	
 	assert (Algorithm <T> :: is_initialized ());
 }
@@ -40,8 +43,10 @@ template <class T> Algorithm <T> ::
 template <class T> Algorithm <T> ::
 	~Algorithm ()
 {
-	Log :: trace <Algorithm <T> > (me, "~");
+	Engines :: Log :: trace <Algorithm <T> > (me, "~");
 	assert (Algorithm <T> :: is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -59,37 +64,10 @@ template <class T> bool Algorithm <T> ::
 }
 
 //	virtual
-template <class T> Algorithm <T> & Algorithm <T> ::
-	transit (T & owner)
-{
-	assert (is_initialized ());
-
-	return owner . get_active_state ();
-}
-
-template <class T> Algorithm <T> & Algorithm <T> ::
-	full_transit (T & owner)
-{
-	assert (is_initialized ());
-
-	if (parent != * this)
-	{
-		Algorithm <T> & parental_result_state = parent . full_transit (owner);
-	
-		if (parental_result_state != * this)
-		{
-			return parental_result_state;
-		}
-	}
-
-	return transit (owner);
-}
-
-//	virtual
 template <class T> void Algorithm <T> ::
 	enter (T & owner)
 {
-	Log :: trace <Algorithm <T> > (me, "enter", owner);
+	Engines :: Log :: trace <Algorithm <T> > (me, "enter", owner);
 	assert (is_initialized ());
 }
 
@@ -97,12 +75,56 @@ template <class T> void Algorithm <T> ::
 template <class T> void Algorithm <T> ::
 	exit (T & owner)
 {
-	Log :: trace <Algorithm <T> > (me, "exit", owner);
+	Engines :: Log :: trace <Algorithm <T> > (me, "exit", owner);
 	assert (is_initialized ());
+}
+
+template <class T> Algorithm <T> & Algorithm <T> ::
+	recursive_transit (T & owner, const Object & message)
+{
+	assert (is_initialized ());
+
+	if (parent != * this)
+	{
+		Algorithm <T> & parental_result_state = parent . recursive_transit (owner, message);
+	
+		if (parental_result_state != * this)
+		{
+			return parental_result_state;
+		}
+	}
+
+	return transit (owner, message);
+}
+
+template <class T> void Algorithm <T> ::
+	recursive_enter (T & owner)
+{
+	assert (is_initialized ());
+
+	if (parent != * this)
+	{
+		parent . recursive_enter (owner);
+	}
+
+	enter (owner);
+}
+
+template <class T> void Algorithm <T> ::
+	recursive_exit (T & owner)
+{
+	assert (is_initialized ());
+
+	exit (owner);
+	
+	if (parent != * this)
+	{
+		parent . recursive_exit (owner);
+	}
 }
 
 #include "game.hpp"
 #include "npc.hpp"
 
-template class Algorithm <Game>;
-template class Algorithm <NPC>;
+template class Algorithm <Engines :: Game>;
+template class Algorithm <Items :: NPC>;

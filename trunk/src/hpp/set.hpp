@@ -8,8 +8,7 @@ using namespace std;
 namespace TSL
 {
 
-	///	An Object can't be inside more then one Set at once in a certain context.
-	///	A Set cannot contain multiple Objects with the same name.
+	///	Set can contain objects of a certain type, but not more then once.
 	///	Set elements add the set as one of their dependencies.
 	template <class T> class Set :
 		public virtual Object
@@ -20,6 +19,8 @@ namespace TSL
 			virtual bool is_initialized () const;
 			
 			static const string get_class_name ();
+
+			virtual void drop_implicit_dependency (const Object & dependency);
 
 			bool is_empty () const;
 
@@ -61,6 +62,8 @@ namespace TSL
 			mutable T_iterator next_child;
 
 			bool sealed;
+
+			const string context;
 		};
 }
 

@@ -16,9 +16,10 @@ template <class T> Observer <T> ::
 	Observer () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	Log :: trace <Observer <T> > (me);
-	assert (Object :: is_initialized ());
-	
+	Engines :: Log :: trace <Observer <T> > (me);
+
+	//	Do nothing.
+
 	assert (Observer <T> :: is_initialized ());
 }
 
@@ -26,8 +27,10 @@ template <class T> Observer <T> ::
 template <class T> Observer <T> ::
 	~Observer ()
 {
-	Log :: trace <Observer <T> > (me, "~");
+	Engines :: Log :: trace <Observer <T> > (me, "~");
 	assert (Observer <T> :: is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -38,6 +41,13 @@ template <class T> bool Observer <T> ::
 	return Object :: is_initialized ();
 }
 
+//	to avert linking errors:
+#include "character.hpp"
+#include "gui.hpp"
 #include "log.hpp"
+#include "play_state.hpp"
 
-template class Observer <Log>;
+template class Observer <Algorithms :: Play_State>;
+template class Observer <Engines :: Log>;
+template class Observer <GUI>;
+template class Observer <Items :: Character>;

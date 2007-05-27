@@ -3,6 +3,7 @@
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Algorithms;
 
 //	static
 const string Quit_State ::
@@ -16,8 +17,9 @@ Quit_State ::
 	Quit_State () :
 	Object ("quit state")
 {
-	Log :: trace <Quit_State> (me);
-	assert (Algorithm <Game> :: is_initialized ());
+	Engines :: Log :: trace <Quit_State> (me);
+	
+	//	Do nothing.
 
 	assert (Quit_State :: is_initialized ());
 }
@@ -26,9 +28,10 @@ Quit_State ::
 Quit_State ::
 	~Quit_State ()
 {
-	Log :: trace <Quit_State> (me, "~");
+	Engines :: Log :: trace <Quit_State> (me, "~");
+	assert (Quit_State :: is_initialized ());
 
-	assert (Algorithm <Game> :: is_initialized ());
+	//	Do nothing.
 }
 
 //	virtual
@@ -36,5 +39,15 @@ bool Quit_State ::
 	is_initialized ()
 	const
 {
-	return Algorithm <Game> :: is_initialized ();
+	return Algorithm <Engines :: Game> :: is_initialized ();
+}
+
+//	virtual
+Algorithm <Engines :: Game> & Quit_State ::
+	transit (Engines :: Game & owner, const Object & message)
+{
+	assert (is_initialized ());
+
+	//	Return myself.
+	return * this;
 }

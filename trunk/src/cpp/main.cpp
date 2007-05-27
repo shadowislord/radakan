@@ -1,7 +1,6 @@
 #include "game.hpp"
 
 using namespace std;
-using namespace TSL;
 
 #ifdef TSL_WIN
 	INT WINAPI WinMain (HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
@@ -55,7 +54,7 @@ using namespace TSL;
 	try
 	{
 		cout << "Setting up The Scattered Lands..." << endl;
-		Game game (tsl_path, ogre_media_path);
+		TSL :: Engines :: Game game (tsl_path, ogre_media_path);
 		cout << "The Scattered Lands is set up." << endl;
 
 		cout << "Running The Scattered Lands..." << endl;
@@ -75,15 +74,6 @@ using namespace TSL;
 			cerr << "Exception: " << exception . getFullDescription () << endl;
 		#endif
 	}
-
-	#ifdef TSL_DEBUG
-		for (Object * i = Object :: objects . get_child (); i != NULL;
-			i = Object :: objects . get_another_child ())
-		{
-			cout << "Warning: " << * i << " (" << i << ") was not deleted." << endl;
-		}
-		assert (Object :: objects . is_empty ());
-	#endif
 
 	cout << "The Scattered Lands is shut down." << endl;
 

@@ -1,18 +1,21 @@
 #ifndef TSL_GUI_HPP
 #define TSL_GUI_HPP
 
-#include <OgreRenderWindow.h>
-#include "/home/t/opt/ogre-1.4/Samples/Common/CEGUIRenderer/include/OgreCEGUIRenderer.h"
-#include "gui_listener.hpp"
 #include "log.hpp"
 #include "observer.hpp"
+#include <OgreRenderWindow.h>
+#include <OgreCEGUIRenderer.h>
+#include <CEGUIWindow.h>
 
 using namespace std;
 
 namespace TSL
 {
+
+	///	GUI is a graphical user interface.
 	class GUI :
-		public Observer <Log>
+		public Observer <Engines :: Log>,
+		public Observable <GUI>
 	{
 		public :
 			GUI
@@ -27,9 +30,15 @@ namespace TSL
 			
 			CEGUI :: Window & root_window;
 
-			virtual void call (const string & type, const string & message);
+			virtual void call (const Object & message);
 
 		private :
+			void subscribe (CEGUI :: Window & window);
+
+			virtual bool handle_event (const CEGUI :: EventArgs & arguments);
+
+			CEGUI :: Event :: Subscriber subscriber;
+			
 			CEGUI :: Window * text_window;
 	};
 }

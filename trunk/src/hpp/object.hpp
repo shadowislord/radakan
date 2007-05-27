@@ -1,6 +1,8 @@
 #ifndef TSL_OBJECT_HPP
 #define TSL_OBJECT_HPP
 
+///	All other TSL headers should (in)directly include this header.
+
 #include <OgrePrerequisites.h>
 #include <OgreVector3.h>
 
@@ -48,14 +50,19 @@ namespace TSL
 		template <class T> class Set;
 	#endif
 
-	///	Object is the universal abstract base class for all TSL classes.
-	///	All other files should (in)directly include this master include file.
+	///	I'm the abstract base class for all TSL classes.
+	///	I'm a subclass of 'string', because I use the string as my name.
+	///	I can't be copied, consider a reference of me instead.
 	class Object :
 		public string,
 		public boost :: noncopyable
 	{
 		public :
-			//	protected constructor(s), see below
+			#ifdef TSL_WIN
+				///	Some Windows compilers give an error otherwise.
+				Object ();
+			#endif
+			Object (string new_name);
 			virtual ~Object ();
 			virtual bool is_initialized () const;
 			
@@ -66,36 +73,28 @@ namespace TSL
 
 			static const bool debugging;
 
-			void remember (const Object & dependency, const string context);
+			void remember (Object & dependency);
 
 			///	I will self-destruct, when I forget my last dependency.
 			///	Set 'stay' to 'true' to force me to not self-destruct.
-			void forget (const Object & dependency, const string context, bool stay = false);
+			void forget (const Object & dependency, bool stay = false);
 
-			#ifdef TSL_DEBUG
-				static unsigned long int turn;
+			virtual void drop_implicit_dependency (const Object & dependency);
 
-				//	This set is used to check if all objects were properly destructed.
-				static Set <Object> objects;
-			#endif
-
+			///	'me' is '* this'.
 			Object & me;
 			const string my;
 
-		protected:
-			///	To avoid plain Object instances, the constructor(s) is/are proteced.
-			#ifdef TSL_WIN
-				///	Some Windows compilers give an error otherwise.
-				Object ();
-			#endif
-			Object (string new_name);
-
+			static const Object update;
+			static const Object terminate;
+			
 		private :
-			bool has_dependency (const string context) const;
-			bool does_depend (const Object & candidate, const string context) const;
+			bool has_dependency () const;
+			bool does_depend (const Object & candidate) const;
 
-			///	Only one dependency is allowed per context.
-			map <const string, const Object *> dependencies;
+			///	I store my dependencies as const to reduce the number of casts,
+			///	but they are const_cast-ed, at my destruction.
+			set <const Object *> dependencies;
 	};
 }
 

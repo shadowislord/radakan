@@ -1,9 +1,11 @@
 #include "gui_engine.hpp"
+#include "input_engine.hpp"
 #include <CEGUIWindowManager.h>
 #include <CEGUISchemeManager.h>
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Engines;
 
 //	static
 const string GUI_Engine ::
@@ -21,33 +23,33 @@ GUI_Engine ::
 	) :
 	Object ("GUI engine")
 {
-	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name);
-	assert (GUI_Listener :: is_instantiated ());
-	assert (Singleton <GUI_Engine> :: is_initialized ());
-	assert (Data_State_Machine <GUI> :: is_initialized ());
+	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name);
 
-	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "A");
+	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "A");
 	renderer = new CEGUI :: OgreCEGUIRenderer (& window, Ogre :: RENDER_QUEUE_OVERLAY, false, 0, & scene_manager);
 
-	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "B");
+	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "B");
 	system = new CEGUI :: System (renderer, NULL, NULL, NULL, "", log_file_name);
 
-	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "C");
+	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "C");
 	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
 	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
-	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "D");
+	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "D");
 	system -> setDefaultFont ("BlueHighway-12");
 
-	Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "E");
+	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "E");
+
 	assert (is_initialized ());
 }
 
 GUI_Engine ::
 	~GUI_Engine ()
 {
-	Log :: trace <GUI_Engine> (me, "~");
+	Engines :: Log :: trace <GUI_Engine> (me, "~");
 	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -55,9 +57,8 @@ bool GUI_Engine ::
 	is_initialized ()
 	const
 {
-	assert (GUI_Listener :: is_instantiated ());
 	assert (Singleton <GUI_Engine> :: is_initialized ());
-	assert (Data_State_Machine <GUI> :: is_initialized ());
+	assert (State_Machines :: Data_State_Machine <GUI> :: is_initialized ());
 
 	return true;
 }
@@ -102,29 +103,22 @@ GUI & GUI_Engine ::
 			)
 		);
 
+	result . register_observer (Input_Engine :: get ());
+
 	//	If this is the first gui, it's automatically used as active state.
 	bool check = add (result);
 	assert (check);
-	
-	if (get_active_state () == result)
-	{
-		system -> setGUISheet (& result . root_window);
-	}
 
 	return result;
 }
 
 void GUI_Engine ::
-	activate (GUI & gui)
+	set_active_state (GUI & gui)
 {
 	assert (is_initialized ());
 	assert (gui . is_initialized ());
-	assert (contains (gui));
 
-	if (get_active_state () != gui)
-	{
-		Log :: log (me) << "Changing to GUI: " << gui << endl;
-		set_active_state (gui);
-		system -> setGUISheet (& gui . root_window);
-	}
+	State_Machines :: State_Machine <GUI> :: set_active_state (gui);
+
+	system -> setGUISheet (& gui . root_window);
 }

@@ -9,6 +9,7 @@ using namespace std;
 namespace TSL
 {
 
+	///	Singleton is the base class for classes with only one instance.
 	template <class T> class Singleton :
 		public virtual Object,
 		protected Ogre :: Singleton <T>

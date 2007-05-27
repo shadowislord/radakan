@@ -1,5 +1,6 @@
 #include "gui.hpp"
 #include <CEGUIExceptions.h>
+#include <elements/CEGUIPushButton.h>
 
 using namespace std;
 using namespace TSL;
@@ -18,10 +19,9 @@ GUI ::
 		CEGUI :: Window & new_root
 	) :
 	Object (new_name),
-	root_window (new_root)
+	root_window (new_root),
+	subscriber (& GUI :: handle_event, this)
 {
-	assert (Object :: is_initialized ());
-
 	try
 	{
 		text_window = root_window . getChild ("sector-text");
@@ -34,14 +34,14 @@ GUI ::
 		}
 		catch (CEGUI :: UnknownObjectException & exception)
 		{
-			Log :: error (me) << "Unknown CEGUI exception." << endl;
+			Engines :: Log :: error (me) << "Unknown CEGUI exception." << endl;
 			abort ();
 		}
 	}
 
-	GUI_Listener :: get () . subscribe (root_window);
+	subscribe (root_window);
 
-	Log :: get () . observers . add (* this);
+	Engines :: Log :: get () . register_observer (* this);
 
 	assert (is_initialized ());
 }
@@ -49,8 +49,10 @@ GUI ::
 GUI ::
 	~GUI ()
 {
-	Log :: trace <GUI> (me, "~");
+	Engines :: Log :: trace <GUI> (me, "~");
 	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -64,11 +66,51 @@ bool GUI ::
 
 //	virtual
 void GUI ::
-	call (const string & type, const string & message)
+	call (const Object & message)
 {
 	assert (is_initialized ());
-	assert (type == "show");
-	assert (! message . empty ());
 
 	text_window -> setText (message);
+}
+
+void GUI ::
+	subscribe (CEGUI :: Window & window)
+{
+	assert (is_initialized ());
+	CEGUI :: Window * temp;
+	for (unsigned int i = 0; i < window . getChildCount (); i ++)
+	{
+		temp = window . getChildAtIdx (i);
+		if (temp -> getType () . find ("Button") != string :: npos)
+		{
+			temp -> subscribeEvent (CEGUI :: PushButton :: EventClicked, subscriber);
+		}
+		else
+		{
+			subscribe (* temp);
+		}
+	}
+}
+
+bool GUI ::
+	handle_event (const CEGUI :: EventArgs & arguments)
+{
+	Engines :: Log :: trace <GUI> (me, "handle_event", "~arguments~");
+	assert (is_initialized ());
+
+	CEGUI :: WindowEventArgs * window_event_arguments = (CEGUI :: WindowEventArgs *)(& arguments);
+	if (window_event_arguments == NULL)
+	{
+		Engines :: Log :: show ("Unknown event type...");
+	}
+	else
+	{
+		string caption (window_event_arguments -> window -> getText () . c_str ());
+
+		Object * message = new Object (caption);
+		call_observers (* message);
+		delete message;
+	}
+
+	return true;
 }

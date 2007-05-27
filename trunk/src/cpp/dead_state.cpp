@@ -1,10 +1,11 @@
 #include "log.hpp"
-#include "model.hpp"
+#include "movable_model.hpp"
 #include "npc.hpp"
 #include "dead_state.hpp"
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Algorithms;
 
 //	static
 const string Dead_State ::
@@ -18,7 +19,7 @@ Dead_State ::
 	Dead_State () :
 	Object ("dead state")
 {
-	assert (Algorithm <NPC> :: is_initialized ());
+	//	Do nothing.
 
 	assert (Dead_State :: is_initialized ());
 }
@@ -27,10 +28,10 @@ Dead_State ::
 Dead_State ::
 	~Dead_State ()
 {
-	Log :: trace <Dead_State> (me, "~");
-	assert (Algorithm <NPC> :: is_initialized ());
+	Engines :: Log :: trace <Dead_State> (me, "~");
+	assert (Algorithm <Items :: NPC> :: is_initialized ());
 
-	assert (Algorithm <NPC> :: is_initialized ());	
+	//	Do nothing.
 }
 
 //	virtual
@@ -38,17 +39,28 @@ bool Dead_State ::
 	is_initialized ()
 	const
 {
-	return Algorithm <NPC> :: is_initialized ();
+	return Algorithm <Items :: NPC> :: is_initialized ();
+}
+
+//	virtual
+Algorithm <Items :: NPC> & Dead_State ::
+	transit (Items :: NPC & owner, const Object & message)
+{
+	assert (is_initialized ());
+
+	//	Don't do anything, just stay dead.
+
+	return * this;
 }
 
 //	virtual
 void Dead_State ::
-	enter (NPC & owner)
+	enter (Items :: NPC & owner)
 {
-	Log :: trace <Dead_State> (me, "enter", owner);
+	Engines :: Log :: trace <Dead_State> (me, "enter", owner);
 	assert (is_initialized ());
 
-	owner . get_movable_model () . turn (1, 10, owner . get_model () . get_side_direction ());
+	owner . get_movable_model () . turn (1, owner . get_model () . get_side_direction ());
 
-	Log :: show (owner + " died.");
+	Engines :: Log :: show (owner + " died.");
 }

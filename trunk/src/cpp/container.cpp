@@ -3,6 +3,7 @@
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Items;
 
 //	static
 const string Container ::
@@ -36,7 +37,7 @@ Container ::
 	),
 	Set <Item> ("", new_maximal_size)
 {
-	assert (Item :: is_initialized () && Set <Item> :: is_initialized ());
+	//	Do nothing.
 	
 	assert (is_initialized ());
 }
@@ -45,8 +46,10 @@ Container ::
 Container ::
 	~Container ()
 {
-	Log :: trace <Container> (me, "~");
+	Engines :: Log :: trace <Container> (me, "~");
 	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -54,7 +57,10 @@ bool Container ::
 	is_initialized ()
 	const
 {
-	return Item :: is_initialized () && Set <Item> :: is_initialized ();
+	assert (Item :: is_initialized ());
+	assert (Set <Item> :: is_initialized ());
+
+	return true;
 }
 
 //	virtual
@@ -78,7 +84,7 @@ float Container ::
 bool Container ::
 	add (Item & item)
 {
-	Log :: trace <Container> (me, "add", item);
+	Engines :: Log :: trace <Container> (me, "add", item);
 	assert (is_initialized ());
 	assert (item . is_initialized ());
 	assert (! is_sealed ());

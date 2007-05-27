@@ -1,10 +1,12 @@
 #include "chat_state.hpp"
+#include "conversation_message.hpp"
 #include "fight_state.hpp"
 #include "log.hpp"
 #include "npc.hpp"
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Algorithms;
 
 //	static
 const string Chat_State ::
@@ -17,19 +19,21 @@ const string Chat_State ::
 Chat_State ::
 	Chat_State () :
 	Object ("chat state"),
-	Algorithm <NPC> (Alive_State :: get ())
+	Algorithm <Items :: NPC> (Alive_State :: get ())
 {
-	assert (Algorithm <NPC> :: is_initialized ());
+	//	Do nothing.
 
-	assert (Chat_State :: is_initialized ());
+	assert (is_initialized ());
 }
 
 //  destructor
 Chat_State ::
 	~Chat_State ()
 {
-	Log :: trace <Chat_State> (me, "~");
-	assert (Algorithm <NPC> :: is_initialized ());
+	Engines :: Log :: trace <Chat_State> (me, "~");
+	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -37,14 +41,59 @@ bool Chat_State ::
 	is_initialized ()
 	const
 {
-	return Algorithm <NPC> :: is_initialized ();
+	assert (Algorithm <Items :: NPC> :: is_initialized ());
+	
+	return true;
 }
 
 //	virtual
-Algorithm <NPC> & Chat_State ::
-	transit (NPC & owner)
+Algorithm <Items :: NPC> & Chat_State ::
+	transit (Items :: NPC & owner, const Object & message)
 {
 	assert (is_initialized ());
 
-	return owner . get_active_state ();
+	if (message . is_type <Messages :: Conversation_Message> ())
+	{
+		Messages :: Conversation_Message & conversation_message = message . to_type <Messages :: Conversation_Message> ();
+		
+		if (conversation_message . to == owner)	//	Is (s)he talking to me?
+		{
+			if (conversation_message == "Hello.")
+			{
+				owner . chat ("Hello, " + conversation_message . from + "!", conversation_message . from);
+				
+				owner . conversation_timeout = 30;
+			}
+			else if (conversation_message == "Duel!")
+			{
+				return Fight_State :: get ();
+			}
+		}
+	}
+
+	if (owner . conversation_timeout == 0)
+	{
+		owner . chat ("I'm not going to wait longer...", owner);
+
+		return Alive_State :: get ();
+	}
+
+	owner . conversation_timeout --;
+
+	//	Return myself.
+	return * this;
+}
+
+//	virtual
+void Chat_State ::
+	enter (Items :: NPC & owner)
+{
+	owner . conversation_timeout = 30;
+}
+
+//	virtual
+void Chat_State ::
+	exit (Items :: NPC & owner)
+{
+	owner . conversation_timeout = 0;
 }

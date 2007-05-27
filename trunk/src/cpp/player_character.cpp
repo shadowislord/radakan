@@ -1,19 +1,22 @@
+#include "conversation_message.hpp"
 #include "log.hpp"
-#include "player.hpp"
+#include "npc.hpp"
+#include "player_character.hpp"
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Items;
 
 //	static
-const string Player ::
+const string Player_Character ::
 	get_class_name ()
 {
-	return "Player";
+	return "Player_Character";
 }
 
 //  constructor
-Player ::
-	Player
+Player_Character ::
+ Player_Character
 	(
 		string new_name,
 		string new_mesh_name,
@@ -27,11 +30,9 @@ Player ::
 		new_size,
 		new_mass
 	),
-	camera_distance (0.72),
 	dead (false)
 {
-	Log :: trace <Player> (me, "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
-	assert (Character :: is_initialized ());
+	Engines :: Log :: trace <Player_Character> (me, "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 
 	bool check = back . add (Container :: create ("Backbpack", "bar.mesh", Ogre :: Vector3 (0.3, 0.5, 0.2), 3));
 	assert (check);
@@ -43,15 +44,17 @@ Player ::
 }
 
 //  destructor
-Player ::
-	~Player ()
+Player_Character ::
+	~Player_Character ()
 {
-	Log :: trace <Player> (me, "");
-	assert (Object :: is_initialized ());
+	Engines :: Log :: trace <Player_Character> (me, "");
+	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
-bool Player ::
+bool Player_Character ::
 	is_initialized ()
 	const
 {
@@ -59,24 +62,35 @@ bool Player ::
 }
 
 //	virtual
-bool Player ::
+bool Player_Character ::
 	is_dead () const
 {
 	return dead;
 }
 
 //	virtual
-void Player ::
+void Player_Character ::
 	die ()
 {
 	assert (is_initialized ());
 	dead = true;
 
-	Log :: show ("Your character died!");
+	Engines :: Log :: show ("Your character died!");
+}
+
+//	virtual
+void Player_Character ::
+	call (const Object & message)
+{
+	assert (is_initialized ());
+	assert (message . is_type <Messages :: Conversation_Message> ());
+
+	//	I show the message in the log, to let the player know.
+	Engines :: Log :: show (message . to_type <Messages :: Conversation_Message> () . from + ": " + message);
 }
 
 //	static
-Item & Player ::
+Item & Player_Character ::
 	create
 	(
 		string new_name,
@@ -86,7 +100,7 @@ Item & Player ::
 	)
 {
 	Item * temp =
-		new Player
+		new Player_Character
 		(
 			new_name,
 			new_mesh_name,

@@ -1,12 +1,15 @@
+#include "game.hpp"
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "log.hpp"
 #include "menu_state.hpp"
+#include "play_state.hpp"
 #include "quit_state.hpp"
 #include "world.hpp"
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Algorithms;
 
 //	static
 const string Menu_State ::
@@ -19,21 +22,23 @@ const string Menu_State ::
 Menu_State ::
 	Menu_State () :
 	Object ("menu state"),
-	gui (GUI_Engine :: get () . create_gui ("menu.cfg"))
+	gui (Engines :: GUI_Engine :: get () . create_gui ("menu.cfg"))
 {
-	Log :: trace <Menu_State> (me);
-	assert (Algorithm <Game> :: is_initialized ());
+	Engines :: Log :: trace <Menu_State> (me);
 
-	assert (Menu_State :: is_initialized ());
+	//	Do nothing.
+
+	assert (is_initialized ());
 }
 
 //  destructor
 Menu_State ::
 	~Menu_State ()
 {
-	Log :: trace <Menu_State> (me, "~");
+	Engines :: Log :: trace <Menu_State> (me, "~");
+	assert (is_initialized ());
 
-	assert (Algorithm <Game> :: is_initialized ());
+	//	Do nothing.
 }
 
 //	virtual
@@ -41,46 +46,50 @@ bool Menu_State ::
 	is_initialized ()
 	const
 {
-	return Algorithm <Game> :: is_initialized ();
+	assert (Algorithm <Engines :: Game> :: is_initialized ());
+
+	return true;
 }
 
 //	virtual
-Algorithm <Game> & Menu_State ::
-	transit (Game & owner)
+Algorithm <Engines :: Game> & Menu_State ::
+	transit (Engines :: Game & owner, const Object & message)
 {
 	assert (is_initialized ());
 
-	//	un-pause
-	if (Input_Engine :: get () . get_key ("Escape", true)
-					|| Input_Engine :: get () . get_gui_button ("Return", true))
-	{
-		Log :: log (me) << "Game resumed" << endl;
-		
-		return World :: get ();
-	}
-
 	//	quit
-	if (Input_Engine :: get () . get_gui_button ("Quit", true))
+	if ((message == terminate)
+		|| Engines :: Input_Engine :: get () . get_gui_button ("Quit", true))
 	{
 		return Quit_State :: get ();
 	}
 
-	//	FPS
-	if (Input_Engine :: get () . get_gui_button ("Statistics", true))
+	//	un-pause
+	if (Engines :: Input_Engine :: get () . get_key ("Escape", true)
+		|| Engines :: Input_Engine :: get () . get_gui_button ("Return", true))
 	{
-		Log :: show (owner . get_FPS ());
+		Engines :: Log :: log (me) << "Game resumed" << endl;
+		
+		return Play_State :: get ();
+	}
+
+	//	FPS
+	if (Engines :: Input_Engine :: get () . get_gui_button ("Statistics", true))
+	{
+		Engines :: Log :: show (owner . get_FPS () + " " + to_string (1000 / World :: get () . get_last_turn_lenght ()));
 	}
 	
+	//	Return me or a child state.
 	return owner . get_active_state ();
 }
 
 //	virtual
 void Menu_State ::
-	enter (Game & owner)
+	enter (Engines :: Game & owner)
 {
 	assert (is_initialized ());
 
-	GUI_Engine :: get () . activate (gui);
+	Engines :: GUI_Engine :: get () . set_active_state (gui);
 	
-	Log :: show ("Menu (game paused)");
+	Engines :: Log :: show ("Menu (game paused)");
 }

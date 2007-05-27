@@ -1,5 +1,6 @@
 #include "log.hpp"
 #include "model.hpp"
+#include "world.hpp"
 
 using namespace std;
 using namespace TSL;
@@ -13,20 +14,19 @@ const string Model ::
 
 //  constructor
 Model ::
-	Model (Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry) :
+	Model (Items :: Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry) :
 	Object (new_item + "'s model"),
-	Set <Item> ("", 1),
+	Set <Items :: Item> ("", 1),
 	item (new_item),
-	node (* Environment :: get () . root_node . createChildSceneNode (string :: data ())),
+	node (* World :: get () . root_node . createChildSceneNode (string :: data ())),
 	geometry (new_geometry)
 {
-	Log :: trace <Model> (me, "", new_item, to_string (position), to_string (scale));
-	assert (Set <Item> :: is_initialized ());
+	Engines :: Log :: trace <Model> (me, "", new_item, to_string (position), to_string (scale));
 
-	Set <Item> :: add (item);
+	Set <Items :: Item> :: add (item);
 	seal ();
 
-//	Environment :: get () . root_node . addChild (this);
+//	World :: get () . root_node . addChild (this);
 
 	node . setPosition (position);
 	node . setScale (scale, scale, scale);
@@ -38,7 +38,7 @@ Model ::
 
 	if (geometry . getBody () == NULL)
 	{
-		Log :: log (me) << "I'm a static model." << endl;
+		Engines :: Log :: log (me) << "I'm a static model." << endl;
 
 		geometry . setUserObject (& item . entity);
 		geometry . setPosition (position);
@@ -58,20 +58,18 @@ Model ::
 Model ::
 	~Model ()
 {
-	Log :: trace <Model> (me, "~");
+	Engines :: Log :: trace <Model> (me, "~");
 	assert (Model :: is_initialized ());
 
 	item . remove_model ();
 	
 	assert (node . numAttachedObjects () == 1);
 
-	Environment :: get () . getSceneManager () -> destroyMovableObject (& item . entity);
+	World :: get () . getSceneManager () -> destroyMovableObject (& item . entity);
 
 	assert (node . numAttachedObjects () == 0);
 
 	node . getParent () -> removeChild (node . getName ());
-
-	assert (Set <Item> :: is_initialized ());
 }
 
 //	virtual
@@ -79,10 +77,10 @@ bool Model ::
 	is_initialized ()
 	const
 {
-	assert (Set <Item> :: is_initialized ());
+	assert (Set <Items :: Item> :: is_initialized ());
 	assert (is_sealed ());
 	assert (item . has_model ());
-	assert (node . getParent () == & Environment :: get () . root_node);
+	assert (node . getParent () == & World :: get () . root_node);
 	assert (node . numAttachedObjects () <= 2);
 
 	//	TODO re-enable assert ((node . getPosition () - geometry . getPosition ()) . length () < 0.01);

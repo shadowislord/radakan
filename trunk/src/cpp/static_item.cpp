@@ -3,6 +3,7 @@
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Items;
 
 //	static
 const string Static_Item ::
@@ -33,7 +34,7 @@ Static_Item ::
 		new_visible
 	)
 {
-	assert (Item :: is_initialized ());
+	//	Do nothing.
 
 	assert (is_initialized ());
 }
@@ -42,8 +43,10 @@ Static_Item ::
 Static_Item ::
 	~Static_Item ()
 {
-	Log :: trace <Static_Item> (me, "~");
+	Engines :: Log :: trace <Static_Item> (me, "~");
 	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual

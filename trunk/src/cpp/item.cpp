@@ -1,9 +1,11 @@
 #include "item.hpp"
 #include "log.hpp"
 #include "model.hpp"
+#include "world.hpp"
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Items;
 
 //	static
 const string Item ::
@@ -29,11 +31,11 @@ Item ::
 	mobile (new_mobile),
 	solid (new_solid),
 	visible (new_visible),
-	entity (* Environment :: get () . getSceneManager () -> createEntity
+	entity (* World :: get () . getSceneManager () -> createEntity
 										(my + "entity", new_mesh_name)),
 	model (NULL)
 {
-	Log :: trace <Item>
+	Engines :: Log :: trace <Item>
 	(
 		me,
 		"",
@@ -44,13 +46,12 @@ Item ::
 		bool_to_string (solid),
 		bool_to_string (visible)
 	);
-	assert (Object :: is_initialized ());
-	assert (Environment :: is_instantiated ());
-	assert (Environment :: get () . is_initialized ());
 	assert (0 <= size . x);
 	assert (0 <= size . y);
 	assert (0 <= size . z);
 	assert (0 <= mass);
+
+	//	Do nothing.
 
 	assert (Item :: is_initialized ());
 }
@@ -59,15 +60,13 @@ Item ::
 Item ::
 	~Item ()
 {
-	Log :: trace <Item> (me, "~");
+	Engines :: Log :: trace <Item> (me, "~");
 	assert (Item :: is_initialized ());
 
 	if (has_model ())
 	{
 		remove_model ();
 	}
-	
-	assert (Object :: is_initialized ());
 }
 
 //	virtual
@@ -75,10 +74,8 @@ bool Item ::
 	is_initialized ()
 	const
 {
-	//	Log :: trace <Item> (me, "is_initialized");
+	//	Engines :: Log :: trace <Item> (me, "is_initialized");
 	assert (Object :: is_initialized ());
-	assert (Environment :: is_instantiated ());
-	assert (Environment :: get () . is_initialized ());
 	assert (0 <= size . x);
 	assert (0 <= size . y);
 	assert (0 <= size . z);
@@ -100,7 +97,7 @@ float Item ::
 void Item ::
 	set_model (Model & new_model)
 {
-	//	Log :: trace <Item> (me, "set_model", new_model);
+	//	Engines :: Log :: trace <Item> (me, "set_model", new_model);
 	assert (Item :: is_initialized ());
 	assert (! has_model ());
 
@@ -144,11 +141,11 @@ OgreOde :: Geometry & Item ::
 	assert (is_initialized ());
 	assert (! has_model ());
 
-	OgreOde :: Geometry * geometry = new OgreOde :: BoxGeometry (size, & Environment :: get (), Environment :: get () . getDefaultSpace ());
+	OgreOde :: Geometry * geometry = new OgreOde :: BoxGeometry (size, & World :: get (), World :: get () . getDefaultSpace ());
 
 	if (mobile)
 	{
-		OgreOde :: Body * body = new OgreOde :: Body (& Environment :: get (), string :: data ());
+		OgreOde :: Body * body = new OgreOde :: Body (& World :: get (), string :: data ());
 		body -> setMass (OgreOde :: BoxMass (mass, size));
 		geometry -> setBody (body);
 	}

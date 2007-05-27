@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Items;
 
 //	static
 const string NPC ::
@@ -30,21 +31,22 @@ NPC ::
 		new_mass
 	)
 {
-	Log :: trace <NPC> (me, "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
-	assert (Character :: is_initialized ());
+	Engines :: Log :: trace <NPC> (me, "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 
-	set_active_state (Alive_State :: get ());
+	set_active_state (Algorithms :: Alive_State :: get ());
 
 	assert (is_initialized ());
-	Log :: log (me) << "I'm fully constructed (as NPC)." << endl;
+	Engines :: Log :: log (me) << "I'm fully constructed (as NPC)." << endl;
 }
 
 //  destructor
 NPC ::
 	~NPC ()
 {
-	Log :: trace <NPC> (me, "~");
+	Engines :: Log :: trace <NPC> (me, "~");
 	assert (NPC :: is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -57,10 +59,19 @@ bool NPC ::
 }
 
 //	virtual
+void NPC ::
+	call (const Object & message)
+{
+	assert (is_initialized ());
+	
+	State_Machines :: Algorithm_State_Machine <NPC> :: run (message);
+}
+
+//	virtual
 bool NPC ::
 	is_dead () const
 {
-	return get_active_state () . is_type <Dead_State> ();
+	return get_active_state () . is_type <Algorithms :: Dead_State> ();
 }
 
 //	virtual
@@ -70,7 +81,9 @@ void NPC ::
 	assert (NPC :: is_initialized ());
 	assert (has_model ());
 
-	set_active_state (Dead_State :: get ());
+	call (terminate);
+
+	assert (is_dead ());
 }
 
 //	static

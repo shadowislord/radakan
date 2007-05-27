@@ -7,39 +7,42 @@ using namespace std;
 
 namespace TSL
 {
-
-	///	A Multislot can contain a limited number of objects of a specific class.
-	template <class T> class Multislot :
-		public Container
+	namespace Items
 	{
-		public :
-			//	The constructor is protected, see below.
-			virtual ~Multislot ();
-			virtual bool is_initialized () const;
-			
-			static const string get_class_name ();
-			
-			virtual bool add (Item & item);
 
-			static Multislot <T> & create
-			(
-				string new_name,
-				string new_mesh_name,
-				Ogre :: Vector3 new_size,
-				float new_mass,
-				int new_max_size
-			);
+		///	A Multislot is an item that can contain a limited number of items of a specific class.
+		template <class T> class Multislot :
+			public Container
+		{
+			public :
+				//	The constructor is protected, see below.
+				virtual ~Multislot ();
+				virtual bool is_initialized () const;
+				
+				static const string get_class_name ();
+				
+				virtual bool add (Item & item);
 
-		protected :
-			Multislot
-			(
-				string new_name,
-				string new_mesh_name,
-				Ogre :: Vector3 new_size,
-				float new_mass,
-				int new_max_size
-			);
-	};
+				static Multislot <T> & create
+				(
+					string new_name,
+					string new_mesh_name,
+					Ogre :: Vector3 new_size,
+					float new_mass,
+					int new_max_size
+				);
+
+			protected :
+				Multislot
+				(
+					string new_name,
+					string new_mesh_name,
+					Ogre :: Vector3 new_size,
+					float new_mass,
+					int new_max_size
+				);
+		};
+	}
 }
 
 #endif	//	TSL_MULTISLOT_HPP

@@ -1,9 +1,13 @@
 #include <fstream>
 #include <sstream>
 #include "log.hpp"
+#ifdef TSL_DEBUG
+	#include "world.hpp"
+#endif
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Engines;
 
 //	static
 const string Log ::
@@ -18,7 +22,8 @@ Log ::
 	Object ("Log")
 {
 	trace <Log> (me, "");
-	assert (Object :: is_initialized ());
+	
+ //	Do nothing.
 	
 	assert (is_initialized ());
 }
@@ -29,6 +34,8 @@ Log ::
 {
 	trace <Log> (me, "~");
 	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -53,7 +60,10 @@ ostream & Log ::
 {
 	#ifdef TSL_DEBUG
 		cout << endl;
-		cout << "= turn " << turn << " =" << endl;
+		if (World :: is_instantiated ())
+		{
+			cout << "= turn " << World :: get () . get_turn () << " =" << endl;
+		}
 		cout << "'" << logger << "' reports:" << endl;
 		return cout << "\t";
 	#else
@@ -63,17 +73,15 @@ ostream & Log ::
 
 //	static
 void Log ::
-	show (string message)
+	show (string message_contents)
 {
-	assert (is_instantiated ());
-
-	trace <Log> (get (), "show", message);
+	trace <Log> (get (), "show", message_contents);
 	
-	Set <Observer <Log> > & observers = get () . observers;
-	for (Observer <Log> * i = observers . get_child (); i != NULL;
-		i = observers . get_another_child ())
+	if (is_instantiated ())
 	{
-		i -> call ("show", message);
+		Object * message = new Object (message_contents);
+		get () . call_observers (* message);
+		delete message;
 	}
 }
 
@@ -112,21 +120,26 @@ template <class T> void Log ::
 		<< ")" << endl;
 }
 
+#include "alive_state.hpp"
 #include "audio_engine.hpp"
-#include "battle_engine.hpp"
+#include "battle_plugin.hpp"
 #include "chat_state.hpp"
+#include "conversation_message.hpp"
+#include "conversation_plugin.hpp"
 #include "dead_state.hpp"
 #include "fight_state.hpp"
 #include "game.hpp"
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "menu_state.hpp"
-#include "alive_state.hpp"
+#include "player_character.hpp"
+#include "plugin_manager.hpp"
+#include "settings.hpp"
 #include "quit_state.hpp"
-#include "speech_state.hpp"
+#include "tracker.hpp"
 #include "world.hpp"
 
-template void Log :: trace <Algorithm <Game> >
+template void Log :: trace <Algorithms :: Algorithm <Engines :: Game> >
 (
 	const Object & logger,
 	string method,
@@ -137,7 +150,7 @@ template void Log :: trace <Algorithm <Game> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Algorithm <NPC> >
+template void Log :: trace <Algorithms :: Algorithm <Items :: NPC> >
 (
 	const Object & logger,
 	string method,
@@ -148,7 +161,7 @@ template void Log :: trace <Algorithm <NPC> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Algorithm_State_Machine <Game> >
+template void Log :: trace <State_Machines :: Algorithm_State_Machine <Engines :: Game> >
 (
 	const Object & logger,
 	string method,
@@ -159,7 +172,7 @@ template void Log :: trace <Algorithm_State_Machine <Game> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Algorithm_State_Machine <NPC> >
+template void Log :: trace <State_Machines :: Algorithm_State_Machine <Items :: NPC> >
 (
 	const Object & logger,
 	string method,
@@ -170,7 +183,7 @@ template void Log :: trace <Algorithm_State_Machine <NPC> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Alive_State>
+template void Log :: trace <Algorithms :: Alive_State>
 (
 	const Object & logger,
 	string method,
@@ -181,7 +194,7 @@ template void Log :: trace <Alive_State>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Audio_Engine>
+template void Log :: trace <Engines :: Audio_Engine>
 (
 	const Object & logger,
 	string method,
@@ -192,7 +205,7 @@ template void Log :: trace <Audio_Engine>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Battle_Engine>
+template void Log :: trace <Plugins :: Battle_Plugin>
 (
 	const Object & logger,
 	string method,
@@ -203,7 +216,7 @@ template void Log :: trace <Battle_Engine>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Character>
+template void Log :: trace <Items :: Character>
 (
 	const Object & logger,
 	string method,
@@ -214,7 +227,7 @@ template void Log :: trace <Character>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Chat_State>
+template void Log :: trace <Algorithms :: Chat_State>
 (
 	const Object & logger,
 	string method,
@@ -225,7 +238,7 @@ template void Log :: trace <Chat_State>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Container>
+template void Log :: trace <Items :: Container>
 (
 	const Object & logger,
 	string method,
@@ -236,7 +249,7 @@ template void Log :: trace <Container>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Dead_State>
+template void Log :: trace <Messages :: Conversation_Message>
 (
 	const Object & logger,
 	string method,
@@ -247,7 +260,7 @@ template void Log :: trace <Dead_State>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Data_State_Machine <GUI> >
+template void Log :: trace <Plugins :: Conversation_Plugin>
 (
 	const Object & logger,
 	string method,
@@ -258,7 +271,7 @@ template void Log :: trace <Data_State_Machine <GUI> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Data_State_Machine <Tile> >
+template void Log :: trace <Algorithms :: Dead_State>
 (
 	const Object & logger,
 	string method,
@@ -269,7 +282,7 @@ template void Log :: trace <Data_State_Machine <Tile> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Environment>
+template void Log :: trace <State_Machines :: Data_State_Machine <GUI> >
 (
 	const Object & logger,
 	string method,
@@ -280,7 +293,7 @@ template void Log :: trace <Environment>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Fight_State>
+template void Log :: trace <State_Machines :: Data_State_Machine <Tile> >
 (
 	const Object & logger,
 	string method,
@@ -291,7 +304,18 @@ template void Log :: trace <Fight_State>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Game>
+template void Log :: trace <Algorithms :: Fight_State>
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Engines :: Game>
 (
 	const Object & logger,
 	string method,
@@ -313,7 +337,7 @@ template void Log :: trace <GUI>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <GUI_Engine>
+template void Log :: trace <Engines :: GUI_Engine>
 (
 	const Object & logger,
 	string method,
@@ -324,7 +348,7 @@ template void Log :: trace <GUI_Engine>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <GUI_Listener>
+template void Log :: trace <Engines :: Input_Engine>
 (
 	const Object & logger,
 	string method,
@@ -335,7 +359,7 @@ template void Log :: trace <GUI_Listener>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Input_Engine>
+template void Log :: trace <Items :: Item>
 (
 	const Object & logger,
 	string method,
@@ -346,7 +370,7 @@ template void Log :: trace <Input_Engine>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Item>
+template void Log :: trace <Items :: NPC>
 (
 	const Object & logger,
 	string method,
@@ -357,7 +381,7 @@ template void Log :: trace <Item>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <NPC>
+template void Log :: trace <Algorithms :: Menu_State>
 (
 	const Object & logger,
 	string method,
@@ -368,7 +392,7 @@ template void Log :: trace <NPC>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Menu_State>
+/*template void Log :: trace <Message>
 (
 	const Object & logger,
 	string method,
@@ -378,7 +402,7 @@ template void Log :: trace <Menu_State>
 	string argument_4,
 	string argument_5,
 	string argument_6
-);
+);*/
 template void Log :: trace <Model>
 (
 	const Object & logger,
@@ -401,7 +425,7 @@ template void Log :: trace <Movable_Model>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Multislot <Container> >
+template void Log :: trace <Items :: Multislot <Items :: Container> >
 (
 	const Object & logger,
 	string method,
@@ -412,7 +436,7 @@ template void Log :: trace <Multislot <Container> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Multislot <Item> >
+template void Log :: trace <Items :: Multislot <Items :: Item> >
 (
 	const Object & logger,
 	string method,
@@ -434,7 +458,7 @@ template void Log :: trace <Object>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Observable <Log> >
+template void Log :: trace <Observable <Items :: Character> >
 (
 	const Object & logger,
 	string method,
@@ -445,7 +469,7 @@ template void Log :: trace <Observable <Log> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Observer <Log> >
+template void Log :: trace <Observable <GUI> >
 (
 	const Object & logger,
 	string method,
@@ -456,7 +480,7 @@ template void Log :: trace <Observer <Log> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Player>
+template void Log :: trace <Observable <Engines :: Log> >
 (
 	const Object & logger,
 	string method,
@@ -467,7 +491,95 @@ template void Log :: trace <Player>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Quit_State>
+template void Log :: trace <Observable <Algorithms :: Play_State> >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Observer <Items :: Character> >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Observer <GUI> >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Observer <Engines :: Log> >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Observer <Algorithms :: Play_State> >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Algorithms :: Play_State>
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Items :: Player_Character>
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Algorithms :: Quit_State>
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Set <Items :: Character> >
 (
 	const Object & logger,
 	string method,
@@ -489,7 +601,7 @@ template void Log :: trace <Set <GUI> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Set <Item> >
+template void Log :: trace <Set <Items :: Item> >
 (
 	const Object & logger,
 	string method,
@@ -511,7 +623,7 @@ template void Log :: trace <Set <Model> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Set <NPC> >
+template void Log :: trace <Set <Items :: NPC> >
 (
 	const Object & logger,
 	string method,
@@ -533,7 +645,40 @@ template void Log :: trace <Set <Object> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Set <Observer <Log> > >
+template void Log :: trace <Set <Observer <Items :: Character> > >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Set <Observer <GUI> > >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Set <Observer <Engines :: Log> > >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Set <Observer <Algorithms :: Play_State> > >
 (
 	const Object & logger,
 	string method,
@@ -566,7 +711,7 @@ template void Log :: trace <Set <Sound> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Alive_State> >
+template void Log :: trace <Engines :: Settings>
 (
 	const Object & logger,
 	string method,
@@ -577,7 +722,7 @@ template void Log :: trace <Singleton <Alive_State> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Audio_Engine> >
+template void Log :: trace <Singleton <Algorithms :: Alive_State> >
 (
 	const Object & logger,
 	string method,
@@ -588,7 +733,7 @@ template void Log :: trace <Singleton <Audio_Engine> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Battle_Engine> >
+template void Log :: trace <Singleton <Engines :: Audio_Engine> >
 (
 	const Object & logger,
 	string method,
@@ -599,7 +744,7 @@ template void Log :: trace <Singleton <Battle_Engine> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Chat_State> >
+template void Log :: trace <Singleton <Plugins :: Battle_Plugin> >
 (
 	const Object & logger,
 	string method,
@@ -610,7 +755,7 @@ template void Log :: trace <Singleton <Chat_State> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Dead_State> >
+template void Log :: trace <Singleton <Algorithms :: Chat_State> >
 (
 	const Object & logger,
 	string method,
@@ -621,7 +766,7 @@ template void Log :: trace <Singleton <Dead_State> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Environment> >
+template void Log :: trace <Singleton <Plugins :: Conversation_Plugin> >
 (
 	const Object & logger,
 	string method,
@@ -632,7 +777,7 @@ template void Log :: trace <Singleton <Environment> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Fight_State> >
+template void Log :: trace <Singleton <Algorithms :: Dead_State> >
 (
 	const Object & logger,
 	string method,
@@ -643,7 +788,7 @@ template void Log :: trace <Singleton <Fight_State> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Game> >
+template void Log :: trace <Singleton <Algorithms :: Fight_State> >
 (
 	const Object & logger,
 	string method,
@@ -654,7 +799,7 @@ template void Log :: trace <Singleton <Game> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <GUI_Engine> >
+template void Log :: trace <Singleton <Engines :: Game> >
 (
 	const Object & logger,
 	string method,
@@ -665,7 +810,7 @@ template void Log :: trace <Singleton <GUI_Engine> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <GUI_Listener> >
+template void Log :: trace <Singleton <Engines :: GUI_Engine> >
 (
 	const Object & logger,
 	string method,
@@ -676,7 +821,7 @@ template void Log :: trace <Singleton <GUI_Listener> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Input_Engine> >
+template void Log :: trace <Singleton <Engines :: Input_Engine> >
 (
 	const Object & logger,
 	string method,
@@ -687,7 +832,7 @@ template void Log :: trace <Singleton <Input_Engine> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Log> >
+template void Log :: trace <Singleton <Engines :: Log> >
 (
 	const Object & logger,
 	string method,
@@ -698,7 +843,7 @@ template void Log :: trace <Singleton <Log> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Menu_State> >
+template void Log :: trace <Singleton <Algorithms :: Menu_State> >
 (
 	const Object & logger,
 	string method,
@@ -709,7 +854,7 @@ template void Log :: trace <Singleton <Menu_State> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Player> >
+template void Log :: trace <Singleton <Algorithms :: Play_State> >
 (
 	const Object & logger,
 	string method,
@@ -720,7 +865,51 @@ template void Log :: trace <Singleton <Player> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Singleton <Quit_State> >
+template void Log :: trace <Singleton <Items :: Player_Character> >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Singleton <Plugin_Manager> >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Singleton <Algorithms :: Quit_State> >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Singleton <Engines :: Settings> >
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Singleton <Engines :: Tracker> >
 (
 	const Object & logger,
 	string method,
@@ -753,7 +942,7 @@ template void Log :: trace <Sound>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Speech_State>
+template void Log :: trace <State_Machines :: State_Machine <Algorithms :: Algorithm <Engines :: Game> > >
 (
 	const Object & logger,
 	string method,
@@ -764,7 +953,7 @@ template void Log :: trace <Speech_State>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <State_Machine <Algorithm <Game> > >
+template void Log :: trace <State_Machines :: State_Machine <Algorithms :: Algorithm <Items :: NPC> > >
 (
 	const Object & logger,
 	string method,
@@ -775,7 +964,7 @@ template void Log :: trace <State_Machine <Algorithm <Game> > >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <State_Machine <Algorithm <NPC> > >
+template void Log :: trace <State_Machines :: State_Machine <GUI> >
 (
 	const Object & logger,
 	string method,
@@ -786,7 +975,7 @@ template void Log :: trace <State_Machine <Algorithm <NPC> > >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <State_Machine <GUI> >
+template void Log :: trace <State_Machines :: State_Machine <Tile> >
 (
 	const Object & logger,
 	string method,
@@ -797,18 +986,7 @@ template void Log :: trace <State_Machine <GUI> >
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <State_Machine <Tile> >
-(
-	const Object & logger,
-	string method,
-	string argument_1,
-	string argument_2,
-	string argument_3,
-	string argument_4,
-	string argument_5,
-	string argument_6
-);
-template void Log :: trace <Static_Item>
+template void Log :: trace <Items :: Static_Item>
 (
 	const Object & logger,
 	string method,
@@ -830,7 +1008,18 @@ template void Log :: trace <Tile>
 	string argument_5,
 	string argument_6
 );
-template void Log :: trace <Weapon>
+template void Log :: trace <Engines :: Tracker>
+(
+	const Object & logger,
+	string method,
+	string argument_1,
+	string argument_2,
+	string argument_3,
+	string argument_4,
+	string argument_5,
+	string argument_6
+);
+template void Log :: trace <Items :: Weapon>
 (
 	const Object & logger,
 	string method,
@@ -852,5 +1041,3 @@ template void Log :: trace <World>
 	string argument_5,
 	string argument_6
 );
-
-

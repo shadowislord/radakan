@@ -1,5 +1,9 @@
 #include "log.hpp"
+#include "movable_model.hpp"
+#include "player_character.hpp"
+#include "static_item.hpp"
 #include "tile.hpp"
+#include "world.hpp"
 
 using namespace std;
 using namespace TSL;
@@ -21,17 +25,15 @@ Tile ::
 	(
 		"tile_" + to_string (new_coordinates . first) + "_" + to_string (new_coordinates . second)
 	),
-	OgreOde :: SimpleSpace (& Environment :: get (), Environment :: get () . getDefaultSpace ()),
+	OgreOde :: SimpleSpace (& World :: get (), World :: get () . getDefaultSpace ()),
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
 	tsl_path (new_tsl_path),
 	npcs (my + "NPCs"),
 	doc (tsl_path + "/data/tile/" + me + ".xml")
 {
-	Log :: trace <Tile> (me, "", " (" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")", tsl_path);
+	Engines :: Log :: trace <Tile> (me, "", " (" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")", tsl_path);
 	
-	assert (Object :: is_initialized ());
-
 	load_xml_file (doc);
 
 /*	if (root -> FirstChildElement ("forest") != NULL)
@@ -91,7 +93,7 @@ Tile ::
 	*/
 
 	//	set a floor
-	new OgreOde :: InfinitePlaneGeometry (Ogre :: Plane (y_axis, 0), & Environment :: get (), this);
+	new OgreOde :: InfinitePlaneGeometry (Ogre :: Plane (y_axis, 0), & World :: get (), this);
 
 	assert (is_initialized ());
 }
@@ -99,8 +101,10 @@ Tile ::
 Tile ::
 	~Tile ()
 {
-	Log :: trace <Tile> (me, "~");
+	Engines :: Log :: trace <Tile> (me, "~");
 	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -117,7 +121,7 @@ bool Tile ::
 bool Tile ::
 	add (Model & model)
 {
-	Log :: trace <Tile> (me, "add", model);
+	Engines :: Log :: trace <Tile> (me, "add", model);
 	assert (is_initialized ());
 	assert (model . is_initialized ());
 	assert (! contains (model));
@@ -125,13 +129,13 @@ bool Tile ::
 	bool check = Set <Model> :: add (model);
 	assert (check);
 
-	if (model . item . is_type <NPC> ())
+	if (model . item . is_type <Items :: NPC> ())
 	{
-		Log :: log (me) << model . item << " will be added to the list of NPCs..." << endl;
-		bool check = npcs . add (model . item . to_type <NPC> ());
+		Engines :: Log :: log (me) << model . item << " will be added to the list of NPCs..." << endl;
+		bool check = npcs . add (model . item . to_type <Items :: NPC> ());
 		assert (check);
 		
-		Log :: log (me) << model . item << " was added to the list of NPCs." << endl;
+		Engines :: Log :: log (me) << model . item << " was added to the list of NPCs." << endl;
 	}
 
 	model . set_space (* this);
@@ -143,16 +147,16 @@ bool Tile ::
 bool Tile ::
 	move (Model & model, Set <Model> & destination)
 {
-	Log :: trace <Tile> (me, "move", model, destination);
+	Engines :: Log :: trace <Tile> (me, "move", model, destination);
 	assert (is_initialized ());
 	assert (model . is_initialized ());
 	assert (contains (model));
 	assert (destination . is_initialized ());
 	assert (destination . is_type <Tile> ());
 
-	if (model . item . is_type <NPC> ())
+	if (model . item . is_type <Items :: NPC> ())
 	{
-		npcs . drop (model . item . to_type <NPC> ());
+		npcs . drop (model . item . to_type <Items :: NPC> ());
 	}
 
 	bool check = Set <Model> :: move (model, destination);
@@ -164,10 +168,10 @@ bool Tile ::
 void Tile ::
 	load_xml (TiXmlElement & element)
 {
-	Log :: trace <Tile> (me, "load_xml", "~element~");
+	Engines :: Log :: trace <Tile> (me, "load_xml", "~element~");
 	assert (is_initialized ());
 
-	Log :: log (me) << "element value: " << element . ValueStr () << endl;
+	Engines :: Log :: log (me) << "element value: " << element . ValueStr () << endl;
 	if (element . ValueStr () == string ("include"))
 	{
 		TiXmlDocument document (tsl_path + "/data/tile/" + element . Attribute ("name") + ".xml");
@@ -178,7 +182,7 @@ void Tile ::
 //	float x = to_float (element . Attribute ("x"));
 /*	double x;
 	element . Attribute ("x", & x);
-	Log :: log (me) << "x: " << x << endl;*/
+	Engines :: Log :: log (me) << "x: " << x << endl;*/
 	float x = to_float (element . Attribute ("x"));
 	float y = to_float (element . Attribute ("y"));
 	float z = to_float (element . Attribute ("z"));
@@ -202,22 +206,22 @@ void Tile ::
 		to_float (volume_element -> Attribute ("z"))
 	);
 
-	Item * item = NULL;
+	Items :: Item * item = NULL;
 	if (item_xml -> ValueStr () == string ("static_item"))
 	{
-		item = & Static_Item :: create (name, mesh, volume, mass, solid);
+		item = & Items :: Static_Item :: create (name, mesh, volume, mass, solid);
 	}
 	else if (item_xml -> ValueStr () == string ("npc"))
 	{
-		item = & NPC :: create (name, mesh, volume, mass);
+		item = & Items :: NPC :: create (name, mesh, volume, mass);
 	}
 	else if (item_xml -> ValueStr () == string ("player"))
 	{
-		item = & Player :: create (name, mesh, volume, mass);
+		item = & Items :: Player_Character :: create (name, mesh, volume, mass);
 	}
 	else
 	{
-		Log :: error (me) << "Unrecognizable xml tag name: " << item_xml -> ValueStr () << endl;
+		Engines :: Log :: error (me) << "Unrecognizable xml tag name: " << item_xml -> ValueStr () << endl;
 		abort ();
 	}
 
@@ -236,7 +240,7 @@ void Tile ::
 void Tile ::
 	load_xml_file (TiXmlDocument & document)
 {
-	Log :: trace <Tile> (me, "load_xml_file", "~document~");
+	Engines :: Log :: trace <Tile> (me, "load_xml_file", "~document~");
 	assert (is_initialized ());
 
 	bool check = document . LoadFile ();
@@ -249,13 +253,13 @@ void Tile ::
 	{
 		load_xml (* model_xml);
 	}
-	Log :: log (me) << "Tile loaded" << endl;
+	Engines :: Log :: log (me) << "Tile loaded" << endl;
 }
 
 Model & Tile ::
-	create_model (Item & item, Ogre :: Vector3 position, float scale)
+	create_model (Items :: Item & item, Ogre :: Vector3 position, float scale)
 {
-	Log :: trace <Tile> (me, "create_model", item, to_string (position), to_string (scale));
+	Engines :: Log :: trace <Tile> (me, "create_model", item, to_string (position), to_string (scale));
 	OgreOde :: Geometry & geometry = item . create_geometry ();
 	OgreOde :: Body * body = geometry . getBody ();
 	if (body == NULL)

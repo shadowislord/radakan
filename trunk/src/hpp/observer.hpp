@@ -7,6 +7,7 @@ using namespace std;
 
 namespace TSL
 {
+	///	Observer is an abstract base class for the observer pattern.
 	template <class T> class Observer :
 		public virtual Object
 	{
@@ -16,8 +17,8 @@ namespace TSL
 			virtual bool is_initialized () const;
 			
 			static const string get_class_name ();
-
-			virtual void call (const string & type, const string & message) = 0;
+			
+			virtual void call (const Object & message) = 0;
 			
 		protected :
 			Observer ();

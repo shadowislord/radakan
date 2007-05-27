@@ -33,36 +33,19 @@ namespace TSL
 			Sound (string file_name);
 	};
 
-#ifdef TSL_FMOD
-	///	.MOD, .S3M, .XM, .IT, .MID, .RMI, .SGT, .FSB
-	class Music_Module :
-		public Sound
-	{
-		public :
-			Music_Module (string file_name);
-			~Music_Module ();
-			virtual void play ();
-			
-		private :
-			FMUSIC_MODULE * module;
-	};
-#endif
-
 	///	for static soundfiles, like .WAV, .MP2, .MP3, .OGG and .RAW
 	class Sound_Sample :
 		public Sound
 	{
 		public :
-			#ifdef TSL_FMOD
-				Sound_Sample (string file_name);
-			#else
-				Sound_Sample (string file_name, audiere :: AudioDevicePtr device);
-			#endif
+			static Sound_Sample & create (string file_name);
 
 			// These files are closed automatically
 			virtual void play ();
 
 		private :
+			Sound_Sample (string file_name);
+			
 			#ifdef TSL_FMOD
 				FSOUND_SAMPLE * sample;
 			#else
@@ -70,41 +53,31 @@ namespace TSL
 			#endif
 	};
 
-#ifdef TSL_FMOD
-	///	for streamed audio, like file, url and cd
-	class Sound_Stream :
-		public Sound
+	namespace Engines
 	{
-		public :
-			Sound_Stream (string file_name);
-			~Sound_Stream ();
-			virtual void play ();
+		///	Audio_Engine is the music and sound engine.
+		class Audio_Engine :
+			public Singleton <Audio_Engine>,
+			private Set <Sound>
+		{
+			public :
+				Audio_Engine ();
+				virtual ~Audio_Engine ();
+				virtual bool is_initialized () const;
+				
+				static const string get_class_name ();
+				
+				void play ();
+				void load (string file_name);
 
-	private :
-		FSOUND_STREAM * stream;
-	};
-#endif
+				#ifndef TSL_FMOD
+					audiere :: AudioDevicePtr device;
+				#endif
 
-	class Audio_Engine :
-		public Singleton <Audio_Engine>,
-		private Set <Sound>
-	{
-		public :
-			Audio_Engine ();
-			virtual ~Audio_Engine ();
-			virtual bool is_initialized () const;
-			
-			static const string get_class_name ();
-			
-			void play ();
-			void load (string file_name);
-
-		private :
-			bool silent;
-			#ifndef TSL_FMOD
-				audiere :: AudioDevicePtr device;
-			#endif
-	};
+			private :
+				bool silent;
+		};
+	}
 }
 
 #endif	//	TSL_AUDIO_ENGINE_HPP

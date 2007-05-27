@@ -1,20 +1,21 @@
-#include "battle_engine.hpp"
+#include "battle_plugin.hpp"
 #include "log.hpp"
 
 using namespace std;
 using namespace boost;
 using namespace TSL;
+using namespace TSL :: Plugins;
 
 //	static
-const string Battle_Engine ::
+const string Battle_Plugin ::
 	get_class_name ()
 {
-	return "Battle_Engine";
+	return "Battle_Plugin";
 }
 
-Battle_Engine ::
-	Battle_Engine () :
-	Object ("Battle engine"),
+Battle_Plugin ::
+	Battle_Plugin () :
+	Object ("Battle state"),
 	max_distance (1),
 	generator (42u),
 	uniform_real_distribution (0, 1),
@@ -22,40 +23,57 @@ Battle_Engine ::
 	uniform (generator, uniform_real_distribution),
 	lognormal (generator, lognormal_real_distribution)
 {
-	Log :: trace <Battle_Engine> (me);
-	assert (Object :: is_initialized ());
+	Engines :: Log :: trace <Battle_Plugin> (me);
 
 	generator . seed (static_cast <unsigned int> (time (0)));
 
 	assert (is_initialized ());
 }
 
-Battle_Engine ::
-	~Battle_Engine ()
+Battle_Plugin ::
+	~Battle_Plugin ()
 {
-	Log :: trace <Battle_Engine> (me, "~");
+	Engines :: Log :: trace <Battle_Plugin> (me, "~");
 	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
-bool Battle_Engine ::
+bool Battle_Plugin ::
 	is_initialized ()
 	const
 {
-	return Object :: is_initialized ();
+	assert (Singleton <Battle_Plugin> :: is_initialized ());
+	assert (Observer <Algorithms :: Play_State> :: is_initialized ());
+	
+	return true;
 }
 
-void Battle_Engine ::
-	hit (Character & attacker, Character & defender)
+//	virtual
+void Battle_Plugin ::
+	call (const Object & message)
 {
-	Log :: trace <Battle_Engine> (me, "hit", attacker, defender);
+	assert (is_initialized ());
+	if (message != "battle")
+	{
+		return;
+	}
+
+	//	TODO
+}
+
+/*void Battle_Plugin ::
+	add (Character & attacker, Character & defender)
+{
+	Engines :: Log :: trace <Battle_Plugin> (me, "add", attacker, defender);
 	assert (is_initialized ());
 
 	assert (! attacker . is_dead ());
 
 	if (defender . is_dead ())
 	{
-		Log :: show ("Mutilating " + defender + "'s dead body is *not* nice.");
+		Engines :: Log :: show ("Mutilating " + defender + "'s dead body is *not* nice.");
 		return;
 	}
 
@@ -67,7 +85,7 @@ void Battle_Engine ::
 	
 	if (max_distance < distance)
 	{
-		Log :: show ("Target is out of range: "
+		Engines :: Log :: show ("Target is out of range: "
 			+ to_string (distance) + " > " + to_string (max_distance));
 		return;
 	}
@@ -93,8 +111,8 @@ void Battle_Engine ::
 		}
 	}
 
-	Log :: log (me) << "Atack: " << attack << endl;
-	Log :: log (me) << "Defense: " << defense << endl;
+	Engines :: Log :: log (me) << "Atack: " << attack << endl;
+	Engines :: Log :: log (me) << "Defense: " << defense << endl;
 
 	if (defense < attack)	//	Hit
 	{
@@ -102,6 +120,6 @@ void Battle_Engine ::
 	}
 	else
 	{
-		Log :: show (attacker + " missed!");
+		Engines :: Log :: show (attacker + " missed!");
 	}
-}
+}*/

@@ -11,8 +11,6 @@
 
 #include "model.hpp"
 #include "npc.hpp"
-#include "player.hpp"
-#include "static_item.hpp"
 
 #include <tinyxml.h>
 
@@ -20,11 +18,8 @@ using namespace std;
 
 namespace TSL
 {
-	//	'typename' added to assure that const_iterator is a type.
-	//	'class' would give MSV problems.
-	typedef set <NPC *> :: const_iterator NPC_iterator;
-
-	///	A Tile is a square piece of a sector.
+	///	A Tile is a square piece of the world.
+	///	Tile data is stored under trunk/data/tile/.
 	class Tile :
 		public Set <Model>,
 		public OgreOde :: SimpleSpace
@@ -44,12 +39,12 @@ namespace TSL
 
 			static const int side_length;
 
-			Set <NPC> npcs;
+			Set <Items :: NPC> npcs;
 
 		private :
 			void load_xml (TiXmlElement & element);
 			void load_xml_file (TiXmlDocument & document);
-			Model & create_model (Item & item, Ogre :: Vector3 position, float scale);
+			Model & create_model (Items :: Item & item, Ogre :: Vector3 position, float scale);
 
 			const string tsl_path;
 

@@ -1,19 +1,18 @@
 #include "audio_engine.hpp"
-#include "battle_engine.hpp"
-#include "chat_state.hpp"
-#include "dead_state.hpp"
 #include "game.hpp"
-#include "fight_state.hpp"
 #include "input_engine.hpp"
 #include "log.hpp"
 #include "menu_state.hpp"
+#include "play_state.hpp"
 #include "quit_state.hpp"
-#include "world.hpp"
+#include "settings.hpp"
+#include "tracker.hpp"
 
 #include <OgreColourValue.h>
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Engines;
 
 //	static
 const string Game ::
@@ -24,11 +23,11 @@ const string Game ::
 
 Game ::
 	Game (string tsl_path, string ogre_media_path) :
-	Object ("Game"),
-	last_turn_lenght (0)
+	Object ("Game")
 {
 	Log :: trace <Game> (me, "", tsl_path, ogre_media_path);
 
+	new Tracker ();
 	new Log ();
 
 	new Audio_Engine ();
@@ -100,18 +99,20 @@ Game ::
 		Ogre :: SceneManager & scene_manager = * root -> createSceneManager (Ogre :: ST_GENERIC);
 		new GUI_Engine (* window, scene_manager, tsl_path + "/log/cegui.txt");
 
-		new World (scene_manager, tsl_path);
-		new Menu_State ();
-		new Quit_State ();
+		new Algorithms :: Play_State (scene_manager, tsl_path);
+		new Algorithms :: Menu_State ();
+		new Algorithms :: Quit_State ();
 
-		Algorithm_State_Machine <Game> :: set_active_state (World :: get ());
-		assert (get_active_state () . is_type <World> ());
+		set_active_state (Algorithms :: Play_State :: get ());
+		assert (get_active_state () . is_type <Algorithms :: Play_State> ());
 
 		Ogre :: Camera * camera = scene_manager . getCameraIterator () . getNext ();
 		assert (camera != NULL);
 
 		root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
 		root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
+		
+		new Settings (scene_manager);
 	}	// try
 	catch (Ogre :: Exception & exception)
 	{
@@ -127,25 +128,24 @@ Game ::
 {
 	Log :: trace <Game> (me, "~");
 	assert (is_initialized ());
+	
 	Log :: log (me) << "active state: " << get_active_state () << endl;
-	assert (get_active_state () == Quit_State :: get ());
+	assert (get_active_state () == Algorithms :: Quit_State :: get ());
 
 	unset_active_state ();
 
-	Menu_State :: destruct ();
-	Quit_State :: destruct ();
-	World :: destruct ();
-
-	Chat_State :: destruct ();
-	Fight_State :: destruct ();
-	Alive_State :: destruct ();
-	Dead_State :: destruct ();
+	Settings :: destruct ();
 	
+	Algorithms :: Menu_State :: destruct ();
+	Algorithms :: Quit_State :: destruct ();
+	Algorithms :: Play_State :: destruct ();
+
 	GUI_Engine :: destruct ();
 	Input_Engine :: destruct ();
 	Audio_Engine :: destruct ();
 
 	Log :: destruct ();
+	Tracker :: destruct ();
 }
 
 //	virtual
@@ -154,7 +154,7 @@ bool Game ::
 	const
 {
 	assert (Singleton <Game> :: is_initialized ());
-	assert (Algorithm_State_Machine <Game> :: is_initialized ());
+	assert (State_Machines :: Algorithm_State_Machine <Game> :: is_initialized ());
 
 	return true;
 }
@@ -162,12 +162,9 @@ bool Game ::
 void Game ::
 	run ()
 {
-	while (get_active_state () != Quit_State :: get ())
+	const Object * message = & Object :: update;
+	while (get_active_state () != Algorithms :: Quit_State :: get ())
 	{
-		#ifdef TSL_DEBUG
-			turn ++;
-		#endif
-
 		bool check = root -> renderOneFrame ();
 		assert (check);
 		GUI_Engine :: get () . render ();
@@ -175,25 +172,14 @@ void Game ::
 		Input_Engine :: get () . capture ();
 		Ogre :: WindowEventUtilities :: messagePump ();
 
-		Algorithm_State_Machine <Game> :: run ();
-
-		last_turn_lenght = float (turn_lenght_timer . getMilliseconds ()) / 1000;
-
-		Log :: log (me) << "Turn lenght: " << last_turn_lenght << endl;
-
-//		if (maximal_turn_lenght < last_turn_lenght)
-//		{
-//			last_turn_lenght = maximal_turn_lenght;
-//		}
-		turn_lenght_timer . reset ();
-
 		if (window -> isClosed ())
 		{
-			Algorithm_State_Machine <Game> :: set_active_state (Quit_State :: get ());
+			message = & Object :: terminate;
 		}
+		State_Machines :: Algorithm_State_Machine <Game> :: run (* message);
 	}
-	
-	assert (get_active_state () == Quit_State :: get ());
+
+	assert (get_active_state () == Algorithms :: Quit_State :: get ());
 }
 
 string Game ::
@@ -202,18 +188,4 @@ string Game ::
 	assert (is_initialized ());
 
 	return "FPS: " + to_string (window -> getAverageFPS ());
-}
-
-void Game ::
-	set_camera (Ogre :: Camera & new_camera)
-{
-	assert (is_initialized ());
-
-	root -> getRenderSystem () -> _getViewport () -> setCamera (& new_camera);
-}
-
-const float & Game ::
-	get_last_turn_lenght () const
-{
-	return last_turn_lenght;
 }

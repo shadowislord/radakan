@@ -3,6 +3,7 @@
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Engines;
 
 Sound ::
 	Sound (string file_name) :
@@ -15,47 +16,22 @@ Sound ::
 {
 }
 
-#ifdef TSL_FMOD
-	Music_Module ::
-		Music_Module (string file_name) :
-		Sound (file_name)
-	{
-		module = FMUSIC_LoadSong (file_name . c_str ());
-	}
-			
-	Music_Module ::
-		~Music_Module ()
-	{
-		FMUSIC_FreeSong (module);
-	}
-			
-	void Music_Module ::
-		play ()
-	{
-		FMUSIC_PlaySong (module);
-	}
-#endif
-
 Sound_Sample ::
-	#ifdef TSL_FMOD
-		Sound_Sample (string file_name) :
-	#else
-		Sound_Sample (string file_name, audiere :: AudioDevicePtr device) :
-	#endif
+	Sound_Sample (string file_name) :
 	Sound (file_name)
 {
 	#ifdef TSL_FMOD
 		sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
 	#else
-		sound = audiere :: OpenSound (device, file_name . c_str ());
+		sound = audiere :: OpenSound (Audio_Engine :: get () . device, file_name . c_str ());
 		if (! sound)
 		{
-			Log :: error (me) << "OpenSound (...) failed" << endl;
+			Engines :: Log :: error (me) << "OpenSound (...) failed" << endl;
 			abort ();
 		}
 	#endif
 }
-			
+
 void Sound_Sample ::
 	play ()
 {
@@ -66,26 +42,14 @@ void Sound_Sample ::
 	#endif
 }
 
-#ifdef TSL_FMOD
-	Sound_Stream ::
-		Sound_Stream (string file_name) :
-		Sound (file_name)
-	{
-		stream = FSOUND_Stream_Open (file_name . c_str (), 0, 0, 0);
-	}
-	
-	Sound_Stream ::
-		~Sound_Stream ()
-	{
-		FSOUND_Stream_Close (stream);
-	}
-	
-	void Sound_Stream ::
-		play ()
-	{
-		FSOUND_Stream_Play (FSOUND_FREE, stream);
-	}
-#endif
+//	static
+Sound_Sample & Sound_Sample ::
+	create (string file_name)
+{
+	Sound_Sample * result  = new Sound_Sample (file_name);
+
+	return * result;
+}
 
 //	static
 const string Audio_Engine ::
@@ -106,19 +70,22 @@ Audio_Engine ::
 		device = audiere :: OpenDevice ("");
 		if (! device)
 		{
-			Log :: log (me) << "OpenDevice () failed:" << endl;
-			Log :: log (me) << "Silence!" << endl;
+			Engines :: Log :: log (me) << "OpenDevice () failed:" << endl;
+			Engines :: Log :: log (me) << "Silence!" << endl;
 
 			silent = true;
 		}
 	#endif
+
+	assert (is_initialized ());
 }
 
 Audio_Engine ::
 	~Audio_Engine ()
 {
+	Engines :: Log :: trace <Audio_Engine> (me, "~");
 	assert (is_initialized ());
-	Log :: trace <Audio_Engine> (me, "~");
+	
 	if (! silent)
 	{
 		#ifdef TSL_FMOD
@@ -153,21 +120,17 @@ void Audio_Engine ::
 		string extension = file_name . substr (file_name . size () - 3);
 		if (extension == "ogg")
 		{
-			bool check = add ((new Sound_Sample (file_name
-			#ifndef TSL_FMOD
-				, device
-			#endif
-			)) -> to_type <Sound> ());
+			bool check = add (Sound_Sample :: create (file_name));
 			assert (check);
 		}
 		else if (extension == "mp3")
 		{
-			Log :: error (me) << "We do not have the rights to use the .mp3 format. Please use the .ogg format instead." << endl;
+			Engines :: Log :: error (me) << "We do not have the rights to use the .mp3 format. Please use the .ogg format instead." << endl;
 			abort ();
 		}
 		else
 		{
-			Log :: error (me) << "Unknown file format '" << extension << "'" << endl;
+			Engines :: Log :: error (me) << "Unknown file format '" << extension << "'" << endl;
 			abort ();
 		}
 	}

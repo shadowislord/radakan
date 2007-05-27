@@ -1,71 +1,61 @@
-#ifndef TSL_World_HPP
-#define TSL_World_HPP
+#ifndef TSL_WORLD_HPP
+#define TSL_WORLD_HPP
 
-#include "algorithm.hpp"
-#include "battle_engine.hpp"
+#include "singleton.hpp"
 #include "data_state_machine.hpp"
 #include "tile.hpp"
-#include "gui.hpp"
+#include "movable_model.hpp"
 
-using namespace std;
+#include <OgreSceneManager.h>
 
 namespace TSL
 {
-	class Game;
 
+	///	World contains all basic 'environment' data.
 	class World :
 		public Singleton <World>,
-		public Algorithm <Game>,
-		private Environment,
-		private Data_State_Machine <Tile>,
-		private Battle_Engine,
-		public OgreOde :: ExactVariableStepHandler,	//	somehow things don't work without
-		public OgreOde :: CollisionListener
+		//	public virtual Object,
+		public OgreOde :: World,
+		private OgreOde :: ExactVariableStepHandler,	//	somehow things don't work without
+		public OgreOde :: CollisionListener,
+		public State_Machines :: Data_State_Machine <Tile>
 	{
-		public :
+		public:
 			World (Ogre :: SceneManager & scene_manager, string tsl_path);
 			virtual ~World ();
 			virtual bool is_initialized () const;
 			
 			static const string get_class_name ();
 
-			using Singleton <World> :: get;
-			using Singleton <World> :: is_instantiated;
-			using Singleton <World> :: destruct;
-			
 			virtual void set_active_state (Tile & tile);
-			virtual Algorithm <Game> & transit (Game & owner);
 
 			///	Called by OgreOde whenever a collision occurs,
 			///	so that we can modify the contact parameters.
 			virtual bool collision (OgreOde :: Contact * contact);
+			
+			void update ();
 
+			const unsigned int & get_turn () const;
+			
+			///	in seconds
+			const float & get_last_turn_lenght () const;
+
+			Ogre :: SceneNode & root_node;
+		
 		private :
-			void enter (Game & owner);
+			unsigned int turn;
+			float last_turn_lenght;
+			Ogre :: Timer turn_lenght_timer;
 			
-			GUI & gui;
-			
-			float vertical_camera_angle;
-
 			//	The coordinates of a tile are expressed as (x, z).
 			map <pair <int, int>, Tile *> tiles;
-
-			Ogre :: Camera & camera;
 
 			//	This are the tile position limits, not the item position limits!
 			static const int min_x;
 			static const int max_x;
 			static const int min_z;
 			static const int max_z;
-
-			///	in radians
-			static const float min_vertical_camera_angle;
-			
-			///	in radians
-			static const float max_vertical_camera_angle;
-
-			Movable_Model * player_model;
 	};
 }
 
-#endif	//	TSL_World_HPP
+#endif	// TSL_WORLD_HPP

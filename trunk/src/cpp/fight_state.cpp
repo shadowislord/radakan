@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Algorithms;
 
 //	static
 const string Fight_State ::
@@ -17,10 +18,10 @@ const string Fight_State ::
 Fight_State ::
 	Fight_State () :
 	Object ("fight state"),
-	Algorithm <NPC> (Alive_State :: get ())
+	Algorithm <Items :: NPC> (Alive_State :: get ())
 {
-	assert (Algorithm <NPC> :: is_initialized ());
-
+	//	Do nothing.
+	
 	assert (Fight_State :: is_initialized ());
 }
 
@@ -28,8 +29,10 @@ Fight_State ::
 Fight_State ::
 	~Fight_State ()
 {
-	Log :: trace <Fight_State> (me, "~");
-	assert (Algorithm <NPC> :: is_initialized ());
+	Engines :: Log :: trace <Fight_State> (me, "~");
+	assert (Fight_State :: is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
@@ -37,17 +40,18 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	assert (Algorithm <NPC> :: is_initialized ());
+	assert (Algorithm <Items :: NPC> :: is_initialized ());
 	assert (Singleton <Fight_State> :: is_initialized ());
 	
 	return true;
 }
 
 //	virtual
-Algorithm <NPC> & Fight_State ::
-	transit (NPC & owner)
+Algorithm <Items :: NPC> & Fight_State ::
+	transit (Items :: NPC & owner, const Object & message)
 {
 	assert (is_initialized ());
 
+	//	Return me or a child state.
 	return owner . get_active_state ();
 }

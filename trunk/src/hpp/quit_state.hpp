@@ -8,22 +8,32 @@ using namespace std;
 
 namespace TSL
 {
-	class Game;
-
-	class Quit_State :
-		public Singleton <Quit_State>,
-		public Algorithm <Game>
+	namespace Engines
 	{
-		public :
-			Quit_State ();
-			virtual ~Quit_State ();
-			virtual bool is_initialized () const;
-			
-			static const string get_class_name ();
+		class Game;
+	}
 
-			using Algorithm <Game> :: enter;
-			using Algorithm <Game> :: exit;
-	};
+	namespace Algorithms
+	{
+
+		///	Quit_State is the algorithm for the game when quiting.
+		class Quit_State :
+			public Singleton <Quit_State>,
+			public Algorithm <Engines :: Game>
+		{
+			public :
+				Quit_State ();
+				virtual ~Quit_State ();
+				virtual bool is_initialized () const;
+				
+				static const string get_class_name ();
+
+				virtual Algorithm <Engines :: Game> & transit (Engines :: Game & owner, const Object & message);
+
+				using Algorithm <Engines :: Game> :: enter;
+				using Algorithm <Engines :: Game> :: exit;
+		};
+	}
 }
 
 #endif	//	TSL_QUIT_STATE_HPP

@@ -3,6 +3,7 @@
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Items;
 
 //	static
 const string Weapon ::
@@ -42,8 +43,6 @@ Weapon ::
 	defense_rate (new_defense_rate),
 	damage (new_damage)
 {
-	assert (Item :: is_initialized ());
-
 	broken = false;
 	sharpness = new_sharpness;
 
@@ -54,8 +53,10 @@ Weapon ::
 Weapon ::
 	~Weapon ()
 {
-	Log :: trace <Weapon> (me, "~");
+	Engines :: Log :: trace <Weapon> (me, "~");
 	assert (is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual

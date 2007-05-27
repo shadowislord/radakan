@@ -3,6 +3,7 @@
 
 using namespace std;
 using namespace TSL;
+using namespace TSL :: Items;
 
 //	static
 template <class T> const string Multislot <T> ::
@@ -34,8 +35,9 @@ template <class T> Multislot <T> ::
 		new_max_size
 	)
 {
-	Log :: trace <Multislot> (me, "");
-	assert (Container :: is_initialized ());
+	Engines :: Log :: trace <Multislot> (me, "");
+	
+	//	Do nothing.
 
 	assert (is_initialized ());
 }
@@ -44,8 +46,10 @@ template <class T> Multislot <T> ::
 template <class T> Multislot <T> ::
 	~Multislot ()
 {
-	Log :: trace <Multislot> (me, "~");
+	Engines :: Log :: trace <Multislot> (me, "~");
 	assert (Container :: is_initialized ());
+
+	//	Do nothing.
 }
 
 //	virtual
