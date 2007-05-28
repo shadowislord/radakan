@@ -16,14 +16,14 @@ const string Model ::
 Model ::
 	Model (Items :: Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry) :
 	Object (new_item + "'s model"),
-	Set <Items :: Item> ("", 1),
+	Location <Items :: Item> (1),
 	item (new_item),
 	node (* World :: get () . root_node . createChildSceneNode (string :: data ())),
 	geometry (new_geometry)
 {
-	Engines :: Log :: trace <Model> (me, "", new_item, to_string (position), to_string (scale));
+	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item, to_string (position), to_string (scale));
 
-	Set <Items :: Item> :: add (item);
+	add (item);
 	seal ();
 
 //	World :: get () . root_node . addChild (this);
@@ -58,8 +58,10 @@ Model ::
 Model ::
 	~Model ()
 {
-	Engines :: Log :: trace <Model> (me, "~");
+	Engines :: Log :: trace (me, Model :: get_class_name (), "~");
 	assert (Model :: is_initialized ());
+
+	forget_dependencies ();
 
 	item . remove_model ();
 	
@@ -78,12 +80,14 @@ bool Model ::
 	const
 {
 	assert (Set <Items :: Item> :: is_initialized ());
-	assert (is_sealed ());
+	//	TODO re-enable:
+	//	assert (is_sealed ());
 	assert (item . has_model ());
 	assert (node . getParent () == & World :: get () . root_node);
 	assert (node . numAttachedObjects () <= 2);
 
-	//	TODO re-enable assert ((node . getPosition () - geometry . getPosition ()) . length () < 0.01);
+	//	TODO re-enable:
+	//	assert ((node . getPosition () - geometry . getPosition ()) . length () < 0.01);
 
 	return true;
 }

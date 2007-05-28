@@ -1,7 +1,6 @@
 #ifndef TSL_ALGORITHM_HPP
 #define TSL_ALGORITHM_HPP
 
-#include "message.hpp"
 #include "singleton.hpp"
 
 using namespace std;

@@ -32,7 +32,7 @@ Player_Character ::
 	),
 	dead (false)
 {
-	Engines :: Log :: trace <Player_Character> (me, "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
+	Engines :: Log :: trace (me, Player_Character :: get_class_name (), "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 
 	bool check = back . add (Container :: create ("Backbpack", "bar.mesh", Ogre :: Vector3 (0.3, 0.5, 0.2), 3));
 	assert (check);
@@ -47,10 +47,10 @@ Player_Character ::
 Player_Character ::
 	~Player_Character ()
 {
-	Engines :: Log :: trace <Player_Character> (me, "");
+	Engines :: Log :: trace (me, Player_Character :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

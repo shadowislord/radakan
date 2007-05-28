@@ -73,14 +73,16 @@ Object ::
 	Object (string new_name) :
 	string (new_name),
 	me (* this),
-	my (me + "'s ")
+	my (me + "'s "),
+	destructing (false)
 {
-	Engines :: Log :: trace <Object> (me, "", new_name);
+	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name);
 	assert (! new_name . empty ());
 
 	if (Engines :: Tracker :: is_instantiated ())
 	{
-		Engines :: Tracker :: get () . add (me);
+		bool check = Engines :: Tracker :: get () . add (me);
+		assert (check);
 		assert (does_depend (Engines :: Tracker :: get ()));
 	}
 
@@ -91,15 +93,11 @@ Object ::
 Object ::
 	~Object ()
 {
-	Engines :: Log :: trace <Object> (me, "~");
+	Engines :: Log :: trace (me, Object :: get_class_name (), "~");
 	assert (is_initialized ());
-	
-	for (set <const Object *> :: const_iterator i = dependencies . begin ();
-		i != dependencies . end (); i ++)
-	{
-		const_cast <Object *> (* i) -> drop_implicit_dependency (me);
-	}
-	
+
+	forget_dependencies ();
+
 	Engines :: Log :: log (me) << "Farewell..." << endl;
 }
 
@@ -108,7 +106,7 @@ bool Object ::
 	is_initialized ()
 	const
 {
-	//	Engines :: Log :: trace <Object> (me, "is_initialized");
+	//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_initialized");
 	//	checks for empty string
 	assert (! empty ());
 	
@@ -120,7 +118,7 @@ bool Object ::
 	does_depend (const Object & candidate)
 	const
 {
-	Engines :: Log :: trace <Object> (me, "does_depend", candidate);
+	//	Engines :: Log :: trace (me, Object :: get_class_name (), "does_depend", candidate);
 	//	assert (Object :: is_initialized ());
 
 	return (dependencies . find (& candidate) != dependencies . end ());
@@ -129,7 +127,7 @@ bool Object ::
 void Object ::
 	remember (Object & dependency)
 {
-	Engines :: Log :: trace <Object> (me, "remember", dependency);
+	Engines :: Log :: trace (me, Object :: get_class_name (), "remember", dependency);
 	//	assert (Object :: is_initialized ());
 
 	bool check = dependencies . insert (& dependency) . second;
@@ -139,53 +137,92 @@ void Object ::
 void Object ::
 	forget (const Object & dependency, bool stay)
 {
-	Engines :: Log :: trace <Object> (me, "forget", dependency, bool_to_string (stay));
+	Engines :: Log :: trace (me, Object :: get_class_name (), "forget", dependency, bool_to_string (stay));
 	assert (is_initialized ());
 	assert (does_depend (dependency));
 
 	dependencies . erase (& dependency);
 
-	if (dependency == Engines :: Tracker :: get ())
+	if (destructing)
 	{
-		Engines :: Log :: log (me) << "I will not self-delete twice." << endl;
-
+		Engines :: Log :: log (me) << "I'm already destructing." << endl;
 		return;
 	}
 
-	//	Am I an orphan? 'objects' (debug only) is ignored here.
-	if (dependencies . size () == (debugging ? 1 : 0))
+	unsigned int self_destruct_criterion = 0;
+	if (does_depend (Engines :: Tracker :: get ()))
 	{
-		if (stay)
-		{
-			Engines :: Log :: log (me) << "I have no more dependencies, but I'm forced to stay." << endl;
-		}
-		else
-		{
-			Engines :: Log :: log (me) << "I have no more dependencies and will self-delete." << endl;
-			delete this;
-		}
+		self_destruct_criterion = 1;
 	}
-	else
+	assert (dependencies . size () >= self_destruct_criterion);
+
+	if (dependencies . size () > self_destruct_criterion)
 	{
 		Engines :: Log :: log (me) << "I have another dependency and will not self-delete." << endl;
+		return;
 	}
+
+	if (stay)
+	{
+		Engines :: Log :: log (me) << "I have no more dependencies, but I'm forced to stay." << endl;
+		return;
+	}
+
+	Engines :: Log :: log (me) << "I have no more dependencies and will self-delete." << endl;
+	delete this;
 }
 
 //	virtual
 void Object ::
-	drop_implicit_dependency (const Object & dependency)
+	drop (Object & t, bool stay)
 {
+	Engines :: Log :: trace (me, Object :: get_class_name (), "drop", t, bool_to_string (stay));
 	assert (is_initialized ());
 
-	Engines :: Log :: error (me) << "Unknown implicit dependency '" << dependency << "'." << endl;
+	Engines :: Log :: error (me) << "Plain object call to drop '" << t << "'." << endl;
 	abort ();
+}
+
+void Object ::
+	forget_dependencies ()
+{
+	Engines :: Log :: trace (me, Object :: get_class_name (), "forget_dependencies");
+	assert (is_initialized ());
+
+	destructing = true;
+
+	for (set <const Object *> :: const_iterator i = dependencies . begin ();
+		i != dependencies . end (); i++)
+	{
+		Engines :: Log :: log (me) << "Dependency to forget: '" << * * i << "'" << endl;
+	}
+
+	const Object * last = NULL;
+	for (set <const Object *> :: const_iterator i = dependencies . begin ();
+		i != dependencies . end (); i = dependencies . begin ())
+	{
+		assert (* i != last);
+		//	The dropping object should call 'forget (...)' for me.
+		const_cast <Object *> (* i) -> drop (me);
+
+		last = * i;
+	}
+}
+
+const bool & Object ::
+	is_destructing ()
+	const
+{
+	//	Being initialized isn't necessairy here.
+
+	return destructing;
 }
 
 template <class T> bool Object ::
 	is_type ()
 	const
 {
-//	Engines :: Log :: trace <Object> (me, "is_type", "<" + T :: get_class_name () + ">");
+//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_type", "<" + T :: get_class_name () + ">");
 	assert (is_initialized ());
 
 	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
@@ -195,7 +232,7 @@ template <class T> T & Object ::
 	to_type ()
 	const
 {
-//	Engines :: Log :: trace <Object> (me, "to_type", "<" + T :: get_class_name () + ">");
+//	Engines :: Log :: trace (me, Object :: get_class_name (), "to_type", "<" + T :: get_class_name () + ">");
 	assert (is_initialized ());
 	assert (is_type <T> ());
 

@@ -35,7 +35,7 @@ Container ::
 		new_solid,
 		new_visible
 	),
-	Set <Item> ("", new_maximal_size)
+	Location <Item> (new_maximal_size)
 {
 	//	Do nothing.
 	
@@ -46,10 +46,10 @@ Container ::
 Container ::
 	~Container ()
 {
-	Engines :: Log :: trace <Container> (me, "~");
+	Engines :: Log :: trace (me, Container :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual
@@ -84,7 +84,7 @@ float Container ::
 bool Container ::
 	add (Item & item)
 {
-	Engines :: Log :: trace <Container> (me, "add", item);
+	Engines :: Log :: trace (me, Container :: get_class_name (), "add", item);
 	assert (is_initialized ());
 	assert (item . is_initialized ());
 	assert (! is_sealed ());
@@ -102,7 +102,7 @@ bool Container ::
 		return false;
 	}
 
-	bool check = Set <Item> :: add (item);
+	bool check = Location <Item> :: add (item);
 	assert (check);
 
 	return true;

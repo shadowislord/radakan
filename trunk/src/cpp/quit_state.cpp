@@ -17,7 +17,7 @@ Quit_State ::
 	Quit_State () :
 	Object ("quit state")
 {
-	Engines :: Log :: trace <Quit_State> (me);
+	Engines :: Log :: trace (me, Quit_State :: get_class_name ());
 	
 	//	Do nothing.
 
@@ -28,10 +28,10 @@ Quit_State ::
 Quit_State ::
 	~Quit_State ()
 {
-	Engines :: Log :: trace <Quit_State> (me, "~");
+	Engines :: Log :: trace (me, Quit_State :: get_class_name (), "~");
 	assert (Quit_State :: is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

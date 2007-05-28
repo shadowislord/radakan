@@ -26,9 +26,10 @@ namespace TSL
 				static ostream & error (const Object & logger);
 				static ostream & log (const Object & logger);
 				static void show (string message);
-				template <class T> static void trace
+				static void trace
 				(
 					const Object & logger,
+					string class_name,
 					string method = "",
 					string argument_1 = "",
 					string argument_2 = "",

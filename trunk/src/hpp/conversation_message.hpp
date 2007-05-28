@@ -2,7 +2,6 @@
 #define TSL_CONVERSATION_MESSAGE_HPP
 
 #include "character.hpp"
-#include "message.hpp"
 
 using namespace std;
 

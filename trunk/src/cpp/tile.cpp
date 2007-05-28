@@ -32,7 +32,7 @@ Tile ::
 	npcs (my + "NPCs"),
 	doc (tsl_path + "/data/tile/" + me + ".xml")
 {
-	Engines :: Log :: trace <Tile> (me, "", " (" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")", tsl_path);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "", " (" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")", tsl_path);
 	
 	load_xml_file (doc);
 
@@ -101,10 +101,10 @@ Tile ::
 Tile ::
 	~Tile ()
 {
-	Engines :: Log :: trace <Tile> (me, "~");
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual
@@ -121,12 +121,12 @@ bool Tile ::
 bool Tile ::
 	add (Model & model)
 {
-	Engines :: Log :: trace <Tile> (me, "add", model);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "add", model);
 	assert (is_initialized ());
 	assert (model . is_initialized ());
 	assert (! contains (model));
 
-	bool check = Set <Model> :: add (model);
+	bool check = Location <Model> :: add (model);
 	assert (check);
 
 	if (model . item . is_type <Items :: NPC> ())
@@ -147,7 +147,7 @@ bool Tile ::
 bool Tile ::
 	move (Model & model, Set <Model> & destination)
 {
-	Engines :: Log :: trace <Tile> (me, "move", model, destination);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", model, destination);
 	assert (is_initialized ());
 	assert (model . is_initialized ());
 	assert (contains (model));
@@ -168,7 +168,7 @@ bool Tile ::
 void Tile ::
 	load_xml (TiXmlElement & element)
 {
-	Engines :: Log :: trace <Tile> (me, "load_xml", "~element~");
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml", "~element~");
 	assert (is_initialized ());
 
 	Engines :: Log :: log (me) << "element value: " << element . ValueStr () << endl;
@@ -226,7 +226,8 @@ void Tile ::
 	}
 
 	Model & model = create_model (* item, position + Ogre :: Vector3 (x, y, z), scale);
-	add (model);
+	bool check = add (model);
+	assert (check);
 
 	//	TODO re-enable assert ((position + Ogre :: Vector3 (x, y, z) - model . getPosition ()) . length () < 0.01);
 
@@ -240,7 +241,7 @@ void Tile ::
 void Tile ::
 	load_xml_file (TiXmlDocument & document)
 {
-	Engines :: Log :: trace <Tile> (me, "load_xml_file", "~document~");
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml_file", "~document~");
 	assert (is_initialized ());
 
 	bool check = document . LoadFile ();
@@ -259,7 +260,7 @@ void Tile ::
 Model & Tile ::
 	create_model (Items :: Item & item, Ogre :: Vector3 position, float scale)
 {
-	Engines :: Log :: trace <Tile> (me, "create_model", item, to_string (position), to_string (scale));
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "create_model", item, to_string (position), to_string (scale));
 	OgreOde :: Geometry & geometry = item . create_geometry ();
 	OgreOde :: Body * body = geometry . getBody ();
 	if (body == NULL)

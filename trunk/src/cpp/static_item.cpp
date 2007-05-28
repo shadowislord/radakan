@@ -43,10 +43,10 @@ Static_Item ::
 Static_Item ::
 	~Static_Item ()
 {
-	Engines :: Log :: trace <Static_Item> (me, "~");
+	Engines :: Log :: trace (me, Static_Item :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

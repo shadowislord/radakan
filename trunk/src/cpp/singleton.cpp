@@ -19,7 +19,7 @@ template <class T> Singleton <T> ::
 	Singleton () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	Engines :: Log :: trace <Singleton <T> > (me);
+	Engines :: Log :: trace (me, Singleton <T> :: get_class_name ());
 
 	//	Do nothing.
 
@@ -29,7 +29,7 @@ template <class T> Singleton <T> ::
 template <class T> Singleton <T> ::
 	~Singleton ()
 {
-	Engines :: Log :: trace <Singleton <T> > (me, "~");
+	Engines :: Log :: trace (me, Singleton <T> :: get_class_name (), "~");
 	assert (Singleton <T> :: is_initialized ());
 
 	//	Do nothing.

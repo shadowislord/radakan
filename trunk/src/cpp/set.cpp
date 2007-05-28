@@ -22,7 +22,7 @@ template <class T> Set <T> ::
 	maximal_size (new_maximal_size),
 	sealed (false)
 {
-	Engines :: Log :: trace <Set <T> > (me, "", name, to_string (new_maximal_size));
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "", name, to_string (new_maximal_size));
 	assert ((new_maximal_size == unlimited) || (0 <= new_maximal_size));
 
 	//	Do nothing.
@@ -34,10 +34,10 @@ template <class T> Set <T> ::
 template <class T> Set <T> ::
 	~Set ()
 {
-	Engines :: Log :: trace <Set <T> > (me, "~");
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "~");
 	assert (Set <T> :: is_initialized ());
 
-	sealed = false;
+	forget_dependencies ();
 
 	for (T * child = get_child (); child != NULL; child = get_child ())
 	{
@@ -71,16 +71,6 @@ template <class T> bool Set <T> ::
 	return true;
 }
 
-//	virtual
-template <class T> void Set <T> ::
-	drop_implicit_dependency (const Object & dependency)
-{
-	assert (Set <T> :: is_initialized ());
-	assert (dependency . is_type <T> ());
-
-	drop (dependency . to_type <T> ());
-}
-
 template <class T> bool Set <T> ::
 	is_empty () const
 {
@@ -93,7 +83,7 @@ template <class T> bool Set <T> ::
 template <class T> bool Set <T> ::
 	add (T & t)
 {
-	Engines :: Log :: trace <Set <T> > (me,"add", t);
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "add", t);
 	assert (Set <T> :: is_initialized ());
 	assert (! contains (t));
 	assert (! sealed);
@@ -121,7 +111,7 @@ template <class T> bool Set <T> ::
 	contains (T & t)
 	const
 {
-//	Engines :: Log :: trace <Set <T> > (me, "contains", name);
+//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "contains", name);
 	assert (Set <T> :: is_initialized ());
 
 	return (children . find (& t) != children . end ());
@@ -131,7 +121,7 @@ template <class T> bool Set <T> ::
 template <class T> bool Set <T> ::
 	move (T & t, Set <T> & destination)
 {
-	Engines :: Log :: trace <Set <T> > (me, "move", t, destination);
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "move", t, destination);
 	assert (Set <T> :: is_initialized ());
 	assert (t . is_initialized ());
 	assert (destination . is_initialized ());
@@ -151,22 +141,25 @@ template <class T> bool Set <T> ::
 	return false;
 }
 
+//	virtual
 template <class T> void Set <T> ::
-	drop (T & t, bool stay)
+	drop (Object & t, bool stay)
 {
+	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "drop", t, bool_to_string (stay));
 	assert (Set <T> :: is_initialized ());
-	assert (! sealed);
-	assert (contains (t));
+	assert ((! sealed) || is_destructing ());
+	T & dropped = t . to_type <T> ();
+	assert (contains (dropped));
 
-	t . forget (me, stay);
-	children . erase (& t);
+	dropped . forget (me, stay);
+	children . erase (& dropped);
 }
 
 template <class T> T * Set <T> ::
 	get_child ()
 	const
 {
-//	Engines :: Log :: trace <Set <T> > (me, get_child);
+//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), get_child);
 	assert (Set <T> :: is_initialized ());
 
 	if (children . empty ())
@@ -181,7 +174,7 @@ template <class T> T * Set <T> ::
 	get_another_child ()
 	const
 {
-//	Engines :: Log :: trace <Set <T> > (me, get_another_child);
+//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), get_another_child);
 	assert (Set <T> :: is_initialized ());
 
 	if (next_child == children . end ())

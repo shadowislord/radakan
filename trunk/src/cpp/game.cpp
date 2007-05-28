@@ -23,9 +23,26 @@ const string Game ::
 
 Game ::
 	Game (string tsl_path, string ogre_media_path) :
-	Object ("Game")
+	Object ("game")
 {
-	Log :: trace <Game> (me, "", tsl_path, ogre_media_path);
+	Log :: trace (me, Game :: get_class_name (), "", tsl_path, ogre_media_path);
+
+	#ifdef TSL_DEBUG
+		Log :: log (me) << "Debug mode is enabled." << endl;
+		Log :: log (me) << "Further logs will be written to '" << tsl_path << "/log/log.txt'." << endl;
+
+		//	'Log :: log (me)' is redirected to a log file.
+		//	Don't use 'clog' or 'cerr'.
+		cout . rdbuf ((new ofstream ((tsl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
+		cerr . rdbuf (Log :: log (me) . rdbuf ());
+		clog . rdbuf (Log :: log (me) . rdbuf ());
+	#else
+		Log :: log (me) << "Debug mode is disabled." << endl;
+		Log :: log (me) << "No further logging will occur." << endl;
+
+		//	From here on, all Log :: log (me) messages are ignored.
+		Log :: log (me) . rdbuf ((new ostream (new stringbuf (ios_base :: out))) -> rdbuf ());
+	#endif
 
 	new Tracker ();
 	new Log ();
@@ -126,11 +143,11 @@ Game ::
 Game ::
 	~Game ()
 {
-	Log :: trace <Game> (me, "~");
+	Log :: trace (me, Game :: get_class_name (), "~");
 	assert (is_initialized ());
-	
-	Log :: log (me) << "active state: " << get_active_state () << endl;
 	assert (get_active_state () == Algorithms :: Quit_State :: get ());
+
+	forget_dependencies ();
 
 	unset_active_state ();
 
@@ -141,7 +158,7 @@ Game ::
 	Algorithms :: Play_State :: destruct ();
 
 	GUI_Engine :: destruct ();
-	Input_Engine :: destruct ();
+	//	Input_Engine :: destruct ();	//	This engine is already auto-destructed.
 	Audio_Engine :: destruct ();
 
 	Log :: destruct ();

@@ -24,7 +24,7 @@ Menu_State ::
 	Object ("menu state"),
 	gui (Engines :: GUI_Engine :: get () . create_gui ("menu.cfg"))
 {
-	Engines :: Log :: trace <Menu_State> (me);
+	Engines :: Log :: trace (me, Menu_State :: get_class_name ());
 
 	//	Do nothing.
 
@@ -35,10 +35,10 @@ Menu_State ::
 Menu_State ::
 	~Menu_State ()
 {
-	Engines :: Log :: trace <Menu_State> (me, "~");
+	Engines :: Log :: trace (me, Menu_State :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

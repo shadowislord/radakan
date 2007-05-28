@@ -8,8 +8,7 @@ using namespace std;
 namespace TSL
 {
 
-	///	Set can contain objects of a certain type, but not more then once.
-	///	Set elements add the set as one of their dependencies.
+	///	Set can contain instances of a specific Object subclass, but not more then once.
 	template <class T> class Set :
 		public virtual Object
 	{
@@ -20,11 +19,9 @@ namespace TSL
 			
 			static const string get_class_name ();
 
-			virtual void drop_implicit_dependency (const Object & dependency);
-
 			bool is_empty () const;
 
-			///	'add' returns true on success.
+			///	On success, I add myself to the dependencies of 't' and return 'true'.
 			virtual bool add (T & t);
 			
 			virtual bool contains (T & t) const;
@@ -33,7 +30,10 @@ namespace TSL
 			///	'move' assumes that t is one of my children.
 			virtual bool move (T & t, Set <T> & destination);
 
-			void drop (T & t, bool stay = false);
+			///	To allow 'drop' to be called from any class, t doesn't have to be of type T.
+			///	I remove myself from the dependencies of 't'.
+			///	'drop' is allowed when destructing, even for sealed Sets.
+			virtual void drop (Object & t, bool stay = false);
 
 			///	Combine 'get_child' with 'get_another_child' to get a pointer to each child.
 			T * get_child () const;
@@ -45,8 +45,7 @@ namespace TSL
 
 			const int maximal_size;
 
-			///	When sealed, no more children can be added or moved away.
-			///	There's no unseal!
+			///	When sealed, no children can be added or dropped (see the exception above).
 			void seal ();
 
 			bool is_sealed () const;

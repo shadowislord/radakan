@@ -25,11 +25,11 @@ const string Play_State ::
 //  constructor
 Play_State ::
 	Play_State (Ogre :: SceneManager & scene_manager, string tsl_path) :
-	Object ("world"),
+	Object ("play state"),
 	gui (Engines :: GUI_Engine :: get () . create_gui ("sector.cfg")),
 	camera (* scene_manager . createCamera ("camera"))
 {
-	Engines :: Log :: trace <Play_State> (me, "", "~scene_manager~", tsl_path);
+	Engines :: Log :: trace (me, Play_State :: get_class_name (), "", "~scene_manager~", tsl_path);
 
 	new Alive_State ();
 	new Chat_State ();
@@ -48,8 +48,12 @@ Play_State ::
 Play_State ::
 	~Play_State ()
 {
-	Engines :: Log :: trace <Play_State> (me, "~");
+	Engines :: Log :: trace (me, Play_State :: get_class_name (), "~");
 	assert (Play_State :: is_initialized ());
+
+	forget_dependencies ();
+
+	World :: destruct ();
 
 	Fight_State :: destruct ();
 	Dead_State :: destruct ();
@@ -62,7 +66,7 @@ bool Play_State ::
 	is_initialized ()
 	const
 {
-//	Engines :: Log :: trace <Play_State> (me, "is_initialized");
+//	Engines :: Log :: trace (me, Play_State :: get_class_name (), "is_initialized");
 	assert (Singleton <Play_State> :: is_initialized ());
 	assert (Algorithm <Engines :: Game> :: is_initialized ());
 	assert (Observable <Play_State> :: is_initialized ());
@@ -220,7 +224,7 @@ Algorithm <Engines :: Game> & Play_State ::
 void Play_State ::
 	enter (Engines :: Game & owner)
 {
-	Engines :: Log :: trace <Play_State> (me, "enter", owner);
+	Engines :: Log :: trace (me, Play_State :: get_class_name (), "enter", owner);
 	assert (is_initialized ());
 
 	Engines :: GUI_Engine :: get () . set_active_state (gui);

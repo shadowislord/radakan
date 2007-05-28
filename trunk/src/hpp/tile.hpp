@@ -21,7 +21,8 @@ namespace TSL
 	///	A Tile is a square piece of the world.
 	///	Tile data is stored under trunk/data/tile/.
 	class Tile :
-		public Set <Model>,
+		public Resident <Tile>,
+		public Location <Model>,
 		public OgreOde :: SimpleSpace
 	{
 		public :

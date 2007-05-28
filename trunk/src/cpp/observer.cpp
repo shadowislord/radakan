@@ -16,7 +16,7 @@ template <class T> Observer <T> ::
 	Observer () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	Engines :: Log :: trace <Observer <T> > (me);
+	Engines :: Log :: trace (me, Observer <T> :: get_class_name ());
 
 	//	Do nothing.
 
@@ -27,7 +27,7 @@ template <class T> Observer <T> ::
 template <class T> Observer <T> ::
 	~Observer ()
 {
-	Engines :: Log :: trace <Observer <T> > (me, "~");
+	Engines :: Log :: trace (me, Observer <T> :: get_class_name (), "~");
 	assert (Observer <T> :: is_initialized ());
 
 	//	Do nothing.

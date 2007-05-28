@@ -14,7 +14,7 @@ namespace TSL
 		///	A Container is an Item that can contain other Items.
 		class Container :
 			public Item,
-			public Set <Item>
+			public Location <Item>
 		{
 			public :
 				virtual ~Container ();

@@ -29,10 +29,10 @@ Fight_State ::
 Fight_State ::
 	~Fight_State ()
 {
-	Engines :: Log :: trace <Fight_State> (me, "~");
+	Engines :: Log :: trace (me, Fight_State :: get_class_name (), "~");
 	assert (Fight_State :: is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

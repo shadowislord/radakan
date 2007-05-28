@@ -18,7 +18,7 @@ template <class T> Observable <T> ::
 	//	Set a custom context to evade problems with the dependencies.
 	observers (my + "observers", Set <Observer <T> > :: unlimited)
 {
-	Engines :: Log :: trace <Observable> (me, "");
+	Engines :: Log :: trace (me, Observable :: get_class_name (), "");
 	
 	//	Do nothing.
 
@@ -29,7 +29,7 @@ template <class T> Observable <T> ::
 template <class T> Observable <T> ::
 	~Observable ()
 {
-	Engines :: Log :: trace <Observable> (me, "~");
+	Engines :: Log :: trace (me, Observable :: get_class_name (), "~");
 	assert (Observable <T> :: is_initialized ());
 	
 	//	Do nothing.
@@ -65,7 +65,8 @@ template <class T> void Observable <T> ::
 {
 	assert (is_initialized ());
 	
-	observers . add (observer);
+	bool check = observers . add (observer);
+	assert (check);
 }
 
 template <class T> void Observable <T> ::

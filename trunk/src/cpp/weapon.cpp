@@ -53,10 +53,10 @@ Weapon ::
 Weapon ::
 	~Weapon ()
 {
-	Engines :: Log :: trace <Weapon> (me, "~");
+	Engines :: Log :: trace (me, Weapon :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

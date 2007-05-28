@@ -14,6 +14,7 @@ Sound ::
 Sound ::
 	~Sound ()
 {
+	forget_dependencies ();
 }
 
 Sound_Sample ::
@@ -60,7 +61,7 @@ const string Audio_Engine ::
 
 Audio_Engine ::
 	Audio_Engine () :
-	Object ("Audio engine")
+	Object ("audio engine")
 {
 	silent = false;
 
@@ -83,8 +84,10 @@ Audio_Engine ::
 Audio_Engine ::
 	~Audio_Engine ()
 {
-	Engines :: Log :: trace <Audio_Engine> (me, "~");
+	Engines :: Log :: trace (me, Audio_Engine :: get_class_name (), "~");
 	assert (is_initialized ());
+
+	forget_dependencies ();
 	
 	if (! silent)
 	{

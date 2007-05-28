@@ -49,10 +49,10 @@ GUI ::
 GUI ::
 	~GUI ()
 {
-	Engines :: Log :: trace <GUI> (me, "~");
+	Engines :: Log :: trace (me, GUI :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual
@@ -95,7 +95,7 @@ void GUI ::
 bool GUI ::
 	handle_event (const CEGUI :: EventArgs & arguments)
 {
-	Engines :: Log :: trace <GUI> (me, "handle_event", "~arguments~");
+	Engines :: Log :: trace (me, GUI :: get_class_name (), "handle_event", "~arguments~");
 	assert (is_initialized ());
 
 	CEGUI :: WindowEventArgs * window_event_arguments = (CEGUI :: WindowEventArgs *)(& arguments);

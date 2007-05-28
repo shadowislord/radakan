@@ -18,7 +18,7 @@ template <class T> Algorithm <T> ::
 	Object ("The name doesn't matter as this class is an abstact class."),
 	parent (* this)
 {
-	Engines :: Log :: trace <Algorithm <T> > (me, "");
+	Engines :: Log :: trace (me, Algorithm <T> :: get_class_name (), "");
 	
 	//	Do nothing.
 
@@ -31,7 +31,7 @@ template <class T> Algorithm <T> ::
 	Object ("The name doesn't matter as this class is an abstact class."),
 	parent (new_parent)
 {
-	Engines :: Log :: trace <Algorithm <T> > (me, "", new_parent);
+	Engines :: Log :: trace (me, Algorithm <T> :: get_class_name (), "", new_parent);
 	assert (new_parent . is_initialized ());
 
 	//	Do nothing.
@@ -43,7 +43,7 @@ template <class T> Algorithm <T> ::
 template <class T> Algorithm <T> ::
 	~Algorithm ()
 {
-	Engines :: Log :: trace <Algorithm <T> > (me, "~");
+	Engines :: Log :: trace (me, Algorithm <T> :: get_class_name (), "~");
 	assert (Algorithm <T> :: is_initialized ());
 
 	//	Do nothing.
@@ -67,7 +67,7 @@ template <class T> bool Algorithm <T> ::
 template <class T> void Algorithm <T> ::
 	enter (T & owner)
 {
-	Engines :: Log :: trace <Algorithm <T> > (me, "enter", owner);
+	Engines :: Log :: trace (me, Algorithm <T> :: get_class_name (), "enter", owner);
 	assert (is_initialized ());
 }
 
@@ -75,7 +75,7 @@ template <class T> void Algorithm <T> ::
 template <class T> void Algorithm <T> ::
 	exit (T & owner)
 {
-	Engines :: Log :: trace <Algorithm <T> > (me, "exit", owner);
+	Engines :: Log :: trace (me, Algorithm <T> :: get_class_name (), "exit", owner);
 	assert (is_initialized ());
 }
 

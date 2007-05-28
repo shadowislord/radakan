@@ -17,7 +17,7 @@ template <class T> Algorithm_State_Machine <T> ::
 	Algorithm_State_Machine () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	Engines :: Log :: trace <Algorithm_State_Machine <T> > (this -> me, "");
+	Engines :: Log :: trace (this -> me, Algorithm_State_Machine <T> :: get_class_name (), "");
 	
 	//	Do nothing.
 
@@ -28,7 +28,7 @@ template <class T> Algorithm_State_Machine <T> ::
 template <class T> Algorithm_State_Machine <T> ::
 	~Algorithm_State_Machine ()
 {
-	Engines :: Log :: trace <Algorithm_State_Machine <T> > (this -> me, "~");
+	Engines :: Log :: trace (this -> me, Algorithm_State_Machine <T> :: get_class_name (), "~");
 	assert (Algorithm_State_Machine <T> :: is_initialized ());
 
 	State_Machine <Algorithms :: Algorithm <T> > :: unset_active_state ();

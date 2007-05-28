@@ -19,7 +19,7 @@ Conversation_Message ::
 	from (new_from),
 	to (new_to)
 {
-	Engines :: Log :: trace <Conversation_Message > (me);
+	Engines :: Log :: trace (me, Conversation_Message :: get_class_name ());
 	
 	//	Do nothing.
 	
@@ -30,10 +30,10 @@ Conversation_Message ::
 Conversation_Message ::
 	~Conversation_Message ()
 {
-	Engines :: Log :: trace <Conversation_Message > (me, "~");
+	Engines :: Log :: trace (me, Conversation_Message :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

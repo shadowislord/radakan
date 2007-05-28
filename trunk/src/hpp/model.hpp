@@ -14,7 +14,8 @@ namespace TSL
 
 	///	Model is a 3D representation of an Items :: Item.
 	class Model :
-		public Set <Items :: Item>
+		public Resident <Model>,
+		public Location <Items :: Item>
 	{
 		public :
 			Model (Items :: Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry);

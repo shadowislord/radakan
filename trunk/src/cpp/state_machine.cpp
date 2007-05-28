@@ -18,7 +18,7 @@ template <class T> State_Machine <T> ::
 	Object ("The name doesn't matter as this class is an abstact class."),
 	active_state (NULL)
 {
-	Engines :: Log :: trace <State_Machine <T> > (me);
+	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name ());
 	
 	//	Do nothing.
 
@@ -29,7 +29,7 @@ template <class T> State_Machine <T> ::
 template <class T> State_Machine <T> ::
 	~State_Machine ()
 {
-	Engines :: Log :: trace <State_Machine <T> > (me, "~");
+	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "~");
 	assert (State_Machine <T> :: is_initialized ());
 
 	//	Do nothing.
@@ -50,7 +50,7 @@ template <class T> bool State_Machine <T> ::
 template <class T> bool State_Machine <T> ::
 	has_active_state () const
 {
-	//	Engines :: Log :: trace <State_Machine <T> > (me, "has_active_state");
+	//	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "has_active_state");
 	assert (State_Machine <T> :: is_initialized ());
 
 	return (active_state != NULL);
@@ -70,7 +70,7 @@ template <class T> T & State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	set_active_state (T & new_state)
 {
-	Engines :: Log :: trace <State_Machine <T> > (me, "set_active_state", new_state);
+	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "set_active_state", new_state);
 	assert (State_Machine <T> :: is_initialized ());
 
 	if (active_state != & new_state)	//	This also works for NULL.
@@ -91,7 +91,7 @@ template <class T> void State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	unset_active_state ()
 {
-	Engines :: Log :: trace <State_Machine <T> > (me, "unset_active_state");
+	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "unset_active_state");
 	assert (State_Machine <T> :: is_initialized ());
 
 	active_state = NULL;

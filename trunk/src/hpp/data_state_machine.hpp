@@ -1,7 +1,7 @@
 #ifndef TSL_DATA_STATE_MACHINE_HPP
 #define TSL_DATA_STATE_MACHINE_HPP
 
-#include "set.hpp"
+#include "location.hpp"
 #include "state_machine.hpp"
 
 using namespace std;
@@ -14,7 +14,7 @@ namespace TSL
 		///	Data_State_Machine is the abstract base class for all data based state machines.
 		template <class T> class Data_State_Machine :
 			public State_Machine <T>,
-			public Set <T>
+			public Location <T>
 		{
 			public :
 				//	protected constructor, see below

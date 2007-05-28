@@ -28,10 +28,10 @@ Conversation_Plugin ::
 Conversation_Plugin ::
 	~Conversation_Plugin ()
 {
-	Engines :: Log :: trace <Conversation_Plugin> (me, "~");
+	Engines :: Log :: trace (me, Conversation_Plugin :: get_class_name (), "~");
 	assert (is_initialized ());
 	
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

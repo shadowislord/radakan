@@ -15,7 +15,7 @@ const string Battle_Plugin ::
 
 Battle_Plugin ::
 	Battle_Plugin () :
-	Object ("Battle state"),
+	Object ("battle state"),
 	max_distance (1),
 	generator (42u),
 	uniform_real_distribution (0, 1),
@@ -23,7 +23,7 @@ Battle_Plugin ::
 	uniform (generator, uniform_real_distribution),
 	lognormal (generator, lognormal_real_distribution)
 {
-	Engines :: Log :: trace <Battle_Plugin> (me);
+	Engines :: Log :: trace (me, Battle_Plugin :: get_class_name ());
 
 	generator . seed (static_cast <unsigned int> (time (0)));
 
@@ -33,10 +33,10 @@ Battle_Plugin ::
 Battle_Plugin ::
 	~Battle_Plugin ()
 {
-	Engines :: Log :: trace <Battle_Plugin> (me, "~");
+	Engines :: Log :: trace (me, Battle_Plugin :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual
@@ -66,7 +66,7 @@ void Battle_Plugin ::
 /*void Battle_Plugin ::
 	add (Character & attacker, Character & defender)
 {
-	Engines :: Log :: trace <Battle_Plugin> (me, "add", attacker, defender);
+	Engines :: Log :: trace (me, Battle_Plugin :: get_class_name (), "add", attacker, defender);
 	assert (is_initialized ());
 
 	assert (! attacker . is_dead ());

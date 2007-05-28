@@ -28,10 +28,10 @@ Dead_State ::
 Dead_State ::
 	~Dead_State ()
 {
-	Engines :: Log :: trace <Dead_State> (me, "~");
+	Engines :: Log :: trace (me, Dead_State :: get_class_name (), "~");
 	assert (Algorithm <Items :: NPC> :: is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual
@@ -57,7 +57,7 @@ Algorithm <Items :: NPC> & Dead_State ::
 void Dead_State ::
 	enter (Items :: NPC & owner)
 {
-	Engines :: Log :: trace <Dead_State> (me, "enter", owner);
+	Engines :: Log :: trace (me, Dead_State :: get_class_name (), "enter", owner);
 	assert (is_initialized ());
 
 	owner . get_movable_model () . turn (1, owner . get_model () . get_side_direction ());

@@ -8,8 +8,6 @@ using namespace std;
 	int main (int argc, char * argv [])
 #endif
 {
-	cout << "Preparing The Scattered Lands..." << endl;
-
 	string tsl_path;
 	string ogre_media_path;
 	#ifdef TSL_WIN
@@ -33,35 +31,12 @@ using namespace std;
 		ogre_media_path = argv [argc - 1];
 	#endif
 
-	#ifdef TSL_DEBUG
-		cout << "debug mode: enabled." << endl;
-
-		//	'cout' is redirected to a log file.
-		//	Don't use 'clog' or 'cerr'.
-		cout . rdbuf ((new ofstream ((tsl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
-		cerr . rdbuf (cout . rdbuf ());
-		clog . rdbuf (cout . rdbuf ());
-
-		cout << "tsl_path: " << tsl_path << endl;
-		cout << "ogre_media_path: " << ogre_media_path << endl;
-	#else
-		cout << "debug mode: disabled." << endl;
-
-		//	From here on, all cout messages are ignored.
-		cout . rdbuf ((new ostream (new stringbuf (ios_base :: out))) -> rdbuf ());
-	#endif
-
 	try
 	{
-		cout << "Setting up The Scattered Lands..." << endl;
 		TSL :: Engines :: Game game (tsl_path, ogre_media_path);
-		cout << "The Scattered Lands is set up." << endl;
 
-		cout << "Running The Scattered Lands..." << endl;
 		game . run ();
-		cout << "The Scattered Lands is stopped." << endl;
-
-		cout << "Shutting down The Scattered Lands..." << endl;
+		
 		//	The game is automatically shut down here.
 	}
 	catch (Ogre :: Exception & exception)
@@ -74,8 +49,6 @@ using namespace std;
 			cerr << "Exception: " << exception . getFullDescription () << endl;
 		#endif
 	}
-
-	cout << "The Scattered Lands is shut down." << endl;
 
 	return 0;
 }

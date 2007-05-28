@@ -1,5 +1,4 @@
 #include "log.hpp"
-#include "message.hpp"
 #include "player_character.hpp"
 #include "world.hpp"
 
@@ -36,7 +35,7 @@ const string World ::
 
 World ::
 	World (Ogre :: SceneManager & scene_manager, string tsl_path) :
-	Object ("environment"),
+	Object ("world"),
 	OgreOde :: World (& scene_manager),
 	OgreOde :: ExactVariableStepHandler
 	(
@@ -84,10 +83,10 @@ World ::
 World ::
 	~World ()
 {
-	Engines :: Log :: trace <World> (me, "~");
+	Engines :: Log :: trace (me, World :: get_class_name (), "~");
 	assert (World :: is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

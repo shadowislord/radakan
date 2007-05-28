@@ -35,9 +35,10 @@ Item ::
 										(my + "entity", new_mesh_name)),
 	model (NULL)
 {
-	Engines :: Log :: trace <Item>
+	Engines :: Log :: trace
 	(
 		me,
+		Item :: get_class_name (),
 		"",
 		new_mesh_name,
 		to_string (size),
@@ -60,8 +61,10 @@ Item ::
 Item ::
 	~Item ()
 {
-	Engines :: Log :: trace <Item> (me, "~");
+	Engines :: Log :: trace (me, Item :: get_class_name (), "~");
 	assert (Item :: is_initialized ());
+
+	forget_dependencies ();
 
 	if (has_model ())
 	{
@@ -74,7 +77,7 @@ bool Item ::
 	is_initialized ()
 	const
 {
-	//	Engines :: Log :: trace <Item> (me, "is_initialized");
+	//	Engines :: Log :: trace (me, Item :: get_class_name (), "is_initialized");
 	assert (Object :: is_initialized ());
 	assert (0 <= size . x);
 	assert (0 <= size . y);
@@ -97,7 +100,7 @@ float Item ::
 void Item ::
 	set_model (Model & new_model)
 {
-	//	Engines :: Log :: trace <Item> (me, "set_model", new_model);
+	//	Engines :: Log :: trace (me, Item :: get_class_name (), "set_model", new_model);
 	assert (Item :: is_initialized ());
 	assert (! has_model ());
 

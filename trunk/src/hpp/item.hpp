@@ -1,7 +1,7 @@
 #ifndef TSL_ITEM_HPP
 #define TSL_ITEM_HPP
 
-#include "object.hpp"
+#include "resident.hpp"
 
 #include <OgreEntity.h>
 #include <OgreOde_Core.h>
@@ -19,7 +19,7 @@ namespace TSL
 	{
 		///	Item is the base class for all in-game items.
 		class Item :
-			public virtual Object
+			public Resident <Item>
 		{
 			public :
 				virtual ~Item ();
@@ -33,10 +33,12 @@ namespace TSL
 
 				///	Don't use this method directely, use 'new Body (...);' if possible.
 				void set_model (Model & new_model);
+				
 				bool has_model () const;
 				
 				///	Don't use this method directely, use 'delete model;' if possible.
 				void remove_model ();
+				
 				Model & get_model () const;
 
 				float get_volume () const;

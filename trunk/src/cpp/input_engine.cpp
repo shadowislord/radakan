@@ -40,10 +40,10 @@ const string Input_Engine ::
 
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow & window) :
-	Object ("Input Engine"),
+	Object ("input engine"),
 	Singleton <Input_Engine> ()
 {
-	Engines :: Log :: trace <Input_Engine> (me, "", "~window~");
+	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "", "~window~");
 
 	#if OIS_VERSION_MAJOR < 1
 		Engines :: Log :: error (me) << "An old version of OIS (" << OIS_VERSION_MAJOR
@@ -95,8 +95,10 @@ Input_Engine ::
 Input_Engine ::
 	~Input_Engine ()
 {
-	Engines :: Log :: trace <Input_Engine> (me, "~");
+	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "~");
 	assert (is_initialized ());
+
+	forget_dependencies ();
 
 	input_manager -> destroyInputObject (keyboard);
 	input_manager -> destroyInputObject (mouse);
@@ -130,7 +132,7 @@ bool Input_Engine ::
 void Input_Engine ::
 	call (const Object & message)
 {
-	Engines :: Log :: trace <Input_Engine> (me, "call", message);
+	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message);
 	assert (is_initialized ());
 
 	gui_button = message;

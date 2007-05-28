@@ -27,7 +27,7 @@ Plugin_Manager ::
 {
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

@@ -30,10 +30,10 @@ Chat_State ::
 Chat_State ::
 	~Chat_State ()
 {
-	Engines :: Log :: trace <Chat_State> (me, "~");
+	Engines :: Log :: trace (me, Chat_State :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

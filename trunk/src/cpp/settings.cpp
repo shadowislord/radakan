@@ -33,10 +33,10 @@ Settings ::
 Settings ::
 	~Settings ()
 {
-	Log :: trace <Settings> (me, "~");
+	Log :: trace (me, Settings :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

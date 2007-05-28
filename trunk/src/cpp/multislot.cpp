@@ -35,7 +35,7 @@ template <class T> Multislot <T> ::
 		new_max_size
 	)
 {
-	Engines :: Log :: trace <Multislot> (me, "");
+	Engines :: Log :: trace (me, Multislot :: get_class_name (), "");
 	
 	//	Do nothing.
 
@@ -46,10 +46,10 @@ template <class T> Multislot <T> ::
 template <class T> Multislot <T> ::
 	~Multislot ()
 {
-	Engines :: Log :: trace <Multislot> (me, "~");
+	Engines :: Log :: trace (me, Multislot :: get_class_name (), "~");
 	assert (Container :: is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

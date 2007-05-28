@@ -18,7 +18,7 @@ Movable_Model ::
 	Model (new_item, position, scale, new_geometry),
 	body (new_body)
 {
-	Engines :: Log :: trace <Movable_Model> (me, "", new_item, to_string (position), to_string (scale), "~new_geometry~", "~new_body~");
+	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item, to_string (position), to_string (scale), "~new_geometry~", "~new_body~");
 
 	node . attachObject (& body);
 
@@ -29,8 +29,10 @@ Movable_Model ::
 Movable_Model ::
 	~Movable_Model ()
 {
-	Engines :: Log :: trace <Movable_Model> (me, "~");
+	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "~");
 	assert (Model :: is_initialized ());
+
+	forget_dependencies ();
 	
 	node . detachObject (& body);
 }
@@ -74,7 +76,7 @@ void Movable_Model ::
 void Movable_Model ::
 	reset ()
 {
-	Engines :: Log :: trace <Movable_Model> (me, "reset");
+	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "reset");
 	assert (Model :: is_initialized ());
 
 	body . setOrientation (Ogre :: Quaternion (1, 0, 0, 0));

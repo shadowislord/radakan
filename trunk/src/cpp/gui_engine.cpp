@@ -21,24 +21,24 @@ GUI_Engine ::
 		Ogre :: SceneManager & scene_manager,
 		string log_file_name
 	) :
-	Object ("GUI engine")
+	Object ("gui engine")
 {
-	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name);
+	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name);
 
-	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "A");
+	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "A");
 	renderer = new CEGUI :: OgreCEGUIRenderer (& window, Ogre :: RENDER_QUEUE_OVERLAY, false, 0, & scene_manager);
 
-	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "B");
+	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "B");
 	system = new CEGUI :: System (renderer, NULL, NULL, NULL, "", log_file_name);
 
-	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "C");
+	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "C");
 	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
 	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
-	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "D");
+	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "D");
 	system -> setDefaultFont ("BlueHighway-12");
 
-	Engines :: Log :: trace <GUI_Engine> (me, "", "~window~", "~scene_manager~", log_file_name, "E");
+	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "E");
 
 	assert (is_initialized ());
 }
@@ -46,10 +46,10 @@ GUI_Engine ::
 GUI_Engine ::
 	~GUI_Engine ()
 {
-	Engines :: Log :: trace <GUI_Engine> (me, "~");
+	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

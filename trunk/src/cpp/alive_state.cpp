@@ -32,10 +32,10 @@ Alive_State ::
 Alive_State ::
 	~Alive_State ()
 {
-	Engines :: Log :: trace <Alive_State> (me, "~");
+	Engines :: Log :: trace (me, Alive_State :: get_class_name (), "~");
 	assert (Alive_State :: is_initialized ());
 
-	// Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

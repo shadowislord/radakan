@@ -3,6 +3,7 @@
 
 #include "log.hpp"
 #include "observer.hpp"
+#include "resident.hpp"
 #include <OgreRenderWindow.h>
 #include <OgreCEGUIRenderer.h>
 #include <CEGUIWindow.h>
@@ -14,8 +15,9 @@ namespace TSL
 
 	///	GUI is a graphical user interface.
 	class GUI :
-		public Observer <Engines :: Log>,
-		public Observable <GUI>
+		public Resident <GUI>,
+		public Observable <GUI>,
+		public Observer <Engines :: Log>
 	{
 		public :
 			GUI

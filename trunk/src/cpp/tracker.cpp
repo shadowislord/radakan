@@ -17,7 +17,7 @@ Tracker ::
 	Tracker () :
 	Object ("tracker")
 {
-	Log :: trace <Tracker> (me);
+	Log :: trace (me, Tracker :: get_class_name ());
 
 	//	Do nothing.
 	
@@ -28,8 +28,10 @@ Tracker ::
 Tracker ::
 	~Tracker ()
 {
-	Log :: trace <Tracker> (me, "~");
+	Log :: trace (me, Tracker :: get_class_name (), "~");
 	assert (Tracker :: is_initialized ());
+
+	forget_dependencies ();
 
 	#ifdef TSL_DEBUG
 		for (Object * i = Tracker :: get () . get_child (); i != NULL;

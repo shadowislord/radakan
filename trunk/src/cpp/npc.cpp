@@ -31,7 +31,7 @@ NPC ::
 		new_mass
 	)
 {
-	Engines :: Log :: trace <NPC> (me, "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
+	Engines :: Log :: trace (me, NPC :: get_class_name (), "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 
 	set_active_state (Algorithms :: Alive_State :: get ());
 
@@ -43,10 +43,10 @@ NPC ::
 NPC ::
 	~NPC ()
 {
-	Engines :: Log :: trace <NPC> (me, "~");
+	Engines :: Log :: trace (me, NPC :: get_class_name (), "~");
 	assert (NPC :: is_initialized ());
 
-	//	Do nothing.
+	forget_dependencies ();
 }
 
 //	virtual

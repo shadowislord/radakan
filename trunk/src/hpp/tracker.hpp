@@ -12,7 +12,7 @@ namespace TSL
 	{
 
 		///	Tracker is used to keep track of all objects.
-		///	For tracking method calls, see Log :: track.
+		///	For tracking method calls, see Log :: trace.
 		class Tracker :
 			public Singleton <Tracker>,
 			public Set <Object>

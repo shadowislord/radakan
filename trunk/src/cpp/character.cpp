@@ -48,7 +48,7 @@ Character ::
 	//	feet (Multislot <Shoe> :: create (2)),
 	movable_model (NULL)
 {
-	Engines :: Log :: trace <Character> (me, "", new_mesh_name, to_string (new_size), to_string (new_mass));
+	Engines :: Log :: trace (me, Character :: get_class_name (), "", new_mesh_name, to_string (new_size), to_string (new_mass));
 
 	bool check/* = Container :: add (head)*/;
 	/*assert (check);*/
@@ -71,7 +71,8 @@ Character ::
 		character -> register_observer (* this);
 	}
 
-	characters . add (* this);
+	check = characters . add (* this);
+	assert (check);
 
 	assert (is_initialized ());
 }
@@ -80,17 +81,10 @@ Character ::
 Character ::
 	~Character ()
 {
-	Engines :: Log :: trace <Character> (me, "~");
+	Engines :: Log :: trace (me, Character :: get_class_name (), "~");
 	assert (Character :: is_initialized ());
 
-	characters . drop (* this);
-
-	for (Character * character = characters . get_child ();
-		character != NULL; character = characters . get_another_child ())
-	{
-		drop_observer (* character);
-		character -> drop_observer (* this);
-	}
+	//	Do nothing.
 }
 
 //	virtual

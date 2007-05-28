@@ -79,7 +79,13 @@ namespace TSL
 			///	Set 'stay' to 'true' to force me to not self-destruct.
 			void forget (const Object & dependency, bool stay = false);
 
-			virtual void drop_implicit_dependency (const Object & dependency);
+			///	Call this method at the beginning of each non-abstract subclass destructor.
+			void forget_dependencies ();
+
+			///	'drop' results in an error, except for Sets.
+			virtual void drop (Object & t, bool stay = false);
+
+			const bool & is_destructing () const;
 
 			///	'me' is '* this'.
 			Object & me;
@@ -95,6 +101,8 @@ namespace TSL
 			///	I store my dependencies as const to reduce the number of casts,
 			///	but they are const_cast-ed, at my destruction.
 			set <const Object *> dependencies;
+
+			bool destructing;
 	};
 }
 
