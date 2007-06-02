@@ -77,11 +77,13 @@ template <class T> void Location <T> ::
 }
 
 //	to avert linking errors:
+#include "algorithm.hpp"
 #include "gui.hpp"
 #include "item.hpp"
 #include "model.hpp"
 #include "tile.hpp"
 
+template class Location <Algorithms :: Algorithm>;
 template class Location <GUI>;
 template class Location <Items :: Item>;
 template class Location <Model>;

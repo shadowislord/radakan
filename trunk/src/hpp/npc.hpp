@@ -14,18 +14,27 @@ namespace TSL
 		///	An NPC is an in-game character that is not under direct control of the player.
 		class NPC :
 			public Character,
-			public State_Machines :: Algorithm_State_Machine <NPC>
+			private Algorithms :: Algorithm_State_Machine
 		{
 			public :
+				NPC
+				(
+					string new_name,
+					string new_mesh_name,
+					Ogre :: Vector3 new_size,
+					float new_mass
+				);
 				virtual ~NPC ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 
-				virtual bool is_dead () const;
-				virtual void die ();
+				virtual void drop (Object & t, bool stay);
 
 				virtual void call (const Object & message);
+				
+				virtual bool is_dead () const;
+				virtual void die ();
 
 				static Item & create
 				(
@@ -34,20 +43,6 @@ namespace TSL
 					Ogre :: Vector3 new_size,
 					float new_mass
 				);
-
-				unsigned int conversation_timeout;
-
-			protected :
-				NPC
-				(
-					string new_name,
-					string new_mesh_name,
-					Ogre :: Vector3 new_size,
-					float new_mass
-				);
-
-			private :
-				NPC (const NPC & npc);
 		};
 	}
 }

@@ -2,7 +2,7 @@
 #define TSL_WORLD_HPP
 
 #include "singleton.hpp"
-#include "data_state_machine.hpp"
+#include "state_machine.hpp"
 #include "tile.hpp"
 #include "movable_model.hpp"
 
@@ -18,7 +18,7 @@ namespace TSL
 		public OgreOde :: World,
 		private OgreOde :: ExactVariableStepHandler,	//	somehow things don't work without
 		public OgreOde :: CollisionListener,
-		public State_Machines :: Data_State_Machine <Tile>
+		public State_Machine <Tile>
 	{
 		public:
 			World (Ogre :: SceneManager & scene_manager, string tsl_path);

@@ -2,7 +2,7 @@
 #define TSL_GUI_ENGINE_HPP
 
 #include "gui.hpp"
-#include "data_state_machine.hpp"
+#include "state_machine.hpp"
 #include "singleton.hpp"
 
 using namespace std;
@@ -14,7 +14,7 @@ namespace TSL
 		///	GUI_Engine manages the GUIs.
 		class GUI_Engine :
 			public Singleton <GUI_Engine>,
-			public State_Machines :: Data_State_Machine <GUI>
+			public State_Machine <GUI>
 		{
 			public :
 				GUI_Engine

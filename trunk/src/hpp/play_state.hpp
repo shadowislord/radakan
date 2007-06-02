@@ -19,8 +19,7 @@ namespace TSL
 
 		class Play_State :
 			public Singleton <Play_State>,
-			public Algorithm <Engines :: Game>,
-			public Observable <Play_State>
+			public Algorithm
 		{
 			public :
 				Play_State (Ogre :: SceneManager & scene_manager, string tsl_path);
@@ -29,11 +28,9 @@ namespace TSL
 				
 				static const string get_class_name ();
 
-				virtual Algorithm <Engines :: Game> & transit (Engines :: Game & owner, const Object & message);
+				virtual void transit (const Object & message);
 
 			private :
-				virtual void enter (Engines :: Game & owner);
-				
 				GUI & gui;
 				
 				Ogre :: Camera & camera;

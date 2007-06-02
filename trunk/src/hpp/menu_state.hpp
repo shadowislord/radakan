@@ -1,12 +1,15 @@
 #ifndef TSL_MENU_STATE_HPP
 #define TSL_MENU_STATE_HPP
 
-#include "gui.hpp"
+#include "algorithm.hpp"
+#include "singleton.hpp"
 
 using namespace std;
 
 namespace TSL
 {
+	class GUI;
+
 	namespace Engines
 	{
 		class Game;
@@ -17,7 +20,7 @@ namespace TSL
 		///	Menu_State is the algorithm for the game when displaying the menu.
 		class Menu_State :
 			public Singleton <Menu_State>,
-			public Algorithm <Engines :: Game>
+			public Algorithm
 		{
 			public :
 				Menu_State ();
@@ -26,11 +29,9 @@ namespace TSL
 				
 				static const string get_class_name ();
 				
-				virtual Algorithm <Engines :: Game> & transit (Engines :: Game & owner, const Object & message);
+				virtual void transit (const Object & message);
 		
 			private :
-				virtual void enter (Engines :: Game & owner);
-				
 				GUI & gui;
 		};
 	}

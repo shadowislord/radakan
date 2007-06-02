@@ -1,12 +1,18 @@
+#include "alive_state.hpp"
 #include "chat_state.hpp"
 #include "conversation_message.hpp"
 #include "fight_state.hpp"
+#include "gui.hpp"
 #include "log.hpp"
 #include "npc.hpp"
 
 using namespace std;
 using namespace TSL;
 using namespace TSL :: Algorithms;
+
+//	static
+const unsigned int Chat_State ::
+	maximal_timeout = 100;	//	turns, not seconds or something
 
 //	static
 const string Chat_State ::
@@ -17,9 +23,10 @@ const string Chat_State ::
 
 //  constructor
 Chat_State ::
-	Chat_State () :
+	Chat_State (Alive_State & new_alive_state) :
 	Object ("chat state"),
-	Algorithm <Items :: NPC> (Alive_State :: get ())
+	alive_state (new_alive_state),
+	timeout (maximal_timeout)
 {
 	//	Do nothing.
 
@@ -41,14 +48,14 @@ bool Chat_State ::
 	is_initialized ()
 	const
 {
-	assert (Algorithm <Items :: NPC> :: is_initialized ());
+	assert (Algorithm :: is_initialized ());
 	
 	return true;
 }
 
 //	virtual
-Algorithm <Items :: NPC> & Chat_State ::
-	transit (Items :: NPC & owner, const Object & message)
+void Chat_State ::
+	transit (const Object & message)
 {
 	assert (is_initialized ());
 
@@ -56,44 +63,38 @@ Algorithm <Items :: NPC> & Chat_State ::
 	{
 		Messages :: Conversation_Message & conversation_message = message . to_type <Messages :: Conversation_Message> ();
 		
-		if (conversation_message . to == owner)	//	Is (s)he talking to me?
+		if (conversation_message . to == alive_state . npc)	//	Is (s)he talking to me?
 		{
 			if (conversation_message == "Hello.")
 			{
-				owner . chat ("Hello, " + conversation_message . from + "!", conversation_message . from);
-				
-				owner . conversation_timeout = 30;
+				alive_state . npc . chat ("Hello, " + conversation_message . from + "!", conversation_message . from);
 			}
-			else if (conversation_message == "Duel!")
+			else
 			{
-				return Fight_State :: get ();
+				alive_state . npc . chat (conversation_message . from + ", I didn't understand that.", conversation_message . from);
 			}
+			
+			timeout = maximal_timeout;
 		}
 	}
 
-	if (owner . conversation_timeout == 0)
+	if (timeout == 0)
 	{
-		owner . chat ("I'm not going to wait longer...", owner);
+		alive_state . npc . chat ("I'm not going to wait longer...", alive_state . npc);
 
-		return Alive_State :: get ();
+		alive_state . calm *= 0.9;	//	The NPC gets slightly annoyed.
+
+		delete this;
+
+		return;
 	}
 
-	owner . conversation_timeout --;
-
-	//	Return myself.
-	return * this;
+	timeout --;
 }
 
-//	virtual
-void Chat_State ::
-	enter (Items :: NPC & owner)
+//	static
+Algorithm & Chat_State ::
+	create (Alive_State & new_alive_state)
 {
-	owner . conversation_timeout = 30;
-}
-
-//	virtual
-void Chat_State ::
-	exit (Items :: NPC & owner)
-{
-	owner . conversation_timeout = 0;
+	return static_cast <Algorithm &> (* new Chat_State (new_alive_state));
 }

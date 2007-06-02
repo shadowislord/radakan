@@ -38,12 +38,12 @@ material Grass
 		pass
 		{
 			//scene_blend alpha_blend
-			alpha_rejection greater 50
+			//alpha_rejection greater 50
 			//depth_write off
 			texture_unit
 			{
 				//colour_op alpha_blend
-				texture gras_02.png
+				texture grass.png
 			}		
 		}
 	}

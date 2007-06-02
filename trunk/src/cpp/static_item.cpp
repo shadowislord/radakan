@@ -56,29 +56,3 @@ bool Static_Item ::
 {
 	return Item :: is_initialized ();
 }
-
-//	static
-Item & Static_Item ::
-	create
-	(
-		string new_name,
-		string new_mesh_name,
-		Ogre :: Vector3 new_size,
-		float new_mass,
-		bool new_solid,
-		bool new_visible
-	)
-{
-	Item * temp =
-		new Static_Item
-		(
-			new_name,
-			new_mesh_name,
-			new_size,
-			new_mass,
-			new_solid,
-			new_visible
-		);
-
-	return * temp;
-}

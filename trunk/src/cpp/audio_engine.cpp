@@ -5,21 +5,9 @@ using namespace std;
 using namespace TSL;
 using namespace TSL :: Engines;
 
-Sound ::
-	Sound (string file_name) :
-	Object (file_name)
-{
-}
-
-Sound ::
-	~Sound ()
-{
-	forget_dependencies ();
-}
-
 Sound_Sample ::
 	Sound_Sample (string file_name) :
-	Sound (file_name)
+	Object (file_name)
 {
 	#ifdef TSL_FMOD
 		sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
@@ -41,15 +29,6 @@ void Sound_Sample ::
 	#else
 		sound -> play();
 	#endif
-}
-
-//	static
-Sound_Sample & Sound_Sample ::
-	create (string file_name)
-{
-	Sound_Sample * result  = new Sound_Sample (file_name);
-
-	return * result;
 }
 
 //	static
@@ -123,7 +102,7 @@ void Audio_Engine ::
 		string extension = file_name . substr (file_name . size () - 3);
 		if (extension == "ogg")
 		{
-			bool check = add (Sound_Sample :: create (file_name));
+			bool check = add (* new Sound_Sample (file_name));
 			assert (check);
 		}
 		else if (extension == "mp3")

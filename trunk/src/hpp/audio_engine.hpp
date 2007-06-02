@@ -18,34 +18,17 @@ using namespace std;
 namespace TSL
 {
 
-	///	Sound is the abstract base class for all sounds classes.
-	class Sound :
-		public Object
-	{
-		public :
-			//	protected constructor(s), see below
-			virtual ~Sound ();
-			
-			//	pure virtual method
-			virtual void play () = 0;
-			
-		protected :
-			Sound (string file_name);
-	};
-
 	///	for static soundfiles, like .WAV, .MP2, .MP3, .OGG and .RAW
 	class Sound_Sample :
-		public Sound
+		public virtual Object
 	{
 		public :
-			static Sound_Sample & create (string file_name);
-
+			Sound_Sample (string file_name);
+			
 			// These files are closed automatically
 			virtual void play ();
 
 		private :
-			Sound_Sample (string file_name);
-			
 			#ifdef TSL_FMOD
 				FSOUND_SAMPLE * sample;
 			#else
@@ -58,7 +41,7 @@ namespace TSL
 		///	Audio_Engine is the music and sound engine.
 		class Audio_Engine :
 			public Singleton <Audio_Engine>,
-			private Set <Sound>
+			private Set <Sound_Sample>
 		{
 			public :
 				Audio_Engine ();

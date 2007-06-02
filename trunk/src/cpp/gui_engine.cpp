@@ -58,7 +58,7 @@ bool GUI_Engine ::
 	const
 {
 	assert (Singleton <GUI_Engine> :: is_initialized ());
-	assert (State_Machines :: Data_State_Machine <GUI> :: is_initialized ());
+	assert (State_Machine <GUI> :: is_initialized ());
 
 	return true;
 }
@@ -105,9 +105,10 @@ GUI & GUI_Engine ::
 
 	result . register_observer (Input_Engine :: get ());
 
-	//	If this is the first gui, it's automatically used as active state.
-	bool check = add (result);
-	assert (check);
+	if (! has_active_state ())
+	{
+		set_active_state (result);
+	}
 
 	return result;
 }
@@ -118,7 +119,7 @@ void GUI_Engine ::
 	assert (is_initialized ());
 	assert (gui . is_initialized ());
 
-	State_Machines :: State_Machine <GUI> :: set_active_state (gui);
+	State_Machine <GUI> :: set_active_state (gui);
 
 	system -> setGUISheet (& gui . root_window);
 }

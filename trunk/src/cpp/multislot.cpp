@@ -76,29 +76,5 @@ template <class T> bool Multislot <T> ::
 	return false;
 }
 
-//	static
-template <class T> Multislot <T> & Multislot <T> ::
-	create
-	(
-		string new_name,
-		string new_mesh_name,
-		Ogre :: Vector3 new_size,
-		float new_mass,
-		int new_max_size
-	)
-{
-	Multislot <T> * temp =
-		new Multislot <T>
-		(
-			new_name,
-			new_mesh_name,
-			new_size,
-			new_mass,
-			new_max_size
-		);
-
-	return * temp;
-}
-
 template class Multislot <Container>;
 template class Multislot <Item>;

@@ -4,16 +4,16 @@
 #include "log.hpp"
 #include "observer.hpp"
 #include "resident.hpp"
-#include <OgreRenderWindow.h>
-#include <OgreCEGUIRenderer.h>
 #include <CEGUIWindow.h>
+#include <OgreCEGUIRenderer.h>
+//	#include <OgreRenderWindow.h>
 
 using namespace std;
 
 namespace TSL
 {
 
-	///	GUI is a graphical user interface.
+	///	I'm a graphical user interface.
 	class GUI :
 		public Resident <GUI>,
 		public Observable <GUI>,
@@ -41,7 +41,7 @@ namespace TSL
 
 			CEGUI :: Event :: Subscriber subscriber;
 			
-			CEGUI :: Window * text_window;
+			CEGUI :: Listbox * log_window;
 	};
 }
 

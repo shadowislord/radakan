@@ -1,5 +1,7 @@
 #include "gui.hpp"
 #include <CEGUIExceptions.h>
+#include <elements/CEGUIListbox.h>
+#include <elements/CEGUIListboxTextItem.h>
 #include <elements/CEGUIPushButton.h>
 
 using namespace std;
@@ -22,22 +24,27 @@ GUI ::
 	root_window (new_root),
 	subscriber (& GUI :: handle_event, this)
 {
+	CEGUI :: Window * temp;
+
 	try
 	{
-		text_window = root_window . getChild ("sector-text");
+		temp = root_window . getChild ("play-log");
 	}
 	catch (CEGUI :: UnknownObjectException & exception)
 	{
 		try
 		{
-			text_window = root_window . getChild ("menu-text");
+			temp = root_window . getChild ("menu-log");
 		}
 		catch (CEGUI :: UnknownObjectException & exception)
 		{
-			Engines :: Log :: error (me) << "Unknown CEGUI exception." << endl;
+			Engines :: Log :: error (me) << "No log window found." << endl;
 			abort ();
 		}
 	}
+	
+	log_window = dynamic_cast <CEGUI :: Listbox *> (temp);
+	assert (log_window != NULL);
 
 	subscribe (root_window);
 
@@ -61,7 +68,9 @@ bool GUI ::
 	const
 {
 	assert (Object :: is_initialized ());
-	return text_window != NULL;
+	assert (log_window != NULL);
+
+	return true;
 }
 
 //	virtual
@@ -70,7 +79,9 @@ void GUI ::
 {
 	assert (is_initialized ());
 
-	text_window -> setText (message);
+	CEGUI :: ListboxTextItem * item = new CEGUI :: ListboxTextItem (message);
+	log_window -> addItem (item);
+	log_window -> ensureItemIsVisible (log_window -> getItemCount ());
 }
 
 void GUI ::
@@ -98,7 +109,8 @@ bool GUI ::
 	Engines :: Log :: trace (me, GUI :: get_class_name (), "handle_event", "~arguments~");
 	assert (is_initialized ());
 
-	CEGUI :: WindowEventArgs * window_event_arguments = (CEGUI :: WindowEventArgs *)(& arguments);
+	const CEGUI :: WindowEventArgs * window_event_arguments
+		= dynamic_cast <const CEGUI :: WindowEventArgs *> (& arguments);
 	if (window_event_arguments == NULL)
 	{
 		Engines :: Log :: show ("Unknown event type...");
@@ -107,9 +119,8 @@ bool GUI ::
 	{
 		string caption (window_event_arguments -> window -> getText () . c_str ());
 
-		Object * message = new Object (caption);
-		call_observers (* message);
-		delete message;
+		Object message (caption);
+		call_observers (message);
 	}
 
 	return true;

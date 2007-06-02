@@ -59,8 +59,7 @@ World ::
 			Engines :: Log :: log (me) << "tile position: (" << x << ", " << z << ")" << endl;
 			tiles [coordinates] = new Tile (coordinates, tsl_path);
 			Engines :: Log :: log (me) << * tiles [coordinates] << endl;
-			bool check = add (* tiles [coordinates]);
-			assert (check);
+			set_active_state (* tiles [coordinates]);	//	This adds the tile to the Set.
 		}
 	}
 
@@ -103,18 +102,19 @@ void World ::
 {
 	assert (is_initialized ());
 
-	if (tile != get_active_state ())
+	if (has_active_state () && Items :: Player_Character :: is_instantiated ())
 	{
-		Engines :: Log :: show ("current tile: " + tile);
-
-		//	The first time, 'tile' will already contain the player model.
-		if (! tile . contains (Items :: Player_Character :: get () . get_movable_model ()))
+		if (tile != get_active_state ())
 		{
-			get_active_state () . move (Items :: Player_Character :: get () . get_movable_model (), tile);
+			if (! tile . contains (Items :: Player_Character :: get () . get_movable_model ()))
+			{
+				get_active_state () . move
+					(Items :: Player_Character :: get () . get_movable_model (), tile);
+			}
 		}
-
-		State_Machines :: State_Machine <Tile> :: set_active_state (tile);
 	}
+	
+	State_Machine <Tile> :: set_active_state (tile);
 }
 
 void World ::
@@ -146,11 +146,12 @@ void World ::
 	assert (new_active_tile != NULL);
 	World :: get () . set_active_state (* new_active_tile);
 
-	for (Tile * tile = get_child (); tile != NULL; tile = get_another_child ())
+	for (map <pair <int, int>, Tile *> :: iterator i = tiles . begin ();
+		i != tiles . end (); i ++)
 	{
-		tile -> collide ();
+		i -> second -> collide ();
 	}
-	
+
 	OgreOde :: World :: step (0.1);
 	updateDrawState ();
 	synchronise ();

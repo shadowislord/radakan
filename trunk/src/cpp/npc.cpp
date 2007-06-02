@@ -1,5 +1,4 @@
 #include "alive_state.hpp"
-#include "dead_state.hpp"
 #include "log.hpp"
 #include "npc.hpp"
 
@@ -33,7 +32,7 @@ NPC ::
 {
 	Engines :: Log :: trace (me, NPC :: get_class_name (), "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 
-	set_active_state (Algorithms :: Alive_State :: get ());
+	set_active_state (static_cast <Algorithms :: Algorithm &> (* new Algorithms :: Alive_State (* this)));
 
 	assert (is_initialized ());
 	Engines :: Log :: log (me) << "I'm fully constructed (as NPC)." << endl;
@@ -55,6 +54,7 @@ bool NPC ::
 	const
 {
 	assert (Character :: is_initialized ());
+	
 	return true;
 }
 
@@ -63,15 +63,15 @@ void NPC ::
 	call (const Object & message)
 {
 	assert (is_initialized ());
-	
-	State_Machines :: Algorithm_State_Machine <NPC> :: run (message);
+
+	return Algorithms :: Algorithm_State_Machine :: transit (message);
 }
 
 //	virtual
 bool NPC ::
 	is_dead () const
 {
-	return get_active_state () . is_type <Algorithms :: Dead_State> ();
+	return ! has_active_state ();
 }
 
 //	virtual
@@ -86,24 +86,19 @@ void NPC ::
 	assert (is_dead ());
 }
 
-//	static
-Item & NPC ::
-	create
-	(
-		string new_name,
-		string new_mesh_name,
-		Ogre :: Vector3 new_size,
-		float new_mass
-	)
+//	virtual
+void NPC ::
+	drop (Object & t, bool stay)
 {
-	Item * temp =
-		new NPC
-		(
-			new_name,
-			new_mesh_name,
-			new_size,
-			new_mass
-		);
+	Engines :: Log :: trace (this -> me, NPC :: get_class_name (), "drop", t, bool_to_string (stay));
+	assert (NPC :: is_initialized ());
 
-	return * temp;
+	if (t . is_type <Algorithms :: Algorithm> ())
+	{
+		Algorithms :: Algorithm_State_Machine :: drop (t, stay);
+	}
+	else
+	{
+		Container :: drop (t, stay);
+	}
 }

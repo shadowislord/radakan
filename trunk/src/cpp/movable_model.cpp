@@ -62,6 +62,7 @@ void Movable_Model ::
 void Movable_Model ::
 	turn (float top_radian_angle_speed, Ogre :: Vector3 ax)
 {
+	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "turn", to_string (top_radian_angle_speed), to_string (ax));
 	assert (Model :: is_initialized ());
 	assert (Ogre :: Math :: Abs (top_radian_angle_speed) <= 1);
 

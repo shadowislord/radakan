@@ -85,8 +85,12 @@ template <class T> bool Set <T> ::
 {
 	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "add", t);
 	assert (Set <T> :: is_initialized ());
-	assert (! contains (t));
 	assert (! sealed);
+
+	if (contains (t))
+	{
+		return false;
+	}
 
 	if ((maximal_size != unlimited) && (children . size () == maximal_size))
 	{
@@ -95,7 +99,7 @@ template <class T> bool Set <T> ::
 	}
 
 	t . remember (me);
-//	Engines :: Log :: log (me) << t << " was added." << endl;
+	//	Engines :: Log :: log (me) << t << " was added." << endl;
 
 	//	'second' means we're interested in if it worked or not.
 	//	'first' would give a iterator to the item.
@@ -198,10 +202,12 @@ template <class T> bool Set <T> ::
 
 //	to avert linking errors:
 #include "audio_engine.hpp"
+#include "algorithm.hpp"
 #include "gui.hpp"
 #include "tile.hpp"
 #include "play_state.hpp"
 
+template class Set <Algorithms :: Algorithm>;
 template class Set <GUI>;
 template class Set <Items :: Character>;
 template class Set <Items :: Item>;
@@ -212,5 +218,5 @@ template class Set <Observer <Algorithms :: Play_State> >;
 template class Set <Observer <Engines :: Log> >;
 template class Set <Observer <GUI> >;
 template class Set <Observer <Items :: Character> >;
-template class Set <Sound>;
+template class Set <Sound_Sample>;
 template class Set <Tile>;

@@ -70,12 +70,9 @@ template <class T> void Singleton <T> ::
 	delete & get ();
 }
 
-#include "alive_state.hpp"
 #include "audio_engine.hpp"
 #include "battle_plugin.hpp"
-#include "chat_state.hpp"
 #include "conversation_plugin.hpp"
-#include "dead_state.hpp"
 #include "fight_state.hpp"
 #include "game.hpp"
 #include "gui_engine.hpp"
@@ -83,17 +80,11 @@ template <class T> void Singleton <T> ::
 #include "menu_state.hpp"
 #include "play_state.hpp"
 #include "plugin_manager.hpp"
-#include "quit_state.hpp"
 #include "settings.hpp"
 #include "tracker.hpp"
 
-template class Singleton <Algorithms :: Alive_State>;
-template class Singleton <Algorithms :: Chat_State>;
-template class Singleton <Algorithms :: Dead_State>;
-template class Singleton <Algorithms :: Fight_State>;
 template class Singleton <Algorithms :: Menu_State>;
 template class Singleton <Algorithms :: Play_State>;
-template class Singleton <Algorithms :: Quit_State>;
 template class Singleton <Engines :: Audio_Engine>;
 template class Singleton <Engines :: Game>;
 template class Singleton <Engines :: GUI_Engine>;

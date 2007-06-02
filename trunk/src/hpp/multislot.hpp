@@ -15,24 +15,6 @@ namespace TSL
 			public Container
 		{
 			public :
-				//	The constructor is protected, see below.
-				virtual ~Multislot ();
-				virtual bool is_initialized () const;
-				
-				static const string get_class_name ();
-				
-				virtual bool add (Item & item);
-
-				static Multislot <T> & create
-				(
-					string new_name,
-					string new_mesh_name,
-					Ogre :: Vector3 new_size,
-					float new_mass,
-					int new_max_size
-				);
-
-			protected :
 				Multislot
 				(
 					string new_name,
@@ -41,6 +23,12 @@ namespace TSL
 					float new_mass,
 					int new_max_size
 				);
+				virtual ~Multislot ();
+				virtual bool is_initialized () const;
+				
+				static const string get_class_name ();
+				
+				virtual bool add (Item & item);
 		};
 	}
 }

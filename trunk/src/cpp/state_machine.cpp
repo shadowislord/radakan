@@ -3,7 +3,6 @@
 
 using namespace std;
 using namespace TSL;
-using namespace TSL :: State_Machines;
 
 //	static
 template <class T> const string State_Machine <T> ::
@@ -15,7 +14,7 @@ template <class T> const string State_Machine <T> ::
 //  constructor
 template <class T> State_Machine <T> ::
 	State_Machine () :
-	Object ("The name doesn't matter as this class is an abstact class."),
+	Object ("Doesn't matter."),
 	active_state (NULL)
 {
 	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name ());
@@ -40,10 +39,28 @@ template <class T> bool State_Machine <T> ::
 	is_initialized ()
 	const
 {
-	assert (Object :: is_initialized ());
-	assert ((active_state == NULL) || active_state -> is_initialized ());
+	assert (Location <T> :: is_initialized ());
+
+	if (active_state != NULL)
+	{
+		assert (contains (* active_state));
+	}
 
 	return true;
+}
+
+//	virtual
+template <class T> void State_Machine <T> ::
+	drop (Object & t, bool stay)
+{
+	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "drop", t, bool_to_string (stay));
+	assert (Location <T> :: is_initialized ());
+	
+	if (& t != active_state)	//	This also works for NULL.
+	{
+		unset_active_state ();
+	}
+	Location <T> :: drop (t, stay);
 }
 
 //	virtual
@@ -73,17 +90,19 @@ template <class T> void State_Machine <T> ::
 	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "set_active_state", new_state);
 	assert (State_Machine <T> :: is_initialized ());
 
-	if (active_state != & new_state)	//	This also works for NULL.
+	if (& new_state != active_state)	//	This also works for NULL.
 	{
-		string active_state_name = "NULL";
-		if (active_state != NULL)
+		//	If this doesn't succeed, that meant I already have 'new_state' as a Resident,
+		//	which is fine too.
+		Location <T> :: add (new_state);
+
+		if (has_active_state ())
 		{
-			active_state_name =  * active_state;
+			unset_active_state ();
 		}
-		
+
 		active_state = & new_state;
-		
-		Engines :: Log :: log (me) << "The active state changed from " << active_state_name << " to " << new_state << "." << endl;
+		Engines :: Log :: log (me) << "The active state changed to " << new_state << "." << endl;
 	}
 }
 
@@ -93,17 +112,26 @@ template <class T> void State_Machine <T> ::
 {
 	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "unset_active_state");
 	assert (State_Machine <T> :: is_initialized ());
+	assert (has_active_state ());
 
-	active_state = NULL;
+	history . push_back (* active_state);
+	
+	Engines :: Log :: log (me) << * active_state << " was dropped as active state." << endl;
+}
+
+template <class T> const vector <string> & State_Machine <T> ::
+	get_history ()
+{
+	assert (is_initialized ());
+
+	return history;
 }
 
 //	to avert linking errors:
-#include "game.hpp"
 #include "gui.hpp"
-#include "npc.hpp"
+#include "algorithm.hpp"
 #include "tile.hpp"
 
-template class State_Machine <Algorithms :: Algorithm <Engines :: Game> >;
-template class State_Machine <Algorithms :: Algorithm <Items :: NPC> >;
+template class State_Machine <Algorithms :: Algorithm>;
 template class State_Machine <GUI>;
 template class State_Machine <Tile>;

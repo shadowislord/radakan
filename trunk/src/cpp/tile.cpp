@@ -95,6 +95,8 @@ Tile ::
 	//	set a floor
 	new OgreOde :: InfinitePlaneGeometry (Ogre :: Plane (y_axis, 0), & World :: get (), this);
 
+	Engines :: Log :: log (me) << "Tile loaded" << endl;
+
 	assert (is_initialized ());
 }
 
@@ -152,7 +154,6 @@ bool Tile ::
 	assert (model . is_initialized ());
 	assert (contains (model));
 	assert (destination . is_initialized ());
-	assert (destination . is_type <Tile> ());
 
 	if (model . item . is_type <Items :: NPC> ())
 	{
@@ -209,15 +210,19 @@ void Tile ::
 	Items :: Item * item = NULL;
 	if (item_xml -> ValueStr () == string ("static_item"))
 	{
-		item = & Items :: Static_Item :: create (name, mesh, volume, mass, solid);
+		item = static_cast <Items :: Item *> (new Items :: Static_Item (name, mesh, volume, mass, solid));
+	}
+	else if (item_xml -> ValueStr () == string ("plane"))
+	{
+		item = static_cast <Items :: Item *> (new Items :: Static_Item (name, mesh, volume, mass, solid));
 	}
 	else if (item_xml -> ValueStr () == string ("npc"))
 	{
-		item = & Items :: NPC :: create (name, mesh, volume, mass);
+		item = static_cast <Items :: Item *> (new Items :: NPC (name, mesh, volume, mass));
 	}
 	else if (item_xml -> ValueStr () == string ("player"))
 	{
-		item = & Items :: Player_Character :: create (name, mesh, volume, mass);
+		item = static_cast <Items :: Item *> (new Items :: Player_Character (name, mesh, volume, mass));
 	}
 	else
 	{
@@ -254,7 +259,6 @@ void Tile ::
 	{
 		load_xml (* model_xml);
 	}
-	Engines :: Log :: log (me) << "Tile loaded" << endl;
 }
 
 Model & Tile ::

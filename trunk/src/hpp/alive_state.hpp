@@ -14,20 +14,23 @@ namespace TSL
 	
 	namespace Algorithms
 	{
-
 		///	Alive_State is the basic algorithm for living NPCs.
 		class Alive_State :
-			public Singleton <Alive_State>,
-			public Algorithm <Items :: NPC>
+			public Algorithm_State_Machine
 		{
 			public :
-				Alive_State ();
+				Alive_State (Items :: NPC & new_npc);
 				virtual ~Alive_State ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 				
-				virtual Algorithm <Items :: NPC> & transit (Items :: NPC & owner, const Object & message);
+				virtual void transit (const Object & message);
+
+				Items :: NPC & npc;
+				
+				//	'calm' can vary from 0 to 1.
+				float calm;
 		};
 	}
 }

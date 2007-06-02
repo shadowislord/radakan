@@ -107,33 +107,3 @@ bool Container ::
 
 	return true;
 }
-
-//	static
-Item & Container ::
-	create
-	(
-		string new_name,
-		string new_mesh_name,
-		Ogre :: Vector3 new_size,
-		float new_mass,
-		bool new_mobile,
-		bool new_solid,
-		bool new_visible,
-		int new_maximal_size
-	)
-{
-	Item * temp =
-		new Container
-		(
-			new_name,
-			new_mesh_name,
-			new_size,
-			new_mass,
-			new_mobile,
-			new_solid,
-			new_visible,
-			new_maximal_size
-		);
-
-	return * temp;
-}

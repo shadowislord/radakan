@@ -16,7 +16,7 @@ const string Player_Character ::
 
 //  constructor
 Player_Character ::
- Player_Character
+	Player_Character
 	(
 		string new_name,
 		string new_mesh_name,
@@ -34,10 +34,10 @@ Player_Character ::
 {
 	Engines :: Log :: trace (me, Player_Character :: get_class_name (), "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 
-	bool check = back . add (Container :: create ("Backbpack", "bar.mesh", Ogre :: Vector3 (0.3, 0.5, 0.2), 3));
+	bool check = back . add (static_cast <Item &> (* new Container ("Backbpack", "bar.mesh", Ogre :: Vector3 (0.3, 0.5, 0.2), 3)));
 	assert (check);
 
-	check = hands . add (Weapon :: create ("Sword", "bar.mesh", Ogre :: Vector3 (0.1, 0.2, 0.3), 4, 5, 6, 7, 8, 9, 10));
+	check = hands . add (static_cast <Item &> (* new Weapon ("Sword", "bar.mesh", Ogre :: Vector3 (0.1, 0.2, 0.3), 4, 5, 6, 7, 8, 9, 10)));
 	assert (check);
 
 	assert (is_initialized ());
@@ -86,27 +86,5 @@ void Player_Character ::
 	assert (message . is_type <Messages :: Conversation_Message> ());
 
 	//	I show the message in the log, to let the player know.
-	Engines :: Log :: show (message . to_type <Messages :: Conversation_Message> () . from + ": " + message);
-}
-
-//	static
-Item & Player_Character ::
-	create
-	(
-		string new_name,
-		string new_mesh_name,
-		Ogre :: Vector3 new_size,
-		float new_mass
-	)
-{
-	Item * temp =
-		new Player_Character
-		(
-			new_name,
-			new_mesh_name,
-			new_size,
-			new_mass
-		);
-
-	return * temp;
+	Engines :: Log :: show (message . to_type <Messages :: Conversation_Message> () . from + ": '" + message + "'");
 }

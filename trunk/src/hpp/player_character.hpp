@@ -16,6 +16,13 @@ namespace TSL
 			public Character
 		{
 			public :
+				Player_Character
+				(
+					string new_name,
+					string new_mesh_name,
+					Ogre :: Vector3 new_size,
+					float new_mass
+				);
 				virtual ~Player_Character ();
 				virtual bool is_initialized () const;
 				
@@ -25,24 +32,7 @@ namespace TSL
 				virtual void die ();
 				
 				virtual void call (const Object & message);
-					
-				static Item & create
-				(
-					string new_name,
-					string mesh_name,
-					Ogre :: Vector3 new_size,
-					float new_mass
-				);
-
-			protected :
-				Player_Character
-				(
-					string new_name,
-					string new_mesh_name,
-					Ogre :: Vector3 new_size,
-					float new_mass
-				);
-
+			
 			private :
 				bool dead;
 		};

@@ -28,6 +28,8 @@ namespace TSL
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
+
+				virtual void call (const Object & message) = 0;
 				
 				virtual bool is_dead () const = 0;
 				virtual void die () = 0;
@@ -35,6 +37,7 @@ namespace TSL
 				Movable_Model & get_movable_model () const;
 
 				void chat (string message_contents, Character & target);
+				void hit (string fight_mode, Character & target);
 				
 				//	Item & head;
 				//	Multislot <Shirt> & body;

@@ -4,7 +4,7 @@
 #include "log.hpp"
 #include "menu_state.hpp"
 #include "play_state.hpp"
-#include "quit_state.hpp"
+#include "player_character.hpp"
 #include "world.hpp"
 
 using namespace std;
@@ -22,7 +22,7 @@ const string Menu_State ::
 Menu_State ::
 	Menu_State () :
 	Object ("menu state"),
-	gui (Engines :: GUI_Engine :: get () . create_gui ("menu.cfg"))
+	gui (Engines :: GUI_Engine :: get () . create_gui ("menu.xml"))
 {
 	Engines :: Log :: trace (me, Menu_State :: get_class_name ());
 
@@ -46,14 +46,14 @@ bool Menu_State ::
 	is_initialized ()
 	const
 {
-	assert (Algorithm <Engines :: Game> :: is_initialized ());
+	assert (Algorithm :: is_initialized ());
 
 	return true;
 }
 
 //	virtual
-Algorithm <Engines :: Game> & Menu_State ::
-	transit (Engines :: Game & owner, const Object & message)
+void Menu_State ::
+	transit (const Object & message)
 {
 	assert (is_initialized ());
 
@@ -61,35 +61,37 @@ Algorithm <Engines :: Game> & Menu_State ::
 	if ((message == terminate)
 		|| Engines :: Input_Engine :: get () . get_gui_button ("Quit", true))
 	{
-		return Quit_State :: get ();
+		Menu_State :: destruct ();
+		Play_State :: destruct ();
+
+		return;
 	}
+
+	Engines :: GUI_Engine :: get () . set_active_state (gui);
 
 	//	un-pause
 	if (Engines :: Input_Engine :: get () . get_key ("Escape", true)
 		|| Engines :: Input_Engine :: get () . get_gui_button ("Return", true))
 	{
-		Engines :: Log :: log (me) << "Game resumed" << endl;
-		
-		return Play_State :: get ();
+		if (Items :: Player_Character :: get () . is_dead ())
+		{
+			Engines :: Log :: show ("You're dead and cannot return to the game.");
+		}
+		else
+		{
+			Engines :: Game :: get () . set_active_state (Play_State :: get ());
+			
+			Engines :: Log :: log (me) << "Game resumed" << endl;
+		}
 	}
 
 	//	FPS
 	if (Engines :: Input_Engine :: get () . get_gui_button ("Statistics", true))
 	{
-		Engines :: Log :: show (owner . get_FPS () + " " + to_string (1000 / World :: get () . get_last_turn_lenght ()));
+		Engines :: Log :: show
+		(
+			Engines :: Game :: get () . get_FPS ()
+			+ " " + to_string (1000 * World :: get () . get_last_turn_lenght ())
+		);
 	}
-	
-	//	Return me or a child state.
-	return owner . get_active_state ();
-}
-
-//	virtual
-void Menu_State ::
-	enter (Engines :: Game & owner)
-{
-	assert (is_initialized ());
-
-	Engines :: GUI_Engine :: get () . set_active_state (gui);
-	
-	Engines :: Log :: show ("Menu (game paused)");
 }

@@ -68,37 +68,3 @@ bool Weapon ::
 	&& (break_chance < 100)  && (0 < sharpness) && (sharpness < 100)
 	&& (0 < speed) && (0 < attack_rate) && (0 < defense_rate) && (0 < damage);
 }
-
-//	static
-Item & Weapon ::
-	create
-	(
-				string new_name,
-				string new_mesh_name,
-				Ogre :: Vector3 new_size,
-				float new_mass,
-				float new_sharpness,
-				float new_break_chance,
-				float new_speed,
-				float new_attack_rate,
-				float new_defense_rate,
-				float new_damage
-	)
-{
-	Item * temp =
-		new Weapon
-		(
-			new_name,
-			new_mesh_name,
-			new_size,
-			new_mass,
-			new_sharpness,
-			new_break_chance,
-			new_speed,
-			new_attack_rate,
-			new_defense_rate,
-			new_damage
-		);
-
-	return * temp;
-}

@@ -9,25 +9,28 @@ namespace TSL
 {
 	namespace Items
 	{
-		class NPC;
+		class Character;
 	}
 	
 	namespace Algorithms
 	{
+		class Alive_State;
 
 		///	Fight_State is the algorithm for fighting NPCs.
 		class Fight_State :
-			public Singleton <Fight_State>,
-			public Algorithm <Items :: NPC>
+			public Algorithm
 		{
 			public :
-				Fight_State ();
+				Fight_State (Alive_State & new_alive_state);
 				virtual ~Fight_State ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 				
-				virtual Algorithm <Items :: NPC> & transit (Items :: NPC & owner, const Object & message);
+				virtual void transit (const Object & message);
+
+				Alive_State & alive_state;
+				Set <Items :: Character> targets;
 		};
 	}
 }

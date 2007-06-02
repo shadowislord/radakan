@@ -4,11 +4,11 @@
 #include "log.hpp"
 #include "menu_state.hpp"
 #include "play_state.hpp"
-#include "quit_state.hpp"
 #include "settings.hpp"
 #include "tracker.hpp"
 
 #include <OgreColourValue.h>
+#include <OgreDefaultHardwareBufferManager.h>
 
 using namespace std;
 using namespace TSL;
@@ -103,10 +103,13 @@ Game ::
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(ogre_media_path + "/models", "FileSystem", "models", true);
 
+		window = root -> initialise (true, "The Scattered Lands");
+		
+		Ogre :: MeshManager :: getSingleton () . createPlane
+			("ground.mesh", "models", Ogre :: Plane (Ogre :: Vector3 (1, 0, 0), 0), 20, 20);
+
 		// Initialise our resources
 		Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
-
-		window = root -> initialise (true, "The Scattered Lands");
 
 		//	set default mipmap level (NB some APIs ignore this)
 		Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);	
@@ -118,10 +121,8 @@ Game ::
 
 		new Algorithms :: Play_State (scene_manager, tsl_path);
 		new Algorithms :: Menu_State ();
-		new Algorithms :: Quit_State ();
 
 		set_active_state (Algorithms :: Play_State :: get ());
-		assert (get_active_state () . is_type <Algorithms :: Play_State> ());
 
 		Ogre :: Camera * camera = scene_manager . getCameraIterator () . getNext ();
 		assert (camera != NULL);
@@ -145,7 +146,6 @@ Game ::
 {
 	Log :: trace (me, Game :: get_class_name (), "~");
 	assert (is_initialized ());
-	assert (get_active_state () == Algorithms :: Quit_State :: get ());
 
 	forget_dependencies ();
 
@@ -154,7 +154,6 @@ Game ::
 	Settings :: destruct ();
 	
 	Algorithms :: Menu_State :: destruct ();
-	Algorithms :: Quit_State :: destruct ();
 	Algorithms :: Play_State :: destruct ();
 
 	GUI_Engine :: destruct ();
@@ -171,32 +170,37 @@ bool Game ::
 	const
 {
 	assert (Singleton <Game> :: is_initialized ());
-	assert (State_Machines :: Algorithm_State_Machine <Game> :: is_initialized ());
+	assert (Algorithms :: Algorithm_State_Machine :: is_initialized ());
 
 	return true;
+}
+
+//	virtual
+void Game ::
+	transit (const Object & message)
+{
+	Input_Engine :: get () . capture ();
+	Ogre :: WindowEventUtilities :: messagePump ();
+	
+	Algorithms :: Algorithm_State_Machine :: transit (message);
+	
+	bool check = root -> renderOneFrame ();
+	assert (check);
+	GUI_Engine :: get () . render ();
 }
 
 void Game ::
 	run ()
 {
 	const Object * message = & Object :: update;
-	while (get_active_state () != Algorithms :: Quit_State :: get ())
+	while (has_active_state ())
 	{
-		bool check = root -> renderOneFrame ();
-		assert (check);
-		GUI_Engine :: get () . render ();
-
-		Input_Engine :: get () . capture ();
-		Ogre :: WindowEventUtilities :: messagePump ();
-
 		if (window -> isClosed ())
 		{
 			message = & Object :: terminate;
 		}
-		State_Machines :: Algorithm_State_Machine <Game> :: run (* message);
+		transit (* message);
 	}
-
-	assert (get_active_state () == Algorithms :: Quit_State :: get ());
 }
 
 string Game ::

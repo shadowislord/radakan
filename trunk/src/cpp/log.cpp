@@ -79,9 +79,8 @@ void Log ::
 	
 	if (is_instantiated ())
 	{
-		Object * message = new Object (message_contents);
-		get () . call_observers (* message);
-		delete message;
+		Object message (message_contents);
+		get () . call_observers (message);
 	}
 }
 

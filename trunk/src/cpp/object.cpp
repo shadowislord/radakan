@@ -225,7 +225,7 @@ template <class T> bool Object ::
 //	Engines :: Log :: trace (me, Object :: get_class_name (), "is_type", "<" + T :: get_class_name () + ">");
 	assert (is_initialized ());
 
-	return (dynamic_cast <T *> (const_cast <Object *> (this)) != NULL);
+	return (dynamic_cast <const T *> (this) != NULL);
 }
 
 template <class T> T & Object ::
@@ -242,24 +242,27 @@ template <class T> T & Object ::
 //	to avert linking errors:
 #include "alive_state.hpp"
 #include "audio_engine.hpp"
+#include "battle_message.hpp"
 #include "chat_state.hpp"
 #include "conversation_message.hpp"
-#include "dead_state.hpp"
 #include "fight_state.hpp"
 #include "game.hpp"
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "menu_state.hpp"
 #include "play_state.hpp"
-#include "quit_state.hpp"
 #include "world.hpp"
 
 template bool Object ::
-	is_type <Algorithms :: Dead_State> () const;
+	is_type <Algorithms :: Algorithm> () const;
+template bool Object ::
+	is_type <Algorithms :: Alive_State> () const;
+template bool Object ::
+	is_type <Algorithms :: Chat_State> () const;
+template bool Object ::
+	is_type <Algorithms :: Fight_State> () const;
 template bool Object ::
 	is_type <Algorithms :: Play_State> () const;
-template bool Object ::
-	is_type <Algorithms :: Quit_State> () const;
 template bool Object ::
 	is_type <Engines :: Game> () const;
 template bool Object ::
@@ -272,6 +275,8 @@ template bool Object ::
 	is_type <Items :: NPC> () const;
 template bool Object ::
 	is_type <Items :: Weapon> () const;
+template bool Object ::
+	is_type <Messages :: Battle_Message> () const;
 template bool Object ::
 	is_type <Messages :: Conversation_Message> () const;
 template bool Object ::
@@ -289,18 +294,20 @@ template bool Object ::
 template bool Object ::
 	is_type <Set <Tile> > () const;
 template bool Object ::
-	is_type <Set <Sound> > () const;
-template bool Object ::
-	is_type <State_Machines :: Data_State_Machine <Tile> > () const;
+	is_type <Set <Sound_Sample> > () const;
 template bool Object ::
 	is_type <Movable_Model> () const;
 template bool Object ::
+	is_type <Sound_Sample> () const;
+template bool Object ::
+	is_type <State_Machine <Tile> > () const;
+template bool Object ::
 	is_type <Tile> () const;
 
+template Algorithms :: Algorithm & Object ::
+	to_type <Algorithms :: Algorithm> () const;
 template Algorithms :: Alive_State & Object ::
 	to_type <Algorithms :: Alive_State> () const;
-template Algorithms :: Dead_State & Object ::
-	to_type <Algorithms :: Dead_State> () const;
 template Algorithms :: Fight_State & Object ::
 	to_type <Algorithms :: Fight_State> () const;
 template Algorithms :: Menu_State & Object ::
@@ -325,6 +332,8 @@ template Items :: NPC & Object ::
 	to_type <Items :: NPC> () const;
 template Items :: Weapon & Object ::
 	to_type <Items :: Weapon> () const;
+template Messages :: Battle_Message & Object ::
+	to_type <Messages :: Battle_Message> () const;
 template Messages :: Conversation_Message & Object ::
 	to_type <Messages :: Conversation_Message> () const;
 template Model & Object ::
@@ -343,17 +352,15 @@ template Set <Items :: Item> & Object ::
 	to_type <Set <Items :: Item> > () const;
 template Set <Tile> & Object ::
 	to_type <Set <Tile> > () const;
-template Set <Sound> & Object ::
-	to_type <Set <Sound> > () const;
-template State_Machines :: Data_State_Machine <Tile> & Object ::
-	to_type <State_Machines :: Data_State_Machine <Tile> > () const;
+template Set <Sound_Sample> & Object ::
+	to_type <Set <Sound_Sample> > () const;
 template Movable_Model & Object ::
 	to_type <Movable_Model> () const;
 template Object & Object ::
 	to_type <Object> () const;
-template Sound & Object ::
-	to_type <Sound> () const;
+template Sound_Sample & Object ::
+	to_type <Sound_Sample> () const;
+template State_Machine <Tile> & Object ::
+	to_type <State_Machine <Tile> > () const;
 template Tile & Object ::
 	to_type <Tile> () const;
-template World & Object ::
-	to_type <World> () const;
