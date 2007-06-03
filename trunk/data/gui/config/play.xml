@@ -1,0 +1,45 @@
+<GUILayout>
+	<Window Type="DefaultWindow" Name="play">
+		<!--top-->
+		<Window Type="TaharezLook/StaticImage" Name="play-image">
+			<Property Name="UnifiedPosition" Value="{{0.00,0},{0.00,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.20,0},{0.20,0}}" />
+			<Property Name="FrameEnabled" Value="false" />
+			<Property Name="Image" Value="set:ImageForStaticImage image:full_image" />
+		</Window>
+		<Window Type="TaharezLook/StaticText" Name="play-intro">
+			<Property Name="UnifiedPosition" Value="{{0.20,0},{0.00,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.65,0},{0.05,0}}" />
+			<Property Name="Text" Value="The Shattered Lands is a single-player sandbox 3D RPG in a dark dynamic fantasy world." />
+		</Window>
+
+		<!--bottom left-->
+		<Window Type="TaharezLook/Button" Name="play-menu">
+			<Property Name="UnifiedPosition" Value="{{0.00,0},{0.96,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
+			<Property Name="Text" Value="Menu" />
+		</Window>
+		
+		<!--bottom right-->
+		<Window Type="TaharezLook/Listbox" Name="play-log">
+			<Property Name="UnifiedPosition" Value="{{0.70,0},{0.70,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.30,0},{0.26,0}}" />
+			<Property Name="Alpha" Value="0.65" />
+		</Window>
+		<Window Type="TaharezLook/Button" Name="play-chat">
+			<Property Name="UnifiedPosition" Value="{{0.70,0},{0.96,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
+			<Property Name="Text" Value="Chat" />
+		</Window>
+		<Window Type="TaharezLook/Button" Name="play-hit">
+			<Property Name="UnifiedPosition" Value="{{0.80,0},{0.96,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
+			<Property Name="Text" Value="Hit" />
+		</Window>
+		<Window Type="TaharezLook/Button" Name="play-move">
+			<Property Name="UnifiedPosition" Value="{{0.90,0},{0.96,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
+			<Property Name="Text" Value="Move" />
+		</Window>
+	</Window>
+</GUILayout>
