@@ -11,10 +11,10 @@ namespace TSL
 	namespace Algorithms
 	{
 
-		///	Algorithm_State_Machine is the abstract base class for all algorithm based state machines.
+		///	I'm the abstract base class for all algorithm based state machines.
+		///	Derive from me using private inheritance.
 		class Algorithm_State_Machine :
-			public State_Machine <Algorithm>,
-			protected Algorithm
+			public State_Machine <Algorithm>
 		{
 			public :
 				Algorithm_State_Machine ();
@@ -23,9 +23,9 @@ namespace TSL
 				
 				static const string get_class_name ();
 
-				virtual void drop (Object & t, bool stay);
+				virtual void drop (Object & t, bool stay = false);
 
-				virtual void transit (const Object & message);
+				void run (const Object & message, bool old_state_stay = false);
 		};
 	}
 }

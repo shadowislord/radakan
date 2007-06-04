@@ -34,7 +34,7 @@ const string World ::
 }
 
 World ::
-	World (Ogre :: SceneManager & scene_manager, string tsl_path) :
+	World (Ogre :: SceneManager & scene_manager) :
 	Object ("world"),
 	OgreOde :: World (& scene_manager),
 	OgreOde :: ExactVariableStepHandler
@@ -57,13 +57,12 @@ World ::
 		{
 			pair <int, int> coordinates (x, z);
 			Engines :: Log :: log (me) << "tile position: (" << x << ", " << z << ")" << endl;
-			tiles [coordinates] = new Tile (coordinates, tsl_path);
+			tiles [coordinates] = new Tile (coordinates);
 			Engines :: Log :: log (me) << * tiles [coordinates] << endl;
-			set_active_state (* tiles [coordinates]);	//	This adds the tile to the Set.
 		}
 	}
 
-	set_active_state (* tiles [pair <int, int> (0, 0)]);
+	set_active_tile (* tiles [pair <int, int> (0, 0)]);
 
 	setCollisionListener (this);
 
@@ -98,13 +97,13 @@ bool World ::
 
 //	virtual
 void World ::
-	set_active_state (Tile & tile)
+	set_active_tile (Tile & tile)
 {
 	assert (is_initialized ());
 
-	if (has_active_state () && Items :: Player_Character :: is_instantiated ())
+	if ((! has_active_state ()) || (tile != get_active_state ()))
 	{
-		if (tile != get_active_state ())
+		if (has_active_state () && Items :: Player_Character :: is_instantiated ())
 		{
 			if (! tile . contains (Items :: Player_Character :: get () . get_movable_model ()))
 			{
@@ -112,9 +111,9 @@ void World ::
 					(Items :: Player_Character :: get () . get_movable_model (), tile);
 			}
 		}
+		
+		State_Machine <Tile> :: set_active_state (tile, true);
 	}
-	
-	State_Machine <Tile> :: set_active_state (tile);
 }
 
 void World ::
@@ -144,7 +143,7 @@ void World ::
 	assert (z < Tile :: side_length * (max_z + 1));
 	Tile * new_active_tile = tiles [pair <int, int> (x, z)];
 	assert (new_active_tile != NULL);
-	World :: get () . set_active_state (* new_active_tile);
+	World :: get () . set_active_tile (* new_active_tile);
 
 	for (map <pair <int, int>, Tile *> :: iterator i = tiles . begin ();
 		i != tiles . end (); i ++)
@@ -198,4 +197,12 @@ bool World ::
 
 //	Log :: log (me) << "collision: " << g1 -> getClass () << " " << g2 -> getClass () << endl;
 	return true;
+}
+
+string World ::
+	get_FPS () const
+{
+	assert (is_initialized ());
+
+	return "FPS: " + to_string (1.0 / World :: get () . get_last_turn_lenght ());
 }

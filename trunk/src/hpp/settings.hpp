@@ -13,7 +13,7 @@ namespace TSL
 			public Singleton <Settings>
 		{
 			public :
-				Settings (Ogre :: SceneManager & scene_manager);
+				Settings (string new_tsl_path);
 				virtual ~Settings ();
 				virtual bool is_initialized () const;
 				
@@ -30,6 +30,8 @@ namespace TSL
 				
 				///	in radians
 				void increase_vertical_camera_angle (float angle);
+
+				const string tsl_path;
 
 			private :
 				///	in meters

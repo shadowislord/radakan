@@ -22,14 +22,12 @@ const string Play_State ::
 
 //  constructor
 Play_State ::
-	Play_State (Ogre :: SceneManager & scene_manager, string tsl_path) :
+	Play_State (Ogre :: SceneManager & scene_manager) :
 	Object ("play state"),
 	gui (Engines :: GUI_Engine :: get () . create_gui ("play.xml")),
 	camera (* scene_manager . createCamera ("camera"))
 {
-	Engines :: Log :: trace (me, Play_State :: get_class_name (), "", "~scene_manager~", tsl_path);
-
-	new World (scene_manager, tsl_path);
+	Engines :: Log :: trace (me, Play_State :: get_class_name (), "", "~scene_manager~");
 
 	camera . setNearClipDistance (0.001);
 	camera . setFarClipDistance (80);
@@ -45,8 +43,6 @@ Play_State ::
 	assert (Play_State :: is_initialized ());
 
 	forget_dependencies ();
-
-	World :: destruct ();
 }
 
 //	virtual
@@ -62,7 +58,7 @@ bool Play_State ::
 }
 
 //	virtual
-void Play_State ::
+Algorithm * Play_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());
@@ -70,32 +66,18 @@ void Play_State ::
 	//	quit
 	if (message == terminate)
 	{
-		Menu_State :: destruct ();
-		Play_State :: destruct ();
-
-		return;
+		return NULL;
 	}
 
-	//	dead
-	if (Items :: Player_Character :: get () . is_dead ())
-	{
-		Engines :: Game :: get () . set_active_state (Menu_State :: get ());
-
-		Play_State :: destruct ();
-
-		return;
-	}
-
-	//	pause
-	if (Engines :: Input_Engine :: get () . get_key ("Escape", true)
+	//	menu
+	if (Items :: Player_Character :: get () . is_dead ()
+		|| Engines :: Input_Engine :: get () . get_key ("Escape", true)
 		|| Engines :: Input_Engine :: get () . get_gui_button ("Menu", true))
 	{
-		Engines :: Game :: get () . set_active_state (Menu_State :: get ());
-
-		return;
+		return & Menu_State :: get ();
 	}
 
-	Engines :: GUI_Engine :: get () . set_active_state (gui);
+	Engines :: GUI_Engine :: get () . set_active_gui (gui);
 
 	World :: get () . update ();
 
@@ -214,4 +196,6 @@ void Play_State ::
 		)
 		* Items :: Player_Character :: get () . get_movable_model () . node . getOrientation ()
 	);
+
+	return this;
 }

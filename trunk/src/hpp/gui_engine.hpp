@@ -20,15 +20,14 @@ namespace TSL
 				GUI_Engine
 				(
 					Ogre :: RenderWindow & window,
-					Ogre :: SceneManager & scene_manager,
-					string log_file_name
+					Ogre :: SceneManager & scene_manager
 				);
 				virtual ~GUI_Engine ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 				
-				virtual void set_active_state (GUI & gui);
+				void set_active_gui (GUI & gui);
 
 				void set_mouse_position (const Ogre :: Vector3 & new_position);
 				void left_mouse_button_click ();

@@ -1,5 +1,6 @@
 #include "audio_engine.hpp"
 #include "log.hpp"
+#include "settings.hpp"
 
 using namespace std;
 using namespace TSL;
@@ -56,6 +57,9 @@ Audio_Engine ::
 			silent = true;
 		}
 	#endif
+
+	load (Settings :: get () . tsl_path + "/data/sound/prelude_11.ogg");
+	play ();
 
 	assert (is_initialized ());
 }

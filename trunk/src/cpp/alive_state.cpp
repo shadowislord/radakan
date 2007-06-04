@@ -60,16 +60,14 @@ bool Alive_State ::
 }
 
 //	virtual
-void Alive_State ::
+Algorithm * Alive_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());
 	
 	if (message == terminate)
 	{
-		delete this;
-
-		return;
+		return NULL;
 	}
 
 	npc . get_movable_model () . move (0);
@@ -91,7 +89,7 @@ void Alive_State ::
 		{
 			if (message . to_type <Messages :: Conversation_Message> () . to == npc)
 			{
-				if (! (has_active_state () && get_active_state () . is_type <Chat_State> ()))
+				if (! has_active_state ())
 				{
 					set_active_state (static_cast <Algorithm &> (* new Chat_State (* this)));
 				}
@@ -99,5 +97,7 @@ void Alive_State ::
 		}
 	}
 
-	Algorithm_State_Machine :: transit (message);
+	Algorithm_State_Machine :: run (message);
+
+	return this;
 }

@@ -1,5 +1,6 @@
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
+#include "settings.hpp"
 #include <CEGUIWindowManager.h>
 #include <CEGUISchemeManager.h>
 
@@ -18,27 +19,31 @@ GUI_Engine ::
 	GUI_Engine
 	(
 		Ogre :: RenderWindow & window,
-		Ogre :: SceneManager & scene_manager,
-		string log_file_name
+		Ogre :: SceneManager & scene_manager
 	) :
 	Object ("gui engine")
 {
-	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name);
+	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~");
 
-	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "A");
-	renderer = new CEGUI :: OgreCEGUIRenderer (& window, Ogre :: RENDER_QUEUE_OVERLAY, false, 0, & scene_manager);
+	renderer = new CEGUI :: OgreCEGUIRenderer
+		(& window, Ogre :: RENDER_QUEUE_OVERLAY, false, 0, & scene_manager);
 
-	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "B");
-	system = new CEGUI :: System (renderer, NULL, NULL, NULL, "", log_file_name);
+	Engines :: Log :: trace
+		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "A");
+	system = new CEGUI :: System
+		(renderer, NULL, NULL, NULL, "", Settings :: get () . tsl_path + "/log/cegui.txt");
 
-	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "C");
+	Engines :: Log :: trace
+		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "B");
 	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
 	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
-	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "D");
+	Engines :: Log :: trace
+		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "C");
 	system -> setDefaultFont ("BlueHighway-12");
 
-	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", log_file_name, "E");
+	Engines :: Log :: trace
+		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "D");
 
 	assert (is_initialized ());
 }
@@ -114,12 +119,12 @@ GUI & GUI_Engine ::
 }
 
 void GUI_Engine ::
-	set_active_state (GUI & gui)
+	set_active_gui (GUI & gui)
 {
 	assert (is_initialized ());
 	assert (gui . is_initialized ());
 
-	State_Machine <GUI> :: set_active_state (gui);
+	State_Machine <GUI> :: set_active_state (gui, true);
 
 	system -> setGUISheet (& gui . root_window);
 }

@@ -13,8 +13,8 @@ namespace TSL
 
 		///	Game is the main class. It manages the eninges and the sectors.
 		class Game :
-			public Singleton <Game>,
-			public Algorithms :: Algorithm_State_Machine
+			protected Singleton <Game>,
+			private Algorithms :: Algorithm_State_Machine
 		{
 			public :
 				Game (string tsl_path, string ogre_media_path);
@@ -23,9 +23,7 @@ namespace TSL
 				
 				static const string get_class_name ();
 
-				virtual void transit (const Object & message);
 				void run ();
-				string get_FPS () const;
 
 			private :
 				Ogre :: Root * root;

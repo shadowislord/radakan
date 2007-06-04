@@ -22,11 +22,10 @@ namespace TSL
 
 			virtual void drop (Object & t, bool stay = false);
 
-			virtual bool has_active_state () const;
-			virtual T & get_active_state () const;
+			bool has_active_state () const;
+			T & get_active_state () const;
 
-			virtual void set_active_state (T & new_state);
-			virtual void unset_active_state ();
+			void set_active_state (T & new_state, bool old_state_stay = false);
 
 			///	The indices are in chronological order. (0 means first.)
 			const vector <string> & get_history ();
@@ -35,8 +34,6 @@ namespace TSL
 			State_Machine ();
 
 		private :
-			T * active_state;
-
 			///	The history stores the name of previous 'active_state's.
 			vector <string> history;
 	};

@@ -15,7 +15,7 @@ template <class T> const string State_Machine <T> ::
 template <class T> State_Machine <T> ::
 	State_Machine () :
 	Object ("Doesn't matter."),
-	active_state (NULL)
+	Location <T> (1)
 {
 	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name ());
 	
@@ -41,11 +41,6 @@ template <class T> bool State_Machine <T> ::
 {
 	assert (Location <T> :: is_initialized ());
 
-	if (active_state != NULL)
-	{
-		assert (contains (* active_state));
-	}
-
 	return true;
 }
 
@@ -55,68 +50,50 @@ template <class T> void State_Machine <T> ::
 {
 	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "drop", t, bool_to_string (stay));
 	assert (Location <T> :: is_initialized ());
+	assert (t . is_type <T> ());
 	
-	if (& t != active_state)	//	This also works for NULL.
-	{
-		unset_active_state ();
-	}
+	Engines :: Log :: log (me) << t << " was dropped as active state." << endl;
+	
+	history . push_back (t);
 	Location <T> :: drop (t, stay);
 }
 
-//	virtual
 template <class T> bool State_Machine <T> ::
 	has_active_state () const
 {
 	//	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "has_active_state");
 	assert (State_Machine <T> :: is_initialized ());
 
-	return (active_state != NULL);
+	return (Location <T> :: get_child () != NULL);
 }
 
-//	virtual
 template <class T> T & State_Machine <T> ::
 	get_active_state () const
 {
 	assert (State_Machine <T> :: is_initialized ());
 	assert (has_active_state ());
 
-	return * active_state;
+	return * Location <T> :: get_child ();
 }
 
-//	virtual
 template <class T> void State_Machine <T> ::
-	set_active_state (T & new_state)
+	set_active_state (T & new_state, bool old_state_stay)
 {
-	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "set_active_state", new_state);
+	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "set_active_state", new_state, bool_to_string (old_state_stay));
 	assert (State_Machine <T> :: is_initialized ());
 
-	if (& new_state != active_state)	//	This also works for NULL.
+	if (! contains (new_state))	//	This also works for NULL.
 	{
-		//	If this doesn't succeed, that meant I already have 'new_state' as a Resident,
-		//	which is fine too.
-		Location <T> :: add (new_state);
-
 		if (has_active_state ())
 		{
-			unset_active_state ();
+			drop (get_active_state (), old_state_stay);
 		}
 
-		active_state = & new_state;
+		bool check = Location <T> :: add (new_state);
+		assert (check);
+
 		Engines :: Log :: log (me) << "The active state changed to " << new_state << "." << endl;
 	}
-}
-
-//	virtual
-template <class T> void State_Machine <T> ::
-	unset_active_state ()
-{
-	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "unset_active_state");
-	assert (State_Machine <T> :: is_initialized ());
-	assert (has_active_state ());
-
-	history . push_back (* active_state);
-	
-	Engines :: Log :: log (me) << * active_state << " was dropped as active state." << endl;
 }
 
 template <class T> const vector <string> & State_Machine <T> ::

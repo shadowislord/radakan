@@ -52,7 +52,7 @@ bool Menu_State ::
 }
 
 //	virtual
-void Menu_State ::
+Algorithm * Menu_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());
@@ -61,13 +61,10 @@ void Menu_State ::
 	if ((message == terminate)
 		|| Engines :: Input_Engine :: get () . get_gui_button ("Quit", true))
 	{
-		Menu_State :: destruct ();
-		Play_State :: destruct ();
-
-		return;
+		return NULL;
 	}
 
-	Engines :: GUI_Engine :: get () . set_active_state (gui);
+	Engines :: GUI_Engine :: get () . set_active_gui (gui);
 
 	//	un-pause
 	if (Engines :: Input_Engine :: get () . get_key ("Escape", true)
@@ -79,19 +76,17 @@ void Menu_State ::
 		}
 		else
 		{
-			Engines :: Game :: get () . set_active_state (Play_State :: get ());
-			
 			Engines :: Log :: log (me) << "Game resumed" << endl;
+			
+			return & Play_State :: get ();
 		}
 	}
 
 	//	FPS
 	if (Engines :: Input_Engine :: get () . get_gui_button ("Statistics", true))
 	{
-		Engines :: Log :: show
-		(
-			Engines :: Game :: get () . get_FPS ()
-			+ " " + to_string (1000 * World :: get () . get_last_turn_lenght ())
-		);
+		Engines :: Log :: show (World :: get () . get_FPS ());
 	}
+
+	return this;
 }

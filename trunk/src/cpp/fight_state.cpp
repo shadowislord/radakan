@@ -23,6 +23,8 @@ Fight_State ::
 	alive_state (new_alive_state),
 	targets (my + "targets")
 {
+	Engines :: Log :: show (alive_state . npc + " becomes agressive!");
+
 	alive_state . calm = 0;
 	
 	assert (Fight_State :: is_initialized ());
@@ -49,7 +51,7 @@ bool Fight_State ::
 }
 
 //	virtual
-void Fight_State ::
+Algorithm * Fight_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());
@@ -63,7 +65,7 @@ void Fight_State ::
 
 	if (targets . is_empty ())
 	{
-		delete this;
+		return NULL;
 	}
 
 	Items :: Character & target = * targets . get_child ();
@@ -106,4 +108,6 @@ void Fight_State ::
 	{
 		npc_model . move (0);
 	}
+
+	return this;
 }

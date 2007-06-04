@@ -21,8 +21,9 @@ const float Settings ::
 	max_vertical_camera_angle (Ogre :: Math :: HALF_PI);
 
 Settings ::
-	Settings (Ogre :: SceneManager & scene_manager) :
+	Settings (string new_tsl_path) :
 	Object ("settings"),
+	tsl_path (new_tsl_path),
 	camera_distance (0.72)
 {
 	//	Do nothing.

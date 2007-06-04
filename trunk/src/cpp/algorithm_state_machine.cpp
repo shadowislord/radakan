@@ -31,7 +31,7 @@ Algorithm_State_Machine ::
 	Engines :: Log :: trace (this -> me, Algorithm_State_Machine :: get_class_name (), "~");
 	assert (Algorithm_State_Machine :: is_initialized ());
 
-	State_Machine <Algorithm > :: unset_active_state ();
+	//	Do nothing.
 }
 
 //	virtual
@@ -54,14 +54,22 @@ void Algorithm_State_Machine ::
 	State_Machine <Algorithm> :: drop (t, stay);
 }
 
-//	virtual
 void Algorithm_State_Machine ::
-	transit (const Object & message)
+	run (const Object & message, bool old_state_stay)
 {
 	assert (is_initialized ());
 
 	if (has_active_state ())
 	{
-		State_Machine <Algorithm> :: get_active_state () . transit (message);
+		Algorithm & old_state = State_Machine <Algorithm> :: get_active_state ();
+		Algorithm * new_state = old_state . transit (message);
+		if (new_state == NULL)
+		{
+			drop (old_state);
+		}
+		else
+		{
+			set_active_state (* new_state, old_state_stay);
+		}
 	}
 }

@@ -29,7 +29,7 @@ namespace TSL
 				
 				static const string get_class_name ();
 				
-				virtual void transit (const Object & message);
+				virtual Algorithm * transit (const Object & message);
 		
 			private :
 				GUI & gui;

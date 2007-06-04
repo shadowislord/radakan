@@ -22,7 +22,7 @@ namespace TSL
 				
 				static const string get_class_name ();
 				
-				virtual void transit (const Object & message);
+				virtual Algorithm * transit (const Object & message);
 
 				static Algorithm & create (Alive_State & new_alive_state);
 

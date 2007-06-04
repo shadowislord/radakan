@@ -64,7 +64,7 @@ void NPC ::
 {
 	assert (is_initialized ());
 
-	return Algorithms :: Algorithm_State_Machine :: transit (message);
+	Algorithms :: Algorithm_State_Machine :: run (message);
 }
 
 //	virtual

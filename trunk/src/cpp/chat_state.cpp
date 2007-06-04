@@ -54,7 +54,7 @@ bool Chat_State ::
 }
 
 //	virtual
-void Chat_State ::
+Algorithm * Chat_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());
@@ -84,12 +84,12 @@ void Chat_State ::
 
 		alive_state . calm *= 0.9;	//	The NPC gets slightly annoyed.
 
-		delete this;
-
-		return;
+		return NULL;
 	}
 
 	timeout --;
+	
+	return this;
 }
 
 //	static

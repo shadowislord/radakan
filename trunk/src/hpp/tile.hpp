@@ -26,7 +26,7 @@ namespace TSL
 		public OgreOde :: SimpleSpace
 	{
 		public :
-			Tile (pair <int, int> new_coordinates, string new_tsl_path);
+			Tile (pair <int, int> new_coordinates);
 			virtual ~Tile ();
 			virtual bool is_initialized () const;
 			
@@ -46,8 +46,6 @@ namespace TSL
 			void load_xml (TiXmlElement & element);
 			void load_xml_file (TiXmlDocument & document);
 			Model & create_model (Items :: Item & item, Ogre :: Vector3 position, float scale);
-
-			const string tsl_path;
 
 			TiXmlDocument doc;
 	};

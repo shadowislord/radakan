@@ -3,6 +3,7 @@
 #include "player_character.hpp"
 #include "static_item.hpp"
 #include "tile.hpp"
+#include "settings.hpp"
 #include "world.hpp"
 
 using namespace std;
@@ -20,7 +21,7 @@ const int Tile ::
 	side_length (20);
 
 Tile ::
-	Tile (pair <int, int> new_coordinates, string new_tsl_path) :
+	Tile (pair <int, int> new_coordinates) :
 	Object
 	(
 		"tile_" + to_string (new_coordinates . first) + "_" + to_string (new_coordinates . second)
@@ -28,11 +29,10 @@ Tile ::
 	OgreOde :: SimpleSpace (& World :: get (), World :: get () . getDefaultSpace ()),
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
-	tsl_path (new_tsl_path),
 	npcs (my + "NPCs"),
-	doc (tsl_path + "/data/tile/" + me + ".xml")
+	doc (Engines :: Settings :: get () . tsl_path + "/data/tile/" + me + ".xml")
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "", " (" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")", tsl_path);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
 	
 	load_xml_file (doc);
 
@@ -175,7 +175,9 @@ void Tile ::
 	Engines :: Log :: log (me) << "element value: " << element . ValueStr () << endl;
 	if (element . ValueStr () == string ("include"))
 	{
-		TiXmlDocument document (tsl_path + "/data/tile/" + element . Attribute ("name") + ".xml");
+		TiXmlDocument document
+			(Engines :: Settings :: get () . tsl_path + "/data/tile/"
+				+ element . Attribute ("name") + ".xml");
 		load_xml_file (document);
 		return;
 	}

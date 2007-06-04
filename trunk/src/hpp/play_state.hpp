@@ -22,13 +22,13 @@ namespace TSL
 			public Algorithm
 		{
 			public :
-				Play_State (Ogre :: SceneManager & scene_manager, string tsl_path);
+				Play_State (Ogre :: SceneManager & scene_manager);
 				virtual ~Play_State ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 
-				virtual void transit (const Object & message);
+				virtual Algorithm * transit (const Object & message);
 
 			private :
 				GUI & gui;

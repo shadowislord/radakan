@@ -21,13 +21,13 @@ namespace TSL
 		public State_Machine <Tile>
 	{
 		public:
-			World (Ogre :: SceneManager & scene_manager, string tsl_path);
+			World (Ogre :: SceneManager & scene_manager);
 			virtual ~World ();
 			virtual bool is_initialized () const;
 			
 			static const string get_class_name ();
 
-			virtual void set_active_state (Tile & tile);
+			void set_active_tile (Tile & tile);
 
 			///	Called by OgreOde whenever a collision occurs,
 			///	so that we can modify the contact parameters.
@@ -40,6 +40,8 @@ namespace TSL
 			///	in seconds
 			const float & get_last_turn_lenght () const;
 
+			string get_FPS () const;
+			
 			Ogre :: SceneNode & root_node;
 		
 		private :

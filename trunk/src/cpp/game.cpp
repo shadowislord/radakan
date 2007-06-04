@@ -46,10 +46,9 @@ Game ::
 
 	new Tracker ();
 	new Log ();
+	new Settings (tsl_path);
 
 	new Audio_Engine ();
-	Audio_Engine :: get () . load (tsl_path + "/data/sound/prelude_11.ogg");
-	Audio_Engine :: get () . play ();
 
 	//	Don't copy the log to the console. Store the log to a file, if debugging.
 	(new Ogre :: LogManager ()) -> createLog (tsl_path + "/log/ogre.txt", true, false, ! debugging);
@@ -117,11 +116,13 @@ Game ::
 		new Input_Engine (* window);
 
 		Ogre :: SceneManager & scene_manager = * root -> createSceneManager (Ogre :: ST_GENERIC);
-		new GUI_Engine (* window, scene_manager, tsl_path + "/log/cegui.txt");
 
-		new Algorithms :: Play_State (scene_manager, tsl_path);
+		new GUI_Engine (* window, scene_manager);
+
+		new World (scene_manager);
+
 		new Algorithms :: Menu_State ();
-
+		new Algorithms :: Play_State (scene_manager);
 		set_active_state (Algorithms :: Play_State :: get ());
 
 		Ogre :: Camera * camera = scene_manager . getCameraIterator () . getNext ();
@@ -130,7 +131,6 @@ Game ::
 		root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
 		root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
 		
-		new Settings (scene_manager);
 	}	// try
 	catch (Ogre :: Exception & exception)
 	{
@@ -149,13 +149,10 @@ Game ::
 
 	forget_dependencies ();
 
-	unset_active_state ();
+	World :: destruct ();
 
 	Settings :: destruct ();
 	
-	Algorithms :: Menu_State :: destruct ();
-	Algorithms :: Play_State :: destruct ();
-
 	GUI_Engine :: destruct ();
 	//	Input_Engine :: destruct ();	//	This engine is already auto-destructed.
 	Audio_Engine :: destruct ();
@@ -175,20 +172,6 @@ bool Game ::
 	return true;
 }
 
-//	virtual
-void Game ::
-	transit (const Object & message)
-{
-	Input_Engine :: get () . capture ();
-	Ogre :: WindowEventUtilities :: messagePump ();
-	
-	Algorithms :: Algorithm_State_Machine :: transit (message);
-	
-	bool check = root -> renderOneFrame ();
-	assert (check);
-	GUI_Engine :: get () . render ();
-}
-
 void Game ::
 	run ()
 {
@@ -199,14 +182,14 @@ void Game ::
 		{
 			message = & Object :: terminate;
 		}
-		transit (* message);
+		
+		Input_Engine :: get () . capture ();
+		Ogre :: WindowEventUtilities :: messagePump ();
+		
+		Algorithms :: Algorithm_State_Machine :: run (* message, true);
+		
+		bool check = root -> renderOneFrame ();
+		assert (check);
+		GUI_Engine :: get () . render ();
 	}
-}
-
-string Game ::
-	get_FPS () const
-{
-	assert (is_initialized ());
-
-	return "FPS: " + to_string (window -> getAverageFPS ());
 }

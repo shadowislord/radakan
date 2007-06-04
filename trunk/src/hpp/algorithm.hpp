@@ -21,8 +21,10 @@ namespace TSL
 				
 				static const string get_class_name ();
 
-				///	I'll self-destruct, if appropriate.
-				virtual void transit (const Object & message) = 0;
+				///	Don't use this method directly.
+				///	I return myself to continue next time.
+				///	I return NULL when I should be destructed.
+				virtual Algorithm * transit (const Object & message) = 0;
 				
 			protected :
 				Algorithm ();
