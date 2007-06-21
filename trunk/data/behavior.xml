@@ -1,0 +1,107 @@
+<!-- This is a comment. -->
+
+<!-- NPC parameters: like, fear - each ranging from 0 to 1.
+Here, 0 means 'not at all' and 1 means 'absolutely'. -->
+
+<!-- main skills: charisma, strength, ... - each ranging from 0 to 2.
+Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like and IQ of 160). -->
+
+<!-- Intimidation usualy, but not always, results in fear. -->
+
+<!-- Variables can be looked up using '${variable name}'. -->
+
+<behaviour>
+	<if state="peace">
+		<options>
+			<option say="Hello." />
+			<if charisma=">1.2">
+				<option say="Greetings, my name is ${name}." effect="like" />
+			</if>
+			<option say="You there!" shout="true" effect="intimidation" />
+		</options>
+		<reactions>
+			<if like=">0.5">
+				<reaction say="What can I do for you?" state="conversation" />
+			</if>
+			<elseif like="<0.2">
+				<reaction say="To the death!" shout="true" state="battle" />
+			</if>
+			<elseif fear=">0.8">
+				<reaction say="I'll do everything you say." state="conversation" />
+			</elseif>
+			<else>
+				<reaction say="Hello." />
+			</else>
+		</reactions>
+	</if>
+	<if state="conversation">
+		<dialog>
+			<options>
+				<option say="Where can I find the blacksmith, please?" />
+				<option say="Tell me where the blacksmth is. Now!" effect="intimidation" />
+			</options>
+			<reactions>
+				<if fear=">0.6">
+					<reaction say="At the market place, next to the temple." />
+				</if>
+				<else>
+					<reaction say="You can find him at the market place, next to the temple." />
+				</else>
+			</reactions>
+		</dialog>
+		<dialog>
+			<options>
+				<option say="Give me that shiny dagger." effect="intimidation" />
+			</options>
+			<reactions>
+				<if fear=">0.8">
+					<reaction say="Of course..." />
+				</if>
+				<else>
+					<reaction say="Help, a thief!" shout="true" />
+				</else>
+			</reactions>
+		</dialog>
+		<dialog>
+			<options>
+				<if like=">0.7">
+					<option say="Something wrong?" />
+				</if>
+			</options>
+			<reactions>
+				<reaction say="Yes, I just have been robbed..." knowledge="robbers" />
+			</reactions>
+		</dialog>
+		<dialog>
+			<options>
+				<if knowledge="robbers">
+					<option say="Don't worry. I'll handle those robbers." />
+				</if>
+			</options>
+			<reactions>
+				<reaction say="Thank you!" />
+			</reactions>
+		</dialog>
+		<dialog>
+			<options>
+				<if know="robbers" have="dagger">
+					<option say="Here, your dagger" effect="like" />
+				</if>
+			</options>
+			<reactions>
+				<reaction say="Thank you so much..." />
+			</reactions>
+		</dialog>
+		<dialog>
+			<options>
+				<option say="Bye." />
+				<option action="Walk away without saying a word." effect="weird" />
+			</options>
+			<reactions>
+				<if fear="<0.4"><!-- less then 0.4 fear -->
+					<reaction say="Bye." />
+				</if>
+			</reactions>
+		</dialog>
+	</if>
+</behaviour>
