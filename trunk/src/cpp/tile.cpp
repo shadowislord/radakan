@@ -255,7 +255,8 @@ void Tile ::
 	assert (check);
 	assert (! document . Error ());
 	TiXmlElement * root = document . RootElement ();
-
+	assert (root != NULL);
+	
 	for (TiXmlElement * model_xml = root -> FirstChildElement ();
 				model_xml != NULL; model_xml = model_xml -> NextSiblingElement ())
 	{

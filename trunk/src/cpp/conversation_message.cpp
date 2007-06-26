@@ -14,8 +14,14 @@ const string Conversation_Message ::
 
 //  constructor
 Conversation_Message ::
-	Conversation_Message (const string & information, Items :: Character & new_from, Items :: Character & new_to) :
-	Object (information),
+	Conversation_Message
+	(
+		TiXmlElement & new_conversation_option,
+		Items :: Character & new_from,
+		Items :: Character & new_to
+	) :
+	Object (new_conversation_option . Attribute ("say")),
+	conversation_option (new_conversation_option),
 	from (new_from),
 	to (new_to)
 {

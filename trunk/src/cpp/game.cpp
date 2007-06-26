@@ -149,6 +149,8 @@ Game ::
 
 	forget_dependencies ();
 
+	Algorithms :: Play_State :: destruct ();
+
 	World :: destruct ();
 
 	Settings :: destruct ();

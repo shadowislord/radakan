@@ -3,6 +3,8 @@
 
 #include "character.hpp"
 
+#include <tinyxml.h>
+
 using namespace std;
 
 namespace TSL
@@ -14,12 +16,19 @@ namespace TSL
 			public Object
 		{
 			public :
-				Conversation_Message (const string & information, Items :: Character & new_from, Items :: Character & new_to);
+				Conversation_Message
+				(
+					TiXmlElement & new_conversation_option,
+					Items :: Character & new_from,
+					Items :: Character & new_to
+				);
 				virtual ~Conversation_Message ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 
+				TiXmlElement & conversation_option;
+				
 				Items :: Character & from;
 				Items :: Character & to;
 		};

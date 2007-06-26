@@ -82,18 +82,30 @@ Algorithm * Alive_State ::
 				set_active_state (static_cast <Algorithm &> (* new Fight_State (* this)));
 			}
 		}
-	}
-	else if (0.5 < calm)	//	'listening' state:
-	{
-		if (message . is_type <Messages :: Conversation_Message> ())
+		else
 		{
-			if (message . to_type <Messages :: Conversation_Message> () . to == npc)
+			//	Ignore the message.
+		}
+	}
+	else if (message . is_type <Messages :: Conversation_Message> ())
+	{
+		if (message . to_type <Messages :: Conversation_Message> () . to == npc)
+		{
+			if (0.5 < calm)	//	'listening' state:
 			{
 				if (! has_active_state ())
 				{
 					set_active_state (static_cast <Algorithm &> (* new Chat_State (* this)));
 				}
 			}
+			else
+			{
+				Engines :: Log :: show (npc + " is not listening.");
+			}
+		}
+		else
+		{
+			//	Ignore the message.
 		}
 	}
 

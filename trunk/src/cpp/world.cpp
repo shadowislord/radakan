@@ -85,6 +85,16 @@ World ::
 	assert (World :: is_initialized ());
 
 	forget_dependencies ();
+
+	for (int x = min_x; x <= max_x; x ++)
+	{
+		for (int z = min_z; z <= max_z; z ++)
+		{
+			pair <int, int> coordinates (x, z);
+			delete tiles [coordinates];
+		}
+	}
+
 }
 
 //	virtual

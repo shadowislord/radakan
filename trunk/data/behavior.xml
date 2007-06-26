@@ -10,27 +10,29 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 
 <!-- Variables can be looked up using '${variable name}'. -->
 
-<behaviour>
+<!-- '&lt;' means 'less than' and '&gt;' means 'greater than'. -->
+
+<behavior>
 	<if state="peace">
 		<options>
 			<option say="Hello." />
-			<if charisma=">1.2">
+			<if charisma="&gt;1.2">
 				<option say="Greetings, my name is ${name}." effect="like" />
 			</if>
 			<option say="You there!" shout="true" effect="intimidation" />
 		</options>
 		<reactions>
-			<if like=">0.5">
+			<if like="&gt;0.5">
 				<reaction say="What can I do for you?" state="conversation" />
 			</if>
-			<elseif like="<0.2">
+			<elseif like="&lt;0.2">
 				<reaction say="To the death!" shout="true" state="battle" />
-			</if>
-			<elseif fear=">0.8">
+			</elseif>
+			<elseif fear="&gt;0.8">
 				<reaction say="I'll do everything you say." state="conversation" />
 			</elseif>
 			<else>
-				<reaction say="Hello." />
+				<reaction say="Hello." state="conversation" />
 			</else>
 		</reactions>
 	</if>
@@ -41,7 +43,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 				<option say="Tell me where the blacksmth is. Now!" effect="intimidation" />
 			</options>
 			<reactions>
-				<if fear=">0.6">
+				<if fear="&gt;0.6">
 					<reaction say="At the market place, next to the temple." />
 				</if>
 				<else>
@@ -54,7 +56,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 				<option say="Give me that shiny dagger." effect="intimidation" />
 			</options>
 			<reactions>
-				<if fear=">0.8">
+				<if fear="&gt;0.8">
 					<reaction say="Of course..." />
 				</if>
 				<else>
@@ -64,7 +66,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 		</dialog>
 		<dialog>
 			<options>
-				<if like=">0.7">
+				<if like="&gt;0.7">
 					<option say="Something wrong?" />
 				</if>
 			</options>
@@ -98,10 +100,10 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 				<option action="Walk away without saying a word." effect="weird" />
 			</options>
 			<reactions>
-				<if fear="<0.4"><!-- less then 0.4 fear -->
+				<if fear="&lt;0.4"><!-- less then 0.4 fear -->
 					<reaction say="Bye." />
 				</if>
 			</reactions>
 		</dialog>
 	</if>
-</behaviour>
+</behavior>

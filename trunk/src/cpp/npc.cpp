@@ -102,3 +102,10 @@ void NPC ::
 		Container :: drop (t, stay);
 	}
 }
+
+void NPC ::
+	think (const string tought)
+	const
+{
+	Engines :: Log :: show (me + " thinks \"" + tought + "\"");
+}

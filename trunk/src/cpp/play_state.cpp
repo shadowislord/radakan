@@ -9,6 +9,10 @@
 #include "play_state.hpp"
 #include "player_character.hpp"
 
+#include <CEGUIExceptions.h>
+#include <elements/CEGUIListbox.h>
+#include <elements/CEGUIListboxTextItem.h>
+
 using namespace std;
 using namespace TSL;
 using namespace TSL :: Algorithms;
@@ -31,6 +35,47 @@ Play_State ::
 
 	camera . setNearClipDistance (0.001);
 	camera . setFarClipDistance (80);
+
+	CEGUI :: Window * temp = NULL;
+	try
+	{
+		temp = gui . root_window . getChild ("play-chat");
+		assert (temp != NULL);
+	}
+	catch (CEGUI :: UnknownObjectException & exception)
+	{
+		Engines :: Log :: error (me) << "No log window found." << endl;
+		abort ();
+	}
+
+	chat_window = dynamic_cast <CEGUI :: Listbox *> (temp);
+	assert (chat_window != NULL);
+
+	TiXmlDocument behavior (Engines :: Settings :: get () . tsl_path + "/data/behavior.xml");
+	bool check = behavior . LoadFile ();
+	if ((! check) || behavior . Error ())
+	{
+		Engines :: Log :: error (me) << behavior . ErrorDesc () << endl;
+		abort ();
+	}
+
+	TiXmlElement * root = behavior . RootElement ();
+	assert (root != NULL);
+	TiXmlElement * peace_state = root -> FirstChildElement ();
+	assert (peace_state != NULL);
+	TiXmlElement * options = peace_state -> FirstChildElement ();
+	assert (options != NULL);
+
+	for (TiXmlElement * option = options -> FirstChildElement ("option");
+				option != NULL; option = option -> NextSiblingElement ("option"))
+	{
+		string message = option -> Attribute ("say");
+		assert (! message . empty ());
+		
+		CEGUI :: ListboxTextItem * item = new CEGUI :: ListboxTextItem (message);
+		chat_window -> addItem (item);
+		chat_window -> ensureItemIsVisible (chat_window -> getItemCount ());
+	}
 
 	assert (Play_State :: is_initialized ());
 }
@@ -107,7 +152,8 @@ Algorithm * Play_State ::
 	Items :: Player_Character :: get () . get_movable_model () . turn (top_angular_speed);
 	
 	//	reset your orientation
-	if (Engines :: Input_Engine :: get () . get_key ("space", false))
+	if (Engines :: Input_Engine :: get () . get_key ("space", false)
+		|| Engines :: Input_Engine :: get () . get_gui_button ("Reset", true))
 	{
 		Items :: Player_Character :: get () . get_movable_model () . reset ();
 	}
@@ -119,13 +165,6 @@ Algorithm * Play_State ::
 		|| Engines :: Input_Engine :: get () . get_gui_button ("Hit", true))
 	{
 		Items :: Player_Character :: get () . hit ("agressive", closest_npc);
-	}
-	
-	//	chat
-	if (Engines :: Input_Engine :: get () . get_key ("c", true)
-		|| Engines :: Input_Engine :: get () . get_gui_button ("Chat", true))
-	{
-		Items :: Player_Character :: get () . chat ("Hello.", closest_npc);
 	}
 	
 	//	move the weapon

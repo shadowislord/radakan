@@ -1,8 +1,9 @@
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "settings.hpp"
-#include <CEGUIWindowManager.h>
+#include <CEGUIImagesetManager.h>
 #include <CEGUISchemeManager.h>
+#include <CEGUIWindowManager.h>
 
 using namespace std;
 using namespace TSL;
@@ -32,6 +33,8 @@ GUI_Engine ::
 		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "A");
 	system = new CEGUI :: System
 		(renderer, NULL, NULL, NULL, "", Settings :: get () . tsl_path + "/log/cegui.txt");
+
+	CEGUI :: ImagesetManager :: getSingletonPtr () -> createImageset ("logo.imageset");
 
 	Engines :: Log :: trace
 		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "B");

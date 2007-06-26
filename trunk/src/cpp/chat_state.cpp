@@ -65,22 +65,36 @@ Algorithm * Chat_State ::
 		
 		if (conversation_message . to == alive_state . npc)	//	Is (s)he talking to me?
 		{
-			if (conversation_message == "Hello.")
+			TiXmlNode * temp = & conversation_message . conversation_option;
+
+			for (int i = 0; temp -> ValueStr () != "dialogue"; i ++)
 			{
-				alive_state . npc . chat ("Hello, " + conversation_message . from + "!", conversation_message . from);
+				assert (i < 5);
+				
+				temp = temp -> Parent ();
+				assert (temp != NULL);
 			}
-			else
+
+			for (int i = 0; temp -> ValueStr () != "reaction"; i ++)
 			{
-				alive_state . npc . chat (conversation_message . from + ", I didn't understand that.", conversation_message . from);
+				assert (i < 5);
+				
+				temp = temp -> FirstChild ();
+				assert (temp != NULL);
 			}
-			
+
+			TiXmlElement * reaction = temp -> ToElement ();
+			assert (reaction != NULL);
+
+			alive_state . npc . chat (* reaction, conversation_message . from);
+
 			timeout = maximal_timeout;
 		}
 	}
 
 	if (timeout == 0)
 	{
-		alive_state . npc . chat ("I'm not going to wait longer...", alive_state . npc);
+		alive_state . npc . think ("I'm not going to wait any longer...");
 
 		alive_state . calm *= 0.9;	//	The NPC gets slightly annoyed.
 

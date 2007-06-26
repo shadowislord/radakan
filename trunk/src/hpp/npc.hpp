@@ -36,6 +36,8 @@ namespace TSL
 				virtual bool is_dead () const;
 				virtual void die ();
 
+				void think (const string tought) const;
+				
 				static Item & create
 				(
 					string new_name,

@@ -83,8 +83,14 @@ void Player_Character ::
 	call (const Object & message)
 {
 	assert (is_initialized ());
-	assert (message . is_type <Messages :: Conversation_Message> ());
-
-	//	I show the message in the log, to let the player know.
-	Engines :: Log :: show (message . to_type <Messages :: Conversation_Message> () . from + ": '" + message + "'");
+	
+	if (message . is_type <Messages :: Conversation_Message> ())
+	{
+		//	I show the message in the log, to let the player know.
+		Engines :: Log :: show (message . to_type <Messages :: Conversation_Message> () . from + ": '" + message + "'");
+	}
+	else if (message != update)
+	{
+		Engines :: Log :: show (message);
+	}
 }

@@ -34,6 +34,8 @@ namespace TSL
 				GUI & gui;
 				
 				Ogre :: Camera & camera;
+
+				CEGUI :: Listbox * chat_window;
 		};
 	}
 }

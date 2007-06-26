@@ -75,6 +75,8 @@ Character ::
 	check = characters . add (* this);
 	assert (check);
 
+	register_observer (* this);
+
 	assert (is_initialized ());
 }
 
@@ -93,7 +95,11 @@ bool Character ::
 	is_initialized ()
 	const
 {
-	return Container :: is_initialized ();
+	assert (Observable <Character> :: is_initialized ());
+	assert (Observer <Character> :: is_initialized ());
+	assert (Container :: is_initialized ());
+
+	return true;
 }
 
 Movable_Model & Character ::
@@ -110,11 +116,11 @@ Movable_Model & Character ::
 }
 
 void Character ::
-	chat (string message_contents, Character & target)
+	chat (TiXmlElement & conversation_option, Character & target)
 {
 	assert (is_initialized ());
 
-	Object * message = new Messages :: Conversation_Message (message_contents, * this, target);
+	Object * message = new Messages :: Conversation_Message (conversation_option, * this, target);
 	call_observers (* message);
 	delete message;
 }
@@ -123,6 +129,8 @@ void Character ::
 	hit (string fight_mode, Character & target)
 {
 	assert (is_initialized ());
+
+	Engines :: Log :: show (me + " hits " + target + "!");
 
 	Object * message = new Messages :: Battle_Message (fight_mode, * this, target);
 	call_observers (* message);

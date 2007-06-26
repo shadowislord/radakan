@@ -6,6 +6,8 @@
 #include "static_item.hpp"
 #include "weapon.hpp"
 
+#include <tinyxml.h>
+
 using namespace std;
 
 namespace TSL
@@ -36,7 +38,7 @@ namespace TSL
 
 				Movable_Model & get_movable_model () const;
 
-				void chat (string message_contents, Character & target);
+				void chat (TiXmlElement & conversation_option, Character & target);
 				void hit (string fight_mode, Character & target);
 				
 				//	Item & head;

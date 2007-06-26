@@ -79,7 +79,7 @@ template <class T> T & State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	set_active_state (T & new_state, bool old_state_stay)
 {
-	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "set_active_state", new_state, bool_to_string (old_state_stay));
+	//	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "set_active_state", new_state, bool_to_string (old_state_stay));
 	assert (State_Machine <T> :: is_initialized ());
 
 	if (! contains (new_state))	//	This also works for NULL.
