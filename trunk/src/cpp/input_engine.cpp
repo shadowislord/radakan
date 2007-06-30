@@ -331,7 +331,15 @@ string Input_Engine ::
 	Engines :: Log :: log (me) << "converting - in: " << key << endl;
 
 	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+		// Case replacement. Hopefully this works better.
+	    for(unsigned int i=0;i<key.length();i++)
+	    {
+		   key[i] = tolower(key[i]);
+ 	    }
+
 		//	Convert capitals to lower-case:
+		//	Added by Tariq. This didn't convert Space to space!
+		/*
 		if (key . size () == 1)
 		{
 			int temp = int (key . at (0));
@@ -340,7 +348,7 @@ string Input_Engine ::
 				key . erase ();
 				key . push_back (char (temp + 32));
 			}
-		}
+		}*/
 		//	Convert 'NUM X' to 'X':
 		if (key . find ("NUM ") != string :: npos)
 		{

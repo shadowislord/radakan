@@ -135,7 +135,7 @@ Algorithm * Play_State ::
 
 	//	menu
 	if (Items :: Player_Character :: get () . is_dead ()
-		|| Engines :: Input_Engine :: get () . get_key ("Escape", true)
+		|| Engines :: Input_Engine :: get () . get_key ("escape", true)
 		|| Engines :: Input_Engine :: get () . get_gui_button ("Menu", true))
 	{
 		return & Menu_State :: get ();
