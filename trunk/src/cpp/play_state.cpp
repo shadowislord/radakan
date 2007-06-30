@@ -13,6 +13,11 @@
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxTextItem.h>
 
+// A quick way to enable WSAD is to define TSL_WSAD.
+#ifdef TSL_WIN
+#define TSL_WSAD
+#endif
+
 using namespace std;
 using namespace TSL;
 using namespace TSL :: Algorithms;
@@ -48,7 +53,21 @@ Play_State ::
 		abort ();
 	}
 
+#ifdef TSL_WIN
+	try
+	{
+#endif
 	chat_window = dynamic_cast <CEGUI :: Listbox *> (temp);
+
+#ifdef TSL_WIN
+	}
+	catch(std::__non_rtti_object e)
+	{
+		Engines :: Log :: error (me) << "Chat window could not be dynamically cast. Falling back to unsafe type casting." << endl;
+		chat_window = (CEGUI :: Listbox *) (temp);
+	}
+#endif
+
 	assert (chat_window != NULL);
 
 	TiXmlDocument behavior (Engines :: Settings :: get () . tsl_path + "/data/behavior.xml");
@@ -130,6 +149,28 @@ Algorithm * Play_State ::
 	//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
 
 	float top_speed = 0;
+
+#ifdef TSL_WSAD
+	if (Engines :: Input_Engine :: get () . get_key ("w", false))
+	{
+		top_speed = 1;
+	}
+	else if (Engines :: Input_Engine :: get () . get_key ("s", false))
+	{
+		top_speed = - 0.5;
+	}
+	Items :: Player_Character :: get () . get_movable_model () . move (top_speed);
+	
+	float top_angular_speed = 0;
+	if (Engines :: Input_Engine :: get () . get_key ("a", false))
+	{
+		top_angular_speed = 1;
+	}
+	else if (Engines :: Input_Engine :: get () . get_key ("d", false))
+	{
+		top_angular_speed = - 1;
+	}
+#else
 	if (Engines :: Input_Engine :: get () . get_key ("e", false))
 	{
 		top_speed = 1;
@@ -149,6 +190,7 @@ Algorithm * Play_State ::
 	{
 		top_angular_speed = - 1;
 	}
+#endif
 	Items :: Player_Character :: get () . get_movable_model () . turn (top_angular_speed);
 	
 	//	reset your orientation

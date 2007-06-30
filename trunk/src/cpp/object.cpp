@@ -203,7 +203,14 @@ void Object ::
 	{
 		assert (* i != last);
 		//	The dropping object should call 'forget (...)' for me.
+		
+#ifdef TSL_WIN
+		// I don't really know how to handle this
+		// alternatively.
+		//const Object * (* i) -> drop (me);
+#else
 		const_cast <Object *> (* i) -> drop (me);
+#endif
 
 		last = * i;
 	}

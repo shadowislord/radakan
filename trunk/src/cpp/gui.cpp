@@ -43,7 +43,22 @@ GUI ::
 		}
 	}
 	
-	log_window = dynamic_cast <CEGUI :: Listbox *> (temp);
+	#ifdef TSL_WIN
+		try
+		{
+	#endif
+
+		log_window = dynamic_cast <CEGUI :: Listbox *> (temp);
+
+	#ifdef TSL_WIN
+		}
+		catch(std::__non_rtti_object e)
+		{
+			Engines :: Log :: error (me) << "Log window could not be dynamically cast. Falling back to unsafe casting." << endl;
+			log_window = (CEGUI :: Listbox *) (temp);
+		}
+	#endif
+
 	assert (log_window != NULL);
 
 	subscribe (root_window);
@@ -109,8 +124,29 @@ bool GUI ::
 	Engines :: Log :: trace (me, GUI :: get_class_name (), "handle_event", "~arguments~");
 	assert (is_initialized ());
 
-	const CEGUI :: WindowEventArgs * window_event_arguments
-		= dynamic_cast <const CEGUI :: WindowEventArgs *> (& arguments);
+	// I had to declare this outside due to scoping.
+	const CEGUI :: WindowEventArgs * window_event_arguments;
+
+	#ifdef TSL_WIN
+		try
+		{
+	#endif
+
+	
+		window_event_arguments = dynamic_cast <const CEGUI :: WindowEventArgs *> (& arguments);
+
+	#ifdef TSL_WIN
+		}
+		catch(std::__non_rtti_object e)
+		{
+			Engines :: Log :: error (me) << "The window's arguments list could not be type casted. Fallig back to unsafe type casts." << endl;
+
+			window_event_arguments
+				= (const CEGUI :: WindowEventArgs *) (& arguments);
+		}
+	#endif
+
+
 	if (window_event_arguments == NULL)
 	{
 		Engines :: Log :: show ("Unknown event type...");
