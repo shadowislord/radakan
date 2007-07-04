@@ -516,7 +516,7 @@ int Body::getJointCount()
 //-----------------------------------------------------------------------
 Joint* Body::getJoint(int index)
 {
-	return (Joint*)_world->getJointList().findItem((unsigned int)dBodyGetJoint(_body,index)); 
+	return (Joint*)_world->getJointList().findItem((unsigned long int)dBodyGetJoint(_body,index)); 
 }
 //-----------------------------------------------------------------------
 size_t Body::getGeometryCount()
@@ -713,7 +713,7 @@ Body::~Body()
 	destroyDebugNode();
 	delete _mass;
 
-	_world->getBodyList().unregisterItem((unsigned int)_body);
+	_world->getBodyList().unregisterItem((unsigned long int)_body);
 	dBodyDestroy(_body);
 }
 

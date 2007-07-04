@@ -60,7 +60,7 @@ int Space::getGeometryCount()
 //------------------------------------------------------------------------------------------------
 Geometry* Space::getGeometry(int index)
 {
-	return (Geometry*) _world->getGeometryList().findItem((unsigned int)dSpaceGetGeom(_space,index)); 
+	return (Geometry*) _world->getGeometryList().findItem((unsigned long int)dSpaceGetGeom(_space,index)); 
 }
 //------------------------------------------------------------------------------------------------
 void Space::registerSpace()

@@ -35,7 +35,7 @@ void JointGroup::empty()
 
 JointGroup::~JointGroup()
 {
-	_world->getJointGroupList().unregisterItem((unsigned int)_joint_group);
+	_world->getJointGroupList().unregisterItem((long unsigned int)_joint_group);
 	dJointGroupDestroy(_joint_group); 
 }
 

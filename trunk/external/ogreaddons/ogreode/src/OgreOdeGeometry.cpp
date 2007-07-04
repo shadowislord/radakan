@@ -47,7 +47,7 @@ Geometry::~Geometry()
     }
     if (_geom)
     {
-        _world->getGeometryList().unregisterItem((unsigned long)_geom);
+        _world->getGeometryList().unregisterItem((long unsigned int)_geom);
         dGeomDestroy(_geom); 
     }
 }
@@ -211,7 +211,7 @@ void Geometry::setDebugContact(const bool debug)
     {
         _debug_contacts = new DebugContact*[_max_contacts];
         for (unsigned int i = 0; i < _max_contacts; i++)
-            _debug_contacts[i] = new DebugContact(Ogre::StringConverter::toString((int)_geom) + 
+            _debug_contacts[i] = new DebugContact(Ogre::StringConverter::toString((long int)_geom) + 
                                                     "_Contact_" + 
                                                     Ogre::StringConverter::toString(i),
                                                     _world);
@@ -273,7 +273,7 @@ const AxisAlignedBox& Geometry::getAxisAlignedBox()
 //------------------------------------------------------------------------------------------------
 Space* Geometry::getSpace()
 {
-	return (Space*)_world->getSpaceList().findItem((unsigned int)dGeomGetSpace(_geom));
+	return (Space*)_world->getSpaceList().findItem((unsigned long int)dGeomGetSpace(_geom));
 }
 
 
@@ -425,7 +425,7 @@ void Geometry::setMaxContacts(unsigned int max_contacts)
         }
         _debug_contacts = new DebugContact*[max_contacts];
         for (unsigned int i = 0; i < max_contacts; i++)
-            _debug_contacts[i] = new DebugContact(Ogre::StringConverter::toString((int)_geom) +  + "_Contact_" + Ogre::StringConverter::toString(i),
+            _debug_contacts[i] = new DebugContact(Ogre::StringConverter::toString((long int)_geom) +  + "_Contact_" + Ogre::StringConverter::toString(i),
             _world);
     }
     _max_contacts = max_contacts;
