@@ -8,23 +8,24 @@ using namespace TSL;
 //	static
 const int World ::
 	min_x (- 1);
-	
+
 //	static
 const int World ::
 	max_x (2);
-	
+
 //	static
 const int World ::
 	min_z (- 1);
-	
+
 //	static
 const int World ::
 	max_z (1);
 
 //	a few constants for our stepper
-const float max_frame_time (0.1);
-const float time_scale (1.0);
-const float time_step (0.1);
+const Ogre::Real frame_rate = (1.0 / 60);   //aiming for 60 fps
+const Ogre::Real max_frame_time (1.0 / 4);
+const Ogre::Real time_scale (1.0);
+const Ogre::Real time_step (0.01);
 
 //	static
 const string World ::
@@ -37,11 +38,12 @@ World ::
 	World (Ogre :: SceneManager & scene_manager) :
 	Object ("world"),
 	OgreOde :: World (& scene_manager),
-	OgreOde :: ExactVariableStepHandler
+	OgreOde :: ForwardFixedInterpolatedStepHandler
 	(
 		this,
 		OgreOde :: StepHandler :: QuickStep,
 		time_step,
+		frame_rate,
 		max_frame_time,
 		time_scale
 	),
@@ -66,8 +68,11 @@ World ::
 
 	setCollisionListener (this);
 
-	setGravity (Ogre :: Vector3 (0, - 9.81, 0));
-
+    setGravity(Ogre::Vector3(0,-9.81,0));
+    //setCFM(10e-5);    //fine tune to make a realistic simulation
+    //setERP(0.8);
+    setAutoSleep(true);
+    setContactCorrectionVelocity(1.0);
 	//	The following line causes an error in Ogre.
 	//	setShowDebugGeometries (true);
 
@@ -75,7 +80,8 @@ World ::
 	Engines :: Log :: log (me) << "CFM: " << getCFM () << endl;
 
 	//	TODO make the next line work.
-	//	getSceneManager () -> setSkyDome (true, "Peaceful", 10, 5);
+    getSceneManager () -> setSkyDome (true, "Examples/CloudySky",10,50000);
+    //getSceneManager () -> setSkyBox(true,"Examples/CloudySky",5000,true);
 }
 
 World ::
@@ -121,7 +127,7 @@ void World ::
 					(Items :: Player_Character :: get () . get_movable_model (), tile);
 			}
 		}
-		
+
 		State_Machine <Tile> :: set_active_state (tile, true);
 	}
 }
@@ -130,7 +136,7 @@ void World ::
 	update ()
 {
 	assert (is_initialized ());
-	
+
 	//	Here, 'last_turn_lenght' contains the lenth of the current turn.
 	last_turn_lenght = float (turn_lenght_timer . getMilliseconds ()) / 1000;
 	turn_lenght_timer . reset ();
@@ -142,7 +148,7 @@ void World ::
 
 		Engines :: Log :: log (me) << "Turn " << turn << " started" << endl;
 	#endif
-	
+
 	Ogre :: Vector3 position = Items :: Player_Character :: get () . get_movable_model () . node . getPosition ();
 
 	int x = int (floor (position . x / Tile :: side_length));
@@ -161,7 +167,7 @@ void World ::
 		i -> second -> collide ();
 	}
 
-	OgreOde :: World :: step (0.1);
+	OgreOde :: World :: step (time_step);
 	updateDrawState ();
 	synchronise ();
 	clearContacts ();
@@ -175,7 +181,7 @@ const unsigned int & World ::
 	const
 {
 	assert (is_initialized ());
-	
+
 	return turn;
 }
 
@@ -184,7 +190,7 @@ const float & World ::
 	const
 {
 	assert (is_initialized ());
-	
+
 	return last_turn_lenght;
 }
 
@@ -201,9 +207,9 @@ bool World ::
 	{
 		return false;
 	}
-	
-	contact -> setCoulombFriction (0.8);
-	contact -> setBouncyness (0);
+
+	contact -> setCoulombFriction (0.2);
+	//contact -> setBouncyness (0);
 
 //	Log :: log (me) << "collision: " << g1 -> getClass () << " " << g2 -> getClass () << endl;
 	return true;

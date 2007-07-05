@@ -51,8 +51,8 @@ Game ::
 	new Audio_Engine ();
 
 	//	Don't copy the log to the console. Store the log to a file, if debugging.
-	(new Ogre :: LogManager ()) -> createLog (tsl_path + "/log/ogre.txt", true, false, ! debugging);
-	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg", tsl_path + "/data/ogre.cfg");
+	// (new Ogre :: LogManager ()) -> createLog (tsl_path + "/log/ogre.txt", true, false, ! debugging);
+	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg", tsl_path + "/data/ogre.cfg",tsl_path + "/log/ogre.log");
 	if (! root -> showConfigDialog ())
 	{
 		Log :: error (me) << "An Ogre configuration dialog problem occurred." << endl;
@@ -72,15 +72,15 @@ Game ::
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(tsl_path + "/data/material", "FileSystem", "materials", true);
-					
+
 		// Add gui config directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(tsl_path + "/data/gui/config", "FileSystem", "gui", true);
-					
+
 		// Add gui font directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(tsl_path + "/data/gui/font", "FileSystem", "gui", true);
-					
+
 		// Add gui imageset directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(tsl_path + "/data/gui/imageset", "FileSystem", "gui", true);
@@ -95,7 +95,7 @@ Game ::
 
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(ogre_media_path + "/gui", "FileSystem", "gui", true);
-					
+
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(ogre_media_path + "/fonts", "FileSystem", "gui", true);
 
@@ -103,7 +103,7 @@ Game ::
 					(ogre_media_path + "/models", "FileSystem", "models", true);
 
 		window = root -> initialise (true, "The Scattered Lands");
-		
+
 		Ogre :: MeshManager :: getSingleton () . createPlane
 			("ground.mesh", "models", Ogre :: Plane (Ogre :: Vector3 (1, 0, 0), 0), 20, 20);
 
@@ -111,7 +111,7 @@ Game ::
 		Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
 
 		//	set default mipmap level (NB some APIs ignore this)
-		Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);	
+		Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
 
 		new Input_Engine (* window);
 
@@ -130,7 +130,7 @@ Game ::
 
 		root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
 		root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
-		
+
 	}	// try
 	catch (Ogre :: Exception & exception)
 	{
@@ -154,7 +154,7 @@ Game ::
 	World :: destruct ();
 
 	Settings :: destruct ();
-	
+
 	GUI_Engine :: destruct ();
 	//	Input_Engine :: destruct ();	//	This engine is already auto-destructed.
 	Audio_Engine :: destruct ();
@@ -184,12 +184,12 @@ void Game ::
 		{
 			message = & Object :: terminate;
 		}
-		
+
 		Input_Engine :: get () . capture ();
 		Ogre :: WindowEventUtilities :: messagePump ();
-		
+
 		Algorithms :: Algorithm_State_Machine :: run (* message, true);
-		
+
 		bool check = root -> renderOneFrame ();
 		assert (check);
 		GUI_Engine :: get () . render ();
