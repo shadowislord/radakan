@@ -32,7 +32,7 @@ NPC ::
 {
 	Engines :: Log :: trace (me, NPC :: get_class_name (), "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 
-	set_active_state (static_cast <Algorithms :: Algorithm &> (* new Algorithms :: Alive_State (* this)));
+	set_active_state (static_cast <Strategies :: Strategy &> (* new Strategies :: Alive_State (* this)));
 
 	assert (is_initialized ());
 	Engines :: Log :: log (me) << "I'm fully constructed (as NPC)." << endl;
@@ -64,7 +64,7 @@ void NPC ::
 {
 	assert (is_initialized ());
 
-	Algorithms :: Algorithm_State_Machine :: run (message);
+	Strategies :: Strategy_State_Machine :: run (message);
 }
 
 //	virtual
@@ -93,9 +93,9 @@ void NPC ::
 	Engines :: Log :: trace (this -> me, NPC :: get_class_name (), "drop", t, bool_to_string (stay));
 	assert (NPC :: is_initialized ());
 
-	if (t . is_type <Algorithms :: Algorithm> ())
+	if (t . is_type <Strategies :: Strategy> ())
 	{
-		Algorithms :: Algorithm_State_Machine :: drop (t, stay);
+		Strategies :: Strategy_State_Machine :: drop (t, stay);
 	}
 	else
 	{

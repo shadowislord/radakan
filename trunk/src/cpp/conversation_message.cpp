@@ -16,12 +16,12 @@ const string Conversation_Message ::
 Conversation_Message ::
 	Conversation_Message
 	(
-		TiXmlElement & new_conversation_option,
+		TiXmlElement & new_option,
 		Items :: Character & new_from,
 		Items :: Character & new_to
 	) :
-	Object (new_conversation_option . Attribute ("say")),
-	conversation_option (new_conversation_option),
+	Object (new_option . Attribute ("say")),
+	option (new_option),
 	from (new_from),
 	to (new_to)
 {

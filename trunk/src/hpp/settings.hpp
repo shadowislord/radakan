@@ -3,6 +3,11 @@
 
 #include "singleton.hpp"
 
+// A quick way to enable WSAD is to define TSL_WSAD.
+#ifdef TSL_WIN
+	#define TSL_WSAD
+#endif
+
 namespace TSL
 {
 	namespace Engines
@@ -32,6 +37,18 @@ namespace TSL
 				void increase_vertical_camera_angle (float angle);
 
 				const string tsl_path;
+
+				///	Defaults to e, unless TSL_WSAD is set.
+				string forward_key;	
+
+				///	Defaults to d, unless TSL_WSAD is set.
+				string backward_key;
+
+				///	Defaults to s, unless TSL_WSAD is set.
+				string left_key;
+
+				///	Defaults to f, unless TSL_WSAD is set.
+				string right_key;
 
 			private :
 				///	in meters

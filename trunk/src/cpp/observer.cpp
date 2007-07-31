@@ -47,7 +47,7 @@ template <class T> bool Observer <T> ::
 #include "log.hpp"
 #include "play_state.hpp"
 
-template class Observer <Algorithms :: Play_State>;
+template class Observer <Strategies :: Play_State>;
 template class Observer <Engines :: Log>;
 template class Observer <GUI>;
 template class Observer <Items :: Character>;

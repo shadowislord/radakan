@@ -26,7 +26,17 @@ Settings ::
 	tsl_path (new_tsl_path),
 	camera_distance (0.72)
 {
-	//	Do nothing.
+	#ifdef TSL_WSAD
+		forward_key = "w";
+		backward_key = "s";
+		left_key = "a";
+		right_key = "d";
+	#else
+		forward_key = "e";
+		backward_key = "d";
+		left_key = "s";
+		right_key = "f";
+	#endif
 	
 	assert (is_initialized ());
 }

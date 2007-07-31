@@ -1,7 +1,7 @@
 #ifndef TSL_PLAY_STATE_HPP
 #define TSL_PLAY_STATE_HPP
 
-#include "algorithm.hpp"
+#include "strategy.hpp"
 #include "gui.hpp"
 #include "world.hpp"
 
@@ -14,12 +14,12 @@ namespace TSL
 		class Game;
 	}
 	
-	namespace Algorithms
+	namespace Strategies
 	{
 
 		class Play_State :
 			public Singleton <Play_State>,
-			public Algorithm
+			public Strategy
 		{
 			public :
 				Play_State (Ogre :: SceneManager & scene_manager);
@@ -28,7 +28,7 @@ namespace TSL
 				
 				static const string get_class_name ();
 
-				virtual Algorithm * transit (const Object & message);
+				virtual Strategy * transit (const Object & message);
 
 			private :
 				GUI & gui;

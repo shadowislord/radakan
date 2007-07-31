@@ -1,7 +1,7 @@
 #ifndef TSL_ALIVE_STATE_HPP
 #define TSL_ALIVE_STATE_HPP
 
-#include "algorithm_state_machine.hpp"
+#include "strategy_state_machine.hpp"
 
 using namespace std;
 
@@ -12,12 +12,12 @@ namespace TSL
 		class NPC;
 	}
 	
-	namespace Algorithms
+	namespace Strategies
 	{
-		///	Alive_State is the basic algorithm for living NPCs.
+		///	Alive_State is the basic strategy for living NPCs.
 		class Alive_State :
-			public Algorithm,
-			private Algorithm_State_Machine
+			public Strategy,
+			private Strategy_State_Machine
 		{
 			public :
 				Alive_State (Items :: NPC & new_npc);
@@ -26,7 +26,7 @@ namespace TSL
 				
 				static const string get_class_name ();
 				
-				virtual Algorithm * transit (const Object & message);
+				virtual Strategy * transit (const Object & message);
 
 				Items :: NPC & npc;
 				

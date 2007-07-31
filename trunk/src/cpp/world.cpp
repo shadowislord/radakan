@@ -22,10 +22,10 @@ const int World ::
 	max_z (1);
 
 //	a few constants for our stepper
-const Ogre::Real frame_rate = (1.0 / 60);   //aiming for 60 fps
-const Ogre::Real max_frame_time (1.0 / 4);
-const Ogre::Real time_scale (1.0);
-const Ogre::Real time_step (0.01);
+const Ogre :: Real frame_rate = (1.0 / 60);   //aiming for 60 fps
+const Ogre :: Real max_frame_time (1.0 / 4);
+const Ogre :: Real time_scale (1.0);
+const Ogre :: Real time_step (0.01);
 
 //	static
 const string World ::
@@ -68,9 +68,9 @@ World ::
 
 	setCollisionListener (this);
 
-    setGravity(Ogre::Vector3(0,-9.81,0));
-    //setCFM(10e-5);    //fine tune to make a realistic simulation
-    //setERP(0.8);
+    setGravity (Ogre::Vector3(0,-9.81,0));
+    //	setCFM (10e-5);    //	fine tune to make a realistic simulation
+    //	setERP (0.8);
     setAutoSleep(true);
     setContactCorrectionVelocity(1.0);
 	//	The following line causes an error in Ogre.
@@ -81,7 +81,7 @@ World ::
 
 	//	TODO make the next line work.
     getSceneManager () -> setSkyDome (true, "Examples/CloudySky",10,50000);
-    //getSceneManager () -> setSkyBox(true,"Examples/CloudySky",5000,true);
+    //	getSceneManager () -> setSkyBox (true, "Examples/CloudySky", 5000, true);
 }
 
 World ::

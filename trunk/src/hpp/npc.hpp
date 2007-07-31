@@ -2,7 +2,7 @@
 #define TSL_NPC_HPP
 
 #include "character.hpp"
-#include "algorithm_state_machine.hpp"
+#include "strategy_state_machine.hpp"
 
 using namespace std;
 
@@ -14,7 +14,7 @@ namespace TSL
 		///	An NPC is an in-game character that is not under direct control of the player.
 		class NPC :
 			public Character,
-			private Algorithms :: Algorithm_State_Machine
+			private Strategies :: Strategy_State_Machine
 		{
 			public :
 				NPC

@@ -83,8 +83,8 @@ template <class T> void Singleton <T> ::
 #include "settings.hpp"
 #include "tracker.hpp"
 
-template class Singleton <Algorithms :: Menu_State>;
-template class Singleton <Algorithms :: Play_State>;
+template class Singleton <Strategies :: Menu_State>;
+template class Singleton <Strategies :: Play_State>;
 template class Singleton <Engines :: Audio_Engine>;
 template class Singleton <Engines :: Game>;
 template class Singleton <Engines :: GUI_Engine>;

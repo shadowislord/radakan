@@ -13,14 +13,9 @@
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxTextItem.h>
 
-// A quick way to enable WSAD is to define TSL_WSAD.
-#ifdef TSL_WIN
-#define TSL_WSAD
-#endif
-
 using namespace std;
 using namespace TSL;
-using namespace TSL :: Algorithms;
+using namespace TSL :: Strategies;
 
 //	static
 const string Play_State ::
@@ -116,13 +111,13 @@ bool Play_State ::
 {
 //	Engines :: Log :: trace (me, Play_State :: get_class_name (), "is_initialized");
 	assert (Singleton <Play_State> :: is_initialized ());
-	assert (Algorithm :: is_initialized ());
+	assert (Strategy :: is_initialized ());
 
 	return true;
 }
 
 //	virtual
-Algorithm * Play_State ::
+Strategy * Play_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());
@@ -145,52 +140,32 @@ Algorithm * Play_State ::
 
 	World :: get () . update ();
 
-	//	Handle movement
-	//	Normal WASD keys don't work on all keyboard layouts, so we'll use ESDF for now.
-
 	float top_speed = 0;
 
-#ifdef TSL_WSAD
-	if (Engines :: Input_Engine :: get () . get_key ("w", false))
+	if (Engines :: Input_Engine :: get () . get_key
+		(Engines :: Settings :: get () . forward_key, false))
 	{
 		top_speed = 1;
 	}
-	else if (Engines :: Input_Engine :: get () . get_key ("s", false))
+	else if (Engines :: Input_Engine :: get () . get_key
+		(Engines :: Settings :: get () . backward_key, false))
 	{
 		top_speed = - 0.5;
 	}
 	Items :: Player_Character :: get () . get_movable_model () . move (top_speed);
 	
 	float top_angular_speed = 0;
-	if (Engines :: Input_Engine :: get () . get_key ("a", false))
+	if (Engines :: Input_Engine :: get () . get_key
+		(Engines :: Settings :: get () . left_key, false))
 	{
 		top_angular_speed = 1;
 	}
-	else if (Engines :: Input_Engine :: get () . get_key ("d", false))
+	else if (Engines :: Input_Engine :: get () . get_key
+		(Engines :: Settings :: get () . right_key, false))
 	{
 		top_angular_speed = - 1;
 	}
-#else
-	if (Engines :: Input_Engine :: get () . get_key ("e", false))
-	{
-		top_speed = 1;
-	}
-	else if (Engines :: Input_Engine :: get () . get_key ("d", false))
-	{
-		top_speed = - 0.5;
-	}
-	Items :: Player_Character :: get () . get_movable_model () . move (top_speed);
-	
-	float top_angular_speed = 0;
-	if (Engines :: Input_Engine :: get () . get_key ("s", false))
-	{
-		top_angular_speed = 1;
-	}
-	else if (Engines :: Input_Engine :: get () . get_key ("f", false))
-	{
-		top_angular_speed = - 1;
-	}
-#endif
+
 	Items :: Player_Character :: get () . get_movable_model () . turn (top_angular_speed);
 	
 	//	reset your orientation

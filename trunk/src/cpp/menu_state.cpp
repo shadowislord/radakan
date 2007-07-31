@@ -9,7 +9,7 @@
 
 using namespace std;
 using namespace TSL;
-using namespace TSL :: Algorithms;
+using namespace TSL :: Strategies;
 
 //	static
 const string Menu_State ::
@@ -46,13 +46,13 @@ bool Menu_State ::
 	is_initialized ()
 	const
 {
-	assert (Algorithm :: is_initialized ());
+	assert (Strategy :: is_initialized ());
 
 	return true;
 }
 
 //	virtual
-Algorithm * Menu_State ::
+Strategy * Menu_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());

@@ -261,15 +261,15 @@ template <class T> T & Object ::
 #include "world.hpp"
 
 template bool Object ::
-	is_type <Algorithms :: Algorithm> () const;
+	is_type <Strategies :: Strategy> () const;
 template bool Object ::
-	is_type <Algorithms :: Alive_State> () const;
+	is_type <Strategies :: Alive_State> () const;
 template bool Object ::
-	is_type <Algorithms :: Chat_State> () const;
+	is_type <Strategies :: Chat_State> () const;
 template bool Object ::
-	is_type <Algorithms :: Fight_State> () const;
+	is_type <Strategies :: Fight_State> () const;
 template bool Object ::
-	is_type <Algorithms :: Play_State> () const;
+	is_type <Strategies :: Play_State> () const;
 template bool Object ::
 	is_type <Engines :: Game> () const;
 template bool Object ::
@@ -289,7 +289,7 @@ template bool Object ::
 template bool Object ::
 	is_type <Model> () const;
 template bool Object ::
-	is_type <Observer <Algorithms :: Play_State> > () const;
+	is_type <Observer <Strategies :: Play_State> > () const;
 template bool Object ::
 	is_type <Observer <Engines :: Log> > () const;
 template bool Object ::
@@ -311,16 +311,16 @@ template bool Object ::
 template bool Object ::
 	is_type <Tile> () const;
 
-template Algorithms :: Algorithm & Object ::
-	to_type <Algorithms :: Algorithm> () const;
-template Algorithms :: Alive_State & Object ::
-	to_type <Algorithms :: Alive_State> () const;
-template Algorithms :: Fight_State & Object ::
-	to_type <Algorithms :: Fight_State> () const;
-template Algorithms :: Menu_State & Object ::
-	to_type <Algorithms :: Menu_State> () const;
-template Algorithms :: Play_State & Object ::
-	to_type <Algorithms :: Play_State> () const;
+template Strategies :: Strategy & Object ::
+	to_type <Strategies :: Strategy> () const;
+template Strategies :: Alive_State & Object ::
+	to_type <Strategies :: Alive_State> () const;
+template Strategies :: Fight_State & Object ::
+	to_type <Strategies :: Fight_State> () const;
+template Strategies :: Menu_State & Object ::
+	to_type <Strategies :: Menu_State> () const;
+template Strategies :: Play_State & Object ::
+	to_type <Strategies :: Play_State> () const;
 template Engines :: Game & Object ::
 	to_type <Engines :: Game> () const;
 template Engines :: GUI_Engine & Object ::
@@ -345,8 +345,8 @@ template Messages :: Conversation_Message & Object ::
 	to_type <Messages :: Conversation_Message> () const;
 template Model & Object ::
 	to_type <Model> () const;
-template Observer <Algorithms :: Play_State> & Object ::
-	to_type <Observer <Algorithms :: Play_State> > () const;
+template Observer <Strategies :: Play_State> & Object ::
+	to_type <Observer <Strategies :: Play_State> > () const;
 template Observer <Engines :: Log> & Object ::
 	to_type <Observer <Engines :: Log> > () const;
 template Observer <GUI> & Object ::

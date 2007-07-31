@@ -7,7 +7,7 @@
 
 using namespace std;
 using namespace TSL;
-using namespace TSL :: Algorithms;
+using namespace TSL :: Strategies;
 
 //	static
 const string Fight_State ::
@@ -45,13 +45,13 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	assert (Algorithm :: is_initialized ());
+	assert (Strategies :: is_initialized ());
 	
 	return true;
 }
 
 //	virtual
-Algorithm * Fight_State ::
+Strategy * Fight_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());

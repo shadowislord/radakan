@@ -24,7 +24,7 @@ namespace TSL
 				static const string get_class_name ();
 
 			private :
-				Set <Observer <Algorithms :: Play_State> > plugins;
+				Set <Observer <Strategies :: Play_State> > plugins;
 		};
 	}
 }

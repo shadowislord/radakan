@@ -21,7 +21,7 @@ namespace TSL
 		///	Battle_Plugin will soon be redesigned.
 		class Battle_Plugin :
 			public Singleton <Battle_Plugin>,
-			public Observer <Algorithms :: Play_State>
+			public Observer <Strategies :: Play_State>
 		{
 			public :
 				Battle_Plugin ();

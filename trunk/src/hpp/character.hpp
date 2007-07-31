@@ -38,7 +38,7 @@ namespace TSL
 
 				Movable_Model & get_movable_model () const;
 
-				void chat (TiXmlElement & conversation_option, Character & target);
+				void chat (TiXmlElement & option, Character & target);
 				void hit (string fight_mode, Character & target);
 				
 				//	Item & head;

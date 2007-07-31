@@ -1,7 +1,7 @@
 #ifndef TSL_GAME_HPP
 #define TSL_GAME_HPP
 
-#include "algorithm_state_machine.hpp"
+#include "strategy_state_machine.hpp"
 #include "singleton.hpp"
 
 using namespace std;
@@ -14,7 +14,7 @@ namespace TSL
 		///	Game is the main class. It manages the eninges and the sectors.
 		class Game :
 			protected Singleton <Game>,
-			private Algorithms :: Algorithm_State_Machine
+			private Strategies :: Strategy_State_Machine
 		{
 			public :
 				Game (string tsl_path, string ogre_media_path);

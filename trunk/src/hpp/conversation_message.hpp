@@ -18,7 +18,7 @@ namespace TSL
 			public :
 				Conversation_Message
 				(
-					TiXmlElement & new_conversation_option,
+					TiXmlElement & new_option,
 					Items :: Character & new_from,
 					Items :: Character & new_to
 				);
@@ -27,7 +27,7 @@ namespace TSL
 				
 				static const string get_class_name ();
 
-				TiXmlElement & conversation_option;
+				TiXmlElement & option;
 				
 				Items :: Character & from;
 				Items :: Character & to;

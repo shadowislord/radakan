@@ -40,7 +40,7 @@ bool Conversation_Plugin ::
 	const
 {
 	assert (Singleton <Conversation_Plugin> :: is_initialized ());
-	assert (Observer <Algorithms :: Play_State> :: is_initialized ());
+	assert (Observer <Strategies :: Play_State> :: is_initialized ());
 	
 	return true;
 }

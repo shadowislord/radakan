@@ -121,9 +121,9 @@ Game ::
 
 		new World (scene_manager);
 
-		new Algorithms :: Menu_State ();
-		new Algorithms :: Play_State (scene_manager);
-		set_active_state (Algorithms :: Play_State :: get ());
+		new Strategies :: Menu_State ();
+		new Strategies :: Play_State (scene_manager);
+		set_active_state (Strategies :: Play_State :: get ());
 
 		Ogre :: Camera * camera = scene_manager . getCameraIterator () . getNext ();
 		assert (camera != NULL);
@@ -149,7 +149,7 @@ Game ::
 
 	forget_dependencies ();
 
-	Algorithms :: Play_State :: destruct ();
+	Strategies :: Play_State :: destruct ();
 
 	World :: destruct ();
 
@@ -169,7 +169,7 @@ bool Game ::
 	const
 {
 	assert (Singleton <Game> :: is_initialized ());
-	assert (Algorithms :: Algorithm_State_Machine :: is_initialized ());
+	assert (Strategies :: Strategy_State_Machine :: is_initialized ());
 
 	return true;
 }
@@ -188,7 +188,7 @@ void Game ::
 		Input_Engine :: get () . capture ();
 		Ogre :: WindowEventUtilities :: messagePump ();
 
-		Algorithms :: Algorithm_State_Machine :: run (* message, true);
+		Strategies :: Strategy_State_Machine :: run (* message, true);
 
 		bool check = root -> renderOneFrame ();
 		assert (check);

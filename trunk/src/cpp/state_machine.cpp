@@ -106,9 +106,9 @@ template <class T> const vector <string> & State_Machine <T> ::
 
 //	to avert linking errors:
 #include "gui.hpp"
-#include "algorithm.hpp"
+#include "strategy.hpp"
 #include "tile.hpp"
 
-template class State_Machine <Algorithms :: Algorithm>;
+template class State_Machine <Strategies :: Strategy>;
 template class State_Machine <GUI>;
 template class State_Machine <Tile>;

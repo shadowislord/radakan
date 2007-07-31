@@ -9,7 +9,7 @@
 
 using namespace std;
 using namespace TSL;
-using namespace TSL :: Algorithms;
+using namespace TSL :: Strategies;
 
 //	static
 const string Alive_State ::
@@ -52,7 +52,7 @@ bool Alive_State ::
 	is_initialized ()
 	const
 {
-	assert (Algorithm :: is_initialized ());
+	assert (Strategy :: is_initialized ());
 	assert (0 <= calm);
 	assert (calm <= 1);
 
@@ -60,7 +60,7 @@ bool Alive_State ::
 }
 
 //	virtual
-Algorithm * Alive_State ::
+Strategy * Alive_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());
@@ -79,7 +79,7 @@ Algorithm * Alive_State ::
 		{
 			if (! (has_active_state () && get_active_state () . is_type <Fight_State> ()))
 			{
-				set_active_state (static_cast <Algorithm &> (* new Fight_State (* this)));
+				set_active_state (static_cast <Strategy &> (* new Fight_State (* this)));
 			}
 		}
 		else
@@ -95,7 +95,7 @@ Algorithm * Alive_State ::
 			{
 				if (! has_active_state ())
 				{
-					set_active_state (static_cast <Algorithm &> (* new Chat_State (* this)));
+					set_active_state (static_cast <Strategy &> (* new Chat_State (* this)));
 				}
 			}
 			else
@@ -109,7 +109,7 @@ Algorithm * Alive_State ::
 		}
 	}
 
-	Algorithm_State_Machine :: run (message);
+	Strategy_State_Machine :: run (message);
 
 	return this;
 }

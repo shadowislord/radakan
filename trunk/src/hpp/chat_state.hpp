@@ -1,19 +1,19 @@
 #ifndef TSL_CHAT_STATE_HPP
 #define TSL_CHAT_STATE_HPP
 
-#include "algorithm.hpp"
+#include "strategy.hpp"
 
 using namespace std;
 
 namespace TSL
 {
-	namespace Algorithms
+	namespace Strategies
 	{
 		class Alive_State;
 
-		///	Chat_State is the algorithm for conversating NPCs.
+		///	Chat_State is the strategy for conversating NPCs.
 		class Chat_State :
-			public Algorithm
+			public Strategy
 		{
 			public :
 				Chat_State (Alive_State & new_alive_state);
@@ -22,9 +22,9 @@ namespace TSL
 				
 				static const string get_class_name ();
 				
-				virtual Algorithm * transit (const Object & message);
+				virtual Strategy * transit (const Object & message);
 
-				static Algorithm & create (Alive_State & new_alive_state);
+				static Strategy & create (Alive_State & new_alive_state);
 
 				Alive_State & alive_state;
 

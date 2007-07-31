@@ -8,7 +8,7 @@
 
 using namespace std;
 using namespace TSL;
-using namespace TSL :: Algorithms;
+using namespace TSL :: Strategies;
 
 //	static
 const unsigned int Chat_State ::
@@ -48,13 +48,13 @@ bool Chat_State ::
 	is_initialized ()
 	const
 {
-	assert (Algorithm :: is_initialized ());
+	assert (Strategy :: is_initialized ());
 	
 	return true;
 }
 
 //	virtual
-Algorithm * Chat_State ::
+Strategy * Chat_State ::
 	transit (const Object & message)
 {
 	assert (is_initialized ());
@@ -65,7 +65,7 @@ Algorithm * Chat_State ::
 		
 		if (conversation_message . to == alive_state . npc)	//	Is (s)he talking to me?
 		{
-			TiXmlNode * temp = & conversation_message . conversation_option;
+			TiXmlNode * temp = & conversation_message . option;
 
 			for (int i = 0; temp -> ValueStr () != "dialogue"; i ++)
 			{
@@ -107,8 +107,8 @@ Algorithm * Chat_State ::
 }
 
 //	static
-Algorithm & Chat_State ::
+Strategy & Chat_State ::
 	create (Alive_State & new_alive_state)
 {
-	return static_cast <Algorithm &> (* new Chat_State (new_alive_state));
+	return static_cast <Strategy &> (* new Chat_State (new_alive_state));
 }

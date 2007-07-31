@@ -116,11 +116,11 @@ Movable_Model & Character ::
 }
 
 void Character ::
-	chat (TiXmlElement & conversation_option, Character & target)
+	chat (TiXmlElement & option, Character & target)
 {
 	assert (is_initialized ());
 
-	Object * message = new Messages :: Conversation_Message (conversation_option, * this, target);
+	Object * message = new Messages :: Conversation_Message (option, * this, target);
 	call_observers (* message);
 	delete message;
 }

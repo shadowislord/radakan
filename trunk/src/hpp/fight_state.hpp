@@ -1,7 +1,7 @@
 #ifndef TSL_FIGHT_STATE_HPP
 #define TSL_FIGHT_STATE_HPP
 
-#include "algorithm.hpp"
+#include "strategy.hpp"
 
 using namespace std;
 
@@ -12,13 +12,13 @@ namespace TSL
 		class Character;
 	}
 	
-	namespace Algorithms
+	namespace Strategies
 	{
 		class Alive_State;
 
-		///	Fight_State is the algorithm for fighting NPCs.
+		///	Fight_State is the strategy for fighting NPCs.
 		class Fight_State :
-			public Algorithm
+			public Strategy
 		{
 			public :
 				Fight_State (Alive_State & new_alive_state);
@@ -27,7 +27,7 @@ namespace TSL
 				
 				static const string get_class_name ();
 				
-				virtual Algorithm * transit (const Object & message);
+				virtual Strategy * transit (const Object & message);
 
 				Alive_State & alive_state;
 				Set <Items :: Character> targets;

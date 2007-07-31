@@ -72,13 +72,13 @@ template <class T> void Resident <T> ::
 }
 
 //	to avert linking errors:
-#include "algorithm.hpp"
+#include "strategy.hpp"
 #include "gui.hpp"
 #include "item.hpp"
 #include "model.hpp"
 #include "tile.hpp"
 
-template class Resident <Algorithms :: Algorithm>;
+template class Resident <Strategies :: Strategy>;
 template class Resident <GUI>;
 template class Resident <Items :: Item>;
 template class Resident <Model>;

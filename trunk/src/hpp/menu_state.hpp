@@ -1,7 +1,7 @@
 #ifndef TSL_MENU_STATE_HPP
 #define TSL_MENU_STATE_HPP
 
-#include "algorithm.hpp"
+#include "strategy.hpp"
 #include "singleton.hpp"
 
 using namespace std;
@@ -15,12 +15,12 @@ namespace TSL
 		class Game;
 	}
 
-	namespace Algorithms
+	namespace Strategies
 	{
-		///	Menu_State is the algorithm for the game when displaying the menu.
+		///	Menu_State is the strategy for the game when displaying the menu.
 		class Menu_State :
 			public Singleton <Menu_State>,
-			public Algorithm
+			public Strategy
 		{
 			public :
 				Menu_State ();
@@ -29,7 +29,7 @@ namespace TSL
 				
 				static const string get_class_name ();
 				
-				virtual Algorithm * transit (const Object & message);
+				virtual Strategy * transit (const Object & message);
 		
 			private :
 				GUI & gui;

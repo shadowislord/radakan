@@ -7,7 +7,7 @@ using namespace std;
 
 namespace TSL
 {
-	///	Resident can only be in one Location at once.
+	///	I can only be in one Location at once.
 	template <class T> class Resident :
 		public virtual Object
 	{

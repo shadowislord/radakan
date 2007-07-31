@@ -13,7 +13,7 @@ namespace TSL
 
 		class Conversation_Plugin :
 			public Singleton <Conversation_Plugin>,
-			public Observer <Algorithms :: Play_State>
+			public Observer <Strategies :: Play_State>
 		{
 			public :
 				Conversation_Plugin ();
