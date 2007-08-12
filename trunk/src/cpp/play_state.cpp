@@ -56,7 +56,7 @@ Play_State ::
 
 #ifdef TSL_WIN
 	}
-	catch(std::__non_rtti_object e)
+	catch (__non_rtti_object e)
 	{
 		Engines :: Log :: error (me) << "Chat window could not be dynamically cast. Falling back to unsafe type casting." << endl;
 		chat_window = (CEGUI :: Listbox *) (temp);
@@ -64,32 +64,6 @@ Play_State ::
 #endif
 
 	assert (chat_window != NULL);
-
-	TiXmlDocument behavior (Engines :: Settings :: get () . tsl_path + "/data/behavior.xml");
-	bool check = behavior . LoadFile ();
-	if ((! check) || behavior . Error ())
-	{
-		Engines :: Log :: error (me) << behavior . ErrorDesc () << endl;
-		abort ();
-	}
-
-	TiXmlElement * root = behavior . RootElement ();
-	assert (root != NULL);
-	TiXmlElement * peace_state = root -> FirstChildElement ();
-	assert (peace_state != NULL);
-	TiXmlElement * options = peace_state -> FirstChildElement ();
-	assert (options != NULL);
-
-	for (TiXmlElement * option = options -> FirstChildElement ("option");
-				option != NULL; option = option -> NextSiblingElement ("option"))
-	{
-		string message = option -> Attribute ("say");
-		assert (! message . empty ());
-		
-		CEGUI :: ListboxTextItem * item = new CEGUI :: ListboxTextItem (message);
-		chat_window -> addItem (item);
-		chat_window -> ensureItemIsVisible (chat_window -> getItemCount ());
-	}
 
 	assert (Play_State :: is_initialized ());
 }
@@ -101,7 +75,7 @@ Play_State ::
 	Engines :: Log :: trace (me, Play_State :: get_class_name (), "~");
 	assert (Play_State :: is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -150,7 +124,7 @@ Strategy * Play_State ::
 	else if (Engines :: Input_Engine :: get () . get_key
 		(Engines :: Settings :: get () . backward_key, false))
 	{
-		top_speed = - 0.5;
+		top_speed = - 0.7;
 	}
 	Items :: Player_Character :: get () . get_movable_model () . move (top_speed);
 	

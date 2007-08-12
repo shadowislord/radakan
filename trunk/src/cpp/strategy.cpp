@@ -18,10 +18,9 @@ Strategy ::
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
 	Engines :: Log :: trace (me, Strategy :: get_class_name (), "");
-	
-	//	Do nothing.
-
 	assert (Strategy :: is_initialized ());
+	
+	prepare_for_destruction ();
 }
 
 //  destructor
@@ -32,6 +31,8 @@ Strategy ::
 	assert (Strategy :: is_initialized ());
 
 	//	Do nothing.
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
 }
 
 //	virtual

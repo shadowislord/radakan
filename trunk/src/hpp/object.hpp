@@ -54,10 +54,12 @@ namespace TSL
 	///	I'm a subclass of 'string', because I use the string as my name.
 	///	I can't be copied, consider a reference of me instead.
 	class Object :
-		public string,
 		public boost :: noncopyable
 	{
 		public :
+			bool operator== (const Object & other_object) const;
+			bool operator!= (const Object & other_object) const;
+
 			#ifdef TSL_WIN
 				///	Some Windows compilers give an error otherwise.
 				Object ();
@@ -66,21 +68,21 @@ namespace TSL
 			virtual ~Object ();
 			virtual bool is_initialized () const;
 			
+			///	Call 'prepare_for_destruction ()' at the beginning of the destructor of each non-abstract subclass. Don't worry about calling it twice.
+			///	'destructing' is set to 'true'.
+			///	I'm removed from each parent Set.
+			void prepare_for_destruction ();
+
 			static const string get_class_name ();
 			
 			template <class T> bool is_type () const;
 			template <class T> T & to_type () const;
-
-			static const bool debugging;
 
 			void remember (Object & dependency);
 
 			///	I will self-destruct, when I forget my last dependency.
 			///	Set 'stay' to 'true' to force me to not self-destruct.
 			void forget (const Object & dependency, bool stay = false);
-
-			///	Call this method at the beginning of each non-abstract subclass destructor.
-			void forget_dependencies ();
 
 			///	'drop' results in an error, except for Sets.
 			virtual void drop (Object & t, bool stay = false);
@@ -89,7 +91,9 @@ namespace TSL
 
 			///	'me' is '* this'.
 			Object & me;
-			const string my;
+			const string name;
+
+			static const bool debugging;
 
 			static const Object update;
 			static const Object terminate;
@@ -99,7 +103,7 @@ namespace TSL
 			bool does_depend (const Object & candidate) const;
 
 			///	I store my dependencies as const to reduce the number of casts,
-			///	but they are const_cast-ed, at my destruction.
+			///	but they are 'const_cast'-ed, at my destruction.
 			set <const Object *> dependencies;
 
 			bool destructing;

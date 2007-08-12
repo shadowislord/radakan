@@ -40,7 +40,7 @@ Chat_State ::
 	Engines :: Log :: trace (me, Chat_State :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual

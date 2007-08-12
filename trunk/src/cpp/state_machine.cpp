@@ -32,6 +32,8 @@ template <class T> State_Machine <T> ::
 	assert (State_Machine <T> :: is_initialized ());
 
 	//	Do nothing.
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
 }
 
 //	virtual
@@ -48,13 +50,13 @@ template <class T> bool State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	drop (Object & t, bool stay)
 {
-	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "drop", t, bool_to_string (stay));
+	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "drop", t . name, bool_to_string (stay));
 	assert (Location <T> :: is_initialized ());
 	assert (t . is_type <T> ());
 	
-	Engines :: Log :: log (me) << t << " was dropped as active state." << endl;
+	Engines :: Log :: log (me) << t . name << " was dropped as active state." << endl;
 	
-	history . push_back (t);
+	history . push_back (t . name);
 	Location <T> :: drop (t, stay);
 }
 
@@ -92,7 +94,7 @@ template <class T> void State_Machine <T> ::
 		bool check = Location <T> :: add (new_state);
 		assert (check);
 
-		Engines :: Log :: log (me) << "The active state changed to " << new_state << "." << endl;
+		Engines :: Log :: log (me) << "The active state changed to " << new_state . name << "." << endl;
 	}
 }
 

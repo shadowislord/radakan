@@ -32,7 +32,7 @@ Item ::
 	solid (new_solid),
 	visible (new_visible),
 	entity (* World :: get () . getSceneManager () -> createEntity
-										(my + "entity", new_mesh_name)),
+										(name + "'s entity", new_mesh_name)),
 	model (NULL)
 {
 	Engines :: Log :: trace
@@ -63,9 +63,10 @@ Item ::
 {
 	Engines :: Log :: trace (me, Item :: get_class_name (), "~");
 	assert (Item :: is_initialized ());
-
-	forget_dependencies ();
-
+	
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
+	
 	if (has_model ())
 	{
 		remove_model ();
@@ -123,7 +124,7 @@ void Item ::
 	assert (Item :: is_initialized ());
 	assert (has_model ());
 
-	//	The body deletes the item, not the other way around.
+	//	The body destructs the item, not the other way around.
 	
 	model = NULL;
 }
@@ -148,7 +149,7 @@ OgreOde :: Geometry & Item ::
 
 	if (mobile)
 	{
-		OgreOde :: Body * body = new OgreOde :: Body (& World :: get (), string :: data ());
+		OgreOde :: Body * body = new OgreOde :: Body (& World :: get (), name);
 		body -> setMass (OgreOde :: BoxMass (mass, size));
 		geometry -> setBody (body);
 	}

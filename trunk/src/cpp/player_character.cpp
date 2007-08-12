@@ -50,7 +50,7 @@ Player_Character ::
 	Engines :: Log :: trace (me, Player_Character :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -87,10 +87,10 @@ void Player_Character ::
 	if (message . is_type <Messages :: Conversation_Message> ())
 	{
 		//	I show the message in the log, to let the player know.
-		Engines :: Log :: show (message . to_type <Messages :: Conversation_Message> () . from + ": '" + message + "'");
+		Engines :: Log :: show (message . to_type <Messages :: Conversation_Message> () . from . name + ": '" + message . name + "'");
 	}
-	else if (message != update)
+	else if (& message != & update)
 	{
-		Engines :: Log :: show (message);
+		Engines :: Log :: show (message . name);
 	}
 }

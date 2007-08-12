@@ -32,6 +32,8 @@ Strategy_State_Machine ::
 	assert (Strategy_State_Machine :: is_initialized ());
 
 	//	Do nothing.
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
 }
 
 //	virtual
@@ -48,7 +50,7 @@ bool Strategy_State_Machine ::
 void Strategy_State_Machine ::
 	drop (Object & t, bool stay)
 {
-	Engines :: Log :: trace (this -> me, Strategy_State_Machine :: get_class_name (), "drop", t, bool_to_string (stay));
+	Engines :: Log :: trace (this -> me, Strategy_State_Machine :: get_class_name (), "drop", t . name, bool_to_string (stay));
 	assert (is_initialized ());
 	
 	State_Machine <Strategy> :: drop (t, stay);

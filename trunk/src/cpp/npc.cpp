@@ -45,7 +45,7 @@ NPC ::
 	Engines :: Log :: trace (me, NPC :: get_class_name (), "~");
 	assert (NPC :: is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -90,7 +90,7 @@ void NPC ::
 void NPC ::
 	drop (Object & t, bool stay)
 {
-	Engines :: Log :: trace (this -> me, NPC :: get_class_name (), "drop", t, bool_to_string (stay));
+	Engines :: Log :: trace (this -> me, NPC :: get_class_name (), "drop", t . name, bool_to_string (stay));
 	assert (NPC :: is_initialized ());
 
 	if (t . is_type <Strategies :: Strategy> ())
@@ -107,5 +107,5 @@ void NPC ::
 	think (const string tought)
 	const
 {
-	Engines :: Log :: show (me + " thinks \"" + tought + "\"");
+	Engines :: Log :: show (name + " thinks \"" + tought + "\"");
 }

@@ -35,7 +35,7 @@ Log ::
 	trace (me, Log :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -64,7 +64,7 @@ ostream & Log ::
 		{
 			cout << "= turn " << World :: get () . get_turn () << " =" << endl;
 		}
-		cout << "'" << logger << "' reports:" << endl;
+		cout << "'" << logger . name << "' reports:" << endl;
 		return cout << "\t";
 	#else
 		return cout;	//	completely ignored when not in TSL_DEBUG
@@ -79,8 +79,7 @@ void Log ::
 	
 	if (is_instantiated ())
 	{
-		Object message (message_contents);
-		get () . call_observers (message);
+		get () . call_observers (message_contents);	//	Automatically construct an Object.
 	}
 }
 

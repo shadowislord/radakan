@@ -49,7 +49,7 @@ template <class T> Multislot <T> ::
 	Engines :: Log :: trace (me, Multislot :: get_class_name (), "~");
 	assert (Container :: is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual

@@ -32,7 +32,6 @@ Game ::
 		Log :: log (me) << "Further logs will be written to '" << tsl_path << "/log/log.txt'." << endl;
 
 		//	'Log :: log (me)' is redirected to a log file.
-		//	Don't use 'clog' or 'cerr'.
 		cout . rdbuf ((new ofstream ((tsl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
 		cerr . rdbuf (Log :: log (me) . rdbuf ());
 		clog . rdbuf (Log :: log (me) . rdbuf ());
@@ -52,7 +51,7 @@ Game ::
 
 	//	Don't copy the log to the console. Store the log to a file, if debugging.
 	// (new Ogre :: LogManager ()) -> createLog (tsl_path + "/log/ogre.txt", true, false, ! debugging);
-	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg", tsl_path + "/data/ogre.cfg",tsl_path + "/log/ogre.log");
+	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg", tsl_path + "/data/ogre.cfg", tsl_path + "/log/ogre.log");
 	if (! root -> showConfigDialog ())
 	{
 		Log :: error (me) << "An Ogre configuration dialog problem occurred." << endl;
@@ -147,20 +146,14 @@ Game ::
 	Log :: trace (me, Game :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
-
-	Strategies :: Play_State :: destruct ();
-
-	World :: destruct ();
-
-	Settings :: destruct ();
-
-	GUI_Engine :: destruct ();
-	//	Input_Engine :: destruct ();	//	This engine is already auto-destructed.
-	Audio_Engine :: destruct ();
-
-	Log :: destruct ();
-	Tracker :: destruct ();
+	delete & Strategies :: Play_State :: get ();
+	delete & World :: get ();
+	delete & Settings :: get ();
+	delete & GUI_Engine :: get ();
+	//	delete & Input_Engine :: get ();	//	Already auto-destructed.
+	delete & Audio_Engine :: get ();
+	delete & Log :: get ();
+	delete & Tracker :: get ();
 }
 
 //	virtual

@@ -39,12 +39,12 @@ Character ::
 		true,
 		Set <Item> :: unlimited
 	),
-	//	head (* new Static_Item (my + "head", "bar.mesh", 1, 1)),
+	//	head (* new Static_Item (name + "'s head", "bar.mesh", 1, 1)),
 	//	head (* new Multislot <Hat> (1)),
 	//	body (* new Multislot <Shirt> (1)),
-	back (* new Multislot <Container> (my + "back", "bar.mesh", Ogre :: Vector3 (0.5, 0.5, 0.3), 0, 1)),
+	back (* new Multislot <Container> (name + "'s back", "bar.mesh", Ogre :: Vector3 (0.5, 0.5, 0.3), 0, 1)),
 	//	arms (* new Multislot <Bracer> (2)),
-	hands (* new Multislot <Item> (my + "hands", "bar.mesh", Ogre :: Vector3 (1, 0.3, 0.3), 0, 2)),
+	hands (* new Multislot <Item> (name + "'s hands", "bar.mesh", Ogre :: Vector3 (1, 0.3, 0.3), 0, 2)),
 	//	legs (* new Multislot <Pants> (1)),
 	//	feet (* new Multislot <Shoe> (2)),
 	movable_model (NULL)
@@ -88,6 +88,8 @@ Character ::
 	assert (Character :: is_initialized ());
 
 	//	Do nothing.
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
 }
 
 //	virtual
@@ -120,9 +122,8 @@ void Character ::
 {
 	assert (is_initialized ());
 
-	Object * message = new Messages :: Conversation_Message (option, * this, target);
-	call_observers (* message);
-	delete message;
+	Messages :: Conversation_Message temp (option, * this, target);
+	call_observers (temp);
 }
 
 void Character ::
@@ -130,9 +131,8 @@ void Character ::
 {
 	assert (is_initialized ());
 
-	Engines :: Log :: show (me + " hits " + target + "!");
+	Engines :: Log :: show (name + " hits " + target . name + "!");
 
-	Object * message = new Messages :: Battle_Message (fight_mode, * this, target);
-	call_observers (* message);
-	delete message;
+	Messages :: Battle_Message temp (fight_mode, * this, target);
+	call_observers (temp);
 }

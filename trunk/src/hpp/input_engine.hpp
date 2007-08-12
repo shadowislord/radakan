@@ -34,7 +34,6 @@ namespace TSL
 				
 				using Singleton <Input_Engine> :: get;
 				using Singleton <Input_Engine> :: is_instantiated;
-				using Singleton <Input_Engine> :: destruct;
 
 				void capture ();
 				bool get_key (string key, bool reset);

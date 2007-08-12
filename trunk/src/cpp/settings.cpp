@@ -47,7 +47,7 @@ Settings ::
 	Log :: trace (me, Settings :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual

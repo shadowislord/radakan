@@ -18,10 +18,9 @@ Tracker ::
 	Object ("tracker")
 {
 	Log :: trace (me, Tracker :: get_class_name ());
-
-	//	Do nothing.
-	
 	assert (Tracker :: is_initialized ());
+
+	prepare_for_destruction ();
 }
 
 //  destructor
@@ -31,13 +30,11 @@ Tracker ::
 	Log :: trace (me, Tracker :: get_class_name (), "~");
 	assert (Tracker :: is_initialized ());
 
-	forget_dependencies ();
-
 	#ifdef TSL_DEBUG
 		for (Object * i = Tracker :: get () . get_child (); i != NULL;
 			i = Tracker :: get () . get_another_child ())
 		{
-			cout << "Warning: " << * i << " (" << i << ") was not deleted." << endl;
+			cout << "Warning: " << i -> name << " (" << i << ") was not destructed." << endl;
 		}
 		assert (Tracker :: get () . is_empty ());
 	#endif

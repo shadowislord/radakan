@@ -19,11 +19,11 @@ const string Fight_State ::
 //  constructor
 Fight_State ::
 	Fight_State (Alive_State & new_alive_state) :
-	Object (new_alive_state . npc . my + "fight state"),
+	Object (new_alive_state . npc . name + "'s fight state"),
 	alive_state (new_alive_state),
-	targets (my + "targets")
+	targets (name + "'s targets")
 {
-	Engines :: Log :: show (alive_state . npc + " becomes agressive!");
+	Engines :: Log :: show (alive_state . npc . name + " becomes agressive!");
 
 	alive_state . calm = 0;
 	
@@ -37,7 +37,7 @@ Fight_State ::
 	Engines :: Log :: trace (me, Fight_State :: get_class_name (), "~");
 	assert (Fight_State :: is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -45,7 +45,7 @@ bool Fight_State ::
 	is_initialized ()
 	const
 {
-	assert (Strategies :: is_initialized ());
+	assert (Strategy :: is_initialized ());
 	
 	return true;
 }

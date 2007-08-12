@@ -12,7 +12,7 @@ namespace TSL
 	{
 
 		class Conversation_Plugin :
-			public Singleton <Conversation_Plugin>,
+//			public Singleton <Conversation_Plugin>,
 			public Observer <Strategies :: Play_State>
 		{
 			public :
@@ -25,7 +25,7 @@ namespace TSL
 				virtual void call (const Object & message);
 
 			private :
-				void add (Items :: Character & one, Items :: Character & two);
+				TiXmlDocument behavior;
 		};
 	}
 }

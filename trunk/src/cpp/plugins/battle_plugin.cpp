@@ -1,4 +1,4 @@
-#include "battle_plugin.hpp"
+#include "plugins/battle_plugin.hpp"
 #include "log.hpp"
 
 using namespace std;
@@ -36,7 +36,7 @@ Battle_Plugin ::
 	Engines :: Log :: trace (me, Battle_Plugin :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -44,7 +44,7 @@ bool Battle_Plugin ::
 	is_initialized ()
 	const
 {
-	assert (Singleton <Battle_Plugin> :: is_initialized ());
+//	assert (Singleton <Battle_Plugin> :: is_initialized ());
 	assert (Observer <Strategies :: Play_State> :: is_initialized ());
 	
 	return true;
@@ -55,7 +55,7 @@ void Battle_Plugin ::
 	call (const Object & message)
 {
 	assert (is_initialized ());
-	if (message != "battle")
+	if (message . name != "battle")
 	{
 		return;
 	}
@@ -73,7 +73,7 @@ void Battle_Plugin ::
 
 	if (defender . is_dead ())
 	{
-		Engines :: Log :: show ("Mutilating " + defender + "'s dead body is *not* nice.");
+		Engines :: Log :: show ("Mutilating " + defender . name + "'s dead body is *not* nice.");
 		return;
 	}
 
@@ -120,6 +120,6 @@ void Battle_Plugin ::
 	}
 	else
 	{
-		Engines :: Log :: show (attacker + " missed!");
+		Engines :: Log :: show (attacker . name + " missed!");
 	}
 }*/

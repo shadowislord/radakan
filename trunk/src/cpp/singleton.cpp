@@ -21,7 +21,7 @@ template <class T> Singleton <T> ::
 {
 	Engines :: Log :: trace (me, Singleton <T> :: get_class_name ());
 
-	//	Do nothing.
+	prepare_for_destruction ();
 
 	assert (Singleton <T> :: is_initialized ());
 }
@@ -33,6 +33,8 @@ template <class T> Singleton <T> ::
 	assert (Singleton <T> :: is_initialized ());
 
 	//	Do nothing.
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
 }
 
 //	virtual
@@ -61,24 +63,16 @@ template <class T> bool Singleton <T> ::
 	return Ogre :: Singleton <T> :: getSingletonPtr () != NULL;
 }
 
-//	static
-template <class T> void Singleton <T> ::
-	destruct ()
-{
-	assert (is_instantiated ());
-	
-	delete & get ();
-}
-
 #include "audio_engine.hpp"
-#include "battle_plugin.hpp"
-#include "conversation_plugin.hpp"
+//	#include "plugins/battle_plugin.hpp"
+//	#include "plugins/conversation_plugin.hpp"
 #include "fight_state.hpp"
 #include "game.hpp"
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "menu_state.hpp"
 #include "play_state.hpp"
+#include "player_character.hpp"
 #include "plugin_manager.hpp"
 #include "settings.hpp"
 #include "tracker.hpp"
@@ -94,6 +88,6 @@ template class Singleton <Engines :: Plugin_Manager>;
 template class Singleton <Engines :: Settings>;
 template class Singleton <Engines :: Tracker>;
 template class Singleton <Items :: Player_Character>;
-template class Singleton <Plugins :: Battle_Plugin>;
-template class Singleton <Plugins :: Conversation_Plugin>;
+//	template class Singleton <Plugins :: Battle_Plugin>;
+//	template class Singleton <Plugins :: Conversation_Plugin>;
 template class Singleton <World>;

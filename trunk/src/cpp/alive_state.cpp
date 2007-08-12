@@ -37,14 +37,14 @@ Alive_State ::
 	Engines :: Log :: trace (me, Alive_State :: get_class_name (), "~");
 	assert (Alive_State :: is_initialized ());
 
+	prepare_for_destruction ();
+
 	if (! npc . is_destructing ())
 	{
 		npc . get_movable_model () . turn (1, npc . get_model () . get_side_direction ());
 		
-		Engines :: Log :: show (npc + " died.");
+		Engines :: Log :: show (npc . name + " died.");
 	}
-
-	forget_dependencies ();
 }
 
 //	virtual
@@ -100,7 +100,7 @@ Strategy * Alive_State ::
 			}
 			else
 			{
-				Engines :: Log :: show (npc + " is not listening.");
+				Engines :: Log :: show (npc . name + " is not listening.");
 			}
 		}
 		else

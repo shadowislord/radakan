@@ -98,7 +98,7 @@ Input_Engine ::
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 
 	input_manager -> destroyInputObject (keyboard);
 	input_manager -> destroyInputObject (mouse);
@@ -132,10 +132,10 @@ bool Input_Engine ::
 void Input_Engine ::
 	call (const Object & message)
 {
-	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message);
+	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message . name);
 	assert (is_initialized ());
 
-	gui_button = message;
+	gui_button = message . name;
 
 	Engines :: Log :: show ("The '" + gui_button + "' button was clicked.");
 }
@@ -331,24 +331,6 @@ string Input_Engine ::
 	Engines :: Log :: log (me) << "converting - in: " << key << endl;
 
 	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-		// Case replacement. Hopefully this works better.
-	    for(unsigned int i=0;i<key.length();i++)
-	    {
-		   key[i] = tolower(key[i]);
- 	    }
-
-		//	Convert capitals to lower-case:
-		//	Added by Tariq. This didn't convert Space to space!
-		/*
-		if (key . size () == 1)
-		{
-			int temp = int (key . at (0));
-			if ((64 < temp) && (temp < 90))
-			{
-				key . erase ();
-				key . push_back (char (temp + 32));
-			}
-		}*/
 		//	Convert 'NUM X' to 'X':
 		if (key . find ("NUM ") != string :: npos)
 		{
@@ -357,7 +339,7 @@ string Input_Engine ::
 		}
 		if (key == "Esc")
 		{
-			key = "Escape";
+			key = "escape";
 		}
 	#else	//	assuming linux
 		//	Convert the keypad codes to numbers:
@@ -402,6 +384,11 @@ string Input_Engine ::
 			key = "9";
 		}
 	#endif
+
+	for (unsigned int i = 0; i < key . length (); i ++)
+	{
+		key [i] = tolower (key [i]);
+	}
 
 	Engines :: Log :: log (me) << "converting - out: " << key << endl;
 	return key;

@@ -8,7 +8,7 @@ using namespace std;
 namespace TSL
 {
 
-	///	Location can hold subclasses of Resident.
+	///	Only one instances of me can hold a specifc Resident.
 	template <class T> class Location :
 		public Set <T>
 	{

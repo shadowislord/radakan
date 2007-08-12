@@ -29,8 +29,8 @@ Tile ::
 	OgreOde :: SimpleSpace (& World :: get (), World :: get () . getDefaultSpace ()),
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
-	npcs (my + "NPCs"),
-	doc (Engines :: Settings :: get () . tsl_path + "/data/tile/" + me + ".xml")
+	npcs (name + "'s NPCs"),
+	doc (Engines :: Settings :: get () . tsl_path + "/data/tile/" + name + ".xml")
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
 	
@@ -106,7 +106,7 @@ Tile ::
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -123,7 +123,7 @@ bool Tile ::
 bool Tile ::
 	add (Model & model)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "add", model);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "add", model . name);
 	assert (is_initialized ());
 	assert (model . is_initialized ());
 	assert (! contains (model));
@@ -133,11 +133,11 @@ bool Tile ::
 
 	if (model . item . is_type <Items :: NPC> ())
 	{
-		Engines :: Log :: log (me) << model . item << " will be added to the list of NPCs..." << endl;
+		Engines :: Log :: log (me) << model . item . name << " will be added to the list of NPCs..." << endl;
 		bool check = npcs . add (model . item . to_type <Items :: NPC> ());
 		assert (check);
 		
-		Engines :: Log :: log (me) << model . item << " was added to the list of NPCs." << endl;
+		Engines :: Log :: log (me) << model . item . name << " was added to the list of NPCs." << endl;
 	}
 
 	model . set_space (* this);
@@ -149,7 +149,7 @@ bool Tile ::
 bool Tile ::
 	move (Model & model, Set <Model> & destination)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", model, destination);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", model . name, destination . name);
 	assert (is_initialized ());
 	assert (model . is_initialized ());
 	assert (contains (model));
@@ -267,7 +267,7 @@ void Tile ::
 Model & Tile ::
 	create_model (Items :: Item & item, Ogre :: Vector3 position, float scale)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "create_model", item, to_string (position), to_string (scale));
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "create_model", item . name, to_string (position), to_string (scale));
 	OgreOde :: Geometry & geometry = item . create_geometry ();
 	OgreOde :: Body * body = geometry . getBody ();
 	if (body == NULL)

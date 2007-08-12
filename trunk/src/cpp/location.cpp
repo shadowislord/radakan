@@ -31,12 +31,15 @@ template <class T> Location <T> ::
 	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "~");
 	assert (Location <T> :: is_initialized ());
 	
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
+	
 	for (T * child = Set <T> :: get_child (); child != NULL; child = Set <T> :: get_child ())
 	{
-		Engines :: Log :: log (this -> me) << "Deleting child '" << * child << "'..." << endl;
+		Engines :: Log :: log (this -> me) << "Destructing child '" << child -> name << "'..." << endl;
 		delete child;
 	}
-	Engines :: Log :: log (this -> me) << "All children were deleted." << endl;
+	Engines :: Log :: log (this -> me) << "All children were destructed." << endl;
 }
 
 //	virtual
@@ -53,7 +56,7 @@ template <class T> bool Location <T> ::
 template <class T> bool Location <T> ::
 	add (T & t)
 {
-	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "add", t);
+	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "add", t . name);
 	assert (Location <T> :: is_initialized ());
 
 	bool result = Set <T> :: add (t);
@@ -69,7 +72,7 @@ template <class T> bool Location <T> ::
 template <class T> void Location <T> ::
 	drop (Object & t, bool stay)
 {
-	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "drop", t, bool_to_string (stay));
+	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "drop", t . name, bool_to_string (stay));
 	assert (Location <T> :: is_initialized ());
 	
 	t . to_type <T> () . leave (* this);

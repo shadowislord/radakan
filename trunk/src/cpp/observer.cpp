@@ -31,6 +31,8 @@ template <class T> Observer <T> ::
 	assert (Observer <T> :: is_initialized ());
 
 	//	Do nothing.
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
 }
 
 //	virtual

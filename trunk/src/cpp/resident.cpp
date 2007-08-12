@@ -32,6 +32,8 @@ template <class T> Resident <T> ::
 	assert (Resident <T> :: is_initialized ());
 
 	//	Do nothing.
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
 }
 
 //	virtual
@@ -45,7 +47,7 @@ template <class T> bool Resident <T> ::
 template <class T> void Resident <T> ::
 	enter (const Location <T> & new_location)
 {
-	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "enter", new_location);
+	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "enter", new_location . name);
 	assert (Resident <T> :: is_initialized ());
 	assert (location == NULL);
 
@@ -55,18 +57,11 @@ template <class T> void Resident <T> ::
 template <class T> void Resident <T> ::
 	leave (const Location <T> & old_location)
 {
-	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "leave", old_location);
+	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "leave", old_location . name);
 	assert (Resident <T> :: is_initialized ());
+	assert (location == & old_location);	//	'location' may be 'NULL'.
 	
-	if (location == NULL)
-	{
-		Engines :: Log :: log (me) << "I'm currently nowhere." << endl;
-	}
-	else
-	{
-		Engines :: Log :: log (me) << "I'm currently in " << * location << "." << endl;
-	}
-	assert (location == & old_location);
+	Engines :: Log :: log (me) << "I'm leaving " << location -> name << "." << endl;
 
 	location = NULL;
 }

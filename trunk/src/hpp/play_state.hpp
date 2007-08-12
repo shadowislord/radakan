@@ -30,12 +30,12 @@ namespace TSL
 
 				virtual Strategy * transit (const Object & message);
 
+				CEGUI :: Listbox * chat_window;
+
 			private :
 				GUI & gui;
 				
 				Ogre :: Camera & camera;
-
-				CEGUI :: Listbox * chat_window;
 		};
 	}
 }

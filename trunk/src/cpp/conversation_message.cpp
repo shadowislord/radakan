@@ -39,7 +39,7 @@ Conversation_Message ::
 	Engines :: Log :: trace (me, Conversation_Message :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual

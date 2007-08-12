@@ -60,7 +60,7 @@ World ::
 			pair <int, int> coordinates (x, z);
 			Engines :: Log :: log (me) << "tile position: (" << x << ", " << z << ")" << endl;
 			tiles [coordinates] = new Tile (coordinates);
-			Engines :: Log :: log (me) << * tiles [coordinates] << endl;
+			Engines :: Log :: log (me) << tiles [coordinates] -> name << endl;
 		}
 	}
 
@@ -90,7 +90,7 @@ World ::
 	Engines :: Log :: trace (me, World :: get_class_name (), "~");
 	assert (World :: is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 
 	for (int x = min_x; x <= max_x; x ++)
 	{
@@ -100,7 +100,6 @@ World ::
 			delete tiles [coordinates];
 		}
 	}
-
 }
 
 //	virtual

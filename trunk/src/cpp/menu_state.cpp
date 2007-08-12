@@ -38,7 +38,7 @@ Menu_State ::
 	Engines :: Log :: trace (me, Menu_State :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -67,7 +67,7 @@ Strategy * Menu_State ::
 	Engines :: GUI_Engine :: get () . set_active_gui (gui);
 
 	//	un-pause
-	if (Engines :: Input_Engine :: get () . get_key ("Escape", true)
+	if (Engines :: Input_Engine :: get () . get_key ("escape", true)
 		|| Engines :: Input_Engine :: get () . get_gui_button ("Return", true))
 	{
 		if (Items :: Player_Character :: get () . is_dead ())

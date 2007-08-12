@@ -70,8 +70,8 @@ Audio_Engine ::
 	Engines :: Log :: trace (me, Audio_Engine :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
-	
+	prepare_for_destruction ();
+
 	if (! silent)
 	{
 		#ifdef TSL_FMOD

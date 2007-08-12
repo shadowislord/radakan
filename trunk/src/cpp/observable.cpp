@@ -16,7 +16,7 @@ template <class T> Observable <T> ::
 	Observable () :
 	Object ("The name doesn't matter as this class is an abstact class."),
 	//	Set a custom context to evade problems with the dependencies.
-	observers (my + "observers")
+	observers (name + "'s observers")
 {
 	Engines :: Log :: trace (me, Observable :: get_class_name (), "");
 	
@@ -33,6 +33,8 @@ template <class T> Observable <T> ::
 	assert (Observable <T> :: is_initialized ());
 	
 	//	Do nothing.
+	//	'prepare_for_destruction ();' hasn't to be called,
+	//	because this is an abstract base class.
 }
 
 //	virtual
@@ -63,7 +65,7 @@ template <class T> void Observable <T> ::
 template <class T> void Observable <T> ::
 	register_observer (Observer <T> & observer)
 {
-	Engines :: Log :: trace (me, Observable :: get_class_name (), "register_observer", observer);
+	Engines :: Log :: trace (me, Observable :: get_class_name (), "register_observer", observer . name);
 	assert (is_initialized ());
 	
 	bool check = observers . add (observer);

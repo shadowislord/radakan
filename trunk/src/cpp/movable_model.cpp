@@ -14,11 +14,11 @@ const string Movable_Model ::
 //  constructor
 Movable_Model ::
 	Movable_Model (Items :: Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry, OgreOde :: Body & new_body) :
-	Object (new_item + "'s movable model"),
+	Object (new_item . name + "'s movable model"),
 	Model (new_item, position, scale, new_geometry),
 	body (new_body)
 {
-	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item, to_string (position), to_string (scale), "~new_geometry~", "~new_body~");
+	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item . name, to_string (position), to_string (scale), "~new_geometry~", "~new_body~");
 
 	node . attachObject (& body);
 
@@ -32,8 +32,8 @@ Movable_Model ::
 	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "~");
 	assert (Model :: is_initialized ());
 
-	forget_dependencies ();
-	
+	prepare_for_destruction ();
+
 	node . detachObject (& body);
 }
 
@@ -56,7 +56,7 @@ void Movable_Model ::
 	assert (Model :: is_initialized ());
 	assert (Ogre :: Math :: Abs (top_speed) <= 1);
 
-	body . setForce (200 * (top_speed * get_front_direction () - body . getLinearVelocity ()));
+	body . setForce (1000 * (top_speed * get_front_direction () - body . getLinearVelocity ()));
 }
 
 void Movable_Model ::
@@ -71,7 +71,7 @@ void Movable_Model ::
 		ax = get_top_direction ();
 	}
 
-	body . setTorque (10 * (top_radian_angle_speed * ax - body . getAngularVelocity ()));
+	body . setTorque (30 * (top_radian_angle_speed * ax - body . getAngularVelocity ()));
 }
 
 void Movable_Model ::

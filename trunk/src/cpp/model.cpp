@@ -15,13 +15,13 @@ const string Model ::
 //  constructor
 Model ::
 	Model (Items :: Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry) :
-	Object (new_item + "'s model"),
+	Object (new_item . name + "'s model"),
 	Location <Items :: Item> (1),
 	item (new_item),
-	node (* World :: get () . root_node . createChildSceneNode (string :: data ())),
+	node (* World :: get () . root_node . createChildSceneNode (name)),
 	geometry (new_geometry)
 {
-	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item, to_string (position), to_string (scale));
+	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item . name, to_string (position), to_string (scale));
 
 	add (item);
 	seal ();
@@ -61,7 +61,7 @@ Model ::
 	Engines :: Log :: trace (me, Model :: get_class_name (), "~");
 	assert (Model :: is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 
 	item . remove_model ();
 	

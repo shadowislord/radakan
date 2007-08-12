@@ -49,7 +49,7 @@ Container ::
 	Engines :: Log :: trace (me, Container :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -84,7 +84,7 @@ float Container ::
 bool Container ::
 	add (Item & item)
 {
-	Engines :: Log :: trace (me, Container :: get_class_name (), "add", item);
+	Engines :: Log :: trace (me, Container :: get_class_name (), "add", item . name);
 	assert (is_initialized ());
 	assert (item . is_initialized ());
 	assert (! is_sealed ());

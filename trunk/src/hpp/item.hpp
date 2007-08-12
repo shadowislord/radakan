@@ -31,12 +31,12 @@ namespace TSL
 
 				virtual OgreOde :: Geometry & create_geometry ();
 
-				///	Don't use this method directely, use 'new Body (...);' if possible.
+				///	Don't use this method directely.
 				void set_model (Model & new_model);
 				
 				bool has_model () const;
 				
-				///	Don't use this method directely, use 'delete model;' if possible.
+				///	Don't use this method directely, use 'model . destruct ();' if possible.
 				void remove_model ();
 				
 				Model & get_model () const;

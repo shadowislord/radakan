@@ -13,7 +13,12 @@ if(WIN32)
     find_package(DIrectX)
 endif(WIN32)
 
-file(GLOB_RECURSE SRC_FILES "${TSLRPG_SOURCE_DIR}/src/cpp" *.cpp)
+file(GLOB SRC_FILES "${TSLRPG_SOURCE_DIR}/src/cpp/*" *.cpp)
+
+add_library (battle
+	SHARED "${TSLRPG_SOURCE_DIR}/src/cpp/plugins/battle_plugin.cpp")
+add_library (conversation
+	SHARED "${TSLRPG_SOURCE_DIR}/src/cpp/plugins/conversation_plugin.cpp")
 
 set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
                     ${Boost_INCLUDE_DIR}
@@ -28,7 +33,7 @@ set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
                     ${Vorbis_INCLUDE_DIR}
                     ${CEGUI_INCLUDE_DIR}
                     )
-if(USE_FMOD)                 
+if(USE_FMOD)
     set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Fmod_INCLUDE_DIR})
 endif(USE_FMOD)
 

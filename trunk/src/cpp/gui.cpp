@@ -74,7 +74,7 @@ GUI ::
 	Engines :: Log :: trace (me, GUI :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 }
 
 //	virtual
@@ -94,7 +94,7 @@ void GUI ::
 {
 	assert (is_initialized ());
 
-	CEGUI :: ListboxTextItem * item = new CEGUI :: ListboxTextItem (message);
+	CEGUI :: ListboxTextItem * item = new CEGUI :: ListboxTextItem (message . name);
 	log_window -> addItem (item);
 	log_window -> ensureItemIsVisible (log_window -> getItemCount ());
 }
@@ -155,8 +155,7 @@ bool GUI ::
 	{
 		string caption (window_event_arguments -> window -> getText () . c_str ());
 
-		Object message (caption);
-		call_observers (message);
+		call_observers (caption);	//	Automatically construct an Object.
 	}
 
 	return true;

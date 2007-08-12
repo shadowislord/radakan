@@ -24,8 +24,6 @@ namespace TSL
 			static T & get ();
 			static bool is_instantiated ();
 
-			static void destruct ();
-
 		protected :
 			Singleton ();
 	};

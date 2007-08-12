@@ -37,11 +37,11 @@ template <class T> Set <T> ::
 	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "~");
 	assert (Set <T> :: is_initialized ());
 
-	forget_dependencies ();
+	prepare_for_destruction ();
 
 	for (T * child = get_child (); child != NULL; child = get_child ())
 	{
-		Engines :: Log :: log (me) << "Dropping child '" << * child << "'..." << endl;
+		Engines :: Log :: log (me) << "Dropping child '" << child -> name << "'..." << endl;
 		drop (* child);
 	}
 	Engines :: Log :: log (me) << "All children were dropped." << endl;
@@ -83,7 +83,7 @@ template <class T> bool Set <T> ::
 template <class T> bool Set <T> ::
 	add (T & t)
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "add", t);
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "add", t . name);
 	assert (Set <T> :: is_initialized ());
 	assert (! sealed);
 
@@ -94,7 +94,7 @@ template <class T> bool Set <T> ::
 
 	if ((maximal_size != unlimited) && (children . size () == maximal_size))
 	{
-		Engines :: Log :: log (me) << t << " could not be added. I'm full." << endl;
+		Engines :: Log :: log (me) << t . name << " could not be added. I'm full." << endl;
 		return false;
 	}
 
@@ -125,7 +125,7 @@ template <class T> bool Set <T> ::
 template <class T> bool Set <T> ::
 	move (T & t, Set <T> & destination)
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "move", t, destination);
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "move", t . name, destination . name);
 	assert (Set <T> :: is_initialized ());
 	assert (t . is_initialized ());
 	assert (destination . is_initialized ());
@@ -149,7 +149,7 @@ template <class T> bool Set <T> ::
 template <class T> void Set <T> ::
 	drop (Object & t, bool stay)
 {
-	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "drop", t, bool_to_string (stay));
+	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "drop", t . name, bool_to_string (stay));
 	assert (Set <T> :: is_initialized ());
 	assert ((! sealed) || is_destructing ());
 	T & dropped = t . to_type <T> ();

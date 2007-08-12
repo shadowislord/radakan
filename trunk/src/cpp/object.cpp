@@ -68,16 +68,29 @@ const Object Object ::
 const Object Object ::
 	terminate ("terminate (static)");
 
+bool Object ::
+	operator== (const Object & other_object)
+	const
+{
+	return (this == & other_object);
+}
+
+bool Object ::
+	operator!= (const Object & other_object)
+	const
+{
+	return ! (me == other_object);
+}
+
 //  constructor
 Object ::
 	Object (string new_name) :
-	string (new_name),
+	name (new_name),
 	me (* this),
-	my (me + "'s "),
 	destructing (false)
 {
 	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name);
-	assert (! new_name . empty ());
+	assert (! name . empty ());
 
 	if (Engines :: Tracker :: is_instantiated ())
 	{
@@ -96,9 +109,42 @@ Object ::
 	Engines :: Log :: trace (me, Object :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	forget_dependencies ();
-
+	prepare_for_destruction ();
+	
 	Engines :: Log :: log (me) << "Farewell..." << endl;
+}
+
+void Object ::
+	prepare_for_destruction ()
+{
+	Engines :: Log :: trace (me, Object :: get_class_name (), "prepare_for_destruction");
+	assert (is_initialized ());
+
+	destructing = true;
+
+	for (set <const Object *> :: const_iterator i = dependencies . begin ();
+		i != dependencies . end (); i ++)
+	{
+		Engines :: Log :: log (me) << "Dependency to be dropped by: '" << (* i) -> name << "'" << endl;
+	}
+
+	const Object * last = NULL;
+	for (set <const Object *> :: const_iterator i = dependencies . begin ();
+		i != dependencies . end (); i = dependencies . begin ())
+	{
+		assert (* i != last);
+		//	The dropping object should call 'forget (...)' for me.
+		
+#ifdef TSL_WIN
+		// I don't really know how to handle this
+		// alternatively.
+		(Object *) (* i) -> drop (me);
+#else
+		const_cast <Object *> (* i) -> drop (me);
+#endif
+
+		last = * i;
+	}
 }
 
 //	virtual
@@ -108,7 +154,7 @@ bool Object ::
 {
 	//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_initialized");
 	//	checks for empty string
-	assert (! empty ());
+	assert (! name . empty ());
 	
 	return true;
 }
@@ -127,7 +173,7 @@ bool Object ::
 void Object ::
 	remember (Object & dependency)
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "remember", dependency);
+	Engines :: Log :: trace (me, Object :: get_class_name (), "remember", dependency . name);
 	//	assert (Object :: is_initialized ());
 
 	bool check = dependencies . insert (& dependency) . second;
@@ -137,7 +183,7 @@ void Object ::
 void Object ::
 	forget (const Object & dependency, bool stay)
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "forget", dependency, bool_to_string (stay));
+	Engines :: Log :: trace (me, Object :: get_class_name (), "forget", dependency . name, bool_to_string (stay));
 	assert (is_initialized ());
 	assert (does_depend (dependency));
 
@@ -158,7 +204,7 @@ void Object ::
 
 	if (dependencies . size () > self_destruct_criterion)
 	{
-		Engines :: Log :: log (me) << "I have another dependency and will not self-delete." << endl;
+		Engines :: Log :: log (me) << "I have another dependency and will not self-destruct." << endl;
 		return;
 	}
 
@@ -168,7 +214,7 @@ void Object ::
 		return;
 	}
 
-	Engines :: Log :: log (me) << "I have no more dependencies and will self-delete." << endl;
+	Engines :: Log :: log (me) << "I have no more dependencies and will self-destruct." << endl;
 	delete this;
 }
 
@@ -176,44 +222,11 @@ void Object ::
 void Object ::
 	drop (Object & t, bool stay)
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "drop", t, bool_to_string (stay));
+	Engines :: Log :: trace (me, Object :: get_class_name (), "drop", t . name, bool_to_string (stay));
 	assert (is_initialized ());
 
-	Engines :: Log :: error (me) << "Plain object call to drop '" << t << "'." << endl;
+	Engines :: Log :: error (me) << "Plain object call to drop '" << t . name << "'." << endl;
 	abort ();
-}
-
-void Object ::
-	forget_dependencies ()
-{
-	Engines :: Log :: trace (me, Object :: get_class_name (), "forget_dependencies");
-	assert (is_initialized ());
-
-	destructing = true;
-
-	for (set <const Object *> :: const_iterator i = dependencies . begin ();
-		i != dependencies . end (); i++)
-	{
-		Engines :: Log :: log (me) << "Dependency to forget: '" << * * i << "'" << endl;
-	}
-
-	const Object * last = NULL;
-	for (set <const Object *> :: const_iterator i = dependencies . begin ();
-		i != dependencies . end (); i = dependencies . begin ())
-	{
-		assert (* i != last);
-		//	The dropping object should call 'forget (...)' for me.
-		
-#ifdef TSL_WIN
-		// I don't really know how to handle this
-		// alternatively.
-		//const Object * (* i) -> drop (me);
-#else
-		const_cast <Object *> (* i) -> drop (me);
-#endif
-
-		last = * i;
-	}
 }
 
 const bool & Object ::
