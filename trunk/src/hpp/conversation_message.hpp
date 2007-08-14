@@ -1,5 +1,5 @@
-#ifndef TSL_CONVERSATION_MESSAGE_HPP
-#define TSL_CONVERSATION_MESSAGE_HPP
+#ifndef RADAKAN_CONVERSATION_MESSAGE_HPP
+#define RADAKAN_CONVERSATION_MESSAGE_HPP
 
 #include "character.hpp"
 
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Messages
 	{
@@ -35,4 +35,4 @@ namespace TSL
 	}
 }
 
-#endif	// TSL_CONVERSATION_MESSAGE_HPP
+#endif	// RADAKAN_CONVERSATION_MESSAGE_HPP

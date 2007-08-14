@@ -8,8 +8,8 @@
 #include "world.hpp"
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Strategies;
+using namespace Radakan;
+using namespace Radakan :: Strategies;
 
 //	static
 const string Menu_State ::

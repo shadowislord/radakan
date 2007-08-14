@@ -1,5 +1,5 @@
-#ifndef TSL_PLUGIN_MANAGER_HPP
-#define TSL_PLUGIN_MANAGER_HPP
+#ifndef RADAKAN_PLUGIN_MANAGER_HPP
+#define RADAKAN_PLUGIN_MANAGER_HPP
 
 #include "observer.hpp"
 #include "play_state.hpp"
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Engines
 	{
@@ -29,4 +29,4 @@ namespace TSL
 	}
 }
 
-#endif	// TSL_PLUGIN_MANAGER_HPP
+#endif	// RADAKAN_PLUGIN_MANAGER_HPP

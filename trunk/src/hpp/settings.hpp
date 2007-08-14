@@ -1,14 +1,14 @@
-#ifndef TSL_SETTINGS_HPP
-#define TSL_SETTINGS_HPP
+#ifndef RADAKAN_SETTINGS_HPP
+#define RADAKAN_SETTINGS_HPP
 
 #include "singleton.hpp"
 
-// A quick way to enable WSAD is to define TSL_WSAD.
-#ifdef TSL_WIN
-	#define TSL_WSAD
+// A quick way to enable WSAD is to define RADAKAN_WSAD.
+#ifdef RADAKAN_WINDOWS
+	#define RADAKAN_WSAD
 #endif
 
-namespace TSL
+namespace Radakan
 {
 	namespace Engines
 	{
@@ -18,7 +18,7 @@ namespace TSL
 			public Singleton <Settings>
 		{
 			public :
-				Settings (string new_tsl_path);
+				Settings (string new_radakan_path);
 				virtual ~Settings ();
 				virtual bool is_initialized () const;
 				
@@ -36,18 +36,18 @@ namespace TSL
 				///	in radians
 				void increase_vertical_camera_angle (float angle);
 
-				const string tsl_path;
+				const string radakan_path;
 
-				///	Defaults to e, unless TSL_WSAD is set.
+				///	Defaults to e, unless RADAKAN_WSAD is set.
 				string forward_key;	
 
-				///	Defaults to d, unless TSL_WSAD is set.
+				///	Defaults to d, unless RADAKAN_WSAD is set.
 				string backward_key;
 
-				///	Defaults to s, unless TSL_WSAD is set.
+				///	Defaults to s, unless RADAKAN_WSAD is set.
 				string left_key;
 
-				///	Defaults to f, unless TSL_WSAD is set.
+				///	Defaults to f, unless RADAKAN_WSAD is set.
 				string right_key;
 
 			private :
@@ -66,4 +66,4 @@ namespace TSL
 	}
 }
 
-#endif	// TSL_SETTINGS_HPP
+#endif	// RADAKAN_SETTINGS_HPP

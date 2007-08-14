@@ -9,8 +9,8 @@
 #include <elements/CEGUIListboxTextItem.h>
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Plugins;
+using namespace Radakan;
+using namespace Radakan :: Plugins;
 
 //	static
 const string Conversation_Plugin ::
@@ -23,7 +23,7 @@ const string Conversation_Plugin ::
 Conversation_Plugin ::
 	Conversation_Plugin () :
 	Object ("conversation plugin"),
-	behavior (Engines :: Settings :: get () . tsl_path + "/data/behavior.xml")
+	behavior (Engines :: Settings :: get () . radakan_path + "/data/behavior.xml")
 {
 	bool check = behavior . LoadFile ();
 	if ((! check) || behavior . Error ())

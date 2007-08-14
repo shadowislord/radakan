@@ -2,7 +2,7 @@
 #include "singleton.hpp"
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
 //	static
 template <class T> T * Ogre :: Singleton <T> ::

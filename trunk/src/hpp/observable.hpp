@@ -1,12 +1,12 @@
-#ifndef TSL_OBSERVABLE_HPP
-#define TSL_OBSERVABLE_HPP
+#ifndef RADAKAN_OBSERVABLE_HPP
+#define RADAKAN_OBSERVABLE_HPP
 
 #include "observer.hpp"
 #include "set.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 
 	///	Observable is an abstract base class for the observer pattern.
@@ -33,4 +33,4 @@ namespace TSL
 	};
 }
 
-#endif	//	TSL_OBSERVABLE_HPP
+#endif	//	RADAKAN_OBSERVABLE_HPP

@@ -1,12 +1,12 @@
-#ifndef TSL_SINGLETON_HPP
-#define TSL_SINGLETON_HPP
+#ifndef RADAKAN_SINGLETON_HPP
+#define RADAKAN_SINGLETON_HPP
 
 #include <OgreSingleton.h>
 #include "object.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 
 	///	Singleton is the base class for classes with only one instance.
@@ -29,4 +29,4 @@ namespace TSL
 	};
 }
 
-#endif	//	TSL_SINGLETON_HPP
+#endif	//	RADAKAN_SINGLETON_HPP

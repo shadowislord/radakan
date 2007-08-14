@@ -5,7 +5,7 @@
 #include <elements/CEGUIPushButton.h>
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
 //	static
 const string GUI ::
@@ -43,14 +43,14 @@ GUI ::
 		}
 	}
 	
-	#ifdef TSL_WIN
+	#ifdef RADAKAN_WINDOWS
 		try
 		{
 	#endif
 
 		log_window = dynamic_cast <CEGUI :: Listbox *> (temp);
 
-	#ifdef TSL_WIN
+	#ifdef RADAKAN_WINDOWS
 		}
 		catch(std::__non_rtti_object e)
 		{
@@ -127,7 +127,7 @@ bool GUI ::
 	// I had to declare this outside due to scoping.
 	const CEGUI :: WindowEventArgs * window_event_arguments;
 
-	#ifdef TSL_WIN
+	#ifdef RADAKAN_WINDOWS
 		try
 		{
 	#endif
@@ -135,7 +135,7 @@ bool GUI ::
 	
 		window_event_arguments = dynamic_cast <const CEGUI :: WindowEventArgs *> (& arguments);
 
-	#ifdef TSL_WIN
+	#ifdef RADAKAN_WINDOWS
 		}
 		catch(std::__non_rtti_object e)
 		{

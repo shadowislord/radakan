@@ -1,12 +1,12 @@
-#ifndef TSL_MENU_STATE_HPP
-#define TSL_MENU_STATE_HPP
+#ifndef RADAKAN_MENU_STATE_HPP
+#define RADAKAN_MENU_STATE_HPP
 
 #include "strategy.hpp"
 #include "singleton.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	class GUI;
 
@@ -37,4 +37,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_MENU_STATE_HPP
+#endif	//	RADAKAN_MENU_STATE_HPP

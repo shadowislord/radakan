@@ -1,11 +1,11 @@
-#ifndef TSL_LOCATION_HPP
-#define TSL_LOCATION_HPP
+#ifndef RADAKAN_LOCATION_HPP
+#define RADAKAN_LOCATION_HPP
 
 #include "set.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 
 	///	Only one instances of me can hold a specifc Resident.
@@ -29,4 +29,4 @@ namespace TSL
 	};
 }
 
-#endif	// TSL_LOCATION_HPP
+#endif	// RADAKAN_LOCATION_HPP

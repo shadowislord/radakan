@@ -3,8 +3,8 @@
 
 using namespace std;
 using namespace boost;
-using namespace TSL;
-using namespace TSL :: Plugins;
+using namespace Radakan;
+using namespace Radakan :: Plugins;
 
 //	static
 const string Battle_Plugin ::

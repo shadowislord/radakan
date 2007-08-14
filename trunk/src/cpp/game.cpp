@@ -11,8 +11,8 @@
 #include <OgreDefaultHardwareBufferManager.h>
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Engines;
+using namespace Radakan;
+using namespace Radakan :: Engines;
 
 //	static
 const string Game ::
@@ -22,17 +22,17 @@ const string Game ::
 }
 
 Game ::
-	Game (string tsl_path, string ogre_media_path) :
+	Game (string radakan_path, string ogre_media_path) :
 	Object ("game")
 {
-	Log :: trace (me, Game :: get_class_name (), "", tsl_path, ogre_media_path);
+	Log :: trace (me, Game :: get_class_name (), "", radakan_path, ogre_media_path);
 
-	#ifdef TSL_DEBUG
+	#ifdef RADAKAN_DEBUG
 		Log :: log (me) << "Debug mode is enabled." << endl;
-		Log :: log (me) << "Further logs will be written to '" << tsl_path << "/log/log.txt'." << endl;
+		Log :: log (me) << "Further logs will be written to '" << radakan_path << "/log/log.txt'." << endl;
 
 		//	'Log :: log (me)' is redirected to a log file.
-		cout . rdbuf ((new ofstream ((tsl_path + "/log/log.txt") . c_str ())) -> rdbuf ());
+		cout . rdbuf ((new ofstream ((radakan_path + "/log/log.txt") . c_str ())) -> rdbuf ());
 		cerr . rdbuf (Log :: log (me) . rdbuf ());
 		clog . rdbuf (Log :: log (me) . rdbuf ());
 	#else
@@ -45,13 +45,13 @@ Game ::
 
 	new Tracker ();
 	new Log ();
-	new Settings (tsl_path);
+	new Settings (radakan_path);
 
 	new Audio_Engine ();
 
 	//	Don't copy the log to the console. Store the log to a file, if debugging.
-	// (new Ogre :: LogManager ()) -> createLog (tsl_path + "/log/ogre.txt", true, false, ! debugging);
-	root = new Ogre :: Root (tsl_path + "/data/plugins.cfg", tsl_path + "/data/ogre.cfg", tsl_path + "/log/ogre.log");
+	// (new Ogre :: LogManager ()) -> createLog (radakan_path + "/log/ogre.txt", true, false, ! debugging);
+	root = new Ogre :: Root (radakan_path + "/data/plugins.cfg", radakan_path + "/data/ogre.cfg", radakan_path + "/log/ogre.log");
 	if (! root -> showConfigDialog ())
 	{
 		Log :: error (me) << "An Ogre configuration dialog problem occurred." << endl;
@@ -62,35 +62,35 @@ Game ::
 	{
 		// Add textures directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(tsl_path + "/data/texture", "FileSystem", "textures", true);
+					(radakan_path + "/data/texture", "FileSystem", "textures", true);
 
 		// Add 3D models directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(tsl_path + "/data/model", "FileSystem", "models", true);
+					(radakan_path + "/data/model", "FileSystem", "models", true);
 
 		// Add materials directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(tsl_path + "/data/material", "FileSystem", "materials", true);
+					(radakan_path + "/data/material", "FileSystem", "materials", true);
 
 		// Add gui config directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(tsl_path + "/data/gui/config", "FileSystem", "gui", true);
+					(radakan_path + "/data/gui/config", "FileSystem", "gui", true);
 
 		// Add gui font directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(tsl_path + "/data/gui/font", "FileSystem", "gui", true);
+					(radakan_path + "/data/gui/font", "FileSystem", "gui", true);
 
 		// Add gui imageset directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(tsl_path + "/data/gui/imageset", "FileSystem", "gui", true);
+					(radakan_path + "/data/gui/imageset", "FileSystem", "gui", true);
 
 		// Add gui looknfeel directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(tsl_path + "/data/gui/looknfeel", "FileSystem", "gui", true);
+					(radakan_path + "/data/gui/looknfeel", "FileSystem", "gui", true);
 
 		// Add gui scheme directory
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
-					(tsl_path + "/data/gui/scheme", "FileSystem", "gui", true);
+					(radakan_path + "/data/gui/scheme", "FileSystem", "gui", true);
 
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(ogre_media_path + "/gui", "FileSystem", "gui", true);

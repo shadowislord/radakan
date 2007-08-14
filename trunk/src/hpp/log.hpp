@@ -1,12 +1,12 @@
-#ifndef TSL_LOG_HPP
-#define TSL_LOG_HPP
+#ifndef RADAKAN_LOG_HPP
+#define RADAKAN_LOG_HPP
 
 #include "singleton.hpp"
 #include "observable.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Engines
 	{
@@ -42,4 +42,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_LOG_HPP
+#endif	//	RADAKAN_LOG_HPP

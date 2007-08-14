@@ -1,11 +1,11 @@
-#ifndef TSL_FIGHT_STATE_HPP
-#define TSL_FIGHT_STATE_HPP
+#ifndef RADAKAN_FIGHT_STATE_HPP
+#define RADAKAN_FIGHT_STATE_HPP
 
 #include "strategy.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Items
 	{
@@ -35,4 +35,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_FIGHT_STATE_HPP
+#endif	//	RADAKAN_FIGHT_STATE_HPP

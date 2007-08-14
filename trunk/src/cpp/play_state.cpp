@@ -14,8 +14,8 @@
 #include <elements/CEGUIListboxTextItem.h>
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Strategies;
+using namespace Radakan;
+using namespace Radakan :: Strategies;
 
 //	static
 const string Play_State ::
@@ -48,13 +48,13 @@ Play_State ::
 		abort ();
 	}
 
-#ifdef TSL_WIN
+#ifdef RADAKAN_WINDOWS
 	try
 	{
 #endif
 	chat_window = dynamic_cast <CEGUI :: Listbox *> (temp);
 
-#ifdef TSL_WIN
+#ifdef RADAKAN_WINDOWS
 	}
 	catch (__non_rtti_object e)
 	{

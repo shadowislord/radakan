@@ -1,12 +1,12 @@
-#ifndef TSL_PLAYER_CHARACTER_HPP
-#define TSL_PLAYER_CHARACTER_HPP
+#ifndef RADAKAN_PLAYER_CHARACTER_HPP
+#define RADAKAN_PLAYER_CHARACTER_HPP
 
 #include "character.hpp"
 #include "singleton.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Items
 	{
@@ -39,4 +39,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_PLAYER_CHARACTER_HPP
+#endif	//	RADAKAN_PLAYER_CHARACTER_HPP

@@ -1,12 +1,12 @@
-#ifndef TSL_NPC_HPP
-#define TSL_NPC_HPP
+#ifndef RADAKAN_NPC_HPP
+#define RADAKAN_NPC_HPP
 
 #include "character.hpp"
 #include "strategy_state_machine.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Items
 	{
@@ -49,4 +49,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_NPC_HPP
+#endif	//	RADAKAN_NPC_HPP

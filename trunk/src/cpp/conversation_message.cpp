@@ -2,8 +2,8 @@
 #include "conversation_message.hpp"
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Messages;
+using namespace Radakan;
+using namespace Radakan :: Messages;
 
 //	static
 const string Conversation_Message ::

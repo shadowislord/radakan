@@ -1,5 +1,5 @@
-#ifndef TSL_CHARACTER_HPP
-#define TSL_CHARACTER_HPP
+#ifndef RADAKAN_CHARACTER_HPP
+#define RADAKAN_CHARACTER_HPP
 
 #include "multislot.hpp"
 #include "observable.hpp"
@@ -10,7 +10,7 @@
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	class Movable_Model;
 
@@ -74,4 +74,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_CHARACTER_HPP
+#endif	//	RADAKAN_CHARACTER_HPP

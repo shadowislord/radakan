@@ -3,14 +3,14 @@
 #include "settings.hpp"
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Engines;
+using namespace Radakan;
+using namespace Radakan :: Engines;
 
 Sound_Sample ::
 	Sound_Sample (string file_name) :
 	Object (file_name)
 {
-	#ifdef TSL_FMOD
+	#ifdef RADAKAN_FMOD
 		sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
 	#else
 		sound = audiere :: OpenSound (Audio_Engine :: get () . device, file_name . c_str ());
@@ -25,7 +25,7 @@ Sound_Sample ::
 void Sound_Sample ::
 	play ()
 {
-	#ifdef TSL_FMOD
+	#ifdef RADAKAN_FMOD
 		FSOUND_PlaySound (FSOUND_FREE, sample);
 	#else
 		sound -> play();
@@ -45,7 +45,7 @@ Audio_Engine ::
 {
 	silent = false;
 
-	#ifdef TSL_FMOD
+	#ifdef RADAKAN_FMOD
 		FSOUND_Init (44100, 32, 0);
 	#else
 		device = audiere :: OpenDevice ("");
@@ -58,7 +58,7 @@ Audio_Engine ::
 		}
 	#endif
 
-	load (Settings :: get () . tsl_path + "/data/sound/prelude_11.ogg");
+	load (Settings :: get () . radakan_path + "/data/sound/prelude_11.ogg");
 	play ();
 
 	assert (is_initialized ());
@@ -74,7 +74,7 @@ Audio_Engine ::
 
 	if (! silent)
 	{
-		#ifdef TSL_FMOD
+		#ifdef RADAKAN_FMOD
 			FSOUND_Close ();
 		#endif
 	}

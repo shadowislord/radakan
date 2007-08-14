@@ -1,5 +1,5 @@
-#ifndef TSL_GUI_ENGINE_HPP
-#define TSL_GUI_ENGINE_HPP
+#ifndef RADAKAN_GUI_ENGINE_HPP
+#define RADAKAN_GUI_ENGINE_HPP
 
 #include "gui.hpp"
 #include "state_machine.hpp"
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Engines
 	{
@@ -46,4 +46,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_GUI_ENGINE_HPP
+#endif	//	RADAKAN_GUI_ENGINE_HPP

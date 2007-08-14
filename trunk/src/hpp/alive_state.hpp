@@ -1,11 +1,11 @@
-#ifndef TSL_ALIVE_STATE_HPP
-#define TSL_ALIVE_STATE_HPP
+#ifndef RADAKAN_ALIVE_STATE_HPP
+#define RADAKAN_ALIVE_STATE_HPP
 
 #include "strategy_state_machine.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Items
 	{
@@ -36,4 +36,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_ALIVE_STATE_HPP
+#endif	//	RADAKAN_ALIVE_STATE_HPP

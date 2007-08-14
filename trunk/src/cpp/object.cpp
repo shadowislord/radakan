@@ -2,9 +2,9 @@
 #include "tracker.hpp"
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
-string TSL ::
+string Radakan ::
 	bool_to_string (const bool & value)
 {
 	if (value)
@@ -14,7 +14,7 @@ string TSL ::
 	return "false";
 }
 
-string TSL ::
+string Radakan ::
 	to_string (const float & value)
 {
 	ostringstream oss;
@@ -22,7 +22,7 @@ string TSL ::
 	return oss . str ();
 }
 
-string TSL ::
+string Radakan ::
 	to_string (const Ogre :: Vector3 & vector)
 {
 	return "(" + to_string (vector . x) + ", " + to_string (vector . y) + ", "
@@ -30,7 +30,7 @@ string TSL ::
 }
 
 //	static
-float TSL ::
+float Radakan ::
 	to_float (const string & value)
 {
 	istringstream iss (value);
@@ -49,7 +49,7 @@ const string Object ::
 	return "Object";
 }
 
-#ifdef TSL_DEBUG
+#ifdef RADAKAN_DEBUG
 	//	static
 	const bool Object ::
 		debugging (true);
@@ -135,7 +135,7 @@ void Object ::
 		assert (* i != last);
 		//	The dropping object should call 'forget (...)' for me.
 		
-#ifdef TSL_WIN
+#ifdef RADAKAN_WINDOWS
 		// I don't really know how to handle this
 		// alternatively.
 		(Object *) (* i) -> drop (me);

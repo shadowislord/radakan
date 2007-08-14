@@ -1,8 +1,8 @@
 #include "plugin_manager.hpp"
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Engines;
+using namespace Radakan;
+using namespace Radakan :: Engines;
 
 //	static
 const string Plugin_Manager ::

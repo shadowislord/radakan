@@ -1,5 +1,5 @@
-#ifndef TSL_BATTLE_PLUGIN_HPP
-#define TSL_BATTLE_PLUGIN_HPP
+#ifndef RADAKAN_BATTLE_PLUGIN_HPP
+#define RADAKAN_BATTLE_PLUGIN_HPP
 
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/uniform_real.hpp>
@@ -13,7 +13,7 @@
 using namespace std;
 using namespace boost;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Plugins
 	{
@@ -43,4 +43,4 @@ namespace TSL
 	}
 }
 
-#endif	// TSL_BATTLE_PLUGIN_HPP
+#endif	// RADAKAN_BATTLE_PLUGIN_HPP

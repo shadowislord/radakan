@@ -1,11 +1,11 @@
-#ifndef TSL_RESIDENT_HPP
-#define TSL_RESIDENT_HPP
+#ifndef RADAKAN_RESIDENT_HPP
+#define RADAKAN_RESIDENT_HPP
 
 #include "location.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	///	I can only be in one Location at once.
 	template <class T> class Resident :
@@ -29,4 +29,4 @@ namespace TSL
 	};
 }
 
-#endif	// TSL_RESIDENT_HPP
+#endif	// RADAKAN_RESIDENT_HPP

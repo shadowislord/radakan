@@ -1,12 +1,12 @@
-#ifndef TSL_MODEL_HPP
-#define TSL_MODEL_HPP
+#ifndef RADAKAN_MODEL_HPP
+#define RADAKAN_MODEL_HPP
 
 #include "set.hpp"
 #include "item.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	const Ogre :: Vector3 x_axis (1, 0, 0);
 	const Ogre :: Vector3 y_axis (0, 1, 0);	//	upwards
@@ -43,4 +43,4 @@ namespace TSL
 	Ogre :: Quaternion make_quaternion (float radian_angle, Ogre :: Vector3 ax);
 }
 
-#endif	//	TSL_MODEL_HPP
+#endif	//	RADAKAN_MODEL_HPP

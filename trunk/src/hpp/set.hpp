@@ -1,11 +1,11 @@
-#ifndef TSL_SET_HPP
-#define TSL_SET_HPP
+#ifndef RADAKAN_SET_HPP
+#define RADAKAN_SET_HPP
 
 #include "object.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 
 	///	Set can contain instances of a specific Object subclass, but not more then once.
@@ -66,4 +66,4 @@ namespace TSL
 		};
 }
 
-#endif	//	TSL_DISJOINT_SET_HPP
+#endif	//	RADAKAN_SET_HPP

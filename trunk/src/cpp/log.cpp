@@ -1,13 +1,13 @@
 #include <fstream>
 #include <sstream>
 #include "log.hpp"
-#ifdef TSL_DEBUG
+#ifdef RADAKAN_DEBUG
 	#include "world.hpp"
 #endif
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Engines;
+using namespace Radakan;
+using namespace Radakan :: Engines;
 
 //	static
 const string Log ::
@@ -58,7 +58,7 @@ ostream & Log ::
 ostream & Log ::
 	log (const Object & logger)
 {
-	#ifdef TSL_DEBUG
+	#ifdef RADAKAN_DEBUG
 		cout << endl;
 		if (World :: is_instantiated ())
 		{
@@ -67,7 +67,7 @@ ostream & Log ::
 		cout << "'" << logger . name << "' reports:" << endl;
 		return cout << "\t";
 	#else
-		return cout;	//	completely ignored when not in TSL_DEBUG
+		return cout;	//	completely ignored
 	#endif
 }
 

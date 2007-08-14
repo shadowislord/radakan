@@ -2,14 +2,14 @@
 #include "log.hpp"
 #include <OgreStringConverter.h>
 
-#ifndef TSL_WIN
+#ifndef RADAKAN_WINDOWS
 	#include <X11/Xlib.h>
 	void checkX11Events ();
 #endif
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Engines;
+using namespace Radakan;
+using namespace Radakan :: Engines;
 
 //	static
 const string Input_Engine ::

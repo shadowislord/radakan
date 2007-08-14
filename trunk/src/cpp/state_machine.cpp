@@ -2,7 +2,7 @@
 #include "state_machine.hpp"
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
 //	static
 template <class T> const string State_Machine <T> ::

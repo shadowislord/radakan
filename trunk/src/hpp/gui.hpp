@@ -1,5 +1,5 @@
-#ifndef TSL_GUI_HPP
-#define TSL_GUI_HPP
+#ifndef RADAKAN_GUI_HPP
+#define RADAKAN_GUI_HPP
 
 #include "log.hpp"
 #include "observer.hpp"
@@ -10,7 +10,7 @@
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 
 	///	I'm a graphical user interface.
@@ -45,4 +45,4 @@ namespace TSL
 	};
 }
 
-#endif	//	TSL_GUI_HPP
+#endif	//	RADAKAN_GUI_HPP

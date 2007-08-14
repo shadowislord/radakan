@@ -3,8 +3,8 @@
 #include "npc.hpp"
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Items;
+using namespace Radakan;
+using namespace Radakan :: Items;
 
 //	static
 const string NPC ::

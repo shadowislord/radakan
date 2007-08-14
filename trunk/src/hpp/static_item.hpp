@@ -1,11 +1,11 @@
-#ifndef TSL_STATIC_ITEM_HPP
-#define TSL_STATIC_ITEM_HPP
+#ifndef RADAKAN_STATIC_ITEM_HPP
+#define RADAKAN_STATIC_ITEM_HPP
 
 #include "item.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Items
 	{
@@ -32,4 +32,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_STATIC_ITEM_HPP
+#endif	//	RADAKAN_STATIC_ITEM_HPP

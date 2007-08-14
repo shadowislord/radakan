@@ -1,11 +1,11 @@
-#ifndef TSL_BATTLE_MESSAGE_HPP
-#define TSL_BATTLE_MESSAGE_HPP
+#ifndef RADAKAN_BATTLE_MESSAGE_HPP
+#define RADAKAN_BATTLE_MESSAGE_HPP
 
 #include "character.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Messages
 	{
@@ -26,4 +26,4 @@ namespace TSL
 	}
 }
 
-#endif	// TSL_BATTLE_MESSAGE_HPP
+#endif	// RADAKAN_BATTLE_MESSAGE_HPP

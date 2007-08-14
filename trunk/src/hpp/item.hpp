@@ -1,5 +1,5 @@
-#ifndef TSL_ITEM_HPP
-#define TSL_ITEM_HPP
+#ifndef RADAKAN_ITEM_HPP
+#define RADAKAN_ITEM_HPP
 
 #include "resident.hpp"
 
@@ -8,12 +8,12 @@
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	class Model;
 }
 
-namespace TSL
+namespace Radakan
 {
 	namespace Items
 	{
@@ -77,4 +77,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_ITEM_HPP
+#endif	//	RADAKAN_ITEM_HPP

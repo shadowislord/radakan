@@ -1,5 +1,5 @@
-#ifndef TSL_INPUT_ENGINE_HPP
-#define TSL_INPUT_ENGINE_HPP
+#ifndef RADAKAN_INPUT_ENGINE_HPP
+#define RADAKAN_INPUT_ENGINE_HPP
 
 #include <OgreRenderWindow.h>
 
@@ -13,7 +13,7 @@
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Engines
 	{
@@ -81,4 +81,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_INPUT_ENGINE_HPP
+#endif	//	RADAKAN_INPUT_ENGINE_HPP

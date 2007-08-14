@@ -6,8 +6,8 @@
 #include <CEGUIWindowManager.h>
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Engines;
+using namespace Radakan;
+using namespace Radakan :: Engines;
 
 //	static
 const string GUI_Engine ::
@@ -32,7 +32,7 @@ GUI_Engine ::
 	Engines :: Log :: trace
 		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "A");
 	system = new CEGUI :: System
-		(renderer, NULL, NULL, NULL, "", Settings :: get () . tsl_path + "/log/cegui.txt");
+		(renderer, NULL, NULL, NULL, "", Settings :: get () . radakan_path + "/log/cegui.txt");
 
 	CEGUI :: ImagesetManager :: getSingletonPtr () -> createImageset ("logo.imageset");
 

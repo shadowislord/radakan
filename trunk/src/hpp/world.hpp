@@ -1,5 +1,5 @@
-#ifndef TSL_WORLD_HPP
-#define TSL_WORLD_HPP
+#ifndef RADAKAN_WORLD_HPP
+#define RADAKAN_WORLD_HPP
 
 #include "singleton.hpp"
 #include "state_machine.hpp"
@@ -8,7 +8,7 @@
 
 #include <OgreSceneManager.h>
 
-namespace TSL
+namespace Radakan
 {
 
 	///	World contains all basic 'environment' data.
@@ -60,4 +60,4 @@ namespace TSL
 	};
 }
 
-#endif	// TSL_WORLD_HPP
+#endif	// RADAKAN_WORLD_HPP

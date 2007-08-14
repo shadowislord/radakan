@@ -2,7 +2,7 @@
 #include "movable_model.hpp"
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
 //	static
 const string Movable_Model ::

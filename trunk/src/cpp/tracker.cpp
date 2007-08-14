@@ -2,8 +2,8 @@
 #include "tracker.hpp"
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Engines;
+using namespace Radakan;
+using namespace Radakan :: Engines;
 
 //	static
 const string Tracker ::
@@ -30,7 +30,7 @@ Tracker ::
 	Log :: trace (me, Tracker :: get_class_name (), "~");
 	assert (Tracker :: is_initialized ());
 
-	#ifdef TSL_DEBUG
+	#ifdef RADAKAN_DEBUG
 		for (Object * i = Tracker :: get () . get_child (); i != NULL;
 			i = Tracker :: get () . get_another_child ())
 		{

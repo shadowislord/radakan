@@ -7,7 +7,7 @@
 #include "world.hpp"
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
 //	static
 const string Tile ::
@@ -30,7 +30,7 @@ Tile ::
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
 	npcs (name + "'s NPCs"),
-	doc (Engines :: Settings :: get () . tsl_path + "/data/tile/" + name + ".xml")
+	doc (Engines :: Settings :: get () . radakan_path + "/data/tile/" + name + ".xml")
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
 	
@@ -176,7 +176,7 @@ void Tile ::
 	if (element . ValueStr () == string ("include"))
 	{
 		TiXmlDocument document
-			(Engines :: Settings :: get () . tsl_path + "/data/tile/"
+			(Engines :: Settings :: get () . radakan_path + "/data/tile/"
 				+ element . Attribute ("name") + ".xml");
 		load_xml_file (document);
 		return;

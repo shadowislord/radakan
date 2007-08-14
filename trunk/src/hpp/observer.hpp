@@ -1,11 +1,11 @@
-#ifndef TSL_OBSERVER_HPP
-#define TSL_OBSERVER_HPP
+#ifndef RADAKAN_OBSERVER_HPP
+#define RADAKAN_OBSERVER_HPP
 
 #include "object.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	///	Observer is an abstract base class for the observer pattern.
 	template <class T> class Observer :
@@ -25,4 +25,4 @@ namespace TSL
 	};
 }
 
-#endif	//	TSL_OBSERVER_HPP
+#endif	//	RADAKAN_OBSERVER_HPP

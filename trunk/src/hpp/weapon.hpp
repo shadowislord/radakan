@@ -1,11 +1,11 @@
-#ifndef TSL_WEAPON_HPP
-#define TSL_WEAPON_HPP
+#ifndef RADAKAN_WEAPON_HPP
+#define RADAKAN_WEAPON_HPP
 
 #include "item.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Items
 	{
@@ -53,4 +53,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_WEAPON_HPP
+#endif	//	RADAKAN_WEAPON_HPP

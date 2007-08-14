@@ -1,11 +1,11 @@
-#ifndef TSL_STATE_MACHINE_HPP
-#define TSL_STATE_MACHINE_HPP
+#ifndef RADAKAN_STATE_MACHINE_HPP
+#define RADAKAN_STATE_MACHINE_HPP
 
 #include "location.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 
 	///	State_Machine is the abstract base class for all state machines.
@@ -39,4 +39,4 @@ namespace TSL
 	};
 }
 
-#endif	//	TSL_STATE_MACHINE_HPP
+#endif	//	RADAKAN_STATE_MACHINE_HPP

@@ -3,7 +3,7 @@
 #include "world.hpp"
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
 //	static
 const int World ::
@@ -48,7 +48,7 @@ World ::
 		time_scale
 	),
 	root_node (* scene_manager . getRootSceneNode ()),
-	#ifdef TSL_DEBUG
+	#ifdef RADAKAN_DEBUG
 		turn (0),
 	#endif
 	last_turn_lenght (0)
@@ -140,7 +140,7 @@ void World ::
 	last_turn_lenght = float (turn_lenght_timer . getMilliseconds ()) / 1000;
 	turn_lenght_timer . reset ();
 
-	#ifdef TSL_DEBUG
+	#ifdef RADAKAN_DEBUG
 		Engines :: Log :: log (me) << "Turn lenght: " << last_turn_lenght << " seconds" << endl;
 
 		turn ++;

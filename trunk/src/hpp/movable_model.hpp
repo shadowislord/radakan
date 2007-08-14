@@ -1,11 +1,11 @@
-#ifndef TSL_MOVABLE_MODEL_HPP
-#define TSL_MOVABLE_MODEL_HPP
+#ifndef RADAKAN_MOVABLE_MODEL_HPP
+#define RADAKAN_MOVABLE_MODEL_HPP
 
 #include "model.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	
 	///	Movable_Model is a model that can move.
@@ -33,4 +33,4 @@ namespace TSL
 	};
 }
 
-#endif	//	TSL_MOVABLE_BODY_HPP
+#endif	//	RADAKAN_MOVABLE_BODY_HPP

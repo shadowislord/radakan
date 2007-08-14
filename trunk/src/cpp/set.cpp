@@ -2,7 +2,7 @@
 #include "set.hpp"
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
 //	static
 template <class T> const string Set <T> ::

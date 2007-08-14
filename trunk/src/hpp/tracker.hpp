@@ -1,12 +1,12 @@
-#ifndef TSL_TRACKER_HPP
-#define TSL_TRACKER_HPP
+#ifndef RADAKAN_TRACKER_HPP
+#define RADAKAN_TRACKER_HPP
 
 #include "set.hpp"
 #include "singleton.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Engines
 	{
@@ -27,4 +27,4 @@ namespace TSL
 	}
 }
 
-#endif	// TSL_TRACKER_HPP
+#endif	// RADAKAN_TRACKER_HPP

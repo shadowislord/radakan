@@ -1,5 +1,5 @@
-#ifndef TSL_TILE_HPP
-#define TSL_TILE_HPP
+#ifndef RADAKAN_TILE_HPP
+#define RADAKAN_TILE_HPP
 
 #include <Ogre.h>
 #if OGRE_VERSION_MINOR < 3
@@ -16,7 +16,7 @@
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	///	A Tile is a square piece of the world.
 	///	Tile data is stored under trunk/data/tile/.
@@ -51,4 +51,4 @@ namespace TSL
 	};
 }
 
-#endif	//	TSL_TILE_HPP
+#endif	//	RADAKAN_TILE_HPP

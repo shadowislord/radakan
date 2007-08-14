@@ -1,12 +1,12 @@
-#ifndef TSL_GAME_HPP
-#define TSL_GAME_HPP
+#ifndef RADAKAN_GAME_HPP
+#define RADAKAN_GAME_HPP
 
 #include "strategy_state_machine.hpp"
 #include "singleton.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Engines
 	{
@@ -17,7 +17,7 @@ namespace TSL
 			private Strategies :: Strategy_State_Machine
 		{
 			public :
-				Game (string tsl_path, string ogre_media_path);
+				Game (string radakan_path, string ogre_media_path);
 				virtual ~Game ();
 				virtual bool is_initialized () const;
 				
@@ -32,4 +32,4 @@ namespace TSL
 	}
 }
 
-#endif	// TSL_GAME_HPP
+#endif	// RADAKAN_GAME_HPP

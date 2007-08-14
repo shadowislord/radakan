@@ -1,9 +1,9 @@
-#ifndef TSL_AUDIO_ENGINE_HPP
-#define TSL_AUDIO_ENGINE_HPP
+#ifndef RADAKAN_AUDIO_ENGINE_HPP
+#define RADAKAN_AUDIO_ENGINE_HPP
 
-//	#define TSL_FMOD
+//	#define RADAKAN_FMOD
 
-#ifdef TSL_FMOD
+#ifdef RADAKAN_FMOD
 	//	We're using FMOD version 3.
 	#include <fmod.h>
 #else
@@ -15,7 +15,7 @@
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 
 	///	for static soundfiles, like .WAV, .MP2, .MP3, .OGG and .RAW
@@ -29,7 +29,7 @@ namespace TSL
 			virtual void play ();
 
 		private :
-			#ifdef TSL_FMOD
+			#ifdef RADAKAN_FMOD
 				FSOUND_SAMPLE * sample;
 			#else
 				audiere :: OutputStreamPtr sound;
@@ -53,7 +53,7 @@ namespace TSL
 				void play ();
 				void load (string file_name);
 
-				#ifndef TSL_FMOD
+				#ifndef RADAKAN_FMOD
 					audiere :: AudioDevicePtr device;
 				#endif
 
@@ -63,4 +63,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_AUDIO_ENGINE_HPP
+#endif	//	RADAKAN_AUDIO_ENGINE_HPP

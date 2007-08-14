@@ -1,12 +1,12 @@
-#ifndef TSL_CONVERSATION_PLUGIN_HPP
-#define TSL_CONVERSATION_PLUGIN_HPP
+#ifndef RADAKAN_CONVERSATION_PLUGIN_HPP
+#define RADAKAN_CONVERSATION_PLUGIN_HPP
 
 #include "character.hpp"
 #include "play_state.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Plugins
 	{
@@ -30,4 +30,4 @@ namespace TSL
 	}
 }
 
-#endif	// TSL_CONVERSATION_PLUGIN_HPP
+#endif	// RADAKAN_CONVERSATION_PLUGIN_HPP

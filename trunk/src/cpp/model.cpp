@@ -3,7 +3,7 @@
 #include "world.hpp"
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
 //	static
 const string Model ::
@@ -136,7 +136,7 @@ void Model ::
 	new_space . addGeometry (geometry);
 }
 
-Ogre :: Quaternion TSL :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)
+Ogre :: Quaternion Radakan :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)
 {
 	return Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax);
 }

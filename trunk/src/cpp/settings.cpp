@@ -2,8 +2,8 @@
 #include "settings.hpp"
 
 using namespace std;
-using namespace TSL;
-using namespace TSL :: Engines;
+using namespace Radakan;
+using namespace Radakan :: Engines;
 
 //	static
 const string Settings ::
@@ -21,12 +21,12 @@ const float Settings ::
 	max_vertical_camera_angle (Ogre :: Math :: HALF_PI);
 
 Settings ::
-	Settings (string new_tsl_path) :
+	Settings (string new_radakan_path) :
 	Object ("settings"),
-	tsl_path (new_tsl_path),
+	radakan_path (new_radakan_path),
 	camera_distance (0.72)
 {
-	#ifdef TSL_WSAD
+	#ifdef RADAKAN_WSAD
 		forward_key = "w";
 		backward_key = "s";
 		left_key = "a";

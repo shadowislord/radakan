@@ -1,11 +1,11 @@
-#ifndef TSL_STRATEGY_HPP
-#define TSL_STRATEGY_HPP
+#ifndef RADAKAN_STRATEGY_HPP
+#define RADAKAN_STRATEGY_HPP
 
 #include "resident.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Strategies
 	{
@@ -36,4 +36,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_STRATEGY_HPP
+#endif	//	RADAKAN_STRATEGY_HPP

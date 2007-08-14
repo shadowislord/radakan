@@ -1,11 +1,11 @@
-#ifndef TSL_MULTISLOT_HPP
-#define TSL_MULTISLOT_HPP
+#ifndef RADAKAN_MULTISLOT_HPP
+#define RADAKAN_MULTISLOT_HPP
 
 #include "container.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Items
 	{
@@ -33,4 +33,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_MULTISLOT_HPP
+#endif	//	RADAKAN_MULTISLOT_HPP

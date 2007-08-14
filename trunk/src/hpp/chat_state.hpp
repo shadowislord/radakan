@@ -1,11 +1,11 @@
-#ifndef TSL_CHAT_STATE_HPP
-#define TSL_CHAT_STATE_HPP
+#ifndef RADAKAN_CHAT_STATE_HPP
+#define RADAKAN_CHAT_STATE_HPP
 
 #include "strategy.hpp"
 
 using namespace std;
 
-namespace TSL
+namespace Radakan
 {
 	namespace Strategies
 	{
@@ -35,4 +35,4 @@ namespace TSL
 	}
 }
 
-#endif	//	TSL_CHAT_STATE_HPP
+#endif	//	RADAKAN_CHAT_STATE_HPP

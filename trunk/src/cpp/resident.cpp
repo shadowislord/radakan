@@ -2,7 +2,7 @@
 #include "resident.hpp"
 
 using namespace std;
-using namespace TSL;
+using namespace Radakan;
 
 //	static
 template <class T> const string Resident <T> ::

@@ -1,7 +1,7 @@
-#ifndef TSL_OBJECT_HPP
-#define TSL_OBJECT_HPP
+#ifndef RADAKAN_OBJECT_HPP
+#define RADAKAN_OBJECT_HPP
 
-///	All other TSL headers should (in)directly include this header.
+///	All other Radakan headers should (in)directly include this header.
 
 #include <OgrePrerequisites.h>
 #include <OgreVector3.h>
@@ -15,7 +15,7 @@
 		#pragma warning(disable: 4250)
 	#endif
 
-	#define TSL_WIN
+	#define RADAKAN_WINDOWS
 #endif
 
 #include <cassert>
@@ -30,14 +30,13 @@
 //	#define NDEBUG
 
 #ifndef NDEBUG
-	//	TSL run with TSL_DEBUG will print debug messages.
-	#define TSL_DEBUG
+	//	Radakan run with RADAKAN_DEBUG will print debug messages.
+	#define RADAKAN_DEBUG
 #endif
 
 using namespace std;
 
-///	The Scattered Lands namespace
-namespace TSL
+namespace Radakan
 {
 	const Ogre :: Vector3 zero_vector (0, 0, 0);
 
@@ -46,11 +45,11 @@ namespace TSL
 	string to_string (const Ogre :: Vector3 & vector);
 	float to_float (const string & value);
 
-	#ifdef TSL_DEBUG
+	#ifdef RADAKAN_DEBUG
 		template <class T> class Set;
 	#endif
 
-	///	I'm the abstract base class for all TSL classes.
+	///	I'm the abstract base class for all Radakan classes.
 	///	I'm a subclass of 'string', because I use the string as my name.
 	///	I can't be copied, consider a reference of me instead.
 	class Object :
@@ -60,7 +59,7 @@ namespace TSL
 			bool operator== (const Object & other_object) const;
 			bool operator!= (const Object & other_object) const;
 
-			#ifdef TSL_WIN
+			#ifdef RADAKAN_WINDOWS
 				///	Some Windows compilers give an error otherwise.
 				Object ();
 			#endif
@@ -110,4 +109,4 @@ namespace TSL
 	};
 }
 
-#endif	//	TSL_OBJECT_HPP
+#endif	//	RADAKAN_OBJECT_HPP
