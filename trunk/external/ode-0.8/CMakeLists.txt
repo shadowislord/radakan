@@ -99,9 +99,9 @@ set(SRC_FILES		"ode/src/fastdot.c"
 	    			"OPCODE/OPC_VolumeCollider.cpp"
                     "OPCODE/StdAfx.cpp")
 	
-set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/external/ode-0.8/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ode-0.8/OPCODE"
-                    "${TSLRPG_SOURCE_DIR}/external/ode-0.8/GIMPACT/include")            
+set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/external/ode-0.8/include"
+                    "${RADAKAN_SOURCE_DIR}/external/ode-0.8/OPCODE"
+                    "${RADAKAN_SOURCE_DIR}/external/ode-0.8/GIMPACT/include")
 
 include_directories( ${INCLUDE_DIRS} )                
 add_library( ode SHARED ${SRC_FILES} )

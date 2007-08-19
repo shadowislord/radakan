@@ -7,7 +7,7 @@ set(SRC_FILES    "src/OISEffect.cpp"
                  "src/OISKeyboard.cpp"
                  "src/OISObject.cpp")
 
-set(INCLUDE_DIR "${TSLRPG_SOURCE_DIR}/external/ois-1.0RC1/includes")              
+set(INCLUDE_DIR "${RADAKAN_SOURCE_DIR}/external/ois-1.0RC1/includes")
 set(LIBS "")
 set(LINK_DIRS "")
 
@@ -17,7 +17,7 @@ if(WIN32)
 
     find_package(DirectX)       
 
-    set(INCLUDE_DIR ${INCLUDE_DIR} "${TSLRPG_SOURCE_DIR}/external/ois-1.0RC1/includes/win32" ${DirectX_INCLUDE_DIR})   
+    set(INCLUDE_DIR ${INCLUDE_DIR} "${RADAKAN_SOURCE_DIR}/external/ois-1.0RC1/includes/win32" ${DirectX_INCLUDE_DIR})
 
     set(LIBS ${LIBS} dxguid dinput8)
 

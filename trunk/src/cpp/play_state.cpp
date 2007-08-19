@@ -208,7 +208,7 @@ Strategy * Play_State ::
 
 	if (mouse_position . z != 0)
 	{
-		Engines :: Settings :: get () . increase_camera_distance (- mouse_position . z / 500);
+		Engines :: Settings :: get () . increase_camera_distance (- 0.0005 * mouse_position . z);
 	}
 
 	camera . setPosition

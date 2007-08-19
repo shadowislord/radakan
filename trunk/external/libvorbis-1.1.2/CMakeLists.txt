@@ -23,8 +23,8 @@ set( SRC_FILES  "lib/analysis.c"
                 "lib/vorbisfile.c"
     )
 
-set( INCLUDE_DIRS   "${TSLRPG_SOURCE_DIR}/external/libvorbis-1.1.2/include"
-                    "${TSLRPG_SOURCE_DIR}/external/libogg-1.1.3/include" )                
+set( INCLUDE_DIRS   "${RADAKAN_SOURCE_DIR}/external/libvorbis-1.1.2/include"
+                    "${RADAKAN_SOURCE_DIR}/external/libogg-1.1.3/include" )
 
 include_directories( ${INCLUDE_DIRS} )
 add_library( vorbis  ${SRC_FILES} )

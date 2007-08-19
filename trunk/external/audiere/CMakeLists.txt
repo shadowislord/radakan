@@ -16,13 +16,13 @@
 find_package(Ogg)
 
 if( NOT Ogg_FOUND )
-    subdirs( "${TSLRPG_SOURCE_DIR}/external/libogg-1.1.3" )
+    subdirs( "${RADAKAN_SOURCE_DIR}/external/libogg-1.1.3" )
 endif(NOT Ogg_FOUND)
 
 find_package(Vorbis)
 
 if( NOT Vorbis_FOUND )
-    subdirs( "${TSLRPG_SOURCE_DIR}/external/libvorbis-1.1.2" )
+    subdirs( "${RADAKAN_SOURCE_DIR}/external/libvorbis-1.1.2" )
 endif(NOT Vorbis_FOUND)
 
 if(WIN32)
@@ -87,9 +87,9 @@ if(Ogg_FOUND)
                         ${Ogg_LIB_DIR} )        
 else(Ogg_FOUND)
     set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
-                        "${TSLRPG_SOURCE_DIR}/external/libogg-1.1.3/include" )
+                        "${RADAKAN_SOURCE_DIR}/external/libogg-1.1.3/include" )
     set(LINK_DIRS       ${LINK_DIRS}
-                        ${TSLRPG_BINARY_DIR}/ogg )        
+                        ${RADAKAN_BINARY_DIR}/ogg )
                         
 endif(Ogg_FOUND)
 
@@ -100,14 +100,14 @@ if(Vorbis_FOUND)
                         ${Vorbis_LIB_DIR} ) 
 else(Vorbis_FOUND)
     set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
-                        "${TSLRPG_SOURCE_DIR}/external/libvorbis-1.1.2/include" )
+                        "${RADAKAN_SOURCE_DIR}/external/libvorbis-1.1.2/include" )
     set(LINK_DIRS       ${LINK_DIRS}
-                        ${TSLRPG_BINARY_DIR}/vorbis )                         
+                        ${RADAKAN_BINARY_DIR}/vorbis )
 endif(Vorbis_FOUND)
 
 set(INCLUDE_DIRS    ${INCLUDE_DIRS}
-                    "${TSLRPG_SOURCE_DIR}/external/audiere/src"
-                    "${TSLRPG_SOURCE_DIR}/external/audiere/src/mpaudec")            
+                    "${RADAKAN_SOURCE_DIR}/external/audiere/src"
+                    "${RADAKAN_SOURCE_DIR}/external/audiere/src/mpaudec")
 
 if(WIN32)
     set(INCLUDE_DIRS    ${INCLUDE_DIRS}
@@ -137,7 +137,7 @@ else(WIN32)
     set_target_properties( audiere PROPERTIES COMPILE_FLAGS "-DNO_SPEEX -DNO_DUMB -DNO_FLAC -DNO_MP3" )
 endif(WIN32)
 
-install( TARGETS audiere DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
-install( TARGETS audiere DESTINATION ${TSLRPG_SOURCE_DIR}/bin/release CONFIGURATIONS Release )
+install( TARGETS audiere DESTINATION ${RADAKAN_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
+install( TARGETS audiere DESTINATION ${RADAKAN_SOURCE_DIR}/bin/release CONFIGURATIONS Release )
 
 

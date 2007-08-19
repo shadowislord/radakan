@@ -8,16 +8,16 @@ set(SRC_FILES   "src/OgreOdeObject.cpp"
                 "src/OgreOdeRagdoll.cpp"
                 "src/OgreOdeVehicle.cpp")
 
-set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ode-0.8/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
+set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include"
+                    "${RADAKAN_SOURCE_DIR}/external/ode-0.8/include"
+                    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
                     ${Ogre_INCLUDE_DIR})            
 
 include_directories( ${INCLUDE_DIRS} )                
 link_directories(   ${Ogre_LIB_RELEASE} 
-                    ${TSLRPG_BINARY_DIR}/ogreode_core
-                    ${TSLRPG_BINARY_DIR}/prefab
-                    ${TSLRPG_BINARY_DIR}/tinyxml)
+                    ${RADAKAN_BINARY_DIR}/ogreode_core
+                    ${RADAKAN_BINARY_DIR}/prefab
+                    ${RADAKAN_BINARY_DIR}/tinyxml)
 add_library( prefab SHARED ${SRC_FILES} )
 
 #	set(DEBUG_LIBS      OgreMain ogreode_core tinyxml)
@@ -28,5 +28,5 @@ if(WIN32)
     set_target_properties( prefab PROPERTIES DEFINE_SYMBOL "OGREODEEXPORT_PREFAB;_USRDL;_PRECOMP" )
 endif(WIN32)
 
-install( TARGETS prefab DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
-install( TARGETS prefab DESTINATION ${TSLRPG_SOURCE_DIR}/bin/release CONFIGURATIONS Release )
+install( TARGETS prefab DESTINATION ${RADAKAN_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
+install( TARGETS prefab DESTINATION ${RADAKAN_SOURCE_DIR}/bin/release CONFIGURATIONS Release )

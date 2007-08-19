@@ -1,4 +1,4 @@
-#build exe tslrpg
+#build exe radakan
 
 find_package(Boost)
 find_package(Ogre)
@@ -13,21 +13,21 @@ if(WIN32)
     find_package(DIrectX)
 endif(WIN32)
 
-file(GLOB SRC_FILES "${TSLRPG_SOURCE_DIR}/src/cpp/*" *.cpp)
+file(GLOB SRC_FILES "${RADAKAN_SOURCE_DIR}/src/cpp/*" *.cpp)
 
 add_library (battle
-	SHARED "${TSLRPG_SOURCE_DIR}/src/cpp/plugins/battle_plugin.cpp")
+	SHARED "${RADAKAN_SOURCE_DIR}/src/cpp/plugins/battle_plugin.cpp")
 add_library (conversation
-	SHARED "${TSLRPG_SOURCE_DIR}/src/cpp/plugins/conversation_plugin.cpp")
+	SHARED "${RADAKAN_SOURCE_DIR}/src/cpp/plugins/conversation_plugin.cpp")
 
-set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/src/hpp"
+set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/src/hpp"
                     ${Boost_INCLUDE_DIR}
                     "${Ode_INCLUDE_DIR}"
-                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
-                    "${TSLRPG_SOURCE_DIR}/external/tinyxml-2.5.2"
-                    "${TSLRPG_SOURCE_DIR}/external/ois-1.0RC1/includes"
-                    "${TSLRPG_SOURCE_DIR}/external/audiere/src"
+                    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include"
+                    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
+                    "${RADAKAN_SOURCE_DIR}/external/tinyxml-2.5.2"
+                    "${RADAKAN_SOURCE_DIR}/external/ois-1.0RC1/includes"
+                    "${RADAKAN_SOURCE_DIR}/external/audiere/src"
                     ${Ogre_INCLUDE_DIR}
                     ${Ogg_INCLUDE_DIR}
                     ${Vorbis_INCLUDE_DIR}
@@ -41,7 +41,7 @@ set(LINK_DIRS       ${Ogre_LIB_RELEASE}
                     ${Ogre_LIB_DEBUG}
                     ${CEGUI_LIB_RELEASE} 
                     ${CEGUI_LIB_DEBUG}
-                    ${TSLRPG_BINARY_DIR}/lib)
+                    ${RADAKAN_BINARY_DIR}/lib)
 
 if(USE_FMOD)
     set(LINK_DIRS ${INCLUDE_DIRS}  ${Fmod_LIB_RELEASE})
@@ -50,10 +50,10 @@ endif(USE_FMOD)
 if(WIN32)
     set(LINK_DIRS ${LINK_DIRS} ${DirectX_LIB_DIR})
     link_directories(  ${LINK_DIRS}  ${Directx_INCLUDE_DIR} ) 
-    add_executable( tslrpg WIN32 ${SRC_FILES} )
+    add_executable( radakan WIN32 ${SRC_FILES} )
 else(WIN32)
     link_directories(  ${LINK_DIRS} )         
-    add_executable( tslrpg ${SRC_FILES} )
+    add_executable( radakan ${SRC_FILES} )
 endif(WIN32)                
 
 include_directories( ${INCLUDE_DIRS} )
@@ -92,8 +92,8 @@ else(USE_FMOD)
     set(RELEASE_LIBS ${RELEASE_LIBS} optimized audiere)
 endif(USE_FMOD)
                 
-target_link_libraries( tslrpg   ${RELEASE_LIBS}
+target_link_libraries( radakan   ${RELEASE_LIBS}
                                 ${DEBUG_LIBS} )
 
-install( TARGETS tslrpg DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
-install( TARGETS tslrpg DESTINATION ${TSLRPG_SOURCE_DIR}/bin/release CONFIGURATIONS Release )
+install( TARGETS radakan DESTINATION ${RADAKAN_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
+install( TARGETS radakan DESTINATION ${RADAKAN_SOURCE_DIR}/bin/release CONFIGURATIONS Release )

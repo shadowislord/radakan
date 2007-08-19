@@ -43,8 +43,25 @@ material Grass
 			texture_unit
 			{
 				//colour_op alpha_blend
-				texture grass.png
+				texture grass.jpg
 			}		
+		}
+	}
+}
+
+//	For the ground:
+material planeShader	
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.5 0.5 0.5 1
+			specular 0.5 0.5 0.5 20
+			texture_unit
+			{
+				texture grass.jpg
+			}
 		}
 	}
 }

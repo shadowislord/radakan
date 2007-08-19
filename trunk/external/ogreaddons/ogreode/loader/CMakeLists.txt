@@ -5,18 +5,18 @@ find_package(Ode)
 
 set(SRC_FILES   "src/OgreOdeDotLoader.cpp")
 
-set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/external/ode-0.8/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/loader/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
-                    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/tinyxml-2.3.3"
+set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/external/ode-0.8/include"
+                    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/loader/include"
+                    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include"
+                    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
+                    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/tinyxml-2.3.3"
                     ${Ogre_INCLUDE_DIR})            
 
 include_directories( ${INCLUDE_DIRS} )                
 link_directories(   ${Ogre_LIB_RELEASE} 
-                    ${TSLRPG_BINARY_DIR}/ogreode_core
-                    ${TSLRPG_BINARY_DIR}/tinyxml
-                    ${TSLRPG_BINARY_DIR}/prefab)
+                    ${RADAKAN_BINARY_DIR}/ogreode_core
+                    ${RADAKAN_BINARY_DIR}/tinyxml
+                    ${RADAKAN_BINARY_DIR}/prefab)
 add_library( loader SHARED ${SRC_FILES} )
 
 set(DEBUG_LIBS      OgreMain tinyxml prefab ogreode_core)
@@ -28,5 +28,5 @@ if(WIN32)
     set_target_properties( loader PROPERTIES    DEFINE_SYMBOL "OGREODEEXPORT_LOADER;_USRDL;_PRECOMP" )
 endif(WIN32) 
 
-install( TARGETS loader DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
-install( TARGETS loader DESTINATION ${TSLRPG_SOURCE_DIR}/bin/release CONFIGURATIONS Release )
+install( TARGETS loader DESTINATION ${RADAKAN_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
+install( TARGETS loader DESTINATION ${RADAKAN_SOURCE_DIR}/bin/release CONFIGURATIONS Release )

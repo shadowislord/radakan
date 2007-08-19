@@ -3,9 +3,9 @@
 find_package(Ogre)
 find_package(Ode)
 
-file(GLOB_RECURSE SRC_FILES "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/src" *.cpp)
+file(GLOB_RECURSE SRC_FILES "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/src" *.cpp)
 
-set(INCLUDE_DIRS    "${TSLRPG_SOURCE_DIR}/external/ogreaddons/ogreode/include"
+set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include"
                     "${Ode_INCLUDE_DIR}"
                     ${Ogre_INCLUDE_DIR})            
 
@@ -22,5 +22,5 @@ if(WIN32)
     set_target_properties( ogreode_core PROPERTIES DEFINE_SYMBOL "OGREODE_EXPORTS;_USRDL;_PRECOMP" )
 endif(WIN32)
 
-install( TARGETS ogreode_core DESTINATION ${TSLRPG_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
-install( TARGETS ogreode_core DESTINATION ${TSLRPG_SOURCE_DIR}/bin/release CONFIGURATIONS Release )
+install( TARGETS ogreode_core DESTINATION ${RADAKAN_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
+install( TARGETS ogreode_core DESTINATION ${RADAKAN_SOURCE_DIR}/bin/release CONFIGURATIONS Release )
