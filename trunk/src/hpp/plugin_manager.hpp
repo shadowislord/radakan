@@ -1,4 +1,4 @@
-#ifndef RADAKAN_PLUGIN_MANAGER_HPP
+/*#ifndef RADAKAN_PLUGIN_MANAGER_HPP
 #define RADAKAN_PLUGIN_MANAGER_HPP
 
 #include "observer.hpp"
@@ -29,4 +29,4 @@ namespace Radakan
 	}
 }
 
-#endif	// RADAKAN_PLUGIN_MANAGER_HPP
+#endif	// RADAKAN_PLUGIN_MANAGER_HPP*/

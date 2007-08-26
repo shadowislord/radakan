@@ -1,4 +1,4 @@
-#include "plugin_manager.hpp"
+/*#include "plugin_manager.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -38,4 +38,4 @@ bool Plugin_Manager ::
 	assert (Singleton <Plugin_Manager> :: is_initialized ());
 	
 	return true;
-}
+}*/

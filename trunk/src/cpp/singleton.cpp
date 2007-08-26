@@ -73,7 +73,7 @@ template <class T> bool Singleton <T> ::
 #include "menu_state.hpp"
 #include "play_state.hpp"
 #include "player_character.hpp"
-#include "plugin_manager.hpp"
+//	#include "plugin_manager.hpp"
 #include "settings.hpp"
 #include "tracker.hpp"
 
@@ -84,7 +84,7 @@ template class Singleton <Engines :: Game>;
 template class Singleton <Engines :: GUI_Engine>;
 template class Singleton <Engines :: Input_Engine>;
 template class Singleton <Engines :: Log>;
-template class Singleton <Engines :: Plugin_Manager>;
+//	template class Singleton <Engines :: Plugin_Manager>;
 template class Singleton <Engines :: Settings>;
 template class Singleton <Engines :: Tracker>;
 template class Singleton <Items :: Player_Character>;

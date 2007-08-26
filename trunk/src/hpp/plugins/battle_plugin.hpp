@@ -1,4 +1,4 @@
-#ifndef RADAKAN_BATTLE_PLUGIN_HPP
+/*#ifndef RADAKAN_BATTLE_PLUGIN_HPP
 #define RADAKAN_BATTLE_PLUGIN_HPP
 
 #include <boost/random/lognormal_distribution.hpp>
@@ -43,4 +43,4 @@ namespace Radakan
 	}
 }
 
-#endif	// RADAKAN_BATTLE_PLUGIN_HPP
+#endif	// RADAKAN_BATTLE_PLUGIN_HPP*/

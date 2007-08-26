@@ -1,4 +1,4 @@
-#include "chat_state.hpp"
+/*#include "chat_state.hpp"
 #include "plugins/conversation_plugin.hpp"
 #include "gui_engine.hpp"
 #include "log.hpp"
@@ -82,4 +82,4 @@ void Conversation_Plugin ::
 		chat_window . addItem (item);
 		chat_window . ensureItemIsVisible (chat_window . getItemCount ());
 	}
-}
+}*/

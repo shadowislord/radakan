@@ -26,8 +26,12 @@ GUI_Engine ::
 {
 	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~");
 
-	renderer = new CEGUI :: OgreCEGUIRenderer
-		(& window, Ogre :: RENDER_QUEUE_OVERLAY, false, 0, & scene_manager);
+	renderer = new CEGUI :: OgreCEGUIRenderer (& window);
+
+	Engines :: Log :: trace
+		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "AA");
+	
+	renderer -> setTargetSceneManager (& scene_manager);
 
 	Engines :: Log :: trace
 		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "A");

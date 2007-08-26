@@ -15,10 +15,10 @@ endif(WIN32)
 
 file(GLOB SRC_FILES "${RADAKAN_SOURCE_DIR}/src/cpp/*" *.cpp)
 
-add_library (battle
-	SHARED "${RADAKAN_SOURCE_DIR}/src/cpp/plugins/battle_plugin.cpp")
-add_library (conversation
-	SHARED "${RADAKAN_SOURCE_DIR}/src/cpp/plugins/conversation_plugin.cpp")
+#add_library (battle
+#	SHARED "${RADAKAN_SOURCE_DIR}/src/cpp/plugins/battle_plugin.cpp")
+#add_library (conversation
+#	SHARED "${RADAKAN_SOURCE_DIR}/src/cpp/plugins/conversation_plugin.cpp")
 
 set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/src/hpp"
                     ${Boost_INCLUDE_DIR}

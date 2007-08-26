@@ -1,4 +1,4 @@
-#ifndef RADAKAN_CONVERSATION_PLUGIN_HPP
+/*#ifndef RADAKAN_CONVERSATION_PLUGIN_HPP
 #define RADAKAN_CONVERSATION_PLUGIN_HPP
 
 #include "character.hpp"
@@ -30,4 +30,4 @@ namespace Radakan
 	}
 }
 
-#endif	// RADAKAN_CONVERSATION_PLUGIN_HPP
+#endif	// RADAKAN_CONVERSATION_PLUGIN_HPP*/

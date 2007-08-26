@@ -1,4 +1,4 @@
-#include "plugins/battle_plugin.hpp"
+/*#include "plugins/battle_plugin.hpp"
 #include "log.hpp"
 
 using namespace std;
@@ -63,7 +63,7 @@ void Battle_Plugin ::
 	//	TODO
 }
 
-/*void Battle_Plugin ::
+void Battle_Plugin ::
 	add (Character & attacker, Character & defender)
 {
 	Engines :: Log :: trace (me, Battle_Plugin :: get_class_name (), "add", attacker, defender);
