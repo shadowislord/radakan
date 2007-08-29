@@ -84,9 +84,7 @@ template <class T> void Observable <T> ::
 #include "character.hpp"
 #include "gui.hpp"
 #include "log.hpp"
-#include "play_state.hpp"
 
-template class Observable <Strategies :: Play_State>;
 template class Observable <Engines :: Log>;
 template class Observable <GUI>;
 template class Observable <Items :: Character>;

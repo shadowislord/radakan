@@ -41,7 +41,8 @@ const string Input_Engine ::
 Input_Engine ::
 	Input_Engine (Ogre :: RenderWindow & window) :
 	Object ("input engine"),
-	Singleton <Input_Engine> ()
+	Singleton <Input_Engine> (),
+	conversation_option (NULL)
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "", "~window~");
 
@@ -135,9 +136,14 @@ void Input_Engine ::
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message . name);
 	assert (is_initialized ());
 
-	gui_button = message . name;
-
-	Engines :: Log :: show ("The '" + gui_button + "' button was clicked.");
+	if (message . is_type <Messages :: Conversation_Message> ())
+	{
+		conversation_option = & message . to_type <Messages :: Conversation_Message> ();
+	}
+	else
+	{
+		gui_button = message . name;
+	}
 }
 
 void Input_Engine ::
@@ -160,6 +166,39 @@ void Input_Engine ::
 	}
 }
 
+Messages :: Conversation_Message * Input_Engine ::
+	get_conversation_option ()
+{
+	assert (is_initialized ());
+
+	Messages :: Conversation_Message * result = conversation_option;
+
+	if (result != NULL)
+	{
+		Engines :: Log :: show ("The '" + result -> name + "' option was clicked.");
+	
+		conversation_option = NULL;	//	Automatically reset.
+	}
+
+	return result;
+}
+
+bool Input_Engine ::
+	get_gui_button (string button)
+{
+	assert (is_initialized ());
+
+	if (gui_button == button)
+	{
+		Engines :: Log :: log (me) << "GUI button '" << button << "' was clicked." << endl;
+		
+		gui_button = "";	//	Automatically reset.
+		
+		return true;
+	}
+	return false;
+}
+
 bool Input_Engine ::
 	get_key (string key, bool reset)
 {
@@ -172,25 +211,6 @@ bool Input_Engine ::
 			keys [key] = false;
 			Engines :: Log :: log (me) << "key '" << key << "' was reset." << endl;
 		}
-		return true;
-	}
-	return false;
-}
-
-bool Input_Engine ::
-	get_gui_button (string button, bool reset)
-{
-	assert (is_initialized ());
-
-	if (gui_button == button)
-	{
-		string to_be = "is";
-		if (reset)
-		{
-			gui_button = "";
-			to_be = "was";
-		}
-		Engines :: Log :: log (me) << "GUI button '" << button << "' " << to_be << " pressed." << endl;
 		return true;
 	}
 	return false;

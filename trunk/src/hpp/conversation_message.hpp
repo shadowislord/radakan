@@ -18,7 +18,7 @@ namespace Radakan
 			public :
 				Conversation_Message
 				(
-					TiXmlElement & new_option,
+					const TiXmlElement & new_option,
 					Items :: Character & new_from,
 					Items :: Character & new_to
 				);
@@ -27,7 +27,8 @@ namespace Radakan
 				
 				static const string get_class_name ();
 
-				TiXmlElement & option;
+				///	'option' is a reference to an XML element in the behavior file.
+				const TiXmlElement & option;
 				
 				Items :: Character & from;
 				Items :: Character & to;

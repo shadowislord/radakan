@@ -64,8 +64,8 @@ template <class T> bool Singleton <T> ::
 }
 
 #include "audio_engine.hpp"
-//	#include "plugins/battle_plugin.hpp"
-//	#include "plugins/conversation_plugin.hpp"
+#include "battle_engine.hpp"
+#include "conversation_engine.hpp"
 #include "fight_state.hpp"
 #include "game.hpp"
 #include "gui_engine.hpp"
@@ -80,6 +80,8 @@ template <class T> bool Singleton <T> ::
 template class Singleton <Strategies :: Menu_State>;
 template class Singleton <Strategies :: Play_State>;
 template class Singleton <Engines :: Audio_Engine>;
+template class Singleton <Engines :: Battle_Engine>;
+template class Singleton <Engines :: Conversation_Engine>;
 template class Singleton <Engines :: Game>;
 template class Singleton <Engines :: GUI_Engine>;
 template class Singleton <Engines :: Input_Engine>;

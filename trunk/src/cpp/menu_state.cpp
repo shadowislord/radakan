@@ -59,7 +59,7 @@ Strategy * Menu_State ::
 
 	//	quit
 	if ((message == terminate)
-		|| Engines :: Input_Engine :: get () . get_gui_button ("Quit", true))
+		|| Engines :: Input_Engine :: get () . get_gui_button ("Quit"))
 	{
 		return NULL;
 	}
@@ -68,7 +68,7 @@ Strategy * Menu_State ::
 
 	//	un-pause
 	if (Engines :: Input_Engine :: get () . get_key ("escape", true)
-		|| Engines :: Input_Engine :: get () . get_gui_button ("Return", true))
+		|| Engines :: Input_Engine :: get () . get_gui_button ("Return"))
 	{
 		if (Items :: Player_Character :: get () . is_dead ())
 		{
@@ -83,7 +83,7 @@ Strategy * Menu_State ::
 	}
 
 	//	FPS
-	if (Engines :: Input_Engine :: get () . get_gui_button ("Statistics", true))
+	if (Engines :: Input_Engine :: get () . get_gui_button ("Statistics"))
 	{
 		Engines :: Log :: show (World :: get () . get_FPS ());
 	}

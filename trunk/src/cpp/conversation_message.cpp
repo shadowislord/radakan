@@ -16,7 +16,7 @@ const string Conversation_Message ::
 Conversation_Message ::
 	Conversation_Message
 	(
-		TiXmlElement & new_option,
+		const TiXmlElement & new_option,
 		Items :: Character & new_from,
 		Items :: Character & new_to
 	) :

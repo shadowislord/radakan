@@ -1,4 +1,5 @@
 #include "alive_state.hpp"
+#include "conversation_message.hpp"
 #include "log.hpp"
 #include "npc.hpp"
 
@@ -64,7 +65,37 @@ void NPC ::
 {
 	assert (is_initialized ());
 
-	Strategies :: Strategy_State_Machine :: run (message);
+	if (! is_dead ())
+	{
+		Set <Messages :: Conversation_Message> & sensory_buffer = get_active_state () . to_type <Strategies :: Alive_State> () . sensory_buffer;
+	
+		if (message == update)
+		{
+			if (sensory_buffer . is_empty ())
+			{
+				Strategies :: Strategy_State_Machine :: run (update);
+			}
+			else
+			{
+				Messages :: Conversation_Message * buffered_message = sensory_buffer . get_child ();
+
+				Strategies :: Strategy_State_Machine :: run (* buffered_message);
+				
+				delete buffered_message;
+			}
+		}
+		else
+		{
+			assert (message . is_type <Messages :: Conversation_Message> ());
+
+			const Messages :: Conversation_Message & conversation_message = message . to_type <const Messages :: Conversation_Message> ();
+			
+			Messages :: Conversation_Message * message_copy = new Messages :: Conversation_Message (conversation_message . option, conversation_message . from, conversation_message . to);
+		
+			//	Remember the message until next time.
+			sensory_buffer . add (* message_copy);
+		}
+	}
 }
 
 //	virtual

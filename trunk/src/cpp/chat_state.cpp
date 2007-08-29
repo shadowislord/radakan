@@ -65,15 +65,18 @@ Strategy * Chat_State ::
 		
 		if (conversation_message . to == alive_state . npc)	//	Is (s)he talking to me?
 		{
-			TiXmlNode * temp = & conversation_message . option;
+			const TiXmlNode * temp = & conversation_message . option;
 
-			for (int i = 0; temp -> ValueStr () != "dialogue"; i ++)
+			for (int i = 0; temp -> ValueStr () != "dialog"; i ++)
 			{
 				assert (i < 5);
 				
 				temp = temp -> Parent ();
 				assert (temp != NULL);
 			}
+
+			temp = temp -> FirstChild ("reactions");
+			assert (temp != NULL);
 
 			for (int i = 0; temp -> ValueStr () != "reaction"; i ++)
 			{
@@ -83,7 +86,7 @@ Strategy * Chat_State ::
 				assert (temp != NULL);
 			}
 
-			TiXmlElement * reaction = temp -> ToElement ();
+			const TiXmlElement * reaction = temp -> ToElement ();
 			assert (reaction != NULL);
 
 			alive_state . npc . chat (* reaction, conversation_message . from);

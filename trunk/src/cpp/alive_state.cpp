@@ -23,7 +23,8 @@ Alive_State ::
 	Alive_State (Items :: NPC & new_npc) :
 	Object ("alive state"),
 	npc (new_npc),
-	calm (1)
+	calm (1),
+	sensory_buffer (new_npc . name + "'s sensory buffer")
 {
 	//	Do nothing.
 

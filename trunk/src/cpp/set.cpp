@@ -202,11 +202,13 @@ template <class T> bool Set <T> ::
 
 //	to avert linking errors:
 #include "audio_engine.hpp"
+#include "conversation_message.hpp"
 #include "strategy.hpp"
 #include "gui.hpp"
 #include "tile.hpp"
 #include "play_state.hpp"
 
+template class Set <Messages :: Conversation_Message>;
 template class Set <Strategies :: Strategy>;
 template class Set <GUI>;
 template class Set <Items :: Character>;
@@ -214,7 +216,6 @@ template class Set <Items :: Item>;
 template class Set <Items :: NPC>;
 template class Set <Model>;
 template class Set <Object>;
-template class Set <Observer <Strategies :: Play_State> >;
 template class Set <Observer <Engines :: Log> >;
 template class Set <Observer <GUI> >;
 template class Set <Observer <Items :: Character> >;

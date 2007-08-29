@@ -12,6 +12,11 @@ namespace Radakan
 		class NPC;
 	}
 	
+	namespace Messages
+	{
+		class Conversation_Message;
+	}
+	
 	namespace Strategies
 	{
 		///	Alive_State is the basic strategy for living NPCs.
@@ -32,6 +37,8 @@ namespace Radakan
 				
 				//	'calm' can vary from 0 to 1.
 				float calm;
+
+				Set <Messages :: Conversation_Message> sensory_buffer;
 		};
 	}
 }

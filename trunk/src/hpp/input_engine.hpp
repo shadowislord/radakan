@@ -36,8 +36,9 @@ namespace Radakan
 				using Singleton <Input_Engine> :: is_instantiated;
 
 				void capture ();
+				bool get_gui_button (string button);
+				Messages :: Conversation_Message * get_conversation_option ();
 				bool get_key (string key, bool reset);
-				bool get_gui_button (string button, bool reset);
 				bool get_mouse_button (string button, bool reset);
 				const Ogre :: Vector3 & get_mouse_position (bool relative = absolute) const;
 				static bool is_mouse_button (string button);
@@ -60,14 +61,18 @@ namespace Radakan
 				virtual bool mouseReleased
 					(const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
 
-				//	multiple keys can be pressed at once
+				///	Multiple keys can be pressed at once.
 				map <string, bool> keys;
 				
-				//	multiple mouse buttons can be pressed at once
+				///	Multiple mouse buttons can be pressed at once.
 				map <string, bool> mouse_buttons;
 				
-				//	only one gui button can be clicked at once
+				///	Only one gui button can be clicked at once.
 				string gui_button;
+				
+				///	Only one conversation option can be clicked at once.
+				///	'conversation_option' is 'NULL', when no option is selected.
+				Messages :: Conversation_Message * conversation_option;
 				
 				Ogre :: Vector3 relative_mouse_position;
 				Ogre :: Vector3 absolute_mouse_position;

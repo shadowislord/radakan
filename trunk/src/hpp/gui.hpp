@@ -1,6 +1,7 @@
 #ifndef RADAKAN_GUI_HPP
 #define RADAKAN_GUI_HPP
 
+#include "conversation_message.hpp"
 #include "log.hpp"
 #include "observer.hpp"
 #include "resident.hpp"
@@ -40,8 +41,12 @@ namespace Radakan
 			virtual bool handle_event (const CEGUI :: EventArgs & arguments);
 
 			CEGUI :: Event :: Subscriber subscriber;
+
+			CEGUI :: Listbox * chat_window;
 			
 			CEGUI :: Listbox * log_window;
+
+			Set <Messages :: Conversation_Message> * messages;
 	};
 }
 

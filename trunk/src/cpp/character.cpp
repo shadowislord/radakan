@@ -118,7 +118,7 @@ Movable_Model & Character ::
 }
 
 void Character ::
-	chat (TiXmlElement & option, Character & target)
+	chat (const TiXmlElement & option, Character & target)
 {
 	assert (is_initialized ());
 

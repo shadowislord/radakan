@@ -30,8 +30,6 @@ namespace Radakan
 
 				virtual Strategy * transit (const Object & message);
 
-				CEGUI :: Listbox * chat_window;
-
 			private :
 				GUI & gui;
 				

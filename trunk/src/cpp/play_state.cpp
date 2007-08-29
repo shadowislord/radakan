@@ -1,5 +1,6 @@
 #include "alive_state.hpp"
 #include "chat_state.hpp"
+#include "conversation_engine.hpp"
 #include "fight_state.hpp"
 #include "game.hpp"
 #include "gui.hpp"
@@ -36,34 +37,7 @@ Play_State ::
 	camera . setNearClipDistance (0.001);
 	camera . setFarClipDistance (80);
 
-	CEGUI :: Window * temp = NULL;
-	try
-	{
-		temp = gui . root_window . getChild ("play-chat");
-		assert (temp != NULL);
-	}
-	catch (CEGUI :: UnknownObjectException & exception)
-	{
-		Engines :: Log :: error (me) << "No log window found." << endl;
-		abort ();
-	}
-
-#ifdef RADAKAN_WINDOWS
-	try
-	{
-#endif
-	chat_window = dynamic_cast <CEGUI :: Listbox *> (temp);
-
-#ifdef RADAKAN_WINDOWS
-	}
-	catch (__non_rtti_object e)
-	{
-		Engines :: Log :: error (me) << "Chat window could not be dynamically cast. Falling back to unsafe type casting." << endl;
-		chat_window = (CEGUI :: Listbox *) (temp);
-	}
-#endif
-
-	assert (chat_window != NULL);
+	new Engines :: Conversation_Engine ();
 
 	assert (Play_State :: is_initialized ());
 }
@@ -76,6 +50,8 @@ Play_State ::
 	assert (Play_State :: is_initialized ());
 
 	prepare_for_destruction ();
+
+	delete & Engines :: Conversation_Engine :: get ();
 }
 
 //	virtual
@@ -105,14 +81,20 @@ Strategy * Play_State ::
 	//	menu
 	if (Items :: Player_Character :: get () . is_dead ()
 		|| Engines :: Input_Engine :: get () . get_key ("escape", true)
-		|| Engines :: Input_Engine :: get () . get_gui_button ("Menu", true))
+		|| Engines :: Input_Engine :: get () . get_gui_button ("Menu"))
 	{
 		return & Menu_State :: get ();
 	}
 
-	Engines :: GUI_Engine :: get () . set_active_gui (gui);
+	Messages :: Conversation_Message * conversation_option = Engines :: Input_Engine :: get () . get_conversation_option ();
+	if (conversation_option != NULL)
+	{
+		conversation_option -> from . call_observers (* conversation_option);
+	}
 
 	World :: get () . update ();
+
+	Engines :: GUI_Engine :: get () . set_active_gui (gui);
 
 	float top_speed = 0;
 
@@ -144,23 +126,26 @@ Strategy * Play_State ::
 	
 	//	reset your orientation
 	if (Engines :: Input_Engine :: get () . get_key ("space", false)
-		|| Engines :: Input_Engine :: get () . get_gui_button ("Reset", true))
+		|| Engines :: Input_Engine :: get () . get_gui_button ("Reset"))
 	{
 		Items :: Player_Character :: get () . get_movable_model () . reset ();
 	}
 
 	Items :: NPC & closest_npc = * World :: get () . get_active_state () . npcs . get_child ();
 
+	Set <Messages :: Conversation_Message> & conversation_messages = Engines :: Conversation_Engine :: get () . get_options (Items :: Player_Character :: get(), closest_npc);
+	gui . call (conversation_messages);
+
 	//	hit
 	if (Engines :: Input_Engine :: get () . get_key ("h", true)
-		|| Engines :: Input_Engine :: get () . get_gui_button ("Hit", true))
+		|| Engines :: Input_Engine :: get () . get_gui_button ("Hit"))
 	{
 		Items :: Player_Character :: get () . hit ("agressive", closest_npc);
 	}
 	
 	//	move the weapon
 	if (Engines :: Input_Engine :: get () . get_key ("m", true)
-		|| Engines :: Input_Engine :: get () . get_gui_button ("Move", true))
+		|| Engines :: Input_Engine :: get () . get_gui_button ("Move"))
 	{
 		Items :: Multislot <Items :: Item> & player_hands
 			= Items :: Player_Character :: get () . hands;

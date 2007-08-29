@@ -13,30 +13,32 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 <!-- '&lt;' means 'less than' and '&gt;' means 'greater than'. -->
 
 <behavior>
-	<if state="peace">
-		<options>
-			<option say="Hello." />
-			<if charisma="&gt;1.2">
-				<option say="Greetings, my name is ${name}." effect="like" />
-			</if>
-			<option say="You there!" shout="true" effect="intimidation" />
-		</options>
-		<reactions>
-			<if like="&gt;0.5">
-				<reaction say="What can I do for you?" state="conversation" />
-			</if>
-			<elseif like="&lt;0.2">
-				<reaction say="To the death!" shout="true" state="battle" />
-			</elseif>
-			<elseif fear="&gt;0.8">
-				<reaction say="I'll do everything you say." state="conversation" />
-			</elseif>
-			<else>
-				<reaction say="Hello." state="conversation" />
-			</else>
-		</reactions>
+	<if active_state="Alive_State" active_alive_state="none">
+		<dialog>
+			<options>
+				<option say="Hello." />
+				<if charisma="&gt;1.2">
+					<option say="Greetings, my name is ${name}." effect="like" />
+				</if>
+				<option say="You there!" shout="true" effect="intimidation" />
+			</options>
+			<reactions>
+				<if like="&gt;0.5">
+					<reaction say="What can I do for you?" state="conversation" />
+				</if>
+				<elseif like="&lt;0.2">
+					<reaction say="To the death!" shout="true" state="battle" />
+				</elseif>
+				<elseif fear="&gt;0.8">
+					<reaction say="I'll do everything you say." state="conversation" />
+				</elseif>
+				<else>
+					<reaction say="Hello." state="conversation" />
+				</else>
+			</reactions>
+		</dialog>
 	</if>
-	<if state="conversation">
+	<if active_state="Alive_State" active_alive_state="Chat_State">
 		<dialog>
 			<options>
 				<option say="Where can I find the blacksmith, please?" />

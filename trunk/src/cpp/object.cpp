@@ -256,7 +256,7 @@ template <class T> T & Object ::
 	assert (is_initialized ());
 	assert (is_type <T> ());
 
-	return dynamic_cast <T &> (const_cast <Object &> (me));
+	return dynamic_cast <T &> (me);
 }
 
 //	to avert linking errors:
@@ -284,6 +284,8 @@ template bool Object ::
 template bool Object ::
 	is_type <Strategies :: Play_State> () const;
 template bool Object ::
+	is_type <Strategies :: Strategy_State_Machine> () const;
+template bool Object ::
 	is_type <Engines :: Game> () const;
 template bool Object ::
 	is_type <Engines :: Log> () const;
@@ -298,6 +300,8 @@ template bool Object ::
 template bool Object ::
 	is_type <Messages :: Battle_Message> () const;
 template bool Object ::
+	is_type <const Messages :: Conversation_Message> () const;
+template bool Object ::
 	is_type <Messages :: Conversation_Message> () const;
 template bool Object ::
 	is_type <Model> () const;
@@ -309,6 +313,8 @@ template bool Object ::
 	is_type <Observer <GUI> > () const;
 template bool Object ::
 	is_type <Observer <Items :: Character> > () const;
+template bool Object ::
+	is_type <Set <Messages :: Conversation_Message> > () const;
 template bool Object ::
 	is_type <Set <Items :: Item> > () const;
 template bool Object ::
@@ -334,6 +340,8 @@ template Strategies :: Menu_State & Object ::
 	to_type <Strategies :: Menu_State> () const;
 template Strategies :: Play_State & Object ::
 	to_type <Strategies :: Play_State> () const;
+template Strategies :: Strategy_State_Machine & Object ::
+	to_type <Strategies :: Strategy_State_Machine> () const;
 template Engines :: Game & Object ::
 	to_type <Engines :: Game> () const;
 template Engines :: GUI_Engine & Object ::
@@ -354,6 +362,8 @@ template Items :: Weapon & Object ::
 	to_type <Items :: Weapon> () const;
 template Messages :: Battle_Message & Object ::
 	to_type <Messages :: Battle_Message> () const;
+template const Messages :: Conversation_Message & Object ::
+	to_type <const Messages :: Conversation_Message> () const;
 template Messages :: Conversation_Message & Object ::
 	to_type <Messages :: Conversation_Message> () const;
 template Model & Object ::
@@ -366,6 +376,8 @@ template Observer <GUI> & Object ::
 	to_type <Observer <GUI> > () const;
 template Observer <Items :: Character> & Object ::
 	to_type <Observer <Items :: Character> > () const;
+template Set <Messages :: Conversation_Message> & Object ::
+	to_type <Set <Messages :: Conversation_Message> > () const;
 template Set <GUI> & Object ::
 	to_type <Set <GUI> > () const;
 template Set <Items :: Item> & Object ::
