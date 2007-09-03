@@ -118,15 +118,6 @@ Movable_Model & Character ::
 }
 
 void Character ::
-	chat (const TiXmlElement & option, Character & target)
-{
-	assert (is_initialized ());
-
-	Messages :: Conversation_Message temp (option, * this, target);
-	call_observers (temp);
-}
-
-void Character ::
 	hit (string fight_mode, Character & target)
 {
 	assert (is_initialized ());

@@ -6,8 +6,6 @@
 #include "static_item.hpp"
 #include "weapon.hpp"
 
-#include <tinyxml.h>
-
 using namespace std;
 
 namespace Radakan
@@ -38,7 +36,6 @@ namespace Radakan
 
 				Movable_Model & get_movable_model () const;
 
-				void chat (const TiXmlElement & option, Character & target);
 				void hit (string fight_mode, Character & target);
 				
 				//	Item & head;

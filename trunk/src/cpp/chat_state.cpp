@@ -66,14 +66,7 @@ Strategy * Chat_State ::
 		
 		if (conversation_message . to == alive_state . npc)	//	Is (s)he talking to me?
 		{
-			alive_state . npc . chat
-			(
-				Engines :: Conversation_Engine :: get_reaction
-				(
-					conversation_message . option, alive_state . npc
-				),
-				conversation_message . from
-			);
+			alive_state . npc . call_observers (conversation_message . get_reaction ());
 
 			timeout = maximal_timeout;
 		}

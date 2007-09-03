@@ -190,33 +190,3 @@ bool Conversation_Engine ::
 	abort ();
 	return false;
 }
-
-const TiXmlElement & Conversation_Engine ::
-	get_reaction (const TiXmlElement & element, Items :: Character & subject)
-{
-	const TiXmlNode * temp = & element;
-
-	for (int i = 0; temp -> ValueStr () != "dialog"; i ++)
-	{
-		assert (i < 5);
-
-		temp = temp -> Parent ();
-		assert (temp != NULL);
-	}
-
-	temp = temp -> FirstChild ("reactions");
-	assert (temp != NULL);
-
-	for (int i = 0; temp -> ValueStr () != "reaction"; i ++)
-	{
-		assert (i < 5);
-
-		temp = temp -> FirstChild ();
-		assert (temp != NULL);
-	}
-
-	const TiXmlElement * reaction = temp -> ToElement ();
-	assert (reaction != NULL);
-
-	return * reaction;
-}

@@ -245,15 +245,7 @@ template <class T> bool Object ::
 //	Engines :: Log :: trace (me, Object :: get_class_name (), "is_type", "<" + T :: get_class_name () + ">");
 	assert (is_initialized ());
 
-	try
-	{
-		return (dynamic_cast <const T *> (this) != NULL);
-	}
-	catch (std :: __non_rtti_object e)
-	{
-		Engines :: Log :: log (me) << "RTTI is not available for " << me . name << ". I'll fall back to an unsafe cast." << endl;
-		return ((const T *) (this) != NULL);
-	}
+	return (dynamic_cast <const T *> (this) != NULL);
 }
 
 template <class T> T & Object ::
@@ -264,15 +256,8 @@ template <class T> T & Object ::
 	assert (is_initialized ());
 	assert (is_type <T> ());
 
-	try
-	{
-		return dynamic_cast <T &> (me);
-	}
-	catch (std :: __non_rtti_object e)
-	{
-		Engines :: Log :: log (me) << "RTTI is not available for " << me . name << ". I'll fall back to an unsafe cast." << endl;
-		return * (T *) (this);
-	}
+	Engines :: Log :: log (me) << "RTTI is not available for " << me . name << ". I'll fall back to an unsafe cast." << endl;
+	return dynamic_cast <T &> (me);
 }
 
 //	to avert linking errors:

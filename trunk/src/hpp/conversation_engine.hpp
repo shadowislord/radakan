@@ -22,12 +22,11 @@ namespace Radakan
 				
 				static const string get_class_name ();
 
-				static Set <Messages :: Conversation_Message> & get_options (Items :: Character & speaker, Items :: Character & listener);
-				const TiXmlElement & get_reaction (const TiXmlElement & element, Items :: Character & subject);
+				Set <Messages :: Conversation_Message> & get_options (Items :: Character & speaker, Items :: Character & listener);
 
 			private :
-				static bool evaluate_condition (const TiXmlElement * element, Items :: Character & subject);
-				static bool evaluate_expression (const TiXmlAttribute * attribute, Items :: Character & subject);
+				bool evaluate_condition (const TiXmlElement * element, Items :: Character & subject);
+				bool evaluate_expression (const TiXmlAttribute * attribute, Items :: Character & subject);
 			
 				TiXmlDocument behavior;
 		};

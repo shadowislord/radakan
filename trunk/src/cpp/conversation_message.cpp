@@ -50,7 +50,38 @@ bool Conversation_Message ::
 	return Object :: is_initialized ();
 }
 
-//	static
+Conversation_Message & Conversation_Message ::
+	get_reaction ()
+	const
+{
+	const TiXmlNode * temp = & option;
+
+	for (int i = 0; temp -> ValueStr () != "dialog"; i ++)
+	{
+		assert (i < 5);
+
+		temp = temp -> Parent ();
+		assert (temp != NULL);
+	}
+
+	temp = temp -> FirstChild ("reactions");
+	assert (temp != NULL);
+
+	for (int i = 0; temp -> ValueStr () != "reaction"; i ++)
+	{
+		assert (i < 5);
+
+		temp = temp -> FirstChild ();
+		assert (temp != NULL);
+	}
+
+	const TiXmlElement * reaction = temp -> ToElement ();
+	assert (reaction != NULL);
+
+	return * (new Conversation_Message (* reaction, to, from));
+}
+
+//	private & static
 string Conversation_Message ::
 	create_name (const TiXmlElement & option)
 {

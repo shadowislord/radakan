@@ -27,6 +27,8 @@ namespace Radakan
 				
 				static const string get_class_name ();
 
+				Conversation_Message & get_reaction () const;
+
 				///	'option' is a reference to an XML element in the behavior file.
 				const TiXmlElement & option;
 				
