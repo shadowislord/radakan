@@ -8,60 +8,24 @@
 #   Ogre_BIN_DIR      - ogre binary directory 
 
 set(Ogre_FOUND "NO")
+set(OGRE_HOME "$ENV{OGRE_HOME}")
 
 if(WIN32)
     if(MSVC80)
         find_path(Ogre_INCLUDE_DIR "Ogre.h"
-            "D:/ScatteredLands/OgreSDK_1_2_5/include"
-            "D:/ScatteredLands/OgreSDK/include" 
-            "E:/Projects/ScatteredLands/OgreSDK/include" 
-        	"C:/OgreSDK/include")
+            "${OGRE_HOME}/include")
 
         find_path(Ogre_SAMPLES_DIR "include/Bezier.h"
-            "D:/ScatteredLands/OgreSDK_1_2_5/samples"
-            "D:/ScatteredLands/OgreSDK/samples" 
-            "E:/Projects/ScatteredLands/OgreSDK/samples" 
-        	"C:/OgreSDK/samples")
+            "${OGRE_HOME}/samples")
 
         find_path(Ogre_BIN_DIR "release/ogremain.dll"
-            "D:/ScatteredLands/OgreSDK_1_2_5/bin"
-            "D:/ScatteredLands/OgreSDK/bin" 
-            "E:/Projects/ScatteredLands/OgreSDK/bin" 
-        	"C:/OgreSDK/bin")
+            "${OGRE_HOME}/bin")
 
         find_path(Ogre_LIB_RELEASE "OgreMain.lib" 
-	        "D:/ScatteredLands/OgreSDK_1_2_5/lib"
-            "D:/ScatteredLands/OgreSDK/lib" 
-            "E:/Projects/ScatteredLands/OgreSDK/lib" 
-            "C:/OgreSDK/lib")
+	        "${OGRE_HOME}/lib")
 
         find_path(Ogre_LIB_DEBUG "OgreMain_d.lib" 
-            "D:/ScatteredLands/OgreSDK_1_2_5/lib"
-            "D:/ScatteredLands/OgreSDK/lib" 
-            "E:/Projects/ScatteredLands/OgreSDK/lib" 
-            "C:/OgreSDK/lib")
-    else(MSVC80)
-        if(MINGW)
-            find_path(Ogre_INCLUDE_DIR "Ogre.h"
-                "D:/ScatteredLands/OgreSDK_GCC/include"
-            	"C:/OgreSDK/include")
-
-            find_path(Ogre_SAMPLES_DIR "include/Bezier.h"
-                "D:/ScatteredLands/OgreSDK_GCC/samples"
-        	    "C:/OgreSDK/samples")
-
-            find_path(Ogre_BIN_DIR "release/OgreMain.dll"
-                "D:/ScatteredLands/OgreSDK_GCC/bin"
-            	"C:/OgreSDK/bin")
-
-            find_path(Ogre_LIB_RELEASE "OgreMain.dll" 
-	            "D:/ScatteredLands/OgreSDK_GCC/bin/release"
-                "C:/OgreSDK/bin/release")
-
-            find_path(Ogre_LIB_DEBUG "OgreMain_d.dll" 
-                "D:/ScatteredLands/OgreSDK_GCC/bin/debug"
-                "C:/OgreSDK/bin/debug")
-        endif(MINGW)
+            "${OGRE_HOME}/lib")
     endif(MSVC80)
 
     if(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)

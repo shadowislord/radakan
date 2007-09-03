@@ -10,17 +10,17 @@ find_package(Ogre)
 if(WIN32)
     find_path(Vorbis_INCLUDE_DIR "vorbis/Vorbis.h"
         "D:/ScatteredLands/vorbis/include"
-        "E:/Projects/ScatteredLands/vorbis/include"
+        "D:/Projects/ScatteredLands/vorbis/include"
 	    "C:/vorbis/include")
 
     find_path(Vorbis_LIB_RELEASE "vorbis.lib"
         "D:/ScatteredLands/vorbis/lib/releaselib"
-        "E:/Projects/ScatteredLands/vorbis/lib/releaselib"
+        "D:/Projects/ScatteredLands/vorbis/lib/releaselib"
         "C:/vorbis/lib/releaselib")
 
     find_path(Vorbis_LIB_DEBUG "vorbis.lib"
         "D:/ScatteredLands/vorbis/lib/debuglib"
-        "E:/Projects/ScatteredLands/vorbis/lib/debuglib"
+        "D:/Projects/ScatteredLands/vorbis/lib/debuglib"
         "C:/vorbis/lib/releaselib")
 
     set(Vorbis_FOUND 0)

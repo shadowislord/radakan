@@ -13,17 +13,17 @@
 #   "src/mpaudec/mpaudec.c"
 #   "src/speexfile/speexfile.cpp"
 
-find_package(Ogg)
+#find_package(Ogg)
 
-if( NOT Ogg_FOUND )
+#if( NOT Ogg_FOUND )
     subdirs( "${RADAKAN_SOURCE_DIR}/external/libogg-1.1.3" )
-endif(NOT Ogg_FOUND)
+#endif(NOT Ogg_FOUND)
 
-find_package(Vorbis)
+#find_package(Vorbis)
 
-if( NOT Vorbis_FOUND )
+#if( NOT Vorbis_FOUND )
     subdirs( "${RADAKAN_SOURCE_DIR}/external/libvorbis-1.1.2" )
-endif(NOT Vorbis_FOUND)
+#endif(NOT Vorbis_FOUND)
 
 if(WIN32)
     find_package(DirectX)
@@ -80,30 +80,30 @@ else(WIN32)
     set( SRC_FILES ${SRC_FILES} ${SRC_FILES_UNIX} )
 endif(WIN32)
 
-if(Ogg_FOUND)
-    set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
-                        ${Ogg_INCLUDE_DIR} )
-    set(LINK_DIRS       ${LINK_DIRS}
-                        ${Ogg_LIB_DIR} )        
-else(Ogg_FOUND)
+#if(Ogg_FOUND)
+#    set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
+#                        ${Ogg_INCLUDE_DIR} )
+#    set(LINK_DIRS       ${LINK_DIRS}
+#                        ${Ogg_LIB_DIR} )        
+#else(Ogg_FOUND)
     set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
                         "${RADAKAN_SOURCE_DIR}/external/libogg-1.1.3/include" )
     set(LINK_DIRS       ${LINK_DIRS}
                         ${RADAKAN_BINARY_DIR}/ogg )
                         
-endif(Ogg_FOUND)
+#endif(Ogg_FOUND)
 
-if(Vorbis_FOUND)
-    set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
-                        ${Vorbis_INCLUDE_DIR} )
-    set(LINK_DIRS       ${LINK_DIRS}
-                        ${Vorbis_LIB_DIR} ) 
-else(Vorbis_FOUND)
+#if(Vorbis_FOUND)
+#    set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
+#                        ${Vorbis_INCLUDE_DIR} )
+#    set(LINK_DIRS       ${LINK_DIRS}
+#                        ${Vorbis_LIB_DIR} ) 
+#else(Vorbis_FOUND)
     set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
                         "${RADAKAN_SOURCE_DIR}/external/libvorbis-1.1.2/include" )
     set(LINK_DIRS       ${LINK_DIRS}
                         ${RADAKAN_BINARY_DIR}/vorbis )
-endif(Vorbis_FOUND)
+#endif(Vorbis_FOUND)
 
 set(INCLUDE_DIRS    ${INCLUDE_DIRS}
                     "${RADAKAN_SOURCE_DIR}/external/audiere/src"

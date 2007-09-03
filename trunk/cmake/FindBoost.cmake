@@ -9,7 +9,7 @@ if(WIN32)
     find_path(Boost_INCLUDE_DIR "boost/regex.h"
         "D:/ScatteredLands/Boost/include/boost-1_33_1"
         "D:/ScatteredLands/Boost/include/boost-1_33_1" 
-        "E:/Projects/ScatteredLands/Boost/includeboost-1_33_1" 
+        "D:/Projects/ScatteredLands/boost/include/boost-1_33_1" 
     	"C:/Boost/includeboost-1_33_1")
 
     if(Boost_INCLUDE_DIR)

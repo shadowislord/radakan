@@ -7,50 +7,22 @@
 #   CEGUI_BIN_DIR      - ogre binary directory 
 
 set(CEGUI_FOUND "NO")
+set(OGRE_HOME "$ENV{OGRE_HOME}")
+
 
 if(WIN32)
     if(MSVC80)
         find_path(CEGUI_INCLUDE_DIR "CEGUI.h"
-            "D:/ScatteredLands/OgreSDK_1_2_5/include/CEGUI"
-            "D:/ScatteredLands/OgreSDK/include/CEGUI" 
-            "E:/Projects/ScatteredLands/OgreSDK/include/CEGUI" 
-        	"C:/OgreSDK/include/CEGUI")
+            "${OGRE_HOME}/include/CEGUI")
 
         find_path(CEGUI_BIN_DIR "release/CEGUIBase.dll"
-            "D:/ScatteredLands/OgreSDK_1_2_5/bin"
-            "D:/ScatteredLands/OgreSDK/bin" 
-            "E:/Projects/ScatteredLands/OgreSDK/bin" 
-        	"C:/OgreSDK/bin")
+            "${OGRE_HOME}/bin" )
 
         find_path(CEGUI_LIB_RELEASE "CEGUIBase.lib" 
-	        "D:/ScatteredLands/OgreSDK_1_2_5/lib"
-            "D:/ScatteredLands/OgreSDK/lib" 
-            "E:/Projects/ScatteredLands/OgreSDK/lib" 
-            "C:/OgreSDK/lib")
+	        "${OGRE_HOME}/lib")
 
         find_path(CEGUI_LIB_DEBUG "CEGUIBase_d.lib" 
-            "D:/ScatteredLands/OgreSDK_1_2_5/lib"
-            "D:/ScatteredLands/OgreSDK/lib" 
-            "E:/Projects/ScatteredLands/OgreSDK/lib" 
-            "C:/OgreSDK/lib")
-    else(MSVC80)
-        if(MINGW)
-            find_path(CEGUI_INCLUDE_DIR "CEGUI.h"
-                "D:/ScatteredLands/OgreSDK_GCC/include/CEGUI"
-            	"C:/OgreSDK/include/CEGUI")
-
-            find_path(CEGUI_BIN_DIR "release/CEGUIBase.dll"
-                "D:/ScatteredLands/OgreSDK_GCC/bin"
-            	"C:/OgreSDK/bin")
-
-            find_path(CEGUI_LIB_RELEASE "CEGUIBase.dll" 
-	            "D:/ScatteredLands/OgreSDK_GCC/bin/release"
-                "C:/OgreSDK/bin/release")
-
-            find_path(CEGUI_LIB_DEBUG "CEGUIBase_d.dll" 
-                "D:/ScatteredLands/OgreSDK_GCC/bin/debug"
-                "C:/OgreSDK/bin/debug")
-        endif(MINGW)
+            "${OGRE_HOME}/lib")
     endif(MSVC80)
 else(WIN32)
     find_path(CEGUI_INCLUDE_DIR "CEGUI.h"

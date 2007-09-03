@@ -3,7 +3,6 @@
 find_package(Boost)
 find_package(Ogre)
 find_package(CEGUI)
-find_package(Ode)
 
 if(USE_FMOD)
     find_package(Fmod)
@@ -22,13 +21,13 @@ file(GLOB SRC_FILES "${RADAKAN_SOURCE_DIR}/src/cpp/*" *.cpp)
 
 set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/src/hpp"
                     ${Boost_INCLUDE_DIR}
-                    "${Ode_INCLUDE_DIR}"
                     "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include"
                     "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
                     "${RADAKAN_SOURCE_DIR}/external/tinyxml-2.5.2"
                     "${RADAKAN_SOURCE_DIR}/external/ois-1.0RC1/includes"
                     "${RADAKAN_SOURCE_DIR}/external/audiere/src"
                     ${Ogre_INCLUDE_DIR}
+		    "${Ogre_SAMPLES_DIR}/include"
                     ${Ogg_INCLUDE_DIR}
                     ${Vorbis_INCLUDE_DIR}
                     ${CEGUI_INCLUDE_DIR}
@@ -41,6 +40,7 @@ set(LINK_DIRS       ${Ogre_LIB_RELEASE}
                     ${Ogre_LIB_DEBUG}
                     ${CEGUI_LIB_RELEASE} 
                     ${CEGUI_LIB_DEBUG}
+		    "${Ogre_SAMPLES_DIR}/lib"
                     ${RADAKAN_BINARY_DIR}/lib)
 
 if(USE_FMOD)
@@ -59,24 +59,16 @@ endif(WIN32)
 include_directories( ${INCLUDE_DIRS} )
 
 
-set(DEBUG_LIBS  debug OgreMain
-                debug CEGUIBase
-                debug CEGUIOgreRenderer
-                debug audiere
-                debug ogg
-                debug vorbis 
-                debug vorbisfile
+set(DEBUG_LIBS  debug OgreMain_d
+                debug CEGUIBase_d
+                debug OgreGUIRenderer_d                           
                 debug tinyxml
                 debug prefab
                 debug ogreode_core 
                 debug ois) 
 set(RELEASE_LIBS    optimized OgreMain
                     optimized CEGUIBase 
-                    optimized CEGUIOgreRenderer 
-                    optimized audiere
-                    optimized ogg
-                    optimized vorbis
-                    optimized vorbisfile
+                    optimized OgreGUIRenderer               
                     optimized tinyxml
                     optimized prefab 
                     optimized ogreode_core  
@@ -88,8 +80,8 @@ if(USE_FMOD)
     else(WIN32)
     endif(WIN32)
 else(USE_FMOD)
-    set(DEBUG_LIBS ${DEBUG_LIBS}  debug audiere)
-    set(RELEASE_LIBS ${RELEASE_LIBS} optimized audiere)
+    set(DEBUG_LIBS ${DEBUG_LIBS}  debug audiere debug ogg debug vorbis)
+    set(RELEASE_LIBS ${RELEASE_LIBS} optimized audiere optimized ogg )
 endif(USE_FMOD)
                 
 target_link_libraries( radakan   ${RELEASE_LIBS}
