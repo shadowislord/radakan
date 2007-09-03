@@ -13,6 +13,7 @@
 
 	#if _MSC_VER
 		#pragma warning(disable: 4250)
+		#pragma warning(disable: 4355)
 	#endif
 
 	#define RADAKAN_WINDOWS

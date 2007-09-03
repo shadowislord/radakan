@@ -61,7 +61,7 @@ bool Conversation_Engine ::
 Set <Messages :: Conversation_Message> & Conversation_Engine ::
 	get_options (Items :: Character & speaker, Items :: Character & listener)
 {
-	assert (is_initialized ());
+	//assert (is_initialized ());
 
 	TiXmlElement * root = behavior . RootElement ();
 	assert (root != NULL);

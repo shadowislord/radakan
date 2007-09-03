@@ -43,7 +43,7 @@ namespace Radakan
 
 			static const int unlimited;
 
-			const int maximal_size;
+			const unsigned int maximal_size;
 
 			///	When sealed, no children can be added or dropped (see the exception above).
 			void seal ();
