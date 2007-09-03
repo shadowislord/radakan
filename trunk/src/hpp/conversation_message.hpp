@@ -32,6 +32,9 @@ namespace Radakan
 				
 				Items :: Character & from;
 				Items :: Character & to;
+
+			private :
+				static string create_name (const TiXmlElement & option);
 		};
 	}
 }

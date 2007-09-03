@@ -20,7 +20,7 @@ Conversation_Message ::
 		Items :: Character & new_from,
 		Items :: Character & new_to
 	) :
-	Object (new_option . Attribute ("say")),
+	Object (create_name (new_option)),
 	option (new_option),
 	from (new_from),
 	to (new_to)
@@ -48,4 +48,32 @@ bool Conversation_Message ::
 	const
 {
 	return Object :: is_initialized ();
+}
+
+//	static
+string Conversation_Message ::
+	create_name (const TiXmlElement & option)
+{
+	string result;
+	
+	if (option . Attribute ("shout") != NULL)
+	{
+		result = "Shout ";
+	}
+	if (option . Attribute ("say") != NULL)
+	{
+		result += "\"" + * option . Attribute (string ("say")) + "\" ";
+	}
+	if (option . Attribute ("action") != NULL)
+	{
+		result += * option . Attribute (string ("action")) + " ";
+	}
+	if (option . Attribute ("effect") != NULL)
+	{
+		result += "<" + * option . Attribute (string ("effect")) + "> ";
+	}
+
+	assert (! result . empty ());
+
+	return result;
 }

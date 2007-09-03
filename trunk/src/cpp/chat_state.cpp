@@ -1,5 +1,6 @@
 #include "alive_state.hpp"
 #include "chat_state.hpp"
+#include "conversation_engine.hpp"
 #include "conversation_message.hpp"
 #include "fight_state.hpp"
 #include "gui.hpp"
@@ -65,31 +66,14 @@ Strategy * Chat_State ::
 		
 		if (conversation_message . to == alive_state . npc)	//	Is (s)he talking to me?
 		{
-			const TiXmlNode * temp = & conversation_message . option;
-
-			for (int i = 0; temp -> ValueStr () != "dialog"; i ++)
-			{
-				assert (i < 5);
-				
-				temp = temp -> Parent ();
-				assert (temp != NULL);
-			}
-
-			temp = temp -> FirstChild ("reactions");
-			assert (temp != NULL);
-
-			for (int i = 0; temp -> ValueStr () != "reaction"; i ++)
-			{
-				assert (i < 5);
-				
-				temp = temp -> FirstChild ();
-				assert (temp != NULL);
-			}
-
-			const TiXmlElement * reaction = temp -> ToElement ();
-			assert (reaction != NULL);
-
-			alive_state . npc . chat (* reaction, conversation_message . from);
+			alive_state . npc . chat
+			(
+				Engines :: Conversation_Engine :: get_reaction
+				(
+					conversation_message . option, alive_state . npc
+				),
+				conversation_message . from
+			);
 
 			timeout = maximal_timeout;
 		}
