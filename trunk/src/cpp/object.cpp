@@ -135,15 +135,9 @@ void Object ::
 		assert (* i != last);
 		//	The dropping object should call 'forget (...)' for me.
 		
-#ifdef RADAKAN_WINDOWS
-		// I don't really know how to handle this
-		// alternatively.
-		(Object *) (* i) -> drop (me);
-#else
 		const_cast <Object *> (* i) -> drop (me);
-#endif
 
-		last = * i;
+		//last = * i;
 	}
 }
 
@@ -256,7 +250,6 @@ template <class T> T & Object ::
 	assert (is_initialized ());
 	assert (is_type <T> ());
 
-	Engines :: Log :: log (me) << "RTTI is not available for " << me . name << ". I'll fall back to an unsafe cast." << endl;
 	return dynamic_cast <T &> (me);
 }
 

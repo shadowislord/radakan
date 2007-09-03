@@ -81,10 +81,10 @@ if(USE_FMOD)
     endif(WIN32)
 else(USE_FMOD)
     set(DEBUG_LIBS ${DEBUG_LIBS}  debug audiere debug ogg debug vorbis)
-    set(RELEASE_LIBS ${RELEASE_LIBS} optimized audiere optimized ogg )
+    set(RELEASE_LIBS ${RELEASE_LIBS} optimized audiere optimized ogg optimized vorbis )
 endif(USE_FMOD)
                 
-target_link_libraries( radakan   ${RELEASE_LIBS}
+target_link_libraries( radakan  ${RELEASE_LIBS}
                                 ${DEBUG_LIBS} )
 
 install( TARGETS radakan DESTINATION ${RADAKAN_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )

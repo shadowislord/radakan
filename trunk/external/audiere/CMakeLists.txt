@@ -121,18 +121,28 @@ include_directories( ${INCLUDE_DIRS} )
 link_directories( ${LINK_DIRS} )
 add_library( audiere SHARED ${SRC_FILES} )
 
-set(DEBUG_LIBS      ogg vorbis )
-set(RELEASE_LIBS    ogg vorbis )
+set(DEBUG_LIBS      debug ogg 
+                    debug vorbis )
+set(RELEASE_LIBS    optimized ogg 
+                    optimized vorbis )
 
 if(WIN32)
-    set(DEBUG_LIBS    ${DEBUG_LIBS}  dsound dxguid Rpcrt4 winmm )
-    set(RELEASE_LIBS  ${DEBUG_LIBS}  dsound dxguid Rpcrt4 winmm )
+    set(DEBUG_LIBS      ${DEBUG_LIBS}  
+                        debug dsound 
+                        debug dxguid 
+                        debug Rpcrt4 
+                        debug winmm )
+    set(RELEASE_LIBS    ${DEBUG_LIBS}  
+                        optimized dsound 
+                        optimized dxguid 
+                        optimized Rpcrt4 
+                        optimized winmm )
 endif(WIN32)
-target_link_libraries( audiere  optimized   ${RELEASE_LIBS}
-                                debug       ${DEBUG_LIBS} )
+target_link_libraries( audiere  ${RELEASE_LIBS}
+                                ${DEBUG_LIBS} )
 
 if(WIN32)
-    set_target_properties( audiere PROPERTIES DEFINE_SYMBOL "AUDIERE_EXPORTS" COMPILE_FLAGS "-DWIN32_LEAN_AND_MEAN -DWIN32 -D_USRDL -DNOMINMAX -DNO_SPEEX -DNO_DUMB -DNO_FLAC -DNO_MP3" )
+    set_target_properties( audiere PROPERTIES DEFINE_SYMBOL AUDIERE_EXPORTS COMPILE_FLAGS "-DWIN32_LEAN_AND_MEAN -DWIN32 -D_USRDL -DNOMINMAX -DNO_SPEEX -DNO_DUMB -DNO_FLAC -DNO_MP3" )
 else(WIN32)
     set_target_properties( audiere PROPERTIES COMPILE_FLAGS "-DNO_SPEEX -DNO_DUMB -DNO_FLAC -DNO_MP3" )
 endif(WIN32)

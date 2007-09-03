@@ -17,7 +17,9 @@ if(WIN32)
 
     find_package(DirectX)       
 
-    set(INCLUDE_DIR ${INCLUDE_DIR} "${RADAKAN_SOURCE_DIR}/external/ois-1.0RC1/includes/win32" ${DirectX_INCLUDE_DIR})
+    set(INCLUDE_DIR ${INCLUDE_DIR} 
+                    "${RADAKAN_SOURCE_DIR}/external/ois-1.0RC1/includes/win32" 
+                    ${DirectX_INCLUDE_DIR})
 
     set(LIBS ${LIBS} dxguid dinput8)
 
