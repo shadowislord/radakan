@@ -19,7 +19,11 @@ link_directories(   ${Ogre_LIB_RELEASE}
                     ${RADAKAN_BINARY_DIR}/tinyxml)
 add_library( prefab SHARED ${SRC_FILES} )
 
-set(DEBUG_LIBS      OgreMain_d ogreode_core tinyxml)
+if(WIN32)
+	set(DEBUG_LIBS      OgreMain_d ogreode_core tinyxml)
+else(WIN32)
+	set(DEBUG_LIBS      OgreMain ogreode_core tinyxml)
+endif(WIN32)
 set(RELEASE_LIBS    OgreMain ogreode_core tinyxml)
 
 target_link_libraries( prefab 	optimized ${RELEASE_LIBS}

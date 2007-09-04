@@ -59,21 +59,31 @@ endif(WIN32)
 include_directories( ${INCLUDE_DIRS} )
 
 
-set(DEBUG_LIBS  debug OgreMain_d
+if(WIN32)
+	set(DEBUG_LIBS  debug OgreMain_d
                 debug CEGUIBase_d
-                debug OgreGUIRenderer_d                           
+                debug OgreGUIRenderer_d
                 debug tinyxml
                 debug prefab
-                debug ogreode_core 
-                debug ois) 
+                debug ogreode_core
+                debug ois)
+else(WIN32)
+	set(DEBUG_LIBS  debug OgreMain
+                debug CEGUIBase
+                debug CEGUIOgreRenderer
+                debug tinyxml
+                debug prefab
+                debug ogreode_core
+                debug ois)
+endif(WIN32)
 set(RELEASE_LIBS    optimized OgreMain
                     optimized CEGUIBase 
-                    optimized OgreGUIRenderer               
+                    optimized OgreGUIRenderer
                     optimized tinyxml
                     optimized prefab 
-                    optimized ogreode_core  
+                    optimized ogreode_core
                     optimized ois)  
-if(USE_FMOD)                 
+if(USE_FMOD)
     if(WIN32)
         set(DEBUG_LIBS ${DEBUG_LIBS}  fmodvc)
         set(RELEASE_LIBS ${RELEASE_LIBS}  fmodvc)

@@ -25,10 +25,15 @@ include_directories( ${INCLUDE_DIRS} )
 link_directories(   ${Ogre_LIB_RELEASE} )
 add_library( ogreode_core SHARED ${SRC_FILES} )
 
-set(DEBUG_LIBS      debug ode 
-    	   		    debug Ogremain_d)
-set(RELEASE_LIBS    optimized ode 
-					optimized Ogremain)
+if(WIN32)
+    set(DEBUG_LIBS      debug ode 
+    	   		    debug OgreMain_d)
+else(WIN32)
+    set(DEBUG_LIBS      debug ode 
+    	   		    debug OgreMain)
+endif(WIN32)
+set(RELEASE_LIBS    optimized ode
+					optimized OgreMain)
 
 target_link_libraries( ogreode_core ${RELEASE_LIBS}
                                     ${DEBUG_LIBS} )
