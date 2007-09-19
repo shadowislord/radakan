@@ -35,7 +35,7 @@ Play_State ::
 	Engines :: Log :: trace (me, Play_State :: get_class_name (), "", "~scene_manager~");
 
 	camera . setNearClipDistance (0.001);
-	camera . setFarClipDistance (80);
+	camera . setFarClipDistance (150);
 
 	new Engines :: Conversation_Engine ();
 
@@ -109,7 +109,7 @@ Strategy * Play_State ::
 		top_speed = - 0.7;
 	}
 	Items :: Player_Character :: get () . get_movable_model () . move (top_speed);
-	
+
 	float top_angular_speed = 0;
 	if (Engines :: Input_Engine :: get () . get_key
 		(Engines :: Settings :: get () . left_key, false))
@@ -123,7 +123,7 @@ Strategy * Play_State ::
 	}
 
 	Items :: Player_Character :: get () . get_movable_model () . turn (top_angular_speed);
-	
+
 	//	reset your orientation
 	if (Engines :: Input_Engine :: get () . get_key ("space", false)
 		|| Engines :: Input_Engine :: get () . get_gui_button ("Reset"))
@@ -142,7 +142,7 @@ Strategy * Play_State ::
 	{
 		Items :: Player_Character :: get () . hit ("agressive", closest_npc);
 	}
-	
+
 	//	move the weapon
 	if (Engines :: Input_Engine :: get () . get_key ("m", true)
 		|| Engines :: Input_Engine :: get () . get_gui_button ("Move"))
@@ -151,7 +151,7 @@ Strategy * Play_State ::
 			= Items :: Player_Character :: get () . hands;
 		Items :: Multislot <Items :: Item> & npc_hands
 			= closest_npc . hands;
-	
+
 		if (! player_hands . is_empty ())
 		{
 			player_hands . move (* player_hands . get_child (), npc_hands);
@@ -174,7 +174,7 @@ Strategy * Play_State ::
 
 	const Ogre :: Vector3 & mouse_position = Engines :: Input_Engine :: get ()
 		. get_mouse_position (Engines :: Input_Engine :: relative);
-			
+
 	if (Engines :: Input_Engine :: get () . get_mouse_button
 		(Engines :: Input_Engine :: middle_mouse_button, false))
 	{
@@ -183,7 +183,7 @@ Strategy * Play_State ::
 			Items :: Player_Character :: get () . get_movable_model () . turn
 				(- Ogre :: Math :: Sign (mouse_position . x));
 		}
-		
+
 		if (mouse_position . y != 0)
 		{
 			Engines :: Settings :: get () . increase_vertical_camera_angle

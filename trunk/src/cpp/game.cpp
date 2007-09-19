@@ -101,7 +101,7 @@ Game ::
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(ogre_media_path + "/models", "FileSystem", "models", true);
 
-		window = root -> initialise (true, "The Scattered Lands");
+		window = root -> initialise (true, "Radakan");
 
 		Ogre :: MeshManager :: getSingleton () . createPlane
 			("ground.mesh", "models", Ogre :: Plane (Ogre :: Vector3 (1, 0, 0), 0), 20, 20);

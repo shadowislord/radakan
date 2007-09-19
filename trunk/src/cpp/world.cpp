@@ -80,8 +80,9 @@ World ::
 	Engines :: Log :: log (me) << "CFM: " << getCFM () << endl;
 
 	//	TODO make the next line work.
-    getSceneManager () -> setSkyDome (true, "Examples/CloudySky",10,50000);
-    //	getSceneManager () -> setSkyBox (true, "Examples/CloudySky", 5000, true);
+    //getSceneManager () -> setSkyDome (true, "Examples/CloudySky",10,50000);
+    getSceneManager () -> setSkyDome (true, "Examples/CloudySky", 5, 8, 100);
+
 }
 
 World ::
