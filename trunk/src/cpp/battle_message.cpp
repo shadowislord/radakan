@@ -1,5 +1,6 @@
-#include "log.hpp"
 #include "battle_message.hpp"
+#include "character.hpp"
+#include "log.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -14,7 +15,7 @@ const string Battle_Message ::
 
 //  constructor
 Battle_Message ::
-	Battle_Message (const string & information, Items :: Character & new_from, Items :: Character & new_to) :
+	Battle_Message (const string & information, Reference <Items :: Character> new_from, Reference <Items :: Character> new_to) :
 	Object (information),
 	from (new_from),
 	to (new_to)

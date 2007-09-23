@@ -1,5 +1,17 @@
+#include <tinyxml.h>
+
+#include <Ogre.h>
+#include <OgreStringConverter.h>
+#include <OgreException.h>
+
+#include <OgreOdeBody.h>
+#include <OgreOdeGeometry.h>
+#include <OgreOdeSpace.h>
+#include <OgreOdeWorld.h>
+
 #include "log.hpp"
 #include "movable_model.hpp"
+#include "npc.hpp"
 #include "player_character.hpp"
 #include "static_item.hpp"
 #include "tile.hpp"
@@ -26,11 +38,11 @@ Tile ::
 	(
 		"tile_" + to_string (new_coordinates . first) + "_" + to_string (new_coordinates . second)
 	),
-	OgreOde :: SimpleSpace (& World :: get (), World :: get () . getDefaultSpace ()),
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
-	npcs (name + "'s NPCs"),
-	doc (Engines :: Settings :: get () . radakan_path + "/data/tile/" + name + ".xml")
+	npcs (new Set <Items :: NPC> (name + "'s NPCs")),
+	space (new OgreOde :: SimpleSpace (World :: get () -> ogre_ode_world . get (), World :: get () -> ogre_ode_world -> getDefaultSpace ())),
+	doc (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/tile/" + name + ".xml"))
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
 	
@@ -93,7 +105,7 @@ Tile ::
 	*/
 
 	//	set a floor
-	new OgreOde :: InfinitePlaneGeometry (Ogre :: Plane (y_axis, 0), & World :: get (), this);
+	new OgreOde :: InfinitePlaneGeometry (Ogre :: Plane (y_axis, 0), World :: get () -> ogre_ode_world . get (), space . get ());
 
 	Engines :: Log :: log (me) << "Tile loaded" << endl;
 
@@ -121,43 +133,43 @@ bool Tile ::
 
 //	virtual
 bool Tile ::
-	add (Model & model)
+	add (Reference <Model> model)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "add", model . name);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "add", model ->name);
 	assert (is_initialized ());
-	assert (model . is_initialized ());
+	assert (model -> is_initialized ());
 	assert (! contains (model));
 
 	bool check = Location <Model> :: add (model);
 	assert (check);
 
-	if (model . item . is_type <Items :: NPC> ())
+	if (model -> item -> is_type <Items :: NPC> ())
 	{
-		Engines :: Log :: log (me) << model . item . name << " will be added to the list of NPCs..." << endl;
-		bool check = npcs . add (model . item . to_type <Items :: NPC> ());
+		Engines :: Log :: log (me) << model -> item -> name << " will be added to the list of NPCs..." << endl;
+		bool check = npcs -> add (model -> item -> to_type <Items :: NPC> ());
 		assert (check);
 		
-		Engines :: Log :: log (me) << model . item . name << " was added to the list of NPCs." << endl;
+		Engines :: Log :: log (me) << model -> item -> name << " was added to the list of NPCs." << endl;
 	}
 
-	model . set_space (* this);
+	model -> set_space (space);
 	
 	return true;
 }
 
 //	virtual
 bool Tile ::
-	move (Model & model, Set <Model> & destination)
+	move (Reference <Model> model, Reference <Set <Model> > destination)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", model . name, destination . name);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", model -> name, destination -> name);
 	assert (is_initialized ());
-	assert (model . is_initialized ());
+	assert (model -> is_initialized ());
 	assert (contains (model));
-	assert (destination . is_initialized ());
+	assert (destination -> is_initialized ());
 
-	if (model . item . is_type <Items :: NPC> ())
+	if (model -> item -> is_type <Items :: NPC> ())
 	{
-		npcs . drop (model . item . to_type <Items :: NPC> ());
+		npcs -> drop (model -> item -> to_type <Items :: NPC> ());
 	}
 
 	bool check = Set <Model> :: move (model, destination);
@@ -167,17 +179,21 @@ bool Tile ::
 }
 
 void Tile ::
-	load_xml (TiXmlElement & element)
+	load_xml (boost :: shared_ptr <TiXmlElement> element)
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml", "~element~");
 	assert (is_initialized ());
 
-	Engines :: Log :: log (me) << "element value: " << element . ValueStr () << endl;
-	if (element . ValueStr () == string ("include"))
+	Engines :: Log :: log (me) << "element value: " << element -> ValueStr () << endl;
+	if (element -> ValueStr () == string ("include"))
 	{
-		TiXmlDocument document
-			(Engines :: Settings :: get () . radakan_path + "/data/tile/"
-				+ element . Attribute ("name") + ".xml");
+		boost :: shared_ptr <TiXmlDocument> document
+		(
+			new TiXmlDocument
+			(
+				Engines :: Settings :: get () -> radakan_path + "/data/tile/" + element -> Attribute ("name") + ".xml"
+			)
+		);
 		load_xml_file (document);
 		return;
 	}
@@ -186,12 +202,12 @@ void Tile ::
 /*	double x;
 	element . Attribute ("x", & x);
 	Engines :: Log :: log (me) << "x: " << x << endl;*/
-	float x = to_float (element . Attribute ("x"));
-	float y = to_float (element . Attribute ("y"));
-	float z = to_float (element . Attribute ("z"));
-	float scale = to_float (element . Attribute ("scale"));
+	float x = to_float (element -> Attribute ("x"));
+	float y = to_float (element -> Attribute ("y"));
+	float z = to_float (element -> Attribute ("z"));
+	float scale = to_float (element -> Attribute ("scale"));
 
-	TiXmlElement * item_xml = element . FirstChildElement ();
+	TiXmlElement * item_xml = element -> FirstChildElement ();
 	
 	string name = item_xml -> Attribute ("name") + string (" ") + to_string (position);
 	string mesh = item_xml -> Attribute ("mesh");
@@ -209,22 +225,22 @@ void Tile ::
 		to_float (volume_element -> Attribute ("z"))
 	);
 
-	Items :: Item * item = NULL;
+	Reference <Items :: Item> item;
 	if (item_xml -> ValueStr () == string ("static_item"))
 	{
-		item = static_cast <Items :: Item *> (new Items :: Static_Item (name, mesh, volume, mass, solid));
+		item . reset_pointee (new Items :: Static_Item (name, mesh, volume, mass, solid));
 	}
 	else if (item_xml -> ValueStr () == string ("plane"))
 	{
-		item = static_cast <Items :: Item *> (new Items :: Static_Item (name, mesh, volume, mass, solid));
+		item . reset_pointee (new Items :: Static_Item (name, mesh, volume, mass, solid));
 	}
 	else if (item_xml -> ValueStr () == string ("npc"))
 	{
-		item = static_cast <Items :: Item *> (new Items :: NPC (name, mesh, volume, mass));
+		item . reset_pointee (new Items :: NPC (name, mesh, volume, mass));
 	}
 	else if (item_xml -> ValueStr () == string ("player"))
 	{
-		item = static_cast <Items :: Item *> (new Items :: Player_Character (name, mesh, volume, mass));
+		item . reset_pointee (new Items :: Player_Character (name, mesh, volume, mass));
 	}
 	else
 	{
@@ -232,50 +248,50 @@ void Tile ::
 		abort ();
 	}
 
-	Model & model = create_model (* item, position + Ogre :: Vector3 (x, y, z), scale);
+	Reference <Model> model = create_model (item, position + Ogre :: Vector3 (x, y, z), scale);
 	bool check = add (model);
 	assert (check);
 
 	//	TODO re-enable assert ((position + Ogre :: Vector3 (x, y, z) - model . getPosition ()) . length () < 0.01);
 
-	TiXmlElement * material = element . FirstChildElement ("material");
+	TiXmlElement * material = element -> FirstChildElement ("material");
 	if (material != NULL)
 	{
-		model . set_material (material -> Attribute ("name"));
+		model -> set_material (material -> Attribute ("name"));
 	}
 }
 
 void Tile ::
-	load_xml_file (TiXmlDocument & document)
+	load_xml_file (boost :: shared_ptr <TiXmlDocument> document)
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml_file", "~document~");
 	assert (is_initialized ());
 
-	bool check = document . LoadFile ();
+	bool check = document -> LoadFile ();
 	assert (check);
-	assert (! document . Error ());
-	TiXmlElement * root = document . RootElement ();
+	assert (! document -> Error ());
+	boost :: shared_ptr <TiXmlElement> root (document -> RootElement ());
 	assert (root != NULL);
 	
-	for (TiXmlElement * model_xml = root -> FirstChildElement ();
-				model_xml != NULL; model_xml = model_xml -> NextSiblingElement ())
+	for (boost :: shared_ptr <TiXmlElement> xml_element (root -> FirstChildElement ());
+		xml_element; xml_element . reset (xml_element -> NextSiblingElement ()))
 	{
-		load_xml (* model_xml);
+		load_xml (xml_element);
 	}
 }
 
-Model & Tile ::
-	create_model (Items :: Item & item, Ogre :: Vector3 position, float scale)
+Reference <Model> Tile ::
+	create_model (Reference <Items :: Item> item, Ogre :: Vector3 position, float scale)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "create_model", item . name, to_string (position), to_string (scale));
-	OgreOde :: Geometry & geometry = item . create_geometry ();
-	OgreOde :: Body * body = geometry . getBody ();
-	if (body == NULL)
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "create_model", item -> name, to_string (position), to_string (scale));
+	boost :: shared_ptr <OgreOde :: Geometry> geometry = item -> create_geometry ();
+	boost :: shared_ptr <OgreOde :: Body> body (geometry -> getBody ());
+	if (body)
 	{
-		return * (new Model (item, position, scale, geometry));
+		return Reference <Model> (new Movable_Model (item, position, scale, geometry, body));
 	}
 	else
 	{
-		return * (new Movable_Model (item, position, scale, geometry, * body));
+		return Reference <Model> (new Model (item, position, scale, geometry));
 	}
 }

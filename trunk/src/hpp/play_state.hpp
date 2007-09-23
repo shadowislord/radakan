@@ -2,13 +2,20 @@
 #define RADAKAN_PLAY_STATE_HPP
 
 #include "strategy.hpp"
-#include "gui.hpp"
-#include "world.hpp"
+#include "singleton.hpp"
 
 using namespace std;
 
+namespace Ogre
+{
+	class Camera;
+	class SceneManager;
+}
+
 namespace Radakan
 {
+	class GUI;
+	
 	namespace Engines
 	{
 		class Game;
@@ -22,18 +29,18 @@ namespace Radakan
 			public Strategy
 		{
 			public :
-				Play_State (Ogre :: SceneManager & scene_manager);
+				Play_State (boost :: shared_ptr <Ogre :: SceneManager> scene_manager);
 				virtual ~Play_State ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 
-				virtual Strategy * transit (const Object & message);
+				virtual Reference <Strategy> transit (Reference <const Object> message);
 
 			private :
-				GUI & gui;
+				Reference <GUI> gui;
 				
-				Ogre :: Camera & camera;
+				boost :: scoped_ptr <Ogre :: Camera> camera;
 		};
 	}
 }

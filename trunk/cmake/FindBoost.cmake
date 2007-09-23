@@ -10,20 +10,25 @@ if(WIN32)
         "D:/ScatteredLands/Boost/include/boost-1_33_1"
         "D:/ScatteredLands/Boost/include/boost-1_33_1" 
         "D:/Projects/ScatteredLands/boost/include/boost-1_33_1" 
-    	"C:/Boost/includeboost-1_33_1")
+        "C:/Boost/includeboost-1_33_1")
 
-    if(Boost_INCLUDE_DIR)
-        set(Boost_FOUND "YES")
-    endif(Boost_INCLUDE_DIR)
 else(WIN32)
+    find_path(Boost_INCLUDE_DIR "boost/regex.h"
+        "/usr/include")
 endif(WIN32)
+
+if(Boost_INCLUDE_DIR)
+    set(Boost_FOUND "YES")
+endif(Boost_INCLUDE_DIR)
 
 if (Boost_FOUND)
    if (NOT Boost_FIND_QUIETLY)
-      message(STATUS "Found Boost: ${Boost_LIBRARIES}")
+      message(STATUS "Found Boost: ${Boost_INCLUDE_DIR}")
    endif (NOT Boost_FIND_QUIETLY)
 else (Boost_FOUND)
    if (Boost_FIND_REQUIRED)
       message(FATAL_ERROR "Could not find Boost")
+   else (Boost_FIND_REQUIRED)
+      message(STATUS "Could not find Boost")
    endif (Boost_FIND_REQUIRED)
 endif (Boost_FOUND)

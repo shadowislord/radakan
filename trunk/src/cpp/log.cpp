@@ -1,5 +1,6 @@
 #include <fstream>
 #include <sstream>
+
 #include "log.hpp"
 #ifdef RADAKAN_DEBUG
 	#include "world.hpp"
@@ -18,12 +19,17 @@ const string Log ::
 
 //  constructor
 Log ::
-	Log () :
+	Log (string radakan_path) :
 	Object ("log")
 {
 	trace (me, Log :: get_class_name (), "");
 	
- //	Do nothing.
+	Log :: log (me) << "All further logs will be written to '" << radakan_path << "/log/log.txt'." << endl;
+
+	//	'Log :: log (me)' is redirected to a log file.
+	cout . rdbuf ((new ofstream ((radakan_path + "/log/log.txt") . c_str ())) -> rdbuf ());
+	cerr . rdbuf (Log :: log (me) . rdbuf ());
+	clog . rdbuf (Log :: log (me) . rdbuf ());
 	
 	assert (is_initialized ());
 }
@@ -48,7 +54,7 @@ bool Log ::
 
 //	static
 ostream & Log ::
-	error (const Object & logger)
+	error (const Reference_Base & logger)
 {
 	log (logger) << "An error occurred:" << endl;
 	return cout << "\t";
@@ -56,15 +62,15 @@ ostream & Log ::
 
 //	static
 ostream & Log ::
-	log (const Object & logger)
+	log (const Reference_Base & logger)
 {
 	#ifdef RADAKAN_DEBUG
 		cout << endl;
 		if (World :: is_instantiated ())
 		{
-			cout << "= turn " << World :: get () . get_turn () << " =" << endl;
+			cout << "= turn " << World :: get () -> get_turn () << " =" << endl;
 		}
-		cout << "'" << logger . name << "' reports:" << endl;
+		cout << "'" << logger . get_name () << "' reports:" << endl;
 		return cout << "\t";
 	#else
 		return cout;	//	completely ignored
@@ -79,7 +85,7 @@ void Log ::
 	
 	if (is_instantiated ())
 	{
-		get () . call_observers (message_contents);	//	Automatically construct an Object.
+		get () -> call_observers (Reference <Object> (new Object (message_contents)));
 	}
 }
 
@@ -87,7 +93,7 @@ void Log ::
 void Log ::
 	trace
 	(
-		const Object & logger,
+		const Reference_Base & logger,
 		string class_name,
 		string method,
 		string argument_1,
@@ -98,8 +104,6 @@ void Log ::
 		string argument_6
 	)
 {
-	//	assert (logger . Object :: is_type <T>);
-	
 	if (method . empty ())
 	{
 		method = class_name;
@@ -119,3 +123,12 @@ void Log ::
 		<< ")" << endl;
 }
 
+//	static
+void Log ::
+	no_logs (const Reference_Base & logger)
+{
+	Log :: log (logger) << "No further logging will occur." << endl;
+
+	//	From here on, all Log :: log (me) messages are ignored.
+	cout . rdbuf ((new ostream (new stringbuf (ios_base :: out))) -> rdbuf ());
+}

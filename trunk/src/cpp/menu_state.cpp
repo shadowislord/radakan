@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "gui.hpp"
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "log.hpp"
@@ -22,7 +23,7 @@ const string Menu_State ::
 Menu_State ::
 	Menu_State () :
 	Object ("menu state"),
-	gui (Engines :: GUI_Engine :: get () . create_gui ("menu.xml"))
+	gui (Engines :: GUI_Engine :: get () -> create_gui ("menu.xml"))
 {
 	Engines :: Log :: trace (me, Menu_State :: get_class_name ());
 
@@ -52,25 +53,25 @@ bool Menu_State ::
 }
 
 //	virtual
-Strategy * Menu_State ::
-	transit (const Object & message)
+Reference <Strategy> Menu_State ::
+	transit (Reference <const Object> message)
 {
 	assert (is_initialized ());
 
 	//	quit
 	if ((message == terminate)
-		|| Engines :: Input_Engine :: get () . get_gui_button ("Quit"))
+		|| Engines :: Input_Engine :: get () -> get_gui_button ("Quit"))
 	{
-		return NULL;
+		return Reference <Strategy> ();
 	}
 
-	Engines :: GUI_Engine :: get () . set_active_gui (gui);
+	Engines :: GUI_Engine :: get () -> set_active_gui (gui);
 
 	//	un-pause
-	if (Engines :: Input_Engine :: get () . get_key ("escape", true)
-		|| Engines :: Input_Engine :: get () . get_gui_button ("Return"))
+	if (Engines :: Input_Engine :: get () -> get_key ("escape", true)
+		|| Engines :: Input_Engine :: get () -> get_gui_button ("Return"))
 	{
-		if (Items :: Player_Character :: get () . is_dead ())
+		if (Items :: Player_Character :: get () -> is_dead ())
 		{
 			Engines :: Log :: show ("You're dead and cannot return to the game.");
 		}
@@ -78,15 +79,15 @@ Strategy * Menu_State ::
 		{
 			Engines :: Log :: log (me) << "Game resumed" << endl;
 			
-			return & Play_State :: get ();
+			return Play_State :: get ();
 		}
 	}
 
 	//	FPS
-	if (Engines :: Input_Engine :: get () . get_gui_button ("Statistics"))
+	if (Engines :: Input_Engine :: get () -> get_gui_button ("Statistics"))
 	{
-		Engines :: Log :: show (World :: get () . get_FPS ());
+		Engines :: Log :: show (World :: get () -> get_FPS ());
 	}
 
-	return this;
+	return Reference <Strategy> (this);
 }

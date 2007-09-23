@@ -1,42 +1,48 @@
 #ifndef RADAKAN_CONVERSATION_MESSAGE_HPP
 #define RADAKAN_CONVERSATION_MESSAGE_HPP
 
-#include "character.hpp"
-
-#include <tinyxml.h>
+#include "object.hpp"
 
 using namespace std;
 
+class TiXmlElement;
+
 namespace Radakan
 {
+	namespace Items
+	{
+		class Character;
+	}
+
 	namespace Messages
 	{
 
+		//	comments missing
 		class Conversation_Message :
 			public Object
 		{
 			public :
 				Conversation_Message
 				(
-					const TiXmlElement & new_option,
-					Items :: Character & new_from,
-					Items :: Character & new_to
+					boost :: shared_ptr <const TiXmlElement> new_option,
+					Reference <Items :: Character> new_from,
+					Reference <Items :: Character> new_to
 				);
 				virtual ~Conversation_Message ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 
-				Conversation_Message & get_reaction () const;
+				Reference <Conversation_Message> get_reaction () const;
 
 				///	'option' is a reference to an XML element in the behavior file.
-				const TiXmlElement & option;
+				boost :: shared_ptr <const TiXmlElement> option;
 				
-				Items :: Character & from;
-				Items :: Character & to;
+				Reference <Items :: Character> from;
+				Reference <Items :: Character> to;
 
 			private :
-				static string create_name (const TiXmlElement & option);
+				static string create_name (boost :: shared_ptr <const TiXmlElement> option);
 		};
 	}
 }

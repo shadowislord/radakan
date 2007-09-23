@@ -1,17 +1,32 @@
 #ifndef RADAKAN_CONVERSATION_ENGINE_HPP
 #define RADAKAN_CONVERSATION_ENGINE_HPP
 
-#include "character.hpp"
-#include "conversation_message.hpp"
 #include "singleton.hpp"
 
 using namespace std;
 
+class TiXmlAttribute;
+class TiXmlDocument;
+class TiXmlElement;
+
 namespace Radakan
 {
+	template <class T> class Set;
+
+	namespace Items
+	{
+		class Character;
+	}
+
+	namespace Messages
+	{
+		class Conversation_Message;
+	}
+
 	namespace Engines
 	{
 
+		///	comments missing
 		class Conversation_Engine :
 			public Singleton <Conversation_Engine>
 		{
@@ -22,13 +37,13 @@ namespace Radakan
 				
 				static const string get_class_name ();
 
-				Set <Messages :: Conversation_Message> & get_options (Items :: Character & speaker, Items :: Character & listener);
+				Reference <Set <Messages :: Conversation_Message> > get_options (Reference <Items :: Character > speaker, Reference <Items :: Character> listener);
 
 			private :
-				bool evaluate_condition (const TiXmlElement * element, Items :: Character & subject);
-				bool evaluate_expression (const TiXmlAttribute * attribute, Items :: Character & subject);
+				bool evaluate_condition (boost :: shared_ptr <const TiXmlElement> element, Reference <Items :: Character> subject);
+				bool evaluate_expression (boost :: shared_ptr <const TiXmlAttribute> attribute, Reference <Items :: Character> subject);
 			
-				TiXmlDocument behavior;
+				boost :: scoped_ptr <TiXmlDocument> behavior;
 		};
 	}
 }

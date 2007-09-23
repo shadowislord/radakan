@@ -1,13 +1,13 @@
 #ifndef RADAKAN_OBSERVABLE_HPP
 #define RADAKAN_OBSERVABLE_HPP
 
-#include "observer.hpp"
 #include "set.hpp"
 
 using namespace std;
 
 namespace Radakan
 {
+	template <class T> class Observer;
 
 	///	Observable is an abstract base class for the observer pattern.
 	template <class T> class Observable :
@@ -20,16 +20,16 @@ namespace Radakan
 			
 			static const string get_class_name ();
 
-			void call_observers (const Object & message);
+			void call_observers (Reference <const Object> message = Object :: update);
 
-			void register_observer (Observer <T> & observer);
-			void drop_observer (Observer <T> & observer);
+			void register_observer (Reference <Observer <T> > observer);
+			void drop_observer (Reference <Observer <T> > observer);
 
 		protected :
 			Observable ();
 
 		private :
-			Set <Observer <T> > observers;
+			Reference <Set <Observer <T> > > observers;
 	};
 }
 

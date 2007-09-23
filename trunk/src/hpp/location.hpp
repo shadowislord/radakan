@@ -20,9 +20,9 @@ namespace Radakan
 			static const string get_class_name ();
 
 			///	'add' returns true on success.
-			virtual bool add (T & t);
+			virtual bool add (Reference <T> additive);
 
-			virtual void drop (Object & t, bool stay = false);
+			virtual void drop (Reference <T> dropped);
 			
 		protected :
 			Location (int new_maximal_size = Set <T> :: unlimited);

@@ -29,10 +29,10 @@ namespace Radakan
 				
 				static const string get_class_name ();
 				
-				virtual Strategy * transit (const Object & message);
+				virtual Reference <Strategy> transit (Reference <const Object> message);
 		
 			private :
-				GUI & gui;
+				Reference <GUI> gui;
 		};
 	}
 }

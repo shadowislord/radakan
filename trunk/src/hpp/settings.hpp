@@ -3,7 +3,7 @@
 
 #include "singleton.hpp"
 
-// A quick way to enable WSAD is to define RADAKAN_WSAD.
+// A way to enable WSAD is to define RADAKAN_WSAD.
 #ifdef RADAKAN_WINDOWS
 	#define RADAKAN_WSAD
 #endif

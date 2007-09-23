@@ -1,29 +1,34 @@
 #ifndef RADAKAN_TILE_HPP
 #define RADAKAN_TILE_HPP
 
-#include <Ogre.h>
-#if OGRE_VERSION_MINOR < 3
-	#include <OgreKeyEvent.h>
-	#include <OgreEventListeners.h>
-#endif
-#include <OgreStringConverter.h>
-#include <OgreException.h>
-
-#include "model.hpp"
-#include "npc.hpp"
-
-#include <tinyxml.h>
+#include "location.hpp"
+#include "resident.hpp"
 
 using namespace std;
 
+class TiXmlDocument;
+class TiXmlElement;
+
+namespace OgreOde
+{
+	class SimpleSpace;
+}
+
 namespace Radakan
 {
+	class Model;
+
+	namespace Items
+	{
+		class Item;
+		class NPC;
+	}
+	
 	///	A Tile is a square piece of the world.
 	///	Tile data is stored under trunk/data/tile/.
 	class Tile :
 		public Resident <Tile>,
-		public Location <Model>,
-		public OgreOde :: SimpleSpace
+		public Location <Model>
 	{
 		public :
 			Tile (pair <int, int> new_coordinates);
@@ -32,22 +37,24 @@ namespace Radakan
 			
 			static const string get_class_name ();
 			
-			virtual bool add (Model & model);
-			virtual bool move (Model & model, Set <Model> & destination);
+			virtual bool add (Reference <Model> model);
+			virtual bool move (Reference <Model> model, Reference <Set <Model> > destination);
 
 			const pair <int, int> coordinates;
 			const Ogre :: Vector3 position;
 
 			static const int side_length;
 
-			Set <Items :: NPC> npcs;
+			Reference <Set <Items :: NPC> > npcs;
+
+			boost :: shared_ptr <OgreOde :: SimpleSpace> space;
 
 		private :
-			void load_xml (TiXmlElement & element);
-			void load_xml_file (TiXmlDocument & document);
-			Model & create_model (Items :: Item & item, Ogre :: Vector3 position, float scale);
+			void load_xml (boost :: shared_ptr <TiXmlElement> element);
+			void load_xml_file (boost :: shared_ptr <TiXmlDocument> document);
+			Reference <Model> create_model (Reference <Items :: Item> item, Ogre :: Vector3 position, float scale);
 
-			TiXmlDocument doc;
+			boost :: shared_ptr <TiXmlDocument> doc;
 	};
 }
 

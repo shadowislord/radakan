@@ -31,12 +31,12 @@ Tracker ::
 	assert (Tracker :: is_initialized ());
 
 	#ifdef RADAKAN_DEBUG
-		for (Object * i = Tracker :: get () . get_child (); i != NULL;
-			i = Tracker :: get () . get_another_child ())
+		for (Reference <Object> i = Tracker :: get () -> get_child (); i . points_to_object ();
+			i = Tracker :: get () -> get_another_child ())
 		{
-			cout << "Warning: " << i -> name << " (" << i << ") was not destructed." << endl;
+			Log :: log (me) << "Warning: " << i -> name << " was not destructed." << endl;
 		}
-		assert (Tracker :: get () . is_empty ());
+		assert (Tracker :: get () -> is_empty ());
 	#endif
 }
 

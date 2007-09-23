@@ -5,8 +5,6 @@
 #   Vorbis_LIB_RELEASE  - release library directory
 #   Vorbis_LIB_DEBUG    - release library directory
 
-find_package(Ogre)
-
 if(WIN32)
     find_path(Vorbis_INCLUDE_DIR "vorbis/Vorbis.h"
         "D:/ScatteredLands/vorbis/include"
@@ -22,12 +20,6 @@ if(WIN32)
         "D:/ScatteredLands/vorbis/lib/debuglib"
         "D:/Projects/ScatteredLands/vorbis/lib/debuglib"
         "C:/vorbis/lib/releaselib")
-
-    set(Vorbis_FOUND 0)
-
-    if(Vorbis_INCLUDE_DIR AND Vorbis_LIB_DEBUG AND Vorbis_LIB_RELEASE)
-        set(Vorbis_FOUND 1)
-    endif(Vorbis_INCLUDE_DIR AND Vorbis_LIB_DEBUG AND Vorbis_LIB_RELEASE)
 else(WIN32)
     find_path(Vorbis_INCLUDE_DIR "vorbisenc.h"
         "/usr/include/vorbis")
@@ -37,21 +29,22 @@ else(WIN32)
 
     find_path(Vorbis_LIB_DEBUG "libvorbis.so"
         "/usr/lib")
-
-    set(Vorbis_FOUND 0)
-
-    if(Vorbis_INCLUDE_DIR AND Vorbis_LIB_DEBUG AND Vorbis_LIB_RELEASE)
-        set(Vorbis_FOUND 1)
-    endif(Vorbis_INCLUDE_DIR AND Vorbis_LIB_DEBUG AND Vorbis_LIB_RELEASE)
 endif(WIN32)
 
-if (Vorbis_FOUND)
-   if (NOT Vorbis_FIND_QUIETLY)
-      message(STATUS "Found Vorbis: ${Vorbis_LIBRARIES}")
-   endif (NOT Vorbis_FIND_QUIETLY)
-else (Vorbis_FOUND)
-   if (Vorbis_FIND_REQUIRED)
-      message(FATAL_ERROR "Could not find Vorbis")
-   endif (Vorbis_FIND_REQUIRED)
-endif (Vorbis_FOUND)
+set(Vorbis_FOUND 0)
 
+if(Vorbis_INCLUDE_DIR AND Vorbis_LIB_DEBUG AND Vorbis_LIB_RELEASE)
+#    set(Vorbis_FOUND 1)
+endif(Vorbis_INCLUDE_DIR AND Vorbis_LIB_DEBUG AND Vorbis_LIB_RELEASE)
+
+if (Vorbis_FOUND)
+    if (NOT Vorbis_FIND_QUIETLY)
+        message (STATUS "Found Vorbis: ${Vorbis_INCLUDE_DIR}, ${Vorbis_LIB_RELEASE}, ${Vorbis_LIB_DEBUG}")
+    endif (NOT Vorbis_FIND_QUIETLY)
+else (Vorbis_FOUND)
+    if (Vorbis_FIND_REQUIRED)
+        message (FATAL_ERROR "Could not find Vorbis")
+    else (Vorbis_FIND_REQUIRED)
+        message (STATUS "Could not find Vorbis")
+    endif (Vorbis_FIND_REQUIRED)
+endif (Vorbis_FOUND)

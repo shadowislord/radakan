@@ -1,6 +1,7 @@
 #ifndef RADAKAN_ALIVE_STATE_HPP
 #define RADAKAN_ALIVE_STATE_HPP
 
+#include "strategy.hpp"
 #include "strategy_state_machine.hpp"
 
 using namespace std;
@@ -25,20 +26,20 @@ namespace Radakan
 			private Strategy_State_Machine
 		{
 			public :
-				Alive_State (Items :: NPC & new_npc);
+				Alive_State (Reference <Items :: NPC> new_npc);
 				virtual ~Alive_State ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 				
-				virtual Strategy * transit (const Object & message);
+				virtual Reference <Strategy> transit (Reference <const Object> message);
 
-				Items :: NPC & npc;
+				Reference <Items :: NPC> npc;
 				
 				//	'calm' can vary from 0 to 1.
 				float calm;
 
-				Set <Messages :: Conversation_Message> sensory_buffer;
+				Reference <Set <Object> > sensory_buffer;
 		};
 	}
 }

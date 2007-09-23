@@ -18,7 +18,7 @@ namespace Radakan
 			
 			static const string get_class_name ();
 			
-			virtual void call (const Object & message) = 0;
+			virtual void call (Reference <const Object> message = Object :: update) = 0;
 			
 		protected :
 			Observer ();

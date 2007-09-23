@@ -8,6 +8,8 @@ using namespace std;
 
 namespace Radakan
 {
+	class Tought;
+
 	namespace Items
 	{
 
@@ -29,9 +31,10 @@ namespace Radakan
 				
 				static const string get_class_name ();
 
-				virtual void drop (Object & t, bool stay);
+				virtual void drop (Reference <Item> dropped);
+				virtual void drop (Reference <Strategies :: Strategy> dropped);
 
-				virtual void call (const Object & message);
+				virtual void call (Reference <const Object> message);
 				
 				virtual bool is_dead () const;
 				virtual void die ();
@@ -45,6 +48,8 @@ namespace Radakan
 					Ogre :: Vector3 new_size,
 					float new_mass
 				);
+
+				Set <Tought> toughts;
 		};
 	}
 }

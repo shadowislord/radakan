@@ -1,18 +1,31 @@
 #ifndef RADAKAN_GUI_HPP
 #define RADAKAN_GUI_HPP
 
-#include "conversation_message.hpp"
-#include "log.hpp"
+#include "observable.hpp"
 #include "observer.hpp"
 #include "resident.hpp"
-#include <CEGUIWindow.h>
-#include <OgreCEGUIRenderer.h>
-//	#include <OgreRenderWindow.h>
 
 using namespace std;
 
+namespace CEGUI
+{
+	class EventArgs;
+	class Listbox;
+	class SubscriberSlot;
+	class Window;
+}
+
 namespace Radakan
 {
+	namespace Engines
+	{
+		class Log;
+	}
+
+	namespace Messages
+	{
+		class Conversation_Message;
+	}
 
 	///	I'm a graphical user interface.
 	class GUI :
@@ -24,29 +37,29 @@ namespace Radakan
 			GUI
 			(
 				string new_name,
-				CEGUI :: Window & new_root
+				boost :: shared_ptr <CEGUI :: Window> new_root
 			);
 			virtual ~GUI ();
 			virtual bool is_initialized () const;
 			
 			static const string get_class_name ();
 			
-			CEGUI :: Window & root_window;
+			boost :: shared_ptr <CEGUI :: Window> root_window;
 
-			virtual void call (const Object & message);
+			virtual void call (Reference <const Object> message = Object :: update);
 
 		private :
-			void subscribe (CEGUI :: Window & window);
+			void subscribe (boost :: shared_ptr <CEGUI :: Window> window);
 
 			virtual bool handle_event (const CEGUI :: EventArgs & arguments);
 
-			CEGUI :: Event :: Subscriber subscriber;
+			boost :: shared_ptr <CEGUI :: SubscriberSlot> subscriber;
 
-			CEGUI :: Listbox * chat_window;
+			boost :: shared_ptr <CEGUI :: Listbox> chat_window;
 			
-			CEGUI :: Listbox * log_window;
+			boost :: shared_ptr <CEGUI :: Listbox> log_window;
 
-			Set <Messages :: Conversation_Message> * messages;
+			Reference <const Set <Messages :: Conversation_Message> > messages;
 	};
 }
 

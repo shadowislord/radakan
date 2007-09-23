@@ -39,14 +39,14 @@ template <class T> Set <T> ::
 
 	prepare_for_destruction ();
 
-	for (T * child = get_child (); child != NULL; child = get_child ())
+	for (Reference <T> child = get_child (); child . points_to_object (); child = get_child ())
 	{
 		Engines :: Log :: log (me) << "Dropping child '" << child -> name << "'..." << endl;
-		drop (* child);
+		drop (child);
 	}
 	Engines :: Log :: log (me) << "All children were dropped." << endl;
 
-	assert (children . empty ());
+	assert (children -> empty ());
 }
 
 //	virtual
@@ -57,7 +57,7 @@ template <class T> bool Set <T> ::
 	assert (Object :: is_initialized ());
 	assert (unlimited < 0);
 	assert ((maximal_size == unlimited) || (0 <= maximal_size));
-	assert (children . size () <= maximal_size);
+	assert (children -> size () <= maximal_size);
 
 	/*
 	//	Don't use the 'get_child' & 'get_another_child' methods here,
@@ -76,34 +76,31 @@ template <class T> bool Set <T> ::
 {
 	assert (Set <T> :: is_initialized ());
 
-	return children . empty ();
+	return children -> empty ();
 }
 
 //	virtual
 template <class T> bool Set <T> ::
-	add (T & t)
+	add (Reference <T> additive)
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "add", t . name);
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "add", additive -> name);
 	assert (Set <T> :: is_initialized ());
 	assert (! sealed);
 
-	if (contains (t))
+	if (contains (additive))
 	{
 		return false;
 	}
 
-	if ((maximal_size != unlimited) && (children . size () == maximal_size))
+	if ((maximal_size != unlimited) && (children -> size () == maximal_size))
 	{
-		Engines :: Log :: log (me) << t . name << " could not be added. I'm full." << endl;
+		Engines :: Log :: log (me) << additive -> name << " could not be added. I'm full." << endl;
 		return false;
 	}
-
-	t . remember (me);
-	//	Engines :: Log :: log (me) << t << " was added." << endl;
 
 	//	'second' means we're interested in if it worked or not.
 	//	'first' would give a iterator to the item.
-	bool check = children . insert (& t) . second;
+	bool check = children -> insert (additive) . second;
 	assert (check);
 	
 	assert (Set <T> :: is_initialized ());
@@ -112,34 +109,33 @@ template <class T> bool Set <T> ::
 
 //	virtual
 template <class T> bool Set <T> ::
-	contains (T & t)
+	contains (Reference <T> contained)
 	const
 {
 //	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "contains", name);
 	assert (Set <T> :: is_initialized ());
 
-	return (children . find (& t) != children . end ());
+	return 0 < children -> count (contained);
 }
 
 //	virtual
 template <class T> bool Set <T> ::
-	move (T & t, Set <T> & destination)
+	move (Reference <T> moved, Reference <Set <T> > destination)
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "move", t . name, destination . name);
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "move", moved -> name, destination -> name);
 	assert (Set <T> :: is_initialized ());
-	assert (t . is_initialized ());
-	assert (destination . is_initialized ());
+	assert (moved -> is_initialized ());
+	assert (destination -> is_initialized ());
 	assert (! sealed);
-	assert (contains (t));
+	assert (contains (moved));
 
-	//	'true' as second parameter forces 't' to not self-destruct.
-	drop (t, true);
+	drop (moved);
 	
-	if (destination . add (t))
+	if (destination -> add (moved))
 	{
 		return true;
 	}
-	bool check = add (t);
+	bool check = add (moved);
 	assert (check);
 	
 	return false;
@@ -147,43 +143,42 @@ template <class T> bool Set <T> ::
 
 //	virtual
 template <class T> void Set <T> ::
-	drop (Object & t, bool stay)
+	drop (Reference <T> dropped)
 {
-	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "drop", t . name, bool_to_string (stay));
+	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "drop", dropped -> name);
 	assert (Set <T> :: is_initialized ());
 	assert ((! sealed) || is_destructing ());
-	T & dropped = t . to_type <T> ();
+	assert (dropped -> is_initialized ());
 	assert (contains (dropped));
 
-	dropped . forget (me, stay);
-	children . erase (& dropped);
+	children -> erase (dropped);
 }
 
-template <class T> T * Set <T> ::
+template <class T> Reference <T> Set <T> ::
 	get_child ()
 	const
 {
 //	Engines :: Log :: trace (me, Set <T> :: get_class_name (), get_child);
 	assert (Set <T> :: is_initialized ());
 
-	if (children . empty ())
+	if (children -> empty ())
 	{
-		return NULL;
+		return Reference <T> ();
 	}
-	next_child = children . begin ();
+	next_child = children -> begin ();
 	return * (next_child ++);
 }
 
-template <class T> T * Set <T> ::
+template <class T> Reference <T> Set <T> ::
 	get_another_child ()
 	const
 {
 //	Engines :: Log :: trace (me, Set <T> :: get_class_name (), get_another_child);
 	assert (Set <T> :: is_initialized ());
 
-	if (next_child == children . end ())
+	if (next_child == children -> end ())
 	{
-		return NULL;
+		return Reference <T> ();
 	}
 	return * (next_child ++);
 }
@@ -205,7 +200,12 @@ template <class T> bool Set <T> ::
 #include "conversation_message.hpp"
 #include "strategy.hpp"
 #include "gui.hpp"
+#include "item.hpp"
+#include "npc.hpp"
+#include "model.hpp"
+#include "movable_model.hpp"
 #include "tile.hpp"
+#include "tought.hpp"
 #include "play_state.hpp"
 
 template class Set <Messages :: Conversation_Message>;
@@ -215,9 +215,28 @@ template class Set <Items :: Character>;
 template class Set <Items :: Item>;
 template class Set <Items :: NPC>;
 template class Set <Model>;
+template class Set <Movable_Model>;
 template class Set <Object>;
 template class Set <Observer <Engines :: Log> >;
 template class Set <Observer <GUI> >;
 template class Set <Observer <Items :: Character> >;
+template class Set <Observer <Strategies :: Play_State> >;
 template class Set <Sound_Sample>;
 template class Set <Tile>;
+template class Set <Tought>;
+
+template class Set <const Messages :: Conversation_Message>;
+template class Set <const Strategies :: Strategy>;
+template class Set <const GUI>;
+template class Set <const Items :: Character>;
+template class Set <const Items :: Container>;
+template class Set <const Items :: Item>;
+template class Set <const Items :: NPC>;
+template class Set <const Model>;
+template class Set <const Object>;
+template class Set <const Observer <Engines :: Log> >;
+template class Set <const Observer <GUI> >;
+template class Set <const Observer <Items :: Character> >;
+template class Set <const Sound_Sample>;
+template class Set <const Tile>;
+template class Set <const Tought>;

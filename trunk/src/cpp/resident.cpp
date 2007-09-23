@@ -45,25 +45,25 @@ template <class T> bool Resident <T> ::
 }
 
 template <class T> void Resident <T> ::
-	enter (const Location <T> & new_location)
+	enter (Reference <const Location <T> > new_location)
 {
-	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "enter", new_location . name);
+	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "enter", new_location -> name);
 	assert (Resident <T> :: is_initialized ());
-	assert (location == NULL);
+	assert (! location . points_to_object ());
 
-	location = & new_location;
+	location = new_location;
 }
 
 template <class T> void Resident <T> ::
-	leave (const Location <T> & old_location)
+	leave (Reference <const Location <T> > old_location)
 {
-	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "leave", old_location . name);
+	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "leave", old_location -> name);
 	assert (Resident <T> :: is_initialized ());
-	assert (location == & old_location);	//	'location' may be 'NULL'.
+	assert (location == old_location);	//	'location' may be 'NULL'.
 	
 	Engines :: Log :: log (me) << "I'm leaving " << location -> name << "." << endl;
 
-	location = NULL;
+	location . reset_pointee ();
 }
 
 //	to avert linking errors:

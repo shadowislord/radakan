@@ -3,18 +3,22 @@
 
 #include "resident.hpp"
 
-#include <OgreEntity.h>
-#include <OgreOde_Core.h>
-
 using namespace std;
 
-namespace Radakan
+namespace Ogre
 {
-	class Model;
+	class Entity;
+}
+
+namespace OgreOde
+{
+	class Geometry;
 }
 
 namespace Radakan
 {
+	class Model;
+
 	namespace Items
 	{
 		///	Item is the base class for all in-game items.
@@ -29,17 +33,17 @@ namespace Radakan
 				
 				virtual float get_total_mass () const;
 
-				virtual OgreOde :: Geometry & create_geometry ();
+				virtual boost :: shared_ptr <OgreOde :: Geometry> create_geometry ();
 
 				///	Don't use this method directely.
-				void set_model (Model & new_model);
+				void set_model (Reference <Model> new_model);
 				
 				bool has_model () const;
 				
 				///	Don't use this method directely, use 'model . destruct ();' if possible.
 				void remove_model ();
 				
-				Model & get_model () const;
+				Reference <Model> get_model () const;
 
 				float get_volume () const;
 
@@ -57,7 +61,7 @@ namespace Radakan
 				
 				const bool visible;
 
-				Ogre :: Entity & entity;
+				boost :: shared_ptr <Ogre :: Entity> entity;
 
 			protected :
 				Item
@@ -72,7 +76,7 @@ namespace Radakan
 
 			private :
 				///	can be NULL
-				Model * model;
+				Reference <Model> model;
 		};
 	}
 }

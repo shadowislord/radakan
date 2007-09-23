@@ -51,10 +51,10 @@ bool Battle_Engine ::
 
 //	virtual
 void Battle_Engine ::
-	call (const Object & message)
+	call (Reference <const Object> message)
 {
 	assert (is_initialized ());
-	if (message . name != "battle")
+	if (message -> name != "battle")
 	{
 		return;
 	}
@@ -72,7 +72,7 @@ void Battle_Engine ::
 
 	if (defender . is_dead ())
 	{
-		Engines :: Log :: show ("Mutilating " + defender . name + "'s dead body is *not* nice.");
+		Engines :: Log :: show ("Mutilating " + defender -> name + "'s dead body is *not* nice.");
 		return;
 	}
 
@@ -119,6 +119,6 @@ void Battle_Engine ::
 	}
 	else
 	{
-		Engines :: Log :: show (attacker . name + " missed!");
+		Engines :: Log :: show (attacker -> name + " missed!");
 	}
 }*/

@@ -9,6 +9,10 @@ template <class T> T * Ogre :: Singleton <T> ::
 	ms_Singleton (NULL);
 
 //	static
+template <class T> Reference <Object> Singleton <T> ::
+	myself;
+
+//	static
 template <class T> const string Singleton <T> ::
 	get_class_name ()
 {
@@ -21,7 +25,7 @@ template <class T> Singleton <T> ::
 {
 	Engines :: Log :: trace (me, Singleton <T> :: get_class_name ());
 
-	prepare_for_destruction ();
+	myself . reset_pointee (this);
 
 	assert (Singleton <T> :: is_initialized ());
 }
@@ -48,12 +52,23 @@ template <class T> bool Singleton <T> ::
 }
 
 //	static
-template <class T> T & Singleton <T> ::
+template <class T> void Singleton <T> ::
+	destruct ()
+{
+	assert (is_instantiated ());
+
+	myself . reset_pointee ();
+
+	assert (! is_instantiated ());
+}
+
+//	static
+template <class T> Reference <T> Singleton <T> ::
 	get ()
 {
 	assert (is_instantiated ());
 
-	return Ogre :: Singleton <T> :: getSingleton ();
+	return Reference <T> (Ogre :: Singleton <T> :: getSingletonPtr ());
 }
 
 //	static
@@ -76,6 +91,7 @@ template <class T> bool Singleton <T> ::
 //	#include "plugin_manager.hpp"
 #include "settings.hpp"
 #include "tracker.hpp"
+#include "world.hpp"
 
 template class Singleton <Strategies :: Menu_State>;
 template class Singleton <Strategies :: Play_State>;

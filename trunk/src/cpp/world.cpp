@@ -1,5 +1,13 @@
+#include <OgreOdeBody.h>	//	inclusion before 'OgreOdeWorld.h' to evade errors
+#include <OgreOdeGeometry.h>	//	inclusion before 'OgreOdeWorld.h' to evade errors
+#include <OgreOdeWorld.h>	//	inclusion before 'OgreOdeStepper.h' to evade errors
+#include <OgreOdeSpace.h>
+#include <OgreOdeStepper.h>
+
 #include "log.hpp"
+#include "movable_model.hpp"
 #include "player_character.hpp"
+#include "tile.hpp"
 #include "world.hpp"
 
 using namespace std;
@@ -35,23 +43,26 @@ const string World ::
 }
 
 World ::
-	World (Ogre :: SceneManager & scene_manager) :
+	World (boost :: shared_ptr <Ogre :: SceneManager> scene_manager) :
 	Object ("world"),
-	OgreOde :: World (& scene_manager),
-	OgreOde :: ForwardFixedInterpolatedStepHandler
-	(
-		this,
-		OgreOde :: StepHandler :: QuickStep,
-		time_step,
-		frame_rate,
-		max_frame_time,
-		time_scale
-	),
-	root_node (* scene_manager . getRootSceneNode ()),
+	root_node (scene_manager -> getRootSceneNode ()),
+	ogre_ode_world (new OgreOde :: World (scene_manager . get ())),
 	#ifdef RADAKAN_DEBUG
 		turn (0),
 	#endif
-	last_turn_lenght (0)
+	last_turn_lenght (0),
+	step_handler
+	(
+		new OgreOde :: ForwardFixedInterpolatedStepHandler
+		(
+			ogre_ode_world . get (),
+			OgreOde :: StepHandler :: QuickStep,
+			time_step,
+			frame_rate,
+			max_frame_time,
+			time_scale
+		)
+	)
 {
 	for (int x = min_x; x <= max_x; x ++)
 	{
@@ -64,25 +75,22 @@ World ::
 		}
 	}
 
-	set_active_tile (* tiles [pair <int, int> (0, 0)]);
+	set_active_tile (tiles [pair <int, int> (0, 0)]);
 
-	setCollisionListener (this);
+	ogre_ode_world -> setCollisionListener (this);
 
-    setGravity (Ogre::Vector3(0,-9.81,0));
-    //	setCFM (10e-5);    //	fine tune to make a realistic simulation
-    //	setERP (0.8);
-    setAutoSleep(true);
-    setContactCorrectionVelocity(1.0);
+    ogre_ode_world -> setGravity (Ogre :: Vector3 (0, - 9.81, 0));
+    //	ogre_ode_world -> setCFM (10e-5);    //	fine tune to make a realistic simulation
+    //	ogre_ode_world -> setERP (0.8);
+    ogre_ode_world -> setAutoSleep (true);
+    ogre_ode_world -> setContactCorrectionVelocity (1.0);
 	//	The following line causes an error in Ogre.
-	//	setShowDebugGeometries (true);
+	//	ogre_ode_world -> setShowDebugGeometries (true);
 
-	Engines :: Log :: log (me) << "ERP: " << getERP () << endl;
-	Engines :: Log :: log (me) << "CFM: " << getCFM () << endl;
+	Engines :: Log :: log (me) << "ERP: " << ogre_ode_world -> getERP () << endl;
+	Engines :: Log :: log (me) << "CFM: " << ogre_ode_world -> getCFM () << endl;
 
-	//	TODO make the next line work.
-    //getSceneManager () -> setSkyDome (true, "Examples/CloudySky",10,50000);
-    getSceneManager () -> setSkyDome (true, "Examples/CloudySky", 5, 8, 100);
-
+	ogre_ode_world -> getSceneManager () -> setSkyDome (true, "Examples/CloudySky", 5, 8, 100);
 }
 
 World ::
@@ -92,15 +100,6 @@ World ::
 	assert (World :: is_initialized ());
 
 	prepare_for_destruction ();
-
-	for (int x = min_x; x <= max_x; x ++)
-	{
-		for (int z = min_z; z <= max_z; z ++)
-		{
-			pair <int, int> coordinates (x, z);
-			delete tiles [coordinates];
-		}
-	}
 }
 
 //	virtual
@@ -113,7 +112,7 @@ bool World ::
 
 //	virtual
 void World ::
-	set_active_tile (Tile & tile)
+	set_active_tile (Reference <Tile> tile)
 {
 	assert (is_initialized ());
 
@@ -121,14 +120,14 @@ void World ::
 	{
 		if (has_active_state () && Items :: Player_Character :: is_instantiated ())
 		{
-			if (! tile . contains (Items :: Player_Character :: get () . get_movable_model ()))
+			if (! tile -> contains (Items :: Player_Character :: get () -> get_movable_model ()))
 			{
-				get_active_state () . move
-					(Items :: Player_Character :: get () . get_movable_model (), tile);
+				get_active_state () -> move
+					(Items :: Player_Character :: get () -> get_movable_model (), tile);
 			}
 		}
 
-		State_Machine <Tile> :: set_active_state (tile, true);
+		State_Machine <Tile> :: set_active_state (tile);
 	}
 }
 
@@ -138,7 +137,7 @@ void World ::
 	assert (is_initialized ());
 
 	//	Here, 'last_turn_lenght' contains the lenth of the current turn.
-	last_turn_lenght = float (turn_lenght_timer . getMilliseconds ()) / 1000;
+	last_turn_lenght = float (turn_lenght_timer -> getMilliseconds ()) / 1000;
 	turn_lenght_timer . reset ();
 
 	#ifdef RADAKAN_DEBUG
@@ -149,7 +148,7 @@ void World ::
 		Engines :: Log :: log (me) << "Turn " << turn << " started" << endl;
 	#endif
 
-	Ogre :: Vector3 position = Items :: Player_Character :: get () . get_movable_model () . node . getPosition ();
+	Ogre :: Vector3 position = Items :: Player_Character :: get () -> get_movable_model () -> node -> getPosition ();
 
 	int x = int (floor (position . x / Tile :: side_length));
 	int z = int (floor (position . z / Tile :: side_length));
@@ -157,23 +156,23 @@ void World ::
 	assert (x < Tile :: side_length * (max_x + 1));
 	assert (Tile :: side_length * min_z <= z);
 	assert (z < Tile :: side_length * (max_z + 1));
-	Tile * new_active_tile = tiles [pair <int, int> (x, z)];
-	assert (new_active_tile != NULL);
-	World :: get () . set_active_tile (* new_active_tile);
+	Reference <Tile> new_active_tile = tiles [pair <int, int> (x, z)];
+	assert (new_active_tile . points_to_object ());
+	set_active_tile (new_active_tile);
 
-	for (map <pair <int, int>, Tile *> :: iterator i = tiles . begin ();
+	for (map <pair <int, int>, Reference <Tile> > :: iterator i = tiles . begin ();
 		i != tiles . end (); i ++)
 	{
-		i -> second -> collide ();
+		i -> second -> space -> collide ();
 	}
 
-	OgreOde :: World :: step (time_step);
-	updateDrawState ();
-	synchronise ();
-	clearContacts ();
+	ogre_ode_world -> step (time_step);
+	ogre_ode_world -> updateDrawState ();
+	ogre_ode_world -> synchronise ();
+	ogre_ode_world -> clearContacts ();
 
 	//	run the AI for all nearby NPCs
-	Items :: Player_Character :: get () . call_observers (Object :: update);
+	Items :: Player_Character :: get () -> call_observers (Object :: update);
 }
 
 const unsigned int & World ::
@@ -220,5 +219,5 @@ string World ::
 {
 	assert (is_initialized ());
 
-	return "FPS: " + to_string (1.0 / World :: get () . get_last_turn_lenght ());
+	return "FPS: " + to_string (1.0 / World :: get () -> get_last_turn_lenght ());
 }

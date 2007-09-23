@@ -1,9 +1,15 @@
-#include "gui_engine.hpp"
-#include "input_engine.hpp"
-#include "settings.hpp"
 #include <CEGUIImagesetManager.h>
 #include <CEGUISchemeManager.h>
+#include <CEGUISystem.h>
+#include <CEGUIWindow.h>
 #include <CEGUIWindowManager.h>
+#include <OgreCEGUIRenderer.h>
+
+#include "gui.hpp"
+#include "gui_engine.hpp"
+#include "input_engine.hpp"
+#include "log.hpp"
+#include "settings.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -19,24 +25,24 @@ const string GUI_Engine ::
 GUI_Engine ::
 	GUI_Engine
 	(
-		Ogre :: RenderWindow & window,
-		Ogre :: SceneManager & scene_manager
+		boost :: shared_ptr <Ogre :: RenderWindow> window,
+		boost :: shared_ptr <Ogre :: SceneManager> scene_manager
 	) :
 	Object ("gui engine")
 {
 	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~");
 
-	renderer = new CEGUI :: OgreCEGUIRenderer (& window);
+	renderer . reset (new CEGUI :: OgreCEGUIRenderer (window . get ()));
 
 	Engines :: Log :: trace
 		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "AA");
 	
-	renderer -> setTargetSceneManager (& scene_manager);
+	renderer -> setTargetSceneManager (scene_manager . get ());
 
 	Engines :: Log :: trace
 		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "A");
-	system = new CEGUI :: System
-		(renderer, NULL, NULL, NULL, "", Settings :: get () . radakan_path + "/log/cegui.txt");
+	system . reset (new CEGUI :: System
+		(renderer . get (), NULL, NULL, NULL, "", Settings :: get () -> radakan_path + "/log/cegui.txt"));
 
 	CEGUI :: ImagesetManager :: getSingletonPtr () -> createImageset ("logo.imageset");
 
@@ -101,21 +107,23 @@ void GUI_Engine ::
 	system -> renderGUI ();
 }
 
-GUI & GUI_Engine ::
+Reference <GUI> GUI_Engine ::
 	create_gui (string configuration_file)
 {
 	assert (is_initialized ());
 
-	GUI & result =
-		* (
-			new GUI
+	Reference <GUI> result (
+		new GUI
+		(
+			configuration_file,
+			boost :: shared_ptr <CEGUI :: Window>
 			(
-				configuration_file,
-				* CEGUI :: WindowManager :: getSingleton () . loadWindowLayout (configuration_file)
+				CEGUI :: WindowManager :: getSingleton () . loadWindowLayout (configuration_file)
 			)
-		);
+		)
+	);
 
-	result . register_observer (Input_Engine :: get ());
+	result -> register_observer (Input_Engine :: get ());
 
 	if (! has_active_state ())
 	{
@@ -126,12 +134,12 @@ GUI & GUI_Engine ::
 }
 
 void GUI_Engine ::
-	set_active_gui (GUI & gui)
+	set_active_gui (Reference <GUI> gui)
 {
 	assert (is_initialized ());
-	assert (gui . is_initialized ());
+	assert (gui -> is_initialized ());
 
-	State_Machine <GUI> :: set_active_state (gui, true);
+	State_Machine <GUI> :: set_active_state (gui);
 
-	system -> setGUISheet (& gui . root_window);
+	system -> setGUISheet (gui -> root_window . get ());
 }

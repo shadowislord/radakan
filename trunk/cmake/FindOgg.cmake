@@ -20,12 +20,6 @@ if(WIN32)
         "D:/ScatteredLands/ogg/lib/debuglib"
         "D:/Projects/ScatteredLands/ogg/lib/debuglib"
         "C:/ogg/lib/releaselib")
-
-    set(Ogg_FOUND 0)
-
-    if(Ogg_INCLUDE_DIR AND Ogg_LIB_DEBUG AND Ogg_LIB_RELEASE)
-        set(Ogg_FOUND 1)
-    endif(Ogg_INCLUDE_DIR AND Ogg_LIB_DEBUG AND Ogg_LIB_RELEASE)
 else(WIN32)
     find_path(Ogg_INCLUDE_DIR "ogg.h"
         "/usr/include/ogg")
@@ -35,21 +29,24 @@ else(WIN32)
 
     find_path(Ogg_LIB_DEBUG "libogg.so"
         "/usr/lib")
-
-    set(Ogg_FOUND 0)
-
-    if(Ogg_INCLUDE_DIR AND Ogg_LIB_DEBUG AND Ogg_LIB_RELEASE)
-        set(Ogg_FOUND 1)
-    endif(Ogg_INCLUDE_DIR AND Ogg_LIB_DEBUG AND Ogg_LIB_RELEASE)
 endif(WIN32)
 
+set(Ogg_FOUND 0)
+
+if(Ogg_INCLUDE_DIR AND Ogg_LIB_DEBUG AND Ogg_LIB_RELEASE)
+#    set(Ogg_FOUND 1)
+endif(Ogg_INCLUDE_DIR AND Ogg_LIB_DEBUG AND Ogg_LIB_RELEASE)
+
+
 if (Ogg_FOUND)
-   if (NOT Ogg_FIND_QUIETLY)
-      message(STATUS "Found Ogg: ${Ogg_LIBRARIES}")
-   endif (NOT Ogg_FIND_QUIETLY)
+    if (NOT Ogg_FIND_QUIETLY)
+        message (STATUS "Found Ogg: ${Ogg_INCLUDE_DIR}, ${Ogg_LIB_RELEASE}, ${Ogg_LIB_DEBUG}")
+    endif (NOT Ogg_FIND_QUIETLY)
 else (Ogg_FOUND)
-   if (Ogg_FIND_REQUIRED)
-      message(FATAL_ERROR "Could not find Ogg")
-   endif (Ogg_FIND_REQUIRED)
+    if (Ogg_FIND_REQUIRED)
+        message (FATAL_ERROR "Could not find Ogg")
+    else (Ogg_FIND_REQUIRED)
+        message (STATUS "Could not find Ogg")
+    endif (Ogg_FIND_REQUIRED)
 endif (Ogg_FOUND)
 

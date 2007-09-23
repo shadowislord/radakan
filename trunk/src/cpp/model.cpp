@@ -1,3 +1,9 @@
+#include <OgreOdeGeometry.h>
+#include <OgreOdeSpace.h>
+#include <OgreOdeBody.h>
+#include <OgreOdeWorld.h>
+
+#include "item.hpp"
 #include "log.hpp"
 #include "model.hpp"
 #include "world.hpp"
@@ -14,41 +20,41 @@ const string Model ::
 
 //  constructor
 Model ::
-	Model (Items :: Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry) :
-	Object (new_item . name + "'s model"),
+	Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale, boost :: shared_ptr <OgreOde :: Geometry> new_geometry) :
+	Object (new_item -> name + "'s model"),
 	Location <Items :: Item> (1),
 	item (new_item),
-	node (* World :: get () . root_node . createChildSceneNode (name)),
+	node (World :: get () -> root_node -> createChildSceneNode (name)),
 	geometry (new_geometry)
 {
-	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item . name, to_string (position), to_string (scale));
+	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item -> name, to_string (position), to_string (scale));
 
 	add (item);
 	seal ();
 
 //	World :: get () . root_node . addChild (this);
 
-	node . setPosition (position);
-	node . setScale (scale, scale, scale);
-	node . attachObject (& item . entity);
+	node -> setPosition (position);
+	node -> setScale (scale, scale, scale);
+	node -> attachObject (item -> entity . get ());
 
-	assert (node . numAttachedObjects () == 1);
+	assert (node -> numAttachedObjects () == 1);
 	
-	item . entity . setUserObject (& geometry);
+	item -> entity -> setUserObject (geometry . get ());
 
-	if (geometry . getBody () == NULL)
+	if (geometry -> getBody () == NULL)
 	{
 		Engines :: Log :: log (me) << "I'm a static model." << endl;
 
-		geometry . setUserObject (& item . entity);
-		geometry . setPosition (position);
+		geometry -> setUserObject (item -> entity . get ());
+		geometry -> setPosition (position);
 	}
 
-	item . set_model (* this);
+	item -> set_model (Reference <Model> (this));
 
-	if (! item . solid)
+	if (! item -> solid)
 	{
-		geometry . disable ();
+		geometry -> disable ();
 	}
 
 	assert (Model :: is_initialized ());
@@ -63,15 +69,15 @@ Model ::
 
 	prepare_for_destruction ();
 
-	item . remove_model ();
+	item -> remove_model ();
 	
-	assert (node . numAttachedObjects () == 1);
+	assert (node -> numAttachedObjects () == 1);
 
-	World :: get () . getSceneManager () -> destroyMovableObject (& item . entity);
+	World :: get () -> ogre_ode_world -> getSceneManager () -> destroyMovableObject (item -> entity . get ());
 
-	assert (node . numAttachedObjects () == 0);
+	assert (node -> numAttachedObjects () == 0);
 
-	node . getParent () -> removeChild (node . getName ());
+	node -> getParent () -> removeChild (node -> getName ());
 }
 
 //	virtual
@@ -82,9 +88,9 @@ bool Model ::
 	assert (Set <Items :: Item> :: is_initialized ());
 	//	TODO re-enable:
 	//	assert (is_sealed ());
-	assert (item . has_model ());
-	assert (node . getParent () == & World :: get () . root_node);
-	assert (node . numAttachedObjects () <= 2);
+	assert (item -> has_model ());
+	assert (node -> getParent () == World :: get () -> root_node . get ());
+	assert (node -> numAttachedObjects () <= 2);
 
 	//	TODO re-enable:
 	//	assert ((node . getPosition () - geometry . getPosition ()) . length () < 0.01);
@@ -98,7 +104,7 @@ Ogre :: Vector3 Model ::
 	assert (Model :: is_initialized ());
 
 	//	notice the minus sign
-	return node . getOrientation () * - z_axis;
+	return - node -> getOrientation () * z_axis;
 }
 
 Ogre :: Vector3 Model ::
@@ -106,7 +112,7 @@ Ogre :: Vector3 Model ::
 {
 	assert (Model :: is_initialized ());
 
-	return node . getOrientation () * x_axis;
+	return node -> getOrientation () * x_axis;
 }
 
 Ogre :: Vector3 Model ::
@@ -114,7 +120,7 @@ Ogre :: Vector3 Model ::
 {
 	assert (Model :: is_initialized ());
 
-	return node . getOrientation () * y_axis;
+	return node -> getOrientation () * y_axis;
 }
 
 void Model ::
@@ -122,18 +128,18 @@ void Model ::
 {
 	assert (Model :: is_initialized ());
 
-	item . entity . setMaterialName (name);
+	item -> entity -> setMaterialName (name);
 }
 
 void Model ::
-	set_space (OgreOde :: Space & new_space)
+	set_space (boost :: shared_ptr <OgreOde :: Space> new_space)
 {
-	OgreOde :: Space * old_space = geometry . getSpace ();
-	if (old_space != NULL)
+	boost :: shared_ptr <OgreOde :: Space> old_space (geometry -> getSpace ());
+	if (old_space)
 	{
-		old_space -> removeGeometry (geometry);
+		old_space -> removeGeometry (* geometry . get ());
 	}
-	new_space . addGeometry (geometry);
+	new_space -> addGeometry (* geometry . get ());
 }
 
 Ogre :: Quaternion Radakan :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)

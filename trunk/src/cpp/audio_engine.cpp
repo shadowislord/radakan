@@ -1,3 +1,10 @@
+//	#define RADAKAN_FMOD
+
+#ifdef RADAKAN_FMOD
+	//	We're using FMOD version 3.
+	#include <fmod.h>
+#endif
+
 #include "audio_engine.hpp"
 #include "log.hpp"
 #include "settings.hpp"
@@ -13,7 +20,7 @@ Sound_Sample ::
 	#ifdef RADAKAN_FMOD
 		sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
 	#else
-		sound = audiere :: OpenSound (Audio_Engine :: get () . device, file_name . c_str ());
+		sound = audiere :: OpenSound (Audio_Engine :: get () -> device . get (), file_name . c_str ());
 		if (! sound)
 		{
 			Engines :: Log :: error (me) << "OpenSound (...) failed" << endl;
@@ -58,7 +65,7 @@ Audio_Engine ::
 		}
 	#endif
 
-	load (Settings :: get () . radakan_path + "/data/sound/prelude_11.ogg");
+	load (Settings :: get () -> radakan_path + "/data/sound/prelude_11.ogg");
 	play ();
 
 	assert (is_initialized ());
@@ -106,7 +113,7 @@ void Audio_Engine ::
 		string extension = file_name . substr (file_name . size () - 3);
 		if (extension == "ogg")
 		{
-			bool check = add (* new Sound_Sample (file_name));
+			bool check = add (Reference <Sound_Sample> (new Sound_Sample (file_name)));
 			assert (check);
 		}
 		else if (extension == "mp3")

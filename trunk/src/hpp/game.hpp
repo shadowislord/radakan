@@ -13,6 +13,7 @@ namespace Radakan
 
 		///	Game is the main class. It manages the eninges and the sectors.
 		class Game :
+			public virtual Object,
 			protected Singleton <Game>,
 			private Strategies :: Strategy_State_Machine
 		{
@@ -26,8 +27,8 @@ namespace Radakan
 				void run ();
 
 			private :
-				Ogre :: Root * root;
-				Ogre :: RenderWindow * window;
+				boost :: shared_ptr <Ogre :: Root> root;
+				boost :: shared_ptr <Ogre :: RenderWindow> window;
 		};
 	}
 }

@@ -3,7 +3,23 @@
 
 ///	All other Radakan headers should (in)directly include this header.
 
-#include <OgrePrerequisites.h>
+//	Uncomment the next line for release mode.
+//	#define NDEBUG
+
+#ifndef NDEBUG
+	//	Radakan run with RADAKAN_DEBUG will print debug messages.
+	#define RADAKAN_DEBUG
+#endif
+
+#include <cassert>
+#include <cmath>
+#include <iostream>
+#include <string>
+#include <set>
+
+#include <boost/smart_ptr.hpp>
+#include <boost/utility.hpp>
+
 #include <OgreVector3.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -19,26 +35,16 @@
 	#define RADAKAN_WINDOWS
 #endif
 
-#include <cassert>
-#include <cmath>
-#include <iostream>
-#include <string>
-#include <set>
-
-#include <boost/utility.hpp>
-
-//	Uncomment the next line for release mode.
-//	#define NDEBUG
-
-#ifndef NDEBUG
-	//	Radakan run with RADAKAN_DEBUG will print debug messages.
-	#define RADAKAN_DEBUG
-#endif
+#include "reference.hpp"
 
 using namespace std;
 
 namespace Radakan
 {
+	const Ogre :: Vector3 x_axis (1, 0, 0);
+	const Ogre :: Vector3 y_axis (0, 1, 0);	//	upwards
+	const Ogre :: Vector3 z_axis (0, 0, 1);
+
 	const Ogre :: Vector3 zero_vector (0, 0, 0);
 
 	string bool_to_string (const bool & value);
@@ -46,20 +52,12 @@ namespace Radakan
 	string to_string (const Ogre :: Vector3 & vector);
 	float to_float (const string & value);
 
-	#ifdef RADAKAN_DEBUG
-		template <class T> class Set;
-	#endif
-
 	///	I'm the abstract base class for all Radakan classes.
-	///	I'm a subclass of 'string', because I use the string as my name.
 	///	I can't be copied, consider a reference of me instead.
 	class Object :
 		public boost :: noncopyable
 	{
 		public :
-			bool operator== (const Object & other_object) const;
-			bool operator!= (const Object & other_object) const;
-
 			#ifdef RADAKAN_WINDOWS
 				///	Some Windows compilers give an error otherwise.
 				Object ();
@@ -76,37 +74,35 @@ namespace Radakan
 			static const string get_class_name ();
 			
 			template <class T> bool is_type () const;
-			template <class T> T & to_type () const;
+			template <class T> Reference <T> to_type ();
+			template <class T> Reference <const T> to_type () const;
 
-			void remember (Object & dependency);
+			void register_reference (const Reference_Base & reference) const;
 
-			///	I will self-destruct, when I forget my last dependency.
-			///	Set 'stay' to 'true' to force me to not self-destruct.
-			void forget (const Object & dependency, bool stay = false);
-
-			///	'drop' results in an error, except for Sets.
-			virtual void drop (Object & t, bool stay = false);
+			void unregister_reference (const Reference_Base & reference) const;
 
 			const bool & is_destructing () const;
 
-			///	'me' is '* this'.
-			Object & me;
 			const string name;
 
 			static const bool debugging;
 
-			static const Object update;
-			static const Object terminate;
+			static Reference <const Object> update;
+			static Reference <const Object> terminate;
 			
 		private :
 			bool has_dependency () const;
-			bool does_depend (const Object & candidate) const;
+			bool does_depend (const Reference_Base & candidate) const;
 
 			///	I store my dependencies as const to reduce the number of casts,
 			///	but they are 'const_cast'-ed, at my destruction.
-			set <const Object *> dependencies;
+			mutable boost :: scoped_ptr <set <const Reference_Base *> > dependencies;
 
 			bool destructing;
+
+		public :
+			///	'me' corrensonds to 'this'.
+			Reference <Object> me;
 	};
 }
 

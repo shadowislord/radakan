@@ -1,10 +1,9 @@
 #ifndef RADAKAN_CHARACTER_HPP
 #define RADAKAN_CHARACTER_HPP
 
-#include "multislot.hpp"
+#include "container.hpp"
 #include "observable.hpp"
-#include "static_item.hpp"
-#include "weapon.hpp"
+#include "observer.hpp"
 
 using namespace std;
 
@@ -14,6 +13,7 @@ namespace Radakan
 
 	namespace Items
 	{
+		template <class T> class Multislot;
 
 		///	Character is the abstract bace class of all in-game characters.
 		///	All characters observe each other.
@@ -29,20 +29,23 @@ namespace Radakan
 				
 				static const string get_class_name ();
 
-				virtual void call (const Object & message) = 0;
+				virtual void call (Reference <const Object> message = Object :: update) = 0;
 				
 				virtual bool is_dead () const = 0;
 				virtual void die () = 0;
 
-				Movable_Model & get_movable_model () const;
+				Reference <Movable_Model> get_movable_model () const;
 
-				void hit (string fight_mode, Character & target);
+				void hit (string fight_mode, Reference <Character> target);
+
+				float get_skill (const string skill_name) const;
+				void add_experience (const string skill_name, float amount = 1);
 				
 				//	Item & head;
 				//	Multislot <Shirt> & body;
-				Multislot <Container> & back;
+				Reference <Multislot <Container> > back;
 				//	Multislot <Bracer> & arms;
-				Multislot <Item> & hands;
+				Reference <Multislot <Item> > hands;
 				//	Multislot <Pants> & legs;
 				//	Multislot <Shoe> & feet;
 
@@ -55,18 +58,14 @@ namespace Radakan
 				);
 
 			private :
-				int agility_exp;
-				int beauty_exp;
-				int constitution_exp;
-				int equolence_exp;
-				int intelligence_exp;
-				int quickness_exp;
-				int strength_exp;
-				int willpower_exp;
+				static const float default_experience;
 
-				Movable_Model * movable_model;
+				mutable Reference <Movable_Model> movable_model;
 
-				static Set <Character> characters;
+				static Reference <Set <Character> > characters;
+
+				map <const string, float> experiences;
+				
 		};
 	}
 }

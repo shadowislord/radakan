@@ -20,22 +20,22 @@ namespace Radakan
 
 			static const string get_class_name ();
 
-			virtual void drop (Object & t, bool stay = false);
+			virtual void drop (Reference <T> dropped);
 
 			bool has_active_state () const;
-			T & get_active_state () const;
+			Reference <T> get_active_state () const;
 
-			void set_active_state (T & new_state, bool old_state_stay = false);
+			void set_active_state (Reference <T> new_state);
 
 			///	The indices are in chronological order. (0 means first.)
-			const vector <string> & get_history ();
+			const boost :: shared_ptr <vector <string> > get_history ();
 
 		protected :
 			State_Machine ();
 
 		private :
 			///	The history stores the name of previous 'active_state's.
-			vector <string> history;
+			boost :: shared_ptr <vector <string> > history;
 	};
 }
 

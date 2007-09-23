@@ -21,16 +21,18 @@ namespace Radakan
 			public Strategy
 		{
 			public :
-				Fight_State (Alive_State & new_alive_state);
+				Fight_State (Reference <Alive_State> new_alive_state);
 				virtual ~Fight_State ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 				
-				virtual Strategy * transit (const Object & message);
+				virtual Reference <Strategy> transit (Reference <const Object> message);
 
-				Alive_State & alive_state;
-				Set <Items :: Character> targets;
+				Reference <Alive_State> alive_state;
+
+			private :
+				Reference <Set <Items :: Character> > targets;
 		};
 	}
 }

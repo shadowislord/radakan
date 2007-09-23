@@ -1,11 +1,8 @@
 #ifndef RADAKAN_AUDIO_ENGINE_HPP
 #define RADAKAN_AUDIO_ENGINE_HPP
 
-//	#define RADAKAN_FMOD
-
 #ifdef RADAKAN_FMOD
-	//	We're using FMOD version 3.
-	#include <fmod.h>
+	class FSOUND_SAMPLE;
 #else
 	#include <audiere.h>
 #endif
@@ -30,7 +27,7 @@ namespace Radakan
 
 		private :
 			#ifdef RADAKAN_FMOD
-				FSOUND_SAMPLE * sample;
+				boost :: shared_ptr <FSOUND_SAMPLE> sample;
 			#else
 				audiere :: OutputStreamPtr sound;
 			#endif

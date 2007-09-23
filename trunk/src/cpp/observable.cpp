@@ -1,4 +1,5 @@
 #include "log.hpp"
+#include "observer.hpp"
 #include "observable.hpp"
 
 using namespace std;
@@ -16,7 +17,7 @@ template <class T> Observable <T> ::
 	Observable () :
 	Object ("The name doesn't matter as this class is an abstact class."),
 	//	Set a custom context to evade problems with the dependencies.
-	observers (name + "'s observers")
+	observers (new Set <Observer <T> > (name + "'s observers"))
 {
 	Engines :: Log :: trace (me, Observable :: get_class_name (), "");
 	
@@ -48,36 +49,33 @@ template <class T> bool Observable <T> ::
 }
 
 template <class T> void Observable <T> ::
-	call_observers (const Object & message)
+	call_observers (Reference <const Object> message)
 {
 	assert (is_initialized ());
 	assert (is_type <T> ());
 
-	T & myself = to_type <T> ();
-
-	for (Observer <T> * observer = observers . get_child (); observer != NULL;
-		observer = observers . get_another_child ())
+	for (Reference <Observer <T> > observer = observers -> get_child (); observer . points_to_object (); observer = observers -> get_another_child ())
 	{
 		observer -> call (message);
 	}
 }
 
 template <class T> void Observable <T> ::
-	register_observer (Observer <T> & observer)
+	register_observer (Reference <Observer <T> > observer)
 {
-	Engines :: Log :: trace (me, Observable :: get_class_name (), "register_observer", observer . name);
+	Engines :: Log :: trace (me, Observable :: get_class_name (), "register_observer", observer -> name);
 	assert (is_initialized ());
 	
-	bool check = observers . add (observer);
+	bool check = observers -> add (observer);
 	assert (check);
 }
 
 template <class T> void Observable <T> ::
-	drop_observer (Observer <T> & observer)
+	drop_observer (Reference <Observer <T> > observer)
 {
 	assert (is_initialized ());
-	
-	observers . drop (observer);
+
+	observers -> drop (observer);
 }
 
 //	to avert linking errors:

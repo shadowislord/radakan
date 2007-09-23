@@ -3,8 +3,8 @@
 #   "src/cd_unix.cpp"           need: cdaudio.h
 #   "src/cd_win32.cpp"          need: windows.h & mmsystem.h
 #   "src/device_mm.cpp"         need: windows.h & mmsystem.h
-#   "dxguid.cpp"                need: windows.h, mmsystem.h & dsound.h 
-#   "input.cpp"                 need input_flac, input_mod and input_speex
+#   "dxguid.cpp"                need: windows.h, mmsystem.h & dsound.h
+#   "input.cpp"                 need: input_flac, input_mod and input_speex
 #   "input_flac.cpp"            need: FLAC/seekable_stream_decoder.h
 #   "input_mod.cpp"             need: dumb.h
 #   "input_speex.cpp"           need: speex.h, speex_header.h, speex_stereo.h & speex_callbacks.h
@@ -13,26 +13,26 @@
 #   "src/mpaudec/mpaudec.c"
 #   "src/speexfile/speexfile.cpp"
 
-#find_package(Ogg)
+find_package(Ogg)
 
-#if( NOT Ogg_FOUND )
+if(NOT Ogg_FOUND)
     subdirs( "${RADAKAN_SOURCE_DIR}/external/libogg-1.1.3" )
-#endif(NOT Ogg_FOUND)
+endif(NOT Ogg_FOUND)
 
-#find_package(Vorbis)
+find_package(Vorbis)
 
-#if( NOT Vorbis_FOUND )
+if(NOT Vorbis_FOUND)
     subdirs( "${RADAKAN_SOURCE_DIR}/external/libvorbis-1.1.2" )
-#endif(NOT Vorbis_FOUND)
+endif(NOT Vorbis_FOUND)
 
 if(WIN32)
     find_package(DirectX)
 endif(WIN32)
 
-set(SRC_FILES   
-	"src/basic_source.cpp"
-	"src/debug.cpp"
-	"src/device.cpp"
+set(SRC_FILES
+    "src/basic_source.cpp"
+    "src/debug.cpp"
+    "src/device.cpp"
     "src/device_mixer.cpp"
     "src/device_null.cpp"
     "src/dumb_resample.cpp"
@@ -70,7 +70,7 @@ if(WIN32)
                             "src/device_mm.cpp")
 
     set( INCLUDE_DIRS   ${INCLUDE_DIRS}
-                        ${DirectX_INCLUDE_DIR} )        
+                        ${DirectX_INCLUDE_DIR} )
 
     set( SRC_FILES ${SRC_FILES} ${SRC_FILES_WIN32} )
 else(WIN32)
@@ -80,30 +80,31 @@ else(WIN32)
     set( SRC_FILES ${SRC_FILES} ${SRC_FILES_UNIX} )
 endif(WIN32)
 
-#if(Ogg_FOUND)
-#    set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
-#                        ${Ogg_INCLUDE_DIR} )
-#    set(LINK_DIRS       ${LINK_DIRS}
-#                        ${Ogg_LIB_DIR} )        
-#else(Ogg_FOUND)
-    set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
+if(Ogg_FOUND)
+    set(INCLUDE_DIRS    ${INCLUDE_DIRS}
+                        ${Ogg_INCLUDE_DIR} )
+    set(LINK_DIRS       ${LINK_DIRS}
+                        ${Ogg_LIB_DEBUG}
+                        ${Ogg_LIB_RELEASE} )
+else(Ogg_FOUND)
+    set(INCLUDE_DIRS    ${INCLUDE_DIRS}
                         "${RADAKAN_SOURCE_DIR}/external/libogg-1.1.3/include" )
     set(LINK_DIRS       ${LINK_DIRS}
                         ${RADAKAN_BINARY_DIR}/ogg )
-                        
-#endif(Ogg_FOUND)
+endif(Ogg_FOUND)
 
-#if(Vorbis_FOUND)
-#    set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
-#                        ${Vorbis_INCLUDE_DIR} )
-#    set(LINK_DIRS       ${LINK_DIRS}
-#                        ${Vorbis_LIB_DIR} ) 
-#else(Vorbis_FOUND)
-    set(INCLUDE_DIRS    ${INCLUDE_DIRS} 
+if(Vorbis_FOUND)
+    set(INCLUDE_DIRS    ${INCLUDE_DIRS}
+                        ${Vorbis_INCLUDE_DIR} )
+    set(LINK_DIRS       ${LINK_DIRS}
+                        ${Vorbis_LIB_DEBUG}
+                        ${Vorbis_LIB_RELEASE} )
+else(Vorbis_FOUND)
+    set(INCLUDE_DIRS    ${INCLUDE_DIRS}
                         "${RADAKAN_SOURCE_DIR}/external/libvorbis-1.1.2/include" )
     set(LINK_DIRS       ${LINK_DIRS}
                         ${RADAKAN_BINARY_DIR}/vorbis )
-#endif(Vorbis_FOUND)
+endif(Vorbis_FOUND)
 
 set(INCLUDE_DIRS    ${INCLUDE_DIRS}
                     "${RADAKAN_SOURCE_DIR}/external/audiere/src"
@@ -113,29 +114,29 @@ if(WIN32)
     set(INCLUDE_DIRS    ${INCLUDE_DIRS}
                         ${DirectX_INCLUDE_DIRS})
     set(LINK_DIRS       ${LINK_DIRS}
-                        ${DirectX_LIB_DIR})        
-endif(WIN32)    
+                        ${DirectX_LIB_DIR})
+endif(WIN32)
 
-include_directories( ${INCLUDE_DIRS} )    
+include_directories( ${INCLUDE_DIRS} )
 
 link_directories( ${LINK_DIRS} )
 add_library( audiere SHARED ${SRC_FILES} )
 
-set(DEBUG_LIBS      debug ogg 
+set(DEBUG_LIBS      debug ogg
                     debug vorbis )
-set(RELEASE_LIBS    optimized ogg 
+set(RELEASE_LIBS    optimized ogg
                     optimized vorbis )
 
 if(WIN32)
-    set(DEBUG_LIBS      ${DEBUG_LIBS}  
-                        debug dsound 
-                        debug dxguid 
-                        debug Rpcrt4 
+    set(DEBUG_LIBS      ${DEBUG_LIBS}
+                        debug dsound
+                        debug dxguid
+                        debug Rpcrt4
                         debug winmm )
-    set(RELEASE_LIBS    ${DEBUG_LIBS}  
-                        optimized dsound 
-                        optimized dxguid 
-                        optimized Rpcrt4 
+    set(RELEASE_LIBS    ${RELEASE_LIBS}
+                        optimized dsound
+                        optimized dxguid
+                        optimized Rpcrt4
                         optimized winmm )
 endif(WIN32)
 target_link_libraries( audiere  ${RELEASE_LIBS}
@@ -149,5 +150,3 @@ endif(WIN32)
 
 install( TARGETS audiere DESTINATION ${RADAKAN_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
 install( TARGETS audiere DESTINATION ${RADAKAN_SOURCE_DIR}/bin/release CONFIGURATIONS Release )
-
-

@@ -16,17 +16,15 @@ namespace Radakan
 			public Strategy
 		{
 			public :
-				Chat_State (Alive_State & new_alive_state);
+				Chat_State (Reference <Alive_State> new_alive_state);
 				virtual ~Chat_State ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 				
-				virtual Strategy * transit (const Object & message);
+				virtual Reference <Strategy> transit (Reference <const Object> message);
 
-				static Strategy & create (Alive_State & new_alive_state);
-
-				Alive_State & alive_state;
+				Reference <Alive_State> alive_state;
 
 				static const unsigned int maximal_timeout;
 

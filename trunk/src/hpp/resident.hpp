@@ -1,12 +1,14 @@
 #ifndef RADAKAN_RESIDENT_HPP
 #define RADAKAN_RESIDENT_HPP
 
-#include "location.hpp"
+#include "object.hpp"
 
 using namespace std;
 
 namespace Radakan
 {
+	template <class T> class Location;
+	
 	///	I can only be in one Location at once.
 	template <class T> class Resident :
 		public virtual Object
@@ -18,14 +20,14 @@ namespace Radakan
 			
 			static const string get_class_name ();
 
-			void enter (const Location <T> & new_location);
-			void leave (const Location <T> & old_location);
+			void enter (Reference <const Location <T> > new_location);
+			void leave (Reference <const Location <T> > old_location);
 
 		protected :
 			Resident ();
 
 		private :
-			const Location <T> * location;
+			Reference <const Location <T> > location;
 	};
 }
 

@@ -28,7 +28,7 @@ namespace Radakan
 				
 				static const string get_class_name ();
 				
-				virtual bool add (Item & item);
+				virtual bool add (Reference <Item> item);
 		};
 	}
 }

@@ -17,18 +17,18 @@ namespace Radakan
 			public Observable <Log>
 		{
 			public :
-				Log ();
+				Log (string radakan_path);
 				virtual ~Log ();
 				virtual bool is_initialized () const;
 				
 				static const string get_class_name ();
 
-				static ostream & error (const Object & logger);
-				static ostream & log (const Object & logger);
+				static ostream & error (const Reference_Base & logger);
+				static ostream & log (const Reference_Base & logger);
 				static void show (string message);
 				static void trace
 				(
-					const Object & logger,
+					const Reference_Base & logger,
 					string class_name,
 					string method = "",
 					string argument_1 = "",
@@ -38,6 +38,8 @@ namespace Radakan
 					string argument_5 = "",
 					string argument_6 = ""
 				);
+
+				static void no_logs (const Reference_Base & logger);
 		};
 	}
 }

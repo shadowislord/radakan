@@ -48,16 +48,16 @@ template <class T> bool State_Machine <T> ::
 
 //	virtual
 template <class T> void State_Machine <T> ::
-	drop (Object & t, bool stay)
+	drop (Reference <T> dropped)
 {
-	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "drop", t . name, bool_to_string (stay));
+	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "drop", dropped -> name);
 	assert (Location <T> :: is_initialized ());
-	assert (t . is_type <T> ());
+	assert (dropped -> is_initialized ());
 	
-	Engines :: Log :: log (me) << t . name << " was dropped as active state." << endl;
+	Engines :: Log :: log (me) << dropped -> name << " was dropped as active state." << endl;
 	
-	history . push_back (t . name);
-	Location <T> :: drop (t, stay);
+	Location <T> :: drop (dropped);
+	history -> push_back (dropped -> name);
 }
 
 template <class T> bool State_Machine <T> ::
@@ -66,20 +66,20 @@ template <class T> bool State_Machine <T> ::
 	//	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "has_active_state");
 	assert (State_Machine <T> :: is_initialized ());
 
-	return (Location <T> :: get_child () != NULL);
+	return Location <T> :: get_child () . points_to_object ();
 }
 
-template <class T> T & State_Machine <T> ::
+template <class T> Reference <T> State_Machine <T> ::
 	get_active_state () const
 {
 	assert (State_Machine <T> :: is_initialized ());
 	assert (has_active_state ());
 
-	return * Location <T> :: get_child ();
+	return Location <T> :: get_child ();
 }
 
 template <class T> void State_Machine <T> ::
-	set_active_state (T & new_state, bool old_state_stay)
+	set_active_state (Reference <T> new_state)
 {
 	//	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "set_active_state", new_state, bool_to_string (old_state_stay));
 	assert (State_Machine <T> :: is_initialized ());
@@ -88,17 +88,17 @@ template <class T> void State_Machine <T> ::
 	{
 		if (has_active_state ())
 		{
-			drop (get_active_state (), old_state_stay);
+			drop (get_active_state ());
 		}
 
 		bool check = Location <T> :: add (new_state);
 		assert (check);
 
-		Engines :: Log :: log (me) << "The active state changed to " << new_state . name << "." << endl;
+		Engines :: Log :: log (me) << "The active state changed to " << new_state -> name << "." << endl;
 	}
 }
 
-template <class T> const vector <string> & State_Machine <T> ::
+template <class T> const boost :: shared_ptr <vector <string> > State_Machine <T> ::
 	get_history ()
 {
 	assert (is_initialized ());

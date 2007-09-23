@@ -1,3 +1,8 @@
+#include <OgreSceneNode.h>
+
+#include <OgreOdeBody.h>
+
+#include "item.hpp"
 #include "log.hpp"
 #include "movable_model.hpp"
 
@@ -13,14 +18,14 @@ const string Movable_Model ::
 
 //  constructor
 Movable_Model ::
-	Movable_Model (Items :: Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry, OgreOde :: Body & new_body) :
-	Object (new_item . name + "'s movable model"),
+	Movable_Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale, boost :: shared_ptr <OgreOde :: Geometry> new_geometry, boost :: shared_ptr <OgreOde :: Body> new_body) :
+	Object (new_item -> name + "'s movable model"),
 	Model (new_item, position, scale, new_geometry),
 	body (new_body)
 {
-	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item . name, to_string (position), to_string (scale), "~new_geometry~", "~new_body~");
+	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item -> name, to_string (position), to_string (scale), "~new_geometry~", "~new_body~");
 
-	node . attachObject (& body);
+	node -> attachObject (body . get ());
 
 	assert (Model :: is_initialized ());
 }
@@ -34,7 +39,7 @@ Movable_Model ::
 
 	prepare_for_destruction ();
 
-	node . detachObject (& body);
+	node -> detachObject (body . get ());
 }
 
 //	virtual
@@ -56,7 +61,7 @@ void Movable_Model ::
 	assert (Model :: is_initialized ());
 	assert (Ogre :: Math :: Abs (top_speed) <= 1);
 
-	body . setForce (1000 * (top_speed * get_front_direction () - body . getLinearVelocity ()));
+	body -> setForce (1000 * (top_speed * get_front_direction () - body -> getLinearVelocity ()));
 }
 
 void Movable_Model ::
@@ -71,7 +76,7 @@ void Movable_Model ::
 		ax = get_top_direction ();
 	}
 
-	body . setTorque (30 * (top_radian_angle_speed * ax - body . getAngularVelocity ()));
+	body -> setTorque (30 * (top_radian_angle_speed * ax - body -> getAngularVelocity ()));
 }
 
 void Movable_Model ::
@@ -80,8 +85,8 @@ void Movable_Model ::
 	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "reset");
 	assert (Model :: is_initialized ());
 
-	body . setOrientation (Ogre :: Quaternion (1, 0, 0, 0));
-	body . setPosition (body . getPosition () + y_axis * (2 - body . getPosition () . y));
-	body . setLinearVelocity (zero_vector);
-	body . setForce (zero_vector);
+	body -> setOrientation (Ogre :: Quaternion (1, 0, 0, 0));
+	body -> setPosition (body -> getPosition () + y_axis * (2 - body -> getPosition () . y));
+	body -> setLinearVelocity (zero_vector);
+	body -> setForce (zero_vector);
 }

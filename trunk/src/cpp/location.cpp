@@ -33,13 +33,6 @@ template <class T> Location <T> ::
 	
 	//	'prepare_for_destruction ();' hasn't to be called,
 	//	because this is an abstract base class.
-	
-	for (T * child = Set <T> :: get_child (); child != NULL; child = Set <T> :: get_child ())
-	{
-		Engines :: Log :: log (this -> me) << "Destructing child '" << child -> name << "'..." << endl;
-		delete child;
-	}
-	Engines :: Log :: log (this -> me) << "All children were destructed." << endl;
 }
 
 //	virtual
@@ -54,15 +47,15 @@ template <class T> bool Location <T> ::
 
 //	virtual
 template <class T> bool Location <T> ::
-	add (T & t)
+	add (Reference <T> additive)
 {
-	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "add", t . name);
+	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "add", additive -> name);
 	assert (Location <T> :: is_initialized ());
 
-	bool result = Set <T> :: add (t);
+	bool result = Set <T> :: add (additive);
 	if (result)
 	{
-		t . enter (* this);
+		additive -> enter (Reference <const Location <T> > (this));
 	}
 
 	return result;
@@ -70,13 +63,13 @@ template <class T> bool Location <T> ::
 
 //	virtual
 template <class T> void Location <T> ::
-	drop (Object & t, bool stay)
+	drop (Reference <T> dropped)
 {
-	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "drop", t . name, bool_to_string (stay));
+	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "drop", dropped -> name);
 	assert (Location <T> :: is_initialized ());
 	
-	t . to_type <T> () . leave (* this);
-	Set <T> :: drop (t, stay);
+	dropped -> leave (Reference <const Location <T> > (this));
+	Set <T> :: drop (dropped);
 }
 
 //	to avert linking errors:

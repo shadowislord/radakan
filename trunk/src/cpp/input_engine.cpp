@@ -1,11 +1,20 @@
-#include "input_engine.hpp"
-#include "log.hpp"
+#include <OgreRenderWindow.h>
 #include <OgreStringConverter.h>
 
 #ifndef RADAKAN_WINDOWS
 	#include <X11/Xlib.h>
 	void checkX11Events ();
 #endif
+
+#include <OISInputManager.h>
+#include <OISKeyboard.h>
+#include <OISMouse.h>
+#include <OISEvents.h>
+
+#include "conversation_message.hpp"
+#include "gui_engine.hpp"
+#include "log.hpp"
+#include "input_engine.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -39,7 +48,7 @@ const string Input_Engine ::
 	right_mouse_button ("right");
 
 Input_Engine ::
-	Input_Engine (Ogre :: RenderWindow & window) :
+	Input_Engine (boost :: shared_ptr <Ogre :: RenderWindow> window) :
 	Object ("input engine"),
 	Singleton <Input_Engine> (),
 	conversation_option (NULL)
@@ -55,30 +64,36 @@ Input_Engine ::
 
 	unsigned long window_handle;
 
-	window . getCustomAttribute ("WINDOW", & window_handle);
+	window -> getCustomAttribute ("WINDOW", & window_handle);
 
 	//	The input/output system needs to know how to interact with
 	//	the system window.
 	OIS :: ParamList param_list;
 	param_list . insert (make_pair (string ("WINDOW"), Ogre :: StringConverter :: toString (window_handle)));
 
-    input_manager = OIS :: InputManager :: createInputSystem (param_list);
+    input_manager = boost :: shared_ptr <OIS :: InputManager> (OIS :: InputManager :: createInputSystem (param_list), OIS :: InputManager :: destroyInputSystem);
 
 	//	The final parameter refers to "buffered".
-	keyboard = dynamic_cast <OIS :: Keyboard *>
+	keyboard . reset
 	(
-		input_manager -> createInputObject
+		dynamic_cast <OIS :: Keyboard *>
 		(
-			OIS :: OISKeyboard, true
-			//	I (Tinus) set this to buffered again, as otherwise get_key (...)
-			//	doesn't work.
+			input_manager -> createInputObject
+			(
+				OIS :: OISKeyboard, true
+				//	I (Tinus) set this to buffered again, as otherwise get_key (...)
+				//	doesn't work.
+			)
 		)
 	);
-	mouse = dynamic_cast <OIS :: Mouse *>
+	mouse . reset
 	(
-		input_manager -> createInputObject
+		dynamic_cast <OIS :: Mouse *>
 		(
-			OIS :: OISMouse, true
+			input_manager -> createInputObject
+			(
+				OIS :: OISMouse, true
+			)
 		)
 	);
 
@@ -87,8 +102,8 @@ Input_Engine ::
 
 	//	Reference methods mouseMoved, mousePressed, mouseReleased
 	mouse -> setEventCallback (this);
-	mouse -> getMouseState () . width = window . getWidth ();
-	mouse -> getMouseState () . height = window . getHeight ();
+	mouse -> getMouseState () . width = window -> getWidth ();
+	mouse -> getMouseState () . height = window -> getHeight ();
 
 	assert (is_initialized ());
 }
@@ -101,15 +116,15 @@ Input_Engine ::
 
 	prepare_for_destruction ();
 
-	input_manager -> destroyInputObject (keyboard);
-	input_manager -> destroyInputObject (mouse);
+	input_manager -> destroyInputObject (keyboard . get ());
+	input_manager -> destroyInputObject (mouse . get ());
 	
 	//	TODO solve the linking error caused by the next line.
 	//	input_manager -> destroyInputSystem (input_manager);
 
 	//	Set to NULL so we can query if they have been initialised.
-	keyboard = NULL;
-	mouse = NULL;
+	keyboard . reset ();
+	mouse . reset ();
 }
 
 //	virtual
@@ -131,18 +146,18 @@ bool Input_Engine ::
 
 //	virtual
 void Input_Engine ::
-	call (const Object & message)
+	call (Reference <const Object> message)
 {
-	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message . name);
+	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message -> name);
 	assert (is_initialized ());
 
-	if (message . is_type <Messages :: Conversation_Message> ())
+	if (message -> is_type <Messages :: Conversation_Message> ())
 	{
-		conversation_option = & message . to_type <Messages :: Conversation_Message> ();
+		conversation_option = message -> to_type <Messages :: Conversation_Message> ();
 	}
 	else
 	{
-		gui_button = message . name;
+		gui_button = message -> name;
 	}
 }
 
@@ -159,25 +174,25 @@ void Input_Engine ::
 	mouse -> capture ();
 
 	gui_button = "";	//	reset it, in case of a unhandeled button
-	GUI_Engine :: get () . set_mouse_position (get_mouse_position ());
+	GUI_Engine :: get () -> set_mouse_position (get_mouse_position ());
 	if (get_mouse_button (left_mouse_button, true))
 	{
-		GUI_Engine :: get () . left_mouse_button_click ();
+		GUI_Engine :: get () -> left_mouse_button_click ();
 	}
 }
 
-Messages :: Conversation_Message * Input_Engine ::
+Reference <const Messages :: Conversation_Message> Input_Engine ::
 	get_conversation_option ()
 {
 	assert (is_initialized ());
 
-	Messages :: Conversation_Message * result = conversation_option;
+	Reference <const Messages :: Conversation_Message> result = conversation_option;
 
-	if (result != NULL)
+	if (result . points_to_object ())
 	{
 		Engines :: Log :: show ("The '" + result -> name + "' option was clicked.");
 	
-		conversation_option = NULL;	//	Automatically reset.
+		conversation_option . reset_pointee ();
 	}
 
 	return result;

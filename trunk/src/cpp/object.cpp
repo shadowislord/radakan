@@ -61,40 +61,27 @@ const string Object ::
 #endif
 
 //	static
-const Object Object ::
-	update ("update (static)");
+Reference <const Object> Object ::
+	update (new Object ("update (static)"));
 
 //	static
-const Object Object ::
-	terminate ("terminate (static)");
-
-bool Object ::
-	operator== (const Object & other_object)
-	const
-{
-	return (this == & other_object);
-}
-
-bool Object ::
-	operator!= (const Object & other_object)
-	const
-{
-	return ! (me == other_object);
-}
+Reference <const Object> Object ::
+	terminate (new Object ("terminate (static)"));
 
 //  constructor
 Object ::
 	Object (string new_name) :
 	name (new_name),
-	me (* this),
-	destructing (false)
+	dependencies (new set <const Reference_Base *>),
+	destructing (false),
+	me (this)
 {
 	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name);
 	assert (! name . empty ());
 
 	if (Engines :: Tracker :: is_instantiated ())
 	{
-		bool check = Engines :: Tracker :: get () . add (me);
+		bool check = Engines :: Tracker :: get () -> add (me);
 		assert (check);
 		assert (does_depend (Engines :: Tracker :: get ()));
 	}
@@ -122,22 +109,12 @@ void Object ::
 
 	destructing = true;
 
-	for (set <const Object *> :: const_iterator i = dependencies . begin ();
-		i != dependencies . end (); i ++)
+	for (set <const Reference_Base *> :: const_iterator i = dependencies -> begin ();
+		i != dependencies -> end (); i = dependencies -> begin ())
 	{
-		Engines :: Log :: log (me) << "Dependency to be dropped by: '" << (* i) -> name << "'" << endl;
-	}
-
-	const Object * last = NULL;
-	for (set <const Object *> :: const_iterator i = dependencies . begin ();
-		i != dependencies . end (); i = dependencies . begin ())
-	{
-		assert (* i != last);
-		//	The dropping object should call 'forget (...)' for me.
+		Engines :: Log :: log (me) << "Dependency to be dropped by: '" << (* i) -> get_name () << "'" << endl;
 		
-		const_cast <Object *> (* i) -> drop (me);
-
-		//last = * i;
+		delete (* i);
 	}
 }
 
@@ -149,78 +126,20 @@ bool Object ::
 	//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_initialized");
 	//	checks for empty string
 	assert (! name . empty ());
+	assert (dependencies);
 	
 	return true;
 }
 
 //	private
 bool Object ::
-	does_depend (const Object & candidate)
+	does_depend (const Reference_Base & candidate)
 	const
 {
 	//	Engines :: Log :: trace (me, Object :: get_class_name (), "does_depend", candidate);
 	//	assert (Object :: is_initialized ());
 
-	return (dependencies . find (& candidate) != dependencies . end ());
-}
-
-void Object ::
-	remember (Object & dependency)
-{
-	Engines :: Log :: trace (me, Object :: get_class_name (), "remember", dependency . name);
-	//	assert (Object :: is_initialized ());
-
-	bool check = dependencies . insert (& dependency) . second;
-	assert (check);
-}
-
-void Object ::
-	forget (const Object & dependency, bool stay)
-{
-	Engines :: Log :: trace (me, Object :: get_class_name (), "forget", dependency . name, bool_to_string (stay));
-	assert (is_initialized ());
-	assert (does_depend (dependency));
-
-	dependencies . erase (& dependency);
-
-	if (destructing)
-	{
-		Engines :: Log :: log (me) << "I'm already destructing." << endl;
-		return;
-	}
-
-	unsigned int self_destruct_criterion = 0;
-	if (does_depend (Engines :: Tracker :: get ()))
-	{
-		self_destruct_criterion = 1;
-	}
-	assert (dependencies . size () >= self_destruct_criterion);
-
-	if (dependencies . size () > self_destruct_criterion)
-	{
-		Engines :: Log :: log (me) << "I have another dependency and will not self-destruct." << endl;
-		return;
-	}
-
-	if (stay)
-	{
-		Engines :: Log :: log (me) << "I have no more dependencies, but I'm forced to stay." << endl;
-		return;
-	}
-
-	Engines :: Log :: log (me) << "I have no more dependencies and will self-destruct." << endl;
-	delete this;
-}
-
-//	virtual
-void Object ::
-	drop (Object & t, bool stay)
-{
-	Engines :: Log :: trace (me, Object :: get_class_name (), "drop", t . name, bool_to_string (stay));
-	assert (is_initialized ());
-
-	Engines :: Log :: error (me) << "Plain object call to drop '" << t . name << "'." << endl;
-	abort ();
+	return (0 < dependencies -> count (& candidate));
 }
 
 const bool & Object ::
@@ -242,7 +161,17 @@ template <class T> bool Object ::
 	return (dynamic_cast <const T *> (this) != NULL);
 }
 
-template <class T> T & Object ::
+template <class T> Reference <T> Object ::
+	to_type ()
+{
+//	Engines :: Log :: trace (me, Object :: get_class_name (), "to_type", "<" + T :: get_class_name () + ">");
+	assert (is_initialized ());
+	assert (is_type <T> ());
+
+	return Reference <T> (dynamic_cast <T *> (this));
+}
+
+template <class T> Reference <const T> Object ::
 	to_type ()
 	const
 {
@@ -250,22 +179,86 @@ template <class T> T & Object ::
 	assert (is_initialized ());
 	assert (is_type <T> ());
 
-	return dynamic_cast <T &> (me);
+	return Reference <const T> (dynamic_cast <const T *> (this));
+}
+
+void  Object ::
+	register_reference (const Reference_Base & reference)
+	const
+{
+	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name ());
+	
+	assert (is_initialized ());
+	
+	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name (), "A");
+	
+	assert (dependencies -> count (& reference) == 0);
+
+	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name (), "B");
+	
+	bool check = dependencies -> insert (& reference) . second;
+
+	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name (), "C");
+
+	assert (check);
+}
+
+void  Object ::
+	unregister_reference (const Reference_Base & reference)
+	const
+{
+	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name ());
+	
+	assert (is_initialized ());
+
+	dependencies -> erase (& reference);
+
+	if (destructing)
+	{
+		Engines :: Log :: log (me) << "I'm already destructing." << endl;
+		return;
+	}
+
+	unsigned int self_destruct_criterion = 0;
+	self_destruct_criterion ++;	//	'me' should not forbid to destruct.
+	if (does_depend (Engines :: Tracker :: get ()))
+	{
+		self_destruct_criterion = 1;
+	}
+	assert (dependencies -> size () >= self_destruct_criterion);
+
+	if (dependencies -> size () > self_destruct_criterion)
+	{
+		Engines :: Log :: log (me) << "I have another dependency and will not self-destruct." << endl;
+		return;
+	}
+
+	Engines :: Log :: log (me) << "I have no more dependencies and will self-destruct." << endl;
+	delete this;
 }
 
 //	to avert linking errors:
 #include "alive_state.hpp"
 #include "audio_engine.hpp"
 #include "battle_message.hpp"
+#include "character.hpp"
 #include "chat_state.hpp"
 #include "conversation_message.hpp"
+#include "container.hpp"
 #include "fight_state.hpp"
 #include "game.hpp"
+#include "gui.hpp"
 #include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "menu_state.hpp"
+#include "model.hpp"
+#include "movable_model.hpp"
+#include "npc.hpp"
 #include "play_state.hpp"
+#include "tile.hpp"
+#include "tought.hpp"
 #include "world.hpp"
+#include "weapon.hpp"
 
 template bool Object ::
 	is_type <Strategies :: Strategy> () const;
@@ -323,70 +316,143 @@ template bool Object ::
 	is_type <State_Machine <Tile> > () const;
 template bool Object ::
 	is_type <Tile> () const;
+template bool Object ::
+	is_type <Tought> () const;
 
-template Strategies :: Strategy & Object ::
+template Reference <Strategies :: Strategy> Object ::
+	to_type <Strategies :: Strategy> ();
+template Reference <Strategies :: Alive_State> Object ::
+	to_type <Strategies :: Alive_State> ();
+template Reference <Strategies :: Fight_State> Object ::
+	to_type <Strategies :: Fight_State> ();
+template Reference <Strategies :: Menu_State> Object ::
+	to_type <Strategies :: Menu_State> ();
+template Reference <Strategies :: Play_State> Object ::
+	to_type <Strategies :: Play_State> ();
+template Reference <Strategies :: Strategy_State_Machine> Object ::
+	to_type <Strategies :: Strategy_State_Machine> ();
+template Reference <Engines :: Game> Object ::
+	to_type <Engines :: Game> ();
+template Reference <Engines :: GUI_Engine> Object ::
+	to_type <Engines :: GUI_Engine> ();
+template Reference <Engines :: Log> Object ::
+	to_type <Engines :: Log> ();
+template Reference <GUI> Object ::
+	to_type <GUI> ();
+template Reference <Items :: Character> Object ::
+	to_type <Items :: Character> ();
+template Reference <Items :: Container> Object ::
+	to_type <Items :: Container> ();
+template Reference <Items :: Item> Object ::
+	to_type <Items :: Item> ();
+template Reference <Items :: NPC> Object ::
+	to_type <Items :: NPC> ();
+template Reference <Items :: Weapon> Object ::
+	to_type <Items :: Weapon> ();
+template Reference <Messages :: Battle_Message> Object ::
+	to_type <Messages :: Battle_Message> ();
+template Reference <Messages :: Conversation_Message> Object ::
+	to_type <Messages :: Conversation_Message> ();
+template Reference <Model> Object ::
+	to_type <Model> ();
+template Reference <Observer <Strategies :: Play_State> > Object ::
+	to_type <Observer <Strategies :: Play_State> > ();
+template Reference <Observer <Engines :: Log> > Object ::
+	to_type <Observer <Engines :: Log> > ();
+template Reference <Observer <GUI> > Object ::
+	to_type <Observer <GUI> > ();
+template Reference <Observer <Items :: Character> > Object ::
+	to_type <Observer <Items :: Character> > ();
+template Reference <Set <Messages :: Conversation_Message> > Object ::
+	to_type <Set <Messages :: Conversation_Message> > ();
+template Reference <Set <GUI> > Object ::
+	to_type <Set <GUI> > ();
+template Reference <Set <Items :: Item> > Object ::
+	to_type <Set <Items :: Item> > ();
+template Reference <Set <Tile> > Object ::
+	to_type <Set <Tile> > ();
+template Reference <Set <Sound_Sample> > Object ::
+	to_type <Set <Sound_Sample> > ();
+template Reference <Movable_Model> Object ::
+	to_type <Movable_Model> ();
+template Reference <Object> Object ::
+	to_type <Object> ();
+template Reference <Sound_Sample> Object ::
+	to_type <Sound_Sample> ();
+template Reference <State_Machine <Tile> > Object ::
+	to_type <State_Machine <Tile> > ();
+template Reference <Tile> Object ::
+	to_type <Tile> ();
+template Reference <Tought> Object ::
+	to_type <Tought> ();
+	
+template Reference <const Strategies :: Strategy> Object ::
 	to_type <Strategies :: Strategy> () const;
-template Strategies :: Alive_State & Object ::
+template Reference <const Strategies :: Alive_State> Object ::
 	to_type <Strategies :: Alive_State> () const;
-template Strategies :: Fight_State & Object ::
+template Reference <const Strategies :: Fight_State> Object ::
 	to_type <Strategies :: Fight_State> () const;
-template Strategies :: Menu_State & Object ::
+template Reference <const Strategies :: Menu_State> Object ::
 	to_type <Strategies :: Menu_State> () const;
-template Strategies :: Play_State & Object ::
+template Reference <const Strategies :: Play_State> Object ::
 	to_type <Strategies :: Play_State> () const;
-template Strategies :: Strategy_State_Machine & Object ::
+template Reference <const Strategies :: Strategy_State_Machine> Object ::
 	to_type <Strategies :: Strategy_State_Machine> () const;
-template Engines :: Game & Object ::
+template Reference <const Engines :: Game> Object ::
 	to_type <Engines :: Game> () const;
-template Engines :: GUI_Engine & Object ::
+template Reference <const Engines :: GUI_Engine> Object ::
 	to_type <Engines :: GUI_Engine> () const;
-template Engines :: Log & Object ::
+template Reference <const Engines :: Log> Object ::
 	to_type <Engines :: Log> () const;
-template GUI & Object ::
+template Reference <const GUI> Object ::
 	to_type <GUI> () const;
-template Items :: Character & Object ::
+template Reference <const Items :: Character> Object ::
 	to_type <Items :: Character> () const;
-template Items :: Container & Object ::
+template Reference <const Items :: Container> Object ::
 	to_type <Items :: Container> () const;
-template Items :: Item & Object ::
+template Reference <const Items :: Item> Object ::
 	to_type <Items :: Item> () const;
-template Items :: NPC & Object ::
+template Reference <const Items :: NPC> Object ::
 	to_type <Items :: NPC> () const;
-template Items :: Weapon & Object ::
+template Reference <const Items :: Weapon> Object ::
 	to_type <Items :: Weapon> () const;
-template Messages :: Battle_Message & Object ::
+template Reference <const Messages :: Battle_Message> Object ::
+	to_type <const Messages :: Battle_Message> () const;
+template Reference <const Messages :: Battle_Message> Object ::
 	to_type <Messages :: Battle_Message> () const;
-template const Messages :: Conversation_Message & Object ::
+template Reference <const Messages :: Conversation_Message> Object ::
 	to_type <const Messages :: Conversation_Message> () const;
-template Messages :: Conversation_Message & Object ::
+template Reference <const Messages :: Conversation_Message> Object ::
 	to_type <Messages :: Conversation_Message> () const;
-template Model & Object ::
+template Reference <const Model> Object ::
 	to_type <Model> () const;
-template Observer <Strategies :: Play_State> & Object ::
+template Reference <const Observer <Strategies :: Play_State> > Object ::
 	to_type <Observer <Strategies :: Play_State> > () const;
-template Observer <Engines :: Log> & Object ::
+template Reference <const Observer <Engines :: Log> > Object ::
 	to_type <Observer <Engines :: Log> > () const;
-template Observer <GUI> & Object ::
+template Reference <const Observer <GUI> > Object ::
 	to_type <Observer <GUI> > () const;
-template Observer <Items :: Character> & Object ::
+template Reference <const Observer <Items :: Character> > Object ::
 	to_type <Observer <Items :: Character> > () const;
-template Set <Messages :: Conversation_Message> & Object ::
+template Reference <const Set <Messages :: Conversation_Message> > Object ::
 	to_type <Set <Messages :: Conversation_Message> > () const;
-template Set <GUI> & Object ::
+template Reference <const Set <GUI> > Object ::
 	to_type <Set <GUI> > () const;
-template Set <Items :: Item> & Object ::
+template Reference <const Set <Items :: Item> > Object ::
 	to_type <Set <Items :: Item> > () const;
-template Set <Tile> & Object ::
+template Reference <const Set <Tile> > Object ::
 	to_type <Set <Tile> > () const;
-template Set <Sound_Sample> & Object ::
+template Reference <const Set <Sound_Sample> > Object ::
 	to_type <Set <Sound_Sample> > () const;
-template Movable_Model & Object ::
+template Reference <const Movable_Model> Object ::
 	to_type <Movable_Model> () const;
-template Object & Object ::
+template Reference <const Object> Object ::
 	to_type <Object> () const;
-template Sound_Sample & Object ::
+template Reference <const Sound_Sample> Object ::
 	to_type <Sound_Sample> () const;
-template State_Machine <Tile> & Object ::
+template Reference <const State_Machine <Tile> > Object ::
 	to_type <State_Machine <Tile> > () const;
-template Tile & Object ::
+template Reference <const Tile> Object ::
 	to_type <Tile> () const;
+template Reference <const Tought> Object ::
+	to_type <Tought> () const;

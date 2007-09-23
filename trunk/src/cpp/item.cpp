@@ -1,7 +1,11 @@
-#include "item.hpp"
+#include <OgreEntity.h>
+#include <OgreOde_Core.h>
+
 #include "log.hpp"
 #include "model.hpp"
 #include "world.hpp"
+
+#include "item.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -31,9 +35,13 @@ Item ::
 	mobile (new_mobile),
 	solid (new_solid),
 	visible (new_visible),
-	entity (* World :: get () . getSceneManager () -> createEntity
-										(name + "'s entity", new_mesh_name)),
-	model (NULL)
+	entity
+	(
+		World :: get () -> ogre_ode_world -> getSceneManager () -> createEntity
+		(
+			name + "'s entity", new_mesh_name
+		)
+	)
 {
 	Engines :: Log :: trace
 	(
@@ -99,13 +107,13 @@ float Item ::
 }
 
 void Item ::
-	set_model (Model & new_model)
+	set_model (Reference <Model> new_model)
 {
 	//	Engines :: Log :: trace (me, Item :: get_class_name (), "set_model", new_model);
 	assert (Item :: is_initialized ());
 	assert (! has_model ());
 
-	model = & new_model;
+	model = new_model;
 
 	assert (is_initialized ());
 }
@@ -115,7 +123,7 @@ bool Item ::
 {
 	assert (Item :: is_initialized ());
 	
-	return (model != NULL);
+	return (model . points_to_object ());
 }
 
 void Item ::
@@ -129,32 +137,32 @@ void Item ::
 	model = NULL;
 }
 
-Model & Item ::
+Reference <Model> Item ::
 	get_model () const
 {
 	assert (Item :: is_initialized ());
 	assert (has_model ());
 	
-	return * model;
+	return model;
 }
 
 //	virtual
-OgreOde :: Geometry & Item ::
+boost :: shared_ptr <OgreOde :: Geometry> Item ::
 	create_geometry ()
 {
 	assert (is_initialized ());
 	assert (! has_model ());
 
-	OgreOde :: Geometry * geometry = new OgreOde :: BoxGeometry (size, & World :: get (), World :: get () . getDefaultSpace ());
+	boost :: shared_ptr <OgreOde :: Geometry> geometry (new OgreOde :: BoxGeometry (size, World :: get () -> ogre_ode_world . get (), World :: get () -> ogre_ode_world -> getDefaultSpace ()));
 
 	if (mobile)
 	{
-		OgreOde :: Body * body = new OgreOde :: Body (& World :: get (), name);
+		OgreOde :: Body * body = new OgreOde :: Body (World :: get () -> ogre_ode_world . get (), name);
 		body -> setMass (OgreOde :: BoxMass (mass, size));
 		geometry -> setBody (body);
 	}
 
-	return * geometry;
+	return geometry;
 }
 
 float Item ::
@@ -162,5 +170,5 @@ float Item ::
 {
 	assert (is_initialized ());
 
-	return size . x * size . y * size .z;
+	return size . x * size . y * size . z;
 }

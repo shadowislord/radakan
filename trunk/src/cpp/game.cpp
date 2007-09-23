@@ -1,14 +1,19 @@
+#include <OgreColourValue.h>
+#include <OgreDefaultHardwareBufferManager.h>
+#include <OgreMeshManager.h>
+#include <OgreRoot.h>
+#include <OgreTextureManager.h>
+
 #include "audio_engine.hpp"
 #include "game.hpp"
+#include "gui_engine.hpp"
 #include "input_engine.hpp"
 #include "log.hpp"
 #include "menu_state.hpp"
 #include "play_state.hpp"
 #include "settings.hpp"
 #include "tracker.hpp"
-
-#include <OgreColourValue.h>
-#include <OgreDefaultHardwareBufferManager.h>
+#include "world.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -29,29 +34,21 @@ Game ::
 
 	#ifdef RADAKAN_DEBUG
 		Log :: log (me) << "Debug mode is enabled." << endl;
-		Log :: log (me) << "Further logs will be written to '" << radakan_path << "/log/log.txt'." << endl;
-
-		//	'Log :: log (me)' is redirected to a log file.
-		cout . rdbuf ((new ofstream ((radakan_path + "/log/log.txt") . c_str ())) -> rdbuf ());
-		cerr . rdbuf (Log :: log (me) . rdbuf ());
-		clog . rdbuf (Log :: log (me) . rdbuf ());
+		
+		new Tracker ();
+		new Log (radakan_path);
 	#else
 		Log :: log (me) << "Debug mode is disabled." << endl;
-		Log :: log (me) << "No further logging will occur." << endl;
-
-		//	From here on, all Log :: log (me) messages are ignored.
-		Log :: log (me) . rdbuf ((new ostream (new stringbuf (ios_base :: out))) -> rdbuf ());
+		Log :: no_logs (me);
 	#endif
 
-	new Tracker ();
-	new Log ();
 	new Settings (radakan_path);
 
 	new Audio_Engine ();
 
 	//	Don't copy the log to the console. Store the log to a file, if debugging.
 	// (new Ogre :: LogManager ()) -> createLog (radakan_path + "/log/ogre.txt", true, false, ! debugging);
-	root = new Ogre :: Root (radakan_path + "/data/plugins.cfg", radakan_path + "/data/ogre.cfg", radakan_path + "/log/ogre.log");
+	root . reset (new Ogre :: Root (radakan_path + "/data/plugins.cfg", radakan_path + "/data/ogre.cfg", radakan_path + "/log/ogre.log"));
 	if (! root -> showConfigDialog ())
 	{
 		Log :: error (me) << "An Ogre configuration dialog problem occurred." << endl;
@@ -101,7 +98,7 @@ Game ::
 		Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 					(ogre_media_path + "/models", "FileSystem", "models", true);
 
-		window = root -> initialise (true, "Radakan");
+		window . reset (root -> initialise (true, "Radakan"));
 
 		Ogre :: MeshManager :: getSingleton () . createPlane
 			("ground.mesh", "models", Ogre :: Plane (Ogre :: Vector3 (1, 0, 0), 0), 20, 20);
@@ -112,11 +109,11 @@ Game ::
 		//	set default mipmap level (NB some APIs ignore this)
 		Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
 
-		new Input_Engine (* window);
+		new Input_Engine (window);
 
-		Ogre :: SceneManager & scene_manager = * root -> createSceneManager (Ogre :: ST_GENERIC);
+		boost :: shared_ptr <Ogre :: SceneManager> scene_manager (root -> createSceneManager (Ogre :: ST_GENERIC));
 
-		new GUI_Engine (* window, scene_manager);
+		new GUI_Engine (window, scene_manager);
 
 		new World (scene_manager);
 
@@ -124,10 +121,9 @@ Game ::
 		new Strategies :: Play_State (scene_manager);
 		set_active_state (Strategies :: Play_State :: get ());
 
-		Ogre :: Camera * camera = scene_manager . getCameraIterator () . getNext ();
-		assert (camera != NULL);
+		boost :: shared_ptr <Ogre :: Camera> camera (scene_manager -> getCameraIterator () . getNext ());
 
-		root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
+		root -> getRenderSystem () -> _setViewport (window -> addViewport (camera . get ()));
 		root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
 
 	}	// try
@@ -146,14 +142,14 @@ Game ::
 	Log :: trace (me, Game :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	delete & Strategies :: Play_State :: get ();
-	delete & World :: get ();
-	delete & Settings :: get ();
-	delete & GUI_Engine :: get ();
-	//	delete & Input_Engine :: get ();	//	Already auto-destructed.
-	delete & Audio_Engine :: get ();
-	delete & Log :: get ();
-	delete & Tracker :: get ();
+	Strategies :: Play_State :: destruct ();
+	World :: destruct ();
+	Settings :: destruct ();
+	GUI_Engine :: destruct ();
+	//	Input_Engine :: destruct ();	//	Already auto-destructed.
+	Audio_Engine :: destruct ();
+	Log :: destruct ();
+	Tracker :: destruct ();
 }
 
 //	virtual
@@ -170,21 +166,21 @@ bool Game ::
 void Game ::
 	run ()
 {
-	const Object * message = & Object :: update;
+	Reference <const Object> message = Object :: update;
 	while (has_active_state ())
 	{
 		if (window -> isClosed ())
 		{
-			message = & Object :: terminate;
+			message = Object :: terminate;
 		}
 
-		Input_Engine :: get () . capture ();
+		Input_Engine :: get () -> capture ();
 		Ogre :: WindowEventUtilities :: messagePump ();
 
-		Strategies :: Strategy_State_Machine :: run (* message, true);
+		Strategies :: Strategy_State_Machine :: run (message);
 
 		bool check = root -> renderOneFrame ();
 		assert (check);
-		GUI_Engine :: get () . render ();
+		GUI_Engine :: get () -> render ();
 	}
 }

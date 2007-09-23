@@ -33,7 +33,7 @@ endif(WIN32)
 
 if (DirectX_FOUND)
    if (NOT DirectX_FIND_QUIETLY)
-      message(STATUS "Found DirectX: ${DirectX_LIBRARIES}")
+      message(STATUS "Found DirectX: ${DirectX_INCLUDE_DIR}, ${DirectX_LIB_DIR}")
    endif (NOT DirectX_FIND_QUIETLY)
 else (DirectX_FOUND)
    if (DirectX_FIND_REQUIRED)

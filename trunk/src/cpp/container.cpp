@@ -72,7 +72,7 @@ float Container ::
 	
 	float total_mass = mass;
 
-	for (Item * i = get_child (); i != NULL; i = get_another_child ())
+	for (Reference <Item> i = get_child (); i . points_to_object (); i = get_another_child ())
 	{
 		total_mass += i -> get_total_mass ();
 	}
@@ -82,22 +82,22 @@ float Container ::
 
 //	virtual
 bool Container ::
-	add (Item & item)
+	add (Reference <Item> item)
 {
-	Engines :: Log :: trace (me, Container :: get_class_name (), "add", item . name);
+	Engines :: Log :: trace (me, Container :: get_class_name (), "add", item -> name);
 	assert (is_initialized ());
-	assert (item . is_initialized ());
+	assert (item -> is_initialized ());
 	assert (! is_sealed ());
-	assert (is_initialized ());
+	assert (item -> is_initialized ());
 	
 	float total_volume = 0;
 
-	for (Item * i = get_child (); i != NULL; i = get_another_child ())
+	for (Reference <Item> i = get_child (); i . points_to_object (); i = get_another_child ())
 	{
 		total_volume += i -> get_volume ();
 	}
 	
-	if (total_volume + item . get_volume () > get_volume ())
+	if (total_volume + item -> get_volume () > get_volume ())
 	{
 		return false;
 	}

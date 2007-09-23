@@ -1,8 +1,8 @@
 #ifndef RADAKAN_CONTAINER_HPP
 #define RADAKAN_CONTAINER_HPP
 
-#include "weapon.hpp"
-#include "set.hpp"
+#include "item.hpp"
+#include "location.hpp"
 
 using namespace std;
 
@@ -34,7 +34,7 @@ namespace Radakan
 				static const string get_class_name ();
 				
 				///	'add' returns false if I'm full.
-				virtual bool add (Item & item);
+				virtual bool add (Reference <Item> item);
 
 				virtual float get_total_mass () const;
 		};

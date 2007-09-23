@@ -1,5 +1,8 @@
-#include "log.hpp"
+#include <tinyxml.h>
+
+#include "character.hpp"
 #include "conversation_message.hpp"
+#include "log.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -16,9 +19,9 @@ const string Conversation_Message ::
 Conversation_Message ::
 	Conversation_Message
 	(
-		const TiXmlElement & new_option,
-		Items :: Character & new_from,
-		Items :: Character & new_to
+		boost :: shared_ptr <const TiXmlElement> new_option,
+		Reference <Items :: Character> new_from,
+		Reference <Items :: Character> new_to
 	) :
 	Object (create_name (new_option)),
 	option (new_option),
@@ -50,11 +53,11 @@ bool Conversation_Message ::
 	return Object :: is_initialized ();
 }
 
-Conversation_Message & Conversation_Message ::
+Reference <Conversation_Message> Conversation_Message ::
 	get_reaction ()
 	const
 {
-	const TiXmlNode * temp = & option;
+	const TiXmlNode * temp = option . get ();
 
 	for (int i = 0; temp -> ValueStr () != "dialog"; i ++)
 	{
@@ -75,33 +78,33 @@ Conversation_Message & Conversation_Message ::
 		assert (temp != NULL);
 	}
 
-	const TiXmlElement * reaction = temp -> ToElement ();
-	assert (reaction != NULL);
+	boost :: shared_ptr <const TiXmlElement> reaction (temp -> ToElement ());
+	assert (reaction);
 
-	return * (new Conversation_Message (* reaction, to, from));
+	return Reference <Conversation_Message> (new Conversation_Message (reaction, to, from));
 }
 
 //	private & static
 string Conversation_Message ::
-	create_name (const TiXmlElement & option)
+	create_name (boost :: shared_ptr <const TiXmlElement> option)
 {
 	string result;
 	
-	if (option . Attribute ("shout") != NULL)
+	if (option -> Attribute ("shout") != NULL)
 	{
 		result = "Shout ";
 	}
-	if (option . Attribute ("say") != NULL)
+	if (option -> Attribute ("say") != NULL)
 	{
-		result += "\"" + * option . Attribute (string ("say")) + "\" ";
+		result += "\"" + * option -> Attribute (string ("say")) + "\" ";
 	}
-	if (option . Attribute ("action") != NULL)
+	if (option -> Attribute ("action") != NULL)
 	{
-		result += * option . Attribute (string ("action")) + " ";
+		result += * option -> Attribute (string ("action")) + " ";
 	}
-	if (option . Attribute ("effect") != NULL)
+	if (option -> Attribute ("effect") != NULL)
 	{
-		result += "<" + * option . Attribute (string ("effect")) + "> ";
+		result += "<" + * option -> Attribute (string ("effect")) + "> ";
 	}
 
 	assert (! result . empty ());

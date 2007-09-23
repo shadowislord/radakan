@@ -1,16 +1,28 @@
 #ifndef RADAKAN_MODEL_HPP
 #define RADAKAN_MODEL_HPP
 
-#include "set.hpp"
-#include "item.hpp"
+#include "location.hpp"
+#include "resident.hpp"
 
 using namespace std;
 
+namespace Ogre
+{
+	class SceneNode;
+}
+
+namespace OgreOde
+{
+	class Geometry;
+	class Space;
+}
+
 namespace Radakan
 {
-	const Ogre :: Vector3 x_axis (1, 0, 0);
-	const Ogre :: Vector3 y_axis (0, 1, 0);	//	upwards
-	const Ogre :: Vector3 z_axis (0, 0, 1);
+	namespace Items
+	{
+		class Item;
+	}
 
 	///	Model is a 3D representation of an Items :: Item.
 	class Model :
@@ -18,7 +30,7 @@ namespace Radakan
 		public Location <Items :: Item>
 	{
 		public :
-			Model (Items :: Item & new_item, Ogre :: Vector3 position, float scale, OgreOde :: Geometry & new_geometry);
+			Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale, boost :: shared_ptr <OgreOde :: Geometry> new_geometry);
 			virtual ~Model ();
 			virtual bool is_initialized () const;
 			
@@ -31,13 +43,13 @@ namespace Radakan
 			void set_scale (float scale);
 			void set_material (string name);
 
-			void set_space (OgreOde :: Space & new_space);
+			void set_space (boost :: shared_ptr <OgreOde :: Space> new_space);
 
-			Items :: Item & item;
-			Ogre :: SceneNode & node;
+			Reference <Items :: Item> item;
+			boost :: shared_ptr <Ogre :: SceneNode> node;
 
 		protected :
-			OgreOde :: Geometry & geometry;
+			boost :: shared_ptr <OgreOde :: Geometry> geometry;
 	};
 
 	Ogre :: Quaternion make_quaternion (float radian_angle, Ogre :: Vector3 ax);

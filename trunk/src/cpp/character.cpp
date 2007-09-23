@@ -3,10 +3,15 @@
 #include "conversation_message.hpp"
 #include "log.hpp"
 #include "movable_model.hpp"
+#include "multislot.hpp"
 
 using namespace std;
 using namespace Radakan;
 using namespace Radakan :: Items;
+
+//	static
+const float Character ::
+	default_experience (13);
 
 //	static
 const string Character ::
@@ -16,8 +21,8 @@ const string Character ::
 }
 
 //	static
-Set <Character> Character ::
-	characters ("characters (static)");
+Reference <Set <Character> > Character ::
+	characters (new Set <Character> ("characters (static)"));
 
 //  constructor
 Character ::
@@ -39,14 +44,14 @@ Character ::
 		true,
 		Set <Item> :: unlimited
 	),
-	//	head (* new Static_Item (name + "'s head", "bar.mesh", 1, 1)),
-	//	head (* new Multislot <Hat> (1)),
-	//	body (* new Multislot <Shirt> (1)),
-	back (* new Multislot <Container> (name + "'s back", "bar.mesh", Ogre :: Vector3 (0.5, 0.5, 0.3), 0, 1)),
-	//	arms (* new Multislot <Bracer> (2)),
-	hands (* new Multislot <Item> (name + "'s hands", "bar.mesh", Ogre :: Vector3 (1, 0.3, 0.3), 0, 2)),
-	//	legs (* new Multislot <Pants> (1)),
-	//	feet (* new Multislot <Shoe> (2)),
+	//	head (new Static_Item (name + "'s head", "bar.mesh", 1, 1)),
+	//	head (new Multislot <Hat> (1)),
+	//	body (new Multislot <Shirt> (1)),
+	back (new Multislot <Container> (name + "'s back", "bar.mesh", Ogre :: Vector3 (0.5, 0.5, 0.3), 0, 1)),
+	//	arms (new Multislot <Bracer> (2)),
+	hands (new Multislot <Item> (name + "'s hands", "bar.mesh", Ogre :: Vector3 (1, 0.3, 0.3), 0, 2)),
+	//	legs (new Multislot <Pants> (1)),
+	//	feet (new Multislot <Shoe> (2)),
 	movable_model (NULL)
 {
 	Engines :: Log :: trace (me, Character :: get_class_name (), "", new_mesh_name, to_string (new_size), to_string (new_mass));
@@ -65,17 +70,21 @@ Character ::
 	//	Make sure no body parts are added anymore.
 	seal ();
 
-	for (Character * character = characters . get_child ();
-		character != NULL; character = characters . get_another_child ())
+	Reference <Character> this_character (this);
+
+	for (Reference <Character> character = characters -> get_child ();
+		character . points_to_object (); character = characters -> get_another_child ())
 	{
-		register_observer (* character);
-		character -> register_observer (* this);
+		register_observer (character);
+		character -> register_observer (this_character);
 	}
 
-	check = characters . add (* this);
+	check = characters -> add (this_character);
 	assert (check);
 
-	register_observer (* this);
+	register_observer (this_character);
+
+	experiences ["charisma"] = default_experience;
 
 	assert (is_initialized ());
 }
@@ -104,26 +113,42 @@ bool Character ::
 	return true;
 }
 
-Movable_Model & Character ::
+Reference <Movable_Model> Character ::
 	get_movable_model ()
 	const
 {
-	if (movable_model == NULL)
+	if (! movable_model . points_to_object ())
 	{
-		const_cast <Character *> (this) -> movable_model
-			= & get_model () . to_type <Movable_Model> ();
+		movable_model = get_model () -> to_type <Movable_Model> ();
 	}
 
-	return * movable_model;
+	return movable_model;
 }
 
 void Character ::
-	hit (string fight_mode, Character & target)
+	hit (string fight_mode, Reference <Character> target)
 {
 	assert (is_initialized ());
 
-	Engines :: Log :: show (name + " hits " + target . name + "!");
+	Engines :: Log :: show (name + " hits " + target -> name + "!");
 
-	Messages :: Battle_Message temp (fight_mode, * this, target);
+	Reference <Messages :: Battle_Message> temp (new Messages :: Battle_Message (fight_mode, Reference <Character> (this), target));
 	call_observers (temp);
+}
+
+float Character ::
+	get_skill (const string skill_name)
+	const
+{
+	assert (0 < experiences . count (skill_name));
+
+	return 4 / Ogre :: Math :: PI * Ogre :: Math :: ATan (experiences . find (skill_name) -> second / default_experience) . valueRadians ();
+}
+
+void Character ::
+	add_experience (const string skill_name, float amount)
+{
+	assert (0 < experiences . count (skill_name));
+	
+	experiences [skill_name] += amount;
 }

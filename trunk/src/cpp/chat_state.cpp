@@ -24,7 +24,7 @@ const string Chat_State ::
 
 //  constructor
 Chat_State ::
-	Chat_State (Alive_State & new_alive_state) :
+	Chat_State (Reference <Alive_State> new_alive_state) :
 	Object ("chat state"),
 	alive_state (new_alive_state),
 	timeout (maximal_timeout)
@@ -55,18 +55,18 @@ bool Chat_State ::
 }
 
 //	virtual
-Strategy * Chat_State ::
-	transit (const Object & message)
+Reference <Strategy> Chat_State ::
+	transit (Reference <const Object> message)
 {
 	assert (is_initialized ());
 
-	if (message . is_type <Messages :: Conversation_Message> ())
+	if (message -> is_type <Messages :: Conversation_Message> ())
 	{
-		Messages :: Conversation_Message & conversation_message = message . to_type <Messages :: Conversation_Message> ();
+		Reference <const Messages :: Conversation_Message> conversation_message = message -> to_type <Messages :: Conversation_Message> ();
 		
-		if (conversation_message . to == alive_state . npc)	//	Is (s)he talking to me?
+		if (conversation_message -> to == alive_state -> npc)	//	Is (s)he talking to me?
 		{
-			alive_state . npc . call_observers (conversation_message . get_reaction ());
+			alive_state -> npc -> call_observers (conversation_message -> get_reaction ());
 
 			timeout = maximal_timeout;
 		}
@@ -74,21 +74,14 @@ Strategy * Chat_State ::
 
 	if (timeout == 0)
 	{
-		alive_state . npc . think ("I'm not going to wait any longer...");
+		alive_state -> npc -> think ("I'm not going to wait any longer...");
 
-		alive_state . calm *= 0.9;	//	The NPC gets slightly annoyed.
+		alive_state -> calm *= 0.9;	//	The NPC gets slightly annoyed.
 
 		return NULL;
 	}
 
 	timeout --;
 	
-	return this;
-}
-
-//	static
-Strategy & Chat_State ::
-	create (Alive_State & new_alive_state)
-{
-	return static_cast <Strategy &> (* new Chat_State (new_alive_state));
+	return Reference <Strategy> (this);
 }

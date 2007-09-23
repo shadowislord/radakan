@@ -1,33 +1,34 @@
 #ifndef RADAKAN_WORLD_HPP
 #define RADAKAN_WORLD_HPP
 
+#include <OgreOdeCollision.h>
+
 #include "singleton.hpp"
 #include "state_machine.hpp"
-#include "tile.hpp"
-#include "movable_model.hpp"
 
-#include <OgreSceneManager.h>
+namespace OgreOde
+{
+	class ForwardFixedInterpolatedStepHandler;
+}
 
 namespace Radakan
 {
+	class Tile;
 
 	///	World contains all basic 'environment' data.
 	class World :
 		public Singleton <World>,
-		//	public virtual Object,
-		public OgreOde :: World,
-		private OgreOde :: ForwardFixedInterpolatedStepHandler,	//	choice of step handler: Enables fps control
-		public OgreOde :: CollisionListener,
-		public State_Machine <Tile>
+		public State_Machine <Tile>,
+		public OgreOde :: CollisionListener
 	{
 		public:
-			World (Ogre :: SceneManager & scene_manager);
+			World (boost :: shared_ptr <Ogre :: SceneManager> scene_manager);
 			virtual ~World ();
 			virtual bool is_initialized () const;
 
 			static const string get_class_name ();
 
-			void set_active_tile (Tile & tile);
+			void set_active_tile (Reference <Tile> tile);
 
 			///	Called by OgreOde whenever a collision occurs,
 			///	so that we can modify the contact parameters.
@@ -42,21 +43,27 @@ namespace Radakan
 
 			string get_FPS () const;
 
-			Ogre :: SceneNode & root_node;
+			boost :: scoped_ptr <Ogre :: SceneNode> root_node;
+
+			boost :: scoped_ptr <OgreOde :: World> ogre_ode_world;
 
 		private :
 			unsigned int turn;
 			float last_turn_lenght;
-			Ogre :: Timer turn_lenght_timer;
+			boost :: scoped_ptr <Ogre :: Timer> turn_lenght_timer;
 
 			//	The coordinates of a tile are expressed as (x, z).
-			map <pair <int, int>, Tile *> tiles;
+			map <pair <int, int>, Reference <Tile> > tiles;
 
 			//	These are the tile position limits, not the item position limits!
 			static const int min_x;
 			static const int max_x;
 			static const int min_z;
 			static const int max_z;
+
+			///	enables fps control
+			boost :: scoped_ptr <OgreOde :: ForwardFixedInterpolatedStepHandler> step_handler;
+
 	};
 }
 

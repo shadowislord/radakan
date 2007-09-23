@@ -62,15 +62,15 @@ template <class T> bool Multislot <T> ::
 
 //	virtual
 template <class T> bool Multislot <T> ::
-	add (Item & item)
+	add (Reference <Item> item)
 {
 	assert (is_initialized ());
-	assert (item . is_initialized ());
-	assert (! item . has_model ());
+	assert (item -> is_initialized ());
+	assert (! item -> has_model ());
 
-	if (item . is_type <T> ())
+	if (item -> is_type <T> ())
 	{
-		return Container :: add (item . to_type <T> ());
+		return Container :: add (item -> to_type <T> ());
 	}
 
 	return false;

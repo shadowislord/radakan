@@ -20,11 +20,11 @@ const string Alive_State ::
 
 //  constructor
 Alive_State ::
-	Alive_State (Items :: NPC & new_npc) :
+	Alive_State (Reference <Items :: NPC> new_npc) :
 	Object ("alive state"),
 	npc (new_npc),
 	calm (1),
-	sensory_buffer (new_npc . name + "'s sensory buffer")
+	sensory_buffer (new Set <Object> (new_npc -> name + "'s sensory buffer"))
 {
 	//	Do nothing.
 
@@ -40,11 +40,11 @@ Alive_State ::
 
 	prepare_for_destruction ();
 
-	if (! npc . is_destructing ())
+	if (! npc -> is_destructing ())
 	{
-		npc . get_movable_model () . turn (1, npc . get_model () . get_side_direction ());
+		npc -> get_movable_model () -> turn (1, npc -> get_model () -> get_side_direction ());
 		
-		Engines :: Log :: show (npc . name + " died.");
+		Engines :: Log :: show (npc -> name + " died.");
 	}
 }
 
@@ -61,8 +61,8 @@ bool Alive_State ::
 }
 
 //	virtual
-Strategy * Alive_State ::
-	transit (const Object & message)
+Reference <Strategy> Alive_State ::
+	transit (Reference <const Object> message)
 {
 	assert (is_initialized ());
 	
@@ -71,16 +71,16 @@ Strategy * Alive_State ::
 		return NULL;
 	}
 
-	npc . get_movable_model () . move (0);
-	npc . get_movable_model () . turn (0);
+	npc -> get_movable_model () -> move (0);
+	npc -> get_movable_model () -> turn (0);
 
-	if (message . is_type <Messages :: Battle_Message> ())
+	if (message -> is_type <Messages :: Battle_Message> ())
 	{
-		if (message . to_type <Messages :: Battle_Message> () . to == npc)
+		if (message -> to_type <Messages :: Battle_Message> () -> to == npc)
 		{
-			if (! (has_active_state () && get_active_state () . is_type <Fight_State> ()))
+			if (! (has_active_state () && get_active_state () -> is_type <Fight_State> ()))
 			{
-				set_active_state (static_cast <Strategy &> (* new Fight_State (* this)));
+				set_active_state (Reference <Strategy> (new Fight_State (Reference <Alive_State> (this))));
 			}
 		}
 		else
@@ -88,20 +88,20 @@ Strategy * Alive_State ::
 			//	Ignore the message.
 		}
 	}
-	else if (message . is_type <Messages :: Conversation_Message> ())
+	else if (message -> is_type <Messages :: Conversation_Message> ())
 	{
-		if (message . to_type <Messages :: Conversation_Message> () . to == npc)
+		if (message -> to_type <Messages :: Conversation_Message> () -> to == npc)
 		{
 			if (0.5 < calm)	//	'listening' state:
 			{
 				if (! has_active_state ())
 				{
-					set_active_state (static_cast <Strategy &> (* new Chat_State (* this)));
+					set_active_state (Reference <Strategy> (new Chat_State (Reference <Alive_State> (this))));
 				}
 			}
 			else
 			{
-				Engines :: Log :: show (npc . name + " is not listening.");
+				Engines :: Log :: show (npc -> name + " is not listening.");
 			}
 		}
 		else
@@ -112,5 +112,5 @@ Strategy * Alive_State ::
 
 	Strategy_State_Machine :: run (message);
 
-	return this;
+	return Reference <Alive_State> (this);
 }
