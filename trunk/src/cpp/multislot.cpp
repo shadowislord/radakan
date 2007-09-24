@@ -70,7 +70,7 @@ template <class T> bool Multislot <T> ::
 
 	if (item -> is_type <T> ())
 	{
-		return Container :: add (item -> to_type <T> ());
+		return Container :: add (item);
 	}
 
 	return false;

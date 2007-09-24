@@ -1,5 +1,5 @@
-#ifndef RADAKAN_TOUGHT_HPP
-#define RADAKAN_TOUGHT_HPP
+#ifndef RADAKAN_THOUGHT_HPP
+#define RADAKAN_THOUGHT_HPP
 
 #include "object.hpp"
 
@@ -12,12 +12,12 @@ namespace Radakan
 		class Character;
 	}
 	
-	class Tought :
+	class Thought :
 		public Object
 	{
 		public :
-			Tought (Reference <const Items :: Character> other);
-			virtual ~Tought ();
+			Thought (Reference <const Items :: Character> other);
+			virtual ~Thought ();
 			virtual bool is_initialized () const;
 
 			static const string get_class_name ();
@@ -29,4 +29,4 @@ namespace Radakan
 	};
 }
 
-#endif	// RADAKAN_TOUGHT_HPP
+#endif	// RADAKAN_THOUGHT_HPP

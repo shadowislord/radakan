@@ -1,3 +1,4 @@
+#include "destructible_reference.hpp"
 #include "log.hpp"
 #include "set.hpp"
 
@@ -205,15 +206,14 @@ template <class T> bool Set <T> ::
 #include "model.hpp"
 #include "movable_model.hpp"
 #include "tile.hpp"
-#include "tought.hpp"
+#include "thought.hpp"
 #include "play_state.hpp"
 
-template class Set <Messages :: Conversation_Message>;
-template class Set <Strategies :: Strategy>;
 template class Set <GUI>;
 template class Set <Items :: Character>;
 template class Set <Items :: Item>;
 template class Set <Items :: NPC>;
+template class Set <Messages :: Conversation_Message>;
 template class Set <Model>;
 template class Set <Movable_Model>;
 template class Set <Object>;
@@ -222,21 +222,6 @@ template class Set <Observer <GUI> >;
 template class Set <Observer <Items :: Character> >;
 template class Set <Observer <Strategies :: Play_State> >;
 template class Set <Sound_Sample>;
+template class Set <Strategies :: Strategy>;
 template class Set <Tile>;
-template class Set <Tought>;
-
-template class Set <const Messages :: Conversation_Message>;
-template class Set <const Strategies :: Strategy>;
-template class Set <const GUI>;
-template class Set <const Items :: Character>;
-template class Set <const Items :: Container>;
-template class Set <const Items :: Item>;
-template class Set <const Items :: NPC>;
-template class Set <const Model>;
-template class Set <const Object>;
-template class Set <const Observer <Engines :: Log> >;
-template class Set <const Observer <GUI> >;
-template class Set <const Observer <Items :: Character> >;
-template class Set <const Sound_Sample>;
-template class Set <const Tile>;
-template class Set <const Tought>;
+template class Set <Thought>;

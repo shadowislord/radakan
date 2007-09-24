@@ -7,6 +7,7 @@ using namespace std;
 
 namespace Radakan
 {
+	template <class T> class Destructible_Reference;
 
 	///	Set can contain instances of a specific Object subclass, but not more then once.
 	template <class T> class Set :
@@ -49,11 +50,11 @@ namespace Radakan
 			bool is_sealed () const;
 
 		private :
-			boost :: scoped_ptr <set <Reference <T> > > children;
+			boost :: scoped_ptr <set <Destructible_Reference <T> > > children;
 
 			//	'typename' added to assure that const_iterator is a type.
 			//	'class' would give MSV problems.
-			typedef typename set <Reference <T> > :: const_iterator T_iterator;
+			typedef typename set <Destructible_Reference <T> > :: const_iterator T_iterator;
 		
 			//	'mutable' added to allow change even if in a const Set.
 			mutable T_iterator next_child;

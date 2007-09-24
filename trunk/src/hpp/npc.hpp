@@ -8,7 +8,7 @@ using namespace std;
 
 namespace Radakan
 {
-	class Tought;
+	class Thought;
 
 	namespace Items
 	{
@@ -39,7 +39,7 @@ namespace Radakan
 				virtual bool is_dead () const;
 				virtual void die ();
 
-				void think (const string tought) const;
+				void think (const string thought) const;
 				
 				static Item & create
 				(
@@ -49,7 +49,7 @@ namespace Radakan
 					float new_mass
 				);
 
-				Set <Tought> toughts;
+				Set <Thought> thoughts;
 		};
 	}
 }

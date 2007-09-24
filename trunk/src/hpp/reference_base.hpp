@@ -23,7 +23,7 @@ namespace Radakan
 
 			static const string get_class_name ();
 
-			virtual string get_name () const;
+			virtual const string get_name () const;
 			
 		private :
 			const int number;

@@ -3,7 +3,7 @@
 #include "conversation_message.hpp"
 #include "log.hpp"
 #include "npc.hpp"
-#include "tought.hpp"
+#include "thought.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -32,7 +32,7 @@ NPC ::
 		new_size,
 		new_mass
 	),
-	toughts (name + "'s toughts")
+	thoughts (name + "'s thoughts")
 {
 	Engines :: Log :: trace (me, NPC :: get_class_name (), "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 
@@ -151,8 +151,8 @@ void NPC ::
 }
 
 void NPC ::
-	think (const string tought)
+	think (const string thought)
 	const
 {
-	Engines :: Log :: show (name + " thinks \"" + tought + "\"");
+	Engines :: Log :: show (name + " thinks \"" + thought + "\"");
 }

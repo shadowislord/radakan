@@ -52,7 +52,6 @@ template <class T> void Observable <T> ::
 	call_observers (Reference <const Object> message)
 {
 	assert (is_initialized ());
-	assert (is_type <T> ());
 
 	for (Reference <Observer <T> > observer = observers -> get_child (); observer . points_to_object (); observer = observers -> get_another_child ())
 	{
