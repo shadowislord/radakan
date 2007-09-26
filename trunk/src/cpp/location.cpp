@@ -68,7 +68,7 @@ template <class T> void Location <T> ::
 	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "drop", dropped -> name);
 	assert (Location <T> :: is_initialized ());
 	
-	dropped -> leave (Reference <const Location <T> > (this));
+	dropped -> leave ();
 	Set <T> :: drop (dropped);
 }
 

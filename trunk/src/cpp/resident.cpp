@@ -55,12 +55,11 @@ template <class T> void Resident <T> ::
 }
 
 template <class T> void Resident <T> ::
-	leave (Reference <const Location <T> > old_location)
+	leave ()
 {
-	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "leave", old_location -> name);
+	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "leave");
 	assert (Resident <T> :: is_initialized ());
-	assert (location == old_location);	//	'location' may be 'NULL'.
-	
+
 	Engines :: Log :: log (me) << "I'm leaving " << location -> name << "." << endl;
 
 	location . reset_pointee ();

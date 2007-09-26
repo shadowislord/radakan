@@ -229,5 +229,5 @@ Reference <Strategy> Play_State ::
 		* Items :: Player_Character :: get () -> get_movable_model () -> node -> getOrientation ()
 	);
 
-	return this;
+	return Reference <Strategy> (this);
 }

@@ -21,6 +21,7 @@ template <class T> Set <T> ::
 	Set (string name, int new_maximal_size) :
 	Object (name),
 	maximal_size (new_maximal_size),
+	children (new set <Destructible_Reference <T> >),
 	sealed (false)
 {
 	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "", name, to_string (new_maximal_size));
@@ -216,7 +217,6 @@ template class Set <Items :: NPC>;
 template class Set <Messages :: Conversation_Message>;
 template class Set <Model>;
 template class Set <Movable_Model>;
-template class Set <Object>;
 template class Set <Observer <Engines :: Log> >;
 template class Set <Observer <GUI> >;
 template class Set <Observer <Items :: Character> >;
@@ -225,3 +225,5 @@ template class Set <Sound_Sample>;
 template class Set <Strategies :: Strategy>;
 template class Set <Tile>;
 template class Set <Thought>;
+
+template class Set <const Object>;

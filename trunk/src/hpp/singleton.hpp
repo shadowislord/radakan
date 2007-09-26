@@ -32,7 +32,7 @@ namespace Radakan
 
 		private :
 			///	Store an extra reference to make sure Singletons are not destructed.
-			static Reference <Object> myself;
+			static Reference <T> myself;
 	};
 }
 

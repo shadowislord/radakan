@@ -16,6 +16,9 @@ namespace Radakan
 		public :
 			Reference & operator= (const Reference & other);
 			template <class V> Reference & operator= (const Reference <V> & other);
+			template <class V> bool operator== (const Reference <V> & other) const;
+			template <class V> bool operator!= (const Reference <V> & other) const;
+			bool operator< (const Reference <T> & other) const;
 
 			Reference (T * new_pointee = NULL);
 			Reference (const Reference <T> & other);
@@ -30,7 +33,6 @@ namespace Radakan
 			const T * operator-> () const;
 
 			bool points_to_object () const;
-			template <class V> bool points_to_the_same_object (const Reference <V> & other) const;
 			void reset_pointee (T * new_pointee = NULL);
 
 		private :

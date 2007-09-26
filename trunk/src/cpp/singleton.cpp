@@ -9,7 +9,7 @@ template <class T> T * Ogre :: Singleton <T> ::
 	ms_Singleton (NULL);
 
 //	static
-template <class T> Reference <Object> Singleton <T> ::
+template <class T> Reference <T> Singleton <T> ::
 	myself;
 
 //	static
@@ -24,8 +24,6 @@ template <class T> Singleton <T> ::
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
 	Engines :: Log :: trace (me, Singleton <T> :: get_class_name ());
-
-	myself . reset_pointee (this);
 
 	assert (Singleton <T> :: is_initialized ());
 }
@@ -68,7 +66,13 @@ template <class T> Reference <T> Singleton <T> ::
 {
 	assert (is_instantiated ());
 
-	return Reference <T> (Ogre :: Singleton <T> :: getSingletonPtr ());
+	if (! myself . points_to_object ())
+	{
+		//	This is not 'dangerous' if the Singleton would not be instantiated.
+		myself . reset_pointee (Ogre :: Singleton <T> :: getSingletonPtr ());
+	}
+
+	return myself;
 }
 
 //	static

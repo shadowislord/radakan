@@ -29,6 +29,24 @@ template <class T> template <class V> Reference <T> & Reference <T> ::
 	return * this;
 }
 
+template <class T> template <class V> bool Reference <T> ::
+	operator== (const Reference <V> & other) const
+{
+	return pointee == other . pointee;
+}
+
+template <class T> template <class V> bool Reference <T> ::
+	operator!= (const Reference <V> & other) const
+{
+	return pointee != other . pointee;
+}
+
+template <class T> bool Reference <T> ::
+	operator< (const Reference <T> & other) const
+{
+	return pointee < other . pointee;
+}
+
 template <class T> Reference <T> ::
 	Reference (T * new_pointee) :
 	pointee (new_pointee)
@@ -196,7 +214,7 @@ template class Reference <Set <Items :: NPC> >;
 template class Reference <Set <Messages :: Conversation_Message> >;
 template class Reference <Set <Model> >;
 template class Reference <Set <Movable_Model> >;
-template class Reference <Set <Object> >;
+template class Reference <Set <const Object> >;
 template class Reference <Set <Observer <Engines :: Log> > >;
 template class Reference <Set <Observer <GUI> > >;
 template class Reference <Set <Observer <Items :: Character> > >;
@@ -265,3 +283,53 @@ template class Reference <const Strategies :: Fight_State>;
 //	template class Reference <const Strategies :: Strategy_State_Machine>;
 //	template class Reference <const Tile>;
 //	template class Reference <const Thought>;
+
+template Reference <Items :: Character> ::
+	Reference (const Reference <Items :: NPC> & other);
+template Reference <Items :: Character> ::
+	Reference (const Reference <Items :: Player_Character> & other);
+template Reference <Items :: Item> ::
+	Reference (const Reference <Items :: Multislot <Items :: Container> > & other);
+template Reference <Items :: Item> ::
+	Reference (const Reference <Items :: Multislot <Items :: Item> > & other);
+template Reference <Model> ::
+	Reference (const Reference <Movable_Model> & other);
+template Reference <Observer <Items :: Character> > ::
+	Reference (const Reference <Items :: Character> & other);
+template Reference <Observer <GUI> > ::
+	Reference (const Reference <Engines :: Input_Engine> & other);
+template Reference <Set <Items :: Item> > ::
+	Reference (const Reference <Items :: Multislot <Items :: Item> > & other);
+template Reference <Set <Model> > ::
+	Reference (const Reference <Tile> & other);
+template Reference <Strategies :: Strategy> ::
+	Reference (const Reference <Strategies :: Fight_State> & other);
+template Reference <Strategies :: Strategy> ::
+	Reference (const Reference <Strategies :: Play_State> & other);
+template Reference <Strategies :: Strategy> ::
+	Reference (const Reference <Strategies :: Menu_State> & other);
+
+template Reference <const Object> ::
+	Reference (const Reference <Messages :: Battle_Message> & other);
+template Reference <const Object> ::
+	Reference (const Reference <Messages :: Conversation_Message> & other);
+template Reference <const Object> ::
+	Reference (const Reference <const Messages :: Conversation_Message> & other);
+template Reference <const Object> ::
+	Reference (const Reference <Object> & other);
+template Reference <const Object> ::
+	Reference (const Reference <Set <Messages :: Conversation_Message> > & other);
+
+template bool Reference <Items :: Character> ::
+	operator== (const Reference <Items :: NPC> & other) const;
+template bool Reference <GUI> ::
+	operator== (const Reference <GUI> & other) const;
+template bool Reference <Items :: Character> ::
+	operator== (const Reference <Items :: Player_Character> & other) const;
+template bool Reference <const Object> ::
+	operator== (const Reference <const Object> & other) const;
+
+template bool Reference <const Object> ::
+	operator!= (const Reference <const Object> & other) const;
+template bool Reference <Tile> ::
+	operator!= (const Reference <Tile> & other) const;

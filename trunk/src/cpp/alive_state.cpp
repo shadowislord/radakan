@@ -24,7 +24,7 @@ Alive_State ::
 	Object ("alive state"),
 	npc (new_npc),
 	calm (1),
-	sensory_buffer (new Set <Object> (new_npc -> name + "'s sensory buffer"))
+	sensory_buffer (new Set <const Object> (new_npc -> name + "'s sensory buffer"))
 {
 	//	Do nothing.
 
@@ -112,5 +112,5 @@ Reference <Strategy> Alive_State ::
 
 	Strategy_State_Machine :: run (message);
 
-	return Reference <Alive_State> (this);
+	return Reference <Strategy> (this);
 }

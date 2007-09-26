@@ -14,10 +14,6 @@ namespace Radakan
 		public boost :: noncopyable
 	{
 		public :
-			bool operator== (const Reference_Base & other) const;
-			bool operator!= (const Reference_Base & other) const;
-			bool operator< (const Reference_Base & other) const;
-
 			Reference_Base ();
 			virtual ~Reference_Base ();
 

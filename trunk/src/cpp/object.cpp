@@ -190,24 +190,19 @@ void  Object ::
 	
 	assert (is_initialized ());
 	
-	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name (), "A");
-	
-	assert (dependencies -> count (& reference) == 0);
+	assert (! does_depend (reference));
 
-	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name (), "B");
-	
 	bool check = dependencies -> insert (& reference) . second;
 
-	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name (), "C");
-
 	assert (check);
+	assert (does_depend (reference));
 }
 
 void  Object ::
 	unregister_reference (const Reference_Base & reference)
 	const
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name ());
+	Engines :: Log :: trace (me, Object :: get_class_name (), "unregister_reference", reference . get_name ());
 	
 	assert (is_initialized ());
 
@@ -278,8 +273,8 @@ template bool Object ::
 //		is_type <Engines :: Log> () const;
 template bool Object ::
 	is_type <Items :: Container> () const;
-//	template bool Object ::
-//		is_type <Items :: Item> () const;
+template bool Object ::
+	is_type <Items :: Item> () const;
 template bool Object ::
 	is_type <Items :: NPC> () const;
 //	template bool Object ::
@@ -408,8 +403,8 @@ template Reference <const Messages :: Battle_Message> Object ::
 	to_type <const Messages :: Battle_Message> () const;
 template Reference <const Messages :: Battle_Message> Object ::
 	to_type <Messages :: Battle_Message> () const;
-//	template Reference <const Messages :: Conversation_Message> Object ::
-//		to_type <const Messages :: Conversation_Message> () const;
+template Reference <const Messages :: Conversation_Message> Object ::
+	to_type <const Messages :: Conversation_Message> () const;
 template Reference <const Messages :: Conversation_Message> Object ::
 	to_type <Messages :: Conversation_Message> () const;
 //	template Reference <const Model> Object ::

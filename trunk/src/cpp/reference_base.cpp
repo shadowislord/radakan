@@ -20,30 +20,10 @@ const string Reference_Base ::
 	return "Reference_Base";
 }
 
-bool Reference_Base ::
-	operator== (const Reference_Base & other) const
-{
-	return counter == other . counter;
-}
-
-bool Reference_Base ::
-	operator!= (const Reference_Base & other) const
-{
-	return ! (counter == other . counter);
-}
-
-bool Reference_Base ::
-	operator< (const Reference_Base & other) const
-{
-	return counter < other . counter;
-}
-
 Reference_Base ::
 	Reference_Base () :
 	number (counter ++)
 {
-	assert (counter < 36);
-
 	Engines :: Log :: trace (* this, get_class_name (), "", to_string (number));
 }
 
@@ -58,5 +38,5 @@ const string Reference_Base ::
 	get_name ()
 	const
 {
-	return to_string (number);
+	return "[" + to_string (number) + "]";
 }

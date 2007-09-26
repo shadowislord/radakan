@@ -39,7 +39,7 @@ namespace Radakan
 				//	'calm' can vary from 0 to 1.
 				float calm;
 
-				Reference <Set <Object> > sensory_buffer;
+				Reference <Set <const Object> > sensory_buffer;
 		};
 	}
 }

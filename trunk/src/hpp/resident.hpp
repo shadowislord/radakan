@@ -21,7 +21,7 @@ namespace Radakan
 			static const string get_class_name ();
 
 			void enter (Reference <const Location <T> > new_location);
-			void leave (Reference <const Location <T> > old_location);
+			void leave ();
 
 		protected :
 			Resident ();

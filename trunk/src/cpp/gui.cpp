@@ -235,7 +235,7 @@ bool GUI ::
 		{
 			string caption (window_event_arguments -> window -> getText () . c_str ());
 
-			Reference <Object> message (new Object (caption));
+			Reference <const Object> message (new Object (caption));
 
 			call_observers (message);
 		}

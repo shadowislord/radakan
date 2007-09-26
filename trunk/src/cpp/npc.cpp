@@ -70,7 +70,7 @@ void NPC ::
 
 	if (! is_dead ())
 	{
-		Reference <Set <Object> > sensory_buffer (get_active_state () -> to_type <Strategies :: Alive_State> () -> sensory_buffer);
+		Reference <Set <const Object> > sensory_buffer (get_active_state () -> to_type <Strategies :: Alive_State> () -> sensory_buffer);
 	
 		if (message == update)
 		{
@@ -80,7 +80,7 @@ void NPC ::
 			}
 			else
 			{
-				Reference <Object> buffered_message (sensory_buffer -> get_child ());
+				Reference <const Object> buffered_message (sensory_buffer -> get_child ());
 
 				Strategies :: Strategy_State_Machine :: run (buffered_message);
 			}
