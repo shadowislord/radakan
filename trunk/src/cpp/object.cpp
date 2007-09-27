@@ -197,6 +197,12 @@ void  Object ::
 
 	assert (check);
 	assert (does_depend (reference));
+
+	for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
+			i ++)
+	{
+		Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
+	}
 }
 
 void  Object ::
@@ -209,6 +215,12 @@ void  Object ::
 
 	dependencies -> erase (& reference);
 
+	for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
+			i ++)
+	{
+		Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
+	}
+
 	if (destructing)
 	{
 		Engines :: Log :: log (me) << "I'm already destructing." << endl;
@@ -217,20 +229,19 @@ void  Object ::
 
 	unsigned int self_destruct_criterion = 0;
 	self_destruct_criterion ++;	//	'me' should not forbid to destruct.
-	if (does_depend (Engines :: Tracker :: get ()))
+	if (Engines :: Tracker :: is_instantiated ())
 	{
-		self_destruct_criterion = 1;
+		self_destruct_criterion ++;
 	}
 	assert (dependencies -> size () >= self_destruct_criterion);
 
-	if (dependencies -> size () > self_destruct_criterion)
+	if (dependencies -> size () == self_destruct_criterion)
 	{
-		Engines :: Log :: log (me) << "I have another dependency and will not self-destruct." << endl;
-		return;
+		Engines :: Log :: log (me) << "I have no more dependencies and will self-destruct." << endl;
+		delete this;
 	}
 
-	Engines :: Log :: log (me) << "I have no more dependencies and will self-destruct." << endl;
-	delete this;
+	Engines :: Log :: log (me) << "I have another dependency and will not self-destruct." << endl;
 }
 
 //	to avert linking errors:
