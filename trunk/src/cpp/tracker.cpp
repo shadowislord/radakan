@@ -19,8 +19,6 @@ Tracker ::
 {
 	Log :: trace (me, Tracker :: get_class_name ());
 	assert (Tracker :: is_initialized ());
-
-	prepare_for_destruction ();
 }
 
 //  destructor
@@ -29,6 +27,8 @@ Tracker ::
 {
 	Log :: trace (me, Tracker :: get_class_name (), "~");
 	assert (Tracker :: is_initialized ());
+
+	prepare_for_destruction ();
 
 	#ifdef RADAKAN_DEBUG
 		for (Reference <const Object> i = Tracker :: get () -> get_child (); i . points_to_object ();

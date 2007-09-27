@@ -97,7 +97,8 @@ Object ::
 	assert (is_initialized ());
 
 	prepare_for_destruction ();
-	
+
+	me . reset_pointee ();
 	Engines :: Log :: log (me) << "Farewell..." << endl;
 }
 
@@ -189,7 +190,7 @@ void  Object ::
 	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name ());
 	
 	assert (is_initialized ());
-	
+
 	assert (! does_depend (reference));
 
 	bool check = dependencies -> insert (& reference) . second;

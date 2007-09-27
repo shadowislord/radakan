@@ -34,9 +34,10 @@ using namespace std;
 
 	try
 	{
-		Radakan :: Engines :: Game game (radakan_path, ogre_media_path);
+		Radakan :: Reference <Radakan :: Engines :: Game> game
+			(new Radakan :: Engines :: Game (radakan_path, ogre_media_path));
 
-		game . run ();
+		game -> run ();
 		
 		//	The game is automatically shut down here.
 	}

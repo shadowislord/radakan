@@ -68,7 +68,7 @@ template <class T> Reference <T> Singleton <T> ::
 
 	if (! myself . points_to_object ())
 	{
-		//	This is not 'dangerous' if the Singleton would not be instantiated.
+		//	This is not 'dangerous' if the Singleton would not be instaniated.
 		myself . reset_pointee (Ogre :: Singleton <T> :: getSingletonPtr ());
 	}
 

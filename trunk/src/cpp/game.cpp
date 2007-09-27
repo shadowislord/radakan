@@ -35,8 +35,8 @@ Game ::
 	#ifdef RADAKAN_DEBUG
 		Log :: log (me) << "Debug mode is enabled." << endl;
 		
-		new Tracker ();
 		new Log (radakan_path);
+		new Tracker ();
 	#else
 		Log :: log (me) << "Debug mode is disabled." << endl;
 		Log :: no_logs (me);

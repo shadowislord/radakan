@@ -28,8 +28,8 @@ Log ::
 
 	//	'Log :: log (me)' is redirected to a log file.
 	cout . rdbuf ((new ofstream ((radakan_path + "/log/log.txt") . c_str ())) -> rdbuf ());
-	cerr . rdbuf (Log :: log (me) . rdbuf ());
-	clog . rdbuf (Log :: log (me) . rdbuf ());
+	cerr . rdbuf (cout . rdbuf ());
+	clog . rdbuf (cout . rdbuf ());
 	
 	assert (is_initialized ());
 }

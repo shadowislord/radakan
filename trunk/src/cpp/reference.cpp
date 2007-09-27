@@ -51,48 +51,48 @@ template <class T> Reference <T> ::
 	Reference (T * new_pointee) :
 	pointee (new_pointee)
 {
-	Engines :: Log :: trace (* this, get_class_name (), "", (points_to_object () ? pointee -> name : string ("NULL")), "A");
+	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A");
 	
 	if (points_to_object ())
 	{
 		pointee -> register_reference (* this);
 	}
 	
-	Engines :: Log :: trace (* this, get_class_name (), "", (points_to_object () ? pointee -> name : string ("NULL")), "A", "(end)");
+	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A", "(end)");
 }
 
 template <class T> Reference <T> ::
 	Reference (const Reference <T> & other) :
 	pointee (other . pointee)
 {
-	Engines :: Log :: trace (* this, get_class_name (), "", (points_to_object () ? pointee -> name : string ("NULL")), "B");
+	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B");
 
 	if (points_to_object ())
 	{
 		pointee -> register_reference (* this);
 	}
 	
-	Engines :: Log :: trace (* this, get_class_name (), "", (points_to_object () ? pointee -> name : string ("NULL")), "B", "(end)");
+	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B", "(end)");
 }
 
 template <class T> template <class V> Reference <T> ::
 	Reference (const Reference <V> & other) :
 	pointee (other . pointee)
 {
-	Engines :: Log :: trace (* this, get_class_name (), "", (points_to_object () ? pointee -> name : string ("NULL")), "C");
+	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C");
 
 	if (points_to_object ())
 	{
 		pointee -> register_reference (* this);
 	}
 	
-	Engines :: Log :: trace (* this, get_class_name (), "", (points_to_object () ? pointee -> name : string ("NULL")), "C", "(end)");
+	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C", "(end)");
 }
 
 template <class T> Reference <T> ::
 	~Reference ()
 {
-	Engines :: Log :: trace (* this, get_class_name (), "~", (points_to_object () ? pointee -> name : string ("NULL")));
+	Engines :: Log :: trace (* this, get_class_name (), "~");
 	
 	if (points_to_object ())
 	{
@@ -118,12 +118,16 @@ template <class T> const string Reference <T> ::
 template <class T> T * Reference <T> ::
 	operator-> ()
 {
+	assert (points_to_object ());
+	
 	return pointee;
 }
 
 template <class T> const T * Reference <T> ::
 	operator-> () const
 {
+	assert (points_to_object ());
+	
 	return pointee;
 }
 
