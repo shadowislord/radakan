@@ -42,7 +42,7 @@ namespace Radakan
 			virtual ~GUI ();
 			virtual bool is_initialized () const;
 			
-			static const string get_class_name ();
+			static string get_class_name ();
 			
 			boost :: shared_ptr <CEGUI :: Window> root_window;
 

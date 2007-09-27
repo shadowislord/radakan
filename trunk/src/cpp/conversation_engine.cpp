@@ -19,7 +19,7 @@ using namespace Radakan;
 using namespace Radakan :: Engines;
 
 //	static
-const string Conversation_Engine ::
+string Conversation_Engine ::
 	get_class_name ()
 {
 	return "Conversation_Engine";

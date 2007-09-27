@@ -19,6 +19,8 @@ namespace Radakan
 			private Strategies :: Strategy_State_Machine
 		{
 			public :
+				static string get_class_name ();
+
 				NPC
 				(
 					string new_name,
@@ -29,8 +31,6 @@ namespace Radakan
 				virtual ~NPC ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
-
 				virtual void drop (Reference <Item> dropped);
 				virtual void drop (Reference <Strategies :: Strategy> dropped);
 
@@ -39,7 +39,7 @@ namespace Radakan
 				virtual bool is_dead () const;
 				virtual void die ();
 
-				void think (const string thought) const;
+				void think (string thought) const;
 				
 				static Item & create
 				(

@@ -6,7 +6,7 @@ using namespace Radakan;
 using namespace Radakan :: Items;
 
 //	static
-template <class T> const string Multislot <T> ::
+template <class T> string Multislot <T> ::
 	get_class_name ()
 {
 	return "Multislot <" + T :: get_class_name () + ">";

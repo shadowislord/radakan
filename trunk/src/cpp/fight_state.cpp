@@ -13,7 +13,7 @@ using namespace Radakan;
 using namespace Radakan :: Strategies;
 
 //	static
-const string Fight_State ::
+string Fight_State ::
 	get_class_name ()
 {
 	return "Fight_State";

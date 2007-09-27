@@ -26,10 +26,10 @@ namespace Radakan
 			public Resident <Item>
 		{
 			public :
+				static string get_class_name ();
+				
 				virtual ~Item ();
 				virtual bool is_initialized () const;
-				
-				static const string get_class_name ();
 				
 				virtual float get_total_mass () const;
 

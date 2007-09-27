@@ -25,7 +25,7 @@ namespace Radakan
 				virtual ~Battle_Engine ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
+				static string get_class_name ();
 
 				virtual void call (Reference <const Object> message = Object :: update);
 

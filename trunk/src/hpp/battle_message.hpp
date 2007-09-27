@@ -18,12 +18,12 @@ namespace Radakan
 			public Object
 		{
 			public :
+				static string get_class_name ();
+
 				Battle_Message (const string & information, Reference <Items :: Character> new_from, Reference <Items :: Character> new_to);
 				virtual ~Battle_Message ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
-
 				Reference <Items :: Character> from;
 				Reference <Items :: Character> to;
 		};

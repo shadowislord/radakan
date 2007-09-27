@@ -18,7 +18,7 @@ namespace Radakan
 			virtual ~Observable ();
 			virtual bool is_initialized () const;
 			
-			static const string get_class_name ();
+			static string get_class_name ();
 
 			void call_observers (Reference <const Object> message = Object :: update);
 

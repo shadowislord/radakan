@@ -17,12 +17,12 @@ namespace Radakan
 			public State_Machine <Strategy>
 		{
 			public :
+				static string get_class_name ();
+
 				Strategy_State_Machine ();
 				virtual ~Strategy_State_Machine ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
-
 				void run (Reference <const Object> message);
 		};
 	}

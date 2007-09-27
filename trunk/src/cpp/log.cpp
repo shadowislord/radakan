@@ -11,7 +11,7 @@ using namespace Radakan;
 using namespace Radakan :: Engines;
 
 //	static
-const string Log ::
+string Log ::
 	get_class_name ()
 {
 	return "Log";

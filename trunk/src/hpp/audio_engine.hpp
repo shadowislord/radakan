@@ -41,11 +41,11 @@ namespace Radakan
 			private Set <Sound_Sample>
 		{
 			public :
+				static string get_class_name ();
+				
 				Audio_Engine ();
 				virtual ~Audio_Engine ();
 				virtual bool is_initialized () const;
-				
-				static const string get_class_name ();
 				
 				void play ();
 				void load (string file_name);

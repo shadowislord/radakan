@@ -25,7 +25,7 @@ namespace Radakan
 				virtual ~Fight_State ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
+				static string get_class_name ();
 				
 				virtual Reference <Strategy> transit (Reference <const Object> message);
 

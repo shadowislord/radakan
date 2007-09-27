@@ -16,11 +16,11 @@ namespace Radakan
 			public Strategy
 		{
 			public :
+				static string get_class_name ();
+				
 				Chat_State (Reference <Alive_State> new_alive_state);
 				virtual ~Chat_State ();
 				virtual bool is_initialized () const;
-				
-				static const string get_class_name ();
 				
 				virtual Reference <Strategy> transit (Reference <const Object> message);
 

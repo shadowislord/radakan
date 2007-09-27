@@ -9,7 +9,7 @@ using namespace Radakan;
 using namespace Radakan :: Messages;
 
 //	static
-const string Conversation_Message ::
+string Conversation_Message ::
 	get_class_name ()
 {
 	return "Conversation_Message";

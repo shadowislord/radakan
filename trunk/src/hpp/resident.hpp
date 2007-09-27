@@ -18,7 +18,7 @@ namespace Radakan
 			virtual ~Resident ();
 			virtual bool is_initialized () const;
 			
-			static const string get_class_name ();
+			static string get_class_name ();
 
 			void enter (Reference <const Location <T> > new_location);
 			void leave ();

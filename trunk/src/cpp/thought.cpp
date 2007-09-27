@@ -7,7 +7,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-const string Thought ::
+string Thought ::
 	get_class_name ()
 {
 	return "Thought";

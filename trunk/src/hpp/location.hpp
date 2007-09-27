@@ -13,12 +13,12 @@ namespace Radakan
 		public Set <T>
 	{
 		public :
+			static string get_class_name ();
+
 			//	protected constructor, see below
 			virtual ~Location ();
 			virtual bool is_initialized () const;
 			
-			static const string get_class_name ();
-
 			///	'add' returns true on success.
 			virtual bool add (Reference <T> additive);
 

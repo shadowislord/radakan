@@ -6,7 +6,7 @@ using namespace Radakan;
 using namespace Radakan :: Items;
 
 //	static
-const string Container ::
+string Container ::
 	get_class_name ()
 {
 	return "Container";

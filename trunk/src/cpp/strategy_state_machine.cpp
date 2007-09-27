@@ -7,7 +7,7 @@ using namespace Radakan;
 using namespace Radakan :: Strategies;
 
 //	static
-const string Strategy_State_Machine ::
+string Strategy_State_Machine ::
 	get_class_name ()
 {
 	return "Strategy_State_Machine";

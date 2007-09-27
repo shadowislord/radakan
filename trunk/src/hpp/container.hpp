@@ -17,6 +17,8 @@ namespace Radakan
 			public Location <Item>
 		{
 			public :
+				static string get_class_name ();
+				
 				Container
 				(
 					string new_name,
@@ -30,8 +32,6 @@ namespace Radakan
 				);
 				virtual ~Container ();
 				virtual bool is_initialized () const;
-				
-				static const string get_class_name ();
 				
 				///	'add' returns false if I'm full.
 				virtual bool add (Reference <Item> item);

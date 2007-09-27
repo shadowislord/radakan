@@ -6,7 +6,7 @@ using namespace Radakan;
 using namespace Radakan :: Items;
 
 //	static
-const string Weapon ::
+string Weapon ::
 	get_class_name ()
 {
 	return "Weapon";

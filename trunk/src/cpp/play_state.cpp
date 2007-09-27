@@ -29,7 +29,7 @@ using namespace Radakan;
 using namespace Radakan :: Strategies;
 
 //	static
-const string Play_State ::
+string Play_State ::
 	get_class_name ()
 {
 	return "Play_State";

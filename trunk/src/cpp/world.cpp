@@ -36,7 +36,7 @@ const Ogre :: Real time_scale (1.0);
 const Ogre :: Real time_step (0.01);
 
 //	static
-const string World ::
+string World ::
 	get_class_name ()
 {
 	return "World";

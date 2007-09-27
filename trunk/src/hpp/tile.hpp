@@ -31,19 +31,19 @@ namespace Radakan
 		public Location <Model>
 	{
 		public :
+			static string get_class_name ();
+			
+			static const int side_length;
+
 			Tile (pair <int, int> new_coordinates);
 			virtual ~Tile ();
 			virtual bool is_initialized () const;
-			
-			static const string get_class_name ();
 			
 			virtual bool add (Reference <Model> model);
 			virtual bool move (Reference <Model> model, Reference <Set <Model> > destination);
 
 			const pair <int, int> coordinates;
 			const Ogre :: Vector3 position;
-
-			static const int side_length;
 
 			Reference <Set <Items :: NPC> > npcs;
 

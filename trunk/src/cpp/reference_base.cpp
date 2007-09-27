@@ -11,7 +11,7 @@ int Reference_Base ::
 	counter (0);
 
 //	static
-const string Reference_Base ::
+string Reference_Base ::
 	get_class_name ()
 {
 	//	Do not turn this into a static data member,

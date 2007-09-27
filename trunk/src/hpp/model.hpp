@@ -34,7 +34,7 @@ namespace Radakan
 			virtual ~Model ();
 			virtual bool is_initialized () const;
 			
-			static const string get_class_name ();
+			static string get_class_name ();
 			
 			Ogre :: Vector3 get_front_direction () const;
 			Ogre :: Vector3 get_side_direction () const;

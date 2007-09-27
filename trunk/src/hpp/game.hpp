@@ -18,12 +18,12 @@ namespace Radakan
 			private Strategies :: Strategy_State_Machine
 		{
 			public :
+				static string get_class_name ();
+
 				Game (string radakan_path, string ogre_media_path);
 				virtual ~Game ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
-
 				void run ();
 
 			private :

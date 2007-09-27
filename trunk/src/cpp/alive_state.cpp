@@ -12,7 +12,7 @@ using namespace Radakan;
 using namespace Radakan :: Strategies;
 
 //	static
-const string Alive_State ::
+string Alive_State ::
 	get_class_name ()
 {
 	return "Alive_State";

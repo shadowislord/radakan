@@ -7,7 +7,7 @@ using namespace Radakan;
 using namespace Radakan :: Engines;
 
 //	static
-const string Battle_Engine ::
+string Battle_Engine ::
 	get_class_name ()
 {
 	return "Battle_Engine";

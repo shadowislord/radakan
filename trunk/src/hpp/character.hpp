@@ -27,7 +27,7 @@ namespace Radakan
 				virtual ~Character ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
+				static string get_class_name ();
 
 				virtual void call (Reference <const Object> message = Object :: update) = 0;
 				
@@ -38,8 +38,8 @@ namespace Radakan
 
 				void hit (string fight_mode, Reference <Character> target);
 
-				float get_skill (const string skill_name) const;
-				void add_experience (const string skill_name, float amount = 1);
+				float get_skill (const string & skill_name) const;
+				void add_experience (const string & skill_name, float amount = 1);
 				
 				//	Item & head;
 				//	Multislot <Shirt> & body;

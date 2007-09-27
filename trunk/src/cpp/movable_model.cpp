@@ -10,7 +10,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-const string Movable_Model ::
+string Movable_Model ::
 	get_class_name ()
 {
 	return "Movable_Model";

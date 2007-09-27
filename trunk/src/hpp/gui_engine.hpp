@@ -38,7 +38,7 @@ namespace Radakan
 				virtual ~GUI_Engine ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
+				static string get_class_name ();
 				
 				void set_active_gui (Reference <GUI> gui);
 

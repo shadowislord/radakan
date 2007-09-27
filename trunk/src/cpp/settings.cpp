@@ -6,7 +6,7 @@ using namespace Radakan;
 using namespace Radakan :: Engines;
 
 //	static
-const string Settings ::
+string Settings ::
 	get_class_name ()
 {
 	return "Settings";

@@ -5,7 +5,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-template <class T> const string State_Machine <T> ::
+template <class T> string State_Machine <T> ::
 	get_class_name ()
 {
 	return "State_Machine <" + T :: get_class_name () + ">";

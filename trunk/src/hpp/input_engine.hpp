@@ -38,11 +38,11 @@ namespace Radakan
 			public OIS :: MouseListener
 		{
 			public :
+				static string get_class_name ();
+				
 				Input_Engine (boost :: shared_ptr <Ogre :: RenderWindow> window);
 				virtual ~Input_Engine ();
 				virtual bool is_initialized () const;
-				
-				static const string get_class_name ();
 				
 				using Singleton <Input_Engine> :: get;
 				using Singleton <Input_Engine> :: is_instantiated;

@@ -26,11 +26,11 @@ namespace Radakan
 			private Strategy_State_Machine
 		{
 			public :
+				static string get_class_name ();
+				
 				Alive_State (Reference <Items :: NPC> new_npc);
 				virtual ~Alive_State ();
 				virtual bool is_initialized () const;
-				
-				static const string get_class_name ();
 				
 				virtual Reference <Strategy> transit (Reference <const Object> message);
 

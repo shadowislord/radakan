@@ -1,4 +1,3 @@
-#include "destructible_reference.hpp"
 #include "log.hpp"
 #include "set.hpp"
 
@@ -6,7 +5,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-template <class T> const string Set <T> ::
+template <class T> string Set <T> ::
 	get_class_name ()
 {
 	return "Set <" + T :: get_class_name () + ">";
@@ -21,7 +20,7 @@ template <class T> Set <T> ::
 	Set (string name, int new_maximal_size) :
 	Object (name),
 	maximal_size (new_maximal_size),
-	children (new set <Destructible_Reference <T> >),
+	children (new set <Reference <T> >),
 	sealed (false)
 {
 	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "", name, to_string (new_maximal_size));
@@ -64,7 +63,7 @@ template <class T> bool Set <T> ::
 	/*
 	//	Don't use the 'get_child' & 'get_another_child' methods here,
 	//	as they both require me to be initialized.
-	for (T_iterator i = children . begin (); i != children . end (); i ++)
+	for (T_Iterator i = children . begin (); i != children . end (); i ++)
 	{
 		assert ((* i) -> T :: is_initialized ());
 	}
@@ -100,10 +99,9 @@ template <class T> bool Set <T> ::
 		return false;
 	}
 
-	//	'second' means we're interested in if it worked or not.
-	//	'first' would give a iterator to the item.
-	bool check = children -> insert (additive) . second;
-	assert (check);
+	pair <T_Iterator, bool> result = children -> insert (additive);
+	assert (result . second);
+	const_cast <Reference <T> &> (* result . first) . set_parent (* this);
 	
 	assert (Set <T> :: is_initialized ());
 	return true;

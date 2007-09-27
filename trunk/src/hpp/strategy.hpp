@@ -22,7 +22,7 @@ namespace Radakan
 				virtual ~Strategy ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
+				static string get_class_name ();
 
 				///	Don't call this method directly,
 				///	let it be called by Strategy_State_Machine.

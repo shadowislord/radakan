@@ -40,7 +40,7 @@ float Radakan ::
 }
 
 //	static
-const string Object ::
+string Object ::
 	get_class_name ()
 {
 	//	Do not turn this into a static data member,

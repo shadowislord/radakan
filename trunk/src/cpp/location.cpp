@@ -5,7 +5,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-template <class T> const string Location <T> ::
+template <class T> string Location <T> ::
 	get_class_name ()
 {
 	return "Location <" + T :: get_class_name () + ">";

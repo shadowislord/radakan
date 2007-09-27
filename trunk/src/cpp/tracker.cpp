@@ -6,7 +6,7 @@ using namespace Radakan;
 using namespace Radakan :: Engines;
 
 //	static
-const string Tracker ::
+string Tracker ::
 	get_class_name ()
 {
 	return "Tracker";

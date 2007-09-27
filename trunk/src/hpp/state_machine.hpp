@@ -18,7 +18,7 @@ namespace Radakan
 			virtual ~State_Machine ();
 			virtual bool is_initialized () const;
 
-			static const string get_class_name ();
+			static string get_class_name ();
 
 			virtual void drop (Reference <T> dropped);
 

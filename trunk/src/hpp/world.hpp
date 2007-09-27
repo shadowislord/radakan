@@ -26,7 +26,7 @@ namespace Radakan
 			virtual ~World ();
 			virtual bool is_initialized () const;
 
-			static const string get_class_name ();
+			static string get_class_name ();
 
 			void set_active_tile (Reference <Tile> tile);
 

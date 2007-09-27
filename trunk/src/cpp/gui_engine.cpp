@@ -16,7 +16,7 @@ using namespace Radakan;
 using namespace Radakan :: Engines;
 
 //	static
-const string GUI_Engine ::
+string GUI_Engine ::
 	get_class_name ()
 {
 	return "GUI_Engine";

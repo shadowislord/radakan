@@ -31,12 +31,12 @@ namespace Radakan
 			public Singleton <Conversation_Engine>
 		{
 			public :
+				static string get_class_name ();
+
 				Conversation_Engine ();
 				virtual ~Conversation_Engine ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
-
 				Reference <Set <Messages :: Conversation_Message> > get_options (Reference <Items :: Character > speaker, Reference <Items :: Character> listener);
 
 			private :

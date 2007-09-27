@@ -12,7 +12,7 @@ using namespace Radakan;
 using namespace Radakan :: Items;
 
 //	static
-const string Item ::
+string Item ::
 	get_class_name ()
 {
 	return "Item";

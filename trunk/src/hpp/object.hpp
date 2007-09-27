@@ -58,6 +58,13 @@ namespace Radakan
 		public boost :: noncopyable
 	{
 		public :
+			static string get_class_name ();
+			
+			static const bool debugging;
+
+			static Reference <const Object> update;
+			static Reference <const Object> terminate;
+			
 			#ifdef RADAKAN_WINDOWS
 				///	Some Windows compilers give an error otherwise.
 				Object ();
@@ -71,8 +78,6 @@ namespace Radakan
 			///	I'm removed from each parent Set.
 			void prepare_for_destruction ();
 
-			static const string get_class_name ();
-			
 			template <class T> bool is_type () const;
 			template <class T> Reference <T> to_type ();
 			template <class T> Reference <const T> to_type () const;
@@ -85,11 +90,6 @@ namespace Radakan
 
 			const string name;
 
-			static const bool debugging;
-
-			static Reference <const Object> update;
-			static Reference <const Object> terminate;
-			
 		private :
 			bool has_dependency () const;
 			bool does_depend (const Reference_Base & candidate) const;

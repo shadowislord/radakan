@@ -15,7 +15,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-const string GUI ::
+string GUI ::
 	get_class_name ()
 {
 	return "GUI";

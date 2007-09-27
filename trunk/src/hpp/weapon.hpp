@@ -30,7 +30,7 @@ namespace Radakan
 				virtual ~Weapon ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
+				static string get_class_name ();
 
 				bool broken;
 				

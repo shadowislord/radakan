@@ -13,7 +13,7 @@ using namespace Radakan;
 using namespace Radakan :: Strategies;
 
 //	static
-const string Menu_State ::
+string Menu_State ::
 	get_class_name ()
 {
 	return "Menu_State";

@@ -10,7 +10,7 @@ using namespace Radakan;
 using namespace Radakan :: Items;
 
 //	static
-const string NPC ::
+string NPC ::
 	get_class_name ()
 {
 	return "NPC";
@@ -151,7 +151,7 @@ void NPC ::
 }
 
 void NPC ::
-	think (const string thought)
+	think (string thought)
 	const
 {
 	Engines :: Log :: show (name + " thinks \"" + thought + "\"");

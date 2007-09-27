@@ -22,7 +22,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-const string Tile ::
+string Tile ::
 	get_class_name ()
 {
 	return "Tile";

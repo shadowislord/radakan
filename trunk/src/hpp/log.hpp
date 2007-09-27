@@ -17,11 +17,9 @@ namespace Radakan
 			public Observable <Log>
 		{
 			public :
-				Log (string radakan_path);
-				virtual ~Log ();
-				virtual bool is_initialized () const;
+				static string get_class_name ();
 				
-				static const string get_class_name ();
+				static void no_logs (const Reference_Base & logger);
 
 				static ostream & error (const Reference_Base & logger);
 				static ostream & log (const Reference_Base & logger);
@@ -39,7 +37,9 @@ namespace Radakan
 					string argument_6 = ""
 				);
 
-				static void no_logs (const Reference_Base & logger);
+				Log (string radakan_path);
+				virtual ~Log ();
+				virtual bool is_initialized () const;
 		};
 	}
 }

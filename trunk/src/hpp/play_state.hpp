@@ -29,12 +29,12 @@ namespace Radakan
 			public Strategy
 		{
 			public :
+				static string get_class_name ();
+
 				Play_State (boost :: shared_ptr <Ogre :: SceneManager> scene_manager);
 				virtual ~Play_State ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
-
 				virtual Reference <Strategy> transit (Reference <const Object> message);
 
 			private :

@@ -16,6 +16,8 @@ namespace Radakan
 			public Character
 		{
 			public :
+				static string get_class_name ();
+
 				Player_Character
 				(
 					string new_name,
@@ -26,8 +28,6 @@ namespace Radakan
 				virtual ~Player_Character ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
-
 				virtual bool is_dead () const;
 				virtual void die ();
 				

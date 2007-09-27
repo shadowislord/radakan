@@ -22,7 +22,7 @@ namespace Radakan
 			virtual ~Movable_Model ();
 			virtual bool is_initialized () const;
 			
-			static const string get_class_name ();
+			static string get_class_name ();
 			
 			//	I'll move in my front direction.
 			void move (float top_speed);

@@ -15,6 +15,8 @@ namespace Radakan
 			public Item
 		{
 			public :
+				static string get_class_name ();
+				
 				Static_Item
 				(
 					string new_name,
@@ -26,8 +28,6 @@ namespace Radakan
 				);
 				virtual ~Static_Item ();
 				virtual bool is_initialized () const;
-				
-				static const string get_class_name ();
 		};
 	}
 }

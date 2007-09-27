@@ -9,7 +9,7 @@ using namespace Radakan;
 using namespace Radakan :: Items;
 
 //	static
-const string Player_Character ::
+string Player_Character ::
 	get_class_name ()
 {
 	return "Player_Character";

@@ -6,7 +6,7 @@ using namespace Radakan;
 using namespace Radakan :: Strategies;
 
 //	static
-const string Strategy ::
+string Strategy ::
 	get_class_name ()
 {
 	return "Strategy";

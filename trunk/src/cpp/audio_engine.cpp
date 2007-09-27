@@ -40,7 +40,7 @@ void Sound_Sample ::
 }
 
 //	static
-const string Audio_Engine ::
+string Audio_Engine ::
 	get_class_name ()
 {
 	return "Audio_Engine";

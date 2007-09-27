@@ -13,7 +13,7 @@ template <class T> Reference <T> Singleton <T> ::
 	myself;
 
 //	static
-template <class T> const string Singleton <T> ::
+template <class T> string Singleton <T> ::
 	get_class_name ()
 {
 	return "Singleton <" + T :: get_class_name () + ">";

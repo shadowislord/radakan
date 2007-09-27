@@ -6,7 +6,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-template <class T> const string Observable <T> ::
+template <class T> string Observable <T> ::
 	get_class_name ()
 {
 	return "Observable <" + T :: get_class_name () + ">";

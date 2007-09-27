@@ -22,7 +22,7 @@ namespace Radakan
 				virtual ~Settings ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
+				static string get_class_name ();
 
 				///	in meters
 				const float & get_camera_distance () const;

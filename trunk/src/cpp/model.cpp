@@ -12,7 +12,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-const string Model ::
+string Model ::
 	get_class_name ()
 {
 	return "Model";

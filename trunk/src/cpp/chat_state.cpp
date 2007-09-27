@@ -16,7 +16,7 @@ const unsigned int Chat_State ::
 	maximal_timeout = 100;	//	turns, not seconds or something
 
 //	static
-const string Chat_State ::
+string Chat_State ::
 	get_class_name ()
 {
 	return "Chat_State";

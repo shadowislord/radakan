@@ -21,7 +21,7 @@ using namespace Radakan;
 using namespace Radakan :: Engines;
 
 //	static
-const string Input_Engine ::
+string Input_Engine ::
 	get_class_name ()
 {
 	return "Input_Engine";

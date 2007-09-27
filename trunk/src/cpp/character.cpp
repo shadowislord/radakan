@@ -14,7 +14,7 @@ const float Character ::
 	default_experience (13);
 
 //	static
-const string Character ::
+string Character ::
 	get_class_name ()
 {
 	return "Character";
@@ -137,7 +137,7 @@ void Character ::
 }
 
 float Character ::
-	get_skill (const string skill_name)
+	get_skill (const string & skill_name)
 	const
 {
 	assert (0 < experiences . count (skill_name));
@@ -146,7 +146,7 @@ float Character ::
 }
 
 void Character ::
-	add_experience (const string skill_name, float amount)
+	add_experience (const string & skill_name, float amount)
 {
 	assert (0 < experiences . count (skill_name));
 	

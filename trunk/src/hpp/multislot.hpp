@@ -15,6 +15,8 @@ namespace Radakan
 			public Container
 		{
 			public :
+				static string get_class_name ();
+				
 				Multislot
 				(
 					string new_name,
@@ -25,8 +27,6 @@ namespace Radakan
 				);
 				virtual ~Multislot ();
 				virtual bool is_initialized () const;
-				
-				static const string get_class_name ();
 				
 				virtual bool add (Reference <Item> item);
 		};

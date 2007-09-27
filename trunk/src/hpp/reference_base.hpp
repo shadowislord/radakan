@@ -17,9 +17,9 @@ namespace Radakan
 			Reference_Base ();
 			virtual ~Reference_Base ();
 
-			static const string get_class_name ();
+			static string get_class_name ();
 
-			virtual const string get_name () const;
+			virtual string get_name () const;
 			
 		private :
 			const int number;

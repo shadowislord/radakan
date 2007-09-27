@@ -4,7 +4,7 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-template <class T> const string Reference <T> ::
+template <class T> string Reference <T> ::
 	get_class_name ()
 {
 	//	Do not turn this into a static data member,
@@ -24,6 +24,9 @@ template <class T> Reference <T> & Reference <T> ::
 template <class T> template <class V> Reference <T> & Reference <T> ::
 	operator= (const Reference <V> & other)
 {
+	assert (is_initialized ());
+	assert (other . is_initialized ());
+	
 	reset_pointee (other . pointee);
 
 	return * this;
@@ -32,60 +35,77 @@ template <class T> template <class V> Reference <T> & Reference <T> ::
 template <class T> template <class V> bool Reference <T> ::
 	operator== (const Reference <V> & other) const
 {
+	assert (is_initialized ());
+	assert (other . is_initialized ());
+	
 	return pointee == other . pointee;
 }
 
-template <class T> template <class V> bool Reference <T> ::
-	operator!= (const Reference <V> & other) const
+template <class T> bool Reference <T> ::
+	operator!= (const Reference <T> & other) const
 {
+	assert (is_initialized ());
+	assert (other . is_initialized ());
+	
 	return pointee != other . pointee;
 }
 
 template <class T> bool Reference <T> ::
 	operator< (const Reference <T> & other) const
 {
+	assert (is_initialized ());
+	assert (other . is_initialized ());
+	
 	return pointee < other . pointee;
 }
 
 template <class T> Reference <T> ::
 	Reference (T * new_pointee) :
-	pointee (new_pointee)
+	pointee (new_pointee),
+	parent (NULL)
 {
 	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A");
 	
-	if (points_to_object ())
+	if (pointee != NULL)
 	{
 		pointee -> register_reference (* this);
 	}
 	
+	assert (is_initialized ());
 	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A", "(end)");
 }
 
 template <class T> Reference <T> ::
 	Reference (const Reference <T> & other) :
-	pointee (other . pointee)
+	pointee (other . pointee),
+	parent (NULL)
 {
 	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B");
+	assert (other . is_initialized ());
 
-	if (points_to_object ())
+	if (pointee != NULL)
 	{
 		pointee -> register_reference (* this);
 	}
 	
+	assert (is_initialized ());
 	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B", "(end)");
 }
 
 template <class T> template <class V> Reference <T> ::
 	Reference (const Reference <V> & other) :
-	pointee (other . pointee)
+	pointee (other . pointee),
+	parent (NULL)
 {
 	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C");
+	assert (other . is_initialized ());
 
-	if (points_to_object ())
+	if (pointee != NULL)
 	{
 		pointee -> register_reference (* this);
 	}
 	
+	assert (is_initialized ());
 	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C", "(end)");
 }
 
@@ -93,32 +113,65 @@ template <class T> Reference <T> ::
 	~Reference ()
 {
 	Engines :: Log :: trace (* this, get_class_name (), "~");
+	assert (is_initialized ());
 	
-	if (points_to_object ())
+	if (pointee != NULL)
 	{
 		pointee -> unregister_reference (* this);
+	}
+
+	if (parent != NULL)
+	{
+		(* parent) -> drop (* this);
 	}
 }
 
 //	virtual
-template <class T> const string Reference <T> ::
+template <class T> bool Reference <T> ::
+	is_initialized ()
+	const
+{
+	if (parent != NULL)
+	{
+		assert (pointee != NULL);
+		assert (parent -> pointee != NULL);
+		assert (parent -> parent == NULL);
+	}
+
+	return true;
+}
+
+//	virtual
+template <class T> string Reference <T> ::
 	get_name ()
 	const
 {
-	string result = "NULL";
+	assert (is_initialized ());
+
+	string result = Reference_Base :: get_name () + " ";
 	
-	if (points_to_object ())
+	if (pointee != NULL)
 	{
-		result = pointee -> name;
+		result += pointee -> name;
+
+		if (parent != NULL)
+		{
+			result += " [P: " + parent -> get_name () + "]";
+		}
+
+		return result;
 	}
-	
-	return result + " " + Reference_Base :: get_name ();
+	else
+	{
+		return result + "NULL";
+	}
 }
 
 template <class T> T * Reference <T> ::
 	operator-> ()
 {
-	assert (points_to_object ());
+	assert (is_initialized ());
+	assert (pointee != NULL);
 	
 	return pointee;
 }
@@ -126,7 +179,8 @@ template <class T> T * Reference <T> ::
 template <class T> const T * Reference <T> ::
 	operator-> () const
 {
-	assert (points_to_object ());
+	assert (is_initialized ());
+	assert (pointee != NULL);
 	
 	return pointee;
 }
@@ -134,23 +188,37 @@ template <class T> const T * Reference <T> ::
 template <class T> bool Reference <T> ::
 	points_to_object () const
 {
+	assert (is_initialized ());
+	
 	return pointee != NULL;
 }
 
 template <class T> void Reference <T> ::
 	reset_pointee (T * new_pointee)
 {
-	if (points_to_object ())
+	assert (is_initialized ());
+	assert (parent == NULL);
+	
+	if (pointee != NULL)
 	{
 		pointee -> unregister_reference (* this);
 	}
 	
 	pointee = new_pointee;
 
-	if (points_to_object ())
+	if (pointee != NULL)
 	{
 		pointee -> register_reference (* this);
 	}
+}
+
+template <class T> void Reference <T> ::
+	set_parent (Set <T> & new_parent)
+{
+	assert (is_initialized ());
+	assert (parent == NULL);
+
+	parent = new Reference <Set <T> > (& new_parent);
 }
 
 //	to avert linking errors:
@@ -332,8 +400,3 @@ template bool Reference <Items :: Character> ::
 	operator== (const Reference <Items :: Player_Character> & other) const;
 template bool Reference <const Object> ::
 	operator== (const Reference <const Object> & other) const;
-
-template bool Reference <const Object> ::
-	operator!= (const Reference <const Object> & other) const;
-template bool Reference <Tile> ::
-	operator!= (const Reference <Tile> & other) const;

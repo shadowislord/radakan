@@ -7,7 +7,7 @@ using namespace Radakan;
 using namespace Radakan :: Messages;
 
 //	static
-const string Battle_Message ::
+string Battle_Message ::
 	get_class_name ()
 {
 	return "Battle_Message";

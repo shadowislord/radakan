@@ -22,6 +22,8 @@ namespace Radakan
 			public Object
 		{
 			public :
+				static string get_class_name ();
+
 				Conversation_Message
 				(
 					boost :: shared_ptr <const TiXmlElement> new_option,
@@ -31,8 +33,6 @@ namespace Radakan
 				virtual ~Conversation_Message ();
 				virtual bool is_initialized () const;
 				
-				static const string get_class_name ();
-
 				Reference <Conversation_Message> get_reaction () const;
 
 				///	'option' is a reference to an XML element in the behavior file.

@@ -20,7 +20,7 @@ using namespace Radakan;
 using namespace Radakan :: Engines;
 
 //	static
-const string Game ::
+string Game ::
 	get_class_name ()
 {
 	return "Game";
