@@ -12,7 +12,7 @@ namespace Radakan
 {
 	template <class X> class Set;
 
-	template <class T> class Reference:
+	template <class T> class Reference :
 		public Reference_Base
 	{
 		public :
@@ -46,10 +46,8 @@ namespace Radakan
 		
 			T * pointee;
 
-			Reference <Set <T> > * parent;
+			Set <T> * parent;
 	};
 }
-
-//	#include "../cpp/reference.cpp"
 
 #endif	//	RADAKAN_REFERENCE_HPP

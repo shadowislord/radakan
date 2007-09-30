@@ -122,7 +122,7 @@ template <class T> Reference <T> ::
 
 	if (parent != NULL)
 	{
-		(* parent) -> drop (* this);
+		parent -> drop (* this);
 	}
 }
 
@@ -134,8 +134,8 @@ template <class T> bool Reference <T> ::
 	if (parent != NULL)
 	{
 		assert (pointee != NULL);
-		assert (parent -> pointee != NULL);
-		assert (parent -> parent == NULL);
+//		assert (parent -> pointee != NULL);
+//		assert (parent -> parent == NULL);
 	}
 
 	return true;
@@ -156,7 +156,7 @@ template <class T> string Reference <T> ::
 
 		if (parent != NULL)
 		{
-			result += " [P: " + parent -> get_name () + "]";
+			result += " [P: " + parent -> name + "]";
 		}
 
 		return result;
@@ -177,7 +177,8 @@ template <class T> T * Reference <T> ::
 }
 
 template <class T> const T * Reference <T> ::
-	operator-> () const
+	operator-> ()
+	const
 {
 	assert (is_initialized ());
 	assert (pointee != NULL);
@@ -186,7 +187,8 @@ template <class T> const T * Reference <T> ::
 }
 
 template <class T> bool Reference <T> ::
-	points_to_object () const
+	points_to_object ()
+	const
 {
 	assert (is_initialized ());
 	
@@ -218,7 +220,7 @@ template <class T> void Reference <T> ::
 	assert (is_initialized ());
 	assert (parent == NULL);
 
-	parent = new Reference <Set <T> > (& new_parent);
+	parent = /*new Reference <Set <T> >*/ (& new_parent);
 }
 
 //	to avert linking errors:

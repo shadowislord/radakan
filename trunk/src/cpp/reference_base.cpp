@@ -34,7 +34,7 @@ Reference_Base ::
 }
 
 //	virtual
-const string Reference_Base ::
+string Reference_Base ::
 	get_name ()
 	const
 {
