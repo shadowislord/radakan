@@ -16,23 +16,21 @@ namespace Radakan
 		protected Ogre :: Singleton <T>
 	{
 		public :
-			//	virtual class, constructor protected
-			virtual ~Singleton ();
-			virtual bool is_initialized () const;
-			
 			static string get_class_name ();
 
+			static bool is_instantiated ();
+			static Reference <T> get ();
 			static void destruct ();
 
-			static Reference <T> get ();
-			static bool is_instantiated ();
-
+			//	virtual class, constructor protected
+			virtual ~Singleton ();
+			
+			virtual bool is_initialized () const;
+			
+			virtual bool is_singleton () const;
+		
 		protected :
 			Singleton ();
-
-		private :
-			///	Store an extra reference to make sure Singletons are not destructed.
-			static Reference <T> myself;
 	};
 }
 

@@ -52,6 +52,8 @@ namespace Radakan
 	string to_string (const Ogre :: Vector3 & vector);
 	float to_float (const string & value);
 
+	extern const bool debugging;
+
 	///	I'm the abstract base class for all Radakan classes.
 	///	I can't be copied, consider a reference of me instead.
 	class Object :
@@ -59,12 +61,7 @@ namespace Radakan
 	{
 		public :
 			static string get_class_name ();
-			
-			static const bool debugging;
 
-			static Reference <const Object> update;
-			static Reference <const Object> terminate;
-			
 			#ifdef RADAKAN_WINDOWS
 				///	Some Windows compilers give an error otherwise.
 				Object ();
@@ -86,7 +83,8 @@ namespace Radakan
 
 			void unregister_reference (const Reference_Base & reference) const;
 
-			const bool & is_destructing () const;
+			bool is_destructing () const;
+			virtual bool is_singleton () const;
 
 			const string name;
 
@@ -98,12 +96,16 @@ namespace Radakan
 			///	but they are 'const_cast'-ed, at my destruction.
 			mutable boost :: scoped_ptr <set <const Reference_Base *> > dependencies;
 
-			bool destructing;
+			///	'status' can be 'constructing', 'running' or 'destructing'.
+			string status;
 
 		public :
 			///	'me' corrensonds to 'this'.
 			Reference <Object> me;
 	};
+
+	extern Reference <const Object> update;
+	extern Reference <const Object> terminate;
 }
 
 #endif	//	RADAKAN_OBJECT_HPP

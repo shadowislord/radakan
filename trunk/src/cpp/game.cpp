@@ -32,23 +32,25 @@ Game ::
 {
 	Log :: trace (me, Game :: get_class_name (), "", radakan_path, ogre_media_path);
 
-	#ifdef RADAKAN_DEBUG
+	if (Radakan :: debugging)
+	{
 		Log :: log (me) << "Debug mode is enabled." << endl;
 		
 		new Log (radakan_path);
 		new Tracker ();
-	#else
+	}
+	else
+	{
 		Log :: log (me) << "Debug mode is disabled." << endl;
+		
 		Log :: no_logs (me);
-	#endif
+	}
 
 	new Settings (radakan_path);
 
 	new Audio_Engine ();
 
-	//	Don't copy the log to the console. Store the log to a file, if debugging.
-	// (new Ogre :: LogManager ()) -> createLog (radakan_path + "/log/ogre.txt", true, false, ! debugging);
-	root . reset (new Ogre :: Root (radakan_path + "/data/plugins.cfg", radakan_path + "/data/ogre.cfg", radakan_path + "/log/ogre.log"));
+	root . reset (new Ogre :: Root (radakan_path + "/data/plugins.cfg", radakan_path + "/data/ogre.cfg", radakan_path + "/log/ogre.txt"));
 	if (! root -> showConfigDialog ())
 	{
 		Log :: error (me) << "An Ogre configuration dialog problem occurred." << endl;
@@ -112,6 +114,7 @@ Game ::
 		new Input_Engine (window);
 
 		boost :: shared_ptr <Ogre :: SceneManager> scene_manager (root -> createSceneManager (Ogre :: ST_GENERIC));
+		assert (scene_manager);
 
 		new GUI_Engine (window, scene_manager);
 
@@ -166,12 +169,12 @@ bool Game ::
 void Game ::
 	run ()
 {
-	Reference <const Object> message = Object :: update;
+	Reference <const Object> message = update;
 	while (has_active_state ())
 	{
 		if (window -> isClosed ())
 		{
-			message = Object :: terminate;
+			message = terminate;
 		}
 
 		Input_Engine :: get () -> capture ();

@@ -24,7 +24,7 @@ namespace Radakan
 			///	On success, I return 'true'.
 			virtual bool add (Reference <T> additive);
 			
-			virtual bool contains (Reference <T> contained) const;
+			virtual bool contains (const Reference <T> contained) const;
 			
 			///	'move' returns true on success.
 			///	'move' assumes that 'moved' is one of my children.

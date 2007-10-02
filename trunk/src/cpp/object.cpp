@@ -39,6 +39,15 @@ float Radakan ::
 	return result;
 }
 
+Reference <const Object> Radakan :: update (new Object ("update (static)"));
+Reference <const Object> Radakan :: terminate (new Object ("terminate (static)"));
+
+#ifdef RADAKAN_DEBUG
+	const bool Radakan :: debugging (true);
+#else
+	const bool Radakan :: debugging (false);
+#endif
+
 //	static
 string Object ::
 	get_class_name ()
@@ -49,31 +58,12 @@ string Object ::
 	return "Object";
 }
 
-#ifdef RADAKAN_DEBUG
-	//	static
-	const bool Object ::
-		debugging (true);
-
-#else
-	//	static
-	const bool Object ::
-		debugging (false);
-#endif
-
-//	static
-Reference <const Object> Object ::
-	update (new Object ("update (static)"));
-
-//	static
-Reference <const Object> Object ::
-	terminate (new Object ("terminate (static)"));
-
 //  constructor
 Object ::
 	Object (string new_name) :
 	name (new_name),
 	dependencies (new set <const Reference_Base *>),
-	destructing (false),
+	status ("constructing"),
 	me (this)
 {
 	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name);
@@ -83,9 +73,10 @@ Object ::
 	{
 		bool check = Engines :: Tracker :: get () -> add (me);
 		assert (check);
-		assert (does_depend (Engines :: Tracker :: get ()));
+		//	assert (does_depend (Engines :: Tracker :: get ()));
 	}
 
+	status = "running";
 	assert (Object :: is_initialized ());
 }
 
@@ -108,7 +99,7 @@ void Object ::
 	Engines :: Log :: trace (me, Object :: get_class_name (), "prepare_for_destruction");
 	assert (is_initialized ());
 
-	destructing = true;
+	status = "destructing";
 
 	for (set <const Reference_Base *> :: const_iterator i = dependencies -> begin ();
 		i != dependencies -> end (); i = dependencies -> begin ())
@@ -143,13 +134,23 @@ bool Object ::
 	return (0 < dependencies -> count (& candidate));
 }
 
-const bool & Object ::
+bool Object ::
 	is_destructing ()
 	const
 {
 	//	Being initialized isn't necessairy here.
 
-	return destructing;
+	return status == "destructing";
+}
+
+//	virtual
+bool Object ::
+	is_singleton ()
+	const
+{
+	Engines :: Log :: trace (me, Object :: get_class_name (), "is_singleton");
+	
+	return false;
 }
 
 template <class T> bool Object ::
@@ -213,6 +214,7 @@ void  Object ::
 	
 	assert (is_initialized ());
 
+	assert (does_depend (reference));
 	dependencies -> erase (& reference);
 
 	for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
@@ -221,27 +223,44 @@ void  Object ::
 		Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
 	}
 
-	if (destructing)
+	if (status == "constructing")
+	{
+		Engines :: Log :: log (me) << "I'm still constructing." << endl;
+		return;
+	}
+
+	if (status == "destructing")
 	{
 		Engines :: Log :: log (me) << "I'm already destructing." << endl;
 		return;
 	}
 
+	if (is_singleton ())
+	{
+		Engines :: Log :: log (me) << "I will not self-destruct, because I'm a singleton." << endl;
+		return;
+	}
+	else
+	{
+		assert (name != "settings");
+	}
+	
 	unsigned int self_destruct_criterion = 0;
-	self_destruct_criterion ++;	//	'me' should not forbid to destruct.
+	self_destruct_criterion ++;	//	'me' should not forbid me to destruct.
 	if (Engines :: Tracker :: is_instantiated ())
 	{
+		//	The 'Tracker' Singleton should not forbid me to destruct.
 		self_destruct_criterion ++;
 	}
 	assert (dependencies -> size () >= self_destruct_criterion);
 
 	if (dependencies -> size () == self_destruct_criterion)
 	{
-		Engines :: Log :: log (me) << "I have no more dependencies and will self-destruct." << endl;
+		Engines :: Log :: log (me) << "I will self-destruct, because I have no more dependencies." << endl;
 		delete this;
 	}
 
-	Engines :: Log :: log (me) << "I have another dependency and will not self-destruct." << endl;
+	Engines :: Log :: log (me) << "I will not self-destruct, because I have another dependency." << endl;
 }
 
 //	to avert linking errors:

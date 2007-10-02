@@ -172,7 +172,7 @@ void World ::
 	ogre_ode_world -> clearContacts ();
 
 	//	run the AI for all nearby NPCs
-	Items :: Player_Character :: get () -> call_observers (Object :: update);
+	Items :: Player_Character :: get () -> call_observers (Radakan :: update);
 }
 
 const unsigned int & World ::

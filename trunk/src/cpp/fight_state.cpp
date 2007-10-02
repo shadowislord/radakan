@@ -59,11 +59,11 @@ Reference <Strategy> Fight_State ::
 {
 	assert (is_initialized ());
 
-	Reference <Movable_Model> npc_model = alive_state -> npc -> get_movable_model ();
+	Reference <Movable_Model> npc_model (alive_state -> npc -> get_movable_model ());
 
 	if (message -> is_type <Messages :: Battle_Message> ())
 	{
-		targets -> add (message -> to_type <Messages :: Battle_Message> () -> from);
+		targets -> add (const_cast <Reference <Items :: Character> &> (message -> to_type <Messages :: Battle_Message> () -> from));
 	}
 
 	if (targets -> is_empty ())

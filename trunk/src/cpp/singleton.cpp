@@ -9,14 +9,37 @@ template <class T> T * Ogre :: Singleton <T> ::
 	ms_Singleton (NULL);
 
 //	static
-template <class T> Reference <T> Singleton <T> ::
-	myself;
-
-//	static
 template <class T> string Singleton <T> ::
 	get_class_name ()
 {
 	return "Singleton <" + T :: get_class_name () + ">";
+}
+
+//	static
+template <class T> bool Singleton <T> ::
+	is_instantiated ()
+{
+	return Ogre :: Singleton <T> :: getSingletonPtr () != NULL;
+}
+
+//	static
+template <class T> Reference <T> Singleton <T> ::
+	get ()
+{
+	assert (is_instantiated ());
+
+	return Reference <T> (Ogre :: Singleton <T> :: getSingletonPtr ());
+}
+
+//	static
+template <class T> void Singleton <T> ::
+	destruct ()
+{
+	assert (is_instantiated ());
+
+	delete Ogre :: Singleton <T> :: getSingletonPtr ();
+
+	assert (! is_instantiated ());
 }
 
 template <class T> Singleton <T> ::
@@ -49,37 +72,14 @@ template <class T> bool Singleton <T> ::
 	return true;
 }
 
-//	static
-template <class T> void Singleton <T> ::
-	destruct ()
-{
-	assert (is_instantiated ());
-
-	myself . reset_pointee ();
-
-	assert (! is_instantiated ());
-}
-
-//	static
-template <class T> Reference <T> Singleton <T> ::
-	get ()
-{
-	assert (is_instantiated ());
-
-	if (! myself . points_to_object ())
-	{
-		//	This is not 'dangerous' if the Singleton would not be instaniated.
-		myself . reset_pointee (Ogre :: Singleton <T> :: getSingletonPtr ());
-	}
-
-	return myself;
-}
-
-//	static
+//	virtual
 template <class T> bool Singleton <T> ::
-	is_instantiated ()
+	is_singleton ()
+	const
 {
-	return Ogre :: Singleton <T> :: getSingletonPtr () != NULL;
+	//	This method can be called when not initialized.
+
+	return true;
 }
 
 #include "audio_engine.hpp"

@@ -27,7 +27,7 @@ namespace Radakan
 				
 				static string get_class_name ();
 
-				virtual void call (Reference <const Object> message = Object :: update);
+				virtual void call (Reference <const Object> message = update);
 
 			private :
 				const int max_distance;

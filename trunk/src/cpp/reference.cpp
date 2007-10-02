@@ -148,7 +148,7 @@ template <class T> string Reference <T> ::
 {
 	assert (is_initialized ());
 
-	string result = Reference_Base :: get_name () + " ";
+	string result = Reference_Base :: get_name () + " [" + T :: get_class_name () + "] ";
 	
 	if (pointee != NULL)
 	{
@@ -198,6 +198,8 @@ template <class T> bool Reference <T> ::
 template <class T> void Reference <T> ::
 	reset_pointee (T * new_pointee)
 {
+	Engines :: Log :: trace (* this, get_class_name (), "reset_pointee", "~new_pointee~");
+	
 	assert (is_initialized ());
 	assert (parent == NULL);
 	

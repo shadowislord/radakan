@@ -28,11 +28,10 @@ GUI_Engine ::
 		boost :: shared_ptr <Ogre :: RenderWindow> window,
 		boost :: shared_ptr <Ogre :: SceneManager> scene_manager
 	) :
-	Object ("gui engine")
+	Object ("gui engine"),
+	renderer (new CEGUI :: OgreCEGUIRenderer (window . get ()))
 {
 	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~");
-
-	renderer . reset (new CEGUI :: OgreCEGUIRenderer (window . get ()));
 
 	Engines :: Log :: trace
 		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "AA");
@@ -77,6 +76,8 @@ bool GUI_Engine ::
 {
 	assert (Singleton <GUI_Engine> :: is_initialized ());
 	assert (State_Machine <GUI> :: is_initialized ());
+	assert (renderer);
+	assert (system);
 
 	return true;
 }

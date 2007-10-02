@@ -37,7 +37,7 @@ Settings ::
 		left_key = "s";
 		right_key = "f";
 	#endif
-	
+
 	assert (is_initialized ());
 }
 

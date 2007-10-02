@@ -84,7 +84,7 @@ template <class T> bool Set <T> ::
 template <class T> bool Set <T> ::
 	add (Reference <T> additive)
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "add", additive -> name);
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "add", additive . get_name ());
 	assert (Set <T> :: is_initialized ());
 	assert (! sealed);
 
@@ -109,10 +109,10 @@ template <class T> bool Set <T> ::
 
 //	virtual
 template <class T> bool Set <T> ::
-	contains (Reference <T> contained)
+	contains (const Reference <T> contained)
 	const
 {
-//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "contains", name);
+//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "contains", contained . get_name ());
 	assert (Set <T> :: is_initialized ());
 
 	return 0 < children -> count (contained);
@@ -122,7 +122,7 @@ template <class T> bool Set <T> ::
 template <class T> bool Set <T> ::
 	move (Reference <T> moved, Reference <Set <T> > destination)
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "move", moved -> name, destination -> name);
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "move", moved . get_name (), destination -> name);
 	assert (Set <T> :: is_initialized ());
 	assert (moved -> is_initialized ());
 	assert (destination -> is_initialized ());
@@ -145,7 +145,7 @@ template <class T> bool Set <T> ::
 template <class T> void Set <T> ::
 	drop (Reference <T> dropped)
 {
-	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "drop", dropped -> name);
+	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "drop", dropped . get_name ());
 	assert (Set <T> :: is_initialized ());
 	assert ((! sealed) || is_destructing ());
 	assert (dropped -> is_initialized ());

@@ -31,7 +31,7 @@ namespace Radakan
 				virtual bool is_dead () const;
 				virtual void die ();
 				
-				virtual void call (Reference <const Object> message = Object :: update);
+				virtual void call (Reference <const Object> message = update);
 			
 			private :
 				bool dead;
