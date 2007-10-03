@@ -140,11 +140,11 @@ void Model ::
 void Model ::
 	set_space (boost :: shared_ptr <OgreOde :: Space> new_space)
 {
-	boost :: shared_ptr <OgreOde :: Space> old_space (geometry -> getSpace ());
+	/*boost :: shared_ptr <OgreOde :: Space> old_space (geometry -> getSpace ());
 	if (old_space)
 	{
 		old_space -> removeGeometry (* geometry . get ());
-	}
+	}*/
 	new_space -> addGeometry (* geometry . get ());
 }
 
@@ -160,7 +160,7 @@ boost :: shared_ptr <OgreOde :: Geometry> Radakan :: create_geometry
 	assert (item -> is_initialized ());
 	assert (! item -> has_model ());
 
-	boost :: shared_ptr <OgreOde :: Geometry> geometry (new OgreOde :: BoxGeometry (item -> size, World :: get () -> ogre_ode_world . get (), World :: get () -> ogre_ode_world -> getDefaultSpace ()));
+	boost :: shared_ptr <OgreOde :: Geometry> geometry (new OgreOde :: BoxGeometry (item -> size, World :: get () -> ogre_ode_world . get ()));
 
 	return geometry;
 }

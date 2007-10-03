@@ -271,7 +271,7 @@ void Tile ::
 	assert (check);
 	assert (! document -> Error ());
 	boost :: shared_ptr <TiXmlElement> root (document -> RootElement ());
-	assert (root != NULL);
+	assert (root);
 	
 	for (boost :: shared_ptr <TiXmlElement> xml_element (root -> FirstChildElement ());
 		xml_element; xml_element . reset (xml_element -> NextSiblingElement ()))

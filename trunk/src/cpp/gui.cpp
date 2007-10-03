@@ -116,7 +116,7 @@ bool GUI ::
 	const
 {
 	assert (Object :: is_initialized ());
-	assert (log_window != NULL);
+	assert (log_window);
 
 	return true;
 }
@@ -129,7 +129,7 @@ void GUI ::
 
 	if (message -> is_type <Set <Messages :: Conversation_Message> > ())
 	{
-		assert (chat_window != NULL);
+		assert (chat_window);
 
 		if (! messages . points_to_object ())
 		{

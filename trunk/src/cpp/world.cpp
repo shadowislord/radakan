@@ -89,7 +89,7 @@ World ::
 	ogre_ode_world -> setCollisionListener (this);
 
     ogre_ode_world -> setGravity (Ogre :: Vector3 (0, - 9.81, 0));
-    //	ogre_ode_world -> setCFM (10e-5);    //	fine tune to make a realistic simulation
+    //	ogre_ode_world -> setCFM (10e-5);	//	fine tune to make a realistic simulation
     //	ogre_ode_world -> setERP (0.8);
     ogre_ode_world -> setAutoSleep (true);
     ogre_ode_world -> setContactCorrectionVelocity (1.0);

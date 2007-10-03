@@ -138,9 +138,10 @@ bool Input_Engine ::
 	const
 {
 	assert (Object :: is_initialized ());
-	assert (input_manager != NULL);
-	assert (mouse != NULL);
-	assert (keyboard != NULL);
+	assert (input_manager);
+	assert (mouse);
+	assert (keyboard);
+	
 	assert (absolute == ! relative);
 	assert (left_mouse_button != middle_mouse_button);
 	assert (right_mouse_button != left_mouse_button);
