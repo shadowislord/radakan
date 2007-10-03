@@ -66,10 +66,7 @@ ostream & Log ::
 {
 	#ifdef RADAKAN_DEBUG
 		cout << endl;
-		if (World :: is_instantiated ())
-		{
-			cout << "= turn " << World :: get () -> get_turn () << " =" << endl;
-		}
+		cout << "= turn " << World :: get_turn () << " =" << endl;
 		cout << "'" << logger . get_name () << "' reports:" << endl;
 		return cout << "\t";
 	#else

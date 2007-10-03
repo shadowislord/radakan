@@ -52,8 +52,6 @@ namespace Radakan
 	string to_string (const Ogre :: Vector3 & vector);
 	float to_float (const string & value);
 
-	extern const bool debugging;
-
 	///	I'm the abstract base class for all Radakan classes.
 	///	I can't be copied, consider a reference of me instead.
 	class Object :

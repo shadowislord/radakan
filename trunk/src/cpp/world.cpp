@@ -29,6 +29,9 @@ const int World ::
 const int World ::
 	max_z (1);
 
+unsigned int World ::
+	turn (0);
+
 //	a few constants for our stepper
 const Ogre :: Real frame_rate = (1.0 / 60);   //aiming for 60 fps
 const Ogre :: Real max_frame_time (1.0 / 4);
@@ -42,14 +45,20 @@ string World ::
 	return "World";
 }
 
+const unsigned int & World ::
+	get_turn ()
+{
+	return turn;
+}
+
 World ::
 	World (boost :: shared_ptr <Ogre :: SceneManager> scene_manager) :
 	Object ("world"),
+	Singleton <World> (),
+	State_Machine <Tile> (),
+	OgreOde :: CollisionListener (),
 	root_node (scene_manager -> getRootSceneNode ()),
 	ogre_ode_world (new OgreOde :: World (scene_manager . get ())),
-	#ifdef RADAKAN_DEBUG
-		turn (0),
-	#endif
 	last_turn_lenght (0),
 	step_handler
 	(
@@ -174,16 +183,6 @@ void World ::
 	//	run the AI for all nearby NPCs
 	Items :: Player_Character :: get () -> call_observers (Radakan :: update);
 }
-
-const unsigned int & World ::
-	get_turn ()
-	const
-{
-	assert (is_initialized ());
-
-	return turn;
-}
-
 const float & World ::
 	get_last_turn_lenght ()
 	const

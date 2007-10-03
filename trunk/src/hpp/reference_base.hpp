@@ -22,7 +22,7 @@ namespace Radakan
 			virtual string get_name () const;
 			
 		private :
-			const int number;
+			const string number;
 			
 			static int counter;
 	};

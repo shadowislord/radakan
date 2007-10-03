@@ -32,19 +32,16 @@ Game ::
 {
 	Log :: trace (me, Game :: get_class_name (), "", radakan_path, ogre_media_path);
 
-	if (Radakan :: debugging)
-	{
+	#ifdef RADAKAN_DEBUG
 		Log :: log (me) << "Debug mode is enabled." << endl;
 		
 		new Log (radakan_path);
 		new Tracker ();
-	}
-	else
-	{
+	#else
 		Log :: log (me) << "Debug mode is disabled." << endl;
 		
 		Log :: no_logs (me);
-	}
+	#endif
 
 	new Settings (radakan_path);
 

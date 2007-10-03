@@ -22,15 +22,17 @@ string Reference_Base ::
 
 Reference_Base ::
 	Reference_Base () :
-	number (counter ++)
+	number (to_string (counter ++))
 {
-	Engines :: Log :: trace (* this, get_class_name (), "", to_string (number));
+	Engines :: Log :: trace (* this, get_class_name (), "");
+
+	assert (counter < 64000);
 }
 
 Reference_Base ::
 	~Reference_Base ()
 {
-	Engines :: Log :: trace (* this, get_class_name (), "~", to_string (number));
+	Engines :: Log :: trace (* this, get_class_name (), "~");
 }
 
 //	virtual
@@ -38,5 +40,5 @@ string Reference_Base ::
 	get_name ()
 	const
 {
-	return "[" + to_string (number) + "]";
+	return "[" + number + "]";
 }

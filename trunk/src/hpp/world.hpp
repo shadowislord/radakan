@@ -22,6 +22,8 @@ namespace Radakan
 		public OgreOde :: CollisionListener
 	{
 		public:
+			static const unsigned int & get_turn ();
+
 			World (boost :: shared_ptr <Ogre :: SceneManager> scene_manager);
 			virtual ~World ();
 			virtual bool is_initialized () const;
@@ -36,8 +38,6 @@ namespace Radakan
 
 			void update ();
 
-			const unsigned int & get_turn () const;
-
 			///	in seconds
 			const float & get_last_turn_lenght () const;
 
@@ -48,7 +48,8 @@ namespace Radakan
 			boost :: scoped_ptr <OgreOde :: World> ogre_ode_world;
 
 		private :
-			unsigned int turn;
+			static unsigned int turn;
+			
 			float last_turn_lenght;
 			boost :: scoped_ptr <Ogre :: Timer> turn_lenght_timer;
 

@@ -70,6 +70,7 @@ Input_Engine ::
 	//	the system window.
 	OIS :: ParamList param_list;
 	param_list . insert (make_pair (string ("WINDOW"), Ogre :: StringConverter :: toString (window_handle)));
+	param_list . insert (make_pair (string ("x11_mouse_grab"), string("false")));
 
     input_manager = boost :: shared_ptr <OIS :: InputManager> (OIS :: InputManager :: createInputSystem (param_list), OIS :: InputManager :: destroyInputSystem);
 

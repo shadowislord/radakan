@@ -42,12 +42,6 @@ float Radakan ::
 Reference <const Object> Radakan :: update (new Object ("update (static)"));
 Reference <const Object> Radakan :: terminate (new Object ("terminate (static)"));
 
-#ifdef RADAKAN_DEBUG
-	const bool Radakan :: debugging (true);
-#else
-	const bool Radakan :: debugging (false);
-#endif
-
 //	static
 string Object ::
 	get_class_name ()
@@ -78,6 +72,7 @@ Object ::
 
 	status = "running";
 	assert (Object :: is_initialized ());
+	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name, "(end)");
 }
 
 //  destructor
