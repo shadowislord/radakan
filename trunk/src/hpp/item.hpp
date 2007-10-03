@@ -5,16 +5,6 @@
 
 using namespace std;
 
-namespace Ogre
-{
-	class Entity;
-}
-
-namespace OgreOde
-{
-	class Geometry;
-}
-
 namespace Radakan
 {
 	class Model;
@@ -32,8 +22,6 @@ namespace Radakan
 				virtual bool is_initialized () const;
 				
 				virtual float get_total_mass () const;
-
-				virtual boost :: shared_ptr <OgreOde :: Geometry> create_geometry ();
 
 				///	Don't use this method directely.
 				void set_model (Reference <Model> new_model);
@@ -61,7 +49,7 @@ namespace Radakan
 				
 				const bool visible;
 
-				boost :: shared_ptr <Ogre :: Entity> entity;
+				const string mesh_name;
 
 			protected :
 				Item
@@ -75,7 +63,6 @@ namespace Radakan
 				);
 
 			private :
-				///	can be NULL
 				Reference <Model> model;
 		};
 	}

@@ -1,10 +1,13 @@
 #include <OgreSceneNode.h>
 
+#include <OgreOdeGeometry.h>
 #include <OgreOdeBody.h>
+#include <OgreOdeMass.h>
 
 #include "item.hpp"
 #include "log.hpp"
 #include "movable_model.hpp"
+#include "world.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -18,13 +21,15 @@ string Movable_Model ::
 
 //  constructor
 Movable_Model ::
-	Movable_Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale, boost :: shared_ptr <OgreOde :: Geometry> new_geometry, boost :: shared_ptr <OgreOde :: Body> new_body) :
+	Movable_Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale) :
 	Object (new_item -> name + "'s movable model"),
-	Model (new_item, position, scale, new_geometry),
-	body (new_body)
+	Model (new_item, position, scale)
 {
-	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item -> name, to_string (position), to_string (scale), "~new_geometry~", "~new_body~");
+	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item -> name, to_string (position), to_string (scale));
 
+	body . reset (new OgreOde :: Body (World :: get () -> ogre_ode_world . get (), name));
+	body -> setMass (OgreOde :: BoxMass (item -> mass, item -> size));
+	geometry -> setBody (body . get ());
 	node -> attachObject (body . get ());
 
 	assert (Model :: is_initialized ());

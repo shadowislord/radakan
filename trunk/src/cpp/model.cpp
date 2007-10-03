@@ -20,12 +20,19 @@ string Model ::
 
 //  constructor
 Model ::
-	Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale, boost :: shared_ptr <OgreOde :: Geometry> new_geometry) :
+	Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale) :
 	Object (new_item -> name + "'s model"),
 	Location <Items :: Item> (1),
 	item (new_item),
 	node (World :: get () -> root_node -> createChildSceneNode (name)),
-	geometry (new_geometry)
+	geometry (create_geometry (item)),
+	entity
+	(
+		World :: get () -> ogre_ode_world -> getSceneManager () -> createEntity
+		(
+			name + "'s entity", item -> mesh_name
+		)
+	)
 {
 	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item -> name, to_string (position), to_string (scale));
 
@@ -36,17 +43,17 @@ Model ::
 
 	node -> setPosition (position);
 	node -> setScale (scale, scale, scale);
-	node -> attachObject (item -> entity . get ());
+	node -> attachObject (entity . get ());
 
 	assert (node -> numAttachedObjects () == 1);
 	
-	item -> entity -> setUserObject (geometry . get ());
+	entity -> setUserObject (geometry . get ());
 
-	if (geometry -> getBody () == NULL)
+	if (item -> mobile)
 	{
 		Engines :: Log :: log (me) << "I'm a static model." << endl;
 
-		geometry -> setUserObject (item -> entity . get ());
+		geometry -> setUserObject (entity . get ());
 		geometry -> setPosition (position);
 	}
 
@@ -73,7 +80,7 @@ Model ::
 	
 	assert (node -> numAttachedObjects () == 1);
 
-	World :: get () -> ogre_ode_world -> getSceneManager () -> destroyMovableObject (item -> entity . get ());
+	World :: get () -> ogre_ode_world -> getSceneManager () -> destroyMovableObject (entity . get ());
 
 	assert (node -> numAttachedObjects () == 0);
 
@@ -88,7 +95,6 @@ bool Model ::
 	assert (Set <Items :: Item> :: is_initialized ());
 	//	TODO re-enable:
 	//	assert (is_sealed ());
-	assert (item -> has_model ());
 	assert (node -> getParent () == World :: get () -> root_node . get ());
 	assert (node -> numAttachedObjects () <= 2);
 
@@ -128,7 +134,7 @@ void Model ::
 {
 	assert (Model :: is_initialized ());
 
-	item -> entity -> setMaterialName (name);
+	entity -> setMaterialName (name);
 }
 
 void Model ::
@@ -145,4 +151,16 @@ void Model ::
 Ogre :: Quaternion Radakan :: make_quaternion (float radian_angle, Ogre :: Vector3 ax)
 {
 	return Ogre :: Quaternion (Ogre :: Radian (radian_angle), ax);
+}
+
+boost :: shared_ptr <OgreOde :: Geometry> Radakan :: create_geometry
+	(Reference <Items :: Item> item)
+{
+	assert (item . points_to_object ());
+	assert (item -> is_initialized ());
+	assert (! item -> has_model ());
+
+	boost :: shared_ptr <OgreOde :: Geometry> geometry (new OgreOde :: BoxGeometry (item -> size, World :: get () -> ogre_ode_world . get (), World :: get () -> ogre_ode_world -> getDefaultSpace ()));
+
+	return geometry;
 }

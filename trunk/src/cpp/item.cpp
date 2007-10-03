@@ -1,9 +1,5 @@
-#include <OgreEntity.h>
-#include <OgreOde_Core.h>
-
 #include "log.hpp"
 #include "model.hpp"
-#include "world.hpp"
 
 #include "item.hpp"
 
@@ -35,13 +31,7 @@ Item ::
 	mobile (new_mobile),
 	solid (new_solid),
 	visible (new_visible),
-	entity
-	(
-		World :: get () -> ogre_ode_world -> getSceneManager () -> createEntity
-		(
-			name + "'s entity", new_mesh_name
-		)
-	)
+	mesh_name (new_mesh_name)
 {
 	Engines :: Log :: trace
 	(
@@ -109,12 +99,16 @@ float Item ::
 void Item ::
 	set_model (Reference <Model> new_model)
 {
-	//	Engines :: Log :: trace (me, Item :: get_class_name (), "set_model", new_model);
+	Engines :: Log :: trace (me, Item :: get_class_name (), "set_model", new_model . get_name ());
+	
 	assert (Item :: is_initialized ());
 	assert (! has_model ());
+	assert (new_model . points_to_object ());
+	assert (new_model -> is_initialized ());
 
 	model = new_model;
 
+	assert (has_model ());
 	assert (is_initialized ());
 }
 
@@ -123,7 +117,7 @@ bool Item ::
 {
 	assert (Item :: is_initialized ());
 	
-	return (model . points_to_object ());
+	return model . points_to_object ();
 }
 
 void Item ::
@@ -134,7 +128,7 @@ void Item ::
 
 	//	The body destructs the item, not the other way around.
 	
-	model = NULL;
+	model . reset_pointee ();
 }
 
 Reference <Model> Item ::
@@ -144,25 +138,6 @@ Reference <Model> Item ::
 	assert (has_model ());
 	
 	return model;
-}
-
-//	virtual
-boost :: shared_ptr <OgreOde :: Geometry> Item ::
-	create_geometry ()
-{
-	assert (is_initialized ());
-	assert (! has_model ());
-
-	boost :: shared_ptr <OgreOde :: Geometry> geometry (new OgreOde :: BoxGeometry (size, World :: get () -> ogre_ode_world . get (), World :: get () -> ogre_ode_world -> getDefaultSpace ()));
-
-	if (mobile)
-	{
-		OgreOde :: Body * body = new OgreOde :: Body (World :: get () -> ogre_ode_world . get (), name);
-		body -> setMass (OgreOde :: BoxMass (mass, size));
-		geometry -> setBody (body);
-	}
-
-	return geometry;
 }
 
 float Item ::

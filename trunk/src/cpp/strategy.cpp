@@ -19,8 +19,8 @@ Strategy ::
 {
 	Engines :: Log :: trace (me, Strategy :: get_class_name (), "");
 	assert (Strategy :: is_initialized ());
-	
-	prepare_for_destruction ();
+
+	//	Do nothing.
 }
 
 //  destructor

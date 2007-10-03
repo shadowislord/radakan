@@ -194,11 +194,11 @@ void  Object ::
 	assert (check);
 	assert (does_depend (reference));
 
-	for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
+	/*for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
 			i ++)
 	{
 		Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
-	}
+	}*/
 }
 
 void  Object ::
@@ -212,11 +212,11 @@ void  Object ::
 	assert (does_depend (reference));
 	dependencies -> erase (& reference);
 
-	for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
+	/*for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
 			i ++)
 	{
 		Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
-	}
+	}*/
 
 	if (status == "constructing")
 	{

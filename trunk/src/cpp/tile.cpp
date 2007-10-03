@@ -284,14 +284,12 @@ Reference <Model> Tile ::
 	create_model (Reference <Items :: Item> item, Ogre :: Vector3 position, float scale)
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "create_model", item -> name, to_string (position), to_string (scale));
-	boost :: shared_ptr <OgreOde :: Geometry> geometry = item -> create_geometry ();
-	boost :: shared_ptr <OgreOde :: Body> body (geometry -> getBody ());
-	if (body)
+	if (item -> mobile)
 	{
-		return Reference <Model> (new Movable_Model (item, position, scale, geometry, body));
+		return Reference <Model> (new Movable_Model (item, position, scale));
 	}
 	else
 	{
-		return Reference <Model> (new Model (item, position, scale, geometry));
+		return Reference <Model> (new Model (item, position, scale));
 	}
 }
