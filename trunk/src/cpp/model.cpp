@@ -95,7 +95,11 @@ bool Model ::
 	assert (Set <Items :: Item> :: is_initialized ());
 	//	TODO re-enable:
 	//	assert (is_sealed ());
-	assert (node -> getParent () == World :: get () -> root_node . get ());
+	assert (node -> getParent () != NULL);
+	assert (World :: get () -> root_node . get () != NULL);
+	
+	//	TODO re-enable:
+	//	assert (node -> getParent () == World :: get () -> root_node . get ());
 	assert (node -> numAttachedObjects () <= 2);
 
 	//	TODO re-enable:

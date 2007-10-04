@@ -60,6 +60,7 @@ World ::
 	root_node (scene_manager -> getRootSceneNode ()),
 	ogre_ode_world (new OgreOde :: World (scene_manager . get ())),
 	last_turn_lenght (0),
+	turn_lenght_timer (new Ogre :: Timer ()),
 	step_handler
 	(
 		new OgreOde :: ForwardFixedInterpolatedStepHandler
@@ -147,7 +148,9 @@ void World ::
 
 	//	Here, 'last_turn_lenght' contains the lenth of the current turn.
 	last_turn_lenght = float (turn_lenght_timer -> getMilliseconds ()) / 1000;
-	turn_lenght_timer . reset ();
+
+	//	Reset the timer, not the reference.
+	turn_lenght_timer -> reset ();
 
 	#ifdef RADAKAN_DEBUG
 		Engines :: Log :: log (me) << "Turn lenght: " << last_turn_lenght << " seconds" << endl;

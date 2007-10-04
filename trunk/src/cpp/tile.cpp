@@ -45,8 +45,8 @@ Tile ::
 	doc (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/tile/" + name + ".xml"))
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
-	
-	load_xml_file (doc);
+
+	load_xml_file (* doc);
 
 /*	if (root -> FirstChildElement ("forest") != NULL)
 	{
@@ -179,20 +179,17 @@ bool Tile ::
 }
 
 void Tile ::
-	load_xml (boost :: shared_ptr <TiXmlElement> element)
+	load_xml (TiXmlElement & element)
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml", "~element~");
 	assert (is_initialized ());
 
-	Engines :: Log :: log (me) << "element value: " << element -> ValueStr () << endl;
-	if (element -> ValueStr () == string ("include"))
+	Engines :: Log :: log (me) << "element value: " << element . ValueStr () << endl;
+	if (element . ValueStr () == string ("include"))
 	{
-		boost :: shared_ptr <TiXmlDocument> document
+		TiXmlDocument document
 		(
-			new TiXmlDocument
-			(
-				Engines :: Settings :: get () -> radakan_path + "/data/tile/" + element -> Attribute ("name") + ".xml"
-			)
+			Engines :: Settings :: get () -> radakan_path + "/data/tile/" + element . Attribute ("name") + ".xml"
 		);
 		load_xml_file (document);
 		return;
@@ -202,12 +199,12 @@ void Tile ::
 /*	double x;
 	element . Attribute ("x", & x);
 	Engines :: Log :: log (me) << "x: " << x << endl;*/
-	float x = to_float (element -> Attribute ("x"));
-	float y = to_float (element -> Attribute ("y"));
-	float z = to_float (element -> Attribute ("z"));
-	float scale = to_float (element -> Attribute ("scale"));
+	float x = to_float (element . Attribute ("x"));
+	float y = to_float (element . Attribute ("y"));
+	float z = to_float (element . Attribute ("z"));
+	float scale = to_float (element . Attribute ("scale"));
 
-	TiXmlElement * item_xml = element -> FirstChildElement ();
+	TiXmlElement * item_xml = element . FirstChildElement ();
 	
 	string name = item_xml -> Attribute ("name") + string (" ") + to_string (position);
 	string mesh = item_xml -> Attribute ("mesh");
@@ -254,7 +251,7 @@ void Tile ::
 
 	//	TODO re-enable assert ((position + Ogre :: Vector3 (x, y, z) - model . getPosition ()) . length () < 0.01);
 
-	TiXmlElement * material = element -> FirstChildElement ("material");
+	TiXmlElement * material = element . FirstChildElement ("material");
 	if (material != NULL)
 	{
 		model -> set_material (material -> Attribute ("name"));
@@ -262,21 +259,20 @@ void Tile ::
 }
 
 void Tile ::
-	load_xml_file (boost :: shared_ptr <TiXmlDocument> document)
+	load_xml_file (TiXmlDocument & document)
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml_file", "~document~");
 	assert (is_initialized ());
 
-	bool check = document -> LoadFile ();
+	bool check = document . LoadFile ();
 	assert (check);
-	assert (! document -> Error ());
-	boost :: shared_ptr <TiXmlElement> root (document -> RootElement ());
-	assert (root);
-	
-	for (boost :: shared_ptr <TiXmlElement> xml_element (root -> FirstChildElement ());
-		xml_element; xml_element . reset (xml_element -> NextSiblingElement ()))
+	assert (! document . Error ());
+	TiXmlElement * root = document . RootElement ();
+
+	for (TiXmlElement * xml_element = root -> FirstChildElement ();
+		xml_element != NULL; xml_element = xml_element -> NextSiblingElement ())
 	{
-		load_xml (xml_element);
+		load_xml (* xml_element);
 	}
 }
 

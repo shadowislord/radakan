@@ -50,11 +50,11 @@ namespace Radakan
 			boost :: shared_ptr <OgreOde :: SimpleSpace> space;
 
 		private :
-			void load_xml (boost :: shared_ptr <TiXmlElement> element);
-			void load_xml_file (boost :: shared_ptr <TiXmlDocument> document);
+			void load_xml (TiXmlElement & element);
+			void load_xml_file (TiXmlDocument & document);
 			Reference <Model> create_model (Reference <Items :: Item> item, Ogre :: Vector3 position, float scale);
 
-			boost :: shared_ptr <TiXmlDocument> doc;
+			TiXmlDocument * doc;
 	};
 }
 
