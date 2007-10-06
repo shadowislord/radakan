@@ -1,109 +1,119 @@
-#include "container.hpp"
 #include "log.hpp"
+#include "container.hpp"
 
 using namespace std;
 using namespace Radakan;
-using namespace Radakan :: Items;
 
 //	static
-string Container ::
+template <class T> string Container <T> ::
 	get_class_name ()
 {
-	return "Container";
+	return "Container <" + T :: get_class_name () + ">";
 }
 
+//	This could have been any number (strictly) below 0.
+template <class T> const int Container <T> ::
+	unlimited = - 10;
+
 //  constructor
-Container ::
-	Container
-	(
-		string new_name,
-		string new_mesh_name,
-		Ogre :: Vector3 new_size,
-		float new_mass,
-		bool new_mobile,
-		bool new_solid,
-		bool new_visible,
-		int new_maximal_size
-	) :
-	Object (new_name),
-	Item
-	(
-		new_mesh_name,
-		new_size,
-		new_mass,
-		new_mobile,
-		new_solid,
-		new_visible
-	),
-	Location <Item> (new_maximal_size)
+template <class T> Container <T> ::
+	Container (string name, int new_maximal_size) :
+	Object (name),
+	maximal_size (new_maximal_size),
+	sealed (false)
 {
+	Engines :: Log :: trace (me, Container <T> :: get_class_name (), "", name, to_string (new_maximal_size));
+	assert ((new_maximal_size == unlimited) || (0 <= new_maximal_size));
+
 	//	Do nothing.
-	
-	assert (is_initialized ());
+
+	assert (Container <T> :: is_initialized ());
 }
 
 //  destructor
-Container ::
+template <class T> Container <T> ::
 	~Container ()
 {
-	Engines :: Log :: trace (me, Container :: get_class_name (), "~");
-	assert (is_initialized ());
+	Engines :: Log :: trace (me, Container <T> :: get_class_name (), "~");
+	assert (Container <T> :: is_initialized ());
 
 	prepare_for_destruction ();
 }
 
 //	virtual
-bool Container ::
+template <class T> bool Container <T> ::
 	is_initialized ()
 	const
 {
-	assert (Item :: is_initialized ());
-	assert (Set <Item> :: is_initialized ());
+	assert (Object :: is_initialized ());
+	assert (unlimited < 0);
+	assert ((maximal_size == unlimited) || (0 <= maximal_size));
 
 	return true;
 }
 
-//	virtual
-float Container ::
-	get_total_mass ()
-	const
+template <class T> void Container <T> ::
+	seal ()
 {
-	assert (is_initialized ());
-	
-	float total_mass = mass;
+	sealed = true;
+}
 
-	for (Reference <Item> i = get_child (); i . points_to_object (); i = get_another_child ())
-	{
-		total_mass += i -> get_total_mass ();
-	}
-
-	return total_mass;
+template <class T> bool Container <T> ::
+	is_sealed () const
+{
+	return sealed;
 }
 
 //	virtual
-bool Container ::
-	add (Reference <Item> item)
+template <class T> bool Container <T> ::
+	move (Reference <T> moved, Reference <Container <T> > destination)
 {
-	Engines :: Log :: trace (me, Container :: get_class_name (), "add", item -> name);
-	assert (is_initialized ());
-	assert (item -> is_initialized ());
-	assert (! is_sealed ());
-	assert (item -> is_initialized ());
-	
-	float total_volume = 0;
+	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "move", moved . get_name (), destination -> name);
+	assert (Container <T> :: is_initialized ());
+	assert (moved -> is_initialized ());
+	assert (destination -> is_initialized ());
+	assert (! Container <T> :: is_sealed ());
+	assert (contains (moved));
 
-	for (Reference <Item> i = get_child (); i . points_to_object (); i = get_another_child ())
-	{
-		total_volume += i -> get_volume ();
-	}
+	drop (moved);
 	
-	if (total_volume + item -> get_volume () > get_volume ())
+	if (destination -> add (moved))
 	{
-		return false;
+		return true;
 	}
-
-	bool check = Location <Item> :: add (item);
+	bool check = add (moved);
 	assert (check);
-
-	return true;
+	
+	return false;
 }
+
+//	to avert linking errors:
+#include "audio_engine.hpp"
+#include "container_item.hpp"
+#include "conversation_message.hpp"
+#include "gui.hpp"
+#include "model.hpp"
+#include "movable_model.hpp"
+#include "npc.hpp"
+#include "play_state.hpp"
+#include "strategy.hpp"
+#include "tile.hpp"
+#include "thought.hpp"
+
+template class Container <GUI>;
+template class Container <Items :: Character>;
+template class Container <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
+template class Container <Items :: Container_Item <Items :: Item> >;
+template class Container <Items :: Item>;
+template class Container <Items :: NPC>;
+template class Container <Messages :: Conversation_Message>;
+template class Container <Model>;
+template class Container <Object>;
+template class Container <Observer <Engines :: Log> >;
+template class Container <Observer <GUI> >;
+template class Container <Observer <Items :: Character> >;
+template class Container <Observer <Strategies :: Play_State> >;
+template class Container <Sound_Sample>;
+template class Container <Strategies :: Strategy>;
+template class Container <Tile>;
+template class Container <Thought>;

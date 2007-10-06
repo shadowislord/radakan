@@ -35,7 +35,7 @@ namespace Radakan
 				virtual ~Play_State ();
 				virtual bool is_initialized () const;
 				
-				virtual Reference <Strategy> transit (Reference <const Object> message);
+				virtual Reference <Strategy> transit (const Reference <Object> message);
 
 			private :
 				Reference <GUI> gui;

@@ -32,14 +32,14 @@ namespace Radakan
 				virtual ~Alive_State ();
 				virtual bool is_initialized () const;
 				
-				virtual Reference <Strategy> transit (Reference <const Object> message);
+				virtual Reference <Strategy> transit (const Reference <Object> message);
 
 				Reference <Items :: NPC> npc;
 				
 				//	'calm' can vary from 0 to 1.
 				float calm;
 
-				Reference <Set <const Object> > sensory_buffer;
+				Reference <Set <Object> > sensory_buffer;
 		};
 	}
 }

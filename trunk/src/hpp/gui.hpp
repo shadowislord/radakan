@@ -46,10 +46,10 @@ namespace Radakan
 			
 			boost :: shared_ptr <CEGUI :: Window> root_window;
 
-			virtual void call (Reference <const Object> message = update);
+			virtual void call (const Reference <Object> message = update);
 
 		private :
-			void subscribe (boost :: shared_ptr <CEGUI :: Window> window);
+			void subscribe (CEGUI :: Window & window);
 
 			virtual bool handle_event (const CEGUI :: EventArgs & arguments);
 
@@ -59,7 +59,7 @@ namespace Radakan
 			
 			boost :: shared_ptr <CEGUI :: Listbox> log_window;
 
-			Reference <const Set <Messages :: Conversation_Message> > messages;
+			Reference <Set <Messages :: Conversation_Message> > messages;
 	};
 }
 

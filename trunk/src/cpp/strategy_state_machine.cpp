@@ -48,21 +48,21 @@ bool Strategy_State_Machine ::
 }
 
 void Strategy_State_Machine ::
-	run (Reference <const Object> message)
+	run (const Reference <Object> message)
 {
 	assert (is_initialized ());
 
 	if (has_active_state ())
 	{
-		Reference <Strategy> old_state = State_Machine <Strategy> :: get_active_state ();
+		Reference <Strategy> old_state = get_active_state ();
 		Reference <Strategy> new_state = old_state -> transit (message);
 		if (new_state . points_to_object ())
 		{
-			drop (old_state);
+			set_active_state (new_state);
 		}
 		else
 		{
-			set_active_state (new_state);
+			drop (old_state);
 		}
 	}
 }

@@ -26,7 +26,7 @@ namespace Radakan
 
 				Conversation_Message
 				(
-					boost :: shared_ptr <const TiXmlElement> new_option,
+					const TiXmlElement * new_option,
 					Reference <Items :: Character> new_from,
 					Reference <Items :: Character> new_to
 				);
@@ -36,13 +36,13 @@ namespace Radakan
 				Reference <Conversation_Message> get_reaction () const;
 
 				///	'option' is a reference to an XML element in the behavior file.
-				boost :: shared_ptr <const TiXmlElement> option;
+				const TiXmlElement * option;
 				
 				Reference <Items :: Character> from;
 				Reference <Items :: Character> to;
 
 			private :
-				static string create_name (boost :: shared_ptr <const TiXmlElement> option);
+				static string create_name (const TiXmlElement * option);
 		};
 	}
 }

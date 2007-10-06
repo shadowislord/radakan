@@ -47,11 +47,8 @@ namespace Radakan
 
 	const Ogre :: Vector3 zero_vector (0, 0, 0);
 
-	string bool_to_string (const bool & value);
-	string to_string (const float & value);
 	string to_string (const Ogre :: Vector3 & vector);
-	float to_float (const string & value);
-
+	
 	///	I'm the abstract base class for all Radakan classes.
 	///	I can't be copied, consider a reference of me instead.
 	class Object :
@@ -73,9 +70,9 @@ namespace Radakan
 			///	I'm removed from each parent Set.
 			void prepare_for_destruction ();
 
-			template <class T> bool is_type () const;
-			template <class T> Reference <T> to_type ();
-			template <class T> Reference <const T> to_type () const;
+			template <class T> bool is_class () const;
+			template <class T> Reference <T> to_class ();
+			template <class T> const Reference <T> to_class_const () const;
 
 			void register_reference (const Reference_Base & reference) const;
 
@@ -102,8 +99,8 @@ namespace Radakan
 			Reference <Object> me;
 	};
 
-	extern Reference <const Object> update;
-	extern Reference <const Object> terminate;
+	extern const Reference <Object> update;
+	extern const Reference <Object> terminate;
 }
 
 #endif	//	RADAKAN_OBJECT_HPP

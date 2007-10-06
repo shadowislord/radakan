@@ -82,7 +82,7 @@ void Log ::
 	
 	if (is_instantiated ())
 	{
-		get () -> call_observers (Reference <const Object> (new Object (message_contents)));
+		get () -> call_observers (Reference <Object> (new Object (message_contents)));
 	}
 }
 

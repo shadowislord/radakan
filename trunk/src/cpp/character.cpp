@@ -3,7 +3,7 @@
 #include "conversation_message.hpp"
 #include "log.hpp"
 #include "movable_model.hpp"
-#include "multislot.hpp"
+#include "slot.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -33,39 +33,60 @@ Character ::
 		float new_mass
 	) :
 	Object ("The name doesn't matter as this class is an abstact class."),
-	Container
+	Container_Item <Item>
 	(
 		"The name doesn't matter as this class is an abstact class.",
 		new_mesh_name,
 		new_size,
-		new_mass,
-		true,
-		true,
-		true,
-		Set <Item> :: unlimited
+		new_mass
 	),
 	//	head (new Static_Item (name + "'s head", "bar.mesh", 1, 1)),
-	//	head (new Multislot <Hat> (1)),
-	//	body (new Multislot <Shirt> (1)),
-	back (new Multislot <Container> (name + "'s back", "bar.mesh", Ogre :: Vector3 (0.5, 0.5, 0.3), 0, 1)),
-	//	arms (new Multislot <Bracer> (2)),
-	hands (new Multislot <Item> (name + "'s hands", "bar.mesh", Ogre :: Vector3 (1, 0.3, 0.3), 0, 2)),
-	//	legs (new Multislot <Pants> (1)),
-	//	feet (new Multislot <Shoe> (2)),
-	movable_model (NULL)
+	//	head (new Container_Item <Hat> ()),
+	//	body (new Container_Item <Shirt> ()),
+	back
+	(
+		new Container_Item <Container_Item <Item> >
+		(
+			name + "'s back",
+			"bar.mesh",
+			Ogre :: Vector3 (0.5, 0.5, 0.3),
+			1,
+			true,
+			true,
+			true,
+			1
+		)
+	),
+	//	arms (new Container_Item <Bracer> ()),
+	right_hand
+	(
+		new Container_Item <Item>
+		(
+			name + "'s right hand",
+			"bar.mesh",
+			Ogre :: Vector3 (1, 0.3, 0.3),
+			1,
+			true,
+			true,
+			true,
+			1
+		)
+	)
+	//	legs (new Container_Item <Pants> ()),
+	//	feet (new Container_Item <Shoe> ())
 {
 	Engines :: Log :: trace (me, Character :: get_class_name (), "", new_mesh_name, to_string (new_size), to_string (new_mass));
 
-	bool check/* = Container :: add (head)*/;
+	bool check/* = Container_Item <Item> :: add (head)*/;
 	/*assert (check);*/
-	//	Container :: add (body);
-	check = Container :: add (back);
+	//	Container_Item <Item> :: add (body);
+	check = Container_Item <Item> :: add (back);
 	assert (check);
-	//	Container :: add (arms);
-	check = Container :: add (hands);
+	//	Container_Item <Item> :: add (arms);
+	check = Container_Item <Item> :: add (right_hand);
 	assert (check);
-	//	Container :: add (legs);
-	//	Container :: add (feet);
+	//	Container_Item <Item> :: add (legs);
+	//	Container_Item <Item> :: add (feet);
 
 	//	Make sure no body parts are added anymore.
 	seal ();
@@ -108,7 +129,7 @@ bool Character ::
 {
 	assert (Observable <Character> :: is_initialized ());
 	assert (Observer <Character> :: is_initialized ());
-	assert (Container :: is_initialized ());
+	assert (Container_Item <Item> :: is_initialized ());
 
 	return true;
 }
@@ -119,7 +140,7 @@ Reference <Movable_Model> Character ::
 {
 	if (! movable_model . points_to_object ())
 	{
-		movable_model = get_model () -> to_type <Movable_Model> ();
+		movable_model = get_model () -> to_class <Movable_Model> ();
 	}
 
 	return movable_model;

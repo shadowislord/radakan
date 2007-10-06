@@ -28,7 +28,7 @@ namespace Radakan
 				///	let it be called by Strategy_State_Machine.
 				///	I return myself to continue next time.
 				///	I return NULL when I should be destructed.
-				virtual Reference <Strategy> transit (Reference <const Object> message) = 0;
+				virtual Reference <Strategy> transit (const Reference <Object> message) = 0;
 				
 			protected :
 				Strategy ();

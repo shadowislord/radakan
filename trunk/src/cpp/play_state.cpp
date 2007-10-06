@@ -16,7 +16,6 @@
 #include "log.hpp"
 #include "menu_state.hpp"
 #include "movable_model.hpp"
-#include "multislot.hpp"
 #include "npc.hpp"
 #include "settings.hpp"
 #include "play_state.hpp"
@@ -78,7 +77,7 @@ bool Play_State ::
 
 //	virtual
 Reference <Strategy> Play_State ::
-	transit (Reference <const Object> message)
+	transit (const Reference <Object> message)
 {
 	assert (is_initialized ());
 
@@ -96,7 +95,7 @@ Reference <Strategy> Play_State ::
 		return Menu_State :: get ();
 	}
 
-	Reference <const Messages :: Conversation_Message> conversation_option = Engines :: Input_Engine :: get () -> get_conversation_option ();
+	const Reference <Messages :: Conversation_Message> conversation_option = Engines :: Input_Engine :: get () -> get_conversation_option ();
 	if (conversation_option . points_to_object ())
 	{
 		assert (conversation_option -> from == Items :: Player_Character :: get ());
@@ -158,23 +157,23 @@ Reference <Strategy> Play_State ::
 	if (Engines :: Input_Engine :: get () -> get_key ("m", true)
 		|| Engines :: Input_Engine :: get () -> get_gui_button ("Move"))
 	{
-		Reference <Items :: Multislot <Items :: Item> > player_hands
-			= Items :: Player_Character :: get () -> hands;
-		Reference <Items :: Multislot <Items :: Item> > npc_hands
-			= closest_npc -> hands;
+		Reference <Items :: Container_Item <Items :: Item> > player_hand
+			= Items :: Player_Character :: get () -> right_hand;
+		Reference <Items :: Container_Item <Items :: Item> > npc_hand
+			= closest_npc -> right_hand;
 
-		if (! player_hands -> is_empty ())
+		if (! player_hand -> is_empty ())
 		{
-			player_hands -> move (player_hands -> get_child (), npc_hands);
-			assert (player_hands -> is_empty ());
-			assert (! npc_hands -> is_empty ());
+			player_hand -> move (player_hand -> get_child (), npc_hand);
+			assert (player_hand -> is_empty ());
+			assert (! npc_hand -> is_empty ());
 			Engines :: Log :: show ("You gave your weapon to the ninja.");
 		}
-		else if (! npc_hands -> is_empty ())
+		else if (! npc_hand -> is_empty ())
 		{
-			npc_hands -> move (npc_hands -> get_child (), player_hands);
-			assert (npc_hands -> is_empty ());
-			assert (! player_hands -> is_empty ());
+			npc_hand -> move (npc_hand -> get_child (), player_hand);
+			assert (npc_hand -> is_empty ());
+			assert (! player_hand -> is_empty ());
 			Engines :: Log :: show ("You took your weapon from the ninja.");
 		}
 		else
@@ -204,7 +203,7 @@ Reference <Strategy> Play_State ::
 		if (mouse_position . y != 0)
 		{
 			Engines :: Settings :: get () -> increase_vertical_camera_angle
-				(- World :: get () -> get_last_turn_lenght () * mouse_position . y / 10);
+				(- World :: get () -> get_last_turn_length () * mouse_position . y / 10);
 		}
 	}
 

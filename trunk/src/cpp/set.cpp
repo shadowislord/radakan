@@ -11,20 +11,14 @@ template <class T> string Set <T> ::
 	return "Set <" + T :: get_class_name () + ">";
 }
 
-//	This could have been any number (strictly) below 0.
-template <class T> const int Set <T> ::
-	unlimited = - 10;
-
 //  constructor
 template <class T> Set <T> ::
 	Set (string name, int new_maximal_size) :
 	Object (name),
-	maximal_size (new_maximal_size),
-	children (new set <Reference <T> >),
-	sealed (false)
+	Container <T> (name, new_maximal_size),
+	children (new set <Reference <T> >)
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "", name, to_string (new_maximal_size));
-	assert ((new_maximal_size == unlimited) || (0 <= new_maximal_size));
+	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "", name, to_string (new_maximal_size));
 
 	//	Do nothing.
 
@@ -35,17 +29,17 @@ template <class T> Set <T> ::
 template <class T> Set <T> ::
 	~Set ()
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "~");
+	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "~");
 	assert (Set <T> :: is_initialized ());
 
-	prepare_for_destruction ();
+	Object :: prepare_for_destruction ();
 
 	for (Reference <T> child = get_child (); child . points_to_object (); child = get_child ())
 	{
-		Engines :: Log :: log (me) << "Dropping child '" << child -> name << "'..." << endl;
+		Engines :: Log :: log (this -> me) << "Dropping child '" << child -> name << "'..." << endl;
 		drop (child);
 	}
-	Engines :: Log :: log (me) << "All children were dropped." << endl;
+	Engines :: Log :: log (this -> me) << "All children were dropped." << endl;
 
 	assert (children -> empty ());
 }
@@ -55,23 +49,13 @@ template <class T> bool Set <T> ::
 	is_initialized ()
 	const
 {
-	assert (Object :: is_initialized ());
-	assert (unlimited < 0);
-	assert ((maximal_size == unlimited) || (0 <= maximal_size));
-	assert (children -> size () <= maximal_size);
-
-	/*
-	//	Don't use the 'get_child' & 'get_another_child' methods here,
-	//	as they both require me to be initialized.
-	for (T_Iterator i = children . begin (); i != children . end (); i ++)
-	{
-		assert ((* i) -> T :: is_initialized ());
-	}
-	*/
-
+	assert (Container <T> :: is_initialized ());
+	assert (children -> size () <= Container <T> :: maximal_size);
+	
 	return true;
 }
 
+//	virtual
 template <class T> bool Set <T> ::
 	is_empty () const
 {
@@ -82,20 +66,32 @@ template <class T> bool Set <T> ::
 
 //	virtual
 template <class T> bool Set <T> ::
+	contains (const Reference <T> contained)
+	const
+{
+//	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "contains", contained . get_name ());
+	assert (Set <T> :: is_initialized ());
+
+	return 0 < children -> count (contained);
+}
+
+//	virtual
+template <class T> bool Set <T> ::
 	add (Reference <T> additive)
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "add", additive . get_name ());
+	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "add", additive . get_name ());
 	assert (Set <T> :: is_initialized ());
-	assert (! sealed);
+	assert (! Container <T> :: is_sealed ());
 
 	if (contains (additive))
 	{
 		return false;
 	}
 
-	if ((maximal_size != unlimited) && (children -> size () == maximal_size))
+	//	We can't use <= or >= here, because 'Container <T> :: unlimited < 0'.
+	if (children -> size () == Container <T> :: maximal_size)
 	{
-		Engines :: Log :: log (me) << additive -> name << " could not be added. I'm full." << endl;
+		Engines :: Log :: log (this -> me) << additive -> name << " could not be added. I'm full." << endl;
 		return false;
 	}
 
@@ -108,46 +104,12 @@ template <class T> bool Set <T> ::
 }
 
 //	virtual
-template <class T> bool Set <T> ::
-	contains (const Reference <T> contained)
-	const
-{
-//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "contains", contained . get_name ());
-	assert (Set <T> :: is_initialized ());
-
-	return 0 < children -> count (contained);
-}
-
-//	virtual
-template <class T> bool Set <T> ::
-	move (Reference <T> moved, Reference <Set <T> > destination)
-{
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "move", moved . get_name (), destination -> name);
-	assert (Set <T> :: is_initialized ());
-	assert (moved -> is_initialized ());
-	assert (destination -> is_initialized ());
-	assert (! sealed);
-	assert (contains (moved));
-
-	drop (moved);
-	
-	if (destination -> add (moved))
-	{
-		return true;
-	}
-	bool check = add (moved);
-	assert (check);
-	
-	return false;
-}
-
-//	virtual
 template <class T> void Set <T> ::
 	drop (Reference <T> dropped)
 {
-	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "drop", dropped . get_name ());
+	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "drop", dropped . get_name ());
 	assert (Set <T> :: is_initialized ());
-	assert ((! sealed) || is_destructing ());
+	assert ((! Container <T> :: is_sealed ()) || Object :: is_destructing ());
 	assert (dropped -> is_initialized ());
 	assert (contains (dropped));
 
@@ -158,7 +120,7 @@ template <class T> Reference <T> Set <T> ::
 	get_child ()
 	const
 {
-//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), get_child);
+//	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), get_child);
 	assert (Set <T> :: is_initialized ());
 
 	if (children -> empty ())
@@ -173,7 +135,7 @@ template <class T> Reference <T> Set <T> ::
 	get_another_child ()
 	const
 {
-//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), get_another_child);
+//	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), get_another_child);
 	assert (Set <T> :: is_initialized ());
 
 	if (next_child == children -> end ())
@@ -183,24 +145,12 @@ template <class T> Reference <T> Set <T> ::
 	return * (next_child ++);
 }
 
-template <class T> void Set <T> ::
-	seal ()
-{
-	sealed = true;
-}
-
-template <class T> bool Set <T> ::
-	is_sealed () const
-{
-	return sealed;
-}
-
 //	to avert linking errors:
 #include "audio_engine.hpp"
 #include "conversation_message.hpp"
 #include "strategy.hpp"
 #include "gui.hpp"
-#include "item.hpp"
+#include "container_item.hpp"
 #include "npc.hpp"
 #include "model.hpp"
 #include "movable_model.hpp"
@@ -210,11 +160,13 @@ template <class T> bool Set <T> ::
 
 template class Set <GUI>;
 template class Set <Items :: Character>;
+template class Set <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
+template class Set <Items :: Container_Item <Items :: Item> >;
 template class Set <Items :: Item>;
 template class Set <Items :: NPC>;
 template class Set <Messages :: Conversation_Message>;
 template class Set <Model>;
-template class Set <Movable_Model>;
+template class Set <Object>;
 template class Set <Observer <Engines :: Log> >;
 template class Set <Observer <GUI> >;
 template class Set <Observer <Items :: Character> >;
@@ -224,4 +176,3 @@ template class Set <Strategies :: Strategy>;
 template class Set <Tile>;
 template class Set <Thought>;
 
-template class Set <const Object>;

@@ -1,7 +1,7 @@
 #ifndef RADAKAN_CHARACTER_HPP
 #define RADAKAN_CHARACTER_HPP
 
-#include "container.hpp"
+#include "container_item.hpp"
 #include "observable.hpp"
 #include "observer.hpp"
 
@@ -13,14 +13,14 @@ namespace Radakan
 
 	namespace Items
 	{
-		template <class T> class Multislot;
+		template <class T> class Container_Item;
 
 		///	Character is the abstract bace class of all in-game characters.
 		///	All characters observe each other.
 		class Character :
 			public Observable <Character>,
 			public Observer <Character>,
-			public Container
+			public Container_Item <Item>
 		{
 			public :
 				//	The constructor is protected, see below.
@@ -29,7 +29,7 @@ namespace Radakan
 				
 				static string get_class_name ();
 
-				virtual void call (Reference <const Object> message = update) = 0;
+				virtual void call (const Reference <Object> message = update) = 0;
 				
 				virtual bool is_dead () const = 0;
 				virtual void die () = 0;
@@ -43,9 +43,10 @@ namespace Radakan
 				
 				//	Item & head;
 				//	Multislot <Shirt> & body;
-				Reference <Multislot <Container> > back;
+				Reference <Container_Item <Container_Item <Item> > > back;
 				//	Multislot <Bracer> & arms;
-				Reference <Multislot <Item> > hands;
+				Reference <Container_Item <Item> > left_hand;
+				Reference <Container_Item <Item> > right_hand;
 				//	Multislot <Pants> & legs;
 				//	Multislot <Shoe> & feet;
 

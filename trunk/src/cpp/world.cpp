@@ -59,7 +59,7 @@ World ::
 	OgreOde :: CollisionListener (),
 	root_node (scene_manager -> getRootSceneNode ()),
 	ogre_ode_world (new OgreOde :: World (scene_manager . get ())),
-	last_turn_lenght (0),
+	last_turn_length (0),
 	turn_lenght_timer (new Ogre :: Timer ()),
 	step_handler
 	(
@@ -146,14 +146,14 @@ void World ::
 {
 	assert (is_initialized ());
 
-	//	Here, 'last_turn_lenght' contains the lenth of the current turn.
-	last_turn_lenght = float (turn_lenght_timer -> getMilliseconds ()) / 1000;
+	//	Here, 'last_turn_length' contains the lenth of the current turn.
+	last_turn_length = float (turn_lenght_timer -> getMilliseconds ()) / 1000;
 
 	//	Reset the timer, not the reference.
 	turn_lenght_timer -> reset ();
 
 	#ifdef RADAKAN_DEBUG
-		Engines :: Log :: log (me) << "Turn lenght: " << last_turn_lenght << " seconds" << endl;
+		Engines :: Log :: log (me) << "Turn lenght: " << last_turn_length << " seconds" << endl;
 
 		turn ++;
 
@@ -187,12 +187,12 @@ void World ::
 	Items :: Player_Character :: get () -> call_observers (Radakan :: update);
 }
 const float & World ::
-	get_last_turn_lenght ()
+	get_last_turn_length ()
 	const
 {
 	assert (is_initialized ());
 
-	return last_turn_lenght;
+	return last_turn_length;
 }
 
 bool World ::
@@ -221,5 +221,5 @@ string World ::
 {
 	assert (is_initialized ());
 
-	return "FPS: " + to_string (1.0 / World :: get () -> get_last_turn_lenght ());
+	return "FPS: " + to_string (1.0 / World :: get () -> get_last_turn_length ());
 }

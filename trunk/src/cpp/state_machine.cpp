@@ -1,4 +1,5 @@
 #include "log.hpp"
+#include "slot.hpp"
 #include "state_machine.hpp"
 
 using namespace std;
@@ -15,7 +16,8 @@ template <class T> string State_Machine <T> ::
 template <class T> State_Machine <T> ::
 	State_Machine () :
 	Object ("Doesn't matter."),
-	Location <T> (1)
+	Location <T> (1),	//	There can be only one active state.
+	history (new vector <string> ())
 {
 	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name ());
 	
@@ -50,14 +52,15 @@ template <class T> bool State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	drop (Reference <T> dropped)
 {
-	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "drop", dropped -> name);
+	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "drop", dropped . get_name ());
 	assert (Location <T> :: is_initialized ());
+	assert (dropped . points_to_object ());
 	assert (dropped -> is_initialized ());
-	
-	Engines :: Log :: log (me) << dropped -> name << " was dropped as active state." << endl;
 	
 	Location <T> :: drop (dropped);
 	history -> push_back (dropped -> name);
+	
+	Engines :: Log :: log (me) << dropped . get_name () << " was dropped as active state." << endl;
 }
 
 template <class T> bool State_Machine <T> ::

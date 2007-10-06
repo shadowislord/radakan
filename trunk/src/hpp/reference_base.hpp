@@ -10,6 +10,10 @@ using namespace std;
 
 namespace Radakan
 {
+	string bool_to_string (const bool & value);
+	string to_string (const float & value);
+	float to_float (const string & value);
+
 	class Reference_Base :
 		public boost :: noncopyable
 	{

@@ -56,13 +56,13 @@ bool Chat_State ::
 
 //	virtual
 Reference <Strategy> Chat_State ::
-	transit (Reference <const Object> message)
+	transit (const Reference <Object> message)
 {
 	assert (is_initialized ());
 
-	if (message -> is_type <Messages :: Conversation_Message> ())
+	if (message -> is_class <Messages :: Conversation_Message> ())
 	{
-		Reference <const Messages :: Conversation_Message> conversation_message = message -> to_type <Messages :: Conversation_Message> ();
+		const Reference <Messages :: Conversation_Message> conversation_message = message -> to_class_const <Messages :: Conversation_Message> ();
 		
 		if (conversation_message -> to == alive_state -> npc)	//	Is (s)he talking to me?
 		{

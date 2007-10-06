@@ -1,5 +1,8 @@
 #include "location.hpp"
 #include "log.hpp"
+#include "resident.hpp"
+#include "slot.hpp"
+#include "set.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -14,12 +17,21 @@ template <class T> string Location <T> ::
 //  constructor
 template <class T> Location <T> ::
 	Location (int new_maximal_size) :
-	Object ("The name doesn't matter as this class is an abstact class."),
-	Set <T> ("The name doesn't matter as this class is an abstact class.", new_maximal_size)
+	Object ("The name doesn't matter as this class is an abstact class.")
 {
 	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name ());
-	
-	//	Do nothing.
+	assert ((0 < new_maximal_size) || (new_maximal_size == Container <T> :: unlimited));
+
+	string implementation_name = this -> name + "'s implementation";
+
+	if (new_maximal_size == 1)
+	{
+		implementation . reset_pointee (new Slot <T> (implementation_name));
+	}
+	else
+	{
+		implementation . reset_pointee (new Set <T> (implementation_name, new_maximal_size));
+	}
 
 	assert (Location <T> :: is_initialized ());
 }
@@ -40,9 +52,29 @@ template <class T> bool Location <T> ::
 	is_initialized ()
 	const
 {
-	assert (Set <T> :: is_initialized ());
+	assert (Object :: is_initialized ());
+	assert (implementation . points_to_object ());
 
 	return true;
+}
+
+template <class T> bool Location <T> ::
+	is_empty () const
+{
+	assert (Location <T> :: is_initialized ());
+
+	return implementation -> is_empty ();
+}
+
+//	virtual
+template <class T> bool Location <T> ::
+	contains (const Reference <T> contained)
+	const
+{
+//	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "contains", contained . get_name ());
+	assert (Location <T> :: is_initialized ());
+
+	return implementation -> contains (contained);
 }
 
 //	virtual
@@ -51,11 +83,13 @@ template <class T> bool Location <T> ::
 {
 	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "add", additive -> name);
 	assert (Location <T> :: is_initialized ());
+	assert (additive . points_to_object ());
+	assert (additive -> is_initialized ());
 
-	bool result = Set <T> :: add (additive);
+	bool result = implementation -> add (additive);
 	if (result)
 	{
-		additive -> enter (Reference <const Location <T> > (this));
+		additive -> Resident <T> :: enter (Reference <Location <T> > (this));
 	}
 
 	return result;
@@ -67,20 +101,44 @@ template <class T> void Location <T> ::
 {
 	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "drop", dropped -> name);
 	assert (Location <T> :: is_initialized ());
-	
-	dropped -> leave ();
-	Set <T> :: drop (dropped);
+	assert (dropped . points_to_object ());
+	assert (dropped -> is_initialized ());
+
+	dropped -> Resident <T> :: leave ();
+	return implementation -> drop (dropped);
+}
+
+template <class T> Reference <T> Location <T> ::
+	get_child ()
+	const
+{
+//	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), get_child);
+	assert (Location <T> :: is_initialized ());
+
+	return implementation -> get_child ();
+}
+
+template <class T> Reference <T> Location <T> ::
+	get_another_child ()
+	const
+{
+//	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), get_another_child);
+	assert (Location <T> :: is_initialized ());
+
+ return implementation -> get_another_child ();
 }
 
 //	to avert linking errors:
-#include "strategy.hpp"
+#include "container_item.hpp"
 #include "gui.hpp"
-#include "item.hpp"
 #include "model.hpp"
+#include "strategy.hpp"
 #include "tile.hpp"
 
-template class Location <Strategies :: Strategy>;
 template class Location <GUI>;
+template class Location <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
+template class Location <Items :: Container_Item <Items :: Item> >;
 template class Location <Items :: Item>;
 template class Location <Model>;
+template class Location <Strategies :: Strategy>;
 template class Location <Tile>;

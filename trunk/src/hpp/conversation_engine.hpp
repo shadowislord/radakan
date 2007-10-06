@@ -40,8 +40,8 @@ namespace Radakan
 				Reference <Set <Messages :: Conversation_Message> > get_options (Reference <Items :: Character > speaker, Reference <Items :: Character> listener);
 
 			private :
-				bool evaluate_condition (boost :: shared_ptr <const TiXmlElement> element, Reference <Items :: Character> subject);
-				bool evaluate_expression (boost :: shared_ptr <const TiXmlAttribute> attribute, Reference <Items :: Character> subject);
+				bool evaluate_condition (const TiXmlElement * element, Reference <Items :: Character> subject);
+				bool evaluate_expression (const TiXmlAttribute * attribute, Reference <Items :: Character> subject);
 			
 				boost :: scoped_ptr <TiXmlDocument> behavior;
 		};

@@ -20,6 +20,7 @@ namespace Radakan
 			
 			Reference & operator= (const Reference & other);
 			template <class V> Reference & operator= (const Reference <V> & other);
+			bool operator== (const Reference <T> & other) const;
 			template <class V> bool operator== (const Reference <V> & other) const;
 			bool operator!= (const Reference <T> & other) const;
 			bool operator< (const Reference <T> & other) const;

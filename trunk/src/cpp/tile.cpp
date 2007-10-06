@@ -126,7 +126,7 @@ bool Tile ::
 	is_initialized ()
 	const
 {
-	assert (Set <Model> :: is_initialized ());
+	assert (Location <Model> :: is_initialized ());
 
 	return true;
 }
@@ -143,10 +143,10 @@ bool Tile ::
 	bool check = Location <Model> :: add (model);
 	assert (check);
 
-	if (model -> item -> is_type <Items :: NPC> ())
+	if (model -> item -> is_class <Items :: NPC> ())
 	{
 		Engines :: Log :: log (me) << model -> item -> name << " will be added to the list of NPCs..." << endl;
-		bool check = npcs -> add (model -> item -> to_type <Items :: NPC> ());
+		bool check = npcs -> add (model -> item -> to_class <Items :: NPC> ());
 		assert (check);
 		
 		Engines :: Log :: log (me) << model -> item -> name << " was added to the list of NPCs." << endl;
@@ -159,7 +159,7 @@ bool Tile ::
 
 //	virtual
 bool Tile ::
-	move (Reference <Model> model, Reference <Set <Model> > destination)
+	move (Reference <Model> model, Reference <Container <Model> > destination)
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", model -> name, destination -> name);
 	assert (is_initialized ());
@@ -167,12 +167,12 @@ bool Tile ::
 	assert (contains (model));
 	assert (destination -> is_initialized ());
 
-	if (model -> item -> is_type <Items :: NPC> ())
+	if (model -> item -> is_class <Items :: NPC> ())
 	{
-		npcs -> drop (model -> item -> to_type <Items :: NPC> ());
+		npcs -> drop (model -> item -> to_class <Items :: NPC> ());
 	}
 
-	bool check = Set <Model> :: move (model, destination);
+	bool check = Location <Model> :: move (model, destination);
 	assert (check);
 
 	return true;

@@ -15,7 +15,7 @@ namespace Radakan
 		///	For tracking method calls, see Log :: trace.
 		class Tracker :
 			public Singleton <Tracker>,
-			public Set <const Object>
+			public Set <Object>
 		{
 			public :
 				Tracker ();

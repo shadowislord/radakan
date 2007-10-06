@@ -94,7 +94,7 @@ GUI ::
 		//	We don't have to do anything.
 	}
 
-	subscribe (root_window);
+	subscribe (* root_window . get ());
 
 	Engines :: Log :: get () -> register_observer (Reference <Observer <Engines :: Log> > (this));
 
@@ -123,11 +123,11 @@ bool GUI ::
 
 //	virtual
 void GUI ::
-	call (Reference <const Object> message)
+	call (const Reference <Object> message)
 {
 	assert (is_initialized ());
 
-	if (message -> is_type <Set <Messages :: Conversation_Message> > ())
+	if (message -> is_class <Set <Messages :: Conversation_Message> > ())
 	{
 		assert (chat_window);
 
@@ -138,7 +138,7 @@ void GUI ::
 			messages . reset_pointee ();
 		}
 		
-		messages = message -> to_type <Set <Messages :: Conversation_Message> > ();
+		messages = (const_cast <Reference <Object> &> (message)) -> to_class <Set <Messages :: Conversation_Message> > ();
 		
 		for (Reference <Messages :: Conversation_Message> option = messages -> get_child ();
 					! option . points_to_object (); option = messages -> get_another_child ())
@@ -159,13 +159,13 @@ void GUI ::
 }
 
 void GUI ::
-	subscribe (boost :: shared_ptr <CEGUI :: Window> window)
+	subscribe (CEGUI :: Window & window)
 {
 	assert (is_initialized ());
-	boost :: shared_ptr <CEGUI :: Window> temp;
-	for (unsigned int i = 0; i < window -> getChildCount (); i ++)
+	CEGUI :: Window * temp;
+	for (unsigned int i = 0; i < window . getChildCount (); i ++)
 	{
-		temp . reset (window -> getChildAtIdx (i));
+		temp = window . getChildAtIdx (i);
 		if (temp -> getType () . find ("Button") != string :: npos)
 		{
 			temp -> subscribeEvent (CEGUI :: PushButton :: EventClicked, * subscriber);
@@ -176,7 +176,7 @@ void GUI ::
 		}
 		else
 		{
-			subscribe (temp);
+			subscribe (* temp);
 		}
 	}
 }
@@ -235,7 +235,7 @@ bool GUI ::
 		{
 			string caption (window_event_arguments -> window -> getText () . c_str ());
 
-			Reference <const Object> message (new Object (caption));
+			Reference <Object> message (new Object (caption));
 
 			call_observers (message);
 		}

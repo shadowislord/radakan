@@ -19,7 +19,7 @@ string Conversation_Message ::
 Conversation_Message ::
 	Conversation_Message
 	(
-		boost :: shared_ptr <const TiXmlElement> new_option,
+		const TiXmlElement * new_option,
 		Reference <Items :: Character> new_from,
 		Reference <Items :: Character> new_to
 	) :
@@ -57,7 +57,7 @@ Reference <Conversation_Message> Conversation_Message ::
 	get_reaction ()
 	const
 {
-	const TiXmlNode * temp = option . get ();
+	const TiXmlNode * temp = option;
 
 	for (int i = 0; temp -> ValueStr () != "dialog"; i ++)
 	{
@@ -78,7 +78,7 @@ Reference <Conversation_Message> Conversation_Message ::
 		assert (temp != NULL);
 	}
 
-	boost :: shared_ptr <const TiXmlElement> reaction (temp -> ToElement ());
+	const TiXmlElement * reaction = temp -> ToElement ();
 	assert (reaction);
 
 	return Reference <Conversation_Message> (new Conversation_Message (reaction, to, from));
@@ -86,8 +86,10 @@ Reference <Conversation_Message> Conversation_Message ::
 
 //	private & static
 string Conversation_Message ::
-	create_name (boost :: shared_ptr <const TiXmlElement> option)
+	create_name (const TiXmlElement * option)
 {
+	assert (option != NULL);
+	
 	string result;
 	
 	if (option -> Attribute ("shout") != NULL)

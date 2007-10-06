@@ -31,7 +31,7 @@ Tracker ::
 	prepare_for_destruction ();
 
 	#ifdef RADAKAN_DEBUG
-		for (Reference <const Object> i = Tracker :: get () -> get_child (); i . points_to_object ();
+		for (Reference <Object> i = Tracker :: get () -> get_child (); i . points_to_object ();
 			i = Tracker :: get () -> get_another_child ())
 		{
 			Log :: log (me) << "Warning: " << i -> name << " was not destructed." << endl;

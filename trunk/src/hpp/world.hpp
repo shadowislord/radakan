@@ -39,7 +39,7 @@ namespace Radakan
 			void update ();
 
 			///	in seconds
-			const float & get_last_turn_lenght () const;
+			const float & get_last_turn_length () const;
 
 			string get_FPS () const;
 
@@ -50,7 +50,7 @@ namespace Radakan
 		private :
 			static unsigned int turn;
 			
-			float last_turn_lenght;
+			float last_turn_length;
 			boost :: scoped_ptr <Ogre :: Timer> turn_lenght_timer;
 
 			//	The coordinates of a tile are expressed as (x, z).

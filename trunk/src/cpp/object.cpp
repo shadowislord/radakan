@@ -5,42 +5,14 @@ using namespace std;
 using namespace Radakan;
 
 string Radakan ::
-	bool_to_string (const bool & value)
-{
-	if (value)
-	{
-		return "true";
-	}
-	return "false";
-}
-
-string Radakan ::
-	to_string (const float & value)
-{
-	ostringstream oss;
-	oss << value;	//	insert int into stream
-	return oss . str ();
-}
-
-string Radakan ::
 	to_string (const Ogre :: Vector3 & vector)
 {
 	return "(" + to_string (vector . x) + ", " + to_string (vector . y) + ", "
 												+ to_string (vector . z) + ")";
 }
 
-//	static
-float Radakan ::
-	to_float (const string & value)
-{
-	istringstream iss (value);
-	float result;
-	iss >> result;
-	return result;
-}
-
-Reference <const Object> Radakan :: update (new Object ("update (static)"));
-Reference <const Object> Radakan :: terminate (new Object ("terminate (static)"));
+const Reference <Object> Radakan :: update (new Object ("update (static)"));
+const Reference <Object> Radakan :: terminate (new Object ("terminate (static)"));
 
 //	static
 string Object ::
@@ -111,8 +83,11 @@ bool Object ::
 	const
 {
 	//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_initialized");
+	
 	//	checks for empty string
 	assert (! name . empty ());
+
+	//	checks if dependencies contains an object
 	assert (dependencies);
 	
 	return true;
@@ -149,34 +124,34 @@ bool Object ::
 }
 
 template <class T> bool Object ::
-	is_type ()
+	is_class ()
 	const
 {
-//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_type", "<" + T :: get_class_name () + ">");
+//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_class", "<" + T :: get_class_name () + ">");
 	assert (is_initialized ());
 
 	return (dynamic_cast <const T *> (this) != NULL);
 }
 
 template <class T> Reference <T> Object ::
-	to_type ()
+	to_class ()
 {
-//	Engines :: Log :: trace (me, Object :: get_class_name (), "to_type", "<" + T :: get_class_name () + ">");
+//	Engines :: Log :: trace (me, Object :: get_class_name (), "to_class", "<" + T :: get_class_name () + ">");
 	assert (is_initialized ());
-	assert (is_type <T> ());
+	assert (is_class <T> ());
 
 	return Reference <T> (dynamic_cast <T *> (this));
 }
 
-template <class T> Reference <const T> Object ::
-	to_type ()
+template <class T> const Reference <T> Object ::
+	to_class_const ()
 	const
 {
-//	Engines :: Log :: trace (me, Object :: get_class_name (), "to_type", "<" + T :: get_class_name () + ">");
+//	Engines :: Log :: trace (me, Object :: get_class_name (), "to_class", "<" + T :: get_class_name () + ">");
 	assert (is_initialized ());
-	assert (is_type <T> ());
+	assert (is_class <T> ());
 
-	return Reference <const T> (dynamic_cast <const T *> (this));
+	return (const_cast <Object *> (this)) -> to_class <T> ();
 }
 
 void  Object ::
@@ -235,11 +210,13 @@ void  Object ::
 		Engines :: Log :: log (me) << "I will not self-destruct, because I'm a singleton." << endl;
 		return;
 	}
-	else
+
+	if (name . find ("static") != string :: npos)
 	{
-		assert (name != "settings");
+		Engines :: Log :: log (me) << "I will not self-destruct, because I'm a static." << endl;
+		return;
 	}
-	
+
 	unsigned int self_destruct_criterion = 0;
 	self_destruct_criterion ++;	//	'me' should not forbid me to destruct.
 	if (Engines :: Tracker :: is_instantiated ())
@@ -260,220 +237,61 @@ void  Object ::
 
 //	to avert linking errors:
 #include "alive_state.hpp"
-#include "audio_engine.hpp"
 #include "battle_message.hpp"
-#include "character.hpp"
 #include "chat_state.hpp"
 #include "conversation_message.hpp"
-#include "container.hpp"
+#include "container_item.hpp"
 #include "fight_state.hpp"
-#include "game.hpp"
-#include "gui.hpp"
-#include "gui_engine.hpp"
-#include "input_engine.hpp"
 #include "menu_state.hpp"
-#include "model.hpp"
 #include "movable_model.hpp"
 #include "npc.hpp"
 #include "play_state.hpp"
-#include "tile.hpp"
-#include "thought.hpp"
-#include "world.hpp"
-#include "weapon.hpp"
 
-//	template bool Object ::
-//		is_type <Strategies :: Strategy> () const;
 template bool Object ::
-	is_type <Strategies :: Alive_State> () const;
+	is_class <Items :: Container_Item <Items :: Item> > () const;
 template bool Object ::
-	is_type <Strategies :: Chat_State> () const;
+	is_class <Items :: Item> () const;
 template bool Object ::
-	is_type <Strategies :: Fight_State> () const;
+	is_class <Items :: NPC> () const;
 template bool Object ::
-	is_type <Strategies :: Play_State> () const;
+	is_class <Messages :: Battle_Message> () const;
 template bool Object ::
-	is_type <Strategies :: Strategy_State_Machine> () const;
-//	template bool Object ::
-//		is_type <Engines :: Game> () const;
-//	template bool Object ::
-//		is_type <Engines :: Log> () const;
+	is_class <Messages :: Conversation_Message> () const;
 template bool Object ::
-	is_type <Items :: Container> () const;
+	is_class <Set <Messages :: Conversation_Message> > () const;
 template bool Object ::
-	is_type <Items :: Item> () const;
+	is_class <Strategies :: Alive_State> () const;
 template bool Object ::
-	is_type <Items :: NPC> () const;
-//	template bool Object ::
-//		is_type <Items :: Weapon> () const;
+	is_class <Strategies :: Chat_State> () const;
 template bool Object ::
-	is_type <Messages :: Battle_Message> () const;
+	is_class <Strategies :: Fight_State> () const;
 template bool Object ::
-	is_type <const Messages :: Conversation_Message> () const;
+	is_class <Strategies :: Play_State> () const;
 template bool Object ::
-	is_type <Messages :: Conversation_Message> () const;
-//	template bool Object ::
-//		is_type <Model> () const;
-//	template bool Object ::
-//	is_type <Observer <Strategies :: Play_State> > () const;
-//	template bool Object ::
-//		is_type <Observer <Engines :: Log> > () const;
-//	template bool Object ::
-//		is_type <Observer <GUI> > () const;
-//	template bool Object ::
-//		is_type <Observer <Items :: Character> > () const;
-template bool Object ::
-	is_type <Set <Messages :: Conversation_Message> > () const;
-//	template bool Object ::
-//		is_type <Set <Items :: Item> > () const;
-//	template bool Object ::
-//		is_type <Set <Tile> > () const;
-//	template bool Object ::
-//		is_type <Set <Sound_Sample> > () const;
-//	template bool Object ::
-//		is_type <Movable_Model> () const;
-//	template bool Object ::
-//		is_type <Sound_Sample> () const;
-//	template bool Object ::
-//		is_type <State_Machine <Tile> > () const;
-//	template bool Object ::
-//		is_type <Tile> () const;
-//	template bool Object ::
-//		is_type <Thought> () const;
+	is_class <Strategies :: Strategy_State_Machine> () const;
 
-template Reference <Strategies :: Strategy> Object ::
-	to_type <Strategies :: Strategy> ();
-template Reference <Strategies :: Alive_State> Object ::
-	to_type <Strategies :: Alive_State> ();
-template Reference <Strategies :: Fight_State> Object ::
-	to_type <Strategies :: Fight_State> ();
-template Reference <Strategies :: Menu_State> Object ::
-	to_type <Strategies :: Menu_State> ();
-template Reference <Strategies :: Play_State> Object ::
-	to_type <Strategies :: Play_State> ();
-template Reference <Strategies :: Strategy_State_Machine> Object ::
-	to_type <Strategies :: Strategy_State_Machine> ();
-//	template Reference <Engines :: Game> Object ::
-//		to_type <Engines :: Game> ();
-//	template Reference <Engines :: GUI_Engine> Object ::
-//		to_type <Engines :: GUI_Engine> ();
-//	template Reference <Engines :: Log> Object ::
-//		to_type <Engines :: Log> ();
-//	template Reference <GUI> Object ::
-//		to_type <GUI> ();
-//	template Reference <Items :: Character> Object ::
-//		to_type <Items :: Character> ();
-template Reference <Items :: Container> Object ::
-	to_type <Items :: Container> ();
-//	template Reference <Items :: Item> Object ::
-//		to_type <Items :: Item> ();
+template Reference <Items :: Container_Item <Items :: Item> > Object ::
+	to_class <Items :: Container_Item <Items :: Item> > ();
 template Reference <Items :: NPC> Object ::
-	to_type <Items :: NPC> ();
-//	template Reference <Items :: Weapon> Object ::
-//		to_type <Items :: Weapon> ();
-template Reference <Messages :: Battle_Message> Object ::
-	to_type <Messages :: Battle_Message> ();
-template Reference <Messages :: Conversation_Message> Object ::
-	to_type <Messages :: Conversation_Message> ();
-//	template Reference <Model> Object ::
-//		to_type <Model> ();
-//	template Reference <Observer <Strategies :: Play_State> > Object ::
-//		to_type <Observer <Strategies :: Play_State> > ();
-//	template Reference <Observer <Engines :: Log> > Object ::
-//		to_type <Observer <Engines :: Log> > ();
-//	template Reference <Observer <GUI> > Object ::
-//		to_type <Observer <GUI> > ();
-//	template Reference <Observer <Items :: Character> > Object ::
-//		to_type <Observer <Items :: Character> > ();
-//	template Reference <Set <Messages :: Conversation_Message> > Object ::
-//		to_type <Set <Messages :: Conversation_Message> > ();
-//	template Reference <Set <GUI> > Object ::
-//		to_type <Set <GUI> > ();
-//	template Reference <Set <Items :: Item> > Object ::
-//		to_type <Set <Items :: Item> > ();
-//	template Reference <Set <Tile> > Object ::
-//		to_type <Set <Tile> > ();
-//	template Reference <Set <Sound_Sample> > Object ::
-//		to_type <Set <Sound_Sample> > ();
+	to_class <Items :: NPC> ();
 template Reference <Movable_Model> Object ::
-	to_type <Movable_Model> ();
-//	template Reference <Object> Object ::
-//		to_type <Object> ();
-//	template Reference <Sound_Sample> Object ::
-//		to_type <Sound_Sample> ();
-//	template Reference <State_Machine <Tile> > Object ::
-//		to_type <State_Machine <Tile> > ();
-//	template Reference <Tile> Object ::
-//		to_type <Tile> ();
-//	template Reference <Thought> Object ::
-//		to_type <Thought> ();
+	to_class <Movable_Model> ();
+template Reference <Set <Messages :: Conversation_Message> > Object ::
+	to_class <Set <Messages :: Conversation_Message> > ();
+template Reference <Strategies :: Strategy> Object ::
+	to_class <Strategies :: Strategy> ();
+template Reference <Strategies :: Alive_State> Object ::
+	to_class <Strategies :: Alive_State> ();
+template Reference <Strategies :: Fight_State> Object ::
+	to_class <Strategies :: Fight_State> ();
+template Reference <Strategies :: Menu_State> Object ::
+	to_class <Strategies :: Menu_State> ();
+template Reference <Strategies :: Play_State> Object ::
+	to_class <Strategies :: Play_State> ();
+template Reference <Strategies :: Strategy_State_Machine> Object ::
+	to_class <Strategies :: Strategy_State_Machine> ();
 
-//	template Reference <const Engines :: Game> Object ::
-//		to_type <Engines :: Game> () const;
-//	template Reference <const Engines :: GUI_Engine> Object ::
-//		to_type <Engines :: GUI_Engine> () const;
-//	template Reference <const Engines :: Log> Object ::
-//		to_type <Engines :: Log> () const;
-//	template Reference <const GUI> Object ::
-//		to_type <GUI> () const;
-//	template Reference <const Items :: Character> Object ::
-//		to_type <Items :: Character> () const;
-//	template Reference <const Items :: Container> Object ::
-//		to_type <Items :: Container> () const;
-//	template Reference <const Items :: Item> Object ::
-//		to_type <Items :: Item> () const;
-//	template Reference <const Items :: NPC> Object ::
-//		to_type <Items :: NPC> () const;
-//	template Reference <const Items :: Weapon> Object ::
-//		to_type <Items :: Weapon> () const;
-template Reference <const Messages :: Battle_Message> Object ::
-	to_type <const Messages :: Battle_Message> () const;
-template Reference <const Messages :: Battle_Message> Object ::
-	to_type <Messages :: Battle_Message> () const;
-template Reference <const Messages :: Conversation_Message> Object ::
-	to_type <const Messages :: Conversation_Message> () const;
-template Reference <const Messages :: Conversation_Message> Object ::
-	to_type <Messages :: Conversation_Message> () const;
-//	template Reference <const Model> Object ::
-//		to_type <Model> () const;
-//	template Reference <const Movable_Model> Object ::
-//		to_type <Movable_Model> () const;
-//	template Reference <const Object> Object ::
-//		to_type <Object> () const;
-//	template Reference <const Observer <Strategies :: Play_State> > Object ::
-//		to_type <Observer <Strategies :: Play_State> > () const;
-//	template Reference <const Observer <Engines :: Log> > Object ::
-//		to_type <Observer <Engines :: Log> > () const;
-//	template Reference <const Observer <GUI> > Object ::
-//		to_type <Observer <GUI> > () const;
-//	template Reference <const Observer <Items :: Character> > Object ::
-//		to_type <Observer <Items :: Character> > () const;
-template Reference <const Set <Messages :: Conversation_Message> > Object ::
-	to_type <Set <Messages :: Conversation_Message> > () const;
-//	template Reference <const Set <GUI> > Object ::
-//		to_type <Set <GUI> > () const;
-//	template Reference <const Set <Items :: Item> > Object ::
-//		to_type <Set <Items :: Item> > () const;
-//	template Reference <const Set <Tile> > Object ::
-//		to_type <Set <Tile> > () const;
-//	template Reference <const Set <Sound_Sample> > Object ::
-//		to_type <Set <Sound_Sample> > () const;
-//	template Reference <const Strategies :: Strategy> Object ::
-//		to_type <Strategies :: Strategy> () const;
-//	template Reference <const Strategies :: Alive_State> Object ::
-//		to_type <Strategies :: Alive_State> () const;
-//	template Reference <const Strategies :: Fight_State> Object ::
-//		to_type <Strategies :: Fight_State> () const;
-//	template Reference <const Strategies :: Menu_State> Object ::
-//		to_type <Strategies :: Menu_State> () const;
-//	template Reference <const Strategies :: Play_State> Object ::
-//		to_type <Strategies :: Play_State> () const;
-//	template Reference <const Strategies :: Strategy_State_Machine> Object ::
-//		to_type <Strategies :: Strategy_State_Machine> () const;
-//	template Reference <const Sound_Sample> Object ::
-//		to_type <Sound_Sample> () const;
-//	template Reference <const State_Machine <Tile> > Object ::
-//		to_type <State_Machine <Tile> > () const;
-//	template Reference <const Tile> Object ::
-//		to_type <Tile> () const;
-//	template Reference <const Thought> Object ::
-//		to_type <Thought> () const;
+template const Reference <Messages :: Battle_Message> Object ::
+	to_class_const <Messages :: Battle_Message> () const;
+template const Reference <Messages :: Conversation_Message> Object ::
+	to_class_const <Messages :: Conversation_Message> () const;

@@ -64,13 +64,13 @@ bool NPC ::
 
 //	virtual
 void NPC ::
-	call (Reference <const Object> message)
+	call (const Reference <Object> message)
 {
 	assert (is_initialized ());
 
 	if (! is_dead ())
 	{
-		Reference <Set <const Object> > sensory_buffer (get_active_state () -> to_type <Strategies :: Alive_State> () -> sensory_buffer);
+		Reference <Set <Object> > sensory_buffer (get_active_state () -> to_class <Strategies :: Alive_State> () -> sensory_buffer);
 	
 		if (message == update)
 		{
@@ -80,23 +80,25 @@ void NPC ::
 			}
 			else
 			{
-				Reference <const Object> buffered_message (sensory_buffer -> get_child ());
+				Reference <Object> buffered_message (sensory_buffer -> get_child ());
 
 				Strategies :: Strategy_State_Machine :: run (buffered_message);
+
+				sensory_buffer -> drop (buffered_message);
 			}
 		}
-		else if (message -> is_type <Messages :: Battle_Message> ())
+		else if (message -> is_class <Messages :: Battle_Message> ())
 		{
-			Reference <const Messages :: Battle_Message> battle_message (message -> to_type <const Messages :: Battle_Message> ());
+			const Reference <Messages :: Battle_Message> battle_message (message -> to_class_const <Messages :: Battle_Message> ());
 			
 			Reference <Messages :: Battle_Message> message_copy (new Messages :: Battle_Message (battle_message -> name, battle_message -> from, battle_message -> to));
 		
 			//	Remember the message until next time.
 			sensory_buffer -> add (message_copy);
 		}
-		else if (message -> is_type <Messages :: Conversation_Message> ())
+		else if (message -> is_class <Messages :: Conversation_Message> ())
 		{
-			Reference <const Messages :: Conversation_Message> conversation_message (message -> to_type <const Messages :: Conversation_Message> ());
+			const Reference <Messages :: Conversation_Message> conversation_message (message -> to_class_const <Messages :: Conversation_Message> ());
 			
 			Reference <Messages :: Conversation_Message> message_copy (new Messages :: Conversation_Message (conversation_message -> option, conversation_message -> from, conversation_message -> to));
 		
@@ -122,6 +124,7 @@ bool NPC ::
 void NPC ::
 	die ()
 {
+	Engines :: Log :: trace (this -> me, NPC :: get_class_name (), "die");
 	assert (NPC :: is_initialized ());
 	assert (has_model ());
 
@@ -130,7 +133,7 @@ void NPC ::
 	assert (is_dead ());
 }
 
-//	virtual
+/*//	virtual
 void NPC ::
 	drop (Reference <Strategies :: Strategy> dropped)
 {
@@ -148,7 +151,7 @@ void NPC ::
 	assert (NPC :: is_initialized ());
 
 	Container :: drop (dropped);
-}
+}*/
 
 void NPC ::
 	think (string thought)

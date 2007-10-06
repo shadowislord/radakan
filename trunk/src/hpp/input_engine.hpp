@@ -49,7 +49,7 @@ namespace Radakan
 
 				void capture ();
 				bool get_gui_button (string button);
-				Reference <const Messages :: Conversation_Message> get_conversation_option ();
+				const Reference <Messages :: Conversation_Message> get_conversation_option ();
 				bool get_key (string key, bool reset);
 				bool get_mouse_button (string button, bool reset);
 				const Ogre :: Vector3 & get_mouse_position (bool relative = absolute) const;
@@ -61,7 +61,7 @@ namespace Radakan
 				static const string middle_mouse_button;
 				static const string right_mouse_button;
 
-				virtual void call (Reference <const Object> message = update);
+				virtual void call (const Reference <Object> message = update);
 				
 			private :
 				virtual bool keyPressed (const OIS :: KeyEvent & key_event);
@@ -83,7 +83,7 @@ namespace Radakan
 				string gui_button;
 				
 				///	Only one conversation option can be clicked at once.
-				Reference <const Messages :: Conversation_Message> conversation_option;
+				Reference <Messages :: Conversation_Message> conversation_option;
 				
 				Ogre :: Vector3 relative_mouse_position;
 				Ogre :: Vector3 absolute_mouse_position;

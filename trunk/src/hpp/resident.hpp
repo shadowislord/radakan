@@ -20,14 +20,14 @@ namespace Radakan
 			
 			static string get_class_name ();
 
-			void enter (Reference <const Location <T> > new_location);
+			void enter (Reference <Location <T> > new_location);
 			void leave ();
 
 		protected :
 			Resident ();
 
 		private :
-			Reference <const Location <T> > location;
+			Reference <Location <T> > location;
 	};
 }
 

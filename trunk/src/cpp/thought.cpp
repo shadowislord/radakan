@@ -15,7 +15,7 @@ string Thought ::
 
 //  constructor
 Thought ::
-	Thought (Reference <const Items :: Character> other) :
+	Thought (const Reference <Items :: Character> other) :
 	Object ("thought about " + other -> name),
 	about (other -> name),
 	fear (0),

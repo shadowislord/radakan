@@ -110,7 +110,7 @@ Game ::
 
 		new Input_Engine (window);
 
-		boost :: shared_ptr <Ogre :: SceneManager> scene_manager (root -> createSceneManager (Ogre :: ST_GENERIC));
+		scene_manager . reset (root -> createSceneManager (Ogre :: ST_GENERIC));
 		assert (scene_manager);
 
 		new GUI_Engine (window, scene_manager);
@@ -121,9 +121,9 @@ Game ::
 		new Strategies :: Play_State (scene_manager);
 		set_active_state (Strategies :: Play_State :: get ());
 
-		boost :: shared_ptr <Ogre :: Camera> camera (scene_manager -> getCameraIterator () . getNext ());
+		Ogre :: Camera * camera = scene_manager -> getCameraIterator () . getNext ();
 
-		root -> getRenderSystem () -> _setViewport (window -> addViewport (camera . get ()));
+		root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
 		root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
 
 	}	// try
@@ -166,21 +166,22 @@ bool Game ::
 void Game ::
 	run ()
 {
-	Reference <const Object> message = update;
 	while (has_active_state ())
 	{
 		if (window -> isClosed ())
 		{
-			message = terminate;
+			Strategies :: Strategy_State_Machine :: run (terminate);
 		}
+		else
+		{
+			Input_Engine :: get () -> capture ();
+			Ogre :: WindowEventUtilities :: messagePump ();
 
-		Input_Engine :: get () -> capture ();
-		Ogre :: WindowEventUtilities :: messagePump ();
+			Strategies :: Strategy_State_Machine :: run (update);
 
-		Strategies :: Strategy_State_Machine :: run (message);
-
-		bool check = root -> renderOneFrame ();
-		assert (check);
-		GUI_Engine :: get () -> render ();
+			bool check = root -> renderOneFrame ();
+			assert (check);
+			GUI_Engine :: get () -> render ();
+		}
 	}
 }

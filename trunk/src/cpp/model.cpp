@@ -6,6 +6,7 @@
 #include "item.hpp"
 #include "log.hpp"
 #include "model.hpp"
+#include "slot.hpp"
 #include "world.hpp"
 
 using namespace std;
@@ -22,7 +23,7 @@ string Model ::
 Model ::
 	Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale) :
 	Object (new_item -> name + "'s model"),
-	Location <Items :: Item> (1),
+	Location <Items :: Item> (1),	//	A Model corresponds to a single Item.
 	item (new_item),
 	node (World :: get () -> root_node -> createChildSceneNode (name)),
 	geometry (create_geometry (item)),
@@ -92,14 +93,13 @@ bool Model ::
 	is_initialized ()
 	const
 {
-	assert (Set <Items :: Item> :: is_initialized ());
+	assert (this -> Location <Items :: Item> :: is_initialized ());
 	//	TODO re-enable:
 	//	assert (is_sealed ());
 	assert (node -> getParent () != NULL);
 	assert (World :: get () -> root_node . get () != NULL);
 	
-	//	TODO re-enable:
-	//	assert (node -> getParent () == World :: get () -> root_node . get ());
+	assert (node -> getParent () == World :: get () -> root_node . get ());
 	assert (node -> numAttachedObjects () <= 2);
 
 	//	TODO re-enable:

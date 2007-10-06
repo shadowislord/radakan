@@ -22,7 +22,7 @@ namespace Radakan
 				virtual ~Chat_State ();
 				virtual bool is_initialized () const;
 				
-				virtual Reference <Strategy> transit (Reference <const Object> message);
+				virtual Reference <Strategy> transit (const Reference <Object> message);
 
 				Reference <Alive_State> alive_state;
 

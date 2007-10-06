@@ -24,7 +24,7 @@ Alive_State ::
 	Object ("alive state"),
 	npc (new_npc),
 	calm (1),
-	sensory_buffer (new Set <const Object> (new_npc -> name + "'s sensory buffer"))
+	sensory_buffer (new Set <Object> (new_npc -> name + "'s sensory buffer"))
 {
 	//	Do nothing.
 
@@ -62,7 +62,7 @@ bool Alive_State ::
 
 //	virtual
 Reference <Strategy> Alive_State ::
-	transit (Reference <const Object> message)
+	transit (const Reference <Object> message)
 {
 	assert (is_initialized ());
 	
@@ -74,11 +74,11 @@ Reference <Strategy> Alive_State ::
 	npc -> get_movable_model () -> move (0);
 	npc -> get_movable_model () -> turn (0);
 
-	if (message -> is_type <Messages :: Battle_Message> ())
+	if (message -> is_class <Messages :: Battle_Message> ())
 	{
-		if (message -> to_type <Messages :: Battle_Message> () -> to == npc)
+		if (message -> to_class_const <Messages :: Battle_Message> () -> to == npc)
 		{
-			if (! (has_active_state () && get_active_state () -> is_type <Fight_State> ()))
+			if (! (has_active_state () && get_active_state () -> is_class <Fight_State> ()))
 			{
 				set_active_state (Reference <Strategy> (new Fight_State (Reference <Alive_State> (this))));
 			}
@@ -88,9 +88,9 @@ Reference <Strategy> Alive_State ::
 			//	Ignore the message.
 		}
 	}
-	else if (message -> is_type <Messages :: Conversation_Message> ())
+	else if (message -> is_class <Messages :: Conversation_Message> ())
 	{
-		if (message -> to_type <Messages :: Conversation_Message> () -> to == npc)
+		if (message -> to_class_const <Messages :: Conversation_Message> () -> to == npc)
 		{
 			if (0.5 < calm)	//	'listening' state:
 			{

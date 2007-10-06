@@ -68,11 +68,11 @@ Reference <Set <Messages :: Conversation_Message> > Conversation_Engine ::
 
 	TiXmlElement * root = behavior -> RootElement ();
 	assert (root != NULL);
-	boost :: shared_ptr <TiXmlElement> state (root -> FirstChildElement ("if"));
-	assert (state);
+	TiXmlElement * state = root -> FirstChildElement ("if");
+	assert (state != NULL);
 	while (! evaluate_condition (state, listener))
 	{
-		state . reset (state -> NextSiblingElement ());
+		state = state -> NextSiblingElement ();
 	}
 	
 	Reference <Set <Messages :: Conversation_Message> > result (new Set <Messages :: Conversation_Message> ("conversation options"));
@@ -82,10 +82,10 @@ Reference <Set <Messages :: Conversation_Message> > Conversation_Engine ::
 		TiXmlElement * options = dialog -> FirstChildElement ();
 		assert (options != NULL);
 
-		for (boost :: shared_ptr <TiXmlElement> option (options -> FirstChildElement ());
-					option; option . reset (option -> NextSiblingElement ()))
+		for (TiXmlElement * option = options -> FirstChildElement ();
+					option != NULL; option = option -> NextSiblingElement ())
 		{
-			boost :: shared_ptr <TiXmlElement> temp = option;
+			TiXmlElement * temp = option;
 		
 			if (temp -> ValueStr () == "if")
 			{
@@ -94,7 +94,7 @@ Reference <Set <Messages :: Conversation_Message> > Conversation_Engine ::
 					break;
 				}
 
-				temp . reset (temp -> FirstChildElement ());
+				temp = temp -> FirstChildElement ();
 			}
 
 			assert (temp -> ValueStr () == "option");
@@ -111,14 +111,14 @@ Reference <Set <Messages :: Conversation_Message> > Conversation_Engine ::
 }
 
 bool Conversation_Engine ::
-	evaluate_condition (boost :: shared_ptr <const TiXmlElement> element, Reference <Items :: Character> subject)
+	evaluate_condition (const TiXmlElement * element, Reference <Items :: Character> subject)
 {
 	assert (is_initialized ());
 	assert (element != NULL);
 	
 	bool result = true;
 
-	for (boost :: shared_ptr <const TiXmlAttribute> attribute (element -> FirstAttribute ()); attribute; attribute . reset (attribute -> Next ()))
+	for (const TiXmlAttribute * attribute = element -> FirstAttribute (); attribute != NULL; attribute = attribute -> Next ())
 	{
 		bool temp = evaluate_expression (attribute, subject);
 		if (temp)
@@ -136,7 +136,7 @@ bool Conversation_Engine ::
 }
 
 bool Conversation_Engine ::
-	evaluate_expression (boost :: shared_ptr <const TiXmlAttribute> attribute, Reference <Items :: Character> subject)
+	evaluate_expression (const TiXmlAttribute * attribute, Reference <Items :: Character> subject)
 {
 	assert (is_initialized ());
 	assert (attribute != NULL);
@@ -146,16 +146,16 @@ bool Conversation_Engine ::
 
 	if (name == "active_state")
 	{
-		if (subject -> is_type <Items :: NPC> ())
+		if (subject -> is_class <Items :: NPC> ())
 		{
-			Reference <Strategies :: Strategy_State_Machine> npc = subject -> to_type <Strategies :: Strategy_State_Machine> ();
+			Reference <Strategies :: Strategy_State_Machine> npc = subject -> to_class <Strategies :: Strategy_State_Machine> ();
 			
 			if (! npc -> has_active_state ())
 			{
 				Log :: log (me) << name << " ?= \"" << value << "\" ~ A" << endl;
 				return "none" == value;
 			}
-			else if (npc -> get_active_state () -> is_type <Strategies :: Alive_State> ())
+			else if (npc -> get_active_state () -> is_class <Strategies :: Alive_State> ())
 			{
 				Log :: log (me) << name << " ?= \"" << value << "\" ~ B" << endl;
 				return Strategies :: Alive_State :: get_class_name () == value;
@@ -168,30 +168,30 @@ bool Conversation_Engine ::
 
 	if (name == "active_alive_state")
 	{
-		if (subject -> is_type <Items :: NPC> ())
+		if (subject -> is_class <Items :: NPC> ())
 		{
-			Reference <Strategies :: Strategy_State_Machine> npc = subject -> to_type <Strategies :: Strategy_State_Machine> ();
+			Reference <Strategies :: Strategy_State_Machine> npc = subject -> to_class <Strategies :: Strategy_State_Machine> ();
 			
 			if (! npc -> has_active_state ())
 			{
 				Log :: log (me) << name << " != \"" << value << "\" ~ D" << endl;
 				return false;
 			}
-			else if (npc -> get_active_state () -> is_type <Strategies :: Alive_State> ())
+			else if (npc -> get_active_state () -> is_class <Strategies :: Alive_State> ())
 			{
-				Reference <Strategies :: Strategy_State_Machine> alive_state = npc -> get_active_state () -> to_type <Strategies :: Strategy_State_Machine> ();
+				Reference <Strategies :: Strategy_State_Machine> alive_state = npc -> get_active_state () -> to_class <Strategies :: Strategy_State_Machine> ();
 			
 				if (! alive_state -> has_active_state ())
 				{
 					Log :: log (me) << name << " ?= \"" << value << "\" ~ E" << endl;
 					return "none" == value;
 				}
-				else if (alive_state -> get_active_state () -> is_type <Strategies :: Chat_State> ())
+				else if (alive_state -> get_active_state () -> is_class <Strategies :: Chat_State> ())
 				{
 					Log :: log (me) << name << " ?= \"" << value << "\" ~ F" << endl;
 					return Strategies :: Chat_State :: get_class_name () == value;
 				}
-				else if (alive_state -> get_active_state () -> is_type <Strategies :: Fight_State> ())
+				else if (alive_state -> get_active_state () -> is_class <Strategies :: Fight_State> ())
 				{
 					Log :: log (me) << name << " ?= \"" << value << "\" ~ G" << endl;
 					return Strategies :: Fight_State :: get_class_name () == value;

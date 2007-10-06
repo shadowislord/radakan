@@ -31,10 +31,10 @@ namespace Radakan
 				virtual ~NPC ();
 				virtual bool is_initialized () const;
 				
-				virtual void drop (Reference <Item> dropped);
-				virtual void drop (Reference <Strategies :: Strategy> dropped);
+				/*virtual void drop (Reference <Item> dropped);
+				virtual void drop (Reference <Strategies :: Strategy> dropped);*/
 
-				virtual void call (Reference <const Object> message);
+				virtual void call (const Reference <Object> message);
 				
 				virtual bool is_dead () const;
 				virtual void die ();

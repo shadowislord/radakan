@@ -152,14 +152,14 @@ bool Input_Engine ::
 
 //	virtual
 void Input_Engine ::
-	call (Reference <const Object> message)
+	call (const Reference <Object> message)
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message -> name);
 	assert (is_initialized ());
 
-	if (message -> is_type <Messages :: Conversation_Message> ())
+	if (message -> is_class <Messages :: Conversation_Message> ())
 	{
-		conversation_option = message -> to_type <Messages :: Conversation_Message> ();
+		conversation_option = message -> to_class_const <Messages :: Conversation_Message> ();
 	}
 	else
 	{
@@ -187,12 +187,12 @@ void Input_Engine ::
 	}
 }
 
-Reference <const Messages :: Conversation_Message> Input_Engine ::
+const Reference <Messages :: Conversation_Message> Input_Engine ::
 	get_conversation_option ()
 {
 	assert (is_initialized ());
 
-	Reference <const Messages :: Conversation_Message> result = conversation_option;
+	const Reference <Messages :: Conversation_Message> result = conversation_option;
 
 	if (result . points_to_object ())
 	{

@@ -1,5 +1,5 @@
-#ifndef RADAKAN_SET_HPP
-#define RADAKAN_SET_HPP
+#ifndef RADAKAN_SLOT_HPP
+#define RADAKAN_SLOT_HPP
 
 #include "container.hpp"
 
@@ -7,17 +7,15 @@ using namespace std;
 
 namespace Radakan
 {
-
-	///	Set can contain instances of a specific Object subclass, but not more then once.
-	template <class T> class Set :
+	template <class T> class Slot :
 		public Container <T>
 	{
 		public :
-			Set (string name = "", int new_maximal_size = Container <T> :: unlimited);
-			virtual ~Set ();
-			virtual bool is_initialized () const;
-			
 			static string get_class_name ();
+
+			Slot (string new_name);
+			virtual ~Slot ();
+			virtual bool is_initialized () const;
 
 			virtual bool is_empty () const;
 
@@ -36,15 +34,8 @@ namespace Radakan
 			virtual Reference <T> get_another_child () const;
 
 		private :
-			boost :: scoped_ptr <set <Reference <T> > > children;
-
-			//	'typename' added to assure that const_iterator is a type.
-			//	'class' would give MSV problems.
-			typedef typename set <Reference <T> > :: const_iterator T_Iterator;
-		
-			//	'mutable' added to allow change even if in a const Set.
-			mutable T_Iterator next_child;
-		};
+			Reference <T> child;
+	};
 }
 
-#endif	//	RADAKAN_SET_HPP
+#endif	//	RADAKAN_SLOT_HPP

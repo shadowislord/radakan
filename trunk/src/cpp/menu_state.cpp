@@ -54,7 +54,7 @@ bool Menu_State ::
 
 //	virtual
 Reference <Strategy> Menu_State ::
-	transit (Reference <const Object> message)
+	transit (const Reference <Object> message)
 {
 	assert (is_initialized ());
 

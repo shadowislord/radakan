@@ -40,7 +40,7 @@ namespace Radakan
 			virtual bool is_initialized () const;
 			
 			virtual bool add (Reference <Model> model);
-			virtual bool move (Reference <Model> model, Reference <Set <Model> > destination);
+			virtual bool move (Reference <Model> model, Reference <Container <Model> > destination);
 
 			const pair <int, int> coordinates;
 			const Ogre :: Vector3 position;

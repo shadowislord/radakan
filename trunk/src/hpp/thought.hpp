@@ -16,7 +16,7 @@ namespace Radakan
 		public Object
 	{
 		public :
-			Thought (Reference <const Items :: Character> other);
+			Thought (const Reference <Items :: Character> other);
 			virtual ~Thought ();
 			virtual bool is_initialized () const;
 

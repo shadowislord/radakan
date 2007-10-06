@@ -23,7 +23,7 @@ namespace Radakan
 				virtual ~Strategy_State_Machine ();
 				virtual bool is_initialized () const;
 				
-				void run (Reference <const Object> message);
+				void run (const Reference <Object> message);
 		};
 	}
 }
