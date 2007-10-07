@@ -34,10 +34,10 @@ template <class T> Set <T> ::
 
 	Object :: prepare_for_destruction ();
 
-	for (Reference <T> child = get_child (); child . points_to_object (); child = get_child ())
+	for (T_Iterator child = children -> begin (); child != children -> end (); child = children -> begin ())
 	{
-		Engines :: Log :: log (this -> me) << "Dropping child '" << child -> name << "'..." << endl;
-		drop (child);
+		Engines :: Log :: log (this -> me) << "Dropping child '" << child -> get_name () << "'..." << endl;
+		child -> destruct_from_parent ();
 	}
 	Engines :: Log :: log (this -> me) << "All children were dropped." << endl;
 
@@ -113,7 +113,8 @@ template <class T> void Set <T> ::
 	assert (dropped -> is_initialized ());
 	assert (contains (dropped));
 
-	children -> erase (dropped);
+	unsigned int check = children -> erase (dropped);
+	assert (check == 1);
 }
 
 template <class T> Reference <T> Set <T> ::

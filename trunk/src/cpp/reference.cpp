@@ -1,4 +1,4 @@
-#include "log.hpp"
+//	#include "log.hpp"
 #include "reference.hpp"
 
 using namespace std;
@@ -76,7 +76,7 @@ template <class T> Reference <T> ::
 	pointee (new_pointee),
 	parent (NULL)
 {
-	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A");
+	//	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A");
 	
 	if (pointee != NULL)
 	{
@@ -84,7 +84,7 @@ template <class T> Reference <T> ::
 	}
 	
 	assert (is_initialized ());
-	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A", "(end)");
+	//	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A", "(end)");
 }
 
 template <class T> Reference <T> ::
@@ -92,7 +92,7 @@ template <class T> Reference <T> ::
 	pointee (other . pointee),
 	parent (NULL)
 {
-	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B");
+	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B");
 	assert (other . is_initialized ());
 
 	if (pointee != NULL)
@@ -101,7 +101,7 @@ template <class T> Reference <T> ::
 	}
 	
 	assert (is_initialized ());
-	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B", "(end)");
+	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B", "(end)");
 }
 
 template <class T> template <class V> Reference <T> ::
@@ -109,7 +109,7 @@ template <class T> template <class V> Reference <T> ::
 	pointee (other . pointee),
 	parent (NULL)
 {
-	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C");
+	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C");
 	assert (other . is_initialized ());
 
 	if (pointee != NULL)
@@ -118,24 +118,36 @@ template <class T> template <class V> Reference <T> ::
 	}
 	
 	assert (is_initialized ());
-	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C", "(end)");
+	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C", "(end)");
 }
 
+//	virtual
 template <class T> Reference <T> ::
 	~Reference ()
 {
-	Engines :: Log :: trace (* this, get_class_name (), "~");
+	//	Engines :: Log :: trace (* this, get_class_name (), "~");
 	assert (is_initialized ());
+	assert (parent == NULL);
 	
 	if (pointee != NULL)
 	{
 		pointee -> unregister_reference (* this);
 	}
+}
 
-	if (parent != NULL)
-	{
-		parent -> drop (* this);
-	}
+//	virtual
+template <class T> void Reference <T> ::
+	destruct_from_parent () const
+{
+	//	Engines :: Log :: trace (* this, get_class_name (), "destruct_from_parent");
+	assert (is_initialized ());
+	assert (parent != NULL);
+	
+	Set <T> * temp_parent = parent;
+	const_cast <Reference <T> *> (this) -> parent = NULL;
+		
+	//	My parent will delete me.
+	temp_parent -> drop (* this);
 }
 
 //	virtual
@@ -143,12 +155,7 @@ template <class T> bool Reference <T> ::
 	is_initialized ()
 	const
 {
-	if (parent != NULL)
-	{
-		assert (pointee != NULL);
-//		assert (parent -> pointee != NULL);
-//		assert (parent -> parent == NULL);
-	}
+	assert ((pointee != NULL) || (parent == NULL));
 
 	return true;
 }
@@ -166,10 +173,10 @@ template <class T> string Reference <T> ::
 	{
 		result += pointee -> name;
 
-		/*if (parent != NULL)
+		if (parent != NULL)
 		{
 			result += " [P: " + parent -> name + "]";
-		}*/
+		}
 
 		return result;
 	}
@@ -207,6 +214,23 @@ template <class T> bool Reference <T> ::
 	return pointee != NULL;
 }
 
+//	virtual
+template <class T> void Reference <T> ::
+	reset_pointee ()
+{
+	//	Engines :: Log :: trace (* this, get_class_name (), "reset_pointee");
+	
+	assert (is_initialized ());
+	assert (parent == NULL);
+	
+	if (pointee != NULL)
+	{
+		pointee -> unregister_reference (* this);
+	
+		pointee = NULL;
+	}
+}
+
 template <class T> void Reference <T> ::
 	reset_pointee (T * new_pointee)
 {
@@ -215,10 +239,7 @@ template <class T> void Reference <T> ::
 	assert (is_initialized ());
 	assert (parent == NULL);
 	
-	if (pointee != NULL)
-	{
-		pointee -> unregister_reference (* this);
-	}
+	reset_pointee ();
 	
 	pointee = new_pointee;
 
@@ -234,7 +255,16 @@ template <class T> void Reference <T> ::
 	assert (is_initialized ());
 	assert (parent == NULL);
 
-	parent = /*new Reference <Set <T> >*/ (& new_parent);
+	parent = & new_parent;
+}
+
+template <class T> bool Reference <T> ::
+	has_parent ()
+	const
+{
+	assert (is_initialized ());
+
+	return parent != NULL;
 }
 
 //	to avert linking errors:

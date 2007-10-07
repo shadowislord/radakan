@@ -28,7 +28,9 @@ namespace Radakan
 			Reference (T * new_pointee = NULL);
 			Reference (const Reference <T> & other);
 			template <class V> Reference (const Reference <V> & other);
+			//	When I have a parent, use 'destruct_from_parent' to delete me.
 			virtual ~Reference ();
+			virtual void destruct_from_parent () const;
 
 			virtual bool is_initialized () const;
 
@@ -38,10 +40,12 @@ namespace Radakan
 			const T * operator-> () const;
 
 			bool points_to_object () const;
-			void reset_pointee (T * new_pointee = NULL);
+			virtual void reset_pointee ();
+			void reset_pointee (T * new_pointee);
 
 			void set_parent (Set <T> & new_parent);
-
+			virtual bool has_parent () const;
+			
 		private :
 			template <class V> friend class Reference;
 		

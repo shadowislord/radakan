@@ -56,7 +56,6 @@ Object ::
 
 	prepare_for_destruction ();
 
-	me . reset_pointee ();
 	Engines :: Log :: log (me) << "Farewell..." << endl;
 }
 
@@ -71,9 +70,17 @@ void Object ::
 	for (set <const Reference_Base *> :: const_iterator i = dependencies -> begin ();
 		i != dependencies -> end (); i = dependencies -> begin ())
 	{
-		Engines :: Log :: log (me) << "Dependency to be dropped by: '" << (* i) -> get_name () << "'" << endl;
-		
-		delete (* i);
+		if ((* i) -> has_parent ())
+		{
+			Engines :: Log :: log (me) << "Dependency to be destructed from it's parent: '" << (* i) -> get_name () << "'" << endl;
+			//	When '* i' has a parent, 'delete (* i);' results in a double call to the destructor ().
+			(* i) -> destruct_from_parent ();
+		}
+		else
+		{
+			Engines :: Log :: log (me) << "Dependency to be reset: '" << (* i) -> get_name () << "'" << endl;
+			const_cast <Reference_Base *> (* i) -> reset_pointee ();
+		}
 	}
 }
 
@@ -158,7 +165,7 @@ void  Object ::
 	register_reference (const Reference_Base & reference)
 	const
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name ());
+	//	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name ());
 	
 	assert (is_initialized ());
 
@@ -180,11 +187,11 @@ void  Object ::
 	unregister_reference (const Reference_Base & reference)
 	const
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "unregister_reference", reference . get_name ());
+	//	Engines :: Log :: trace (me, Object :: get_class_name (), "unregister_reference", reference . get_name ());
 	
 	assert (is_initialized ());
-
 	assert (does_depend (reference));
+	
 	dependencies -> erase (& reference);
 
 	/*for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();

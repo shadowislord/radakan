@@ -20,15 +20,20 @@ namespace Radakan
 		public :
 			Reference_Base ();
 			virtual ~Reference_Base ();
+			virtual void destruct_from_parent () const = 0;
 
 			static string get_class_name ();
 
 			virtual string get_name () const;
+
+			virtual void reset_pointee () = 0;
+			
+			virtual bool has_parent () const = 0;
 			
 		private :
 			const string number;
 			
-			static int counter;
+			static long counter;
 	};
 }
 

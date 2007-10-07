@@ -35,7 +35,7 @@ float Radakan ::
 }
 
 //	static
-int Reference_Base ::
+long Reference_Base ::
 	counter (0);
 
 //	static
@@ -53,8 +53,6 @@ Reference_Base ::
 	number (to_string (counter ++))
 {
 	//	Engines :: Log :: trace (* this, get_class_name (), "");
-
-	assert (counter < 64000);
 }
 
 Reference_Base ::
