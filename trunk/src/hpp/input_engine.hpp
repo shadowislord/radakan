@@ -61,7 +61,7 @@ namespace Radakan
 				static const string middle_mouse_button;
 				static const string right_mouse_button;
 
-				virtual void call (const Reference <Object> message = update);
+				virtual void call (const Reference <Object> & message = update);
 				
 			private :
 				virtual bool keyPressed (const OIS :: KeyEvent & key_event);

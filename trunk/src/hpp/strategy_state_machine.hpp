@@ -12,7 +12,7 @@ namespace Radakan
 		class Strategy;
 
 		///	I'm the abstract base class for all strategy based state machines.
-		///	Derive me (using private inheritance) for each class that uses strategies.
+		///	Derive me for each class that uses strategies.
 		class Strategy_State_Machine :
 			public State_Machine <Strategy>
 		{
@@ -23,7 +23,7 @@ namespace Radakan
 				virtual ~Strategy_State_Machine ();
 				virtual bool is_initialized () const;
 				
-				void run (const Reference <Object> message);
+				void run (const Reference <Object> & message);
 		};
 	}
 }

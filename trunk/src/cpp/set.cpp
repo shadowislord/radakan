@@ -37,7 +37,7 @@ template <class T> Set <T> ::
 	for (T_Iterator child = children -> begin (); child != children -> end (); child = children -> begin ())
 	{
 		Engines :: Log :: log (this -> me) << "Dropping child '" << child -> get_name () << "'..." << endl;
-		child -> destruct_from_parent ();
+		drop (* child);
 	}
 	Engines :: Log :: log (this -> me) << "All children were dropped." << endl;
 
@@ -66,11 +66,14 @@ template <class T> bool Set <T> ::
 
 //	virtual
 template <class T> bool Set <T> ::
-	contains (const Reference <T> contained)
+	contains (const Reference <T> & contained)
 	const
 {
 //	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "contains", contained . get_name ());
 	assert (Set <T> :: is_initialized ());
+	assert (contained . is_initialized ());
+	assert (contained . points_to_object ());
+	assert (contained -> is_initialized ());
 
 	return 0 < children -> count (contained);
 }
@@ -82,6 +85,9 @@ template <class T> bool Set <T> ::
 	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "add", additive . get_name ());
 	assert (Set <T> :: is_initialized ());
 	assert (! Container <T> :: is_sealed ());
+	assert (additive . is_initialized ());
+	assert (additive . points_to_object ());
+	assert (additive -> is_initialized ());
 
 	if (contains (additive))
 	{

@@ -46,7 +46,7 @@ namespace Radakan
 			
 			boost :: shared_ptr <CEGUI :: Window> root_window;
 
-			virtual void call (const Reference <Object> message = update);
+			virtual void call (const Reference <Object> & message = update);
 
 		private :
 			void subscribe (CEGUI :: Window & window);

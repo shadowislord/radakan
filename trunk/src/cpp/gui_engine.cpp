@@ -28,10 +28,20 @@ GUI_Engine ::
 		boost :: shared_ptr <Ogre :: RenderWindow> window,
 		boost :: shared_ptr <Ogre :: SceneManager> scene_manager
 	) :
-	Object ("gui engine"),
-	renderer (new CEGUI :: OgreCEGUIRenderer (window . get ()))
+	Object ("gui engine")
 {
 	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~");
+
+	try
+	{
+		//	The following line results in an error (at line 73 of CEGUIString.cpp) for me. --Tinus
+		renderer . reset (new CEGUI :: OgreCEGUIRenderer (window . get ()));
+	}
+	catch (exception & e)
+	{
+		Log :: error (me) << "OgreCEGUIRenderer exception: " << e . what () << endl;
+		abort ();
+	}
 
 	Engines :: Log :: trace
 		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "AA");

@@ -29,7 +29,7 @@ namespace Radakan
 				
 				static string get_class_name ();
 
-				virtual void call (const Reference <Object> message = update) = 0;
+				virtual void call (const Reference <Object> & message = update) = 0;
 				
 				virtual bool is_dead () const = 0;
 				virtual void die () = 0;

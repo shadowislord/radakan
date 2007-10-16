@@ -70,10 +70,6 @@ namespace Radakan
 			///	I'm removed from each parent Set.
 			void prepare_for_destruction ();
 
-			template <class T> bool is_class () const;
-			template <class T> Reference <T> to_class ();
-			template <class T> const Reference <T> to_class_const () const;
-
 			void register_reference (const Reference_Base & reference) const;
 
 			void unregister_reference (const Reference_Base & reference) const;

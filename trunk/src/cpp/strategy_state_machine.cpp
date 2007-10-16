@@ -48,7 +48,7 @@ bool Strategy_State_Machine ::
 }
 
 void Strategy_State_Machine ::
-	run (const Reference <Object> message)
+	run (const Reference <Object> & message)
 {
 	assert (is_initialized ());
 

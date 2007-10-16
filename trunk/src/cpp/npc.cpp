@@ -64,13 +64,13 @@ bool NPC ::
 
 //	virtual
 void NPC ::
-	call (const Reference <Object> message)
+	call (const Reference <Object> & message)
 {
 	assert (is_initialized ());
 
 	if (! is_dead ())
 	{
-		Reference <Set <Object> > sensory_buffer (get_active_state () -> to_class <Strategies :: Alive_State> () -> sensory_buffer);
+		Reference <Set <Object> > sensory_buffer (get_active_state () . cast <Strategies :: Alive_State> () -> sensory_buffer);
 	
 		if (message == update)
 		{
@@ -87,28 +87,30 @@ void NPC ::
 				sensory_buffer -> drop (buffered_message);
 			}
 		}
-		else if (message -> is_class <Messages :: Battle_Message> ())
-		{
-			const Reference <Messages :: Battle_Message> battle_message (message -> to_class_const <Messages :: Battle_Message> ());
-			
-			Reference <Messages :: Battle_Message> message_copy (new Messages :: Battle_Message (battle_message -> name, battle_message -> from, battle_message -> to));
-		
-			//	Remember the message until next time.
-			sensory_buffer -> add (message_copy);
-		}
-		else if (message -> is_class <Messages :: Conversation_Message> ())
-		{
-			const Reference <Messages :: Conversation_Message> conversation_message (message -> to_class_const <Messages :: Conversation_Message> ());
-			
-			Reference <Messages :: Conversation_Message> message_copy (new Messages :: Conversation_Message (conversation_message -> option, conversation_message -> from, conversation_message -> to));
-		
-			//	Remember the message until next time.
-			sensory_buffer -> add (message_copy);
-		}
 		else
 		{
-			Engines :: Log :: error (me) << "Unknown message." << endl;
-			abort ();
+			Reference <Object> message_copy;
+		
+			if (message . is_castable <Messages :: Battle_Message> ())
+			{
+				const Reference <Messages :: Battle_Message> battle_message (message . cast_const <Messages :: Battle_Message> ());
+				
+				message_copy . reset_pointee (new Messages :: Battle_Message (battle_message -> name, battle_message -> from, battle_message -> to));
+			}
+			else if (message . is_castable <Messages :: Conversation_Message> ())
+			{
+				const Reference <Messages :: Conversation_Message> conversation_message (message . cast_const <Messages :: Conversation_Message> ());
+				
+				message_copy . reset_pointee (new Messages :: Conversation_Message (conversation_message -> option, conversation_message -> from, conversation_message -> to));
+			}
+			else
+			{
+				Engines :: Log :: error (me) << "Unknown message class." << endl;
+				abort ();
+			}
+
+			//	Remember the message until next time.
+			sensory_buffer -> add (message_copy);
 		}
 	}
 }

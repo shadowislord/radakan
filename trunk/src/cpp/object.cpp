@@ -125,40 +125,9 @@ bool Object ::
 	is_singleton ()
 	const
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "is_singleton");
+//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_singleton");
 	
 	return false;
-}
-
-template <class T> bool Object ::
-	is_class ()
-	const
-{
-//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_class", "<" + T :: get_class_name () + ">");
-	assert (is_initialized ());
-
-	return (dynamic_cast <const T *> (this) != NULL);
-}
-
-template <class T> Reference <T> Object ::
-	to_class ()
-{
-//	Engines :: Log :: trace (me, Object :: get_class_name (), "to_class", "<" + T :: get_class_name () + ">");
-	assert (is_initialized ());
-	assert (is_class <T> ());
-
-	return Reference <T> (dynamic_cast <T *> (this));
-}
-
-template <class T> const Reference <T> Object ::
-	to_class_const ()
-	const
-{
-//	Engines :: Log :: trace (me, Object :: get_class_name (), "to_class", "<" + T :: get_class_name () + ">");
-	assert (is_initialized ());
-	assert (is_class <T> ());
-
-	return (const_cast <Object *> (this)) -> to_class <T> ();
 }
 
 void  Object ::
@@ -202,25 +171,25 @@ void  Object ::
 
 	if (status == "constructing")
 	{
-		Engines :: Log :: log (me) << "I'm still constructing." << endl;
+		//	Engines :: Log :: log (me) << "I'm still constructing." << endl;
 		return;
 	}
 
 	if (status == "destructing")
 	{
-		Engines :: Log :: log (me) << "I'm already destructing." << endl;
+		//	Engines :: Log :: log (me) << "I'm already destructing." << endl;
 		return;
 	}
 
 	if (is_singleton ())
 	{
-		Engines :: Log :: log (me) << "I will not self-destruct, because I'm a singleton." << endl;
+		//	Engines :: Log :: log (me) << "I will not self-destruct, because I'm a singleton." << endl;
 		return;
 	}
 
 	if (name . find ("static") != string :: npos)
 	{
-		Engines :: Log :: log (me) << "I will not self-destruct, because I'm a static." << endl;
+		//	Engines :: Log :: log (me) << "I will not self-destruct, because I'm a static." << endl;
 		return;
 	}
 
@@ -239,66 +208,5 @@ void  Object ::
 		delete this;
 	}
 
-	Engines :: Log :: log (me) << "I will not self-destruct, because I have another dependency." << endl;
+	//	Engines :: Log :: log (me) << "I will not self-destruct, because I have another dependency." << endl;
 }
-
-//	to avert linking errors:
-#include "alive_state.hpp"
-#include "battle_message.hpp"
-#include "chat_state.hpp"
-#include "conversation_message.hpp"
-#include "container_item.hpp"
-#include "fight_state.hpp"
-#include "menu_state.hpp"
-#include "movable_model.hpp"
-#include "npc.hpp"
-#include "play_state.hpp"
-
-template bool Object ::
-	is_class <Items :: Container_Item <Items :: Item> > () const;
-template bool Object ::
-	is_class <Items :: Item> () const;
-template bool Object ::
-	is_class <Items :: NPC> () const;
-template bool Object ::
-	is_class <Messages :: Battle_Message> () const;
-template bool Object ::
-	is_class <Messages :: Conversation_Message> () const;
-template bool Object ::
-	is_class <Set <Messages :: Conversation_Message> > () const;
-template bool Object ::
-	is_class <Strategies :: Alive_State> () const;
-template bool Object ::
-	is_class <Strategies :: Chat_State> () const;
-template bool Object ::
-	is_class <Strategies :: Fight_State> () const;
-template bool Object ::
-	is_class <Strategies :: Play_State> () const;
-template bool Object ::
-	is_class <Strategies :: Strategy_State_Machine> () const;
-
-template Reference <Items :: Container_Item <Items :: Item> > Object ::
-	to_class <Items :: Container_Item <Items :: Item> > ();
-template Reference <Items :: NPC> Object ::
-	to_class <Items :: NPC> ();
-template Reference <Movable_Model> Object ::
-	to_class <Movable_Model> ();
-template Reference <Set <Messages :: Conversation_Message> > Object ::
-	to_class <Set <Messages :: Conversation_Message> > ();
-template Reference <Strategies :: Strategy> Object ::
-	to_class <Strategies :: Strategy> ();
-template Reference <Strategies :: Alive_State> Object ::
-	to_class <Strategies :: Alive_State> ();
-template Reference <Strategies :: Fight_State> Object ::
-	to_class <Strategies :: Fight_State> ();
-template Reference <Strategies :: Menu_State> Object ::
-	to_class <Strategies :: Menu_State> ();
-template Reference <Strategies :: Play_State> Object ::
-	to_class <Strategies :: Play_State> ();
-template Reference <Strategies :: Strategy_State_Machine> Object ::
-	to_class <Strategies :: Strategy_State_Machine> ();
-
-template const Reference <Messages :: Battle_Message> Object ::
-	to_class_const <Messages :: Battle_Message> () const;
-template const Reference <Messages :: Conversation_Message> Object ::
-	to_class_const <Messages :: Conversation_Message> () const;

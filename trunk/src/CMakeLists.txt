@@ -72,6 +72,13 @@ if(WIN32)
                 debug prefab
                 debug ogreode_core
                 debug ois)
+    set(RELEASE_LIBS  optimized OgreMain
+                    optimized CEGUIBase
+                    optimized OgreGUIRenderer
+                    optimized tinyxml
+                    optimized prefab
+                    optimized ogreode_core
+                    optimized ois)
 else(WIN32)
     set(DEBUG_LIBS  debug OgreMain
                 debug CEGUIBase
@@ -80,14 +87,14 @@ else(WIN32)
                 debug prefab
                 debug ogreode_core
                 debug ois)
+    set(RELEASE_LIBS  optimized OgreMain
+                optimized CEGUIBase
+                optimized CEGUIOgreRenderer
+                optimized tinyxml
+                optimized prefab
+                optimized ogreode_core
+                optimized ois)
 endif(WIN32)
-set(RELEASE_LIBS    optimized OgreMain
-                    optimized CEGUIBase
-                    optimized OgreGUIRenderer
-                    optimized tinyxml
-                    optimized prefab
-                    optimized ogreode_core
-                    optimized ois)
 if(USE_FMOD)
     if(WIN32)
         set(DEBUG_LIBS ${DEBUG_LIBS}  fmodvc)

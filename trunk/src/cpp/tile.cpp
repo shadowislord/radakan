@@ -137,16 +137,26 @@ bool Tile ::
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "add", model ->name);
 	assert (is_initialized ());
+	assert (model . is_initialized ());
+	assert (model . points_to_object ());
 	assert (model -> is_initialized ());
 	assert (! contains (model));
 
 	bool check = Location <Model> :: add (model);
 	assert (check);
 
-	if (model -> item -> is_class <Items :: NPC> ())
+	if (model -> item . is_castable <Items :: NPC> ())
 	{
 		Engines :: Log :: log (me) << model -> item -> name << " will be added to the list of NPCs..." << endl;
-		bool check = npcs -> add (model -> item -> to_class <Items :: NPC> ());
+		assert (model -> item . is_initialized ());
+		assert (model -> item . points_to_object ());
+		assert (model -> item -> is_initialized ());
+		Reference <Items :: NPC> temp (model -> item . cast <Items :: NPC> ());
+		assert (temp . is_initialized ());
+		assert (temp . points_to_object ());
+		assert (temp -> is_initialized ());
+		
+		bool check = npcs -> add (temp);
 		assert (check);
 		
 		Engines :: Log :: log (me) << model -> item -> name << " was added to the list of NPCs." << endl;
@@ -167,9 +177,9 @@ bool Tile ::
 	assert (contains (model));
 	assert (destination -> is_initialized ());
 
-	if (model -> item -> is_class <Items :: NPC> ())
+	if (model -> item . is_castable <Items :: NPC> ())
 	{
-		npcs -> drop (model -> item -> to_class <Items :: NPC> ());
+		npcs -> drop (model -> item . cast <Items :: NPC> ());
 	}
 
 	bool check = Location <Model> :: move (model, destination);
@@ -244,6 +254,9 @@ void Tile ::
 		Engines :: Log :: error (me) << "Unrecognizable xml tag name: " << item_xml -> ValueStr () << endl;
 		abort ();
 	}
+	assert (item . is_initialized ());
+	assert (item . points_to_object ());
+	assert (item -> is_initialized ());
 
 	Reference <Model> model = create_model (item, position + Ogre :: Vector3 (x, y, z), scale);
 	bool check = add (model);

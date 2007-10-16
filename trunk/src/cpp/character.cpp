@@ -140,7 +140,7 @@ Reference <Movable_Model> Character ::
 {
 	if (! movable_model . points_to_object ())
 	{
-		movable_model = get_model () -> to_class <Movable_Model> ();
+		movable_model = get_model () . cast <Movable_Model> ();
 	}
 
 	return movable_model;
@@ -153,7 +153,7 @@ void Character ::
 
 	Engines :: Log :: show (name + " hits " + target -> name + "!");
 
-	Reference <Messages :: Battle_Message> temp (new Messages :: Battle_Message (fight_mode, Reference <Character> (this), target));
+	Reference <Object> temp (new Messages :: Battle_Message (fight_mode, Reference <Character> (this), target));
 	call_observers (temp);
 }
 

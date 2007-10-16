@@ -96,7 +96,9 @@ GUI ::
 
 	subscribe (* root_window . get ());
 
-	Engines :: Log :: get () -> register_observer (Reference <Observer <Engines :: Log> > (this));
+	#ifdef RADAKAN_DEBUG
+		Engines :: Log :: get () -> register_observer (Reference <Observer <Engines :: Log> > (this));
+	#endif
 
 	assert (is_initialized ());
 }
@@ -123,11 +125,11 @@ bool GUI ::
 
 //	virtual
 void GUI ::
-	call (const Reference <Object> message)
+	call (const Reference <Object> & message)
 {
 	assert (is_initialized ());
 
-	if (message -> is_class <Set <Messages :: Conversation_Message> > ())
+	if (message . is_castable <Set <Messages :: Conversation_Message> > ())
 	{
 		assert (chat_window);
 
@@ -138,7 +140,7 @@ void GUI ::
 			messages . reset_pointee ();
 		}
 		
-		messages = (const_cast <Reference <Object> &> (message)) -> to_class <Set <Messages :: Conversation_Message> > ();
+		messages = (const_cast <Reference <Object> &> (message)) . cast <Set <Messages :: Conversation_Message> > ();
 		
 		for (Reference <Messages :: Conversation_Message> option = messages -> get_child ();
 					! option . points_to_object (); option = messages -> get_another_child ())

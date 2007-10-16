@@ -20,7 +20,7 @@ namespace Radakan
 			
 			static string get_class_name ();
 
-			void call_observers (const Reference <Object> message = update);
+			void call_observers (const Reference <Object> & message = update);
 
 			void register_observer (Reference <Observer <T> > observer);
 			void drop_observer (Reference <Observer <T> > observer);

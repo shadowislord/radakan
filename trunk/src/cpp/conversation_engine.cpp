@@ -120,16 +120,7 @@ bool Conversation_Engine ::
 
 	for (const TiXmlAttribute * attribute = element -> FirstAttribute (); attribute != NULL; attribute = attribute -> Next ())
 	{
-		bool temp = evaluate_expression (attribute, subject);
-		if (temp)
-		{
-			Log :: log (me) << "true" << endl;
-		}
-		else
-		{
-			Log :: log (me) << "false" << endl;
-		}
-		result = result && temp;
+		result = result && evaluate_expression (attribute, subject);
 	}
 
 	return result;
@@ -144,62 +135,66 @@ bool Conversation_Engine ::
 	const string & name = attribute -> NameTStr ();
 	const string & value = attribute -> ValueStr ();
 
+	Reference <Items :: NPC> npc;
+	if (subject . is_castable <Items :: NPC> ())
+	{
+		npc = subject . cast <Items :: NPC> ();
+	}
+
 	if (name == "active_state")
 	{
-		if (subject -> is_class <Items :: NPC> ())
+		if (npc . points_to_object ())
 		{
-			Reference <Strategies :: Strategy_State_Machine> npc = subject -> to_class <Strategies :: Strategy_State_Machine> ();
-			
-			if (! npc -> has_active_state ())
+			if (npc -> has_active_state ())
 			{
-				Log :: log (me) << name << " ?= \"" << value << "\" ~ A" << endl;
-				return "none" == value;
-			}
-			else if (npc -> get_active_state () -> is_class <Strategies :: Alive_State> ())
-			{
-				Log :: log (me) << name << " ?= \"" << value << "\" ~ B" << endl;
+				assert (npc -> get_active_state () . is_castable <Strategies :: Alive_State> ());
+				//	Log :: log (me) << name << " ?= \"" << value << "\" ~ A" << endl;
 				return Strategies :: Alive_State :: get_class_name () == value;
+			}
+			else
+			{
+				return "none" == value;
 			}
 		}
 
-		Log :: log (me) << name << " != \"" << value << "\" ~ C" << endl;
+		//	Log :: log (me) << name << " != \"" << value << "\" ~ C" << endl;
 		return false;
 	}
 
 	if (name == "active_alive_state")
 	{
-		if (subject -> is_class <Items :: NPC> ())
+		if (npc . points_to_object ())
 		{
-			Reference <Strategies :: Strategy_State_Machine> npc = subject -> to_class <Strategies :: Strategy_State_Machine> ();
-			
 			if (! npc -> has_active_state ())
 			{
-				Log :: log (me) << name << " != \"" << value << "\" ~ D" << endl;
+				//	Log :: log (me) << name << " != \"" << value << "\" ~ D" << endl;
 				return false;
 			}
-			else if (npc -> get_active_state () -> is_class <Strategies :: Alive_State> ())
+			else if (npc -> get_active_state () . points_to_object ())
 			{
-				Reference <Strategies :: Strategy_State_Machine> alive_state = npc -> get_active_state () -> to_class <Strategies :: Strategy_State_Machine> ();
+				assert (npc -> get_active_state () . is_castable <Strategies :: Alive_State> ());
+				
+				Reference <Strategies :: Alive_State> alive_state (npc -> get_active_state () . cast <Strategies :: Alive_State> ());
 			
 				if (! alive_state -> has_active_state ())
 				{
-					Log :: log (me) << name << " ?= \"" << value << "\" ~ E" << endl;
+					//	Log :: log (me) << name << " ?= \"" << value << "\" ~ E" << endl;
 					return "none" == value;
 				}
-				else if (alive_state -> get_active_state () -> is_class <Strategies :: Chat_State> ())
+				else if (alive_state -> get_active_state () . is_castable <Strategies :: Chat_State> ())
 				{
-					Log :: log (me) << name << " ?= \"" << value << "\" ~ F" << endl;
+					//	Log :: log (me) << name << " ?= \"" << value << "\" ~ F" << endl;
 					return Strategies :: Chat_State :: get_class_name () == value;
 				}
-				else if (alive_state -> get_active_state () -> is_class <Strategies :: Fight_State> ())
+				else if (alive_state -> get_active_state () . is_castable <Strategies :: Fight_State> ())
 				{
-					Log :: log (me) << name << " ?= \"" << value << "\" ~ G" << endl;
+					//	Log :: log (me) << name << " ?= \"" << value << "\" ~ G" << endl;
 					return Strategies :: Fight_State :: get_class_name () == value;
 				}
 			}
 		}
 
-		Log :: log (me) << name << " != \"" << value << "\" ~ H" << endl;
+		//	Log :: log (me) << name << " != \"" << value << "\" ~ H" << endl;
 		return false;
 	}
 

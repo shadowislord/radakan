@@ -54,15 +54,15 @@ bool Fight_State ::
 
 //	virtual
 Reference <Strategy> Fight_State ::
-	transit (const Reference <Object> message)
+	transit (const Reference <Object> & message)
 {
 	assert (is_initialized ());
 
 	Reference <Movable_Model> npc_model (alive_state -> npc -> get_movable_model ());
 
-	if (message -> is_class <Messages :: Battle_Message> ())
+	if (message . is_castable <Messages :: Battle_Message> ())
 	{
-		targets -> add (const_cast <Reference <Items :: Character> &> (message -> to_class_const <Messages :: Battle_Message> () -> from));
+		targets -> add (const_cast <Reference <Object> &> (message) . cast <Messages :: Battle_Message> () -> from);
 	}
 
 	if (targets -> is_empty ())
@@ -111,5 +111,5 @@ Reference <Strategy> Fight_State ::
 		npc_model -> move (0);
 	}
 
-	return Reference <Fight_State> (this);
+	return Reference <Strategy> (this);
 }

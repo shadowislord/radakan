@@ -23,7 +23,7 @@ namespace Radakan
 		///	Alive_State is the basic strategy for living NPCs.
 		class Alive_State :
 			public Strategy,
-			private Strategy_State_Machine
+			public Strategy_State_Machine
 		{
 			public :
 				static string get_class_name ();
@@ -32,7 +32,7 @@ namespace Radakan
 				virtual ~Alive_State ();
 				virtual bool is_initialized () const;
 				
-				virtual Reference <Strategy> transit (const Reference <Object> message);
+				virtual Reference <Strategy> transit (const Reference <Object> & message);
 
 				Reference <Items :: NPC> npc;
 				

@@ -28,7 +28,7 @@ namespace Radakan
 
 			virtual bool is_empty () const = 0;
 
-			virtual bool contains (const Reference <T> contained) const = 0;
+			virtual bool contains (const Reference <T> & contained) const = 0;
 			
 			///	On success, I return 'true'.
 			virtual bool add (Reference <T> additive) = 0;

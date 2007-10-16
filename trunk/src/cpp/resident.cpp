@@ -45,11 +45,12 @@ template <class T> bool Resident <T> ::
 }
 
 template <class T> void Resident <T> ::
-	enter (const Reference <Location <T> > new_location)
+	enter (const Reference <Location <T> > & new_location)
 {
 	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "enter", new_location -> name);
 	assert (Resident <T> :: is_initialized ());
 	assert (! location . points_to_object ());
+	assert (new_location . points_to_object ());
 
 	location = new_location;
 }

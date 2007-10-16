@@ -21,6 +21,11 @@ namespace Radakan
 		class Game;
 	}
 	
+	namespace Items
+	{
+		class Item;
+	}
+	
 	namespace Strategies
 	{
 
@@ -35,12 +40,14 @@ namespace Radakan
 				virtual ~Play_State ();
 				virtual bool is_initialized () const;
 				
-				virtual Reference <Strategy> transit (const Reference <Object> message);
+				virtual Reference <Strategy> transit (const Reference <Object> & message);
 
 			private :
 				Reference <GUI> gui;
 				
 				boost :: scoped_ptr <Ogre :: Camera> camera;
+
+				Reference <Items :: Item> target;
 		};
 	}
 }

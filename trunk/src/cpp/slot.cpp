@@ -58,7 +58,7 @@ template <class T> bool Slot <T> ::
 
 //	virtual
 template <class T> bool Slot <T> ::
-	contains (const Reference <T> contained)
+	contains (const Reference <T> & contained)
 	const
 {
 //	Engines :: Log :: trace (this -> me, Slot <T> :: get_class_name (), "contains", contained . get_name ());

@@ -36,6 +36,9 @@ Model ::
 	)
 {
 	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item -> name, to_string (position), to_string (scale));
+	assert (item . is_initialized ());
+	assert (item . points_to_object ());
+	assert (item -> is_initialized ());
 
 	add (item);
 	seal ();

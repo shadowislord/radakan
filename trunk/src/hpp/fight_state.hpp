@@ -27,7 +27,7 @@ namespace Radakan
 				
 				static string get_class_name ();
 				
-				virtual Reference <Strategy> transit (const Reference <Object> message);
+				virtual Reference <Strategy> transit (const Reference <Object> & message);
 
 				Reference <Alive_State> alive_state;
 

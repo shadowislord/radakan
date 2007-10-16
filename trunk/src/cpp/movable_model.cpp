@@ -66,7 +66,7 @@ void Movable_Model ::
 	assert (Model :: is_initialized ());
 	assert (Ogre :: Math :: Abs (top_speed) <= 1);
 
-	body -> setForce (1000 * (top_speed * get_front_direction () - body -> getLinearVelocity ()));
+	body -> setForce (10000 * (top_speed * get_front_direction () - body -> getLinearVelocity ()));
 }
 
 void Movable_Model ::
@@ -81,7 +81,7 @@ void Movable_Model ::
 		ax = get_top_direction ();
 	}
 
-	body -> setTorque (30 * (top_radian_angle_speed * ax - body -> getAngularVelocity ()));
+	body -> setTorque (300 * (top_radian_angle_speed * ax - body -> getAngularVelocity ()));
 }
 
 void Movable_Model ::

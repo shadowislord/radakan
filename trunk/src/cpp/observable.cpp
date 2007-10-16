@@ -49,7 +49,7 @@ template <class T> bool Observable <T> ::
 }
 
 template <class T> void Observable <T> ::
-	call_observers (const Reference <Object> message)
+	call_observers (const Reference <Object> & message)
 {
 	assert (is_initialized ());
 

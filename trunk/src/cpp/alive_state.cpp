@@ -62,7 +62,7 @@ bool Alive_State ::
 
 //	virtual
 Reference <Strategy> Alive_State ::
-	transit (const Reference <Object> message)
+	transit (const Reference <Object> & message)
 {
 	assert (is_initialized ());
 	
@@ -74,11 +74,11 @@ Reference <Strategy> Alive_State ::
 	npc -> get_movable_model () -> move (0);
 	npc -> get_movable_model () -> turn (0);
 
-	if (message -> is_class <Messages :: Battle_Message> ())
+	if (message . is_castable <Messages :: Battle_Message> ())
 	{
-		if (message -> to_class_const <Messages :: Battle_Message> () -> to == npc)
+		if (message . cast_const <Messages :: Battle_Message> () -> to == npc)
 		{
-			if (! (has_active_state () && get_active_state () -> is_class <Fight_State> ()))
+			if (! (has_active_state () && get_active_state () . is_castable <Fight_State> ()))
 			{
 				set_active_state (Reference <Strategy> (new Fight_State (Reference <Alive_State> (this))));
 			}
@@ -88,9 +88,9 @@ Reference <Strategy> Alive_State ::
 			//	Ignore the message.
 		}
 	}
-	else if (message -> is_class <Messages :: Conversation_Message> ())
+	else if (message . is_castable <Messages :: Conversation_Message> ())
 	{
-		if (message -> to_class_const <Messages :: Conversation_Message> () -> to == npc)
+		if (message . cast_const <Messages :: Conversation_Message> () -> to == npc)
 		{
 			if (0.5 < calm)	//	'listening' state:
 			{

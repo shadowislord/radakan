@@ -20,7 +20,7 @@ namespace Radakan
 			
 			static string get_class_name ();
 
-			void enter (Reference <Location <T> > new_location);
+			void enter (const Reference <Location <T> > & new_location);
 			void leave ();
 
 		protected :

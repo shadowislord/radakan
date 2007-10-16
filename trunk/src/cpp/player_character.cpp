@@ -80,14 +80,14 @@ void Player_Character ::
 
 //	virtual
 void Player_Character ::
-	call (const Reference <Object> message)
+	call (const Reference <Object> & message)
 {
 	assert (is_initialized ());
 	
-	if (message -> is_class <Messages :: Conversation_Message> ())
+	if (message . is_castable <Messages :: Conversation_Message> ())
 	{
 		//	I show the message in the log, to let the player know.
-		Engines :: Log :: show (message -> to_class_const <Messages :: Conversation_Message> () -> from -> name + ": '" + message -> name + "'");
+		Engines :: Log :: show (message . cast_const <Messages :: Conversation_Message> () -> from -> name + ": '" + message -> name + "'");
 	}
 	else if (message != update)
 	{

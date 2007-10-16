@@ -68,7 +68,7 @@ template <class T> bool Location <T> ::
 
 //	virtual
 template <class T> bool Location <T> ::
-	contains (const Reference <T> contained)
+	contains (const Reference <T> & contained)
 	const
 {
 //	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "contains", contained . get_name ());

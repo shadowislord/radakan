@@ -152,14 +152,14 @@ bool Input_Engine ::
 
 //	virtual
 void Input_Engine ::
-	call (const Reference <Object> message)
+	call (const Reference <Object> & message)
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message -> name);
 	assert (is_initialized ());
 
-	if (message -> is_class <Messages :: Conversation_Message> ())
+	if (message . is_castable <Messages :: Conversation_Message> ())
 	{
-		conversation_option = message -> to_class_const <Messages :: Conversation_Message> ();
+		conversation_option = message . cast_const <Messages :: Conversation_Message> ();
 	}
 	else
 	{

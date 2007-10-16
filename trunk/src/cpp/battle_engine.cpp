@@ -51,7 +51,7 @@ bool Battle_Engine ::
 
 //	virtual
 void Battle_Engine ::
-	call (const Reference <Object> message)
+	call (const Reference <Object> & message)
 {
 	assert (is_initialized ());
 	if (message -> name != "battle")
@@ -95,18 +95,18 @@ void Battle_Engine ::
 	if (! attacker . right_hand . is_empty ())
 	{
 		Item & weapon = * attacker . hands . get_child ();
-		if (weapon . is_class <Weapon> ())
+		if (weapon . is_castable <Weapon> ())
 		{
-			attack = weapon . to_class <Weapon> () . attack_rate * lognormal ();
+			attack = weapon . cast <Weapon> () . attack_rate * lognormal ();
 		}
 	}
 
 	if (! defender . hands . is_empty ())
 	{
 		Item & weapon = * defender . hands . get_child ();
-		if (weapon . is_class <Weapon> ())
+		if (weapon . is_castable <Weapon> ())
 		{
-			defense = weapon . to_class <Weapon> () . defense_rate * lognormal ();
+			defense = weapon . cast <Weapon> () . defense_rate * lognormal ();
 		}
 	}
 

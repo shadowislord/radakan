@@ -77,7 +77,7 @@ bool Play_State ::
 
 //	virtual
 Reference <Strategy> Play_State ::
-	transit (const Reference <Object> message)
+	transit (const Reference <Object> & message)
 {
 	assert (is_initialized ());
 
@@ -135,50 +135,86 @@ Reference <Strategy> Play_State ::
 	Items :: Player_Character :: get () -> get_movable_model () -> turn (top_angular_speed);
 
 	//	reset your orientation
-	if (Engines :: Input_Engine :: get () -> get_key ("space", false)
+	if (Engines :: Input_Engine :: get () -> get_key ("space", true)
 		|| Engines :: Input_Engine :: get () -> get_gui_button ("Reset"))
 	{
 		Items :: Player_Character :: get () -> get_movable_model () -> reset ();
 	}
 
-	Reference <Items :: NPC> closest_npc = World :: get () -> get_active_state () -> npcs -> get_child ();
+	//	select a target
+	if (Engines :: Input_Engine :: get () -> get_key ("t", true))
+	{
+		target = World :: get () -> get_active_state () -> npcs -> get_child ();
+		Engines :: Log :: show ("Target: " + target . get_name ());
+	}
 
-	Reference <Set <Messages :: Conversation_Message> > conversation_messages = Engines :: Conversation_Engine :: get () -> get_options (Items :: Player_Character :: get(), closest_npc);
-	gui -> call (conversation_messages);
+	if (target . points_to_object ())
+	{
+		Reference <Set <Messages :: Conversation_Message> > conversation_messages (Engines :: Conversation_Engine :: get () -> get_options (Items :: Player_Character :: get(), target . cast <Items :: Character> ()));
+		gui -> call (conversation_messages);
+	}
 
 	//	hit
 	if (Engines :: Input_Engine :: get () -> get_key ("h", true)
 		|| Engines :: Input_Engine :: get () -> get_gui_button ("Hit"))
 	{
-		Items :: Player_Character :: get () -> hit ("agressive", closest_npc);
+		if (target . points_to_object ())
+		{
+			if (target . is_castable <Items :: Character> ())
+			{
+				Items :: Player_Character :: get () -> hit ("agressive", target . cast <Items :: Character> ());
+			}
+			else
+			{
+				Engines :: Log :: show ("Invalid target selected.");
+			}
+		}
+		else
+		{
+			Engines :: Log :: show ("No target selected.");
+		}
 	}
 
 	//	move the weapon
 	if (Engines :: Input_Engine :: get () -> get_key ("m", true)
 		|| Engines :: Input_Engine :: get () -> get_gui_button ("Move"))
 	{
-		Reference <Items :: Container_Item <Items :: Item> > player_hand
-			= Items :: Player_Character :: get () -> right_hand;
-		Reference <Items :: Container_Item <Items :: Item> > npc_hand
-			= closest_npc -> right_hand;
+		if (target . points_to_object ())
+		{
+			if (target . is_castable <Items :: Character> ())
+			{
+				Reference <Items :: Container_Item <Items :: Item> > player_hand
+					= Items :: Player_Character :: get () -> right_hand;
+				Reference <Items :: Container_Item <Items :: Item> > npc_hand
+					= target . cast <Items :: Character> () -> right_hand;
 
-		if (! player_hand -> is_empty ())
-		{
-			player_hand -> move (player_hand -> get_child (), npc_hand);
-			assert (player_hand -> is_empty ());
-			assert (! npc_hand -> is_empty ());
-			Engines :: Log :: show ("You gave your weapon to the ninja.");
-		}
-		else if (! npc_hand -> is_empty ())
-		{
-			npc_hand -> move (npc_hand -> get_child (), player_hand);
-			assert (npc_hand -> is_empty ());
-			assert (! player_hand -> is_empty ());
-			Engines :: Log :: show ("You took your weapon from the ninja.");
+				if (! player_hand -> is_empty ())
+				{
+					player_hand -> move (player_hand -> get_child (), npc_hand);
+					assert (player_hand -> is_empty ());
+					assert (! npc_hand -> is_empty ());
+					Engines :: Log :: show ("You gave your weapon to the ninja.");
+				}
+				else if (! npc_hand -> is_empty ())
+				{
+					npc_hand -> move (npc_hand -> get_child (), player_hand);
+					assert (npc_hand -> is_empty ());
+					assert (! player_hand -> is_empty ());
+					Engines :: Log :: show ("You took your weapon from the ninja.");
+				}
+				else
+				{
+					Engines :: Log :: show ("Both you and the ninja don't have a weapon.");
+				}
+			}
+			else
+			{
+				Engines :: Log :: show ("Invalid target selected.");
+			}
 		}
 		else
 		{
-			Engines :: Log :: show ("Both you and the ninja don't have a weapon.");
+			Engines :: Log :: show ("No target selected.");
 		}
 	}
 

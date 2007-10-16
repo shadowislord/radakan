@@ -16,7 +16,7 @@ namespace Radakan
 		///	An NPC is an in-game character that is not under direct control of the player.
 		class NPC :
 			public Character,
-			private Strategies :: Strategy_State_Machine
+			public Strategies :: Strategy_State_Machine
 		{
 			public :
 				static string get_class_name ();
@@ -34,7 +34,7 @@ namespace Radakan
 				/*virtual void drop (Reference <Item> dropped);
 				virtual void drop (Reference <Strategies :: Strategy> dropped);*/
 
-				virtual void call (const Reference <Object> message);
+				virtual void call (const Reference <Object> & message);
 				
 				virtual bool is_dead () const;
 				virtual void die ();

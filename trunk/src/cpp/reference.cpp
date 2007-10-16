@@ -15,19 +15,16 @@ template <class T> string Reference <T> ::
 }
 
 template <class T> Reference <T> & Reference <T> ::
-	operator= (const Reference & other)
+	operator= (const Reference <T> & other)
 {
 	reset_pointee (other . pointee);
 
 	return * this;
 }
 
-template <class T> template <class V> Reference <T> & Reference <T> ::
-	operator= (const Reference <V> & other)
+template <class T> template <class U> Reference <T> & Reference <T> ::
+	operator= (const Reference <U> & other)
 {
-	assert (is_initialized ());
-	assert (other . is_initialized ());
-	
 	reset_pointee (other . pointee);
 
 	return * this;
@@ -43,8 +40,8 @@ template <class T> bool Reference <T> ::
 	return pointee == other . pointee;
 }
 
-template <class T> template <class V> bool Reference <T> ::
-	operator== (const Reference <V> & other)
+template <class T> template <class U> bool Reference <T> ::
+	operator== (const Reference <U> & other)
 	const
 {
 	assert (is_initialized ());
@@ -104,8 +101,8 @@ template <class T> Reference <T> ::
 	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B", "(end)");
 }
 
-template <class T> template <class V> Reference <T> ::
-	Reference (const Reference <V> & other) :
+template <class T> template <class U> Reference <T> ::
+	Reference (const Reference <U> & other) :
 	pointee (other . pointee),
 	parent (NULL)
 {
@@ -127,8 +124,7 @@ template <class T> Reference <T> ::
 {
 	//	Engines :: Log :: trace (* this, get_class_name (), "~");
 	assert (is_initialized ());
-	assert (parent == NULL);
-	
+
 	if (pointee != NULL)
 	{
 		pointee -> unregister_reference (* this);
@@ -143,11 +139,8 @@ template <class T> void Reference <T> ::
 	assert (is_initialized ());
 	assert (parent != NULL);
 	
-	Set <T> * temp_parent = parent;
-	const_cast <Reference <T> *> (this) -> parent = NULL;
-		
-	//	My parent will delete me.
-	temp_parent -> drop (* this);
+	//	My parent deletes me.
+	parent -> drop (* this);
 }
 
 //	virtual
@@ -267,6 +260,37 @@ template <class T> bool Reference <T> ::
 	return parent != NULL;
 }
 
+template <class T> template <class U> bool Reference <T> ::
+	is_castable ()
+	const
+{
+//	Engines :: Log :: trace (* this, Reference <T> :: get_class_name (), "is_castable", "<" + U :: get_class_name () + ">");
+	assert (is_initialized ());
+
+	return (dynamic_cast <const U *> (pointee) != NULL);
+}
+
+template <class T> template <class U> Reference <U> Reference <T> ::
+	cast ()
+{
+//	Engines :: Log :: trace (* this, Reference <T> :: get_class_name (), "cast", "<" + U :: get_class_name () + ">");
+	assert (is_initialized ());
+	assert (is_castable <U> ());
+
+	return Reference <U> (dynamic_cast <U *> (pointee));
+}
+
+template <class T> template <class U> const Reference <U> Reference <T> ::
+	cast_const ()
+	const
+{
+//	Engines :: Log :: trace (* this, Reference <T> :: get_class_name (), "cast_const", "<" + U :: get_class_name () + ">");
+	assert (is_initialized ());
+	assert (is_castable <U> ());
+
+	return (const_cast <Reference <T> *> (this)) -> cast <U> ();
+}
+
 //	to avert linking errors:
 #include "alive_state.hpp"
 #include "audio_engine.hpp"
@@ -376,6 +400,16 @@ template class Reference <Tile>;
 template class Reference <Thought>;
 template class Reference <World>;
 
+template Reference <Items :: Character> & Reference <Items :: Character> ::
+	operator= (const Reference <Items :: NPC> & other);
+template Reference <Items :: Item> & Reference <Items :: Item> ::
+	operator= (const Reference <Items :: NPC> & other);
+	
+template bool Reference <Items :: Character> ::
+	operator== (const Reference <Items :: NPC> & other) const;
+template bool Reference <Items :: Character> ::
+	operator== (const Reference <Items :: Player_Character> & other) const;
+
 template Reference <Container <Items :: Item> > ::
 	Reference (const Reference <Items :: Container_Item <Items :: Item> > & other);
 template Reference <Items :: Item> ::
@@ -408,6 +442,40 @@ template Reference <Strategies :: Strategy> ::
 	Reference (const Reference <Strategies :: Menu_State> & other);
 
 template bool Reference <Items :: Character> ::
-	operator== (const Reference <Items :: NPC> & other) const;
-template bool Reference <Items :: Character> ::
-	operator== (const Reference <Items :: Player_Character> & other) const;
+	is_castable <Items :: NPC> () const;
+template bool Reference <Items :: Item> ::
+	is_castable <Items :: Character> () const;
+template bool Reference <Items :: Item> ::
+	is_castable <Items :: NPC> () const;
+template bool Reference <Object> ::
+	is_castable <Messages :: Battle_Message> () const;
+template bool Reference <Object> ::
+	is_castable <Messages :: Conversation_Message> () const;
+template bool Reference <Object> ::
+	is_castable <Set <Messages :: Conversation_Message> > () const;
+template bool Reference <Strategies :: Strategy> ::
+	is_castable <Strategies :: Alive_State> () const;
+template bool Reference <Strategies :: Strategy> ::
+	is_castable <Strategies :: Chat_State> () const;
+template bool Reference <Strategies :: Strategy> ::
+	is_castable <Strategies :: Fight_State> () const;
+
+template Reference <Items :: NPC> Reference <Items :: Character> ::
+	cast <Items :: NPC> ();
+template Reference <Items :: Character> Reference <Items :: Item> ::
+	cast <Items :: Character> ();
+/*template Reference <Items :: Container_Item <Items :: Item> > Reference <Object> ::
+	cast <Items :: Container_Item <Items :: Item> > ();*/
+template Reference <Items :: NPC> Reference <Items :: Item> ::
+	cast <Items :: NPC> ();
+template Reference <Movable_Model> Reference <Model> ::
+	cast <Movable_Model> ();
+template Reference <Set <Messages :: Conversation_Message> > Reference <Object> ::
+	cast <Set <Messages :: Conversation_Message> > ();
+template Reference <Strategies :: Alive_State> Reference <Strategies :: Strategy> ::
+	cast <Strategies :: Alive_State> ();
+
+template const Reference <Messages :: Battle_Message> Reference <Object> ::
+	cast_const <Messages :: Battle_Message> () const;
+template const Reference <Messages :: Conversation_Message> Reference <Object> ::
+	cast_const <Messages :: Conversation_Message> () const;
