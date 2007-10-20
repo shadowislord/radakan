@@ -66,42 +66,42 @@ Reference <Set <Messages :: Conversation_Message> > Conversation_Engine ::
 {
 	assert (is_initialized ());
 
-	TiXmlElement * root = behavior -> RootElement ();
-	assert (root != NULL);
-	TiXmlElement * state = root -> FirstChildElement ("if");
-	assert (state != NULL);
-	while (! evaluate_condition (state, listener))
-	{
-		state = state -> NextSiblingElement ();
-	}
-	
 	Reference <Set <Messages :: Conversation_Message> > result (new Set <Messages :: Conversation_Message> ("conversation options"));
 
-	for (TiXmlElement * dialog = state -> FirstChildElement (); dialog != NULL; dialog = dialog -> NextSiblingElement ())
+	TiXmlElement * root = behavior -> RootElement ();
+	assert (root != NULL);
+	
+	for (TiXmlElement * state = root -> FirstChildElement ("if"); state != NULL; state = state -> NextSiblingElement ())
 	{
-		TiXmlElement * options = dialog -> FirstChildElement ();
-		assert (options != NULL);
-
-		for (TiXmlElement * option = options -> FirstChildElement ();
-					option != NULL; option = option -> NextSiblingElement ())
+		if (evaluate_condition (state, listener))
 		{
-			TiXmlElement * temp = option;
-		
-			if (temp -> ValueStr () == "if")
+			for (TiXmlElement * dialog = state -> FirstChildElement (); dialog != NULL; dialog = dialog -> NextSiblingElement ())
 			{
-				if (! evaluate_condition (temp, speaker))
+				TiXmlElement * options = dialog -> FirstChildElement ();
+				assert (options != NULL);
+
+				for (TiXmlElement * option = options -> FirstChildElement ();
+							option != NULL; option = option -> NextSiblingElement ())
 				{
-					break;
+					TiXmlElement * temp = option;
+				
+					if (temp -> ValueStr () == "if")
+					{
+						if (! evaluate_condition (temp, speaker))
+						{
+							continue;
+						}
+
+						temp = temp -> FirstChildElement ();
+					}
+
+					assert (temp -> ValueStr () == "option");
+
+					Reference <Messages :: Conversation_Message> message (new Messages :: Conversation_Message (temp, speaker, listener));
+
+					result -> add (message);
 				}
-
-				temp = temp -> FirstChildElement ();
 			}
-
-			assert (temp -> ValueStr () == "option");
-
-			Reference <Messages :: Conversation_Message> message (new Messages :: Conversation_Message (temp, speaker, listener));
-
-			result -> add (message);
 		}
 	}
 
@@ -134,89 +134,80 @@ bool Conversation_Engine ::
 
 	const string & name = attribute -> NameTStr ();
 	const string & value = attribute -> ValueStr ();
+	Log :: log (me) << "evaluate: " << name  << " ? " << value << endl;
 
 	Reference <Items :: NPC> npc;
 	if (subject . is_castable <Items :: NPC> ())
 	{
 		npc = subject . cast <Items :: NPC> ();
-	}
-
-	if (name == "active_state")
-	{
-		if (npc . points_to_object ())
+		assert (npc . is_initialized ());
+		assert (npc . points_to_object ());
+		assert (npc -> is_initialized ());
+		
+		if (npc -> has_active_state ())
 		{
-			if (npc -> has_active_state ())
+			if (name == "active_state")
 			{
-				assert (npc -> get_active_state () . is_castable <Strategies :: Alive_State> ());
-				//	Log :: log (me) << name << " ?= \"" << value << "\" ~ A" << endl;
+				Log :: log (me) << name << " ?= \"" << value << "\" ~ A" << endl;
 				return Strategies :: Alive_State :: get_class_name () == value;
 			}
-			else
-			{
-				return "none" == value;
-			}
-		}
 
-		//	Log :: log (me) << name << " != \"" << value << "\" ~ C" << endl;
-		return false;
-	}
-
-	if (name == "active_alive_state")
-	{
-		if (npc . points_to_object ())
-		{
-			if (! npc -> has_active_state ())
-			{
-				//	Log :: log (me) << name << " != \"" << value << "\" ~ D" << endl;
-				return false;
-			}
-			else if (npc -> get_active_state () . points_to_object ())
+			if (name == "active_alive_state")
 			{
 				assert (npc -> get_active_state () . is_castable <Strategies :: Alive_State> ());
 				
 				Reference <Strategies :: Alive_State> alive_state (npc -> get_active_state () . cast <Strategies :: Alive_State> ());
-			
-				if (! alive_state -> has_active_state ())
+
+				if (alive_state -> has_active_state ())
 				{
-					//	Log :: log (me) << name << " ?= \"" << value << "\" ~ E" << endl;
+					if (alive_state -> get_active_state () . is_castable <Strategies :: Chat_State> ())
+					{
+						Log :: log (me) << name << " ?= \"" << value << "\" ~ B" << endl;
+						return Strategies :: Chat_State :: get_class_name () == value;
+					}
+					else
+					{
+						assert (alive_state -> get_active_state () . is_castable <Strategies :: Fight_State> ());
+						Log :: log (me) << name << " ?= \"" << value << "\" ~ C" << endl;
+						return Strategies :: Fight_State :: get_class_name () == value;
+					}
+				}
+				else
+				{
+					Log :: log (me) << name << " ?= \"" << value << "\" ~ D" << endl;
 					return "none" == value;
-				}
-				else if (alive_state -> get_active_state () . is_castable <Strategies :: Chat_State> ())
-				{
-					//	Log :: log (me) << name << " ?= \"" << value << "\" ~ F" << endl;
-					return Strategies :: Chat_State :: get_class_name () == value;
-				}
-				else if (alive_state -> get_active_state () . is_castable <Strategies :: Fight_State> ())
-				{
-					//	Log :: log (me) << name << " ?= \"" << value << "\" ~ G" << endl;
-					return Strategies :: Fight_State :: get_class_name () == value;
 				}
 			}
 		}
-
-		//	Log :: log (me) << name << " != \"" << value << "\" ~ H" << endl;
-		return false;
 	}
 
-	if (value . at (0) == '<')
+	if ((value . at (0) == '<') || (value . at (0) == '>'))
 	{
+		bool larger = (value . at (0) == '>');
 		string temp = value;
 		temp . erase (temp . begin ());
-		
+		float numeric_value = to_float (temp);
+
+		bool is_smaller;
 		if (name == "like")
 		{
-			
+			is_smaller = (numeric_value < 0.5);
+		}
+		else if (name == "fear")
+		{
+			is_smaller = (numeric_value < 0.2);
+		}
+		else
+		{
+			is_smaller = (numeric_value < subject -> get_skill (name));
 		}
 
-		return subject -> get_skill (name) < to_float (temp);
+		return (is_smaller != larger);
 	}
 	
-	if (value . at (0) == '>')
+	if ((name == "know") || (name == "have"))
 	{
-		string temp = value;
-		temp . erase (temp . begin ());
-
-		return subject -> get_skill (name) > to_float (temp);
+		return false;
 	}
 	
 	Engines :: Log :: log (me) << "Expression not valid or not implemented." << endl;

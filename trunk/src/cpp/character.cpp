@@ -161,6 +161,9 @@ float Character ::
 	get_skill (const string & skill_name)
 	const
 {
+	assert (is_initialized ());
+	assert (skill_name != "fear");
+	assert (skill_name != "like");
 	assert (0 < experiences . count (skill_name));
 
 	return 4 / Ogre :: Math :: PI * Ogre :: Math :: ATan (experiences . find (skill_name) -> second / default_experience) . valueRadians ();

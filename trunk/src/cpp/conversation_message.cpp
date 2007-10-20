@@ -92,21 +92,22 @@ string Conversation_Message ::
 	
 	string result;
 	
-	if (option -> Attribute ("shout") != NULL)
-	{
-		result = "Shout ";
-	}
-	if (option -> Attribute ("say") != NULL)
-	{
-		result += "\"" + * option -> Attribute (string ("say")) + "\" ";
-	}
-	if (option -> Attribute ("action") != NULL)
-	{
-		result += * option -> Attribute (string ("action")) + " ";
-	}
 	if (option -> Attribute ("effect") != NULL)
 	{
-		result += "<" + * option -> Attribute (string ("effect")) + "> ";
+		result = "(" + * option -> Attribute (string ("effect")) + ") ";
+	}
+	
+	if (option -> Attribute ("say") != NULL)
+	{
+		if (option -> Attribute ("shout") != NULL)
+		{
+			result += "Shout ";
+		}
+		result += "\"" + * option -> Attribute (string ("say")) + "\" ";
+	}
+	else if (option -> Attribute ("action") != NULL)
+	{
+		result += * option -> Attribute (string ("action"));
 	}
 
 	assert (! result . empty ());

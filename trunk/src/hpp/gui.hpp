@@ -11,6 +11,7 @@ namespace CEGUI
 {
 	class EventArgs;
 	class Listbox;
+	class ListboxItem;
 	class SubscriberSlot;
 	class Window;
 }
@@ -60,6 +61,8 @@ namespace Radakan
 			boost :: shared_ptr <CEGUI :: Listbox> log_window;
 
 			Reference <Set <Messages :: Conversation_Message> > messages;
+
+			map <CEGUI :: ListboxItem *, Reference <Messages :: Conversation_Message> > message_map;
 	};
 }
 

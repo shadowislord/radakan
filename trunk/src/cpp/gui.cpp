@@ -88,6 +88,8 @@ GUI ::
 				chat_window . reset ((CEGUI :: Listbox *) (temp));
 			}
 		#endif
+		
+		chat_window -> setSortingEnabled (true);
 	}
 	catch (CEGUI :: UnknownObjectException & exception)
 	{
@@ -128,28 +130,42 @@ void GUI ::
 	call (const Reference <Object> & message)
 {
 	assert (is_initialized ());
+	Engines :: Log :: trace (me, GUI :: get_class_name (), "call", message . get_name ());
 
 	if (message . is_castable <Set <Messages :: Conversation_Message> > ())
 	{
+		Engines :: Log :: log (me) << "Message set detected." << endl;
+		
 		assert (chat_window);
 
-		if (! messages . points_to_object ())
+		//	If there are old options, remove them.
+		if (messages . points_to_object ())
 		{
-			chat_window -> resetList ();	//	Clear the list.
-
-			messages . reset_pointee ();
+			message_map . clear ();
+			chat_window -> resetList ();
 		}
 		
 		messages = (const_cast <Reference <Object> &> (message)) . cast <Set <Messages :: Conversation_Message> > ();
+		assert (messages . is_initialized ());
+		assert (messages . points_to_object ());
+		assert (messages -> is_initialized ());
+		assert (messages -> get_child () . points_to_object ());
 		
 		for (Reference <Messages :: Conversation_Message> option = messages -> get_child ();
-					! option . points_to_object (); option = messages -> get_another_child ())
+			option . points_to_object (); option = messages -> get_another_child ())
 		{
-			boost :: shared_ptr <CEGUI :: ListboxTextItem> item (new CEGUI :: ListboxTextItem (option -> name));
-			item -> setUserData ((void *) (& option));
-			
-			chat_window -> addItem (item . get ());
-			chat_window -> ensureItemIsVisible (chat_window -> getItemCount ());
+			CEGUI :: ListboxTextItem * item = new CEGUI :: ListboxTextItem (option -> name);
+			message_map [item] = option;
+
+			//	As the chat window is sorted, the item is added in the right place.
+			chat_window -> addItem (item);
+
+			Engines :: Log :: log (me) << "Option '" << option -> name << "' added." << endl;
+		}
+		
+		for (int i = 0; i < chat_window -> getItemCount (); i ++)
+		{
+			chat_window -> ensureItemIsVisible (i);
 		}
 	}
 	else	//	log messages
@@ -224,8 +240,9 @@ bool GUI ::
 			{
 				return true;
 			}
-			
-			Reference <Object> message (* (Reference <Object> *) (chat_window -> getFirstSelectedItem () -> getUserData ()));
+
+			Reference <Messages :: Conversation_Message> message
+				= message_map [chat_window -> getFirstSelectedItem ()];
 			assert (message . points_to_object ());
 			assert (message -> is_initialized ());
 

@@ -83,6 +83,7 @@ template <class T> bool Slot <T> ::
 	}
 
 	child = added;
+	return true;
 }
 
 //	virtual

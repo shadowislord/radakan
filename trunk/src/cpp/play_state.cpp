@@ -150,8 +150,13 @@ Reference <Strategy> Play_State ::
 
 	if (target . points_to_object ())
 	{
-		Reference <Set <Messages :: Conversation_Message> > conversation_messages (Engines :: Conversation_Engine :: get () -> get_options (Items :: Player_Character :: get(), target . cast <Items :: Character> ()));
-		gui -> call (conversation_messages);
+		gui -> call
+		(
+			Engines :: Conversation_Engine :: get () -> get_options
+			(
+				Items :: Player_Character :: get(), target . cast <Items :: Character> ()
+			)
+		);
 	}
 
 	//	hit
