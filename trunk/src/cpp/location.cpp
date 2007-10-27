@@ -1,5 +1,5 @@
+#include "engines/log.hpp"
 #include "location.hpp"
-#include "log.hpp"
 #include "resident.hpp"
 #include "slot.hpp"
 #include "set.hpp"
@@ -22,7 +22,7 @@ template <class T> Location <T> ::
 	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name ());
 	assert ((0 < new_maximal_size) || (new_maximal_size == Container <T> :: unlimited));
 
-	string implementation_name = this -> name + "'s implementation";
+	string implementation_name = this -> me . get_name () + "'s implementation";
 
 	if (new_maximal_size == 1)
 	{
@@ -81,7 +81,7 @@ template <class T> bool Location <T> ::
 template <class T> bool Location <T> ::
 	add (Reference <T> additive)
 {
-	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "add", additive -> name);
+	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "add", additive . get_name ());
 	assert (Location <T> :: is_initialized ());
 	assert (additive . points_to_object ());
 	assert (additive -> is_initialized ());
@@ -99,7 +99,7 @@ template <class T> bool Location <T> ::
 template <class T> void Location <T> ::
 	drop (Reference <T> dropped)
 {
-	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "drop", dropped -> name);
+	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name (), "drop", dropped . get_name ());
 	assert (Location <T> :: is_initialized ());
 	assert (dropped . points_to_object ());
 	assert (dropped -> is_initialized ());
@@ -129,10 +129,12 @@ template <class T> Reference <T> Location <T> ::
 }
 
 //	to avert linking errors:
-#include "container_item.hpp"
+#include "engines/game.hpp"
 #include "gui.hpp"
+#include "items/character.hpp"
+#include "items/container_item.hpp"
 #include "model.hpp"
-#include "strategy.hpp"
+#include "strategies/strategy.hpp"
 #include "tile.hpp"
 
 template class Location <GUI>;
@@ -140,5 +142,6 @@ template class Location <Items :: Container_Item <Items :: Container_Item <Items
 template class Location <Items :: Container_Item <Items :: Item> >;
 template class Location <Items :: Item>;
 template class Location <Model>;
-template class Location <Strategies :: Strategy>;
+template class Location <Strategies :: Strategy <Engines :: Game> >;
+template class Location <Strategies :: Strategy <Items :: Character> >;
 template class Location <Tile>;

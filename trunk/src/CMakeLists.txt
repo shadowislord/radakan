@@ -15,7 +15,7 @@ if(WIN32)
     find_package(DIrectX)
 endif(WIN32)
 
-file(GLOB SRC_FILES "${RADAKAN_SOURCE_DIR}/src/cpp/*" *.cpp)
+file(GLOB_RECURSE SRC_FILES "${RADAKAN_SOURCE_DIR}/src/cpp" *.cpp)
 
 set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/src/hpp"
                     ${Boost_INCLUDE_DIR}

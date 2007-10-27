@@ -1,4 +1,4 @@
-#include "log.hpp"
+#include "engines/log.hpp"
 #include "set.hpp"
 
 using namespace std;
@@ -36,7 +36,7 @@ template <class T> Set <T> ::
 
 	for (T_Iterator child = children -> begin (); child != children -> end (); child = children -> begin ())
 	{
-		Engines :: Log :: log (this -> me) << "Dropping child '" << child -> get_name () << "'..." << endl;
+		Engines :: Log :: log (this -> me) << "Dropping child " << child -> get_name () << "..." << endl;
 		drop (* child);
 	}
 	Engines :: Log :: log (this -> me) << "All children were dropped." << endl;
@@ -97,7 +97,7 @@ template <class T> bool Set <T> ::
 	//	We can't use <= or >= here, because 'Container <T> :: unlimited < 0'.
 	if (children -> size () == Container <T> :: maximal_size)
 	{
-		Engines :: Log :: log (this -> me) << additive -> name << " could not be added. I'm full." << endl;
+		Engines :: Log :: log (this -> me) << additive << " could not be added. I'm full." << endl;
 		return false;
 	}
 
@@ -153,17 +153,17 @@ template <class T> Reference <T> Set <T> ::
 }
 
 //	to avert linking errors:
-#include "audio_engine.hpp"
-#include "conversation_message.hpp"
-#include "strategy.hpp"
+#include "engines/audio_engine.hpp"
 #include "gui.hpp"
-#include "container_item.hpp"
-#include "npc.hpp"
+#include "items/container_item.hpp"
+#include "items/npc.hpp"
+#include "messages/conversation_message.hpp"
 #include "model.hpp"
 #include "movable_model.hpp"
+#include "opinion.hpp"
+#include "strategies/play_state.hpp"
+#include "strategies/strategy.hpp"
 #include "tile.hpp"
-#include "thought.hpp"
-#include "play_state.hpp"
 
 template class Set <GUI>;
 template class Set <Items :: Character>;
@@ -171,15 +171,13 @@ template class Set <Items :: Container_Item <Items :: Container_Item <Items :: I
 template class Set <Items :: Container_Item <Items :: Item> >;
 template class Set <Items :: Item>;
 template class Set <Items :: NPC>;
-template class Set <Messages :: Conversation_Message>;
+template class Set <Messages :: Message <Items :: Character> >;
 template class Set <Model>;
 template class Set <Object>;
-template class Set <Observer <Engines :: Log> >;
-template class Set <Observer <GUI> >;
-template class Set <Observer <Items :: Character> >;
-template class Set <Observer <Strategies :: Play_State> >;
+template class Set <Observer <Messages :: Message <Items :: Character> > >;
+template class Set <Observer <Object> >;
+template class Set <Opinion>;
 template class Set <Sound_Sample>;
-template class Set <Strategies :: Strategy>;
+template class Set <Strategies :: Strategy <Engines :: Game> >;
+template class Set <Strategies :: Strategy <Items :: Character> >;
 template class Set <Tile>;
-template class Set <Thought>;
-

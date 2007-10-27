@@ -1,4 +1,4 @@
-#include "log.hpp"
+#include "engines/log.hpp"
 #include "singleton.hpp"
 
 using namespace std;
@@ -82,25 +82,24 @@ template <class T> bool Singleton <T> ::
 	return true;
 }
 
-#include "audio_engine.hpp"
-#include "battle_engine.hpp"
-#include "conversation_engine.hpp"
-#include "fight_state.hpp"
-#include "game.hpp"
-#include "gui_engine.hpp"
-#include "input_engine.hpp"
-#include "menu_state.hpp"
-#include "play_state.hpp"
-#include "player_character.hpp"
-//	#include "plugin_manager.hpp"
-#include "settings.hpp"
-#include "tracker.hpp"
+#include "engines/audio_engine.hpp"
+#include "engines/battle_engine.hpp"
+#include "engines/conversation_engine.hpp"
+#include "engines/game.hpp"
+#include "engines/gui_engine.hpp"
+#include "items/player_character.hpp"
+//	#include "engines/plugin_manager.hpp"
+#include "engines/settings.hpp"
+#include "engines/tracker.hpp"
+#include "engines/input_engine.hpp"
+#include "strategies/menu_state.hpp"
+#include "strategies/play_state.hpp"
 #include "world.hpp"
 
 template class Singleton <Strategies :: Menu_State>;
 template class Singleton <Strategies :: Play_State>;
 template class Singleton <Engines :: Audio_Engine>;
-template class Singleton <Engines :: Battle_Engine>;
+//	template class Singleton <Engines :: Battle_Engine>;
 template class Singleton <Engines :: Conversation_Engine>;
 template class Singleton <Engines :: Game>;
 template class Singleton <Engines :: GUI_Engine>;

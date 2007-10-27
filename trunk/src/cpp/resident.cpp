@@ -1,4 +1,4 @@
-#include "log.hpp"
+#include "engines/log.hpp"
 #include "resident.hpp"
 
 using namespace std;
@@ -47,7 +47,7 @@ template <class T> bool Resident <T> ::
 template <class T> void Resident <T> ::
 	enter (const Reference <Location <T> > & new_location)
 {
-	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "enter", new_location -> name);
+	Engines :: Log :: trace (me, Resident <T> :: get_class_name (), "enter", new_location . get_name ());
 	assert (Resident <T> :: is_initialized ());
 	assert (! location . points_to_object ());
 	assert (new_location . points_to_object ());
@@ -62,16 +62,18 @@ template <class T> void Resident <T> ::
 	assert (Resident <T> :: is_initialized ());
 	assert (location . points_to_object ());
 
-	Engines :: Log :: log (me) << "I'm leaving " << location . get_name () << "." << endl;
+	Engines :: Log :: log (me) << "I'm leaving " << location << "." << endl;
 
 	location . reset_pointee ();
 }
 
 //	to avert linking errors:
-#include "container_item.hpp"
+#include "engines/game.hpp"
+#include "items/character.hpp"
+#include "items/container_item.hpp"
 #include "gui.hpp"
 #include "model.hpp"
-#include "strategy.hpp"
+#include "strategies/strategy.hpp"
 #include "tile.hpp"
 
 template class Resident <GUI>;
@@ -79,5 +81,6 @@ template class Resident <Items :: Container_Item <Items :: Container_Item <Items
 template class Resident <Items :: Container_Item <Items :: Item> >;
 template class Resident <Items :: Item>;
 template class Resident <Model>;
-template class Resident <Strategies :: Strategy>;
+template class Resident <Strategies :: Strategy <Engines :: Game> >;
+template class Resident <Strategies :: Strategy <Items :: Character> >;
 template class Resident <Tile>;

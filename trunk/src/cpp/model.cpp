@@ -3,8 +3,8 @@
 #include <OgreOdeBody.h>
 #include <OgreOdeWorld.h>
 
-#include "item.hpp"
-#include "log.hpp"
+#include "engines/log.hpp"
+#include "items/item.hpp"
 #include "model.hpp"
 #include "slot.hpp"
 #include "world.hpp"
@@ -22,7 +22,7 @@ string Model ::
 //  constructor
 Model ::
 	Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale) :
-	Object (new_item -> name + "'s model"),
+	Object (new_item . get_name () + "'s model"),
 	Location <Items :: Item> (1),	//	A Model corresponds to a single Item.
 	item (new_item),
 	node (World :: get () -> root_node -> createChildSceneNode (name)),
@@ -35,7 +35,7 @@ Model ::
 		)
 	)
 {
-	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item -> name, to_string (position), to_string (scale));
+	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item . get_name (), to_string (position), to_string (scale));
 	assert (item . is_initialized ());
 	assert (item . points_to_object ());
 	assert (item -> is_initialized ());

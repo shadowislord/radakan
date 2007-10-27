@@ -68,3 +68,9 @@ string Reference_Base ::
 {
 	return "[" + number + "]";
 }
+
+ostream & Radakan ::
+	operator<< (ostream & out_stream, const Reference_Base & reference_base)
+{
+	return out_stream << reference_base . get_name ();
+}

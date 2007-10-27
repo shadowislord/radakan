@@ -4,8 +4,8 @@
 #include <OgreOdeBody.h>
 #include <OgreOdeMass.h>
 
-#include "item.hpp"
-#include "log.hpp"
+#include "engines/log.hpp"
+#include "items/item.hpp"
 #include "movable_model.hpp"
 #include "world.hpp"
 
@@ -22,10 +22,10 @@ string Movable_Model ::
 //  constructor
 Movable_Model ::
 	Movable_Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale) :
-	Object (new_item -> name + "'s movable model"),
+	Object (new_item . get_name () + "'s movable model"),
 	Model (new_item, position, scale)
 {
-	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item -> name, to_string (position), to_string (scale));
+	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item . get_name (), to_string (position), to_string (scale));
 
 	body . reset (new OgreOde :: Body (World :: get () -> ogre_ode_world . get (), name));
 	body -> setMass (OgreOde :: BoxMass (item -> mass, item -> size));

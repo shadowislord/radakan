@@ -20,11 +20,16 @@ namespace Radakan
 
 			static string get_class_name ();
 
+			///	'dropped' should not refer to NULL.
 			virtual void drop (Reference <T> dropped);
 
 			bool has_active_state () const;
+			
+			///	'get_active_state ()' requires an active state.
+			///	'get_active_state ()' will not refer to NULL.
 			Reference <T> get_active_state () const;
 
+			///	'new_state' should not refer to NULL.
 			void set_active_state (Reference <T> new_state);
 
 			///	The indices are in chronological order. (0 means first.)

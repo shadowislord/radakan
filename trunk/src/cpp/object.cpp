@@ -1,5 +1,5 @@
-#include "log.hpp"
-#include "tracker.hpp"
+#include "engines/log.hpp"
+#include "engines/tracker.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -10,9 +10,6 @@ string Radakan ::
 	return "(" + to_string (vector . x) + ", " + to_string (vector . y) + ", "
 												+ to_string (vector . z) + ")";
 }
-
-const Reference <Object> Radakan :: update (new Object ("update (static)"));
-const Reference <Object> Radakan :: terminate (new Object ("terminate (static)"));
 
 //	static
 string Object ::
@@ -72,13 +69,13 @@ void Object ::
 	{
 		if ((* i) -> has_parent ())
 		{
-			Engines :: Log :: log (me) << "Dependency to be destructed from it's parent: '" << (* i) -> get_name () << "'" << endl;
+			Engines :: Log :: log (me) << "Dependency to be destructed from it's parent: " << (* i) -> get_name () << endl;
 			//	When '* i' has a parent, 'delete (* i);' results in a double call to the destructor ().
 			(* i) -> destruct_from_parent ();
 		}
 		else
 		{
-			Engines :: Log :: log (me) << "Dependency to be reset: '" << (* i) -> get_name () << "'" << endl;
+			Engines :: Log :: log (me) << "Dependency to be reset: " << (* i) -> get_name () << endl;
 			const_cast <Reference_Base *> (* i) -> reset_pointee ();
 		}
 	}

@@ -4,9 +4,10 @@
 #include <OgreOdeSpace.h>
 #include <OgreOdeStepper.h>
 
-#include "log.hpp"
+#include "engines/log.hpp"
+#include "items/player_character.hpp"
+#include "messages/message.hpp"
 #include "movable_model.hpp"
-#include "player_character.hpp"
 #include "tile.hpp"
 #include "world.hpp"
 
@@ -79,9 +80,7 @@ World ::
 		for (int z = min_z; z <= max_z; z ++)
 		{
 			pair <int, int> coordinates (x, z);
-			Engines :: Log :: log (me) << "tile position: (" << x << ", " << z << ")" << endl;
 			tiles [coordinates] = new Tile (coordinates);
-			Engines :: Log :: log (me) << tiles [coordinates] -> name << endl;
 		}
 	}
 
@@ -184,7 +183,8 @@ void World ::
 	ogre_ode_world -> clearContacts ();
 
 	//	run the AI for all nearby NPCs
-	Items :: Player_Character :: get () -> call_observers (Radakan :: update);
+	Items :: Player_Character :: get () -> call_observers
+		(Messages :: Message <Items :: Character> :: update);
 }
 const float & World ::
 	get_last_turn_length ()

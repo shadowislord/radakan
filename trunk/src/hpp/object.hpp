@@ -94,9 +94,6 @@ namespace Radakan
 			///	'me' corrensonds to 'this'.
 			Reference <Object> me;
 	};
-
-	extern const Reference <Object> update;
-	extern const Reference <Object> terminate;
 }
 
 #endif	//	RADAKAN_OBJECT_HPP

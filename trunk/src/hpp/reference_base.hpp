@@ -35,6 +35,8 @@ namespace Radakan
 			
 			static long counter;
 	};
+
+	ostream & operator<< (ostream & out_stream, const Reference_Base & reference_base);
 }
 
 #endif	//	RADAKAN_REFERENCE_BASE_HPP

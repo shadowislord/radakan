@@ -1,4 +1,4 @@
-#include "log.hpp"
+#include "engines/log.hpp"
 #include "slot.hpp"
 #include "state_machine.hpp"
 
@@ -58,9 +58,9 @@ template <class T> void State_Machine <T> ::
 	assert (dropped -> is_initialized ());
 	
 	Location <T> :: drop (dropped);
-	history -> push_back (dropped -> name);
+	history -> push_back (dropped . get_name ());
 	
-	Engines :: Log :: log (me) << dropped . get_name () << " was dropped as active state." << endl;
+	Engines :: Log :: log (me) << dropped << " was dropped as active state." << endl;
 }
 
 template <class T> bool State_Machine <T> ::
@@ -69,7 +69,7 @@ template <class T> bool State_Machine <T> ::
 	//	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "has_active_state");
 	assert (State_Machine <T> :: is_initialized ());
 
-	return Location <T> :: get_child () . points_to_object ();
+	return ! Location <T> :: is_empty ();
 }
 
 template <class T> Reference <T> State_Machine <T> ::
@@ -97,7 +97,7 @@ template <class T> void State_Machine <T> ::
 		bool check = Location <T> :: add (new_state);
 		assert (check);
 
-		Engines :: Log :: log (me) << "The active state changed to " << new_state -> name << "." << endl;
+		Engines :: Log :: log (me) << "The active state changed to " << new_state << "." << endl;
 	}
 }
 
@@ -110,10 +110,13 @@ template <class T> const boost :: shared_ptr <vector <string> > State_Machine <T
 }
 
 //	to avert linking errors:
+#include "engines/game.hpp"
 #include "gui.hpp"
-#include "strategy.hpp"
+#include "items/character.hpp"
+#include "strategies/strategy.hpp"
 #include "tile.hpp"
 
-template class State_Machine <Strategies :: Strategy>;
+template class State_Machine <Strategies :: Strategy <Engines :: Game> >;
+template class State_Machine <Strategies :: Strategy <Items :: Character> >;
 template class State_Machine <GUI>;
 template class State_Machine <Tile>;

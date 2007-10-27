@@ -1,4 +1,4 @@
-#include "log.hpp"
+#include "engines/log.hpp"
 #include "observer.hpp"
 #include "observable.hpp"
 
@@ -49,11 +49,12 @@ template <class T> bool Observable <T> ::
 }
 
 template <class T> void Observable <T> ::
-	call_observers (const Reference <Object> & message)
+	call_observers (const Reference <T> & message)
 {
 	assert (is_initialized ());
 
-	for (Reference <Observer <T> > observer = observers -> get_child (); observer . points_to_object (); observer = observers -> get_another_child ())
+	for (Reference <Observer <T> > observer = observers -> get_child ();
+		observer . points_to_object (); observer = observers -> get_another_child ())
 	{
 		observer -> call (message);
 	}
@@ -62,7 +63,7 @@ template <class T> void Observable <T> ::
 template <class T> void Observable <T> ::
 	register_observer (Reference <Observer <T> > observer)
 {
-	Engines :: Log :: trace (me, Observable :: get_class_name (), "register_observer", observer -> name);
+	Engines :: Log :: trace (me, Observable :: get_class_name (), "register_observer", observer . get_name ());
 	assert (is_initialized ());
 	
 	bool check = observers -> add (observer);
@@ -78,10 +79,8 @@ template <class T> void Observable <T> ::
 }
 
 //	to avert linking errors:
-#include "character.hpp"
-#include "gui.hpp"
-#include "log.hpp"
+#include "items/character.hpp"
+#include "messages/message.hpp"
 
-template class Observable <Engines :: Log>;
-template class Observable <GUI>;
-template class Observable <Items :: Character>;
+template class Observable <Messages :: Message <Items :: Character> >;
+template class Observable <Object>;

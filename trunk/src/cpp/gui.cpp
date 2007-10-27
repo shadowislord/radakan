@@ -6,10 +6,9 @@
 #include <elements/CEGUIListboxTextItem.h>
 #include <elements/CEGUIPushButton.h>
 
-#include "conversation_message.hpp"
-#include "log.hpp"
-
+#include "engines/log.hpp"
 #include "gui.hpp"
+#include "messages/message.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -68,38 +67,11 @@ GUI ::
 	
 	assert (log_window);	//	Make sure it doesn't point to NULL.
 
-	//	We're re-using temp now.
-	try
-	{
-		temp = root_window -> getChild ("play-chat");
-		assert (temp != NULL);
-
-		#ifdef RADAKAN_TARIQWALJI
-			try
-			{
-		#endif
-			chat_window . reset (dynamic_cast <CEGUI :: Listbox *> (temp));
-
-		#ifdef RADAKAN_TARIQWALJI
-			}
-			catch (__non_rtti_object e)
-			{
-				Engines :: Log :: error (me) << "Chat window could not be dynamically cast. Falling back to unsafe type casting." << endl;
-				chat_window . reset ((CEGUI :: Listbox *) (temp));
-			}
-		#endif
-		
-		chat_window -> setSortingEnabled (true);
-	}
-	catch (CEGUI :: UnknownObjectException & exception)
-	{
-		//	We don't have to do anything.
-	}
 
 	subscribe (* root_window . get ());
 
 	#ifdef RADAKAN_DEBUG
-		Engines :: Log :: get () -> register_observer (Reference <Observer <Engines :: Log> > (this));
+		Engines :: Log :: get () -> register_observer (Reference <Observer <Object> > (this));
 	#endif
 
 	assert (is_initialized ());
@@ -129,51 +101,15 @@ bool GUI ::
 void GUI ::
 	call (const Reference <Object> & message)
 {
-	assert (is_initialized ());
 	Engines :: Log :: trace (me, GUI :: get_class_name (), "call", message . get_name ());
+	assert (is_initialized ());
+	assert (message . is_initialized ());
+	assert (message . points_to_object ());
+	assert (message -> is_initialized ());
 
-	if (message . is_castable <Set <Messages :: Conversation_Message> > ())
-	{
-		Engines :: Log :: log (me) << "Message set detected." << endl;
-		
-		assert (chat_window);
-
-		//	If there are old options, remove them.
-		if (messages . points_to_object ())
-		{
-			message_map . clear ();
-			chat_window -> resetList ();
-		}
-		
-		messages = (const_cast <Reference <Object> &> (message)) . cast <Set <Messages :: Conversation_Message> > ();
-		assert (messages . is_initialized ());
-		assert (messages . points_to_object ());
-		assert (messages -> is_initialized ());
-		assert (messages -> get_child () . points_to_object ());
-		
-		for (Reference <Messages :: Conversation_Message> option = messages -> get_child ();
-			option . points_to_object (); option = messages -> get_another_child ())
-		{
-			CEGUI :: ListboxTextItem * item = new CEGUI :: ListboxTextItem (option -> name);
-			message_map [item] = option;
-
-			//	As the chat window is sorted, the item is added in the right place.
-			chat_window -> addItem (item);
-
-			Engines :: Log :: log (me) << "Option '" << option -> name << "' added." << endl;
-		}
-		
-		for (int i = 0; i < chat_window -> getItemCount (); i ++)
-		{
-			chat_window -> ensureItemIsVisible (i);
-		}
-	}
-	else	//	log messages
-	{
-		CEGUI :: ListboxTextItem * item = new CEGUI :: ListboxTextItem (message -> name);
-		log_window -> addItem (item);
-		log_window -> ensureItemIsVisible (log_window -> getItemCount ());
-	}
+	CEGUI :: ListboxTextItem * item = new CEGUI :: ListboxTextItem (message . get_name ());
+	log_window -> addItem (item);
+	log_window -> ensureItemIsVisible (log_window -> getItemCount ());
 }
 
 void GUI ::
@@ -214,6 +150,7 @@ bool GUI ::
 	#endif
 
 		window_event_arguments . reset (dynamic_cast <const CEGUI :: WindowEventArgs *> (& arguments));
+		assert (window_event_arguments);
 
 	#ifdef RADAKAN_TARIQWALJI
 		}
@@ -226,39 +163,9 @@ bool GUI ::
 		}
 	#endif
 
-	if (! window_event_arguments)
-	{
-		Engines :: Log :: show ("Unknown event type...");
-	}
-	else
-	{
-		if (window_event_arguments -> window -> getType () . find ("Listbox") != string :: npos)
-		{
-			assert (chat_window);
+	string caption (window_event_arguments -> window -> getText () . c_str ());
 
-			if (chat_window -> getSelectedCount () == 0)
-			{
-				return true;
-			}
-
-			Reference <Messages :: Conversation_Message> message
-				= message_map [chat_window -> getFirstSelectedItem ()];
-			assert (message . points_to_object ());
-			assert (message -> is_initialized ());
-
-			chat_window -> clearAllSelections ();
-
-			call_observers (message);
-		}
-		else	//	button
-		{
-			string caption (window_event_arguments -> window -> getText () . c_str ());
-
-			Reference <Object> message (new Object (caption));
-
-			call_observers (message);
-		}
-	}
+	call_observers (Reference <Object> (new Object (caption)));
 
 	return true;
 }

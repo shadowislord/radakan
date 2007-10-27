@@ -1,4 +1,4 @@
-#include "log.hpp"
+#include "engines/log.hpp"
 #include "slot.hpp"
 
 using namespace std;
@@ -120,10 +120,12 @@ template <class T> Reference <T> Slot <T> ::
 	return Reference <T> ();
 }
 
+#include "engines/game.hpp"
 #include "gui.hpp"
-#include "container_item.hpp"
+#include "items/character.hpp"
+#include "items/container_item.hpp"
 #include "model.hpp"
-#include "strategy.hpp"
+#include "strategies/strategy.hpp"
 #include "tile.hpp"
 
 template class Slot <GUI>;
@@ -131,5 +133,6 @@ template class Slot <Items :: Container_Item <Items :: Container_Item <Items :: 
 template class Slot <Items :: Container_Item <Items :: Item> >;
 template class Slot <Items :: Item>;
 template class Slot <Model>;
-template class Slot <Strategies :: Strategy>;
+template class Slot <Strategies :: Strategy <Engines :: Game> >;
+template class Slot <Strategies :: Strategy <Items :: Character> >;
 template class Slot <Tile>;

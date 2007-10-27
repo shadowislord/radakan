@@ -1,5 +1,5 @@
-#include "log.hpp"
 #include "container.hpp"
+#include "engines/log.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -68,7 +68,7 @@ template <class T> bool Container <T> ::
 template <class T> bool Container <T> ::
 	move (Reference <T> moved, Reference <Container <T> > destination)
 {
-	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "move", moved . get_name (), destination -> name);
+	Engines :: Log :: trace (this -> me, Container <T> :: get_class_name (), "move", moved . get_name (), destination . get_name ());
 	assert (Container <T> :: is_initialized ());
 	assert (moved -> is_initialized ());
 	assert (destination -> is_initialized ());
@@ -88,17 +88,19 @@ template <class T> bool Container <T> ::
 }
 
 //	to avert linking errors:
-#include "audio_engine.hpp"
-#include "container_item.hpp"
-#include "conversation_message.hpp"
+#include "engines/audio_engine.hpp"
+#include "engines/game.hpp"
 #include "gui.hpp"
+#include "items/character.hpp"
+#include "items/container_item.hpp"
+#include "items/npc.hpp"
+#include "messages/conversation_message.hpp"
 #include "model.hpp"
 #include "movable_model.hpp"
-#include "npc.hpp"
-#include "play_state.hpp"
-#include "strategy.hpp"
+#include "opinion.hpp"
+#include "strategies/play_state.hpp"
+#include "strategies/strategy.hpp"
 #include "tile.hpp"
-#include "thought.hpp"
 
 template class Container <GUI>;
 template class Container <Items :: Character>;
@@ -106,14 +108,13 @@ template class Container <Items :: Container_Item <Items :: Container_Item <Item
 template class Container <Items :: Container_Item <Items :: Item> >;
 template class Container <Items :: Item>;
 template class Container <Items :: NPC>;
-template class Container <Messages :: Conversation_Message>;
+template class Container <Messages :: Message <Items :: Character> >;
 template class Container <Model>;
 template class Container <Object>;
-template class Container <Observer <Engines :: Log> >;
-template class Container <Observer <GUI> >;
-template class Container <Observer <Items :: Character> >;
-template class Container <Observer <Strategies :: Play_State> >;
+template class Container <Observer <Messages :: Message <Items :: Character> > >;
+template class Container <Observer <Object> >;
+template class Container <Opinion>;
 template class Container <Sound_Sample>;
-template class Container <Strategies :: Strategy>;
+template class Container <Strategies :: Strategy <Engines :: Game> >;
+template class Container <Strategies :: Strategy <Items :: Character> >;
 template class Container <Tile>;
-template class Container <Thought>;

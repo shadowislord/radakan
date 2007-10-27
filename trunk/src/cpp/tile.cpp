@@ -9,13 +9,13 @@
 #include <OgreOdeSpace.h>
 #include <OgreOdeWorld.h>
 
-#include "log.hpp"
+#include "engines/log.hpp"
+#include "engines/settings.hpp"
+#include "items/npc.hpp"
+#include "items/player_character.hpp"
+#include "items/static_item.hpp"
 #include "movable_model.hpp"
-#include "npc.hpp"
-#include "player_character.hpp"
-#include "static_item.hpp"
 #include "tile.hpp"
-#include "settings.hpp"
 #include "world.hpp"
 
 using namespace std;
@@ -147,7 +147,7 @@ bool Tile ::
 
 	if (model -> item . is_castable <Items :: NPC> ())
 	{
-		Engines :: Log :: log (me) << model -> item -> name << " will be added to the list of NPCs..." << endl;
+		Engines :: Log :: log (me) << model -> item << " will be added to the list of NPCs..." << endl;
 		assert (model -> item . is_initialized ());
 		assert (model -> item . points_to_object ());
 		assert (model -> item -> is_initialized ());
@@ -159,7 +159,7 @@ bool Tile ::
 		bool check = npcs -> add (temp);
 		assert (check);
 		
-		Engines :: Log :: log (me) << model -> item -> name << " was added to the list of NPCs." << endl;
+		Engines :: Log :: log (me) << model -> item << " was added to the list of NPCs." << endl;
 	}
 
 	model -> set_space (space);
@@ -171,7 +171,7 @@ bool Tile ::
 bool Tile ::
 	move (Reference <Model> model, Reference <Container <Model> > destination)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", model -> name, destination -> name);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", model . get_name (), destination . get_name ());
 	assert (is_initialized ());
 	assert (model -> is_initialized ());
 	assert (contains (model));
@@ -292,7 +292,7 @@ void Tile ::
 Reference <Model> Tile ::
 	create_model (Reference <Items :: Item> item, Ogre :: Vector3 position, float scale)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "create_model", item -> name, to_string (position), to_string (scale));
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "create_model", item . get_name (), to_string (position), to_string (scale));
 	if (item -> mobile)
 	{
 		return Reference <Model> (new Movable_Model (item, position, scale));

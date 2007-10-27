@@ -20,19 +20,20 @@ namespace Radakan
 {
 	namespace Engines
 	{
+		class Conversation_Engine;
 		class Log;
 	}
 
 	namespace Messages
 	{
-		class Conversation_Message;
+		template <class T> class Message;
 	}
 
 	///	I'm a graphical user interface.
 	class GUI :
 		public Resident <GUI>,
-		public Observable <GUI>,
-		public Observer <Engines :: Log>
+		public Observable <Object>,	//	I pass messages to the input engine.
+		public Observer <Object>	//	The log pass messages to me.
 	{
 		public :
 			GUI
@@ -47,22 +48,17 @@ namespace Radakan
 			
 			boost :: shared_ptr <CEGUI :: Window> root_window;
 
-			virtual void call (const Reference <Object> & message = update);
+			virtual void call (const Reference <Object> & message);
+
+		protected :
+			virtual bool handle_event (const CEGUI :: EventArgs & arguments);
 
 		private :
 			void subscribe (CEGUI :: Window & window);
 
-			virtual bool handle_event (const CEGUI :: EventArgs & arguments);
-
 			boost :: shared_ptr <CEGUI :: SubscriberSlot> subscriber;
 
-			boost :: shared_ptr <CEGUI :: Listbox> chat_window;
-			
 			boost :: shared_ptr <CEGUI :: Listbox> log_window;
-
-			Reference <Set <Messages :: Conversation_Message> > messages;
-
-			map <CEGUI :: ListboxItem *, Reference <Messages :: Conversation_Message> > message_map;
 	};
 }
 

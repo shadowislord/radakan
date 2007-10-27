@@ -1,5 +1,6 @@
-#include "game.hpp"
 #include <OgreException.h>
+
+#include "engines/game.hpp"
 
 using namespace std;
 

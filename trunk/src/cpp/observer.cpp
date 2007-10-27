@@ -1,5 +1,5 @@
+#include "engines/log.hpp"
 #include "observer.hpp"
-#include "log.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -44,12 +44,8 @@ template <class T> bool Observer <T> ::
 }
 
 //	to avert linking errors:
-#include "character.hpp"
-#include "gui.hpp"
-#include "log.hpp"
-#include "play_state.hpp"
+#include "items/character.hpp"
+#include "messages/message.hpp"
 
-template class Observer <Engines :: Log>;
-template class Observer <GUI>;
-template class Observer <Items :: Character>;
-template class Observer <Strategies :: Play_State>;
+template class Observer <Messages :: Message <Items :: Character> >;
+template class Observer <Object>;
