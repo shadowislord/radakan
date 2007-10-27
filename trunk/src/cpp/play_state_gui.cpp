@@ -109,21 +109,48 @@ bool Play_State_GUI ::
 	Engines :: Log :: trace (me, Play_State_GUI :: get_class_name (), "handle_event", "~arguments~");
 	assert (is_initialized ());
 
-	if (chat_window -> getSelectedCount () == 0)
+	// I had to declare this outside due to scoping.
+	boost :: scoped_ptr <const CEGUI :: WindowEventArgs> window_event_arguments;
+
+	#ifdef RADAKAN_TARIQWALJI
+		try
+		{
+	#endif
+
+		window_event_arguments . reset
+			(dynamic_cast <const CEGUI :: WindowEventArgs *> (& arguments));
+		assert (window_event_arguments);
+
+	#ifdef RADAKAN_TARIQWALJI
+		}
+		catch (__non_rtti_object e)
+		{
+			Engines :: Log :: error (me) << "The window's arguments list could not be type casted. Fallig back to unsafe type casts." << endl;
+
+			window_event_arguments . reset ((const CEGUI :: WindowEventArgs *) (& arguments));
+		}
+	#endif
+
+	if (window_event_arguments -> window -> getType () . find ("Listbox") != string :: npos)
+	{
+		if (chat_window -> getSelectedCount () != 0)
+		{
+			Reference <Messages :: Message <Items :: Character> > message
+				= option_map [chat_window -> getFirstSelectedItem ()];
+			assert (message . points_to_object ());
+			assert (message -> is_initialized ());
+
+			chat_window -> clearAllSelections ();
+
+			Observable <Messages :: Message <Items :: Character> > :: call_observers (message);
+		}
+
+		return true;
+	}
+	else
 	{
 		assert (chat_window -> getFirstSelectedItem () == NULL);
 		
 		return GUI :: handle_event (arguments);
 	}
-
-	Reference <Messages :: Message <Items :: Character> > message
-		= option_map [chat_window -> getFirstSelectedItem ()];
-	assert (message . points_to_object ());
-	assert (message -> is_initialized ());
-
-	chat_window -> clearAllSelections ();
-
-	Observable <Messages :: Message <Items :: Character> > :: call_observers (message);
-
-	return true;
 }

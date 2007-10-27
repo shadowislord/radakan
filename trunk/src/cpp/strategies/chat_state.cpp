@@ -82,11 +82,13 @@ Reference <Strategy <Items :: Character> > Chat_State ::
 				{
 					return Reference <Strategy <Items :: Character> > (new Fight_State (character, alive_state));
 				}
+				else if (new_state_class_name == "none")
+				{
+					return Reference <Strategy <Items :: Character> > ();
+				}
 				else
 				{
-					assert (new_state_class_name == "none");
-					
-					return Reference <Strategy <Items :: Character> > ();
+					return Reference <Strategy <Items :: Character> > (this);
 				}
 			}
 			

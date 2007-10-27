@@ -32,21 +32,15 @@ GUI ::
 {
 	CEGUI :: Window * temp;
 
-	try
+	if (root_window -> isChild ("play-log"))
 	{
 		temp = root_window -> getChild ("play-log");
 	}
-	catch (CEGUI :: UnknownObjectException & exception)
+	else
 	{
-		try
-		{
-			temp = root_window -> getChild ("menu-log");
-		}
-		catch (CEGUI :: UnknownObjectException & exception)
-		{
-			Engines :: Log :: error (me) << "No log window found." << endl;
-			abort ();
-		}
+		assert (root_window -> isChild ("menu-log"));
+		
+		temp = root_window -> getChild ("menu-log");
 	}
 	
 	#ifdef RADAKAN_TARIQWALJI
@@ -66,7 +60,6 @@ GUI ::
 	#endif
 	
 	assert (log_window);	//	Make sure it doesn't point to NULL.
-
 
 	subscribe (* root_window . get ());
 
