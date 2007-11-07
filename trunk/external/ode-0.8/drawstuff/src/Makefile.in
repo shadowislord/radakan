@@ -42,7 +42,6 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-LIBOBJDIR =
 
 # libdrawstuff_a_LIBADD = @GL_LIBS@
 @WIN32_TRUE@am__append_1 = windows.cpp

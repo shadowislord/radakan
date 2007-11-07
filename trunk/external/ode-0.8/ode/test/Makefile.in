@@ -37,7 +37,6 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-LIBOBJDIR =
 noinst_PROGRAMS = test_collision$(EXEEXT) test_slider$(EXEEXT) \
 	test_feedback$(EXEEXT) test_crash$(EXEEXT) test_space$(EXEEXT) \
 	test_I$(EXEEXT) test_friction$(EXEEXT) \

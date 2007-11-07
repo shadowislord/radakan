@@ -38,7 +38,6 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-LIBOBJDIR =
 traplib_PROGRAMS = libode$(EXEEXT)
 @USE_SONAME_TRUE@am__append_1 = -Wl,-soname,@ODE_SONAME@
 @OPCODE_TRUE@am__append_2 = libOPCODE.a

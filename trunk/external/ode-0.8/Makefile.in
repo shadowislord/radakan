@@ -37,7 +37,6 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-LIBOBJDIR =
 DIST_COMMON = $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/ode-config.in \
 	$(top_srcdir)/configure compile config.guess config.sub \
