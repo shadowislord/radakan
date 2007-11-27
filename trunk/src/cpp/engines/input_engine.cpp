@@ -167,7 +167,7 @@ void Input_Engine ::
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message . get_name ());
 	assert (is_initialized ());
 
-	gui_button = message . get_name ();
+	gui_button = message -> name;
 }
 
 void Input_Engine ::
@@ -214,6 +214,7 @@ const Reference <Messages :: Message <Items :: Character> > Input_Engine ::
 bool Input_Engine ::
 	get_gui_button (string button)
 {
+	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "get_gui_button", button, "-> " + gui_button);
 	assert (is_initialized ());
 
 	if (gui_button == button)
