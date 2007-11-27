@@ -7,14 +7,15 @@
 
 using namespace std;
 
-namespace CEGUI
-{
-	class EventArgs;
-	class Listbox;
-	class ListboxItem;
-	class SubscriberSlot;
-	class Window;
-}
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	namespace CEGUI
+	{
+		class EventArgs;
+		class Listbox;
+		class SubscriberSlot;
+		class Window;
+	}
+#endif
 
 namespace Radakan
 {
@@ -38,27 +39,37 @@ namespace Radakan
 		public :
 			GUI
 			(
-				string new_name,
-				boost :: shared_ptr <CEGUI :: Window> new_root
+				string new_name
+				#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+					,
+					boost :: shared_ptr <CEGUI :: Window> new_root
+				#endif
 			);
 			virtual ~GUI ();
 			virtual bool is_initialized () const;
 			
 			static string get_class_name ();
 			
-			boost :: shared_ptr <CEGUI :: Window> root_window;
+			#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+				boost :: shared_ptr <CEGUI :: Window> root_window;
+			#endif
 
 			virtual void call (const Reference <Object> & message);
 
 		protected :
-			virtual bool handle_event (const CEGUI :: EventArgs & arguments);
+			#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+				virtual bool handle_event (const CEGUI :: EventArgs & arguments);
+			#endif
 
 		private :
-			void subscribe (CEGUI :: Window & window);
+			#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+				void subscribe (CEGUI :: Window & window);
 
-			boost :: shared_ptr <CEGUI :: SubscriberSlot> subscriber;
+				boost :: shared_ptr <CEGUI :: SubscriberSlot> subscriber;
 
-			boost :: shared_ptr <CEGUI :: Listbox> log_window;
+				boost :: shared_ptr <CEGUI :: Listbox> log_window;
+			#endif
+
 	};
 }
 

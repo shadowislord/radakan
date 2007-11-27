@@ -1,13 +1,10 @@
-//	#define RADAKAN_FMOD
-
-#ifdef RADAKAN_FMOD
-	//	We're using FMOD version 3.
-	#include <fmod.h>
-#endif
-
 #include "engines/audio_engine.hpp"
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
+
+#if RADAKAN_AUDIO_MODE == RADAKAN_FMOD_MODE
+	#include <fmod.h>
+#endif
 
 using namespace std;
 using namespace Radakan;
@@ -17,25 +14,25 @@ Sound_Sample ::
 	Sound_Sample (string file_name) :
 	Object (file_name)
 {
-	#ifdef RADAKAN_FMOD
-		sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
-	#else
+	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 		sound = audiere :: OpenSound (Audio_Engine :: get () -> device . get (), file_name . c_str ());
 		if (! sound)
 		{
 			Engines :: Log :: error (me) << "OpenSound (...) failed" << endl;
 			abort ();
 		}
+	#elif RADAKAN_AUDIO_MODE == RADAKAN_FMOD_MODE
+		sample = FSOUND_Sample_Load (FSOUND_FREE, file_name . c_str (), FSOUND_NORMAL, 0, 0);
 	#endif
 }
 
 void Sound_Sample ::
 	play ()
 {
-	#ifdef RADAKAN_FMOD
-		FSOUND_PlaySound (FSOUND_FREE, sample);
-	#else
+	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 		sound -> play();
+	#elif AN_AUDIO_MODE == RADAKAN_FMOD_MODE
+		FSOUND_PlaySound (FSOUND_FREE, sample);
 	#endif
 }
 
@@ -52,9 +49,7 @@ Audio_Engine ::
 {
 	silent = false;
 
-	#ifdef RADAKAN_FMOD
-		FSOUND_Init (44100, 32, 0);
-	#else
+	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 		device = audiere :: OpenDevice ("");
 		if (! device)
 		{
@@ -63,6 +58,8 @@ Audio_Engine ::
 
 			silent = true;
 		}
+	#elif RADAKAN_AUDIO_MODE == RADAKAN_FMOD_MODE
+		FSOUND_Init (44100, 32, 0);
 	#endif
 
 	load (Settings :: get () -> radakan_path + "/data/sound/prelude_11.ogg");
@@ -79,12 +76,12 @@ Audio_Engine ::
 
 	prepare_for_destruction ();
 
-	if (! silent)
-	{
-		#ifdef RADAKAN_FMOD
+	#if RADAKAN_AUDIO_MODE == RADAKAN_FMOD_MODE
+		if (! silent)
+		{
 			FSOUND_Close ();
-		#endif
-	}
+		}
+	#endif
 }
 
 //	virtual

@@ -1,14 +1,14 @@
 #ifndef RADAKAN_AUDIO_ENGINE_HPP
 #define RADAKAN_AUDIO_ENGINE_HPP
 
-#ifdef RADAKAN_FMOD
-	class FSOUND_SAMPLE;
-#else
-	#include <audiere.h>
-#endif
-
 #include "set.hpp"
 #include "singleton.hpp"
+
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	#include <audiere.h>
+#elif RADAKAN_AUDIO_MODE == RADAKAN_FMOD_MODE
+	class FSOUND_SAMPLE;
+#endif
 
 using namespace std;
 
@@ -26,10 +26,10 @@ namespace Radakan
 			virtual void play ();
 
 		private :
-			#ifdef RADAKAN_FMOD
-				boost :: shared_ptr <FSOUND_SAMPLE> sample;
-			#else
+			#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 				audiere :: OutputStreamPtr sound;
+			#elif RADAKAN_AUDIO_MODE == RADAKAN_FMOD_MODE
+				boost :: shared_ptr <FSOUND_SAMPLE> sample;
 			#endif
 	};
 
@@ -50,7 +50,7 @@ namespace Radakan
 				void play ();
 				void load (string file_name);
 
-				#ifndef RADAKAN_FMOD
+				#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 					audiere :: AudioDevicePtr device;
 				#endif
 

@@ -3,6 +3,7 @@
 #include "messages/battle_message.hpp"
 #include "messages/conversation_message.hpp"
 #include "movable_model.hpp"
+#include "set.hpp"
 #include "strategies/alive_state.hpp"
 #include "strategies/chat_state.hpp"
 #include "strategies/fight_state.hpp"
@@ -28,7 +29,8 @@ Alive_State ::
 	(
 		new Set <Messages :: Message <Items :: Character> >
 			(character . get_name () + "'s sensory buffer")
-	)
+	),
+	opinions (new Set <Opinion> (me . get_name () + "'s opinions"))
 {
 	//	Do nothing.
 
@@ -76,7 +78,7 @@ Reference <Strategy <Items :: Character> > Alive_State ::
 	}
 	else if (message == Messages :: Message <Items :: Character> :: update)
 	{
-		Reference <Messages :: Message <Items :: Character> > actual_message = message;
+		Pointer <Messages :: Message <Items :: Character> > actual_message (message);
 		
 		if (! sensory_buffer -> is_empty ())
 		{
@@ -110,7 +112,7 @@ Reference <Strategy <Items :: Character> > Alive_State ::
 	{
 		//	We'll store the message for now, and process it on the next 'update'.
 	
-		Reference <Messages :: Message <Items :: Character> > message_copy;
+		Pointer <Messages :: Message <Items :: Character> > message_copy;
 
 		if (message . is_castable <Messages :: Battle_Message> ())
 		{

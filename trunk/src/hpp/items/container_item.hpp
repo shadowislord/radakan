@@ -37,6 +37,12 @@ namespace Radakan
 				
 				///	On success, I return 'true'.
 				virtual bool add (Reference <T> additive);
+				
+				virtual void drop (Reference <T> additive);
+
+			private :
+				float filled_volume;
+				float total_mass;
 		};
 	}
 }

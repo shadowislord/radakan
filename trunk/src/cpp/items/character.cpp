@@ -2,16 +2,16 @@
 #include "items/character.hpp"
 #include "messages/battle_message.hpp"
 #include "messages/conversation_message.hpp"
+#include "map.hpp"
 #include "movable_model.hpp"
+#include "pair.hpp"
+#include "set.hpp"
+#include "skill.hpp"
 #include "slot.hpp"
 
 using namespace std;
 using namespace Radakan;
 using namespace Radakan :: Items;
-
-//	static
-const float Character ::
-	default_experience (13);
 
 //	static
 string Character ::
@@ -71,9 +71,10 @@ Character ::
 			true,
 			1
 		)
-	)
+	),
 	//	legs (new Container_Item <Pants> ()),
-	//	feet (new Container_Item <Shoe> ())
+	//	feet (new Container_Item <Shoe> ()),
+	skills (new Map <string, Skill> ("skills"))
 {
 	Engines :: Log :: trace (me, Character :: get_class_name (), "", new_mesh_name, to_string (new_size), to_string (new_mass));
 
@@ -93,7 +94,7 @@ Character ::
 
 	Reference <Character> this_character (this);
 
-	for (Reference <Character> character = characters -> get_child ();
+	for (Pointer <Character> character = characters -> get_child ();
 		character . points_to_object (); character = characters -> get_another_child ())
 	{
 		register_observer (character);
@@ -104,8 +105,6 @@ Character ::
 	assert (check);
 
 	register_observer (this_character);
-
-	experiences ["charisma"] = default_experience;
 
 	assert (is_initialized ());
 }
@@ -153,7 +152,8 @@ void Character ::
 
 	Engines :: Log :: show (name + " hits " + target . get_name () + "!");
 
-	Reference <Messages :: Message <Character> > temp (new Messages :: Battle_Message (fight_mode, Reference <Character> (this), target));
+	Reference <Messages :: Message <Character> > temp
+		(new Messages :: Battle_Message (fight_mode, Reference <Character> (this), target));
 	call_observers (temp);
 }
 
@@ -164,15 +164,15 @@ float Character ::
 	assert (is_initialized ());
 	assert (skill_name != "fear");
 	assert (skill_name != "like");
-	assert (0 < experiences . count (skill_name));
-
-	return 4 / Ogre :: Math :: PI * Ogre :: Math :: ATan (experiences . find (skill_name) -> second / default_experience) . valueRadians ();
-}
-
-void Character ::
-	add_experience (const string & skill_name, float amount)
-{
-	assert (0 < experiences . count (skill_name));
 	
-	experiences [skill_name] += amount;
+	if (! skills -> look_up (skill_name) . points_to_object ())
+	{
+		skills -> add
+		(
+			Reference <Pair <string, Skill> >
+				(new Pair <string, Skill> (skill_name, Reference <Skill> (new Skill (skill_name))))
+		);
+	}
+
+	return skills -> look_up (skill_name) -> get_value ();
 }

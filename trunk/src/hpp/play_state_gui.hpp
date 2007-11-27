@@ -5,8 +5,17 @@
 
 using namespace std;
 
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	namespace CEGUI
+	{
+		class ListboxItem;
+	}
+#endif
+
 namespace Radakan
 {
+	template <typename T, class U> class Map;
+	
 	namespace Items
 	{
 		class Character;
@@ -25,8 +34,11 @@ namespace Radakan
 		public :
 			Play_State_GUI
 			(
-				string new_name,
-				boost :: shared_ptr <CEGUI :: Window> new_root
+				string new_name
+				#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+					,
+					boost :: shared_ptr <CEGUI :: Window> new_root
+				#endif
 			);
 			virtual ~Play_State_GUI ();
 			virtual bool is_initialized () const;
@@ -39,13 +51,17 @@ namespace Radakan
 				(const Reference <Messages :: Message <Items :: Character> > & message);
 
 		protected :
-			virtual bool handle_event (const CEGUI :: EventArgs & arguments);
-			
+			#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+				virtual bool handle_event (const CEGUI :: EventArgs & arguments);
+			#endif
+
 		private :
-			boost :: shared_ptr <CEGUI :: Listbox> chat_window;
-			
-			map <CEGUI :: ListboxItem *, Reference <Messages :: Message <Items :: Character> > >
-				option_map;
+			#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+				boost :: shared_ptr <CEGUI :: Listbox> chat_window;
+				
+				Reference <Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >
+					options;
+			#endif
 	};
 }
 

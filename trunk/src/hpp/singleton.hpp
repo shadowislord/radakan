@@ -20,7 +20,7 @@ namespace Radakan
 
 			static bool is_instantiated ();
 			static Reference <T> get ();
-			static void destruct ();
+			static void uninstantiate ();
 
 			//	virtual class, constructor protected
 			virtual ~Singleton ();

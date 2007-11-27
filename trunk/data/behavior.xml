@@ -24,16 +24,16 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 			</options>
 			<reactions>
 				<if like="&gt;0.5">
-					<reaction say="What can I do for you?" active_alive_state="Chat_State" />
+					<reaction say="What can I do for you?" />
 				</if>
 				<elseif like="&lt;0.2">
 					<reaction say="To the death!" shout="true" active_alive_state="Battle_State" />
 				</elseif>
 				<elseif fear="&gt;0.8">
-					<reaction say="I'll do everything you say." active_alive_state="Chat_State" />
+					<reaction say="I'll do everything you say." />
 				</elseif>
 				<else>
-					<reaction say="Hello." active_alive_state="Chat_State" />
+					<reaction say="Hello." />
 				</else>
 			</reactions>
 		</dialog>

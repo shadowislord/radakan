@@ -28,8 +28,6 @@ template <class T> Message <T> ::
 	Engines :: Log :: trace
 		(me, Message <T> :: get_class_name (), new_name, from . get_name (), to . get_name ());
 	assert (Object :: is_initialized ());
-	assert (from . is_initialized ());
-	assert (to . is_initialized ());
 	
 	//	Do nothing.
 	

@@ -4,11 +4,15 @@
 #include "container_item.hpp"
 #include "observable.hpp"
 #include "observer.hpp"
+#include "pointer.hpp"
 
 using namespace std;
 
 namespace Radakan
 {
+	template <typename T, class U> class Map;
+	class Skill;
+
 	namespace Messages
 	{
 		template <class T> class Message;
@@ -27,13 +31,22 @@ namespace Radakan
 			public Observer <Messages :: Message <Character> >,
 			public Container_Item <Item>
 		{
+			private :
+				static Reference <Set <Character> > characters;
+
 			public :
+				static string get_class_name ();
+
+				static string Arachnyd;
+				static string Grogg;
+				static string Harpy;
+				static string Inferno;
+				static string Xemna;
+			
 				//	The constructor is protected, see below.
 				virtual ~Character ();
 				virtual bool is_initialized () const;
 				
-				static string get_class_name ();
-
 				virtual void call (const Reference <Messages :: Message <Character> > & message) = 0;
 				
 				virtual bool is_dead () const = 0;
@@ -44,7 +57,8 @@ namespace Radakan
 				void hit (string fight_mode, Reference <Character> target);
 
 				float get_skill (const string & skill_name) const;
-				void add_experience (const string & skill_name, float amount = 1);
+
+				const string specie;
 				
 				//	Item & head;
 				//	Multislot <Shirt> & body;
@@ -55,6 +69,8 @@ namespace Radakan
 				//	Multislot <Pants> & legs;
 				//	Multislot <Shoe> & feet;
 
+				mutable Reference <Map <string, Skill> > skills;
+
 			protected :
 				Character
 				(
@@ -64,13 +80,7 @@ namespace Radakan
 				);
 
 			private :
-				static const float default_experience;
-
-				mutable Reference <Movable_Model> movable_model;
-
-				static Reference <Set <Character> > characters;
-
-				map <const string, float> experiences;
+				mutable Pointer <Movable_Model> movable_model;
 		};
 	}
 }

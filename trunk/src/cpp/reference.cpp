@@ -1,4 +1,3 @@
-//	#include "log.hpp"
 #include "reference.hpp"
 
 using namespace std;
@@ -14,29 +13,10 @@ template <class T> string Reference <T> ::
 	return "Reference <" + T :: get_class_name () + ">";
 }
 
-template <class T> Reference <T> & Reference <T> ::
-	operator= (const Reference <T> & other)
-{
-	reset_pointee (other . pointee);
-
-	return * this;
-}
-
-template <class T> template <class U> Reference <T> & Reference <T> ::
-	operator= (const Reference <U> & other)
-{
-	reset_pointee (other . pointee);
-
-	return * this;
-}
-
 template <class T> bool Reference <T> ::
 	operator== (const Reference <T> & other)
 	const
 {
-	assert (is_initialized ());
-	assert (other . is_initialized ());
-	
 	return pointee == other . pointee;
 }
 
@@ -44,27 +24,18 @@ template <class T> template <class U> bool Reference <T> ::
 	operator== (const Reference <U> & other)
 	const
 {
-	assert (is_initialized ());
-	assert (other . is_initialized ());
-	
 	return pointee == other . pointee;
 }
 
 template <class T> bool Reference <T> ::
 	operator!= (const Reference <T> & other) const
 {
-	assert (is_initialized ());
-	assert (other . is_initialized ());
-	
 	return pointee != other . pointee;
 }
 
 template <class T> bool Reference <T> ::
 	operator< (const Reference <T> & other) const
 {
-	assert (is_initialized ());
-	assert (other . is_initialized ());
-	
 	return pointee < other . pointee;
 }
 
@@ -74,13 +45,12 @@ template <class T> Reference <T> ::
 	parent (NULL)
 {
 	//	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A");
-	
+
 	if (pointee != NULL)
 	{
 		pointee -> register_reference (* this);
 	}
-	
-	assert (is_initialized ());
+
 	//	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A", "(end)");
 }
 
@@ -90,14 +60,12 @@ template <class T> Reference <T> ::
 	parent (NULL)
 {
 	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B");
-	assert (other . is_initialized ());
 
 	if (pointee != NULL)
 	{
 		pointee -> register_reference (* this);
 	}
-	
-	assert (is_initialized ());
+
 	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B", "(end)");
 }
 
@@ -107,14 +75,12 @@ template <class T> template <class U> Reference <T> ::
 	parent (NULL)
 {
 	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C");
-	assert (other . is_initialized ());
 
 	if (pointee != NULL)
 	{
 		pointee -> register_reference (* this);
 	}
-	
-	assert (is_initialized ());
+
 	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "C", "(end)");
 }
 
@@ -123,7 +89,6 @@ template <class T> Reference <T> ::
 	~Reference ()
 {
 	//	Engines :: Log :: trace (* this, get_class_name (), "~");
-	assert (is_initialized ());
 
 	if (pointee != NULL)
 	{
@@ -133,24 +98,21 @@ template <class T> Reference <T> ::
 
 //	virtual
 template <class T> void Reference <T> ::
-	destruct_from_parent () const
-{
-	//	Engines :: Log :: trace (* this, get_class_name (), "destruct_from_parent");
-	assert (is_initialized ());
-	assert (parent != NULL);
-	
-	//	My parent deletes me.
-	parent -> drop (* this);
-}
-
-//	virtual
-template <class T> bool Reference <T> ::
-	is_initialized ()
+	destruct ()
 	const
 {
-	assert ((pointee != NULL) || (parent == NULL));
+	assert (pointee != NULL);
 
-	return true;
+	if (parent == NULL)
+	{
+		pointee -> unregister_reference (* this);
+
+		const_cast <Reference <T> &> (* this) . pointee = NULL;
+	}
+	else
+	{
+		parent -> drop (* this);	//	Calls my destructor.
+	}
 }
 
 //	virtual
@@ -158,11 +120,9 @@ template <class T> string Reference <T> ::
 	get_name ()
 	const
 {
-	assert (is_initialized ());
-
 	#ifdef RADAKAN_DEBUG
 		string result = "'" + Reference_Base :: get_name () + " [" + T :: get_class_name () + "] ";
-		
+
 		if (pointee == NULL)
 		{
 			result += "NULL";
@@ -173,7 +133,7 @@ template <class T> string Reference <T> ::
 
 			if (parent != NULL)
 			{
-				result += " [P: " + parent . get_name () + "]";
+				result += " [P: " + parent -> name + "]";
 			}
 		}
 
@@ -193,9 +153,8 @@ template <class T> string Reference <T> ::
 template <class T> T * Reference <T> ::
 	operator-> ()
 {
-	assert (is_initialized ());
 	assert (pointee != NULL);
-	
+
 	return pointee;
 }
 
@@ -203,9 +162,8 @@ template <class T> const T * Reference <T> ::
 	operator-> ()
 	const
 {
-	assert (is_initialized ());
 	assert (pointee != NULL);
-	
+
 	return pointee;
 }
 
@@ -213,62 +171,13 @@ template <class T> bool Reference <T> ::
 	points_to_object ()
 	const
 {
-	assert (is_initialized ());
-	
 	return pointee != NULL;
 }
 
-//	virtual
 template <class T> void Reference <T> ::
-	reset_pointee ()
+	set_parent (Container <T> & new_parent)
 {
-	//	Engines :: Log :: trace (* this, get_class_name (), "reset_pointee");
-	
-	assert (is_initialized ());
-	assert (parent == NULL);
-	
-	if (pointee != NULL)
-	{
-		pointee -> unregister_reference (* this);
-	
-		pointee = NULL;
-	}
-}
-
-template <class T> void Reference <T> ::
-	reset_pointee (T * new_pointee)
-{
-	//	Engines :: Log :: trace (* this, get_class_name (), "reset_pointee", "~new_pointee~");
-	
-	assert (is_initialized ());
-	assert (parent == NULL);
-	
-	reset_pointee ();
-	
-	pointee = new_pointee;
-
-	if (pointee != NULL)
-	{
-		pointee -> register_reference (* this);
-	}
-}
-
-template <class T> void Reference <T> ::
-	set_parent (Set <T> & new_parent)
-{
-	assert (is_initialized ());
-	assert (parent == NULL);
-
 	parent = & new_parent;
-}
-
-template <class T> bool Reference <T> ::
-	has_parent ()
-	const
-{
-	assert (is_initialized ());
-
-	return parent != NULL;
 }
 
 template <class T> template <class U> bool Reference <T> ::
@@ -276,7 +185,6 @@ template <class T> template <class U> bool Reference <T> ::
 	const
 {
 //	Engines :: Log :: trace (* this, Reference <T> :: get_class_name (), "is_castable", "<" + U :: get_class_name () + ">");
-	assert (is_initialized ());
 
 	return (dynamic_cast <const U *> (pointee) != NULL);
 }
@@ -285,7 +193,6 @@ template <class T> template <class U> Reference <U> Reference <T> ::
 	cast ()
 {
 //	Engines :: Log :: trace (* this, Reference <T> :: get_class_name (), "cast", "<" + U :: get_class_name () + ">");
-	assert (is_initialized ());
 	assert (is_castable <U> ());
 
 	return Reference <U> (dynamic_cast <U *> (pointee));
@@ -296,13 +203,15 @@ template <class T> template <class U> const Reference <U> Reference <T> ::
 	const
 {
 //	Engines :: Log :: trace (* this, Reference <T> :: get_class_name (), "cast_const", "<" + U :: get_class_name () + ">");
-	assert (is_initialized ());
 	assert (is_castable <U> ());
 
 	return (const_cast <Reference <T> *> (this)) -> cast <U> ();
 }
 
 //	to avert linking errors:
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	#include <elements/CEGUIListboxItem.h>
+#endif
 #include "container.hpp"
 #include "engines/audio_engine.hpp"
 #include "engines/battle_engine.hpp"
@@ -317,12 +226,14 @@ template <class T> template <class U> const Reference <U> Reference <T> ::
 #include "items/npc.hpp"
 #include "items/player_character.hpp"
 #include "items/weapon.hpp"
+#include "map.hpp"
 #include "messages/battle_message.hpp"
 #include "messages/conversation_message.hpp"
 #include "model.hpp"
 #include "movable_model.hpp"
 #include "opinion.hpp"
 #include "play_state_gui.hpp"
+#include "skill.hpp"
 #include "slot.hpp"
 #include "strategies/alive_state.hpp"
 #include "strategies/chat_state.hpp"
@@ -344,6 +255,13 @@ template class Reference <Container <Object> >;
 template class Reference <Container <Observer <Messages :: Message <Items :: Character> > > >;
 template class Reference <Container <Observer <Object> > >;
 template class Reference <Container <Opinion> >;
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	template class Reference <Container <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > > >;
+#endif
+template class Reference <Container <Pair <pair <int, int>, Tile> > >;
+template class Reference <Container <Pair <string, Skill> > >;
+template class Reference <Container <Play_State_GUI> >;
+template class Reference <Container <Skill> >;
 template class Reference <Container <Sound_Sample> >;
 template class Reference <Container <Strategies :: Strategy <Engines :: Game> > >;
 template class Reference <Container <Strategies :: Strategy <Items :: Character> > >;
@@ -372,7 +290,11 @@ template class Reference <Location <Items :: Container_Item <Items :: Item> > >;
 template class Reference <Location <Model> >;
 template class Reference <Location <Strategies :: Strategy <Engines :: Game> > >;
 template class Reference <Location <Strategies :: Strategy <Items :: Character> > >;
-template class Reference <Location <Tile> >;
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	template class Reference <Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >;
+#endif
+template class Reference <Map <pair <int, int>, Tile> >;
+template class Reference <Map <string, Skill> >;
 template class Reference <Messages :: Battle_Message>;
 template class Reference <Messages :: Conversation_Message>;
 template class Reference <Messages :: Message <Engines :: Game> >;
@@ -380,10 +302,15 @@ template class Reference <Messages :: Message <Items :: Character> >;
 template class Reference <Model>;
 template class Reference <Movable_Model>;
 template class Reference <Object>;
-template class Reference <Play_State_GUI>;
 template class Reference <Observer <Messages :: Message <Items :: Character> > >;
 template class Reference <Observer <Object> >;
 template class Reference <Opinion>;
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	template class Reference <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >;
+#endif
+template class Reference <Pair <pair <int, int>, Tile> >;
+template class Reference <Pair <string, Skill> >;
+template class Reference <Play_State_GUI>;
 template class Reference <Set <GUI> >;
 template class Reference <Set <Items :: Character> >;
 template class Reference <Set <Items :: Item> >;
@@ -398,6 +325,7 @@ template class Reference <Set <Sound_Sample> >;
 template class Reference <Set <Strategies :: Strategy <Engines :: Game> > >;
 template class Reference <Set <Strategies :: Strategy <Items :: Character> > >;
 template class Reference <Set <Tile> >;
+template class Reference <Skill>;
 template class Reference <Slot <Strategies :: Strategy <Engines :: Game> > >;
 template class Reference <Slot <Strategies :: Strategy <Items :: Character> > >;
 template class Reference <Slot <Tile> >;
@@ -414,50 +342,112 @@ template class Reference <Strategies :: Strategy_State_Machine <Items :: Charact
 template class Reference <Tile>;
 template class Reference <World>;
 
-template Reference <Items :: Character> & Reference <Items :: Character> ::
-	operator= (const Reference <Items :: NPC> & other);
-template Reference <Items :: Item> & Reference <Items :: Item> ::
-	operator= (const Reference <Items :: NPC> & other);
-	
 template bool Reference <Items :: Character> ::
 	operator== (const Reference <Items :: NPC> & other) const;
 template bool Reference <Items :: Character> ::
 	operator== (const Reference <Items :: Player_Character> & other) const;
 
-template Reference <Container <Items :: Item> > ::
-	Reference (const Reference <Items :: Container_Item <Items :: Item> > & other);
-template Reference <GUI> ::
-	Reference (const Reference <Play_State_GUI> & other);
-template Reference <Items :: Item> ::
-	Reference (const Reference <Items :: Container_Item <Items :: Item> > & other);
-template Reference <Items :: Item> ::
-	Reference (const Reference <Items :: Container_Item <Items :: Container_Item <Items :: Item> > > & other);
-template Reference <Items :: Character> ::
-	Reference (const Reference <Items :: NPC> & other);
-template Reference <Items :: Character> ::
-	Reference (const Reference <Items :: Player_Character> & other);
-template Reference <Model> ::
-	Reference (const Reference <Movable_Model> & other);
-//	template Reference <Object> ::
-//		Reference (const Reference <Messages :: Battle_Message> & other);
-template Reference <Messages :: Message <Items :: Character> > ::
-	Reference (const Reference <Messages :: Conversation_Message> & other);
-template Reference <Observer <Messages :: Message <Items :: Character> > > ::
-	Reference (const Reference <Items :: Character> & other);
-template Reference <Observer <Object> > ::
-	Reference (const Reference <Engines :: Input_Engine> & other);
-template Reference <Observer <Messages :: Message <Items :: Character> > > ::
-	Reference (const Reference <Engines :: Input_Engine> & other);
-template Reference <Observer <Messages :: Message <Items :: Character> > > ::
-	Reference (const Reference <Play_State_GUI> & other);
-template Reference <Container <Model> > ::
-	Reference (const Reference <Tile> & other);
-template Reference <Strategies :: Strategy <Items :: Character> > ::
-	Reference (const Reference <Strategies :: Fight_State> & other);
-template Reference <Strategies :: Strategy <Engines :: Game> > ::
-	Reference (const Reference <Strategies :: Play_State> & other);
-template Reference <Strategies :: Strategy <Engines :: Game> > ::
-	Reference (const Reference <Strategies :: Menu_State> & other);
+template <class FROM, class TO> void convert (const FROM & from)
+{
+	return (void) TO (from);
+}
+
+template void convert
+	<
+		Reference <Engines :: Input_Engine>,
+		Reference <Observer <Messages :: Message <Items :: Character> > >
+	>
+	(const Reference <Engines :: Input_Engine> & from);
+template void convert
+	<
+		Reference <Engines :: Input_Engine>,
+		Reference <Observer <Object> >
+	>
+	(const Reference <Engines :: Input_Engine> & from);
+template void convert
+	<
+		Reference <Items :: Character>,
+		Reference <Observer <Messages :: Message <Items :: Character> > >
+	>
+	(const Reference <Items :: Character> & from);
+template void convert
+	<
+		Reference <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >,
+		Reference <Items :: Item>
+	>
+	(const Reference <Items :: Container_Item <Items :: Container_Item <Items :: Item> > > & from);
+template void convert
+	<
+		Reference <Items :: Container_Item <Items :: Item> >,
+		Reference <Container <Items :: Item> >
+	>
+	(const Reference <Items :: Container_Item <Items :: Item> > & from);
+template void convert
+	<
+		Reference <Items :: Container_Item <Items :: Item> >,
+		Reference <Items :: Item>
+	>
+	(const Reference <Items :: Container_Item <Items :: Item> > & from);
+template void convert
+	<
+		Reference <Items :: NPC>,
+		Reference <Items :: Character>
+	>
+	(const Reference <Items :: NPC> & from);
+template void convert
+	<
+		Reference <Items :: Player_Character>,
+		Reference <Items :: Character>
+	>
+	(const Reference <Items :: Player_Character> & from);
+template void convert
+	<
+		Reference <Messages :: Conversation_Message>,
+		Reference <Messages :: Message <Items :: Character> >
+	>
+	(const Reference <Messages :: Conversation_Message> & from);
+template void convert
+	<
+		Reference <Movable_Model>,
+		Reference <Model>
+	>
+	(const Reference <Movable_Model> & from);
+template void convert
+	<
+		Reference <Play_State_GUI>,
+		Reference <GUI>
+	>
+	(const Reference <Play_State_GUI> & from);
+template void convert
+	<
+		Reference <Play_State_GUI>,
+		Reference <Observer <Messages :: Message <Items :: Character> > >
+	>
+	(const Reference <Play_State_GUI> & from);
+template void convert
+	<
+		Reference <Strategies :: Fight_State>,
+		Reference <Strategies :: Strategy <Items :: Character> >
+	>
+	(const Reference <Strategies :: Fight_State> & from);
+template void convert
+	<
+		Reference <Strategies :: Menu_State>,
+		Reference <Strategies :: Strategy <Engines :: Game> >
+	>
+	(const Reference <Strategies :: Menu_State> & from);
+template void convert
+	<
+		Reference <Strategies :: Play_State>,
+		Reference <Strategies :: Strategy <Engines :: Game> >
+	>
+	(const Reference <Strategies :: Play_State> & from);
+template void convert
+	<
+		Reference <Tile>,
+		Reference <Container <Model> >
+	>
+	(const Reference <Tile> & from);
 
 template bool Reference <Items :: Character> ::
 	is_castable <Items :: NPC> () const;
@@ -469,8 +459,6 @@ template bool Reference <Messages :: Message <Items :: Character> > ::
 	is_castable <Messages :: Battle_Message> () const;
 template bool Reference <Messages :: Message <Items :: Character> > ::
 	is_castable <Messages :: Conversation_Message> () const;
-//	template bool Reference <Object> ::
-//		is_castable <Set <Messages :: Conversation_Message> > () const;
 template bool Reference <Strategies :: Strategy <Items :: Character> > ::
 	is_castable <Strategies :: Alive_State> () const;
 template bool Reference <Strategies :: Strategy <Items :: Character> > ::
@@ -482,15 +470,10 @@ template Reference <Items :: NPC> Reference <Items :: Character> ::
 	cast <Items :: NPC> ();
 template Reference <Items :: Character> Reference <Items :: Item> ::
 	cast <Items :: Character> ();
-//	template Reference <Items :: Container_Item <Items :: Item> > Reference <Object> ::
-//		cast <Items :: Container_Item <Items :: Item> > ();
 template Reference <Items :: NPC> Reference <Items :: Item> ::
 	cast <Items :: NPC> ();
 template Reference <Movable_Model> Reference <Model> ::
 	cast <Movable_Model> ();
-//	template Reference <Set <Messages :: Conversation_Message> >
-//		Reference <Messages :: Message <Items :: Character> > ::
-//		cast <Set <Messages :: Conversation_Message> > ();
 template Reference <Strategies :: Alive_State>
 	Reference <Strategies :: Strategy <Items :: Character> > ::
 	cast <Strategies :: Alive_State> ();

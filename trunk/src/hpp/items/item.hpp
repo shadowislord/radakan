@@ -63,7 +63,7 @@ namespace Radakan
 				);
 
 			private :
-				Reference <Model> model;
+				Pointer <Model> model;
 		};
 	}
 }

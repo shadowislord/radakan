@@ -13,6 +13,7 @@ namespace OgreOde
 
 namespace Radakan
 {
+	template <typename T, class U> class Map;
 	class Tile;
 
 	///	World contains all basic 'environment' data.
@@ -23,6 +24,12 @@ namespace Radakan
 	{
 		public:
 			static const unsigned int & get_turn ();
+
+			//	These are the tile position limits, not the item position limits!
+			static const int min_x;
+			static const int max_x;
+			static const int min_z;
+			static const int max_z;
 
 			World (boost :: shared_ptr <Ogre :: SceneManager> scene_manager);
 			virtual ~World ();
@@ -54,17 +61,10 @@ namespace Radakan
 			boost :: scoped_ptr <Ogre :: Timer> turn_lenght_timer;
 
 			//	The coordinates of a tile are expressed as (x, z).
-			map <pair <int, int>, Reference <Tile> > tiles;
-
-			//	These are the tile position limits, not the item position limits!
-			static const int min_x;
-			static const int max_x;
-			static const int min_z;
-			static const int max_z;
-
+			Reference <Map <pair <int, int>, Tile> > tiles;
+			
 			///	enables fps control
 			boost :: scoped_ptr <OgreOde :: ForwardFixedInterpolatedStepHandler> step_handler;
-
 	};
 }
 

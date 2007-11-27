@@ -17,10 +17,13 @@ namespace Radakan
 
 			static const int unlimited;
 
-			Container (string name = "", int new_maximal_size = unlimited);
+			Container (int new_maximal_size = unlimited);
 			virtual ~Container ();
 			virtual bool is_initialized () const;
-			
+
+			//	Drop all children.
+			void clear ();
+
 			///	When sealed, no children can be added or dropped (see the exception below).
 			void seal ();
 

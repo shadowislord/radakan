@@ -36,7 +36,6 @@ Model ::
 	)
 {
 	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item . get_name (), to_string (position), to_string (scale));
-	assert (item . is_initialized ());
 	assert (item . points_to_object ());
 	assert (item -> is_initialized ());
 
@@ -116,8 +115,7 @@ Ogre :: Vector3 Model ::
 {
 	assert (Model :: is_initialized ());
 
-	//	notice the minus sign
-	return - node -> getOrientation () * z_axis;
+	return node -> getOrientation () * z_axis;
 }
 
 Ogre :: Vector3 Model ::

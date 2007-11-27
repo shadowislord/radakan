@@ -143,14 +143,14 @@ Game ::
 	Log :: trace (me, Game :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	Strategies :: Play_State :: destruct ();
-	World :: destruct ();
-	Settings :: destruct ();
-	GUI_Engine :: destruct ();
-	//	Input_Engine :: destruct ();	//	Already auto-destructed.
-	Audio_Engine :: destruct ();
-	Log :: destruct ();
-	Tracker :: destruct ();
+	Strategies :: Play_State :: uninstantiate ();
+	World :: uninstantiate ();
+	Settings :: uninstantiate ();
+	GUI_Engine :: uninstantiate ();
+	//	Input_Engine :: uninstantiate ();	//	Already auto-destructed.
+	Audio_Engine :: uninstantiate ();
+	Log :: uninstantiate ();
+	Tracker :: uninstantiate ();
 }
 
 //	virtual

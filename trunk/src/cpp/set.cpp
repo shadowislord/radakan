@@ -15,7 +15,7 @@ template <class T> string Set <T> ::
 template <class T> Set <T> ::
 	Set (string name, int new_maximal_size) :
 	Object (name),
-	Container <T> (name, new_maximal_size),
+	Container <T> (new_maximal_size),
 	children (new set <Reference <T> >)
 {
 	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "", name, to_string (new_maximal_size));
@@ -34,12 +34,7 @@ template <class T> Set <T> ::
 
 	Object :: prepare_for_destruction ();
 
-	for (T_Iterator child = children -> begin (); child != children -> end (); child = children -> begin ())
-	{
-		Engines :: Log :: log (this -> me) << "Dropping child " << child -> get_name () << "..." << endl;
-		drop (* child);
-	}
-	Engines :: Log :: log (this -> me) << "All children were dropped." << endl;
+	this -> clear ();
 
 	assert (children -> empty ());
 }
@@ -69,9 +64,8 @@ template <class T> bool Set <T> ::
 	contains (const Reference <T> & contained)
 	const
 {
-//	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "contains", contained . get_name ());
+//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), "contains", contained . get_name ());
 	assert (Set <T> :: is_initialized ());
-	assert (contained . is_initialized ());
 	assert (contained . points_to_object ());
 	assert (contained -> is_initialized ());
 
@@ -85,7 +79,6 @@ template <class T> bool Set <T> ::
 	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "add", additive . get_name ());
 	assert (Set <T> :: is_initialized ());
 	assert (! Container <T> :: is_sealed ());
-	assert (additive . is_initialized ());
 	assert (additive . points_to_object ());
 	assert (additive -> is_initialized ());
 
@@ -101,10 +94,10 @@ template <class T> bool Set <T> ::
 		return false;
 	}
 
-	pair <T_Iterator, bool> result = children -> insert (additive);
+	pair <Next_Child_Type, bool> result = children -> insert (additive);
 	assert (result . second);
 	const_cast <Reference <T> &> (* result . first) . set_parent (* this);
-	
+		
 	assert (Set <T> :: is_initialized ());
 	return true;
 }
@@ -127,7 +120,7 @@ template <class T> Reference <T> Set <T> ::
 	get_child ()
 	const
 {
-//	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), get_child);
+//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), get_child);
 	assert (Set <T> :: is_initialized ());
 
 	if (children -> empty ())
@@ -142,7 +135,7 @@ template <class T> Reference <T> Set <T> ::
 	get_another_child ()
 	const
 {
-//	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), get_another_child);
+//	Engines :: Log :: trace (me, Set <T> :: get_class_name (), get_another_child);
 	assert (Set <T> :: is_initialized ());
 
 	if (next_child == children -> end ())

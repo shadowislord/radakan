@@ -2,6 +2,7 @@
 #define RADAKAN_LOCATION_HPP
 
 #include "container.hpp"
+#include "pointer.hpp"
 
 using namespace std;
 
@@ -36,7 +37,7 @@ namespace Radakan
 
 		private :
 			///	This can either be a Slot or a Set.
-			Reference <Container <T> > implementation;
+			Pointer <Container <T> > implementation;
 	};
 }
 

@@ -1,7 +1,7 @@
 #ifndef RADAKAN_STATE_MACHINE_HPP
 #define RADAKAN_STATE_MACHINE_HPP
 
-#include "location.hpp"
+#include "slot.hpp"
 
 using namespace std;
 
@@ -10,8 +10,7 @@ namespace Radakan
 
 	///	State_Machine is the abstract base class for all state machines.
 	template <class T> class State_Machine :
-		public virtual Object,
-		private Location <T>
+		public Slot <T>
 	{
 		public :
 			///	My constructor is protected, see below.

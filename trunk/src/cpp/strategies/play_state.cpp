@@ -1,7 +1,3 @@
-#include <CEGUIExceptions.h>
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxTextItem.h>
-
 #include <OgreSceneManager.h>
 
 #include "engines/conversation_engine.hpp"
@@ -15,6 +11,7 @@
 #include "messages/conversation_message.hpp"
 #include "movable_model.hpp"
 #include "play_state_gui.hpp"
+#include "set.hpp"
 #include "strategies/menu_state.hpp"
 #include "strategies/play_state.hpp"
 #include "tile.hpp"
@@ -61,7 +58,7 @@ Play_State ::
 
 	prepare_for_destruction ();
 
-	Engines :: Conversation_Engine :: destruct ();
+	Engines :: Conversation_Engine :: uninstantiate ();
 }
 
 //	virtual
@@ -158,11 +155,7 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 		}
 	}
 
-	if (character_target . points_to_object ())
-	{
-		Engines :: Conversation_Engine :: get () -> list_options
-			(Items :: Player_Character :: get(), character_target);
-	}
+	Engines :: Conversation_Engine :: get () -> list_options (character_target);
 
 	//	hit
 	if (Engines :: Input_Engine :: get () -> get_key ("h", true)

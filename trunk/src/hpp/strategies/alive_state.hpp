@@ -44,8 +44,10 @@ namespace Radakan
 
 			private :
 				Reference <Items :: Character> character;
-							
+				
 				Reference <Set <Messages :: Message <Items :: Character> > > sensory_buffer;
+
+				Reference <Set <Opinion> > opinions;
 		};
 	}
 }

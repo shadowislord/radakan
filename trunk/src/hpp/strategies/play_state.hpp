@@ -1,8 +1,9 @@
 #ifndef RADAKAN_PLAY_STATE_HPP
 #define RADAKAN_PLAY_STATE_HPP
 
-#include "strategy.hpp"
+#include "pointer.hpp"
 #include "singleton.hpp"
+#include "strategy.hpp"
 
 using namespace std;
 
@@ -49,8 +50,8 @@ namespace Radakan
 				
 				boost :: scoped_ptr <Ogre :: Camera> camera;
 
-				Reference <Items :: Character> character_target;
-				Reference <Items :: Item> item_target;
+				Pointer <Items :: Character> character_target;
+				Pointer <Items :: Item> item_target;
 		};
 	}
 }

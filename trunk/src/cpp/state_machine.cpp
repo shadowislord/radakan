@@ -16,10 +16,10 @@ template <class T> string State_Machine <T> ::
 template <class T> State_Machine <T> ::
 	State_Machine () :
 	Object ("Doesn't matter."),
-	Location <T> (1),	//	There can be only one active state.
+	Slot <T> ("Doesn't matter."),
 	history (new vector <string> ())
 {
-	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name ());
+	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name ());
 	
 	//	Do nothing.
 
@@ -30,7 +30,7 @@ template <class T> State_Machine <T> ::
 template <class T> State_Machine <T> ::
 	~State_Machine ()
 {
-	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "~");
+	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "~");
 	assert (State_Machine <T> :: is_initialized ());
 
 	//	Do nothing.
@@ -43,7 +43,7 @@ template <class T> bool State_Machine <T> ::
 	is_initialized ()
 	const
 {
-	assert (Location <T> :: is_initialized ());
+	assert (Slot <T> :: is_initialized ());
 
 	return true;
 }
@@ -52,15 +52,16 @@ template <class T> bool State_Machine <T> ::
 template <class T> void State_Machine <T> ::
 	drop (Reference <T> dropped)
 {
-	Engines :: Log :: trace (this -> me, State_Machine <T> :: get_class_name (), "drop", dropped . get_name ());
-	assert (Location <T> :: is_initialized ());
+	Engines :: Log :: trace
+		(this -> me, State_Machine <T> :: get_class_name (), "drop", dropped . get_name ());
+	assert (Slot <T> :: is_initialized ());
 	assert (dropped . points_to_object ());
 	assert (dropped -> is_initialized ());
 	
-	Location <T> :: drop (dropped);
+	Slot <T> :: drop (dropped);
 	history -> push_back (dropped . get_name ());
 	
-	Engines :: Log :: log (me) << dropped << " was dropped as active state." << endl;
+	Engines :: Log :: log (this -> me) << dropped << " was dropped as active state." << endl;
 }
 
 template <class T> bool State_Machine <T> ::
@@ -69,7 +70,7 @@ template <class T> bool State_Machine <T> ::
 	//	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "has_active_state");
 	assert (State_Machine <T> :: is_initialized ());
 
-	return ! Location <T> :: is_empty ();
+	return ! Slot <T> :: is_empty ();
 }
 
 template <class T> Reference <T> State_Machine <T> ::
@@ -78,7 +79,7 @@ template <class T> Reference <T> State_Machine <T> ::
 	assert (State_Machine <T> :: is_initialized ());
 	assert (has_active_state ());
 
-	return Location <T> :: get_child ();
+	return Slot <T> :: get_child ();
 }
 
 template <class T> void State_Machine <T> ::
@@ -94,10 +95,11 @@ template <class T> void State_Machine <T> ::
 			drop (get_active_state ());
 		}
 
-		bool check = Location <T> :: add (new_state);
+		bool check = Slot <T> :: add (new_state);
 		assert (check);
 
-		Engines :: Log :: log (me) << "The active state changed to " << new_state << "." << endl;
+		Engines :: Log :: log (this -> me)
+			<< "The active state changed to " << new_state << "." << endl;
 	}
 }
 

@@ -135,7 +135,6 @@ template <class T> Reference <T> Location <T> ::
 #include "items/container_item.hpp"
 #include "model.hpp"
 #include "strategies/strategy.hpp"
-#include "tile.hpp"
 
 template class Location <GUI>;
 template class Location <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
@@ -144,4 +143,3 @@ template class Location <Items :: Item>;
 template class Location <Model>;
 template class Location <Strategies :: Strategy <Engines :: Game> >;
 template class Location <Strategies :: Strategy <Items :: Character> >;
-template class Location <Tile>;

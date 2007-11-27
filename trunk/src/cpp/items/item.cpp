@@ -142,7 +142,7 @@ Reference <Model> Item ::
 float Item ::
 	get_volume () const
 {
-	assert (is_initialized ());
+	assert (Item :: is_initialized ());
 
 	return size . x * size . y * size . z;
 }

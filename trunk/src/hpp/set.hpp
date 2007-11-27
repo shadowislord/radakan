@@ -1,6 +1,8 @@
 #ifndef RADAKAN_SET_HPP
 #define RADAKAN_SET_HPP
 
+#include <set.hpp>
+
 #include "container.hpp"
 
 using namespace std;
@@ -13,12 +15,12 @@ namespace Radakan
 		public Container <T>
 	{
 		public :
+			static string get_class_name ();
+
 			Set (string name = "", int new_maximal_size = Container <T> :: unlimited);
 			virtual ~Set ();
 			virtual bool is_initialized () const;
 			
-			static string get_class_name ();
-
 			virtual bool is_empty () const;
 
 			virtual bool contains (const Reference <T> & contained) const;
@@ -38,12 +40,10 @@ namespace Radakan
 		private :
 			boost :: scoped_ptr <set <Reference <T> > > children;
 
-			//	'typename' added to assure that const_iterator is a type.
-			//	'class' would give MSV problems.
-			typedef typename set <Reference <T> > :: const_iterator T_Iterator;
-		
+			typedef typename set <Reference <T> > :: const_iterator Next_Child_Type;
+
 			//	'mutable' added to allow change even if in a const Set.
-			mutable T_Iterator next_child;
+			mutable Next_Child_Type next_child;
 		};
 }
 

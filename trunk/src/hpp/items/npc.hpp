@@ -44,8 +44,6 @@ namespace Radakan
 					Ogre :: Vector3 new_size,
 					float new_mass
 				);
-
-				Set <Opinion> opinions;
 		};
 	}
 }

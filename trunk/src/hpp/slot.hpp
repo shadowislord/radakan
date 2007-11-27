@@ -2,6 +2,7 @@
 #define RADAKAN_SLOT_HPP
 
 #include "container.hpp"
+#include "pointer.hpp"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ namespace Radakan
 			virtual Reference <T> get_another_child () const;
 
 		private :
-			Reference <T> child;
+			Pointer <T> child;
 	};
 }
 

@@ -49,9 +49,7 @@ const string Input_Engine ::
 
 Input_Engine ::
 	Input_Engine (boost :: shared_ptr <Ogre :: RenderWindow> window) :
-	Object ("input engine"),
-	Singleton <Input_Engine> (),
-	conversation_option (NULL)
+	Object ("input engine")
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "", "~window~");
 
@@ -71,8 +69,10 @@ Input_Engine ::
 	OIS :: ParamList param_list;
 	param_list . insert (make_pair (string ("WINDOW"), Ogre :: StringConverter :: toString (window_handle)));
 	#ifdef RADAKAN_WINDOWS
+		param_list . insert (make_pair (string ("w32_keyboard"), string("DISCL_NONEXCLUSIVE")));
 		param_list . insert (make_pair (string ("w32_mouse"), string ("DISCL_NONEXCLUSIVE")));
 	#else
+		param_list . insert (make_pair (string ("x11_keyboard_grab"), string("false")));
 		param_list . insert (make_pair (string ("x11_mouse_grab"), string("false")));
 	#endif
 

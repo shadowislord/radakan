@@ -14,9 +14,10 @@ template <class T> string Slot <T> ::
 //  constructor
 template <class T> Slot <T> ::
 	Slot (string new_name) :
-	Object (new_name)
+	Object (new_name),
+	Container <T> (1)
 {
-	Engines :: Log :: trace (this -> me, Slot :: get_class_name (), "");
+	Engines :: Log :: trace (this -> Object :: me, Slot :: get_class_name (), "");
 	
 	//	Do nothing.
 
@@ -61,7 +62,7 @@ template <class T> bool Slot <T> ::
 	contains (const Reference <T> & contained)
 	const
 {
-//	Engines :: Log :: trace (this -> me, Slot <T> :: get_class_name (), "contains", contained . get_name ());
+//	Engines :: Log :: trace (this -> this -> me, Slot <T> :: get_class_name (), "contains", contained . get_name ());
 	assert (Slot <T> :: is_initialized ());
 	assert (contained . points_to_object ());
 	assert (contained -> is_initialized ());
@@ -104,7 +105,7 @@ template <class T> Reference <T> Slot <T> ::
 	get_child ()
 	const
 {
-//	Engines :: Log :: trace (this -> me, Slot <T> :: get_class_name (), get_child);
+//	Engines :: Log :: trace (this -> this -> me, Slot <T> :: get_class_name (), get_child);
 	assert (Slot <T> :: is_initialized ());
 
 	return child;
@@ -114,7 +115,7 @@ template <class T> Reference <T> Slot <T> ::
 	get_another_child ()
 	const
 {
-//	Engines :: Log :: trace (this -> me, Slot <T> :: get_class_name (), get_another_child);
+//	Engines :: Log :: trace (this -> this -> me, Slot <T> :: get_class_name (), get_another_child);
 	assert (Slot <T> :: is_initialized ());
 
 	return Reference <T> ();
@@ -124,7 +125,9 @@ template <class T> Reference <T> Slot <T> ::
 #include "gui.hpp"
 #include "items/character.hpp"
 #include "items/container_item.hpp"
+#include "messages/message.hpp"
 #include "model.hpp"
+#include "skill.hpp"
 #include "strategies/strategy.hpp"
 #include "tile.hpp"
 
@@ -132,7 +135,11 @@ template class Slot <GUI>;
 template class Slot <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Slot <Items :: Container_Item <Items :: Item> >;
 template class Slot <Items :: Item>;
+template class Slot <Messages :: Message <Items :: Character> >;
 template class Slot <Model>;
+template class Slot <Observer <Messages :: Message <Items :: Character> > >;
+template class Slot <Observer <Object> >;
+template class Slot <Skill>;
 template class Slot <Strategies :: Strategy <Engines :: Game> >;
 template class Slot <Strategies :: Strategy <Items :: Character> >;
 template class Slot <Tile>;

@@ -9,7 +9,6 @@
 set(CEGUI_FOUND "NO")
 set(OGRE_HOME "$ENV{OGRE_HOME}")
 
-
 if(WIN32)
     if(MSVC80)
         find_path(CEGUI_INCLUDE_DIR "CEGUI.h"

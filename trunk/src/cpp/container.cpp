@@ -1,5 +1,6 @@
 #include "container.hpp"
 #include "engines/log.hpp"
+#include "pointer.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -17,8 +18,8 @@ template <class T> const int Container <T> ::
 
 //  constructor
 template <class T> Container <T> ::
-	Container (string name, int new_maximal_size) :
-	Object (name),
+	Container (int new_maximal_size) :
+	Object ("Doesn't matter."),
 	maximal_size (new_maximal_size),
 	sealed (false)
 {
@@ -53,6 +54,18 @@ template <class T> bool Container <T> ::
 }
 
 template <class T> void Container <T> ::
+	clear ()
+{
+	for (Pointer <T> child (get_child ()); child . points_to_object (); child = get_child ())
+	{
+		Engines :: Log :: log (this -> me) << "Dropping child " << child . get_name () << "..."
+			<< endl;
+		
+		drop (child);
+	}
+}
+
+template <class T> void Container <T> ::
 	seal ()
 {
 	sealed = true;
@@ -68,7 +81,7 @@ template <class T> bool Container <T> ::
 template <class T> bool Container <T> ::
 	move (Reference <T> moved, Reference <Container <T> > destination)
 {
-	Engines :: Log :: trace (this -> me, Container <T> :: get_class_name (), "move", moved . get_name (), destination . get_name ());
+	Engines :: Log :: trace (me, Container <T> :: get_class_name (), "move", moved . get_name (), destination . get_name ());
 	assert (Container <T> :: is_initialized ());
 	assert (moved -> is_initialized ());
 	assert (destination -> is_initialized ());
@@ -88,16 +101,22 @@ template <class T> bool Container <T> ::
 }
 
 //	to avert linking errors:
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	#include <elements/CEGUIListboxItem.h>
+#endif
 #include "engines/audio_engine.hpp"
 #include "engines/game.hpp"
 #include "gui.hpp"
 #include "items/character.hpp"
 #include "items/container_item.hpp"
 #include "items/npc.hpp"
-#include "messages/conversation_message.hpp"
+#include "messages/message.hpp"
 #include "model.hpp"
 #include "movable_model.hpp"
 #include "opinion.hpp"
+#include "pair.hpp"
+#include "play_state_gui.hpp"
+#include "skill.hpp"
 #include "strategies/play_state.hpp"
 #include "strategies/strategy.hpp"
 #include "tile.hpp"
@@ -114,6 +133,13 @@ template class Container <Object>;
 template class Container <Observer <Messages :: Message <Items :: Character> > >;
 template class Container <Observer <Object> >;
 template class Container <Opinion>;
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	template class Container <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >;
+#endif
+template class Container <Pair <pair <int, int>, Tile> >;
+template class Container <Pair <string, Skill> >;
+template class Container <Play_State_GUI>;
+template class Container <Skill>;
 template class Container <Sound_Sample>;
 template class Container <Strategies :: Strategy <Engines :: Game> >;
 template class Container <Strategies :: Strategy <Items :: Character> >;

@@ -6,6 +6,7 @@
 
 #include "engines/log.hpp"
 #include "items/player_character.hpp"
+#include "map.hpp"
 #include "messages/message.hpp"
 #include "movable_model.hpp"
 #include "tile.hpp"
@@ -62,6 +63,7 @@ World ::
 	ogre_ode_world (new OgreOde :: World (scene_manager . get ())),
 	last_turn_length (0),
 	turn_lenght_timer (new Ogre :: Timer ()),
+	tiles (new Map <pair <int, int>, Tile> ("tiles")),
 	step_handler
 	(
 		new OgreOde :: ForwardFixedInterpolatedStepHandler
@@ -80,11 +82,18 @@ World ::
 		for (int z = min_z; z <= max_z; z ++)
 		{
 			pair <int, int> coordinates (x, z);
-			tiles [coordinates] = new Tile (coordinates);
+			tiles -> add
+			(
+				Reference <Pair <pair <int, int>, Tile> >
+				(
+					new Pair <pair <int, int>, Tile>
+						(coordinates, Reference <Tile> (new Tile (coordinates)))
+				)
+			);
 		}
 	}
 
-	set_active_tile (tiles [pair <int, int> (0, 0)]);
+	set_active_tile (tiles -> look_up (pair <int, int> (0, 0)));
 
 	ogre_ode_world -> setCollisionListener (this);
 
@@ -161,20 +170,22 @@ void World ::
 
 	Ogre :: Vector3 position = Items :: Player_Character :: get () -> get_movable_model () -> node -> getPosition ();
 
-	int x = int (floor (position . x / Tile :: side_length));
-	int z = int (floor (position . z / Tile :: side_length));
-	assert (Tile :: side_length * min_x <= x);
-	assert (x < Tile :: side_length * (max_x + 1));
-	assert (Tile :: side_length * min_z <= z);
-	assert (z < Tile :: side_length * (max_z + 1));
-	Reference <Tile> new_active_tile = tiles [pair <int, int> (x, z)];
+	const int x = int (floor (position . x / Tile :: side_length));
+	const int z = int (floor (position . z / Tile :: side_length));
+	assert (min_x <= x);
+	assert (x <= max_x);
+	assert (min_z <= z);
+	assert (z <= max_z);
+	Reference <Tile> new_active_tile (tiles -> look_up (pair <int, int> (x, z)));
 	assert (new_active_tile . points_to_object ());
 	set_active_tile (new_active_tile);
 
-	for (map <pair <int, int>, Reference <Tile> > :: iterator i = tiles . begin ();
-		i != tiles . end (); i ++)
+	for (int x = min_x; x <= max_x; x ++)
 	{
-		i -> second -> space -> collide ();
+		for (int z = min_z; z <= max_z; z ++)
+		{
+			tiles -> look_up (pair <int, int> (x, z)) -> space -> collide ();
+		}
 	}
 
 	ogre_ode_world -> step (time_step);

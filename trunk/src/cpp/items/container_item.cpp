@@ -1,5 +1,6 @@
 #include "engines/log.hpp"
 #include "items/container_item.hpp"
+#include "pointer.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -35,7 +36,9 @@ template <class T> Container_Item <T> ::
 		new_solid,
 		new_visible
 	),
-	Location <T> (new_maximal_size)
+	Location <T> (new_maximal_size),
+	filled_volume (0),
+	total_mass (new_mass)
 {
 	//	Do nothing.
 	
@@ -59,6 +62,9 @@ template <class T> bool Container_Item <T> ::
 {
 	assert (Item :: is_initialized ());
 	assert (Location <T> :: is_initialized ());
+	assert (0 <= filled_volume);
+	assert (filled_volume <= get_volume ());
+	assert (0 <= total_mass);
 
 	return true;
 }
@@ -70,14 +76,6 @@ template <class T> float Container_Item <T> ::
 {
 	assert (is_initialized ());
 	
-	float total_mass = mass;
-
-	for (Reference <T> i = this -> get_child (); i . points_to_object ();
-		i = this -> get_another_child ())
-	{
-		total_mass += i -> get_total_mass ();
-	}
-
 	return total_mass;
 }
 
@@ -87,19 +85,10 @@ template <class T> bool Container_Item <T> ::
 {
 	Engines :: Log :: trace (me, Container_Item :: get_class_name (), "add", item . get_name ());
 	assert (is_initialized ());
-	assert (item -> is_initialized ());
 	assert (! this -> is_sealed ());
 	assert (item -> is_initialized ());
 	
-	float total_volume = 0;
-
-	for (Reference <T> i = this -> get_child (); i . points_to_object ();
-		i = this -> get_another_child ())
-	{
-		total_volume += i -> get_volume ();
-	}
-	
-	if (total_volume + item -> get_volume () > get_volume ())
+	if (filled_volume + item -> get_volume () > get_volume ())
 	{
 		return false;
 	}
@@ -107,7 +96,25 @@ template <class T> bool Container_Item <T> ::
 	bool check = Location <T> :: add (item);
 	assert (check);
 
+	filled_volume += item -> get_volume ();
+	total_mass += item -> get_total_mass ();
+
 	return true;
+}
+
+//	virtual
+template <class T> void Container_Item <T> ::
+	drop (Reference <T> item)
+{
+	Engines :: Log :: trace (me, Container_Item :: get_class_name (), "drop", item . get_name ());
+	assert (is_initialized ());
+	assert (item -> is_initialized ());
+	assert (contains (item));
+	
+	filled_volume -= item -> get_volume ();
+	total_mass -= item -> get_total_mass ();
+
+	Location <T> :: drop (item);
 }
 
 template class Container_Item <Container_Item <Item> >;

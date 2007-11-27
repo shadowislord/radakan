@@ -2,7 +2,6 @@
 #define RADAKAN_TILE_HPP
 
 #include "location.hpp"
-#include "resident.hpp"
 
 using namespace std;
 
@@ -27,7 +26,6 @@ namespace Radakan
 	///	A Tile is a square piece of the world.
 	///	Tile data is stored under trunk/data/tile/.
 	class Tile :
-		public Resident <Tile>,
 		public Location <Model>
 	{
 		public :

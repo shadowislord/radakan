@@ -58,9 +58,6 @@ namespace Radakan
 				Input_Engine (boost :: shared_ptr <Ogre :: RenderWindow> window);
 				virtual ~Input_Engine ();
 				virtual bool is_initialized () const;
-				
-				using Singleton <Input_Engine> :: get;
-				using Singleton <Input_Engine> :: is_instantiated;
 
 				void capture ();
 				bool get_gui_button (string button);
@@ -95,7 +92,7 @@ namespace Radakan
 				
 				///	Only one conversation option can be clicked at once.
 				///	Note: 'conversation_option' isn't a really good name.
-				Reference <Messages :: Message <Items :: Character> > conversation_option;
+				Pointer <Messages :: Message <Items :: Character> > conversation_option;
 				
 				Ogre :: Vector3 relative_mouse_position;
 				Ogre :: Vector3 absolute_mouse_position;

@@ -29,6 +29,8 @@ Object ::
 	status ("constructing"),
 	me (this)
 {
+	//	reset_pointee (this);
+	
 	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name);
 	assert (! name . empty ());
 
@@ -67,17 +69,8 @@ void Object ::
 	for (set <const Reference_Base *> :: const_iterator i = dependencies -> begin ();
 		i != dependencies -> end (); i = dependencies -> begin ())
 	{
-		if ((* i) -> has_parent ())
-		{
-			Engines :: Log :: log (me) << "Dependency to be destructed from it's parent: " << (* i) -> get_name () << endl;
-			//	When '* i' has a parent, 'delete (* i);' results in a double call to the destructor ().
-			(* i) -> destruct_from_parent ();
-		}
-		else
-		{
-			Engines :: Log :: log (me) << "Dependency to be reset: " << (* i) -> get_name () << endl;
-			const_cast <Reference_Base *> (* i) -> reset_pointee ();
-		}
+		Engines :: Log :: log (me) << (* i) -> get_name () << " is going be be destruct-ed." << endl;
+		(* i) -> destruct ();
 	}
 }
 
@@ -132,9 +125,7 @@ void  Object ::
 	const
 {
 	//	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name ());
-	
 	assert (is_initialized ());
-
 	assert (! does_depend (reference));
 
 	bool check = dependencies -> insert (& reference) . second;
@@ -157,7 +148,7 @@ void  Object ::
 	
 	assert (is_initialized ());
 	assert (does_depend (reference));
-	
+
 	dependencies -> erase (& reference);
 
 	/*for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
@@ -191,7 +182,7 @@ void  Object ::
 	}
 
 	unsigned int self_destruct_criterion = 0;
-	self_destruct_criterion ++;	//	'me' should not forbid me to destruct.
+	self_destruct_criterion ++; //	I shouldn't forbid myself to self-destruct.
 	if (Engines :: Tracker :: is_instantiated ())
 	{
 		//	The 'Tracker' Singleton should not forbid me to destruct.

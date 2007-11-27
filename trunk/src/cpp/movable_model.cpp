@@ -66,7 +66,9 @@ void Movable_Model ::
 	assert (Model :: is_initialized ());
 	assert (Ogre :: Math :: Abs (top_speed) <= 1);
 
-	body -> setForce (10000 * (top_speed * get_front_direction () - body -> getLinearVelocity ()));
+	//	I'm not fully sure why the '+'es and '-'es have to be like this.
+	//	But it works for me. --Tinus
+	body -> setForce (- 100 * (top_speed * get_front_direction () + body -> getLinearVelocity ()));
 }
 
 void Movable_Model ::

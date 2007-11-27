@@ -33,7 +33,7 @@ template <class T> Reference <T> Singleton <T> ::
 
 //	static
 template <class T> void Singleton <T> ::
-	destruct ()
+	uninstantiate ()
 {
 	assert (is_instantiated ());
 

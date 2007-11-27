@@ -2,6 +2,7 @@
 #define RADAKAN_RESIDENT_HPP
 
 #include "object.hpp"
+#include "pointer.hpp"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ namespace Radakan
 			Resident ();
 
 		private :
-			Reference <Location <T> > location;
+			Pointer <Location <T> > location;
 	};
 }
 

@@ -1,6 +1,9 @@
 #include "engines/log.hpp"
 #include "observer.hpp"
 #include "observable.hpp"
+#include "pointer.hpp"
+#include "set.hpp"
+#include "slot.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -14,10 +17,16 @@ template <class T> string Observable <T> ::
 
 //  constructor
 template <class T> Observable <T> ::
-	Observable () :
+	Observable (int maximum_number_of_observers) :
 	Object ("The name doesn't matter as this class is an abstact class."),
 	//	Set a custom context to evade problems with the dependencies.
-	observers (new Set <Observer <T> > (name + "'s observers"))
+	observers
+	(
+		maximum_number_of_observers == 1
+		? (Reference <Container <Observer <T> > > (new Slot <Observer <T> > (name + "'s observers")))
+		: (Reference <Container <Observer <T> > > (new Set  <Observer <T> >
+			(name + "'s observers", maximum_number_of_observers)))
+	)
 {
 	Engines :: Log :: trace (me, Observable :: get_class_name (), "");
 	
@@ -53,7 +62,7 @@ template <class T> void Observable <T> ::
 {
 	assert (is_initialized ());
 
-	for (Reference <Observer <T> > observer = observers -> get_child ();
+	for (Pointer <Observer <T> > observer = observers -> get_child ();
 		observer . points_to_object (); observer = observers -> get_another_child ())
 	{
 		observer -> call (message);

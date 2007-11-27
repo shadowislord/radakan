@@ -4,6 +4,7 @@
 #include "items/npc.hpp"
 #include "messages/battle_message.hpp"
 #include "movable_model.hpp"
+#include "set.hpp"
 #include "strategies/alive_state.hpp"
 #include "strategies/fight_state.hpp"
 

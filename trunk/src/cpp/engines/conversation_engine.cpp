@@ -1,14 +1,10 @@
 #include <tinyxml.h>
 
-#include <CEGUIExceptions.h>
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxTextItem.h>
-
 #include "engines/conversation_engine.hpp"
-#include "engines/gui_engine.hpp"
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
 #include "items/npc.hpp"
+#include "items/player_character.hpp"
 #include "messages/conversation_message.hpp"
 #include "strategies/alive_state.hpp"
 #include "strategies/chat_state.hpp"
@@ -29,7 +25,8 @@ string Conversation_Engine ::
 Conversation_Engine ::
 	Conversation_Engine () :
 	Object ("conversation engine"),
-	behavior (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/behavior.xml"))
+	behavior
+		(new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/behavior.xml"))
 {
 	bool check = behavior -> LoadFile ();
 	if ((! check) || behavior -> Error ())
@@ -62,48 +59,53 @@ bool Conversation_Engine ::
 }
 
 void Conversation_Engine ::
-	list_options (Reference <Items :: Character> speaker, Reference <Items :: Character> listener)
+	list_options (Reference <Items :: Character> listener)
 {
 	assert (is_initialized ());
 
 	//	Clear the options from last turn.
 	call_observers (Messages :: Message <Items :: Character> :: terminate);
 
-	TiXmlElement * root = behavior -> RootElement ();
-	assert (root != NULL);
-
-	Reference <Messages :: Message <Items :: Character> > message;
-	
-	for (TiXmlElement * state = root -> FirstChildElement ("if"); state != NULL; state = state -> NextSiblingElement ())
+	if (listener . points_to_object ())
 	{
-		if (evaluate_condition (state, listener))
-		{
-			for (TiXmlElement * dialog = state -> FirstChildElement (); dialog != NULL; dialog = dialog -> NextSiblingElement ())
-			{
-				TiXmlElement * options = dialog -> FirstChildElement ();
-				assert (options != NULL);
+		Reference <Items :: Character> speaker (Items :: Player_Character :: get ());
+	
+		TiXmlElement * root = behavior -> RootElement ();
+		assert (root != NULL);
 
-				for (TiXmlElement * option = options -> FirstChildElement ();
-							option != NULL; option = option -> NextSiblingElement ())
+		Pointer <Messages :: Message <Items :: Character> > message;
+		
+		for (TiXmlElement * state = root -> FirstChildElement ("if"); state != NULL; state = state -> NextSiblingElement ())
+		{
+			if (evaluate_condition (state, listener))
+			{
+				for (TiXmlElement * dialog = state -> FirstChildElement (); dialog != NULL; dialog = dialog -> NextSiblingElement ())
 				{
-					TiXmlElement * temp = option;
-				
-					if (temp -> ValueStr () == "if")
+					TiXmlElement * options = dialog -> FirstChildElement ();
+					assert (options != NULL);
+
+					for (TiXmlElement * option = options -> FirstChildElement ();
+								option != NULL; option = option -> NextSiblingElement ())
 					{
-						if (! evaluate_condition (temp, speaker))
+						TiXmlElement * temp = option;
+					
+						if (temp -> ValueStr () == "if")
 						{
-							continue;
+							if (! evaluate_condition (temp, speaker))
+							{
+								continue;
+							}
+
+							temp = temp -> FirstChildElement ();
 						}
 
-						temp = temp -> FirstChildElement ();
+						assert (temp -> ValueStr () == "option");
+
+						message . reset_pointee
+							(new Messages :: Conversation_Message (temp, speaker, listener));
+
+						call_observers (message);
 					}
-
-					assert (temp -> ValueStr () == "option");
-
-					message . reset_pointee
-						(new Messages :: Conversation_Message (temp, speaker, listener));
-
-					call_observers (message);
 				}
 			}
 		}
@@ -136,11 +138,9 @@ bool Conversation_Engine ::
 	const string & value = attribute -> ValueStr ();
 	Log :: log (me) << "evaluate: " << name  << " ? " << value << endl;
 
-	Reference <Items :: NPC> npc;
 	if (subject . is_castable <Items :: NPC> ())
 	{
-		npc = subject . cast <Items :: NPC> ();
-		assert (npc . is_initialized ());
+		Reference <Items :: NPC> npc ( subject . cast <Items :: NPC> ());
 		assert (npc . points_to_object ());
 		assert (npc -> is_initialized ());
 		

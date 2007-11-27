@@ -16,11 +16,11 @@ namespace Radakan
 		public Object
 	{
 		public :
+			static string get_class_name ();
+
 			Opinion (const Reference <Items :: Character> & other);
 			virtual ~Opinion ();
 			virtual bool is_initialized () const;
-
-			static string get_class_name ();
 
 			const string about;
 			

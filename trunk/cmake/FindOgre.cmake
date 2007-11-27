@@ -26,11 +26,22 @@ if(WIN32)
 
         find_path(Ogre_LIB_DEBUG "OgreMain_d.lib" 
             "${OGRE_HOME}/lib")
-    endif(MSVC80)
+    else(MSVC80)
+        find_path(Ogre_INCLUDE_DIR "Ogre.h"
+            "${OGRE_HOME}/include")
 
-    if(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)
-        set(Ogre_FOUND "YES")
-    endif(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)
+        find_path(Ogre_SAMPLES_DIR "include/Bezier.h"
+            "${OGRE_HOME}/samples")
+
+        find_path(Ogre_BIN_DIR "release/ogremain.dll"
+            "${OGRE_HOME}/bin")
+
+        find_path(Ogre_LIB_RELEASE "OgreMain.lib" 
+	        "${OGRE_HOME}/lib")
+
+        find_path(Ogre_LIB_DEBUG "OgreMain_d.lib" 
+            "${OGRE_HOME}/lib")
+    endif(MSVC80)
 else(WIN32)
     find_path(Ogre_INCLUDE_DIR "Ogre.h"
         "/usr/include/OGRE")
@@ -40,11 +51,11 @@ else(WIN32)
 
     find_path(Ogre_LIB_DEBUG "libOgreMain.so" 
         "/usr/lib")
-
-    if(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)
-        set(Ogre_FOUND "YES")
-    endif(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)
 endif(WIN32)
+
+if(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)
+	set(Ogre_FOUND "YES")
+endif(Ogre_INCLUDE_DIR AND Ogre_LIB_RELEASE AND Ogre_LIB_DEBUG)
 
 if (Ogre_FOUND)
     if (NOT Ogre_FIND_QUIETLY)

@@ -1,15 +1,17 @@
-#include <CEGUIImagesetManager.h>
-#include <CEGUISchemeManager.h>
-#include <CEGUISystem.h>
-#include <CEGUIWindow.h>
-#include <CEGUIWindowManager.h>
-#include <OgreCEGUIRenderer.h>
-
 #include "engines/gui_engine.hpp"
 #include "engines/input_engine.hpp"
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
 #include "play_state_gui.hpp"
+
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	#include <CEGUIImagesetManager.h>
+	#include <CEGUISchemeManager.h>
+	#include <CEGUISystem.h>
+	#include <CEGUIWindow.h>
+	#include <CEGUIWindowManager.h>
+	#include <OgreCEGUIRenderer.h>
+#endif
 
 using namespace std;
 using namespace Radakan;
@@ -32,40 +34,42 @@ GUI_Engine ::
 {
 	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~");
 
-	try
-	{
-		//	The following line results in an error (at line 73 of CEGUIString.cpp) for me. --Tinus
-		renderer . reset (new CEGUI :: OgreCEGUIRenderer (window . get ()));
-	}
-	catch (exception & e)
-	{
-		Log :: error (me) << "OgreCEGUIRenderer exception: " << e . what () << endl;
-		abort ();
-	}
+	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+		try
+		{
+			//	The following line results in an error (at line 73 of CEGUIString.cpp) for me. --Tinus
+			renderer . reset (new CEGUI :: OgreCEGUIRenderer (window . get ()));
+		}
+		catch (exception & e)
+		{
+			Log :: error (me) << "OgreCEGUIRenderer exception: " << e . what () << endl;
+			abort ();
+		}
 
-	Engines :: Log :: trace
-		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "AA");
-	
-	renderer -> setTargetSceneManager (scene_manager . get ());
+		Engines :: Log :: trace
+			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "AA");
+		
+		renderer -> setTargetSceneManager (scene_manager . get ());
 
-	Engines :: Log :: trace
-		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "A");
-	system . reset (new CEGUI :: System
-		(renderer . get (), NULL, NULL, NULL, "", Settings :: get () -> radakan_path + "/log/cegui.txt"));
+		Engines :: Log :: trace
+			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "A");
+		system . reset (new CEGUI :: System
+			(renderer . get (), NULL, NULL, NULL, "", Settings :: get () -> radakan_path + "/log/cegui.txt"));
 
-	CEGUI :: ImagesetManager :: getSingletonPtr () -> createImageset ("logo.imageset");
+		CEGUI :: ImagesetManager :: getSingletonPtr () -> createImageset ("logo.imageset");
 
-	Engines :: Log :: trace
-		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "B");
-	CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
-	system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
+		Engines :: Log :: trace
+			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "B");
+		CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
+		system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
-	Engines :: Log :: trace
-		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "C");
-	system -> setDefaultFont ("BlueHighway-12");
+		Engines :: Log :: trace
+			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "C");
+		system -> setDefaultFont ("BlueHighway-12");
 
-	Engines :: Log :: trace
-		(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "D");
+		Engines :: Log :: trace
+			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "D");
+	#endif
 
 	assert (is_initialized ());
 }
@@ -86,9 +90,11 @@ bool GUI_Engine ::
 {
 	assert (Singleton <GUI_Engine> :: is_initialized ());
 	assert (State_Machine <GUI> :: is_initialized ());
-	assert (renderer);
-	assert (system);
-
+	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+		assert (renderer);
+		assert (system);
+	#endif
+	
 	return true;
 }
 
@@ -97,7 +103,9 @@ void GUI_Engine ::
 {
 	assert (is_initialized ());
 
-	system -> injectMousePosition (new_position . x, new_position . y);
+	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+		system -> injectMousePosition (new_position . x, new_position . y);
+	#endif
 }
 
 void GUI_Engine ::
@@ -105,8 +113,10 @@ void GUI_Engine ::
 {
 	assert (is_initialized ());
 
-	system -> injectMouseButtonDown (CEGUI :: LeftButton);
-	system -> injectMouseButtonUp (CEGUI :: LeftButton);
+	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+		system -> injectMouseButtonDown (CEGUI :: LeftButton);
+		system -> injectMouseButtonUp (CEGUI :: LeftButton);
+	#endif
 }
 
 void GUI_Engine ::
@@ -115,7 +125,9 @@ void GUI_Engine ::
 {
 	assert (is_initialized ());
 
-	system -> renderGUI ();
+	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+		system -> renderGUI ();
+	#endif
 }
 
 template <class T> Reference <T> GUI_Engine ::
@@ -123,12 +135,18 @@ template <class T> Reference <T> GUI_Engine ::
 {
 	assert (is_initialized ());
 
-	boost :: shared_ptr <CEGUI :: Window> window
-	(
-		CEGUI :: WindowManager :: getSingleton () . loadWindowLayout (configuration_file)
-	);
+	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+		boost :: shared_ptr <CEGUI :: Window> window
+		(
+			CEGUI :: WindowManager :: getSingleton () . loadWindowLayout (configuration_file)
+		);
+	#endif
 
-	Reference <T> result (new T (configuration_file, window));
+	Reference <T> result (new T (configuration_file
+	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+		, window
+	#endif
+	));
 
 	result -> Observable <Object> :: register_observer (Input_Engine :: get ());
 
@@ -148,7 +166,9 @@ void GUI_Engine ::
 
 	State_Machine <GUI> :: set_active_state (gui);
 
-	system -> setGUISheet (gui -> root_window . get ());
+	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+		system -> setGUISheet (gui -> root_window . get ());
+	#endif
 }
 
 template Reference <GUI> GUI_Engine :: create_gui (string configuration_file);

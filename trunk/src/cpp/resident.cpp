@@ -74,7 +74,6 @@ template <class T> void Resident <T> ::
 #include "gui.hpp"
 #include "model.hpp"
 #include "strategies/strategy.hpp"
-#include "tile.hpp"
 
 template class Resident <GUI>;
 template class Resident <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
@@ -83,4 +82,3 @@ template class Resident <Items :: Item>;
 template class Resident <Model>;
 template class Resident <Strategies :: Strategy <Engines :: Game> >;
 template class Resident <Strategies :: Strategy <Items :: Character> >;
-template class Resident <Tile>;

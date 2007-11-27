@@ -3,6 +3,7 @@
 #include "messages/battle_message.hpp"
 #include "messages/conversation_message.hpp"
 #include "opinion.hpp"
+#include "set.hpp"
 #include "strategies/alive_state.hpp"
 
 using namespace std;
@@ -31,8 +32,7 @@ NPC ::
 		new_mesh_name,
 		new_size,
 		new_mass
-	),
-	opinions (me . get_name () + "'s opinions")
+	)
 {
 	Engines :: Log :: trace (me, NPC :: get_class_name (), "", me . get_name (), new_mesh_name, to_string (new_size), to_string (new_mass));
 
@@ -83,7 +83,7 @@ bool NPC ::
 void NPC ::
 	die ()
 {
-	Engines :: Log :: trace (this -> me, NPC :: get_class_name (), "die");
+	Engines :: Log :: trace (me, NPC :: get_class_name (), "die");
 	assert (NPC :: is_initialized ());
 	assert (has_model ());
 

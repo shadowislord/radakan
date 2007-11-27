@@ -37,11 +37,7 @@ namespace Radakan
 				virtual ~Conversation_Engine ();
 				virtual bool is_initialized () const;
 				
-				void list_options
-				(
-					Reference <Items :: Character> speaker,
-					Reference <Items :: Character> listener
-				);
+				void list_options (Reference <Items :: Character> listener);
 
 			private :
 				bool evaluate_condition

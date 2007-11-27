@@ -15,6 +15,7 @@
 #include "items/player_character.hpp"
 #include "items/static_item.hpp"
 #include "movable_model.hpp"
+#include "set.hpp"
 #include "tile.hpp"
 #include "world.hpp"
 
@@ -137,7 +138,6 @@ bool Tile ::
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "add", model ->name);
 	assert (is_initialized ());
-	assert (model . is_initialized ());
 	assert (model . points_to_object ());
 	assert (model -> is_initialized ());
 	assert (! contains (model));
@@ -148,11 +148,9 @@ bool Tile ::
 	if (model -> item . is_castable <Items :: NPC> ())
 	{
 		Engines :: Log :: log (me) << model -> item << " will be added to the list of NPCs..." << endl;
-		assert (model -> item . is_initialized ());
 		assert (model -> item . points_to_object ());
 		assert (model -> item -> is_initialized ());
 		Reference <Items :: NPC> temp (model -> item . cast <Items :: NPC> ());
-		assert (temp . is_initialized ());
 		assert (temp . points_to_object ());
 		assert (temp -> is_initialized ());
 		
@@ -232,7 +230,7 @@ void Tile ::
 		to_float (volume_element -> Attribute ("z"))
 	);
 
-	Reference <Items :: Item> item;
+	Pointer <Items :: Item> item;
 	if (item_xml -> ValueStr () == string ("static_item"))
 	{
 		item . reset_pointee (new Items :: Static_Item (name, mesh, volume, mass, solid));
@@ -254,7 +252,6 @@ void Tile ::
 		Engines :: Log :: error (me) << "Unrecognizable xml tag name: " << item_xml -> ValueStr () << endl;
 		abort ();
 	}
-	assert (item . is_initialized ());
 	assert (item . points_to_object ());
 	assert (item -> is_initialized ());
 
