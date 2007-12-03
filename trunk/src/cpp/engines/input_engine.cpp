@@ -1,6 +1,8 @@
 #include <OgreRenderWindow.h>
 #include <OgreStringConverter.h>
 
+#include "base.hpp"
+
 #ifndef RADAKAN_WINDOWS
 	#include <X11/Xlib.h>
 	void checkX11Events ();

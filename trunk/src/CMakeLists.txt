@@ -32,7 +32,7 @@ set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/src/hpp"
 					"${Ogre_SAMPLES_DIR}/include")
 
 if("${GUI_MODE}" STREQUAL "${CEGUI}")
-    set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CEGUI_INCLUDE_DIR})
+    set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CEGUI_INCLUDE_DIR} "${Ogre_INCLUDE_DIR}/cegui")
 endif("${GUI_MODE}" STREQUAL "${CEGUI}")
 
 if("${SOUND_MODE}" STREQUAL "${Audiere}")
@@ -81,33 +81,11 @@ else(WIN32)
     add_executable( radakan ${SRC_FILES} )
 endif(WIN32)
 
-if(WIN32)
-	set(DEBUG_LIBS debug OgreMain_d
-				debug tinyxml
-				debug prefab
-				debug ogreode_core
-				debug ois)
-
-	if("${GUI_MODE}" STREQUAL "${CEGUI}")
-		set(DEBUG_LIBS
-				${DEBUG_LIBS}
-				debug CEGUIBase_d
-				debug OgreGUIRenderer_d)
-	endif("${GUI_MODE}" STREQUAL "${CEGUI}")
-else(WIN32)
-	set(DEBUG_LIBS debug OgreMain
-				debug tinyxml
-				debug prefab
-				debug ogreode_core
-				debug ois)
-				
-	if("${GUI_MODE}" STREQUAL "${CEGUI}")
-		set(DEBUG_LIBS
-				${DEBUG_LIBS}
-				debug CEGUIBase
-				debug CEGUIOgreRenderer)
-	endif("${GUI_MODE}" STREQUAL "${CEGUI}")
-endif(WIN32)
+set(DEBUG_LIBS debug OgreMain_d
+               debug tinyxml
+               debug prefab
+               debug ogreode_core
+               debug ois)
 
 set(RELEASE_LIBS
 			optimized OgreMain
@@ -116,12 +94,35 @@ set(RELEASE_LIBS
 			optimized ogreode_core
 			optimized ois)
 
-if("${GUI_MODE}" STREQUAL "${CEGUI}")
-	set(RELEASE_LIBS
-			${RELEASE_LIBS}
-			optimized CEGUIBase
-			optimized CEGUIOgreRenderer)
-endif("${GUI_MODE}" STREQUAL "${CEGUI}")
+
+if(WIN32)
+
+	if("${GUI_MODE}" STREQUAL "${CEGUI}")
+		set(DEBUG_LIBS
+				${DEBUG_LIBS}
+				debug CEGUIBase_d
+				debug OgreGUIRenderer_d)
+
+                set(RELEASE_LIBS
+                                ${RELEASE_LIBS}
+                                optimized CEGUIBase
+                                optimized OgreGUIRenderer)
+
+	endif("${GUI_MODE}" STREQUAL "${CEGUI}")
+else(WIN32)				
+	if("${GUI_MODE}" STREQUAL "${CEGUI}")
+		set(DEBUG_LIBS
+				${DEBUG_LIBS}
+				debug CEGUIBase
+				debug CEGUIOgreRenderer)
+
+                set(RELEASE_LIBS
+                                ${RELEASE_LIBS}
+                                optimized CEGUIBase
+                                optimized CEGUIOgreRenderer)
+
+	endif("${GUI_MODE}" STREQUAL "${CEGUI}")
+endif(WIN32)
 
 if("${SOUND_MODE}" STREQUAL "${Audiere}")
 	set(DEBUG_LIBS ${DEBUG_LIBS}
