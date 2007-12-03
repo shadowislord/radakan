@@ -13,7 +13,8 @@ set(INCLUDE_DIRS    ${Ogre_INCLUDE_DIR}
                     )            
 
 include_directories( ${INCLUDE_DIRS} )                
-link_directories(   ${Ogre_LIB_RELEASE} 
+link_directories(   ${Ogre_LIB_RELEASE}
+                    ${Ogre_LIB_DEBUG} 
                     ${RADAKAN_BINARY_DIR}/ogreode_core
                     ${RADAKAN_BINARY_DIR}/prefab
                     ${RADAKAN_BINARY_DIR}/tinyxml)

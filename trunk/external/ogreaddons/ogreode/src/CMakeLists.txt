@@ -22,7 +22,7 @@ set(INCLUDE_DIRS   ${Ogre_INCLUDE_DIR}
 		            "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include" )            
 
 include_directories( ${INCLUDE_DIRS} )                
-link_directories(   ${Ogre_LIB_RELEASE} )
+link_directories(   ${Ogre_LIB_RELEASE} ${Ogre_LIB_DEBUG})
 add_library( ogreode_core SHARED ${SRC_FILES} )
 
 if(WIN32)
