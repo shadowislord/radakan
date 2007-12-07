@@ -34,7 +34,7 @@ Player_Character ::
 {
 	Engines :: Log :: trace (me, Player_Character :: get_class_name (), "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
 
-	bool check = back -> add (Reference <Container_Item <Item> > (new Container_Item <Item> ("Backbpack", "bar.mesh", Ogre :: Vector3 (0.3, 0.5, 0.2), 3)));
+	bool check = back -> add (Reference <Container_Item <Item> > (new Container_Item <Item> ("Backpack", "bar.mesh", Ogre :: Vector3 (0.3, 0.5, 0.2), 3)));
 	assert (check);
 
 	check = right_hand -> add (Reference <Item> (new Weapon ("Sword", "bar.mesh", Ogre :: Vector3 (0.1, 0.2, 0.3), 4, 5, 6, 7, 8, 9, 10)));

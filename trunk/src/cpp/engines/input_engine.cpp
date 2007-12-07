@@ -32,19 +32,19 @@ string Input_Engine ::
 //	static
 const bool Input_Engine ::
 	absolute (false);
-	
+
 //	static
 const bool Input_Engine ::
 	relative (true);
-	
+
 //	static
 const string Input_Engine ::
 	left_mouse_button ("left");
-	
+
 //	static
 const string Input_Engine ::
 	middle_mouse_button ("middle");
-	
+
 //	static
 const string Input_Engine ::
 	right_mouse_button ("right");
@@ -75,6 +75,7 @@ Input_Engine ::
 		param_list . insert (make_pair (string ("w32_mouse"), string ("DISCL_NONEXCLUSIVE")));
 	#else
 		param_list . insert (make_pair (string ("x11_keyboard_grab"), string("false")));
+		param_list . insert (make_pair (string ("XAutoRepeatOn"), string("true")));
 		param_list . insert (make_pair (string ("x11_mouse_grab"), string("false")));
 	#endif
 
@@ -125,7 +126,7 @@ Input_Engine ::
 
 	input_manager -> destroyInputObject (keyboard . get ());
 	input_manager -> destroyInputObject (mouse . get ());
-	
+
 	//	TODO solve the linking error caused by the next line.
 	//	input_manager -> destroyInputSystem (input_manager);
 
@@ -143,7 +144,7 @@ bool Input_Engine ::
 	assert (input_manager);
 	assert (mouse);
 	assert (keyboard);
-	
+
 	assert (absolute == ! relative);
 	assert (left_mouse_button != middle_mouse_button);
 	assert (right_mouse_button != left_mouse_button);
@@ -202,9 +203,9 @@ const Reference <Messages :: Message <Items :: Character> > Input_Engine ::
 		const Reference <Messages :: Message <Items :: Character> > result = conversation_option;
 
 		conversation_option . reset_pointee ();
-		
+
 		Engines :: Log :: show ("The " + result . get_name () + " option was clicked.");
-	
+
 		return result;
 	}
 	else
@@ -222,9 +223,9 @@ bool Input_Engine ::
 	if (gui_button == button)
 	{
 		Engines :: Log :: log (me) << "GUI button '" << button << "' was clicked." << endl;
-		
+
 		gui_button = "";	//	Automatically reset.
-		
+
 		return true;
 	}
 	return false;

@@ -56,13 +56,13 @@ namespace Radakan
 
 		private :
 			static unsigned int turn;
-			
+
 			float last_turn_length;
-			boost :: scoped_ptr <Ogre :: Timer> turn_lenght_timer;
+			boost :: scoped_ptr <Ogre :: Timer> turn_length_timer;
 
 			//	The coordinates of a tile are expressed as (x, z).
 			Reference <Map <pair <int, int>, Tile> > tiles;
-			
+
 			///	enables fps control
 			boost :: scoped_ptr <OgreOde :: ForwardFixedInterpolatedStepHandler> step_handler;
 	};

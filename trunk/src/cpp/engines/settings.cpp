@@ -15,7 +15,7 @@ string Settings ::
 //	static
 const float Settings ::
 	min_vertical_camera_angle (- Ogre :: Math :: HALF_PI);
-	
+
 //	static
 const float Settings ::
 	max_vertical_camera_angle (Ogre :: Math :: HALF_PI);
@@ -24,7 +24,8 @@ Settings ::
 	Settings (string new_radakan_path) :
 	Object ("settings"),
 	radakan_path (new_radakan_path),
-	camera_distance (0.72)
+	camera_distance (0.72),
+	vertical_camera_angle(0)
 {
 	#ifdef RADAKAN_WSAD
 		forward_key = "w";

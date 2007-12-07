@@ -18,8 +18,8 @@ Opinion ::
 	Opinion (const Reference <Items :: Character> & other) :
 	Object ("opinion about " + other . get_name ()),
 	about (other . get_name ()),
-	fear (0),
-	like (0.5)
+	like (0.5),
+	fear (0)
 {
 	Engines :: Log :: trace (me, Opinion :: get_class_name (), "", other . get_name ());
 

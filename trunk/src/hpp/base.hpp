@@ -41,6 +41,6 @@
  *      3       Use Audiere
  *      4       Use FMod
  */
-#define RADAKAN_AUDIO_MODE 3
+#define RADAKAN_AUDIO_MODE 0
 
 #define RADAKAN_GUI_MODE 1
