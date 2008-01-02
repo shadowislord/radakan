@@ -41,6 +41,7 @@ using namespace std;
 		game -> run ();
 		
 		//	The game is automatically shut down here.
+		game . destruct ();
 	}
 	catch (Ogre :: Exception & exception)
 	{

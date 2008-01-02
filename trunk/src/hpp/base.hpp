@@ -29,18 +29,3 @@
 
 	#define RADAKAN_WINDOWS
 #endif
-
-#define RADAKAN_CEGUI_MODE 1
-#define RADAKAN_OPENGUI_MODE 2
-#define RADAKAN_AUDIERE_MODE 3
-#define RADAKAN_FMOD_MODE 4
-
-/*
- * This define sets the audio mode for the whole game.
- *      0       No audio
- *      3       Use Audiere
- *      4       Use FMod
- */
-#define RADAKAN_AUDIO_MODE 0
-
-#define RADAKAN_GUI_MODE 1

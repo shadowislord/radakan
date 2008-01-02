@@ -20,7 +20,7 @@ string Log ::
 //  constructor
 Log ::
 	Log (string radakan_path) :
-	Object ("log")
+	Object ("log", true)	//	Here 'true' means 'prevent automatic destruction'.
 {
 	trace (me, Log :: get_class_name (), "");
 	

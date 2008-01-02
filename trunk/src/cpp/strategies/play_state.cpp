@@ -31,7 +31,7 @@ string Play_State ::
 //  constructor
 Play_State ::
 	Play_State (boost :: shared_ptr <Ogre :: SceneManager> scene_manager) :
-	Object ("play state"),
+	Object ("play state", true),	//	Here 'true' means 'prevent automatic destruction'.
 	gui (Engines :: GUI_Engine :: get () -> create_gui <Play_State_GUI> ("play.xml")),
 	camera (scene_manager -> createCamera ("camera"))
 {

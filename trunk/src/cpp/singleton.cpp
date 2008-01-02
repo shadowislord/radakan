@@ -36,6 +36,7 @@ template <class T> void Singleton <T> ::
 	uninstantiate ()
 {
 	assert (is_instantiated ());
+	assert (Ogre :: Singleton <T> :: getSingletonPtr () -> is_initialized ());
 
 	delete Ogre :: Singleton <T> :: getSingletonPtr ();
 
@@ -68,16 +69,6 @@ template <class T> bool Singleton <T> ::
 	const
 {
 	assert (Object :: is_initialized ());
-
-	return true;
-}
-
-//	virtual
-template <class T> bool Singleton <T> ::
-	is_singleton ()
-	const
-{
-	//	This method can be called when not initialized.
 
 	return true;
 }

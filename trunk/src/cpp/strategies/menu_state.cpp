@@ -23,7 +23,7 @@ string Menu_State ::
 //  constructor
 Menu_State ::
 	Menu_State () :
-	Object ("menu state"),
+	Object ("menu state", true),	//	Here 'true' means 'prevent automatic destruction'.
 	gui (Engines :: GUI_Engine :: get () -> create_gui <GUI> ("menu.xml"))
 {
 	Engines :: Log :: trace (me, Menu_State :: get_class_name ());

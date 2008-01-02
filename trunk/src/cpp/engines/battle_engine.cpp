@@ -15,7 +15,7 @@ string Battle_Engine ::
 
 Battle_Engine ::
 	Battle_Engine () :
-	Object ("battle engine"),
+	Object ("battle engine", true),	//	Here 'true' means 'prevent automatic destruction'.
 	max_distance (1),
 	generator (42u),
 	uniform_real_distribution (0, 1),

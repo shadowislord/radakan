@@ -27,13 +27,15 @@ namespace Radakan
 				///	Some Windows compilers give an error otherwise.
 				Object ();
 			#endif
-			Object (string new_name);
+			Object (string new_name, bool new_prevent_automatic_destruction = false);
 			virtual ~Object ();
 			virtual bool is_initialized () const;
 			
-			///	Call 'prepare_for_destruction ()' at the beginning of the destructor of each non-abstract subclass. Don't worry about calling it twice.
+			///	Call 'prepare_for_destruction ()' at the beginning of the
+			///	destructor of each non-abstract subclass.
+			///	Don't worry about calling it twice.
 			///	'destructing' is set to 'true'.
-			///	I'm removed from each parent Set.
+			///	Each reference to me will be un-set.
 			void prepare_for_destruction ();
 
 			void register_reference (const Reference_Base & reference) const;
@@ -41,13 +43,18 @@ namespace Radakan
 			void unregister_reference (const Reference_Base & reference) const;
 
 			bool is_destructing () const;
-			virtual bool is_singleton () const;
+			
+			bool prevent_automatic_destruction;
 
 			const string name;
 
 		private :
 			bool has_dependency () const;
 			bool does_depend (const Reference_Base & candidate) const;
+
+			#ifdef RADAKAN_DEBUG	
+				bool is_tracked;
+			#endif
 
 			///	I store my dependencies as const to reduce the number of casts,
 			///	but they are 'const_cast'-ed, at my destruction.

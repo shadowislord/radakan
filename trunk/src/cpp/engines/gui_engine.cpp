@@ -30,7 +30,7 @@ GUI_Engine ::
 		boost :: shared_ptr <Ogre :: RenderWindow> window,
 		boost :: shared_ptr <Ogre :: SceneManager> scene_manager
 	) :
-	Object ("gui engine")
+	Object ("gui engine", true)	//	Here 'true' means 'prevent automatic destruction'.
 {
 	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~");
 

@@ -17,7 +17,7 @@ namespace Radakan
 
 			static const float default_experience;
 
-			Skill (string new_name);
+			Skill (string new_name, float initial_experience = default_experience);
 			virtual ~Skill ();
 			virtual bool is_initialized () const;
 

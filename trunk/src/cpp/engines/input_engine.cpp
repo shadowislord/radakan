@@ -51,7 +51,7 @@ const string Input_Engine ::
 
 Input_Engine ::
 	Input_Engine (boost :: shared_ptr <Ogre :: RenderWindow> window) :
-	Object ("input engine")
+	Object ("input engine", true)	//	Here 'true' means 'prevent automatic destruction'.
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "", "~window~");
 

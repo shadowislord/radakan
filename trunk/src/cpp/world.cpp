@@ -55,10 +55,7 @@ const unsigned int & World ::
 
 World ::
 	World (boost :: shared_ptr <Ogre :: SceneManager> scene_manager) :
-	Object ("world"),
-	Singleton <World> (),
-	State_Machine <Tile> (),
-	OgreOde :: CollisionListener (),
+	Object ("world", true),	//	Here 'true' means 'prevent automatic destruction'.
 	root_node (scene_manager -> getRootSceneNode ()),
 	ogre_ode_world (new OgreOde :: World (scene_manager . get ())),
 	last_turn_length (0),

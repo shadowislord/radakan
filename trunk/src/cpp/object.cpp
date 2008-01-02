@@ -23,23 +23,32 @@ string Object ::
 
 //  constructor
 Object ::
-	Object (string new_name) :
+	Object (string new_name, bool new_prevent_automatic_destruction) :
 	name (new_name),
+	prevent_automatic_destruction (new_prevent_automatic_destruction),
 	dependencies (new set <const Reference_Base *>),
 	status ("constructing"),
 	me (this)
 {
 	//	reset_pointee (this);
 	
-	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name);
+	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name, to_string (new_prevent_automatic_destruction));
 	assert (! name . empty ());
 
-	if (Engines :: Tracker :: is_instantiated ())
-	{
-		bool check = Engines :: Tracker :: get () -> add (me);
-		assert (check);
-		//	assert (does_depend (Engines :: Tracker :: get ()));
-	}
+	#ifdef RADAKAN_DEBUG
+		if (Engines :: Tracker :: is_instantiated ())
+		{
+			bool check = Engines :: Tracker :: get () -> add (me);
+			assert (check);
+			//	assert (does_depend (Engines :: Tracker :: get ()));
+
+			is_tracked = true;
+		}
+		else
+		{
+			is_tracked = false;
+		}
+	#endif
 
 	status = "running";
 	assert (Object :: is_initialized ());
@@ -110,16 +119,6 @@ bool Object ::
 	return status == "destructing";
 }
 
-//	virtual
-bool Object ::
-	is_singleton ()
-	const
-{
-//	Engines :: Log :: trace (me, Object :: get_class_name (), "is_singleton");
-	
-	return false;
-}
-
 void  Object ::
 	register_reference (const Reference_Base & reference)
 	const
@@ -169,9 +168,9 @@ void  Object ::
 		return;
 	}
 
-	if (is_singleton ())
+	if (prevent_automatic_destruction)
 	{
-		//	Engines :: Log :: log (me) << "I will not self-destruct, because I'm a singleton." << endl;
+		//	Engines :: Log :: log (me) << "I will not self-destruct, because I prevent it." << endl;
 		return;
 	}
 
@@ -183,9 +182,9 @@ void  Object ::
 
 	unsigned int self_destruct_criterion = 0;
 	self_destruct_criterion ++; //	I shouldn't forbid myself to self-destruct.
-	if (Engines :: Tracker :: is_instantiated ())
+	if (is_tracked)
 	{
-		//	The 'Tracker' Singleton should not forbid me to destruct.
+		//	The 'Tracker' should not forbid me to destruct.
 		self_destruct_criterion ++;
 	}
 	assert (dependencies -> size () >= self_destruct_criterion);

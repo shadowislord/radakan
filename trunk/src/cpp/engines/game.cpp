@@ -149,8 +149,12 @@ Game ::
 	GUI_Engine :: uninstantiate ();
 	//	Input_Engine :: uninstantiate ();	//	Already auto-destructed.
 	Audio_Engine :: uninstantiate ();
+
+	#ifdef RADAKAN_DEBUG
+		Tracker :: uninstantiate ();
+	#endif
+
 	Log :: uninstantiate ();
-	Tracker :: uninstantiate ();
 }
 
 //	virtual
@@ -167,6 +171,8 @@ bool Game ::
 void Game ::
 	run ()
 {
+	Log :: trace (me, Game :: get_class_name (), "run");
+	
 	while (has_active_state ())
 	{
 		if (window -> isClosed ())
@@ -187,4 +193,6 @@ void Game ::
 			GUI_Engine :: get () -> render ();
 		}
 	}
+
+	Log :: trace (me, Game :: get_class_name (), "end of run");
 }

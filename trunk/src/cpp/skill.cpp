@@ -18,11 +18,11 @@ const float Skill ::
 
 //  constructor
 Skill ::
-	Skill (string new_name) :
+	Skill (string new_name, float initial_experience) :
 	Object (new_name),
-	experience (0, 0, Mathematics :: infinite)
+	experience (initial_experience, 0, Mathematics :: infinite)
 {
-	Engines :: Log :: trace (me, Skill :: get_class_name (), "", new_name);
+	Engines :: Log :: trace (me, Skill :: get_class_name (), "", new_name, "~initial_experience~");
 
 	assert (Skill :: is_initialized ());
 }

@@ -31,7 +31,7 @@ void Sound_Sample ::
 {
 	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 		sound -> play();
-	#elif AN_AUDIO_MODE == RADAKAN_FMOD_MODE
+	#elif RADAKAN_AUDIO_MODE == RADAKAN_FMOD_MODE
 		FSOUND_PlaySound (FSOUND_FREE, sample);
 	#endif
 }

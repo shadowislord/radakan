@@ -24,9 +24,9 @@ string Conversation_Engine ::
 //  constructor
 Conversation_Engine ::
 	Conversation_Engine () :
-	Object ("conversation engine"),
+	Object ("conversation engine", true),	//	Here 'true' means 'prevent automatic destruction'.
 	behavior
-		(new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/behavior.xml"))
+		(new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/behavior/default.xml"))
 {
 	bool check = behavior -> LoadFile ();
 	if ((! check) || behavior -> Error ())

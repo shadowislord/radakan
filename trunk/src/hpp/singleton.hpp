@@ -26,9 +26,7 @@ namespace Radakan
 			virtual ~Singleton ();
 			
 			virtual bool is_initialized () const;
-			
-			virtual bool is_singleton () const;
-		
+
 		protected :
 			Singleton ();
 	};

@@ -24,6 +24,10 @@ namespace Radakan
 			Reference (const Reference <T> & other);
 			template <class U> Reference (const Reference <U> & other);
 			virtual ~Reference ();
+
+			//	I will ask my parent to destruct me, if possible.
+			//	Otherwise I will reset myself.
+			//	So 'destruct ()' can be used as a safe way of forced destruction.
 			virtual void destruct () const;
 
 			virtual string get_name () const;

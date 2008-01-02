@@ -81,58 +81,65 @@ else(WIN32)
     add_executable( radakan ${SRC_FILES} )
 endif(WIN32)
 
-set(DEBUG_LIBS debug OgreMain_d
-               debug tinyxml
-               debug prefab
-               debug ogreode_core
-               debug ois)
+if(WIN32)
+	set(DEBUG_LIBS debug OgreMain_d
+		debug tinyxml
+		debug prefab
+		debug ogreode_core
+		debug ois)
+else(WIN32)
+	set(DEBUG_LIBS debug OgreMain
+		debug tinyxml
+		debug prefab
+		debug ogreode_core
+		debug ois)
+endif(WIN32)
 
 set(RELEASE_LIBS
-			optimized OgreMain
-			optimized tinyxml
-			optimized prefab
-			optimized ogreode_core
-			optimized ois)
-
+	optimized OgreMain
+	optimized tinyxml
+	optimized prefab
+	optimized ogreode_core
+	optimized ois)
 
 if(WIN32)
 
 	if("${GUI_MODE}" STREQUAL "${CEGUI}")
 		set(DEBUG_LIBS
-				${DEBUG_LIBS}
-				debug CEGUIBase_d
-				debug OgreGUIRenderer_d)
+			${DEBUG_LIBS}
+			debug CEGUIBase_d
+			debug OgreGUIRenderer_d)
 
-                set(RELEASE_LIBS
-                                ${RELEASE_LIBS}
-                                optimized CEGUIBase
-                                optimized OgreGUIRenderer)
+		set(RELEASE_LIBS
+			${RELEASE_LIBS}
+			optimized CEGUIBase
+			optimized OgreGUIRenderer)
 
 	endif("${GUI_MODE}" STREQUAL "${CEGUI}")
 else(WIN32)				
 	if("${GUI_MODE}" STREQUAL "${CEGUI}")
 		set(DEBUG_LIBS
-				${DEBUG_LIBS}
-				debug CEGUIBase
-				debug CEGUIOgreRenderer)
+			${DEBUG_LIBS}
+			debug CEGUIBase
+			debug CEGUIOgreRenderer)
 
-                set(RELEASE_LIBS
-                                ${RELEASE_LIBS}
-                                optimized CEGUIBase
-                                optimized CEGUIOgreRenderer)
+		set(RELEASE_LIBS
+			${RELEASE_LIBS}
+			optimized CEGUIBase
+			optimized CEGUIOgreRenderer)
 
 	endif("${GUI_MODE}" STREQUAL "${CEGUI}")
 endif(WIN32)
 
 if("${SOUND_MODE}" STREQUAL "${Audiere}")
 	set(DEBUG_LIBS ${DEBUG_LIBS}
-				debug audiere
-				debug ogg
-				debug vorbis)
+		debug audiere
+		debug ogg
+		debug vorbis)
 	set(RELEASE_LIBS ${RELEASE_LIBS}
-				optimized audiere
-				optimized ogg
-				optimized vorbis )
+		optimized audiere
+		optimized ogg
+		optimized vorbis )
 else("${SOUND_MODE}" STREQUAL "${Audiere}")
 	if("${SOUND_MODE}" STREQUAL "${FMod}")
 		if(WIN32)
@@ -144,6 +151,24 @@ endif("${SOUND_MODE}" STREQUAL "${Audiere}")
 
 target_link_libraries( radakan  ${DEBUG_LIBS}
                                 ${RELEASE_LIBS} )
+
+set_target_properties(radakan PROPERTIES COMPILE_FLAGS "-DRADAKAN_CEGUI_MODE=1 -DRADAKAN_OPENGUI_MODE=2 -DRADAKAN_AUDIERE_MODE=3 -DRADAKAN_FMOD_MODE=4 -Wall -Wextra")
+
+if("${GUI_MODE}" STREQUAL "${CEGUI}")
+	set_target_properties(radakan PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -DRADAKAN_GUI_MODE=1")
+else("${GUI_MODE}" STREQUAL "${CEGUI}")
+	if("${GUI_MODE}" STREQUAL "${OpenGUI}")
+		set_target_properties(radakan PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -DRADAKAN_GUI_MODE=2")
+	endif("${GUI_MODE}" STREQUAL "${OpenGUI}")
+endif("${GUI_MODE}" STREQUAL "${CEGUI}")
+
+if("${SOUND_MODE}" STREQUAL "${Audiere}")
+	set_target_properties(radakan PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -DRADAKAN_AUDIO_MODE=3")
+else("${SOUND_MODE}" STREQUAL "${Audiere}")
+	if("${SOUND_MODE}" STREQUAL "${FMod}")
+		set_target_properties(radakan PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -DRADAKAN_AUDIO_MODE=4")
+	endif("${SOUND_MODE}" STREQUAL "${FMod}")
+endif("${SOUND_MODE}" STREQUAL "${Audiere}")
 
 install( TARGETS radakan DESTINATION ${RADAKAN_SOURCE_DIR}/bin/debug CONFIGURATIONS Debug )
 install( TARGETS radakan DESTINATION ${RADAKAN_SOURCE_DIR}/bin/release CONFIGURATIONS Release )

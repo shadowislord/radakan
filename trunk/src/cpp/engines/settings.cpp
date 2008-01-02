@@ -22,7 +22,7 @@ const float Settings ::
 
 Settings ::
 	Settings (string new_radakan_path) :
-	Object ("settings"),
+	Object ("settings", true),	//	Here 'true' means 'prevent automatic destruction'.
 	radakan_path (new_radakan_path),
 	camera_distance (0.72),
 	vertical_camera_angle(0)
