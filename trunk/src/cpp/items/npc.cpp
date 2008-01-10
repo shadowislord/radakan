@@ -22,19 +22,19 @@ NPC ::
 	NPC
 	(
 		string new_name,
-		string new_mesh_name,
+		float new_mass,
 		Ogre :: Vector3 new_size,
-		float new_mass
+		const Reference <Mesh_Data> new_mesh_data
 	) :
 	Object (new_name),
 	Character
 	(
-		new_mesh_name,
+		new_mass,
 		new_size,
-		new_mass
+		new_mesh_data
 	)
 {
-	Engines :: Log :: trace (me, NPC :: get_class_name (), "", me . get_name (), new_mesh_name, to_string (new_size), to_string (new_mass));
+	Engines :: Log :: trace (me, NPC :: get_class_name (), "", new_name, to_string (new_mass), to_string (new_size), new_mesh_data . get_name ());
 
 	set_active_state (Reference <Strategies :: Strategy <Character> >
 		(new Strategies :: Alive_State (Reference <NPC> (this))));

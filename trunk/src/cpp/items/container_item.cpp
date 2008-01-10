@@ -18,23 +18,17 @@ template <class T> Container_Item <T> ::
 	Container_Item
 	(
 		string new_name,
-		string new_mesh_name,
-		Ogre :: Vector3 new_size,
 		float new_mass,
-		bool new_mobile,
-		bool new_solid,
-		bool new_visible,
+		Ogre :: Vector3 new_size,
+		const Reference <Mesh_Data> new_mesh_data,
 		int new_maximal_size
 	) :
 	Object (new_name),
 	Item
 	(
-		new_mesh_name,
-		new_size,
 		new_mass,
-		new_mobile,
-		new_solid,
-		new_visible
+		new_size,
+		new_mesh_data
 	),
 	Location <T> (new_maximal_size),
 	filled_volume (0),

@@ -1,6 +1,7 @@
 #ifndef RADAKAN_ITEM_HPP
 #define RADAKAN_ITEM_HPP
 
+#include "mesh_data.hpp"
 #include "resident.hpp"
 
 using namespace std;
@@ -41,25 +42,14 @@ namespace Radakan
 				///	in kilograms
 				const float mass;
 				
-				///	false means that the object is static
-				const bool mobile;
-				
-				///	false means that you can pass through it
-				const bool solid;
-				
-				const bool visible;
-
-				const string mesh_name;
+				Reference <Mesh_Data> mesh_data;
 
 			protected :
 				Item
 				(
-					string new_mesh_name,
-					Ogre :: Vector3 new_size,
 					float new_mass,
-					bool new_mobile = true,
-					bool new_solid = true,
-					bool new_visible = true
+					Ogre :: Vector3 new_size,
+					const Reference <Mesh_Data> new_mesh_data
 				);
 
 			private :

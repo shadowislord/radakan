@@ -16,22 +16,16 @@ string Static_Item ::
 Static_Item ::
 	Static_Item
 	(
-		string new_name,
-		string new_mesh_name,
-		Ogre :: Vector3 new_size,
 		float new_mass,
-		bool new_solid,
-		bool new_visible
+		Ogre :: Vector3 new_size,
+		const Reference <Mesh_Data> new_mesh_data
 	) :
-	Object (new_name),
+	Object ("static item based on " + new_mesh_data . get_name ()),
 	Item
 	(
-		new_mesh_name,
-		new_size,
 		new_mass,
-		false,
-		new_solid,
-		new_visible
+		new_size,
+		new_mesh_data
 	)
 {
 	//	Do nothing.

@@ -22,12 +22,9 @@ namespace Radakan
 				Container_Item
 				(
 					string new_name,
-					string new_mesh_name,
-					Ogre :: Vector3 new_size,
 					float new_mass,
-					bool new_mobile = true,
-					bool new_solid = true,
-					bool new_visible = true,
+					Ogre :: Vector3 new_size,
+					const Reference <Mesh_Data> new_mesh_data,
 					int new_maximal_size = Container <T> :: unlimited
 				);
 				virtual ~Container_Item ();

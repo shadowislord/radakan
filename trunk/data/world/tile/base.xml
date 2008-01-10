@@ -1,7 +1,7 @@
 <base>
 
 	<!-- the ground -->
-	<model x="0" y="0" z="0" scale="100">
+	<model x="10" y="0" z="10" scale="100">
 		<plane name="Ground" mesh="floor.mesh" mass="10" solid="true" visible="true">
 			<volume x="20" y="0.0001" z="20"/>
 		</plane>

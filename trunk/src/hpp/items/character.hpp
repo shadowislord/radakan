@@ -74,9 +74,9 @@ namespace Radakan
 			protected :
 				Character
 				(
-					string new_mesh_name,
-					Ogre :: Vector3 new_volume,
-					float new_mass
+					float new_mass,
+					Ogre :: Vector3 new_size,
+					const Reference <Mesh_Data> new_mesh_data
 				);
 
 			private :

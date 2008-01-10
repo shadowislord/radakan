@@ -1,0 +1,4 @@
+<item_prototype type="plane" mass="10">
+	<mesh file_name="floor.mesh" scale="100" />
+	<size x="20" y="0.0001" z="20"/>
+</item_prototype>

@@ -56,6 +56,7 @@ template <class T> Reference <T> ::
 
 template <class T> Reference <T> ::
 	Reference (const Reference <T> & other) :
+	Reference_Base (),	//	GCC gives a warning when this line is missing with '-Wall -Wextra'.
 	pointee (other . pointee),
 	parent (NULL)
 {
@@ -225,8 +226,10 @@ template <class T> template <class U> const Reference <U> Reference <T> ::
 #include "gui.hpp"
 #include "items/npc.hpp"
 #include "items/player_character.hpp"
+#include "items/static_item.hpp"
 #include "items/weapon.hpp"
 #include "map.hpp"
+#include "mesh_data.hpp"
 #include "messages/battle_message.hpp"
 #include "messages/conversation_message.hpp"
 #include "model.hpp"
@@ -295,6 +298,7 @@ template class Reference <Location <Strategies :: Strategy <Items :: Character> 
 #endif
 template class Reference <Map <pair <int, int>, Tile> >;
 template class Reference <Map <string, Skill> >;
+template class Reference <Mesh_Data>;
 template class Reference <Messages :: Battle_Message>;
 template class Reference <Messages :: Conversation_Message>;
 template class Reference <Messages :: Message <Engines :: Game> >;
@@ -455,6 +459,8 @@ template bool Reference <Items :: Item> ::
 	is_castable <Items :: Character> () const;
 template bool Reference <Items :: Item> ::
 	is_castable <Items :: NPC> () const;
+template bool Reference <Items :: Item> ::
+	is_castable <Items :: Static_Item> () const;
 template bool Reference <Messages :: Message <Items :: Character> > ::
 	is_castable <Messages :: Battle_Message> () const;
 template bool Reference <Messages :: Message <Items :: Character> > ::

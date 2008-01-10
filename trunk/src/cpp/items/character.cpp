@@ -28,17 +28,17 @@ Reference <Set <Character> > Character ::
 Character ::
 	Character
 	(
-		string new_mesh_name,
+		float new_mass,
 		Ogre :: Vector3 new_size,
-		float new_mass
+		const Reference <Mesh_Data> new_mesh_data
 	) :
 	Object ("The name doesn't matter as this class is an abstact class."),
 	Container_Item <Item>
 	(
 		"The name doesn't matter as this class is an abstact class.",
-		new_mesh_name,
+		new_mass,
 		new_size,
-		new_mass
+		new_mesh_data
 	),
 	//	head (new Static_Item (name + "'s head", "bar.mesh", 1, 1)),
 	//	head (new Container_Item <Hat> ()),
@@ -48,13 +48,9 @@ Character ::
 		new Container_Item <Container_Item <Item> >
 		(
 			name + "'s back",
-			"bar.mesh",
-			Ogre :: Vector3 (0.5, 0.5, 0.3),
 			1,
-			true,
-			true,
-			true,
-			1
+			Ogre :: Vector3 (0.5, 0.5, 0.3),
+			Reference <Mesh_Data> ()
 		)
 	),
 	//	arms (new Container_Item <Bracer> ()),
@@ -63,20 +59,16 @@ Character ::
 		new Container_Item <Item>
 		(
 			name + "'s right hand",
-			"bar.mesh",
-			Ogre :: Vector3 (1, 0.3, 0.3),
 			1,
-			true,
-			true,
-			true,
-			1
+			Ogre :: Vector3 (1, 0.3, 0.3),
+			Reference <Mesh_Data> ()
 		)
 	),
 	//	legs (new Container_Item <Pants> ()),
 	//	feet (new Container_Item <Shoe> ()),
 	skills (new Map <string, Skill> ("skills"))
 {
-	Engines :: Log :: trace (me, Character :: get_class_name (), "", new_mesh_name, to_string (new_size), to_string (new_mass));
+	Engines :: Log :: trace (me, Character :: get_class_name (), "", to_string (new_mass), to_string (new_size), new_mesh_data . get_name ());
 
 	bool check/* = Container_Item <Item> :: add (head)*/;
 	/*assert (check);*/

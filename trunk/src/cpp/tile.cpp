@@ -43,11 +43,11 @@ Tile ::
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
 	npcs (new Set <Items :: NPC> (name + "'s NPCs")),
 	space (new OgreOde :: SimpleSpace (World :: get () -> ogre_ode_world . get (), World :: get () -> ogre_ode_world -> getDefaultSpace ())),
-	doc (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/tile/" + name + ".xml"))
+	doc (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/world/tile/" + name + ".xml"))
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
 
-	load_xml_file (* doc);
+	load_tile_file (* doc);
 
 /*	if (root -> FirstChildElement ("forest") != NULL)
 	{
@@ -187,91 +187,130 @@ bool Tile ::
 }
 
 void Tile ::
-	load_xml (TiXmlElement & element)
+	load_model (TiXmlElement & element)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml", "~element~");
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_model", element . Value ());
 	assert (is_initialized ());
 
-	Engines :: Log :: log (me) << "element value: " << element . ValueStr () << endl;
-	if (element . ValueStr () == string ("include"))
-	{
-		TiXmlDocument document
-		(
-			Engines :: Settings :: get () -> radakan_path + "/data/tile/" + element . Attribute ("name") + ".xml"
-		);
-		load_xml_file (document);
-		return;
-	}
-
-//	float x = to_float (element . Attribute ("x"));
-/*	double x;
-	element . Attribute ("x", & x);
-	Engines :: Log :: log (me) << "x: " << x << endl;*/
-	float x = to_float (element . Attribute ("x"));
-	float y = to_float (element . Attribute ("y"));
-	float z = to_float (element . Attribute ("z"));
-	float scale = to_float (element . Attribute ("scale"));
-
-	TiXmlElement * item_xml = element . FirstChildElement ();
-	
-	string name = item_xml -> Attribute ("name") + string (" ") + to_string (position);
-	string mesh = item_xml -> Attribute ("mesh");
-	float mass = to_float (item_xml -> Attribute ("mass"));
-	bool solid = item_xml -> Attribute ("solid") == string ("true");
-	//	bool visible = item_xml -> Attribute ("visible") == string ("true");
-
-	Ogre :: Vector3 volume;
-	TiXmlElement * volume_element = item_xml -> FirstChildElement ("volume");
-	assert (volume_element != NULL);
-	volume = Ogre :: Vector3
+	assert (element . Attribute ("item") != NULL);
+	TiXmlDocument item_prototype
 	(
-		to_float (volume_element -> Attribute ("x")),
-		to_float (volume_element -> Attribute ("y")),
-		to_float (volume_element -> Attribute ("z"))
+		Engines :: Settings :: get () -> radakan_path + "/data/world/prototype/" + element . Attribute ("item") + ".xml"
+	);
+	Reference <Items :: Item> item (load_item_prototype_file (item_prototype));
+
+	//	'position' is the position of this tile.
+	Ogre :: Vector3 model_position = position + Ogre :: Vector3
+	(
+		to_float (element . Attribute ("x")),
+		to_float (element . Attribute ("y")),
+		to_float (element . Attribute ("z"))
 	);
 
-	Pointer <Items :: Item> item;
-	if (item_xml -> ValueStr () == string ("static_item"))
+	Pointer <Model> model;
+	if (item . is_castable <Items :: Static_Item> ())
 	{
-		item . reset_pointee (new Items :: Static_Item (name, mesh, volume, mass, solid));
-	}
-	else if (item_xml -> ValueStr () == string ("plane"))
-	{
-		item . reset_pointee (new Items :: Static_Item (name, mesh, volume, mass, solid));
-	}
-	else if (item_xml -> ValueStr () == string ("npc"))
-	{
-		item . reset_pointee (new Items :: NPC (name, mesh, volume, mass));
-	}
-	else if (item_xml -> ValueStr () == string ("player"))
-	{
-		item . reset_pointee (new Items :: Player_Character (name, mesh, volume, mass));
+		model . reset_pointee (new Model (item, model_position));
 	}
 	else
 	{
-		Engines :: Log :: error (me) << "Unrecognizable xml tag name: " << item_xml -> ValueStr () << endl;
-		abort ();
+		model . reset_pointee (new Movable_Model (item, model_position));
 	}
-	assert (item . points_to_object ());
-	assert (item -> is_initialized ());
-
-	Reference <Model> model = create_model (item, position + Ogre :: Vector3 (x, y, z), scale);
+	
 	bool check = add (model);
 	assert (check);
 
 	//	TODO re-enable assert ((position + Ogre :: Vector3 (x, y, z) - model . getPosition ()) . length () < 0.01);
+}
 
-	TiXmlElement * material = element . FirstChildElement ("material");
-	if (material != NULL)
+Reference <Items :: Item> Tile ::
+	load_item_prototype_file (TiXmlDocument & document)
+{
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_item_prototype_file", document . Value ());
+	assert (is_initialized ());
+	
+	bool check = document . LoadFile ();
+	assert (check);
+	assert (! document . Error ());
+	TiXmlElement * item_element = document . RootElement ();
+	
+	Engines :: Log :: log (me) << "item_element: " << item_element -> Value () << endl;
+
+	string type = item_element -> Attribute ("type");
+	float mass = to_float (item_element -> Attribute ("mass"));
+
+	TiXmlElement * size_element = item_element -> FirstChildElement ("size");
+	assert (size_element != NULL);
+	Ogre :: Vector3 size = Ogre :: Vector3
+	(
+		to_float (size_element -> Attribute ("x")),
+		to_float (size_element -> Attribute ("y")),
+		to_float (size_element -> Attribute ("z"))
+	);
+
+	//	TODO Do this smarter so we don't have to re-run this every time.
+	TiXmlElement * mesh_element = item_element -> FirstChildElement ("mesh");
+
+	string mesh_file_name = mesh_element -> Attribute ("file_name");
+
+	Reference <Mesh_Data> mesh_data (new Mesh_Data (mesh_file_name));
+
+	if (mesh_element -> Attribute ("material") != NULL)
 	{
-		model -> set_material (material -> Attribute ("name"));
+		mesh_data -> material_file_name = mesh_element -> Attribute ("material");
 	}
+	if (mesh_element -> Attribute ("scale") != NULL)
+	{
+		mesh_data -> scale = to_float (mesh_element -> Attribute ("scale"));
+	}
+	if (mesh_element -> Attribute ("solid") != NULL)
+	{
+		mesh_data -> solid = mesh_element -> Attribute ("solid") == string ("true");
+	}
+	if (mesh_element -> Attribute ("visible") != NULL)
+	{
+		mesh_data -> visible = mesh_element -> Attribute ("visible") == string ("true");
+	}
+
+	if (mesh_element -> Attribute ("rotation") != NULL)
+	{
+		if (mesh_element -> Attribute ("rotation") == string ("true"))
+		{
+			mesh_data -> default_orientation = make_quaternion (- Ogre :: Math :: HALF_PI, x_axis);
+		}
+	}
+
+	Pointer <Items :: Item> item;
+	if (type == string ("static_item") || type == string ("plane"))
+	{
+		item . reset_pointee (new Items :: Static_Item (mass, size, mesh_data));
+	}
+	else
+	{
+		if (type == string ("npc"))
+		{
+			item . reset_pointee (new Items :: NPC (name, mass, size, mesh_data));
+		}
+		else if (type == string ("player"))
+		{
+			item . reset_pointee (new Items :: Player_Character (name, mass, size, mesh_data));
+		}
+		else
+		{
+			Engines :: Log :: error (me) << "Unrecognized item type: " << type << endl;
+			abort ();
+		}
+	}
+	assert (item . points_to_object ());
+	assert (item -> is_initialized ());
+
+	return item;
 }
 
 void Tile ::
-	load_xml_file (TiXmlDocument & document)
+	load_tile_file (TiXmlDocument & document)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml_file", "~document~");
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml_file", document . Value ());
 	assert (is_initialized ());
 
 	bool check = document . LoadFile ();
@@ -282,20 +321,6 @@ void Tile ::
 	for (TiXmlElement * xml_element = root -> FirstChildElement ();
 		xml_element != NULL; xml_element = xml_element -> NextSiblingElement ())
 	{
-		load_xml (* xml_element);
-	}
-}
-
-Reference <Model> Tile ::
-	create_model (Reference <Items :: Item> item, Ogre :: Vector3 position, float scale)
-{
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "create_model", item . get_name (), to_string (position), to_string (scale));
-	if (item -> mobile)
-	{
-		return Reference <Model> (new Movable_Model (item, position, scale));
-	}
-	else
-	{
-		return Reference <Model> (new Model (item, position, scale));
+		load_model (* xml_element);
 	}
 }

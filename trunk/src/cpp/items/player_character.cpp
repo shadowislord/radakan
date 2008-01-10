@@ -19,25 +19,25 @@ Player_Character ::
 	Player_Character
 	(
 		string new_name,
-		string new_mesh_name,
+		float new_mass,
 		Ogre :: Vector3 new_size,
-		float new_mass
+		const Reference <Mesh_Data> new_mesh_data
 	) :
 	Object (new_name),
 	Character
 	(
-		new_mesh_name,
+		new_mass,
 		new_size,
-		new_mass
+		new_mesh_data
 	),
 	dead (false)
 {
-	Engines :: Log :: trace (me, Player_Character :: get_class_name (), "", new_name, new_mesh_name, to_string (new_size), to_string (new_mass));
+	Engines :: Log :: trace (me, Player_Character :: get_class_name (), "", new_name, to_string (new_mass), to_string (new_size), new_mesh_data . get_name ());
 
-	bool check = back -> add (Reference <Container_Item <Item> > (new Container_Item <Item> ("Backpack", "bar.mesh", Ogre :: Vector3 (0.3, 0.5, 0.2), 3)));
+	bool check = back -> add (Reference <Container_Item <Item> > (new Container_Item <Item> ("Backpack", 3, Ogre :: Vector3 (0.3, 0.5, 0.2), Reference <Mesh_Data> ())));
 	assert (check);
 
-	check = right_hand -> add (Reference <Item> (new Weapon ("Sword", "bar.mesh", Ogre :: Vector3 (0.1, 0.2, 0.3), 4, 5, 6, 7, 8, 9, 10)));
+	check = right_hand -> add (Reference <Item> (new Weapon ("Sword", 4, Ogre :: Vector3 (0.1, 0.2, 0.3), Reference <Mesh_Data> (), 5, 6, 7, 8, 9, 10)));
 	assert (check);
 
 	assert (is_initialized ());

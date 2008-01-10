@@ -30,7 +30,7 @@ namespace Radakan
 		public Location <Items :: Item>
 	{
 		public :
-			Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale);
+			Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position);
 			virtual ~Model ();
 			virtual bool is_initialized () const;
 			
@@ -39,9 +39,6 @@ namespace Radakan
 			Ogre :: Vector3 get_front_direction () const;
 			Ogre :: Vector3 get_side_direction () const;
 			Ogre :: Vector3 get_top_direction () const;
-
-			void set_scale (float scale);
-			void set_material (string name);
 
 			void set_space (boost :: shared_ptr <OgreOde :: Space> new_space);
 

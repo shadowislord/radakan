@@ -17,37 +17,32 @@ string Item ::
 Item ::
 	Item
 	(
-		string new_mesh_name,
-		Ogre :: Vector3 new_size,
 		float new_mass,
-		bool new_mobile,
-		bool new_solid,
-		bool new_visible
+		Ogre :: Vector3 new_size,
+		const Reference <Mesh_Data> new_mesh_data
 	) :
 	Object ("The name doesn't matter is this is an abstact base class."),
-	size (new_size),
 	mass (new_mass),
-	mobile (new_mobile),
-	solid (new_solid),
-	visible (new_visible),
-	mesh_name (new_mesh_name)
+	size (new_size),
+	mesh_data (new_mesh_data)
 {
 	Engines :: Log :: trace
 	(
 		me,
 		Item :: get_class_name (),
 		"",
-		new_mesh_name,
-		to_string (size),
 		to_string (mass),
-		bool_to_string (mobile),
-		bool_to_string (solid),
-		bool_to_string (visible)
+		to_string (size),
+		mesh_data . get_name ()
 	);
+	assert (0 <= mass);
 	assert (0 <= size . x);
 	assert (0 <= size . y);
 	assert (0 <= size . z);
-	assert (0 <= mass);
+	if (mesh_data . points_to_object ())
+	{
+		assert (mesh_data -> is_initialized ());
+	}
 
 	//	Do nothing.
 
@@ -77,10 +72,14 @@ bool Item ::
 {
 	//	Engines :: Log :: trace (me, Item :: get_class_name (), "is_initialized");
 	assert (Object :: is_initialized ());
+	assert (0 <= mass);
 	assert (0 <= size . x);
 	assert (0 <= size . y);
 	assert (0 <= size . z);
-	assert (0 <= mass);
+	if (mesh_data . points_to_object ())
+	{
+		assert (mesh_data -> is_initialized ());
+	}
 	
 	return true;
 }

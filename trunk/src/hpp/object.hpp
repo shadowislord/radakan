@@ -44,9 +44,9 @@ namespace Radakan
 
 			bool is_destructing () const;
 			
-			bool prevent_automatic_destruction;
-
 			const string name;
+			
+			bool prevent_automatic_destruction;
 
 		private :
 			bool has_dependency () const;

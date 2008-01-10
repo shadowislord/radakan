@@ -1,0 +1,15 @@
+<tile>
+	<model item="flat_ground" x="10" y="0" z="10" />
+	
+	<model item="ninja" x="12.5" y="1.1" z="11.2" name="Fifth Ninja" />
+
+	<model item="tavern" x="10" y="0" z="10" />
+	
+	<model item="fence_1" x="2" y="0" z="1" />
+	<model item="fence_2" x="6" y="0" z="1" />
+	<model item="fence_3" x="10" y="0" z="1" />
+	<model item="fence_4" x="14" y="0" z="1" />
+	<model item="fence_5" x="18" y="0" z="1" />
+
+	<model item="player" x="15" y="2" z="17.5" name="John" />
+</tile>

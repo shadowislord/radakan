@@ -24,9 +24,9 @@ namespace Radakan
 				NPC
 				(
 					string new_name,
-					string new_mesh_name,
+					float new_mass,
 					Ogre :: Vector3 new_size,
-					float new_mass
+					const Reference <Mesh_Data> new_mesh_data
 				);
 				virtual ~NPC ();
 				virtual bool is_initialized () const;
@@ -40,9 +40,9 @@ namespace Radakan
 				static Item & create
 				(
 					string new_name,
-					string new_mesh_name,
+					float new_mass,
 					Ogre :: Vector3 new_size,
-					float new_mass
+					const Reference <Mesh_Data> new_mesh_data
 				);
 		};
 	}

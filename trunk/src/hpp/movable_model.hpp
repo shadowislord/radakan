@@ -18,7 +18,7 @@ namespace Radakan
 		public Model
 	{
 		public :
-			Movable_Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale);
+			Movable_Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position);
 			virtual ~Movable_Model ();
 			virtual bool is_initialized () const;
 			

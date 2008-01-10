@@ -19,12 +19,9 @@ namespace Radakan
 				
 				Static_Item
 				(
-					string new_name,
-					string new_mesh_name,
-					Ogre :: Vector3 new_size,
 					float new_mass,
-					bool new_solid = true,
-					bool new_visible = true
+					Ogre :: Vector3 new_size,
+					const Reference <Mesh_Data> new_mesh_data
 				);
 				virtual ~Static_Item ();
 				virtual bool is_initialized () const;

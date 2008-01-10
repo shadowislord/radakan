@@ -21,9 +21,9 @@ namespace Radakan
 				Player_Character
 				(
 					string new_name,
-					string new_mesh_name,
+					float new_mass,
 					Ogre :: Vector3 new_size,
-					float new_mass
+					const Reference <Mesh_Data> new_mesh_data
 				);
 				virtual ~Player_Character ();
 				virtual bool is_initialized () const;

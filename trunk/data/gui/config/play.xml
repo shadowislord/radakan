@@ -9,8 +9,8 @@
 		</Window>
 		<Window Type="TaharezLook/StaticText" Name="play-intro">
 			<Property Name="UnifiedPosition" Value="{{0,104},{0.00,0}}" />
-			<Property Name="UnifiedSize" Value="{{0.65,0},{0.05,0}}" />
-			<Property Name="Text" Value="The Shattered Lands is a single-player sandbox 3D RPG in a dark dynamic fantasy world." />
+			<Property Name="UnifiedSize" Value="{{0.60,0},{0.05,0}}" />
+			<Property Name="Text" Value="Radakan is a single-player sandbox 3D RPG in a dark dynamic fantasy world." />
 		</Window>
 
 		<!--bottom left-->

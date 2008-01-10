@@ -1,7 +1,0 @@
-<tile>
-
-	<include name="base"/>
-	<include name="tavern"/>
-	<include name="fences"/>
-
-</tile>

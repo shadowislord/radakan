@@ -23,8 +23,8 @@ namespace Radakan
 		class NPC;
 	}
 	
-	///	A Tile is a square piece of the world.
-	///	Tile data is stored under trunk/data/tile/.
+	///	A Tile is a square piece (20 x 20) of the world.
+	///	Tile data is stored under trunk/data/world/tile/.
 	class Tile :
 		public Location <Model>
 	{
@@ -48,9 +48,9 @@ namespace Radakan
 			boost :: shared_ptr <OgreOde :: SimpleSpace> space;
 
 		private :
-			void load_xml (TiXmlElement & element);
-			void load_xml_file (TiXmlDocument & document);
-			Reference <Model> create_model (Reference <Items :: Item> item, Ogre :: Vector3 position, float scale);
+			void load_model (TiXmlElement & element);
+			Reference <Items :: Item> load_item_prototype_file (TiXmlDocument & document);
+			void load_tile_file (TiXmlDocument & document);
 
 			TiXmlDocument * doc;
 	};

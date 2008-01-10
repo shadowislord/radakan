@@ -4,7 +4,7 @@
 #include <OgreOdeWorld.h>
 
 #include "engines/log.hpp"
-#include "items/item.hpp"
+#include "items/static_item.hpp"
 #include "model.hpp"
 #include "slot.hpp"
 #include "world.hpp"
@@ -21,7 +21,7 @@ string Model ::
 
 //  constructor
 Model ::
-	Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position, float scale) :
+	Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position) :
 	Object (new_item . get_name () + "'s model"),
 	Location <Items :: Item> (1),	//	A Model corresponds to a single Item.
 	item (new_item),
@@ -31,11 +31,11 @@ Model ::
 	(
 		World :: get () -> ogre_ode_world -> getSceneManager () -> createEntity
 		(
-			name + "'s entity", item -> mesh_name
+			name + "'s entity", item -> mesh_data -> file_name
 		)
 	)
 {
-	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item . get_name (), to_string (position), to_string (scale));
+	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item . get_name (), to_string (position));
 	assert (item . points_to_object ());
 	assert (item -> is_initialized ());
 
@@ -45,14 +45,14 @@ Model ::
 //	World :: get () . root_node . addChild (this);
 
 	node -> setPosition (position);
-	node -> setScale (scale, scale, scale);
+	node -> setScale (item -> mesh_data -> scale, item -> mesh_data -> scale, item -> mesh_data -> scale);
 	node -> attachObject (entity . get ());
 
 	assert (node -> numAttachedObjects () == 1);
 	
 	entity -> setUserObject (geometry . get ());
 
-	if (item -> mobile)
+	if (item . is_castable <Items :: Static_Item> ())
 	{
 		Engines :: Log :: log (me) << "I'm a static model." << endl;
 
@@ -62,10 +62,17 @@ Model ::
 
 	item -> set_model (Reference <Model> (this));
 
-	if (! item -> solid)
+	if (! item -> mesh_data -> solid)
 	{
 		geometry -> disable ();
 	}
+
+	if (! item -> mesh_data -> material_file_name . empty ())
+	{
+		entity -> setMaterialName (item -> mesh_data -> material_file_name);
+	}
+
+	node -> setOrientation (item -> mesh_data -> default_orientation);
 
 	assert (Model :: is_initialized ());
 }
@@ -132,14 +139,6 @@ Ogre :: Vector3 Model ::
 	assert (Model :: is_initialized ());
 
 	return node -> getOrientation () * y_axis;
-}
-
-void Model ::
-	set_material (string name)
-{
-	assert (Model :: is_initialized ());
-
-	entity -> setMaterialName (name);
 }
 
 void Model ::

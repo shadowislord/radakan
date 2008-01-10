@@ -17,9 +17,9 @@ namespace Radakan
 				Weapon
 				(
 					string new_name,
-					string new_mesh_name,
-					Ogre :: Vector3 new_size,
 					float new_mass,
+					Ogre :: Vector3 new_size,
+					const Reference <Mesh_Data> new_mesh_data,
 					float new_sharpness,
 					float new_break_chance,
 					float new_speed,
