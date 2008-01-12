@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
 
@@ -21,23 +23,32 @@ const float Settings ::
 	max_vertical_camera_angle (Ogre :: Math :: HALF_PI);
 
 Settings ::
-	Settings (string new_radakan_path) :
+	Settings (string path_to_config) :
 	Object ("settings", true),	//	Here 'true' means 'prevent automatic destruction'.
-	radakan_path (new_radakan_path),
 	camera_distance (0.72),
-	vertical_camera_angle(0)
+	vertical_camera_angle(0),
+	radakan_config(new Ogre::ConfigFile())
 {
-	#ifdef RADAKAN_WSAD
-		forward_key = "w";
-		backward_key = "s";
-		left_key = "a";
-		right_key = "d";
-	#else
-		forward_key = "e";
-		backward_key = "d";
-		left_key = "s";
-		right_key = "f";
-	#endif
+	// Load the Radakan configuration file
+	radakan_config->load(path_to_config + "/radakan.cfg");
+
+	radakan_path = radakan_config->getSetting("radakan_path", "directories");
+	ogre_media_path = radakan_config->getSetting("ogre_media_path", "directories");
+
+	forward_key = radakan_config->getSetting("forward", "keyboard");
+	backward_key = radakan_config->getSetting("backward", "keyboard");
+	left_key = radakan_config->getSetting("left", "keyboard");
+	right_key = radakan_config->getSetting("right", "keyboard");
+
+	// Basically load the float values and convert them from string to float.
+	std::istringstream foreward_string(radakan_config->getSetting("foreward_movement_speed", "gameplay"));
+	std::istringstream backward_string(radakan_config->getSetting("backward_movement_speed", "gameplay"));
+	std::istringstream turn_string(radakan_config->getSetting("turn_speed", "gameplay"));
+
+	foreward_string >> foreward_movement_speed;
+	backward_string >> backward_movement_speed;
+
+	turn_string >> turn_speed;
 
 	assert (is_initialized ());
 }
@@ -100,4 +111,11 @@ void Settings ::
 	{
 		vertical_camera_angle = max_vertical_camera_angle;
 	}
+}
+
+
+Ogre::ConfigFile* Settings ::
+	getRadakanConfig()
+{
+	return radakan_config;
 }

@@ -10,13 +10,35 @@ using namespace std;
 	int main (int argc, char * argv [])
 #endif
 {
-	//	example arguments: C:/John/Radakan~C:/OgreSDK/Samples/Media
-	//	example arguments: /home/john/radakan /usr/share/doc/ogre-1.4.0/Samples/Media
+	string path_to_config;
+
+	// Here we get the optional path to where the Radakan configuration file is kept.
+	#ifdef RADAKAN_WINDOWS
+		path_to_config = strCmdLine;
+		if (path_to_config . empty ())
+		{
+			TCHAR buffer [MAX_PATH];
+			GetCurrentDirectory (MAX_PATH, buffer);
+			path_to_config = buffer;
+		}
+	#else
+		// Check to see if a parameter was passed
+		if(argc>0)
+		{
+			// Assuming 0 is he program name, we just want the first parameter
+			path_to_config = argv[1];
+		}
+		else
+		{
+			path_to_config = "./";
+		}
+	#endif
+
 
 	try
 	{
 		Radakan :: Reference <Radakan :: Engines :: Game> game
-			(new Radakan :: Engines :: Game ());
+			(new Radakan :: Engines :: Game (path_to_config));
 
 		game -> run ();
 		

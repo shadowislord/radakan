@@ -110,12 +110,12 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 	if (Engines :: Input_Engine :: get () -> get_key
 		(Engines :: Settings :: get () -> forward_key, false))
 	{
-		top_speed = 1;
+		top_speed = Engines :: Settings :: get () -> foreward_movement_speed;
 	}
 	else if (Engines :: Input_Engine :: get () -> get_key
 		(Engines :: Settings :: get () -> backward_key, false))
 	{
-		top_speed = - 0.7;
+		top_speed = - (Engines :: Settings :: get () -> backward_movement_speed);
 	}
 	Items :: Player_Character :: get () -> get_movable_model () -> move (top_speed);
 
@@ -123,12 +123,12 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 	if (Engines :: Input_Engine :: get () -> get_key
 		(Engines :: Settings :: get () -> left_key, false))
 	{
-		top_angular_speed = 1;
+		top_angular_speed = Engines :: Settings :: get () -> turn_speed;
 	}
 	else if (Engines :: Input_Engine :: get () -> get_key
 		(Engines :: Settings :: get () -> right_key, false))
 	{
-		top_angular_speed = - 1;
+		top_angular_speed = - (Engines :: Settings :: get () -> turn_speed);
 	}
 
 	Items :: Player_Character :: get () -> get_movable_model () -> turn (top_angular_speed);

@@ -1,12 +1,9 @@
 #ifndef RADAKAN_SETTINGS_HPP
 #define RADAKAN_SETTINGS_HPP
 
-#include "singleton.hpp"
+#include <OgreConfigFile.h>
 
-// A way to enable WSAD is to define RADAKAN_WSAD.
-#ifdef RADAKAN_WINDOWS
-	#define RADAKAN_WSAD
-#endif
+#include "singleton.hpp"
 
 namespace Radakan
 {
@@ -18,7 +15,7 @@ namespace Radakan
 			public Singleton <Settings>
 		{
 			public :
-				Settings (string new_radakan_path);
+				Settings (string);
 				virtual ~Settings ();
 				virtual bool is_initialized () const;
 				
@@ -36,18 +33,25 @@ namespace Radakan
 				///	in radians
 				void increase_vertical_camera_angle (float angle);
 
-				const string radakan_path;
+				// get the config object
+				Ogre::ConfigFile* getRadakanConfig();
 
-				///	Defaults to e, unless RADAKAN_WSAD is set.
+				string radakan_path;
+
+				string ogre_media_path;
+				
+				float foreward_movement_speed;
+
+				float backward_movement_speed;
+
+				float turn_speed;
+
 				string forward_key;	
 
-				///	Defaults to d, unless RADAKAN_WSAD is set.
 				string backward_key;
 
-				///	Defaults to s, unless RADAKAN_WSAD is set.
 				string left_key;
 
-				///	Defaults to f, unless RADAKAN_WSAD is set.
 				string right_key;
 
 			private :
@@ -62,6 +66,9 @@ namespace Radakan
 
 				///	in radians
 				float vertical_camera_angle;
+
+				// For loading the radakan settings from a file
+				Ogre::ConfigFile *radakan_config;
 		};
 	}
 }

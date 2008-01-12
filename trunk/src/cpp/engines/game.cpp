@@ -29,15 +29,16 @@ string Game ::
 }
 
 Game ::
-	Game () :
-	Object ("game"),
-	radakan_config(new Ogre::ConfigFile())
+	Game (string path_to_config) :
+	Object ("game")
 {
-	// Load the Radakan configuration file
-	radakan_config->load("radakan.cfg");
+	// These are now loaded from a configuration file within the settings class.
+	string radakan_path;
+	string ogre_media_path;
 
-	radakan_path = radakan_config->getSetting("radakan_path", "directories");
-	ogre_media_path = radakan_config->getSetting("ogre_media_path", "directories");
+	new Settings (path_to_config);
+	radakan_path = Settings::get()->radakan_path;
+	ogre_media_path = Settings::get()->ogre_media_path;
 
 	Log :: trace (me, Game :: get_class_name (), "", radakan_path, ogre_media_path);
 
@@ -53,7 +54,6 @@ Game ::
 		Log :: no_logs (me);
 	#endif
 
-	new Settings (radakan_path);
 
 	new Audio_Engine ();
 
