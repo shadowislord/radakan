@@ -8,6 +8,8 @@
 #include "items/item.hpp"
 #include "movable_model.hpp"
 #include "world.hpp"
+#include "engines/settings.hpp"
+
 
 using namespace std;
 using namespace Radakan;
@@ -68,7 +70,7 @@ void Movable_Model ::
 
 	//	I'm not fully sure why the '+'es and '-'es have to be like this.
 	//	But it works for me. --Tinus
-	body -> setForce (- 100 * (top_speed * get_front_direction () + body -> getLinearVelocity ()));
+	body -> setForce (- (Engines :: Settings :: get () -> movement_speed) * (top_speed * get_front_direction () + body -> getLinearVelocity ()));
 }
 
 void Movable_Model ::
@@ -83,7 +85,7 @@ void Movable_Model ::
 		ax = get_top_direction ();
 	}
 
-	body -> setTorque (300 * (top_radian_angle_speed * ax - body -> getAngularVelocity ()));
+	body -> setTorque (Engines :: Settings :: get () -> turn_speed * (top_radian_angle_speed * ax - body -> getAngularVelocity ()));
 }
 
 void Movable_Model ::

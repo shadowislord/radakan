@@ -41,13 +41,10 @@ Settings ::
 	right_key = radakan_config->getSetting("right", "keyboard");
 
 	// Basically load the float values and convert them from string to float.
-	std::istringstream foreward_string(radakan_config->getSetting("foreward_movement_speed", "gameplay"));
-	std::istringstream backward_string(radakan_config->getSetting("backward_movement_speed", "gameplay"));
+	std::istringstream movement_string(radakan_config->getSetting("movement_speed", "gameplay"));
 	std::istringstream turn_string(radakan_config->getSetting("turn_speed", "gameplay"));
 
-	foreward_string >> foreward_movement_speed;
-	backward_string >> backward_movement_speed;
-
+	movement_string >> movement_speed;
 	turn_string >> turn_speed;
 
 	assert (is_initialized ());

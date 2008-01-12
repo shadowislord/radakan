@@ -40,9 +40,7 @@ namespace Radakan
 
 				string ogre_media_path;
 				
-				float foreward_movement_speed;
-
-				float backward_movement_speed;
+				float movement_speed;
 
 				float turn_speed;
 

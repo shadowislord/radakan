@@ -12,11 +12,8 @@ left=a
 right=d
 
 [gameplay]
-# these affect both left and right turns, no negative numbers as the sign is automatically applied.
-turn_speed = 1
-
-# no negative numbers as the negative sign is automatically applied
-foreward_movement_speed = 1.0
-backward_movement_speed = 0.7
+# these affect all movable characters
+turn_speed = 300
+movement_speed = 100
 
 
