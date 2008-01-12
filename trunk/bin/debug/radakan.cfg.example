@@ -1,0 +1,8 @@
+# example
+# radakan_path=c:/games/radakan
+# ogre_media_path=c:/ogre3d/media
+[directories]
+radakan_path=C:/games/radakan
+ogre_media_path=C:/OgreSDK/media
+
+

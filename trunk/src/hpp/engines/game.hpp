@@ -1,6 +1,8 @@
 #ifndef RADAKAN_GAME_HPP
 #define RADAKAN_GAME_HPP
 
+#include <OgreConfigFile.h>
+
 #include "singleton.hpp"
 #include "strategies/strategy_state_machine.hpp"
 
@@ -20,7 +22,7 @@ namespace Radakan
 			public :
 				static string get_class_name ();
 
-				Game (string radakan_path, string ogre_media_path);
+				Game ();
 				virtual ~Game ();
 				virtual bool is_initialized () const;
 				
@@ -30,6 +32,13 @@ namespace Radakan
 				boost :: shared_ptr <Ogre :: Root> root;
 				boost :: shared_ptr <Ogre :: RenderWindow> window;
 				boost :: shared_ptr <Ogre :: SceneManager> scene_manager;
+
+				// For loading the radakan settings from a file
+				Ogre::ConfigFile *radakan_config;
+
+
+				string radakan_path;
+				string ogre_media_path;
 		};
 	}
 }

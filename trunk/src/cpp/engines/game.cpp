@@ -4,6 +4,7 @@
 #include <OgreRoot.h>
 #include <OgreTextureManager.h>
 
+
 #include "engines/audio_engine.hpp"
 #include "engines/game.hpp"
 #include "engines/gui_engine.hpp"
@@ -28,10 +29,18 @@ string Game ::
 }
 
 Game ::
-	Game (string radakan_path, string ogre_media_path) :
-	Object ("game")
+	Game () :
+	Object ("game"),
+	radakan_config(new Ogre::ConfigFile())
 {
+	// Load the Radakan configuration file
+	radakan_config->load("radakan.cfg");
+
+	radakan_path = radakan_config->getSetting("radakan_path", "directories");
+	ogre_media_path = radakan_config->getSetting("ogre_media_path", "directories");
+
 	Log :: trace (me, Game :: get_class_name (), "", radakan_path, ogre_media_path);
+
 
 	#ifdef RADAKAN_DEBUG
 		Log :: log (me) << "Debug mode is enabled." << endl;
