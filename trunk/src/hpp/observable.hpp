@@ -2,6 +2,7 @@
 #define RADAKAN_OBSERVABLE_HPP
 
 #include "object.hpp"
+#include "container.hpp"
 
 using namespace std;
 

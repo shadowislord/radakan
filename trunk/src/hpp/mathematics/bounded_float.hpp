@@ -34,8 +34,8 @@ namespace Radakan
 				float operator/ (float) const;
 				float operator/ (const Bounded_Float &) const;
 				
-				const float min;
-				const float max;
+				const float minimum;
+				const float maximum;
 
 			private :
 				float val;

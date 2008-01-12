@@ -277,7 +277,11 @@ template class Reference <Engines :: GUI_Engine>;
 template class Reference <Engines :: Input_Engine>;
 template class Reference <Engines :: Log>;
 template class Reference <Engines :: Settings>;
-template class Reference <Engines :: Tracker>;
+
+#ifdef RADAKAN_DEBUG
+	template class Reference <Engines :: Tracker>;
+#endif
+
 template class Reference <GUI>;
 template class Reference <Items :: Character>;
 template class Reference <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;

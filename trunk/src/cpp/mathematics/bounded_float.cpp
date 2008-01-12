@@ -8,8 +8,8 @@ const float Radakan :: Mathematics :: infinite = 1e200 * 1e200;
 
 Bounded_Float ::
 	Bounded_Float (float new_val, float new_min, float new_max) :
-	min (new_min),
-	max (new_max)
+	minimum (new_min),
+	maximum (new_max)
 {
 	assert (new_min <= new_max);
 	
@@ -31,8 +31,8 @@ float Bounded_Float ::
 
 void Bounded_Float :: set_val (float new_val)
 {
-	assert (min <= new_val);
-	assert (new_val <= max);
+	assert (minimum <= new_val);
+	assert (new_val <= maximum);
 
 	val = new_val;
 }

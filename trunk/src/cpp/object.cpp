@@ -182,11 +182,15 @@ void  Object ::
 
 	unsigned int self_destruct_criterion = 0;
 	self_destruct_criterion ++; //	I shouldn't forbid myself to self-destruct.
-	if (is_tracked)
-	{
-		//	The 'Tracker' should not forbid me to destruct.
-		self_destruct_criterion ++;
-	}
+
+	#ifdef RADAKAN_DEBUG
+		if (is_tracked)
+		{
+			//	The 'Tracker' should not forbid me to destruct.
+			self_destruct_criterion ++;
+		}
+	#endif
+
 	assert (dependencies -> size () >= self_destruct_criterion);
 
 	if (dependencies -> size () == self_destruct_criterion)

@@ -98,8 +98,14 @@ template class Singleton <Engines :: Input_Engine>;
 template class Singleton <Engines :: Log>;
 //	template class Singleton <Engines :: Plugin_Manager>;
 template class Singleton <Engines :: Settings>;
-template class Singleton <Engines :: Tracker>;
+
+
 template class Singleton <Items :: Player_Character>;
 //	template class Singleton <Plugins :: Battle_Plugin>;
 //	template class Singleton <Plugins :: Conversation_Plugin>;
 template class Singleton <World>;
+
+
+#ifdef RADAKAN_DEBUG
+	template class Singleton <Engines :: Tracker>;
+#endif
