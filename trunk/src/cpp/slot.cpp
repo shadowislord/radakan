@@ -19,7 +19,7 @@ template <class T> Slot <T> ::
 {
 	Engines :: Log :: trace (this -> Object :: me, Slot :: get_class_name (), "");
 	
-	//	Do nothing.
+	child . set_parent (* this);
 
 	assert (Slot <T> :: is_initialized ());
 }
@@ -84,6 +84,7 @@ template <class T> bool Slot <T> ::
 	}
 
 	child = added;
+
 	return true;
 }
 

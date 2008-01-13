@@ -23,8 +23,8 @@ string Alive_State ::
 Alive_State ::
 	Alive_State (Reference <Items :: Character> new_character) :
 	Object ("alive state"),
+	calm (1, 0, 1),
 	character (new_character),
-	calm (1),
 	sensory_buffer
 	(
 		new Set <Messages :: Message <Items :: Character> >
@@ -60,8 +60,6 @@ bool Alive_State ::
 	const
 {
 	assert (Strategy <Items :: Character> :: is_initialized ());
-	assert (0 <= calm);
-	assert (calm <= 1);
 
 	return true;
 }
@@ -96,7 +94,7 @@ Reference <Strategy <Items :: Character> > Alive_State ::
 		}
 		else if (actual_message . is_castable <Messages :: Conversation_Message> ())
 		{
-			if (0.5 < calm)	//	'listening' state:
+			if (calm > 0.5)	//	'listening' state:
 			{
 				set_active_state_class (Chat_State :: get_class_name ());
 			}

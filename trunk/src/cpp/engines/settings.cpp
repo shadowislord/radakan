@@ -26,26 +26,29 @@ Settings ::
 	Settings (string path_to_config) :
 	Object ("settings", true),	//	Here 'true' means 'prevent automatic destruction'.
 	camera_distance (0.72),
-	vertical_camera_angle(0),
-	radakan_config(new Ogre::ConfigFile())
+	vertical_camera_angle (0),
+	radakan_config (new Ogre :: ConfigFile ())
 {
-	// Load the Radakan configuration file
-	radakan_config->load(path_to_config + "/radakan.cfg");
+	//	Load the Radakan configuration file
+	radakan_config -> load (path_to_config + "/radakan.cfg");
 
-	radakan_path = radakan_config->getSetting("radakan_path", "directories");
-	ogre_media_path = radakan_config->getSetting("ogre_media_path", "directories");
+	radakan_path = radakan_config -> getSetting ("radakan_path", "directories");
+	ogre_media_path = radakan_config -> getSetting ("ogre_media_path", "directories");
 
-	forward_key = radakan_config->getSetting("forward", "keyboard");
-	backward_key = radakan_config->getSetting("backward", "keyboard");
-	left_key = radakan_config->getSetting("left", "keyboard");
-	right_key = radakan_config->getSetting("right", "keyboard");
+	forward_key = radakan_config -> getSetting ("forward", "keyboard");
+	backward_key = radakan_config -> getSetting ("backward", "keyboard");
+	left_key = radakan_config -> getSetting ("left", "keyboard");
+	right_key = radakan_config -> getSetting ("right", "keyboard");
 
-	// Basically load the float values and convert them from string to float.
-	std::istringstream movement_string(radakan_config->getSetting("movement_speed", "gameplay"));
-	std::istringstream turn_string(radakan_config->getSetting("turn_speed", "gameplay"));
-
-	movement_string >> movement_speed;
-	turn_string >> turn_speed;
+	//	Load the string values and convert them from string to float.
+	movement_reaction
+		= to_float (radakan_config -> getSetting ("movement_reaction", "gameplay"));
+	maximal_movement_speed
+		= to_float (radakan_config -> getSetting ("maximal_movement_speed", "gameplay"));
+	turn_reaction
+		= to_float (radakan_config -> getSetting ("turn_reaction", "gameplay"));
+	maximal_turn_speed
+		= to_float (radakan_config -> getSetting ("maximal_turn_speed", "gameplay"));
 
 	assert (is_initialized ());
 }
@@ -108,11 +111,4 @@ void Settings ::
 	{
 		vertical_camera_angle = max_vertical_camera_angle;
 	}
-}
-
-
-Ogre::ConfigFile* Settings ::
-	getRadakanConfig()
-{
-	return radakan_config;
 }

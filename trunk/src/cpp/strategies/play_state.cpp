@@ -105,33 +105,34 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 
 	Engines :: GUI_Engine :: get () -> set_active_gui (gui);
 
-	float top_speed = 0;
-
+	float relative_destination_movement_speed = 0;
 	if (Engines :: Input_Engine :: get () -> get_key
 		(Engines :: Settings :: get () -> forward_key, false))
 	{
-		top_speed = 1;
+		relative_destination_movement_speed = 1;
 	}
 	else if (Engines :: Input_Engine :: get () -> get_key
 		(Engines :: Settings :: get () -> backward_key, false))
 	{
-		top_speed = - 0.7;
+		relative_destination_movement_speed = - 0.7;
+		Engines :: Log :: log (me) << "Going backwards: - 0.7" << endl;
 	}
-	Items :: Player_Character :: get () -> get_movable_model () -> move (top_speed);
+	Items :: Player_Character :: get () -> get_movable_model () -> move
+		(relative_destination_movement_speed);
 
-	float top_angular_speed = 0;
+	float relative_destination_turn_speed = 0;
 	if (Engines :: Input_Engine :: get () -> get_key
 		(Engines :: Settings :: get () -> left_key, false))
 	{
-		top_angular_speed = 1;
+		relative_destination_turn_speed = 1;
 	}
 	else if (Engines :: Input_Engine :: get () -> get_key
 		(Engines :: Settings :: get () -> right_key, false))
 	{
-		top_angular_speed = - 1;
+		relative_destination_turn_speed = - 1;
 	}
-
-	Items :: Player_Character :: get () -> get_movable_model () -> turn (top_angular_speed);
+	Items :: Player_Character :: get () -> get_movable_model () -> turn
+		(relative_destination_turn_speed);
 
 	//	reset your orientation
 	if (Engines :: Input_Engine :: get () -> get_key ("space", true)

@@ -46,8 +46,8 @@ Game ::
 	#ifdef RADAKAN_DEBUG
 		Log :: log (me) << "Debug mode is enabled." << endl;
 
-		new Log (radakan_path);
 		new Tracker ();
+		new Log (radakan_path);
 	#else
 		Log :: log (me) << "Debug mode is disabled." << endl;
 
@@ -55,7 +55,9 @@ Game ::
 	#endif
 
 
-	new Audio_Engine ();
+	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+		new Audio_Engine ();
+	#endif
 
 	root . reset (new Ogre :: Root (radakan_path + "/data/plugins.cfg", radakan_path + "/data/ogre.cfg", radakan_path + "/log/ogre.txt"));
 	if (! root -> showConfigDialog ())
@@ -153,17 +155,20 @@ Game ::
 	assert (is_initialized ());
 
 	Strategies :: Play_State :: uninstantiate ();
+	Strategies :: Menu_State :: uninstantiate ();
 	World :: uninstantiate ();
 	Settings :: uninstantiate ();
 	GUI_Engine :: uninstantiate ();
 	//	Input_Engine :: uninstantiate ();	//	Already auto-destructed.
-	Audio_Engine :: uninstantiate ();
 
-	#ifdef RADAKAN_DEBUG
-		Tracker :: uninstantiate ();
+	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+		Audio_Engine :: uninstantiate ();
 	#endif
 
 	Log :: uninstantiate ();
+	#ifdef RADAKAN_DEBUG
+		Tracker :: uninstantiate ();
+	#endif
 }
 
 //	virtual

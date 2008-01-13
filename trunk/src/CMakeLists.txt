@@ -10,10 +10,6 @@ endif("${GUI_MODE}" STREQUAL "${CEGUI}")
 if("${SOUND_MODE}" STREQUAL "${Audiere}")
 	find_package(Ogg)
 	find_package(Vorbis)
-else("${SOUND_MODE}" STREQUAL "${Audiere}")
-	if("${SOUND_MODE}" STREQUAL "${FMod}")
-		find_package(Fmod)
-	endif("${SOUND_MODE}" STREQUAL "${FMod}")
 endif("${SOUND_MODE}" STREQUAL "${Audiere}")
 
 if(WIN32)
@@ -26,7 +22,7 @@ set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/src/hpp"
 					${Boost_INCLUDE_DIR}
 					"${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include"
 					"${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
-					"${RADAKAN_SOURCE_DIR}/external/tinyxml-2.5.2"
+					"${RADAKAN_SOURCE_DIR}/external/tinyxml-2.5.3"
 					"${RADAKAN_SOURCE_DIR}/external/ois-1.0/includes"
 					${Ogre_INCLUDE_DIR}
 					"${Ogre_SAMPLES_DIR}/include")
@@ -41,10 +37,6 @@ if("${SOUND_MODE}" STREQUAL "${Audiere}")
 		${Ogg_INCLUDE_DIR}
 		${Vorbis_INCLUDE_DIR}
 		"${RADAKAN_SOURCE_DIR}/external/audiere/src")
-else("${SOUND_MODE}" STREQUAL "${Audiere}")
-	if("${SOUND_MODE}" STREQUAL "${FMod}")
-		set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Fmod_INCLUDE_DIR})
-	endif("${SOUND_MODE}" STREQUAL "${FMod}")
 endif("${SOUND_MODE}" STREQUAL "${Audiere}")
 
 include_directories( ${INCLUDE_DIRS} )
@@ -66,10 +58,6 @@ if("${SOUND_MODE}" STREQUAL "${Audiere}")
 					${Ogg_LIB_DEBUG}
 					${Vorbis_LIB_RELEASE}
 					${Vorbis_LIB_DEBUG})
-else("${SOUND_MODE}" STREQUAL "${Audiere}")
-	if("${SOUND_MODE}" STREQUAL "${FMod}")
-		set(LINK_DIRS ${LINK_DIRS} ${Fmod_LIB_RELEASE})
-	endif("${SOUND_MODE}" STREQUAL "${FMod}")
 endif("${SOUND_MODE}" STREQUAL "${Audiere}")
 
 if(WIN32)
@@ -140,30 +128,19 @@ if("${SOUND_MODE}" STREQUAL "${Audiere}")
 		optimized audiere
 		optimized ogg
 		optimized vorbis )
-else("${SOUND_MODE}" STREQUAL "${Audiere}")
-	if("${SOUND_MODE}" STREQUAL "${FMod}")
-		if(WIN32)
-			set(DEBUG_LIBS ${DEBUG_LIBS} fmodvc)
-			set(RELEASE_LIBS ${RELEASE_LIBS} fmodvc)
-		endif(WIN32)
-	endif("${SOUND_MODE}" STREQUAL "${FMod}")
 endif("${SOUND_MODE}" STREQUAL "${Audiere}")
 
 target_link_libraries( radakan  ${DEBUG_LIBS}
                                 ${RELEASE_LIBS} )
 
+set(COMPILE_FLAGS "${COMPILE_FLAGS} -DRADAKAN_AUDIERE_MODE=3 -DRADAKAN_CEGUI_MODE=7 -DRADAKAN_OPENGUI_MODE=8")
+
 if(UNIX)
-	set(COMPILE_FLAGS "${COMPILE_FLAGS} -DRADAKAN_AUDIERE_MODE=3 -DRADAKAN_FMOD_MODE=4 -DRADAKAN_CEGUI_MODE=7 -DRADAKAN_OPENGUI_MODE=8 -Wall -Wextra")
-else(UNIX)
-	set(COMPILE_FLAGS "${COMPILE_FLAGS} -DRADAKAN_AUDIERE_MODE=3 -DRADAKAN_FMOD_MODE=4 -DRADAKAN_CEGUI_MODE=7 -DRADAKAN_OPENGUI_MODE=8")
+	set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wall -Wextra")
 endif(UNIX)
 
 if("${SOUND_MODE}" STREQUAL "${Audiere}")
 	set(COMPILE_FLAGS "${COMPILE_FLAGS} -DRADAKAN_AUDIO_MODE=3")
-else("${SOUND_MODE}" STREQUAL "${Audiere}")
-	if("${SOUND_MODE}" STREQUAL "${FMod}")
-		set(COMPILE_FLAGS "${COMPILE_FLAGS} -DRADAKAN_AUDIO_MODE=4")
-	endif("${SOUND_MODE}" STREQUAL "${FMod}")
 endif("${SOUND_MODE}" STREQUAL "${Audiere}")
 
 if("${GUI_MODE}" STREQUAL "${CEGUI}")

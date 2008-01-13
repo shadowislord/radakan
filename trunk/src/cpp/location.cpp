@@ -16,11 +16,11 @@ template <class T> string Location <T> ::
 
 //  constructor
 template <class T> Location <T> ::
-	Location (int new_maximal_size) :
+	Location (unsigned int new_maximal_size) :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
 	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name ());
-	assert ((0 < new_maximal_size) || (new_maximal_size == Container <T> :: unlimited));
+	assert (0 < new_maximal_size);
 
 	string implementation_name = this -> me . get_name () + "'s implementation";
 

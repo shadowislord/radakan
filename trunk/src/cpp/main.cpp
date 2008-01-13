@@ -23,17 +23,16 @@ using namespace std;
 		}
 	#else
 		// Check to see if a parameter was passed
-		if(argc>0)
+		if (1 < argc)
 		{
 			// Assuming 0 is he program name, we just want the first parameter
-			path_to_config = argv[1];
+			path_to_config = argv [1];
 		}
 		else
 		{
 			path_to_config = "./";
 		}
 	#endif
-
 
 	try
 	{

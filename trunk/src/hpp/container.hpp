@@ -15,9 +15,9 @@ namespace Radakan
 		public :
 			static string get_class_name ();
 
-			static const int unlimited;
+			static const unsigned int unlimited;
 
-			Container (int new_maximal_size = unlimited);
+			Container (unsigned int new_maximal_size = unlimited);
 			virtual ~Container ();
 			virtual bool is_initialized () const;
 

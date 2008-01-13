@@ -25,10 +25,11 @@ namespace Radakan
 			static string get_class_name ();
 			
 			//	I'll move in my front direction.
-			void move (float top_speed);
+			void move (float relative_destination_movement_speed);
 
 			//	If no - or zero - ax specified, I'll turn around my top direction.
-			void turn (float top_radian_angle_speed, Ogre :: Vector3 ax = zero_vector);
+			void turn
+				(float relative_destination_turn_speed, Ogre :: Vector3 ax = zero_vector);
 
 			//	Reset the orientation.
 			void reset ();

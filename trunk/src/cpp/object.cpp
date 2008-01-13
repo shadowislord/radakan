@@ -124,7 +124,7 @@ void  Object ::
 	const
 {
 	//	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name ());
-	assert (is_initialized ());
+	assert (Object :: is_initialized ());
 	assert (! does_depend (reference));
 
 	bool check = dependencies -> insert (& reference) . second;
@@ -132,11 +132,14 @@ void  Object ::
 	assert (check);
 	assert (does_depend (reference));
 
-	/*for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
-			i ++)
+	if (name . find ("tile") != string :: npos)
 	{
-		Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
-	}*/
+		for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
+				i ++)
+		{
+			Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
+		}
+	}
 }
 
 void  Object ::
@@ -145,7 +148,7 @@ void  Object ::
 {
 	//	Engines :: Log :: trace (me, Object :: get_class_name (), "unregister_reference", reference . get_name ());
 	
-	assert (is_initialized ());
+	assert (Object :: is_initialized ());
 	assert (does_depend (reference));
 
 	dependencies -> erase (& reference);

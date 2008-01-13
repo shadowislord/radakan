@@ -23,7 +23,7 @@ namespace Radakan
 		class NPC;
 	}
 	
-	///	A Tile is a square piece (20 x 20) of the world.
+	///	A Tile is a square piece (64 m x 64 m) of the world.
 	///	Tile data is stored under trunk/data/world/tile/.
 	class Tile :
 		public Location <Model>
@@ -49,8 +49,7 @@ namespace Radakan
 
 		private :
 			void load_model (TiXmlElement & element);
-			Reference <Items :: Item> load_item_prototype_file (TiXmlDocument & document);
-			void load_tile_file (TiXmlDocument & document);
+			Reference <Items :: Item> load_item (TiXmlDocument & document, string item_name);
 
 			TiXmlDocument * doc;
 	};

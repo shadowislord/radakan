@@ -170,7 +170,9 @@ template class Set <Object>;
 template class Set <Observer <Messages :: Message <Items :: Character> > >;
 template class Set <Observer <Object> >;
 template class Set <Opinion>;
-template class Set <Sound_Sample>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Set <Sound_Sample>;
+#endif
 template class Set <Strategies :: Strategy <Engines :: Game> >;
 template class Set <Strategies :: Strategy <Items :: Character> >;
 template class Set <Tile>;

@@ -99,7 +99,9 @@ template <class T> void Pointer <T> ::
 #include "strategies/strategy.hpp"
 #include "tile.hpp"
 
-template class Pointer <Sound_Sample>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Pointer <Sound_Sample>;
+#endif
 template class Pointer <Container <GUI> >;
 template class Pointer <Container <Items :: Character> >;
 template class Pointer <Container <Items :: Container_Item <Items :: Container_Item <Items :: Item> > > >;

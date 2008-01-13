@@ -89,7 +89,9 @@ template <class T> bool Singleton <T> ::
 
 template class Singleton <Strategies :: Menu_State>;
 template class Singleton <Strategies :: Play_State>;
-template class Singleton <Engines :: Audio_Engine>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Singleton <Engines :: Audio_Engine>;
+#endif
 //	template class Singleton <Engines :: Battle_Engine>;
 template class Singleton <Engines :: Conversation_Engine>;
 template class Singleton <Engines :: Game>;

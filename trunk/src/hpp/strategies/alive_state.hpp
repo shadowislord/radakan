@@ -1,6 +1,7 @@
 #ifndef RADAKAN_ALIVE_STATE_HPP
 #define RADAKAN_ALIVE_STATE_HPP
 
+#include "mathematics/bounded_float.hpp"
 #include "strategy.hpp"
 #include "strategy_state_machine.hpp"
 
@@ -40,7 +41,7 @@ namespace Radakan
 				void set_active_state_class (string class_name);
 
 				//	'calm' can vary from 0 to 1.
-				float calm;
+				Mathematics :: Bounded_Float calm;
 
 			private :
 				Reference <Items :: Character> character;

@@ -17,14 +17,27 @@ namespace Radakan
 				Bounded_Float (float val, float min, float max);
 				~Bounded_Float ();
 
-				float get_val () const;
+				float get_value () const;
 				
-				void set_val (float);
-
-				Bounded_Float operator+= (float);
+				void set_value (float);
 
 				Bounded_Float operator= (float);
 				Bounded_Float operator= (const Bounded_Float &);
+				
+				Bounded_Float operator+= (float);
+				
+				Bounded_Float operator*= (float);
+
+				bool operator> (float) const;
+				bool operator> (const Bounded_Float &) const;
+				bool operator>= (float) const;
+				bool operator>= (const Bounded_Float &) const;
+				bool operator== (float) const;
+				bool operator== (const Bounded_Float &) const;
+				bool operator<= (float) const;
+				bool operator<= (const Bounded_Float &) const;
+				bool operator< (float) const;
+				bool operator< (const Bounded_Float &) const;
 				float operator+ (float) const;
 				float operator+ (const Bounded_Float &) const;
 				float operator- (float) const;
@@ -38,7 +51,7 @@ namespace Radakan
 				const float maximum;
 
 			private :
-				float val;
+				float value;
 		};
 	}
 }

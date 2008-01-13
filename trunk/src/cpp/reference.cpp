@@ -56,7 +56,7 @@ template <class T> Reference <T> ::
 
 template <class T> Reference <T> ::
 	Reference (const Reference <T> & other) :
-	Reference_Base (),	//	GCC gives a warning when this line is missing with '-Wall -Wextra'.
+	Reference_Base (),	//	GCC (using '-Wall -Wextra') gives a warning without this line.
 	pointee (other . pointee),
 	parent (NULL)
 {
@@ -265,11 +265,15 @@ template class Reference <Container <Pair <pair <int, int>, Tile> > >;
 template class Reference <Container <Pair <string, Skill> > >;
 template class Reference <Container <Play_State_GUI> >;
 template class Reference <Container <Skill> >;
-template class Reference <Container <Sound_Sample> >;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Reference <Container <Sound_Sample> >;
+#endif
 template class Reference <Container <Strategies :: Strategy <Engines :: Game> > >;
 template class Reference <Container <Strategies :: Strategy <Items :: Character> > >;
 template class Reference <Container <Tile> >;
-template class Reference <Engines :: Audio_Engine>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Reference <Engines :: Audio_Engine>;
+#endif
 //	template class Reference <Engines :: Battle_Engine>;
 template class Reference <Engines :: Conversation_Engine>;
 template class Reference <Engines :: Game>;
@@ -329,7 +333,9 @@ template class Reference <Set <Object> >;
 template class Reference <Set <Observer <Messages :: Message <Items :: Character> > > >;
 template class Reference <Set <Observer <Object> > >;
 template class Reference <Set <Opinion> >;
-template class Reference <Set <Sound_Sample> >;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Reference <Set <Sound_Sample> >;
+#endif
 template class Reference <Set <Strategies :: Strategy <Engines :: Game> > >;
 template class Reference <Set <Strategies :: Strategy <Items :: Character> > >;
 template class Reference <Set <Tile> >;
@@ -337,7 +343,9 @@ template class Reference <Skill>;
 template class Reference <Slot <Strategies :: Strategy <Engines :: Game> > >;
 template class Reference <Slot <Strategies :: Strategy <Items :: Character> > >;
 template class Reference <Slot <Tile> >;
-template class Reference <Sound_Sample>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Reference <Sound_Sample>;
+#endif
 template class Reference <State_Machine <Tile> >;
 template class Reference <Strategies :: Strategy <Engines :: Game> >;
 template class Reference <Strategies :: Strategy <Items :: Character> >;

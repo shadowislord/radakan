@@ -1,7 +1,7 @@
 <tile>
 	<model item="flat_ground" x="10" y="0" z="10" />
 	
-	<model item="ninja" x="12.5" y="1.1" z="11.2" name="Twelfth Ninja" />
+	<model item="ninja" x="12.5" y="1.1" z="11.2" name="Twelfth_Ninja" />
 
 	<model item="tavern" x="10" y="0" z="10" />
 	

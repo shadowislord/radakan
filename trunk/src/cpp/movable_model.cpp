@@ -63,29 +63,56 @@ bool Movable_Model ::
 }
 
 void Movable_Model ::
-	move (float top_speed)
+	move (float relative_destination_movement_speed)
 {
 	assert (Model :: is_initialized ());
-	assert (Ogre :: Math :: Abs (top_speed) <= 1);
+	assert (Ogre :: Math :: Abs (relative_destination_movement_speed) <= 1);
 
-	//	I'm not fully sure why the '+'es and '-'es have to be like this.
-	//	But it works for me. --Tinus
-	body -> setForce (- (Engines :: Settings :: get () -> movement_speed) * (top_speed * get_front_direction () + body -> getLinearVelocity ()));
+	if (relative_destination_movement_speed < 0)
+	{
+		Engines :: Log :: log (me) << "relative_destination_movement_speed: " << relative_destination_movement_speed << endl;
+	}
+
+	//	I don't know why 'get_front_direction ()' needs a '-',
+	//	but it works for me. --Tinus
+	body -> setForce
+	(
+		Engines :: Settings :: get () -> movement_reaction
+		*
+		(
+			relative_destination_movement_speed
+				* Engines :: Settings :: get () -> maximal_movement_speed
+				* (- get_front_direction ())
+			-
+			body -> getLinearVelocity ()
+		)
+	);
 }
 
 void Movable_Model ::
-	turn (float top_radian_angle_speed, Ogre :: Vector3 ax)
+	turn (float relative_destination_turn_speed, Ogre :: Vector3 ax)
 {
-	//	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "turn", to_string (top_radian_angle_speed), to_string (ax));
+	//	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "turn", to_string (relative_target_turn_speed), to_string (ax));
 	assert (Model :: is_initialized ());
-	assert (Ogre :: Math :: Abs (top_radian_angle_speed) <= 1);
+	assert (Ogre :: Math :: Abs (relative_destination_turn_speed) <= 1);
 
 	if (ax == zero_vector)
 	{
 		ax = get_top_direction ();
 	}
 
-	body -> setTorque (Engines :: Settings :: get () -> turn_speed * (top_radian_angle_speed * ax - body -> getAngularVelocity ()));
+	body -> setTorque
+	(
+		Engines :: Settings :: get () -> turn_reaction
+		*
+		(
+			relative_destination_turn_speed
+				* Engines :: Settings :: get () -> maximal_turn_speed
+				* ax
+			-
+			body -> getAngularVelocity ()
+		)
+	);
 }
 
 void Movable_Model ::

@@ -12,19 +12,18 @@ template <class T> string Container <T> ::
 	return "Container <" + T :: get_class_name () + ">";
 }
 
-//	This could have been any number (strictly) below 0.
-template <class T> const int Container <T> ::
-	unlimited = - 10;
+template <class T> const unsigned int Container <T> ::
+	unlimited = numeric_limits <unsigned int> :: max ();
 
 //  constructor
 template <class T> Container <T> ::
-	Container (int new_maximal_size) :
+	Container (unsigned int new_maximal_size) :
 	Object ("Doesn't matter."),
 	maximal_size (new_maximal_size),
 	sealed (false)
 {
 	Engines :: Log :: trace (me, Container <T> :: get_class_name (), "", name, to_string (new_maximal_size));
-	assert ((new_maximal_size == unlimited) || (0 <= new_maximal_size));
+	assert (0 < maximal_size);
 
 	//	Do nothing.
 
@@ -47,8 +46,6 @@ template <class T> bool Container <T> ::
 	const
 {
 	assert (Object :: is_initialized ());
-	assert (unlimited < 0);
-	assert ((maximal_size == unlimited) || (0 <= maximal_size));
 
 	return true;
 }
@@ -58,8 +55,7 @@ template <class T> void Container <T> ::
 {
 	for (Pointer <T> child (get_child ()); child . points_to_object (); child = get_child ())
 	{
-		Engines :: Log :: log (this -> me) << "Dropping child " << child . get_name () << "..."
-			<< endl;
+		Engines :: Log :: log (this -> me) << "Dropping child " << child . get_name () << "..." << endl;
 		
 		drop (child);
 	}
@@ -140,7 +136,9 @@ template class Container <Pair <pair <int, int>, Tile> >;
 template class Container <Pair <string, Skill> >;
 template class Container <Play_State_GUI>;
 template class Container <Skill>;
-template class Container <Sound_Sample>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Container <Sound_Sample>;
+#endif
 template class Container <Strategies :: Strategy <Engines :: Game> >;
 template class Container <Strategies :: Strategy <Items :: Character> >;
 template class Container <Tile>;

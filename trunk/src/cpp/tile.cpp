@@ -31,7 +31,7 @@ string Tile ::
 
 //	static
 const int Tile ::
-	side_length (20);
+	side_length (64);
 
 Tile ::
 	Tile (pair <int, int> new_coordinates) :
@@ -47,7 +47,16 @@ Tile ::
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
 
-	load_tile_file (* doc);
+	bool check = doc -> LoadFile ();
+	assert (check);
+	assert (! doc -> Error ());
+	TiXmlElement * root = doc -> RootElement ();
+
+	for (TiXmlElement * xml_element = root -> FirstChildElement ();
+		xml_element != NULL; xml_element = xml_element -> NextSiblingElement ())
+	{
+		load_model (* xml_element);
+	}
 
 /*	if (root -> FirstChildElement ("forest") != NULL)
 	{
@@ -192,12 +201,15 @@ void Tile ::
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_model", element . Value ());
 	assert (is_initialized ());
 
+	string item_name;
+	element . QueryValueAttribute <string> ("name", & item_name);
+	
 	assert (element . Attribute ("item") != NULL);
 	TiXmlDocument item_prototype
 	(
 		Engines :: Settings :: get () -> radakan_path + "/data/world/prototype/" + element . Attribute ("item") + ".xml"
 	);
-	Reference <Items :: Item> item (load_item_prototype_file (item_prototype));
+	Reference <Items :: Item> item (load_item (item_prototype, item_name));
 
 	//	'position' is the position of this tile.
 	Ogre :: Vector3 model_position = position + Ogre :: Vector3
@@ -224,9 +236,9 @@ void Tile ::
 }
 
 Reference <Items :: Item> Tile ::
-	load_item_prototype_file (TiXmlDocument & document)
+	load_item (TiXmlDocument & document, string item_name)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_item_prototype_file", document . Value ());
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_item", document . Value ());
 	assert (is_initialized ());
 	
 	bool check = document . LoadFile ();
@@ -255,14 +267,8 @@ Reference <Items :: Item> Tile ::
 
 	Reference <Mesh_Data> mesh_data (new Mesh_Data (mesh_file_name));
 
-	if (mesh_element -> Attribute ("material") != NULL)
-	{
-		mesh_data -> material_file_name = mesh_element -> Attribute ("material");
-	}
-	if (mesh_element -> Attribute ("scale") != NULL)
-	{
-		mesh_data -> scale = to_float (mesh_element -> Attribute ("scale"));
-	}
+	mesh_element -> QueryStringAttribute ("material", & mesh_data -> material_file_name);
+	mesh_element -> QueryFloatAttribute ("scale", & mesh_data -> scale);
 	if (mesh_element -> Attribute ("solid") != NULL)
 	{
 		mesh_data -> solid = mesh_element -> Attribute ("solid") == string ("true");
@@ -283,17 +289,23 @@ Reference <Items :: Item> Tile ::
 	Pointer <Items :: Item> item;
 	if (type == string ("static_item") || type == string ("plane"))
 	{
+		assert (item_name . empty ());
+		
 		item . reset_pointee (new Items :: Static_Item (mass, size, mesh_data));
 	}
 	else
 	{
 		if (type == string ("npc"))
 		{
-			item . reset_pointee (new Items :: NPC (name, mass, size, mesh_data));
+			assert (! item_name . empty ());
+		
+			item . reset_pointee (new Items :: NPC (item_name, mass, size, mesh_data));
 		}
 		else if (type == string ("player"))
 		{
-			item . reset_pointee (new Items :: Player_Character (name, mass, size, mesh_data));
+			assert (! item_name . empty ());
+		
+			item . reset_pointee (new Items :: Player_Character (item_name, mass, size, mesh_data));
 		}
 		else
 		{
@@ -305,22 +317,4 @@ Reference <Items :: Item> Tile ::
 	assert (item -> is_initialized ());
 
 	return item;
-}
-
-void Tile ::
-	load_tile_file (TiXmlDocument & document)
-{
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_xml_file", document . Value ());
-	assert (is_initialized ());
-
-	bool check = document . LoadFile ();
-	assert (check);
-	assert (! document . Error ());
-	TiXmlElement * root = document . RootElement ();
-
-	for (TiXmlElement * xml_element = root -> FirstChildElement ();
-		xml_element != NULL; xml_element = xml_element -> NextSiblingElement ())
-	{
-		load_model (* xml_element);
-	}
 }

@@ -33,24 +33,18 @@ namespace Radakan
 				///	in radians
 				void increase_vertical_camera_angle (float angle);
 
-				// get the config object
-				Ogre::ConfigFile* getRadakanConfig();
-
 				string radakan_path;
-
 				string ogre_media_path;
-				
-				float movement_speed;
 
-				float turn_speed;
-
-				string forward_key;	
-
+				string forward_key;
 				string backward_key;
-
 				string left_key;
-
 				string right_key;
+
+				float movement_reaction;
+				float maximal_movement_speed;
+				float turn_reaction;
+				float maximal_turn_speed;
 
 			private :
 				///	in meters
@@ -66,7 +60,7 @@ namespace Radakan
 				float vertical_camera_angle;
 
 				// For loading the radakan settings from a file
-				Ogre::ConfigFile *radakan_config;
+				boost :: scoped_ptr <Ogre :: ConfigFile> radakan_config;
 		};
 	}
 }

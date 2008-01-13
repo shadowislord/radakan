@@ -330,7 +330,7 @@ bool Input_Engine ::
 
 //	virtual
 bool Input_Engine ::
-	mousePressed (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id)
+	mousePressed (const OIS :: MouseEvent &, OIS :: MouseButtonID id)
 {
 	assert (is_initialized ());
 
@@ -341,7 +341,7 @@ bool Input_Engine ::
 
 //	virtual
 bool Input_Engine ::
-	mouseReleased (const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id)
+	mouseReleased (const OIS :: MouseEvent &, OIS :: MouseButtonID id)
 {
 	assert (is_initialized ());
 

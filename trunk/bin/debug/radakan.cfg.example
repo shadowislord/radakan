@@ -7,7 +7,7 @@ ogre_media_path=C:/OgreSDK/media
 
 [keyboard]
 forward=w
-back=s
+backward=s
 left=a
 right=d
 

@@ -36,11 +36,11 @@ namespace Radakan
 
 				float get_volume () const;
 
-				///	in cubic meters
-				const Ogre :: Vector3 size;
-				
 				///	in kilograms
 				const float mass;
+				
+				///	in cubic meters
+				const Ogre :: Vector3 size;
 				
 				Reference <Mesh_Data> mesh_data;
 
