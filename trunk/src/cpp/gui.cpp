@@ -116,7 +116,8 @@ void GUI ::
 	assert (message -> is_initialized ());
 
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-		CEGUI :: ListboxItem * item = new CEGUI :: ListboxTextItem (message . get_name ());
+		CEGUI :: ListboxItem * item
+			= new CEGUI :: ListboxTextItem (message . get_name (true));
 		log_window -> addItem (item);
 		log_window -> ensureItemIsVisible (log_window -> getItemCount ());
 	#endif

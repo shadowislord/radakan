@@ -1,6 +1,6 @@
 <item_prototype type="static_item" mass="10">
 	<mesh file_name="building.mesh" scale="0.08" rotation="true" />
-	<size x="10" y="3" z="10"/>
+	<size x="5" y="3" z="5"/>
 </item_prototype>
 
 <!--

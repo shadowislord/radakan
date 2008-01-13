@@ -12,6 +12,10 @@ string Static_Item ::
 	return "Static_Item";
 }
 
+//	static
+unsigned int Static_Item ::
+	counter (0);
+
 //  constructor
 Static_Item ::
 	Static_Item
@@ -20,7 +24,7 @@ Static_Item ::
 		Ogre :: Vector3 new_size,
 		const Reference <Mesh_Data> new_mesh_data
 	) :
-	Object ("static item based on " + new_mesh_data . get_name ()),
+	Object ("static item " + to_string (counter ++) + " (based on " + new_mesh_data . get_name () + ")"),
 	Item
 	(
 		new_mass,

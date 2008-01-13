@@ -30,7 +30,7 @@ namespace Radakan
 			//	So 'destruct ()' can be used as a safe way of forced destruction.
 			virtual void destruct () const;
 
-			virtual string get_name () const;
+			virtual string get_name (bool suppress_debug_info = false) const;
 			
 			T * operator-> ();
 			const T * operator-> () const;

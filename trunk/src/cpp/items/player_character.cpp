@@ -95,6 +95,7 @@ void Player_Character ::
 	else
 	{
 		//	I show the NPC's message in the log, to let the player know.
-		Engines :: Log :: show (message -> from . get_name () + ": " + message . get_name ());
+		Engines :: Log :: show
+			(message -> from . get_name (true) + ": " + message . get_name (true));
 	}
 }

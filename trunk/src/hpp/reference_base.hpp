@@ -21,12 +21,12 @@ namespace Radakan
 			virtual ~Reference_Base ();
 			virtual void destruct () const = 0;
 			
-			virtual string get_name () const;
+			virtual string get_name (bool suppress_debug_info = false) const;
 			
 		private :
 			const string number;
 			
-			static long counter;
+			static unsigned int counter;
 	};
 
 	ostream & operator<< (ostream & out_stream, const Reference_Base & reference_base);

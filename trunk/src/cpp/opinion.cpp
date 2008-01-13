@@ -17,7 +17,7 @@ string Opinion ::
 Opinion ::
 	Opinion (const Reference <Items :: Character> & other) :
 	Object ("opinion about " + other . get_name ()),
-	about (other . get_name ()),
+	about (other . get_name (true)),
 	like (0.5),
 	fear (0)
 {

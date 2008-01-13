@@ -22,15 +22,15 @@ using namespace std;
 			path_to_config = buffer;
 		}
 	#else
-		// Check to see if a parameter was passed
+		//	Check to see if a parameter was passed.
+		// Note that 'argv [0]' is he program name.
 		if (1 < argc)
 		{
-			// Assuming 0 is he program name, we just want the first parameter
 			path_to_config = argv [1];
 		}
 		else
 		{
-			path_to_config = "./";
+			path_to_config = ".";
 		}
 	#endif
 
@@ -42,16 +42,14 @@ using namespace std;
 		game -> run ();
 		
 		//	The game is automatically shut down here.
-		game . destruct ();
 	}
 	catch (Ogre :: Exception & exception)
 	{
+		cerr << "Exception: " << exception . getFullDescription () << endl;
 		#ifdef RADAKAN_WINDOWS
 			MessageBox
 				(NULL, exception . getFullDescription () . c_str (),
 				"An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-		#else
-			cerr << "Exception: " << exception . getFullDescription () << endl;
 		#endif
 	}
 

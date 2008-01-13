@@ -170,7 +170,7 @@ void Input_Engine ::
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message . get_name ());
 	assert (is_initialized ());
 
-	gui_button = message -> name;
+	gui_button = message . get_name (true);
 }
 
 void Input_Engine ::
@@ -204,7 +204,7 @@ const Reference <Messages :: Message <Items :: Character> > Input_Engine ::
 
 		conversation_option . reset_pointee ();
 
-		Engines :: Log :: show ("The " + result . get_name () + " option was clicked.");
+		Engines :: Log :: show ("The " + result . get_name (true) + " option was clicked.");
 
 		return result;
 	}

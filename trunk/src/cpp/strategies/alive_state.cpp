@@ -50,7 +50,7 @@ Alive_State ::
 	{
 		character -> get_movable_model () -> turn (1, character -> get_model () -> get_side_direction ());
 		
-		Engines :: Log :: show (character . get_name () + " died.");
+		Engines :: Log :: show (character . get_name (true) + " died.");
 	}
 }
 
@@ -100,7 +100,7 @@ Reference <Strategy <Items :: Character> > Alive_State ::
 			}
 			else
 			{
-				Engines :: Log :: show (character . get_name () + " is not listening.");
+				Engines :: Log :: show (character . get_name (true) + " is not listening.");
 			}
 		}
 

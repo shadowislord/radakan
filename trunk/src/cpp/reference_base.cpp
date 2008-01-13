@@ -35,7 +35,7 @@ float Radakan ::
 }
 
 //	static
-long Reference_Base ::
+unsigned int Reference_Base ::
 	counter (0);
 
 //	static
@@ -63,10 +63,17 @@ Reference_Base ::
 
 //	virtual
 string Reference_Base ::
-	get_name ()
+	get_name (bool suppress_debug_info)
 	const
 {
-	return "[" + number + "]";
+	if (suppress_debug_info)
+	{
+		return "";
+	}
+	else
+	{
+		return "[" + number + "]";
+	}
 }
 
 ostream & Radakan ::

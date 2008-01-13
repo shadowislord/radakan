@@ -118,10 +118,26 @@ template <class T> void Reference <T> ::
 
 //	virtual
 template <class T> string Reference <T> ::
-	get_name ()
+	get_name (bool suppress_debug_info)
 	const
 {
 	#ifdef RADAKAN_DEBUG
+		suppress_debug_info = true;
+	#endif
+
+	if (suppress_debug_info)
+	{
+		if (pointee == NULL)
+		{
+			return "NULL";
+		}
+		else
+		{
+			return pointee -> name;
+		}
+	}
+	else
+	{
 		string result = "'" + Reference_Base :: get_name () + " [" + T :: get_class_name () + "] ";
 
 		if (pointee == NULL)
@@ -139,16 +155,7 @@ template <class T> string Reference <T> ::
 		}
 
 		return result + "'";
-	#else
-		if (pointee == NULL)
-		{
-			return "NULL";
-		}
-		else
-		{
-			return pointee -> name;
-		}
-	#endif
+	}
 }
 
 template <class T> T * Reference <T> ::

@@ -27,7 +27,7 @@ Fight_State ::
 	alive_state (new_alive_state),
 	targets (new Set <Items :: Character> (me . get_name () + "'s targets"))
 {
-	Engines :: Log :: show (character . get_name () + " becomes agressive!");
+	Engines :: Log :: show (character . get_name (true) + " becomes agressive!");
 
 	alive_state -> calm = 0;
 	

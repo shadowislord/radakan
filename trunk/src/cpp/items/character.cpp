@@ -142,7 +142,7 @@ void Character ::
 {
 	assert (is_initialized ());
 
-	Engines :: Log :: show (name + " hits " + target . get_name () + "!");
+	Engines :: Log :: show (me . get_name (true) + " hits " + target . get_name (true) + "!");
 
 	Reference <Messages :: Message <Character> > temp
 		(new Messages :: Battle_Message (fight_mode, Reference <Character> (this), target));

@@ -40,9 +40,7 @@ Play_State ::
 	camera -> setNearClipDistance (0.001);
 	camera -> setFarClipDistance (150);
 
-	Reference <Engines :: Conversation_Engine> conversation_engine
-		(new Engines :: Conversation_Engine ());
-	conversation_engine -> register_observer (gui);
+	Engines :: Conversation_Engine :: get () -> register_observer (gui);
 	gui -> Observable <Messages :: Message <Items :: Character> > :: register_observer
 		(Engines :: Input_Engine :: get ());
 
@@ -152,7 +150,7 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 		else
 		{
 			character_target = World :: get () -> get_active_state () -> npcs -> get_child ();
-			Engines :: Log :: show ("Target: " + character_target . get_name ());
+			Engines :: Log :: show ("Target: " + character_target . get_name (true));
 		}
 	}
 

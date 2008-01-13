@@ -132,14 +132,14 @@ void  Object ::
 	assert (check);
 	assert (does_depend (reference));
 
-	if (name . find ("tile") != string :: npos)
+	/*if (name . find ("tile") != string :: npos)
 	{
 		for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
 				i ++)
 		{
 			Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
 		}
-	}
+	}*/
 }
 
 void  Object ::

@@ -25,6 +25,10 @@ namespace Radakan
 				);
 				virtual ~Static_Item ();
 				virtual bool is_initialized () const;
+
+			private :
+
+				static unsigned int counter;
 		};
 	}
 }
