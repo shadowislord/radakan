@@ -1,3 +1,4 @@
+#include <OgreRoot.h>
 #include <OgreSceneManager.h>
 
 #include "engines/conversation_engine.hpp"
@@ -30,7 +31,11 @@ string Play_State ::
 
 //  constructor
 Play_State ::
-	Play_State (boost :: shared_ptr <Ogre :: SceneManager> scene_manager) :
+	Play_State
+	(
+		boost :: shared_ptr <Ogre :: RenderWindow> window,
+		boost :: shared_ptr <Ogre :: SceneManager> scene_manager
+	):
 	Object ("play state", true),	//	Here 'true' means 'prevent automatic destruction'.
 	gui (Engines :: GUI_Engine :: get () -> create_gui <Play_State_GUI> ("play.xml")),
 	camera (scene_manager -> createCamera ("camera"))
@@ -39,6 +44,9 @@ Play_State ::
 
 	camera -> setNearClipDistance (0.001);
 	camera -> setFarClipDistance (150);
+
+	Ogre :: Root :: getSingleton () . getRenderSystem () -> _setViewport
+		(window -> addViewport (camera . get ()));
 
 	Engines :: Conversation_Engine :: get () -> register_observer (gui);
 	gui -> Observable <Messages :: Message <Items :: Character> > :: register_observer
@@ -55,8 +63,6 @@ Play_State ::
 	assert (Play_State :: is_initialized ());
 
 	prepare_for_destruction ();
-
-	Engines :: Conversation_Engine :: uninstantiate ();
 }
 
 //	virtual
@@ -85,8 +91,7 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 
 	//	menu
 	if (Items :: Player_Character :: get () -> is_dead ()
-		|| Engines :: Input_Engine :: get () -> get_key ("escape", true)
-		|| Engines :: Input_Engine :: get () -> get_gui_button ("Menu"))
+		|| Engines :: Input_Engine :: get () -> has_command ("menu"))
 	{
 		return Menu_State :: get ();
 	}
@@ -104,13 +109,13 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 	Engines :: GUI_Engine :: get () -> set_active_gui (gui);
 
 	float relative_destination_movement_speed = 0;
-	if (Engines :: Input_Engine :: get () -> get_key
-		(Engines :: Settings :: get () -> forward_key, false))
+	if (Engines :: Input_Engine :: get () -> is_key_pressed
+		(Engines :: Settings :: get () -> key_bindings ["go_forward"], false))
 	{
 		relative_destination_movement_speed = 1;
 	}
-	else if (Engines :: Input_Engine :: get () -> get_key
-		(Engines :: Settings :: get () -> backward_key, false))
+	else if (Engines :: Input_Engine :: get () -> is_key_pressed
+		(Engines :: Settings :: get () -> key_bindings ["go_backward"], false))
 	{
 		relative_destination_movement_speed = - 0.7;
 		Engines :: Log :: log (me) << "Going backwards: - 0.7" << endl;
@@ -119,13 +124,13 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 		(relative_destination_movement_speed);
 
 	float relative_destination_turn_speed = 0;
-	if (Engines :: Input_Engine :: get () -> get_key
-		(Engines :: Settings :: get () -> left_key, false))
+	if (Engines :: Input_Engine :: get () -> is_key_pressed
+		(Engines :: Settings :: get () -> key_bindings ["turn_left"], false))
 	{
 		relative_destination_turn_speed = 1;
 	}
-	else if (Engines :: Input_Engine :: get () -> get_key
-		(Engines :: Settings :: get () -> right_key, false))
+	else if (Engines :: Input_Engine :: get () -> is_key_pressed
+		(Engines :: Settings :: get () -> key_bindings ["turn_right"], false))
 	{
 		relative_destination_turn_speed = - 1;
 	}
@@ -133,14 +138,13 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 		(relative_destination_turn_speed);
 
 	//	reset your orientation
-	if (Engines :: Input_Engine :: get () -> get_key ("space", true)
-		|| Engines :: Input_Engine :: get () -> get_gui_button ("Reset"))
+	if (Engines :: Input_Engine :: get () -> has_command ("reset"))
 	{
 		Items :: Player_Character :: get () -> get_movable_model () -> reset ();
 	}
 
 	//	select a target
-	if (Engines :: Input_Engine :: get () -> get_key ("t", true))
+	if (Engines :: Input_Engine :: get () -> has_command ("select_target"))
 	{
 		if (character_target . points_to_object () || item_target . points_to_object ())
 		{
@@ -157,13 +161,11 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 	Engines :: Conversation_Engine :: get () -> list_options (character_target);
 
 	//	hit
-	if (Engines :: Input_Engine :: get () -> get_key ("h", true)
-		|| Engines :: Input_Engine :: get () -> get_gui_button ("Hit"))
+	if (Engines :: Input_Engine :: get () -> has_command ("hit"))
 	{
 		if (character_target . points_to_object ())
 		{
 			Items :: Player_Character :: get () -> hit ("agressive", character_target);
-
 		}
 		else
 		{
@@ -171,9 +173,8 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 		}
 	}
 
-	//	move the weapon
-	if (Engines :: Input_Engine :: get () -> get_key ("m", true)
-		|| Engines :: Input_Engine :: get () -> get_gui_button ("Move"))
+	//	Give the weapon to your target or take it back.
+	if (Engines :: Input_Engine :: get () -> has_command ("give"))
 	{
 		if (character_target . points_to_object ())
 		{
@@ -212,7 +213,7 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 
 	if
 	(
-		Engines :: Input_Engine :: get () -> get_mouse_button
+		Engines :: Input_Engine :: get () -> is_mouse_button_pressed
 		(
 			Engines :: Input_Engine :: middle_mouse_button,
 			false

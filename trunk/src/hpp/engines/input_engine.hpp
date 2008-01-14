@@ -60,12 +60,13 @@ namespace Radakan
 				virtual bool is_initialized () const;
 
 				void capture ();
-				bool get_gui_button (string button);
+				
 				const Reference <Messages :: Message <Items :: Character> >
 					get_conversation_option ();
-				bool get_key (string key, bool reset);
-				bool get_mouse_button (string button, bool reset);
+				bool is_key_pressed (string key, bool reset);
+				bool is_mouse_button_pressed (string button, bool reset);
 				const Ogre :: Vector3 & get_mouse_position (bool relative = absolute) const;
+				bool has_command (string command_name);
 
 				virtual void call
 					(const Reference <Messages :: Message <Items :: Character> > & message);
@@ -82,13 +83,13 @@ namespace Radakan
 					(const OIS :: MouseEvent & mouse_event, OIS :: MouseButtonID id);
 
 				///	Multiple keys can be pressed at once.
-				map <string, bool> keys;
+				set <string> pressed_keys;
 				
 				///	Multiple mouse buttons can be pressed at once.
-				map <string, bool> mouse_buttons;
+				set <string> pressed_mouse_buttons;
 				
 				///	Only one gui button can be clicked at once.
-				string gui_button;
+				string gui_command;
 				
 				///	Only one conversation option can be clicked at once.
 				///	Note: 'conversation_option' isn't a really good name.

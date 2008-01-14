@@ -1,7 +1,7 @@
+#include "base.hpp"
+
 #include <OgreRenderWindow.h>
 #include <OgreStringConverter.h>
-
-#include "base.hpp"
 
 #ifndef RADAKAN_WINDOWS
 	#include <X11/Xlib.h>
@@ -14,8 +14,9 @@
 #include <OISEvents.h>
 
 #include "engines/gui_engine.hpp"
-#include "engines/log.hpp"
 #include "engines/input_engine.hpp"
+#include "engines/log.hpp"
+#include "engines/settings.hpp"
 #include "messages/conversation_message.hpp"
 
 using namespace std;
@@ -159,6 +160,7 @@ void Input_Engine ::
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message . get_name ());
 	assert (is_initialized ());
+	assert (message . points_to_object ());
 
 	conversation_option = message;
 }
@@ -169,8 +171,10 @@ void Input_Engine ::
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message . get_name ());
 	assert (is_initialized ());
+	assert (message . points_to_object ());
 
-	gui_button = message . get_name (true);
+	gui_command = message . get_name (true);
+	//	assert (is_lower_case (gui_command));	//	Doesn't work.
 }
 
 void Input_Engine ::
@@ -185,9 +189,9 @@ void Input_Engine ::
 	relative_mouse_position = Ogre :: Vector3 (0, 0, 0);
 	mouse -> capture ();
 
-	gui_button = "";	//	reset it, in case of a unhandeled button
+	gui_command = "";	//	reset it, in case of a unhandeled button
 	GUI_Engine :: get () -> set_mouse_position (get_mouse_position ());
-	if (get_mouse_button (left_mouse_button, true))
+	if (is_mouse_button_pressed (left_mouse_button, true))
 	{
 		GUI_Engine :: get () -> left_mouse_button_click ();
 	}
@@ -215,50 +219,35 @@ const Reference <Messages :: Message <Items :: Character> > Input_Engine ::
 }
 
 bool Input_Engine ::
-	get_gui_button (string button)
-{
-	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "get_gui_button", button, "-> " + gui_button);
-	assert (is_initialized ());
-
-	if (gui_button == button)
-	{
-		Engines :: Log :: log (me) << "GUI button '" << button << "' was clicked." << endl;
-
-		gui_button = "";	//	Automatically reset.
-
-		return true;
-	}
-	return false;
-}
-
-bool Input_Engine ::
-	get_key (string key, bool reset)
+	is_key_pressed (string key, bool reset)
 {
 	assert (is_initialized ());
 
-	if (keys [key])
-	{
-		if (reset)
-		{
-			keys [key] = false;
-			Engines :: Log :: log (me) << "key '" << key << "' was reset." << endl;
-		}
-		return true;
-	}
-	return false;
-}
-
-bool Input_Engine ::
-	get_mouse_button (string button, bool reset)
-{
-	assert (is_initialized ());
-
-	if (mouse_buttons [button])
+	if (0 < pressed_keys . count (key))
 	{
 		string to_be = "is";
 		if (reset)
 		{
-			mouse_buttons [button] = false;
+			pressed_keys . erase (key);
+			to_be = "was";
+		}
+		Engines :: Log :: log (me) << "Key '" << key << "' " << to_be << " pressed." << endl;
+		return true;
+	}
+	return false;
+}
+
+bool Input_Engine ::
+	is_mouse_button_pressed (string button, bool reset)
+{
+	assert (is_initialized ());
+
+	if (0 < pressed_mouse_buttons . count (button))
+	{
+		string to_be = "is";
+		if (reset)
+		{
+			pressed_mouse_buttons . erase (button);
 			to_be = "was";
 		}
 		Engines :: Log :: log (me) << "Mouse button '" << button << "' " << to_be << " pressed." << endl;
@@ -281,6 +270,35 @@ const Ogre :: Vector3 & Input_Engine ::
 	return absolute_mouse_position;
 }
 
+bool Input_Engine ::
+	has_command (string command_name)
+{
+	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "has_command", command_name);
+	assert (is_initialized ());
+
+	if (gui_command == command_name)
+	{
+		gui_command = "";	//	Automatically reset.
+
+		return true;
+	}
+	else
+	{
+		//	Is there a key shortcut for the command?
+		map <string, string> :: iterator key_binding
+			= Settings :: get () -> key_bindings . find (command_name);
+		if (key_binding == Settings :: get () -> key_bindings . end ())
+		{
+			return false;
+		}
+		else
+		{
+			//	Is that key shortcut pressed?
+			return is_key_pressed (key_binding -> second, true);
+		}
+	}
+}
+
 //	virtual
 bool Input_Engine ::
 	keyPressed (const OIS :: KeyEvent & key_event)
@@ -288,7 +306,7 @@ bool Input_Engine ::
 	assert (is_initialized ());
 
 	string key_string = convert (keyboard -> getAsString (key_event . key));
-	keys [key_string] = true;
+	pressed_keys . insert (key_string);
 	Engines :: Log :: log (me) << "key '" << key_string << "' is pressed." << endl;
 
 	return true;
@@ -301,7 +319,7 @@ bool Input_Engine ::
 	assert (is_initialized ());
 
 	string key_string = convert (keyboard -> getAsString (key_event . key));
-	keys [key_string] = false;
+	pressed_keys . erase (key_string);
 	Engines :: Log :: log (me) << "key '" << key_string << "' was released." << endl;
 
 	return true;
@@ -319,12 +337,6 @@ bool Input_Engine ::
 	absolute_mouse_position = Ogre :: Vector3 (x . abs, y . abs, z . abs);
 	relative_mouse_position = Ogre :: Vector3 (x . rel, y . rel, z . rel);
 
-//	The assertions below fail if you move the mouse outside the window.
-//	Engines :: Log :: log (me) << prev . first << " + " << relative_mouse_position . first << " ?= " <<  absolute_mouse_position . first << endl;
-//	assert (prev . first + relative_mouse_position . first == absolute_mouse_position . first);
-//	Engines :: Log :: log (me) << prev . second << " + " << relative_mouse_position . second << " ?= " <<  absolute_mouse_position . second << endl;
-//	assert (prev . second + relative_mouse_position . second == absolute_mouse_position . second);
-
 	return true;
 }
 
@@ -334,7 +346,7 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	mouse_buttons [to_string (id)] = true;
+	pressed_mouse_buttons . insert (to_string (id));
 
 	return true;
 }
@@ -345,7 +357,7 @@ bool Input_Engine ::
 {
 	assert (is_initialized ());
 
-	mouse_buttons [to_string (id)] = false;
+	pressed_mouse_buttons . erase (to_string (id));
 
 	return true;
 }
@@ -353,7 +365,9 @@ bool Input_Engine ::
 bool Input_Engine ::
 	is_mouse_button (string button)
 {
-	return (button == left_mouse_button) || (button == middle_mouse_button) || (button == right_mouse_button);
+	return (button == left_mouse_button)
+		|| (button == middle_mouse_button)
+		|| (button == right_mouse_button);
 }
 
 string Input_Engine ::
@@ -380,7 +394,6 @@ string Input_Engine ::
 	convert (string key)
 {
 	assert (is_initialized ());
-	Engines :: Log :: log (me) << "converting - in: " << key << endl;
 
 	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		//	Convert 'NUM X' to 'X':
@@ -442,6 +455,5 @@ string Input_Engine ::
 		key [i] = tolower (key [i]);
 	}
 
-	Engines :: Log :: log (me) << "converting - out: " << key << endl;
 	return key;
 }

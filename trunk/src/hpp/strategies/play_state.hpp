@@ -38,7 +38,11 @@ namespace Radakan
 			public :
 				static string get_class_name ();
 
-				Play_State (boost :: shared_ptr <Ogre :: SceneManager> scene_manager);
+				Play_State
+				(
+					boost :: shared_ptr <Ogre :: RenderWindow> window,
+					boost :: shared_ptr <Ogre :: SceneManager> scene_manager
+				);
 				virtual ~Play_State ();
 				virtual bool is_initialized () const;
 				

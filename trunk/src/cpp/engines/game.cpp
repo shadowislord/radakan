@@ -124,14 +124,9 @@ Game ::
 	new World (scene_manager);
 
 	new Conversation_Engine ();
-	new Strategies :: Play_State (scene_manager);
+	new Strategies :: Play_State (window, scene_manager);
 	set_active_state (Strategies :: Play_State :: get ());
 	new Strategies :: Menu_State ();
-
-	Ogre :: Camera * camera = scene_manager -> getCameraIterator () . getNext ();
-
-	root -> getRenderSystem () -> _setViewport (window -> addViewport (camera));
-	root -> getRenderSystem () -> _getViewport () -> setBackgroundColour (Ogre :: ColourValue :: Blue);
 
 	assert (is_initialized ());
 }

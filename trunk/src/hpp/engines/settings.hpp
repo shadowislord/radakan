@@ -36,10 +36,8 @@ namespace Radakan
 				string radakan_path;
 				string ogre_media_path;
 
-				string forward_key;
-				string backward_key;
-				string left_key;
-				string right_key;
+				//	A map of the commands to the actual keys.
+				map <string, string> key_bindings;
 
 				float movement_reaction;
 				float maximal_movement_speed;

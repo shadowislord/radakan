@@ -147,6 +147,7 @@ template <class T> Reference <T> Set <T> ::
 
 //	to avert linking errors:
 #include "engines/audio_engine.hpp"
+#include "engines/game.hpp"
 #include "gui.hpp"
 #include "items/container_item.hpp"
 #include "items/npc.hpp"
@@ -154,7 +155,6 @@ template <class T> Reference <T> Set <T> ::
 #include "model.hpp"
 #include "movable_model.hpp"
 #include "opinion.hpp"
-#include "strategies/play_state.hpp"
 #include "strategies/strategy.hpp"
 #include "tile.hpp"
 

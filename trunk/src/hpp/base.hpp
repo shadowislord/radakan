@@ -29,3 +29,13 @@
 
 	#define RADAKAN_WINDOWS
 #endif
+
+using namespace std;
+
+namespace Radakan
+{
+	string bool_to_string (const bool & value);
+	string to_string (const float & value);
+	string to_lower_case (const string & value);
+	float to_float (const string & value);
+}

@@ -35,10 +35,15 @@ Settings ::
 	radakan_path = radakan_config -> getSetting ("radakan_path", "directories");
 	ogre_media_path = radakan_config -> getSetting ("ogre_media_path", "directories");
 
-	forward_key = radakan_config -> getSetting ("forward", "keyboard");
-	backward_key = radakan_config -> getSetting ("backward", "keyboard");
-	left_key = radakan_config -> getSetting ("left", "keyboard");
-	right_key = radakan_config -> getSetting ("right", "keyboard");
+	Ogre :: ConfigFile :: SettingsIterator keys_iterator = radakan_config -> getSettingsIterator ("keyboard");
+	while (keys_iterator . hasMoreElements ())
+	{
+		Log :: log (me) << "mapping '" << keys_iterator . peekNextKey () << "' to '" << keys_iterator . peekNextValue () << "'..." << endl;
+		key_bindings [keys_iterator . peekNextKey ()] = keys_iterator . peekNextValue ();
+		Log :: log (me) << "done" << endl;
+		keys_iterator . moveNext ();
+		Log :: log (me) << "done" << endl;
+	}
 
 	//	Load the string values and convert them from string to float.
 	movement_reaction

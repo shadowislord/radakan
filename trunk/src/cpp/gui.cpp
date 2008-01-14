@@ -123,7 +123,7 @@ void GUI ::
 	#endif
 }
 
-	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 	void GUI ::
 		subscribe (CEGUI :: Window & window)
 	{
@@ -147,9 +147,7 @@ void GUI ::
 			}
 		}
 	}
-#endif
 
-#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 	bool GUI ::
 		handle_event (const CEGUI :: EventArgs & arguments)
 	{
@@ -183,7 +181,7 @@ void GUI ::
 
 		string caption (window_event_arguments -> window -> getText () . c_str ());
 
-		call_observers (Reference <Object> (new Object (caption)));
+		call_observers (Reference <Object> (new Object (to_lower_case (caption))));
 
 		return true;
 	}

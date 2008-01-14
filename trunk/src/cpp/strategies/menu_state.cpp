@@ -61,7 +61,7 @@ Reference <Strategy <Engines :: Game> > Menu_State ::
 
 	//	quit
 	if ((message == Messages :: Message <Engines :: Game> :: terminate)
-		|| Engines :: Input_Engine :: get () -> get_gui_button ("Quit"))
+		|| Engines :: Input_Engine :: get () -> has_command ("quit"))
 	{
 		return Reference <Strategy <Engines :: Game> > ();
 	}
@@ -69,8 +69,8 @@ Reference <Strategy <Engines :: Game> > Menu_State ::
 	Engines :: GUI_Engine :: get () -> set_active_gui (gui);
 
 	//	un-pause
-	if (Engines :: Input_Engine :: get () -> get_key ("escape", true)
-		|| Engines :: Input_Engine :: get () -> get_gui_button ("Return"))
+	if (Engines :: Input_Engine :: get () -> is_key_pressed ("escape", true)
+		|| Engines :: Input_Engine :: get () -> has_command ("return"))
 	{
 		if (Items :: Player_Character :: get () -> is_dead ())
 		{
@@ -85,7 +85,7 @@ Reference <Strategy <Engines :: Game> > Menu_State ::
 	}
 
 	//	FPS
-	if (Engines :: Input_Engine :: get () -> get_gui_button ("Statistics"))
+	if (Engines :: Input_Engine :: get () -> has_command ("statistics"))
 	{
 		Engines :: Log :: show (World :: get () -> get_FPS ());
 	}
