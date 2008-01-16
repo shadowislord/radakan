@@ -5,6 +5,11 @@
 using namespace std;
 using namespace Radakan;
 
+// Windows.h has a macro called max (retarded ms!) which conflicts with this STL method!
+#ifdef max()
+#undef max()
+#endif
+
 //	static
 template <class T> string Container <T> ::
 	get_class_name ()
@@ -13,7 +18,7 @@ template <class T> string Container <T> ::
 }
 
 template <class T> const unsigned int Container <T> ::
-	unlimited = numeric_limits <unsigned int> :: max ();
+	unlimited = numeric_limits<unsigned int>::max ();
 
 //  constructor
 template <class T> Container <T> ::
