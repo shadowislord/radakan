@@ -131,7 +131,7 @@ template <class T> Reference <T> Location <T> ::
 //	to avert linking errors:
 #include "engines/game.hpp"
 #include "gui.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "items/container_item.hpp"
 #include "model.hpp"
 #include "strategies/actions/action.hpp"

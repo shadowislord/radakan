@@ -1,5 +1,5 @@
 #include "engines/log.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "strategies/behaviors/behavior.hpp"
 
 using namespace std;
@@ -16,7 +16,7 @@ string Behavior ::
 
 //  constructor
 Behavior ::
-	Behavior (Reference <Items :: Characters :: Character> new_character) :
+	Behavior (Reference <Items :: Character> new_character) :
 	Object ("The name doesn't matter. This is an abstract base class."),
 	character (new_character)
 {
@@ -41,7 +41,7 @@ bool Behavior ::
 	const
 {
 	//	'assert' can't handle double templates.
-	//	assert (Strategy <Behavior, Items :: Characters :: Character> :: is_initialized ());
+	//	assert (Strategy <Behavior, Items :: Character> :: is_initialized ());
 	
 	return true;
 }

@@ -33,11 +33,6 @@ namespace Radakan
 				virtual bool is_initialized () const;
 				
 				void run ();
-
-			private :
-				boost :: shared_ptr <Ogre :: Root> root;
-				boost :: shared_ptr <Ogre :: RenderWindow> window;
-				boost :: shared_ptr <Ogre :: SceneManager> scene_manager;
 		};
 	}
 }

@@ -14,15 +14,20 @@ namespace Radakan
 {
 	namespace Items
 	{
-		namespace Characters
-		{
-			class Character;
-		}
+		class Character;
 	}
 
 	namespace Messages
 	{
 		template <class T> class Message;
+	}
+
+	namespace Strategies
+	{
+		namespace Behaviors
+		{
+			class AI;
+		}
 	}
 
 	namespace Engines
@@ -31,7 +36,7 @@ namespace Radakan
 		///	comments missing
 		class Conversation_Engine :
 			public Singleton <Conversation_Engine>,
-			public Observable <Messages :: Message <Items :: Characters :: Character> >
+			public Observable <Messages :: Message <Items :: Character> >
 		{
 			public :
 				static string get_class_name ();
@@ -40,15 +45,20 @@ namespace Radakan
 				virtual ~Conversation_Engine ();
 				virtual bool is_initialized () const;
 				
-				void list_options (Reference <Items :: Characters :: Character> listener);
+				void list_player_options ();
 
 			private :
-				void load_options
-					(const TiXmlElement * element, Reference <Items :: Characters :: Character> listener);
-				bool evaluate_condition
-					(const TiXmlElement * element, Reference <Items :: Characters :: Character> subject);
-				bool evaluate_expression
-					(const TiXmlAttribute * attribute, Reference <Items :: Characters :: Character> subject);
+				void load_player_options
+					(const TiXmlElement * element,
+						Reference <Strategies :: Behaviors :: AI> ai);
+				bool evaluate_npc_condition
+					(const TiXmlElement * element,
+						Reference <Strategies :: Behaviors :: AI> ai);
+				bool evaluate_npc_expression
+					(const TiXmlAttribute * attribute,
+						Reference <Strategies :: Behaviors :: AI> ai);
+				bool evaluate_player_character_condition (const TiXmlElement * element);
+				bool evaluate_player_character_expression (const TiXmlAttribute * attribute);
 			
 				boost :: scoped_ptr <TiXmlDocument> behavior;
 		};

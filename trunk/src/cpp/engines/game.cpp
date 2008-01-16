@@ -1,7 +1,6 @@
 #include <OgreColourValue.h>
 #include <OgreDefaultHardwareBufferManager.h>
 #include <OgreMeshManager.h>
-#include <OgreRoot.h>
 #include <OgreTextureManager.h>
 
 #include "engines/audio_engine.hpp"
@@ -10,6 +9,7 @@
 #include "engines/gui_engine.hpp"
 #include "engines/input_engine.hpp"
 #include "engines/log.hpp"
+#include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
 #include "engines/tracker.hpp"
 #include "messages/message.hpp"
@@ -36,15 +36,11 @@ Game ::
 	
 	new Settings (path_to_config);
 	
-	// These strings are loaded from a configuration file using the Settings class.
-	string radakan_path = Settings :: get() -> radakan_path;
-	string ogre_media_path = Settings :: get() -> ogre_media_path;
-
 	#ifdef RADAKAN_DEBUG
 		Log :: log (me) << "Debug mode is enabled." << endl;
 
 		new Tracker ();
-		new Log (radakan_path);
+		new Log ();
 	#else
 		Log :: log (me) << "Debug mode is disabled." << endl;
 
@@ -55,12 +51,11 @@ Game ::
 		new Audio_Engine ();
 	#endif
 
-	root . reset (new Ogre :: Root (radakan_path + "/data/plugins.cfg", radakan_path + "/data/ogre.cfg", radakan_path + "/log/ogre.txt"));
-	if (! root -> showConfigDialog ())
-	{
-		Log :: error (me) << "An Ogre configuration dialog problem occurred." << endl;
-		abort ();
-	}
+	new Render_Engine ();
+
+	// These strings are loaded from a configuration file using the Settings class.
+	string radakan_path = Settings :: get() -> radakan_path;
+	string ogre_media_path = Settings :: get() -> ogre_media_path;
 
 	// Add textures directory
 	Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
@@ -103,8 +98,6 @@ Game ::
 	Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 				(ogre_media_path + "/models", "FileSystem", "models", true);
 
-	window . reset (root -> initialise (true, "Radakan"));
-
 	Ogre :: MeshManager :: getSingleton () . createPlane
 		("ground.mesh", "models", Ogre :: Plane (Ogre :: Vector3 (1, 0, 0), 0), 20, 20);
 
@@ -114,18 +107,14 @@ Game ::
 	//	set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
 
-	new Input_Engine (window);
-
-	scene_manager . reset (root -> createSceneManager (Ogre :: ST_GENERIC));
-	assert (scene_manager);
-
-	new GUI_Engine (window, scene_manager);
-
-	new World (scene_manager);
-
+	new Input_Engine ();
+	new GUI_Engine ();
 	new Conversation_Engine ();
+
+	new World ();
+
 	new Strategies :: Game_Modes :: Menu ();
-	new Strategies :: Game_Modes :: Play (window, scene_manager);
+	new Strategies :: Game_Modes :: Play ();
 	set_active_state (Strategies :: Game_Modes :: Play :: get ());
 
 	Log :: show
@@ -182,7 +171,7 @@ void Game ::
 	
 	while (has_active_state ())
 	{
-		if (window -> isClosed ())
+		if (Render_Engine :: get () -> get_window () -> isClosed ())
 		{
 			Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object> :: run
 				(Messages :: Message <Object> :: terminate);
@@ -190,14 +179,11 @@ void Game ::
 		else
 		{
 			Input_Engine :: get () -> capture ();
-			Ogre :: WindowEventUtilities :: messagePump ();
 
 			Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object> :: run
 				(Messages :: Message <Object> :: update);
 
-			bool check = root -> renderOneFrame ();
-			assert (check);
-			GUI_Engine :: get () -> render ();
+			Render_Engine :: get () -> render ();
 		}
 	}
 

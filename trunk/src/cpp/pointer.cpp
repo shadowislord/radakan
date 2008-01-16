@@ -89,7 +89,7 @@ template <class T> void Pointer <T> ::
 #include "engines/audio_engine.hpp"
 #include "engines/game.hpp"
 #include "gui.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/message.hpp"
 #include "movable_model.hpp"
 #include "opinion.hpp"
@@ -105,7 +105,7 @@ template <class T> void Pointer <T> ::
 	template class Pointer <Sound_Sample>;
 #endif
 template class Pointer <Container <GUI> >;
-template class Pointer <Container <Items :: Characters :: Character> >;
+template class Pointer <Container <Items :: Character> >;
 template class Pointer <Container <Items :: Container_Item <Items :: Container_Item <Items :: Item> > > >;
 template class Pointer <Container <Items :: Container_Item <Items :: Item> > >;
 template class Pointer <Container <Items :: Item> >;
@@ -115,7 +115,7 @@ template class Pointer <Container <Strategies :: Behaviors :: Behavior> >;
 template class Pointer <Container <Strategies :: Game_Modes :: Game_Mode> >;
 template class Pointer <Container <Tile> >;
 template class Pointer <GUI>;
-template class Pointer <Items :: Characters :: Character>;
+template class Pointer <Items :: Character>;
 template class Pointer <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Pointer <Items :: Container_Item <Items :: Item> >;
 template class Pointer <Items :: Item>;
@@ -127,16 +127,16 @@ template class Pointer <Location <Model> >;
 template class Pointer <Location <Strategies :: Actions :: Action> >;
 template class Pointer <Location <Strategies :: Behaviors :: Behavior> >;
 template class Pointer <Location <Strategies :: Game_Modes :: Game_Mode> >;
-template class Pointer <Messages :: Message <Items :: Characters :: Character> >;
+template class Pointer <Messages :: Message <Items :: Character> >;
 template class Pointer <Model>;
 template class Pointer <Movable_Model>;
 template class Pointer <Object>;
-template class Pointer <Observer <Messages :: Message <Items :: Characters :: Character> > >;
+template class Pointer <Observer <Messages :: Message <Items :: Character> > >;
 template class Pointer <Observer <Messages :: Message <Object> > >;
 template class Pointer <Observer <Object> >;
 template class Pointer <Opinion>;
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	template class Pointer <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > >;
+	template class Pointer <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >;
 #endif
 template class Pointer <Pair <pair <int, int>, Tile> >;
 template class Pointer <Pair <string, Skill> >;
@@ -147,6 +147,6 @@ template class Pointer <Strategies :: Game_Modes :: Game_Mode>;
 template class Pointer <Tile>;
 
 template Pointer <Items :: Item> & Pointer <Items :: Item> ::
-	operator= (const Reference <Items :: Characters :: Character> & other);
+	operator= (const Reference <Items :: Character> & other);
 template Pointer <GUI> & Pointer <GUI> ::
 	operator= (const Reference <Play_GUI> & other);

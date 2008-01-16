@@ -1,7 +1,7 @@
 #include <tinyxml.h>
 
 #include "engines/log.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/conversation_message.hpp"
 
 using namespace std;
@@ -19,12 +19,12 @@ string Conversation_Message ::
 Conversation_Message ::
 	Conversation_Message
 	(
-		Reference <Items :: Characters :: Character> new_from,
-		Reference <Items :: Characters :: Character> new_to,
+		Reference <Items :: Character> new_from,
+		Reference <Items :: Character> new_to,
 		const TiXmlElement * new_option
 	) :
 	Object (create_name (new_option)),
-	Message <Items :: Characters :: Character> ("Doesn't matter.", new_from, new_to),
+	Message <Items :: Character> ("Doesn't matter.", new_from, new_to),
 	option (new_option)
 {
 	Engines :: Log :: trace (me, Conversation_Message :: get_class_name ());
@@ -53,11 +53,11 @@ bool Conversation_Message ::
 }
 
 //	virtual
-Reference <Message <Items :: Characters :: Character> > Conversation_Message ::
+Reference <Message <Items :: Character> > Conversation_Message ::
 	copy ()
 	const
 {
-	return Reference <Message <Items :: Characters :: Character> >
+	return Reference <Message <Items :: Character> >
 		(new Conversation_Message (from, to, option));
 }
 

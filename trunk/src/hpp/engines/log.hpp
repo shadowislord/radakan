@@ -37,7 +37,7 @@ namespace Radakan
 					string argument_6 = ""
 				);
 
-				Log (string radakan_path);
+				Log ();
 				virtual ~Log ();
 				virtual bool is_initialized () const;
 		};

@@ -2,6 +2,7 @@
 #include <sstream>
 
 #include "engines/log.hpp"
+#include "engines/settings.hpp"
 #ifdef RADAKAN_DEBUG
 	#include "world.hpp"
 #endif
@@ -19,10 +20,12 @@ string Log ::
 
 //  constructor
 Log ::
-	Log (string radakan_path) :
+	Log () :
 	Object ("log", true)	//	Here 'true' means 'prevent automatic destruction'.
 {
 	trace (me, Log :: get_class_name (), "");
+
+	string radakan_path = Settings :: get () -> radakan_path;
 	
 	Log :: log (me) << "All further logs will be written to '" << radakan_path << "/log/log.txt'." << endl;
 

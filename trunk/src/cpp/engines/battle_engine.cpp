@@ -68,9 +68,9 @@ void Battle_Engine ::
 	Engines :: Log :: trace (me, Battle_Engine :: get_class_name (), "add", attacker, defender);
 	assert (is_initialized ());
 
-	assert (! attacker . is_dead ());
+	assert (attacker . is_alive ());
 
-	if (defender . is_dead ())
+	if (! defender . is_alive ())
 	{
 		Engines :: Log :: show ("Mutilating " + defender . get_name (true) + "'s dead body is *not* nice.");
 		return;

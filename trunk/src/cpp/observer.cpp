@@ -44,9 +44,9 @@ template <class T> bool Observer <T> ::
 }
 
 //	to avert linking errors:
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/message.hpp"
 
-template class Observer <Messages :: Message <Items :: Characters :: Character> >;
+template class Observer <Messages :: Message <Items :: Character> >;
 template class Observer <Messages :: Message <Object> >;
 template class Observer <Object>;

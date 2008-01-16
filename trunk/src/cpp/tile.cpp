@@ -11,7 +11,7 @@
 
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
-#include "items/characters/player_character.hpp"
+#include "items/character.hpp"
 #include "items/static_item.hpp"
 #include "movable_model.hpp"
 #include "set.hpp"
@@ -40,7 +40,7 @@ Tile ::
 	),
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
-	characters (new Set <Items :: Characters :: Character> (name + "'s characters")),
+	characters (new Set <Items :: Character> (name + "'s characters")),
 	space (new OgreOde :: SimpleSpace (World :: get () -> ogre_ode_world . get (), World :: get () -> ogre_ode_world -> getDefaultSpace ())),
 	doc (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/tile/" + name + ".xml"))
 {
@@ -153,10 +153,10 @@ bool Tile ::
 	bool check = Location <Model> :: add (model);
 	assert (check);
 
-	if (model -> item . is_castable <Items :: Characters :: Character> ())
+	if (model -> item . is_castable <Items :: Character> ())
 	{
 		bool check = characters -> add
-			(model -> item . cast <Items :: Characters :: Character> ());
+			(model -> item . cast <Items :: Character> ());
 		assert (check);
 	}
 
@@ -175,9 +175,9 @@ bool Tile ::
 	assert (contains (model));
 	assert (destination -> is_initialized ());
 
-	if (model -> item . is_castable <Items :: Characters :: Character> ())
+	if (model -> item . is_castable <Items :: Character> ())
 	{
-		characters -> drop (model -> item . cast <Items :: Characters :: Character> ());
+		characters -> drop (model -> item . cast <Items :: Character> ());
 	}
 
 	bool check = Location <Model> :: move (model, destination);
@@ -286,20 +286,12 @@ Reference <Items :: Item> Tile ::
 	}
 	else
 	{
-		if (type == string ("npc"))
+		if ((type == string ("npc")) || (type == string ("player character")))
 		{
 			assert (! item_name . empty ());
 		
-			item = Items :: Characters :: Character
-				:: create_npc (item_name, mass, size, mesh_data);
-		}
-		else if (type == string ("player"))
-		{
-			assert (! item_name . empty ());
-		
-			item . reset_pointee
-				(new Items :: Characters :: Player_Character
-					(item_name, mass, size, mesh_data));
+			item = Reference <Items :: Item>
+				(new Items :: Character (item_name, mass, size, mesh_data, type));
 		}
 		else
 		{

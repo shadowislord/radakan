@@ -3,7 +3,7 @@
 #include "engines/conversation_engine.hpp"
 #include "engines/log.hpp"
 #include "gui.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/battle_message.hpp"
 #include "messages/conversation_message.hpp"
 #include "movable_model.hpp"
@@ -31,7 +31,7 @@ string Conversate ::
 Conversate ::
 	Conversate
 	(
-		Reference <Items :: Characters :: Character> new_character,
+		Reference <Items :: Character> new_character,
 		Reference <Behaviors :: AI> new_ai
 	) :
 	Object (new_character . get_name () + "'s conversate action"),
@@ -59,14 +59,14 @@ bool Conversate ::
 	const
 {
 	//	'assert' can't handle double templates.
-	//	assert (Strategy <Action, Items :: Characters :: Character> :: is_initialized ());
+	//	assert (Strategy <Action, Items :: Character> :: is_initialized ());
 	
 	return true;
 }
 
 //	virtual
 Reference <Action> Conversate ::
-	transit (const Reference <Messages :: Message <Items :: Characters :: Character> > & message)
+	transit (const Reference <Messages :: Message <Items :: Character> > & message)
 {
 	assert (is_initialized ());
 

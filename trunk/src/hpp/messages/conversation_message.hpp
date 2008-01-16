@@ -11,10 +11,7 @@ namespace Radakan
 {
 	namespace Items
 	{
-		namespace Characters
-		{
-			class Character;
-		}
+		class Character;
 	}
 
 	namespace Messages
@@ -22,22 +19,22 @@ namespace Radakan
 
 		//	comments missing
 		class Conversation_Message :
-			public Message <Items :: Characters :: Character>
+			public Message <Items :: Character>
 		{
 			public :
 				static string get_class_name ();
 
 				Conversation_Message
 				(
-					Reference <Items :: Characters :: Character> new_from,
-					Reference <Items :: Characters :: Character> new_to,
+					Reference <Items :: Character> new_from,
+					Reference <Items :: Character> new_to,
 					const TiXmlElement * new_option
 				);
 				virtual ~Conversation_Message ();
 				virtual bool is_initialized () const;
 
 				//	Overload 'copy ()' in all subclasses.
-				virtual Reference <Message <Items :: Characters :: Character> > copy () const;
+				virtual Reference <Message <Items :: Character> > copy () const;
 				
 				Reference <Conversation_Message> get_reaction () const;
 

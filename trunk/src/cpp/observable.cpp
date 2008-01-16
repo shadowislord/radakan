@@ -88,8 +88,8 @@ template <class T> void Observable <T> ::
 }
 
 //	to avert linking errors:
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/message.hpp"
 
-template class Observable <Messages :: Message <Items :: Characters :: Character> >;
+template class Observable <Messages :: Message <Items ::Character> >;
 template class Observable <Object>;

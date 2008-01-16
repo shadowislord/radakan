@@ -1,6 +1,8 @@
+#include "engines/conversation_engine.hpp"
 #include "engines/gui_engine.hpp"
 #include "engines/input_engine.hpp"
 #include "engines/log.hpp"
+#include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
 #include "play_gui.hpp"
 
@@ -25,20 +27,17 @@ string GUI_Engine ::
 }
 
 GUI_Engine ::
-	GUI_Engine
-	(
-		boost :: shared_ptr <Ogre :: RenderWindow> window,
-		boost :: shared_ptr <Ogre :: SceneManager> scene_manager
-	) :
+	GUI_Engine () :
 	Object ("gui engine", true)	//	Here 'true' means 'prevent automatic destruction'.
 {
-	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~");
+	Engines :: Log :: trace (me, GUI_Engine :: get_class_name ());
 
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 		try
 		{
 			//	The following line results in an error (at line 73 of CEGUIString.cpp) for me. --Tinus
-			renderer . reset (new CEGUI :: OgreCEGUIRenderer (window . get ()));
+			renderer . reset (new CEGUI :: OgreCEGUIRenderer
+				(Render_Engine :: get () -> get_window () . get ()));
 		}
 		catch (exception & e)
 		{
@@ -47,28 +46,29 @@ GUI_Engine ::
 		}
 
 		Engines :: Log :: trace
-			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "AA");
+			(me, GUI_Engine :: get_class_name (), "", "AA");
 		
-		renderer -> setTargetSceneManager (scene_manager . get ());
+		renderer -> setTargetSceneManager
+			(Render_Engine :: get () -> get_scene_manager () . get ());
 
 		Engines :: Log :: trace
-			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "A");
+			(me, GUI_Engine :: get_class_name (), "", "A");
 		system . reset (new CEGUI :: System
 			(renderer . get (), NULL, NULL, NULL, "", Settings :: get () -> radakan_path + "/log/cegui.txt"));
 
 		CEGUI :: ImagesetManager :: getSingletonPtr () -> createImageset ("logo.imageset");
 
 		Engines :: Log :: trace
-			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "B");
+			(me, GUI_Engine :: get_class_name (), "", "B");
 		CEGUI :: SchemeManager :: getSingleton () . loadScheme ("TaharezLookSkin.scheme");
 		system -> setDefaultMouseCursor ("TaharezLook", "MouseArrow");
 
 		Engines :: Log :: trace
-			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "C");
+			(me, GUI_Engine :: get_class_name (), "", "C");
 		system -> setDefaultFont ("BlueHighway-12");
 
 		Engines :: Log :: trace
-			(me, GUI_Engine :: get_class_name (), "", "~window~", "~scene_manager~", "D");
+			(me, GUI_Engine :: get_class_name (), "", "D");
 	#endif
 
 	assert (is_initialized ());
@@ -124,6 +124,8 @@ void GUI_Engine ::
 	const
 {
 	assert (is_initialized ());
+
+	Engines :: Conversation_Engine :: get () -> list_player_options ();
 
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 		system -> renderGUI ();

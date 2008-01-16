@@ -1,5 +1,5 @@
 #include "engines/log.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/battle_message.hpp"
 #include "messages/conversation_message.hpp"
 #include "map.hpp"
@@ -9,17 +9,24 @@
 #include "skill.hpp"
 #include "slot.hpp"
 #include "strategies/behaviors/ai.hpp"
+#include "strategies/behaviors/player.hpp"
 
 using namespace std;
 using namespace Radakan;
 using namespace Radakan :: Items;
-using namespace Radakan :: Items :: Characters;
 
 //	static
 string Character ::
 	get_class_name ()
 {
 	return "Character";
+}
+
+//	static
+Reference <Character> Character ::
+	get_player_character ()
+{
+	return Strategies :: Behaviors :: Player :: get () -> character;
 }
 
 //	static
@@ -33,7 +40,8 @@ Character ::
 		string new_name,
 		float new_mass,
 		Ogre :: Vector3 new_size,
-		const Reference <Mesh_Data> new_mesh_data
+		const Reference <Mesh_Data> new_mesh_data,
+		string type
 	) :
 	Object (new_name),
 	Container_Item <Item>
@@ -87,6 +95,17 @@ Character ::
 	//	Make sure no body parts are added anymore.
 	Container <Items :: Item> :: seal ();
 
+	if (type == "player character")
+	{
+		behave <Strategies :: Behaviors :: Player> ();
+	}
+	else
+	{
+		assert (type == "npc");
+		
+		behave <Strategies :: Behaviors :: AI> ();
+	}
+
 	Reference <Character> this_character (this);
 
 	for (Pointer <Character> character = characters -> get_child ();
@@ -128,10 +147,23 @@ bool Character ::
 	return true;
 }
 
-bool Character ::
-	is_dead () const
+void Character ::
+	drop (Reference <Strategies :: Behaviors :: Behavior> behavior)
 {
-	return ! has_active_state ();
+	if (! is_destructing ())
+	{
+		get_movable_model () -> turn (1, get_model () -> get_side_direction ());
+		
+		Engines :: Log :: show (me . get_name (true) + " died.");
+	}
+
+	Slot <Strategies :: Behaviors :: Behavior> :: drop (behavior);
+}
+
+bool Character ::
+	is_alive () const
+{
+	return has_active_state ();
 }
 
 Reference <Movable_Model> Character ::
@@ -163,22 +195,7 @@ void Character ::
 {
 	assert (is_initialized ());
 
-	if (message == Messages :: Message <Character> :: update)
-	{
-		return;
-	}
-	else if (message == Messages :: Message <Character> :: terminate)
-	{
-		Engines :: Log :: show (me . get_name (true) + " died!");
-		
-		return;
-	}
-	else
-	{
-		//	The NPCs message are showed in the log, to let the player know.
-		Engines :: Log :: show
-			(message -> from . get_name (true) + ": " + message . get_name (true));
-	}
+	run (message);
 }
 
 float Character ::
@@ -201,22 +218,11 @@ float Character ::
 	return skills -> look_up (skill_name) -> get_value ();
 }
 
-//	static
-Reference <Item> Character ::
-	create_npc
-	(
-		string new_name,
-		float new_mass,
-		Ogre :: Vector3 new_size,
-		const Reference <Mesh_Data> new_mesh_data
-	)
+template <class T> void Character ::
+	behave ()
 {
-	Reference <Character> temp
-		(new Character (new_name, new_mass, new_size, new_mesh_data));
-
-	temp -> set_active_state
-		(Reference <Strategies :: Behaviors :: Behavior>
-			(new Strategies :: Behaviors :: AI (temp)));
-
-	return Reference <Item> (temp);
+	assert (! State_Machine <Strategies :: Behaviors :: Behavior> :: has_active_state ());
+	
+	set_active_state (Reference <Strategies :: Behaviors :: Behavior>
+		(new T (Reference <Character> (this))));
 }

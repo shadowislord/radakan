@@ -2,6 +2,7 @@
 
 #include <OgreRenderWindow.h>
 #include <OgreStringConverter.h>
+#include <OgreWindowEventUtilities.h>
 
 #ifndef RADAKAN_WINDOWS
 	#include <X11/Xlib.h>
@@ -16,6 +17,7 @@
 #include "engines/gui_engine.hpp"
 #include "engines/input_engine.hpp"
 #include "engines/log.hpp"
+#include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
 #include "messages/conversation_message.hpp"
 
@@ -51,7 +53,7 @@ const string Input_Engine ::
 	right_mouse_button ("right");
 
 Input_Engine ::
-	Input_Engine (boost :: shared_ptr <Ogre :: RenderWindow> window) :
+	Input_Engine () :
 	Object ("input engine", true)	//	Here 'true' means 'prevent automatic destruction'.
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "", "~window~");
@@ -65,22 +67,29 @@ Input_Engine ::
 
 	unsigned long window_handle;
 
-	window -> getCustomAttribute ("WINDOW", & window_handle);
+	Render_Engine :: get () -> get_window ()
+		-> getCustomAttribute ("WINDOW", & window_handle);
 
 	//	The input/output system needs to know how to interact with
 	//	the system window.
 	OIS :: ParamList param_list;
 	param_list . insert (make_pair (string ("WINDOW"), Ogre :: StringConverter :: toString (window_handle)));
 	#ifdef RADAKAN_WINDOWS
-		param_list . insert (make_pair (string ("w32_keyboard"), string("DISCL_NONEXCLUSIVE")));
-		param_list . insert (make_pair (string ("w32_mouse"), string ("DISCL_NONEXCLUSIVE")));
+		param_list . insert
+			(make_pair (string ("w32_keyboard"), string ("DISCL_NONEXCLUSIVE")));
+		param_list . insert
+			(make_pair (string ("w32_mouse"), string ("DISCL_NONEXCLUSIVE")));
 	#else
-		param_list . insert (make_pair (string ("x11_keyboard_grab"), string("false")));
-		param_list . insert (make_pair (string ("XAutoRepeatOn"), string("true")));
-		param_list . insert (make_pair (string ("x11_mouse_grab"), string("false")));
+		param_list . insert (make_pair (string ("x11_keyboard_grab"), string ("false")));
+		param_list . insert (make_pair (string ("XAutoRepeatOn"), string ("true")));
+		param_list . insert (make_pair (string ("x11_mouse_grab"), string ("false")));
 	#endif
 
-    input_manager = boost :: shared_ptr <OIS :: InputManager> (OIS :: InputManager :: createInputSystem (param_list), OIS :: InputManager :: destroyInputSystem);
+    input_manager = boost :: shared_ptr <OIS :: InputManager>
+    (
+    	OIS :: InputManager :: createInputSystem (param_list),
+    	OIS :: InputManager :: destroyInputSystem
+    );
 
 	//	The final parameter refers to "buffered".
 	keyboard . reset
@@ -111,8 +120,10 @@ Input_Engine ::
 
 	//	Reference methods mouseMoved, mousePressed, mouseReleased
 	mouse -> setEventCallback (this);
-	mouse -> getMouseState () . width = window -> getWidth ();
-	mouse -> getMouseState () . height = window -> getHeight ();
+	mouse -> getMouseState () . width
+		= Render_Engine :: get () -> get_window () -> getWidth ();
+	mouse -> getMouseState () . height
+		= Render_Engine :: get () -> get_window () -> getHeight ();
 
 	assert (is_initialized ());
 }
@@ -156,7 +167,7 @@ bool Input_Engine ::
 
 //	virtual
 void Input_Engine ::
-	call (const Reference <Messages :: Message <Items :: Characters :: Character> > & message)
+	call (const Reference <Messages :: Message <Items :: Character> > & message)
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message . get_name ());
 	assert (is_initialized ());
@@ -194,16 +205,18 @@ void Input_Engine ::
 	{
 		GUI_Engine :: get () -> left_mouse_button_click ();
 	}
+
+	Ogre :: WindowEventUtilities :: messagePump ();
 }
 
-const Reference <Messages :: Message <Items :: Characters :: Character> > Input_Engine ::
+const Reference <Messages :: Message <Items :: Character> > Input_Engine ::
 	get_conversation_option ()
 {
 	assert (is_initialized ());
 
 	if (conversation_option . points_to_object ())
 	{
-		const Reference <Messages :: Message <Items :: Characters :: Character> > result = conversation_option;
+		const Reference <Messages :: Message <Items :: Character> > result = conversation_option;
 
 		conversation_option . reset_pointee ();
 

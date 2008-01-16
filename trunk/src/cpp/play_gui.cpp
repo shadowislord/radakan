@@ -1,7 +1,7 @@
 #include "engines/conversation_engine.hpp"
 #include "engines/input_engine.hpp"
 #include "engines/log.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "map.hpp"
 #include "messages/conversation_message.hpp"
 #include "play_gui.hpp"
@@ -44,7 +44,7 @@ Play_GUI ::
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 		,
 		options
-			(new Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > ("options"))
+			(new Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > ("options"))
 	#endif
 {
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
@@ -70,9 +70,9 @@ Play_GUI ::
 	#endif
 
 	Engines :: Conversation_Engine :: get () -> register_observer
-		(Reference <Observer <Messages :: Message <Items :: Characters :: Character> > >
+		(Reference <Observer <Messages :: Message <Items :: Character> > >
 			(this));
-	Observable <Messages :: Message <Items :: Characters :: Character> >
+	Observable <Messages :: Message <Items :: Character> >
 		:: register_observer (Engines :: Input_Engine :: get ());
 	
 	assert (is_initialized ());
@@ -103,12 +103,12 @@ bool Play_GUI ::
 
 //	virtual
 void Play_GUI ::
-	call (const Reference <Messages :: Message <Items :: Characters :: Character> > & message)
+	call (const Reference <Messages :: Message <Items :: Character> > & message)
 {
 	assert (is_initialized ());
 
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-		if (message == Messages :: Message <Items :: Characters :: Character> :: terminate)
+		if (message == Messages :: Message <Items :: Character> :: terminate)
 		{
 			//	If there are old options, remove them.
 			options -> clear ();
@@ -123,9 +123,9 @@ void Play_GUI ::
 			
 			options -> add
 			(
-				Reference <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > >
+				Reference <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >
 				(
-					new Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> >
+					new Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> >
 						(item, message)
 				)
 			);
@@ -173,14 +173,14 @@ void Play_GUI ::
 		{
 			if (chat_window -> getSelectedCount () != 0)
 			{
-				Reference <Messages :: Message <Items :: Characters :: Character> > message
+				Reference <Messages :: Message <Items :: Character> > message
 					= options -> look_up (chat_window -> getFirstSelectedItem ());
 				assert (message . points_to_object ());
 				assert (message -> is_initialized ());
 
 				chat_window -> clearAllSelections ();
 
-				Observable <Messages :: Message <Items :: Characters :: Character> > :: call_observers (message);
+				Observable <Messages :: Message <Items :: Character> > :: call_observers (message);
 			}
 
 			return true;

@@ -13,10 +13,7 @@ namespace Radakan
 
 	namespace Items
 	{
-		namespace Characters
-		{
-			class Character;
-		}
+		class Character;
 	}
 	
 	namespace Strategies
@@ -32,18 +29,17 @@ namespace Radakan
 			///	AI is the basic strategy for living NPCs.
 			class AI :
 				public Behavior,
-				public Strategy_State_Machine
-					<Actions :: Action, Items :: Characters :: Character>
+				public Strategy_State_Machine <Actions :: Action, Items :: Character>
 			{
 				public :
 					static string get_class_name ();
 					
-					AI (Reference <Items :: Characters :: Character> new_character);
+					AI (Reference <Items :: Character> new_character);
 					virtual ~AI ();
 					virtual bool is_initialized () const;
 					
 					virtual Reference <Behavior> transit
-						(const Reference <Messages :: Message <Items :: Characters :: Character> > & message);
+						(const Reference <Messages :: Message <Items :: Character> > & message);
 
 					string get_current_action_name () const;
 
@@ -53,8 +49,7 @@ namespace Radakan
 					Mathematics :: Bounded_Float calm;
 
 				private :
-					Reference <Set <Messages :: Message <Items :: Characters :: Character> > > sensory_buffer;
-
+					Reference <Set <Messages :: Message <Items :: Character> > > sensory_buffer;
 					Reference <Set <Opinion> > opinions;
 			};
 		}

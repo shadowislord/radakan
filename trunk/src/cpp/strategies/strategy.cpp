@@ -45,11 +45,11 @@ template <class T, class U> bool Strategy <T, U> ::
 	return true;
 }
 
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "strategies/actions/action.hpp"
 #include "strategies/behaviors/behavior.hpp"
 #include "strategies/game_modes/game_mode.hpp"
 
-template class Strategy <Actions :: Action, Items :: Characters :: Character>;
-template class Strategy <Behaviors :: Behavior, Items :: Characters :: Character>;
+template class Strategy <Actions :: Action, Items :: Character>;
+template class Strategy <Behaviors :: Behavior, Items :: Character>;
 template class Strategy <Game_Modes :: Game_Mode, Object>;

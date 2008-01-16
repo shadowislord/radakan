@@ -69,7 +69,7 @@ template <class T> void Resident <T> ::
 
 //	to avert linking errors:
 #include "engines/game.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "items/container_item.hpp"
 #include "gui.hpp"
 #include "model.hpp"

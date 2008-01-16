@@ -20,11 +20,7 @@ namespace Radakan
 	namespace Items
 	{
 		class Item;
-
-		namespace Characters
-		{
-			class Character;
-		}
+		class Character;
 	}
 	
 	///	A Tile is a square piece (64 m x 64 m) of the world.
@@ -47,7 +43,7 @@ namespace Radakan
 			const pair <int, int> coordinates;
 			const Ogre :: Vector3 position;
 
-			Reference <Set <Items :: Characters :: Character> > characters;
+			Reference <Set <Items :: Character> > characters;
 
 			boost :: shared_ptr <OgreOde :: SimpleSpace> space;
 

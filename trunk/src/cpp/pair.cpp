@@ -45,13 +45,13 @@ template <typename T, class U> Pair <T, U> ::
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 	#include <elements/CEGUIListboxItem.h>
 #endif
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/message.hpp"
 #include "skill.hpp"
 #include "tile.hpp"
 
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	template class Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> >;
+	template class Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> >;
 #endif
 template class Pair <pair <int, int>, Tile>;
 template class Pair <string, Skill>;

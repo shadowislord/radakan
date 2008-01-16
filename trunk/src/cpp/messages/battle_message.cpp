@@ -1,6 +1,6 @@
 #include "engines/log.hpp"
 #include "messages/battle_message.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -15,9 +15,9 @@ string Battle_Message ::
 
 //  constructor
 Battle_Message ::
-	Battle_Message (const string & information, Reference <Items :: Characters :: Character> new_from, Reference <Items :: Characters :: Character> new_to) :
+	Battle_Message (const string & information, Reference <Items :: Character> new_from, Reference <Items :: Character> new_to) :
 	Object (information),
-	Message <Items :: Characters :: Character> ("Doesn't matter.", new_from, new_to)
+	Message <Items :: Character> ("Doesn't matter.", new_from, new_to)
 {
 	Engines :: Log :: trace (me, Battle_Message :: get_class_name ());
 	
@@ -45,10 +45,10 @@ bool Battle_Message ::
 }
 
 //	virtual
-Reference <Message <Items :: Characters :: Character> > Battle_Message ::
+Reference <Message <Items :: Character> > Battle_Message ::
 	copy ()
 	const
 {
-	return Reference <Message <Items :: Characters :: Character> >
+	return Reference <Message <Items :: Character> >
 		(new Battle_Message (me . get_name () + "'s copy", from, to));
 }

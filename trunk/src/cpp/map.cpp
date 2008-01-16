@@ -147,13 +147,13 @@ template <typename T, class U> Reference <U> Map <T, U> ::
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 	#include <elements/CEGUIListboxItem.h>
 #endif
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/message.hpp"
 #include "skill.hpp"
 #include "tile.hpp"
 
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	template class Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> >;
+	template class Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> >;
 #endif
 template class Map <pair <int, int>, Tile>;
 template class Map <string, Skill>;

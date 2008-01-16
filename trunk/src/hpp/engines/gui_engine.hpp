@@ -30,11 +30,7 @@ namespace Radakan
 			public State_Machine <GUI>
 		{
 			public :
-				GUI_Engine
-				(
-					boost :: shared_ptr <Ogre :: RenderWindow> window,
-					boost :: shared_ptr <Ogre :: SceneManager> scene_manager
-				);
+				GUI_Engine ();
 				virtual ~GUI_Engine ();
 				virtual bool is_initialized () const;
 				

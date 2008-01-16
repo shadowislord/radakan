@@ -114,7 +114,6 @@ template <class T> const boost :: shared_ptr <vector <string> > State_Machine <T
 //	to avert linking errors:
 #include "engines/game.hpp"
 #include "gui.hpp"
-#include "items/characters/character.hpp"
 #include "strategies/actions/action.hpp"
 #include "strategies/behaviors/behavior.hpp"
 #include "strategies/game_modes/game_mode.hpp"

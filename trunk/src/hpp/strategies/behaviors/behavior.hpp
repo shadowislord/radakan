@@ -9,10 +9,7 @@ namespace Radakan
 {
 	namespace Items
 	{
-		namespace Characters
-		{
-			class Character;
-		}
+		class Character;
 	}
 	
 	namespace Strategies
@@ -20,20 +17,19 @@ namespace Radakan
 		namespace Behaviors
 		{
 			class Behavior :
-				public Strategy <Behavior, Items :: Characters :: Character>
+				public Strategy <Behavior, Items :: Character>
 			{
 				public :
 					static string get_class_name ();
 					
-					Behavior (Reference <Items :: Characters :: Character> new_character);
+					Behavior (Reference <Items :: Character> new_character);
 					virtual ~Behavior ();
 					virtual bool is_initialized () const;
 					
 					virtual Reference <Behavior> transit
-						(const Reference <Messages :: Message <Items :: Characters :: Character> > & message) = 0;
+						(const Reference <Messages :: Message <Items :: Character> > & message) = 0;
 
-				protected :
-					Reference <Items :: Characters :: Character> character;
+					Reference <Items :: Character> character;
 			};
 		}
 	}

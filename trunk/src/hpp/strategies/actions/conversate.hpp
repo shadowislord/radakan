@@ -21,14 +21,14 @@ namespace Radakan
 					
 					Conversate
 					(
-						Reference <Items :: Characters :: Character> new_character,
+						Reference <Items :: Character> new_character,
 						Reference <Behaviors :: AI> new_ai
 					);
 					virtual ~Conversate ();
 					virtual bool is_initialized () const;
 					
 					virtual Reference <Action> transit
-						(const Reference <Messages :: Message <Items :: Characters :: Character> > & message);
+						(const Reference <Messages :: Message <Items :: Character> > & message);
 
 					virtual string get_action_name ();
 

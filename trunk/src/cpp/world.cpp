@@ -5,7 +5,8 @@
 #include <OgreOdeStepper.h>
 
 #include "engines/log.hpp"
-#include "items/characters/player_character.hpp"
+#include "engines/render_engine.hpp"
+#include "items/character.hpp"
 #include "map.hpp"
 #include "messages/message.hpp"
 #include "movable_model.hpp"
@@ -54,10 +55,12 @@ const unsigned int & World ::
 }
 
 World ::
-	World (boost :: shared_ptr <Ogre :: SceneManager> scene_manager) :
+	World () :
 	Object ("world", true),	//	Here 'true' means 'prevent automatic destruction'.
-	root_node (scene_manager -> getRootSceneNode ()),
-	ogre_ode_world (new OgreOde :: World (scene_manager . get ())),
+	root_node
+		(Engines :: Render_Engine :: get () -> get_scene_manager () -> getRootSceneNode ()),
+	ogre_ode_world
+		(new OgreOde :: World (Engines :: Render_Engine :: get () -> get_scene_manager () . get ())),
 	last_turn_length (0),
 	turn_length_timer (new Ogre :: Timer ()),
 	tiles (new Map <pair <int, int>, Tile> ("tiles")),
@@ -158,7 +161,7 @@ void World ::
 	#endif
 
 	Ogre :: Vector3 position
-		= Items :: Characters :: Player_Character :: get ()
+		= Items :: Character :: get_player_character ()
 			-> get_movable_model () -> node -> getPosition ();
 
 	const int x = int (floor (position . x / Tile :: side_length));
@@ -185,8 +188,8 @@ void World ::
 	ogre_ode_world -> clearContacts ();
 
 	//	Run the AI for all nearby NPCs.
-	Items :: Characters :: Player_Character :: get () -> call_observers
-		(Messages :: Message <Items :: Characters :: Character> :: update);
+	Items :: Character :: get_player_character () -> call_observers
+		(Messages :: Message <Items :: Character> :: update);
 }
 const float & World ::
 	get_last_turn_length ()

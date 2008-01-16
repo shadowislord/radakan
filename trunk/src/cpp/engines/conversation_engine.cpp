@@ -3,7 +3,7 @@
 #include "engines/conversation_engine.hpp"
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
-#include "items/characters/player_character.hpp"
+#include "items/character.hpp"
 #include "messages/conversation_message.hpp"
 #include "strategies/actions/conversate.hpp"
 #include "strategies/actions/fight.hpp"
@@ -59,37 +59,70 @@ bool Conversation_Engine ::
 }
 
 void Conversation_Engine ::
-	list_options (Reference <Items :: Characters :: Character> listener)
+	list_player_options ()
 {
 	assert (is_initialized ());
 
 	//	Clear the options from last turn.
-	call_observers (Messages :: Message <Items :: Characters :: Character> :: terminate);
+	call_observers (Messages :: Message <Items :: Character> :: terminate);
 
-	if (listener . points_to_object ())
+	Reference <Items :: Character> npc
+		= Items :: Character :: get_player_character () -> character_target;
+
+	//	Note: no target gives no options.
+	if (npc . points_to_object ())
 	{
+		assert (npc -> is_initialized ());
+		assert (npc != Items :: Character :: get_player_character ());
+
 		TiXmlElement * root = behavior -> RootElement ();
 		assert (root != NULL);
 
-		load_options (root, listener);
+		Reference <Strategies :: Behaviors :: AI> ai
+			(npc -> get_active_state () . cast <Strategies :: Behaviors :: AI> ());
+
+		load_player_options (root, ai);
 	}
 }
 
 void Conversation_Engine ::
-	load_options (const TiXmlElement * element, Reference <Items :: Characters :: Character> listener)
+	load_player_options
+	(
+		const TiXmlElement * element,
+		Reference <Strategies :: Behaviors :: AI> ai
+	)
 {
 	assert (element != NULL);
+	assert (ai . points_to_object ());
+	assert (ai -> is_initialized ());
 	
 	if (element -> ValueStr () == "option")
 	{
-		Reference <Messages :: Message <Items :: Characters :: Character> > message
-			(new Messages :: Conversation_Message
-				(Items :: Characters :: Player_Character :: get (), listener, element));
+		Reference <Messages :: Message <Items :: Character> > message
+		(
+			new Messages :: Conversation_Message
+			(
+				Items :: Character :: get_player_character (),
+				ai -> character,
+				element
+			)
+		);
 
 		call_observers (message);
 	}
 	
-	if ((element -> ValueStr () == "if") && ! evaluate_condition (element, listener))
+	if ((element -> ValueStr () == "reactions"))
+	{
+		return;
+	}
+	
+	if ((element -> ValueStr () == "if_npc") && ! evaluate_npc_condition (element, ai))
+	{
+		return;
+	}
+	
+	if ((element -> ValueStr () == "if_player")
+		&& ! evaluate_player_character_condition (element))
 	{
 		return;
 	}
@@ -97,12 +130,83 @@ void Conversation_Engine ::
 	for (const TiXmlElement * sub_element = element -> FirstChildElement ();
 		sub_element != NULL; sub_element = sub_element -> NextSiblingElement ())
 	{
-		load_options (sub_element, listener);
+		load_player_options (sub_element, ai);
 	}
 }
 
 bool Conversation_Engine ::
-	evaluate_condition (const TiXmlElement * element, Reference <Items :: Characters :: Character> subject)
+	evaluate_npc_condition
+	(
+		const TiXmlElement * element,
+		Reference <Strategies :: Behaviors :: AI> ai
+	)
+{
+	assert (is_initialized ());
+	assert (element != NULL);
+	assert (ai . points_to_object ());
+	assert (ai -> is_initialized ());
+	
+	bool result = true;
+
+	for (const TiXmlAttribute * attribute = element -> FirstAttribute (); attribute != NULL;
+		attribute = attribute -> Next ())
+	{
+		result = result && evaluate_npc_expression (attribute, ai);
+	}
+
+	return result;
+}
+
+bool Conversation_Engine ::
+	evaluate_npc_expression
+	(
+		const TiXmlAttribute * attribute,
+		Reference <Strategies :: Behaviors :: AI> ai
+	)
+{
+	assert (is_initialized ());
+	assert (attribute != NULL);
+	assert (ai . points_to_object ());
+	assert (ai -> is_initialized ());
+
+	const string & name = attribute -> NameTStr ();
+	const string & value = attribute -> ValueStr ();
+	Log :: log (me) << "evaluate: " << name  << " ? " << value << endl;
+	
+	assert ((name == "action") || (name == "fears") || (name == "likes"));
+
+	if (name == "action")
+	{
+		Log :: log (me) << "result: " << to_string (ai -> get_current_action_name () == value) << endl;
+		return ai -> get_current_action_name () == value;
+	}
+
+	assert ((value . at (0) == '<') || (value . at (0) == '>'));
+	bool larger = (value . at (0) == '>');
+	string temp = value;
+	temp . erase (temp . begin ());
+	float numeric_value = to_float (temp);
+
+	bool is_smaller;
+	if (name == "likes")
+	{
+		is_smaller = (numeric_value < 0.5);
+	}
+	else if (name == "fears")
+	{
+		is_smaller = (numeric_value < 0.2);
+	}
+	else
+	{
+		is_smaller = (numeric_value < ai -> character -> get_skill (name));
+	}
+
+	Log :: log (me) << "result: " << to_string (is_smaller != larger) << endl;
+	return (is_smaller != larger);
+}
+
+bool Conversation_Engine ::
+	evaluate_player_character_condition (const TiXmlElement * element)
 {
 	assert (is_initialized ());
 	assert (element != NULL);
@@ -112,69 +216,38 @@ bool Conversation_Engine ::
 	for (const TiXmlAttribute * attribute = element -> FirstAttribute (); attribute != NULL;
 		attribute = attribute -> Next ())
 	{
-		result = result && evaluate_expression (attribute, subject);
+		result = result && evaluate_player_character_expression (attribute);
 	}
 
 	return result;
 }
 
 bool Conversation_Engine ::
-	evaluate_expression (const TiXmlAttribute * attribute, Reference <Items :: Characters :: Character> subject)
+	evaluate_player_character_expression (const TiXmlAttribute * attribute)
 {
 	assert (is_initialized ());
 	assert (attribute != NULL);
-	assert (subject . points_to_object ());
-	assert (subject -> is_initialized ());
-	assert (! subject -> is_dead ());
 
 	const string & name = attribute -> NameTStr ();
 	const string & value = attribute -> ValueStr ();
 	Log :: log (me) << "evaluate: " << name  << " ? " << value << endl;
-
-	if (name == "action")
-	{
-		if (subject -> get_active_state () . is_castable <Strategies :: Behaviors :: AI> ())
-		{
-			Reference <Strategies :: Behaviors :: AI> ai
-				(subject -> get_active_state () . cast <Strategies :: Behaviors :: AI> ());
-
-			Log :: log (me) << "result: " << to_string (ai -> get_current_action_name () == value) << endl;
-			return ai -> get_current_action_name () == value;
-		}
-	}
-
-	if ((value . at (0) == '<') || (value . at (0) == '>'))
-	{
-		bool larger = (value . at (0) == '>');
-		string temp = value;
-		temp . erase (temp . begin ());
-		float numeric_value = to_float (temp);
-
-		bool is_smaller;
-		if (name == "like")
-		{
-			is_smaller = (numeric_value < 0.5);
-		}
-		else if (name == "fear")
-		{
-			is_smaller = (numeric_value < 0.2);
-		}
-		else
-		{
-			is_smaller = (numeric_value < subject -> get_skill (name));
-		}
-
-			Log :: log (me) << "result: " << to_string (is_smaller != larger) << endl;
-		return (is_smaller != larger);
-	}
 	
-	if ((name == "know") || (name == "have"))
+	if ((name == "knows") || (name == "has"))
 	{
-		Log :: log (me) << "result: false (I don't know and don't have.)" << endl;
+		Log :: log (me) << "result: false (I don't know and I don't have.)" << endl;
 		return false;
 	}
+
+	assert ((value . at (0) == '<') || (value . at (0) == '>'));
 	
-	Engines :: Log :: log (me) << "Expression not valid or not implemented." << endl;
-	abort ();
-	return false;
+	bool larger = (value . at (0) == '>');
+	string temp = value;
+	temp . erase (temp . begin ());
+	float numeric_value = to_float (temp);
+
+	bool is_smaller = (numeric_value
+		< Items :: Character :: get_player_character () -> get_skill (name));
+
+	Log :: log (me) << "result: " << to_string (is_smaller != larger) << endl;
+	return (is_smaller != larger);
 }

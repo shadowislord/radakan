@@ -1,5 +1,5 @@
 #include "engines/log.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/battle_message.hpp"
 #include "messages/conversation_message.hpp"
 #include "movable_model.hpp"
@@ -22,13 +22,13 @@ string AI ::
 
 //  constructor
 AI ::
-	AI (Reference <Items :: Characters :: Character> new_character) :
+	AI (Reference <Items :: Character> new_character) :
 	Object (new_character . get_name () + "'s AI"),
 	Behavior (new_character),
 	calm (1, 0, 1),
 	sensory_buffer
 	(
-		new Set <Messages :: Message <Items :: Characters :: Character> >
+		new Set <Messages :: Message <Items :: Character> >
 			(me . get_name () + "'s sensory buffer")
 	),
 	opinions (new Set <Opinion> (me . get_name () + "'s opinions"))
@@ -46,13 +46,6 @@ AI ::
 	assert (AI :: is_initialized ());
 
 	prepare_for_destruction ();
-
-	if (! character -> is_destructing ())
-	{
-		character -> get_movable_model () -> turn (1, character -> get_model () -> get_side_direction ());
-		
-		Engines :: Log :: show (character . get_name (true) + " died.");
-	}
 }
 
 //	virtual
@@ -61,24 +54,24 @@ bool AI ::
 	const
 {
 	//	'assert' can't handle double templates.
-	//	assert (Strategy <Behavior, Items :: Characters :: Character> :: is_initialized ());
+	//	assert (Strategy <Behavior, Items :: Character> :: is_initialized ());
 
 	return true;
 }
 
 //	virtual
 Reference <Behavior> AI ::
-	transit (const Reference <Messages :: Message <Items :: Characters :: Character> > & message)
+	transit (const Reference <Messages :: Message <Items :: Character> > & message)
 {
 	assert (is_initialized ());
 	
-	if (message == Messages :: Message <Items :: Characters :: Character> :: terminate)
+	if (message == Messages :: Message <Items :: Character> :: terminate)
 	{
 		return Reference <Behavior> ();
 	}
-	else if (message == Messages :: Message <Items :: Characters :: Character> :: update)
+	else if (message == Messages :: Message <Items :: Character> :: update)
 	{
-		Pointer <Messages :: Message <Items :: Characters :: Character> > actual_message (message);
+		Pointer <Messages :: Message <Items :: Character> > actual_message (message);
 		
 		if (! sensory_buffer -> is_empty ())
 		{
@@ -106,7 +99,7 @@ Reference <Behavior> AI ::
 			}
 		}
 
-		Strategy_State_Machine <Actions :: Action, Items :: Characters :: Character> :: run
+		Strategy_State_Machine <Actions :: Action, Items :: Character> :: run
 			(actual_message);
 	}
 	else

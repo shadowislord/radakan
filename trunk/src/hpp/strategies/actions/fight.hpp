@@ -21,19 +21,19 @@ namespace Radakan
 					
 					Fight
 					(
-						Reference <Items :: Characters :: Character> new_character,
+						Reference <Items :: Character> new_character,
 						Reference <Behaviors :: AI> new_ai
 					);
 					virtual ~Fight ();
 					virtual bool is_initialized () const;
 					
 					virtual Reference <Action> transit
-						(const Reference <Messages :: Message <Items :: Characters :: Character> > & message);
+						(const Reference <Messages :: Message <Items :: Character> > & message);
 
 					virtual string get_action_name ();
 
 				private :
-					Reference <Set <Items :: Characters :: Character> > targets;
+					Reference <Set <Items :: Character> > targets;
 			};
 		}
 	}

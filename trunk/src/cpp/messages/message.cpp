@@ -61,7 +61,7 @@ template <class T> Reference <Message <T> > Message <T> ::
 		(new Message <T> (me . get_name () + "'s copy", from, to));
 }
 
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 
-template class Message <Items :: Characters :: Character>;
+template class Message <Items :: Character>;
 template class Message <Object>;

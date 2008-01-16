@@ -9,30 +9,26 @@ namespace Radakan
 {
 	namespace Items
 	{
-		namespace Characters
-		{
-			class Character;
-		}
+		class Character;
 	}
 	
 	namespace Strategies
 	{
 		namespace Behaviors
 		{
-		
 			class Player :
+				public Singleton <Player>,
 				public Behavior
 			{
 				public :
 					static string get_class_name ();
-					
-					Player (Reference <Items :: Characters :: Character> new_character);
+
+					Player (Reference <Items :: Character> new_character);
 					virtual ~Player ();
 					virtual bool is_initialized () const;
 
 					virtual Reference <Behavior> transit
-						(const Reference <Messages :: Message <Items :: Characters :: Character> > & message);
-
+						(const Reference <Messages :: Message <Items :: Character> > & message);
 			};
 		}
 	}

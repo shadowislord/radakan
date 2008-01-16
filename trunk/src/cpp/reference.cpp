@@ -228,10 +228,11 @@ template <class T> template <class U> const Reference <U> Reference <T> ::
 #include "engines/gui_engine.hpp"
 #include "engines/input_engine.hpp"
 #include "engines/log.hpp"
+#include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
 #include "engines/tracker.hpp"
 #include "gui.hpp"
-#include "items/characters/player_character.hpp"
+#include "items/character.hpp"
 #include "items/static_item.hpp"
 #include "items/weapon.hpp"
 #include "map.hpp"
@@ -254,19 +255,19 @@ template <class T> template <class U> const Reference <U> Reference <T> ::
 #include "world.hpp"
 
 template class Reference <Container <GUI> >;
-template class Reference <Container <Items :: Characters :: Character> >;
+template class Reference <Container <Items :: Character> >;
 template class Reference <Container <Items :: Container_Item <Items :: Container_Item <Items :: Item> > > >;
 template class Reference <Container <Items :: Container_Item <Items :: Item> > >;
 template class Reference <Container <Items :: Item> >;
-template class Reference <Container <Messages :: Message <Items :: Characters :: Character> > >;
+template class Reference <Container <Messages :: Message <Items :: Character> > >;
 template class Reference <Container <Model> >;
 template class Reference <Container <Object> >;
-template class Reference <Container <Observer <Messages :: Message <Items :: Characters :: Character> > > >;
+template class Reference <Container <Observer <Messages :: Message <Items :: Character> > > >;
 template class Reference <Container <Observer <Messages :: Message <Object> > > >;
 template class Reference <Container <Observer <Object> > >;
 template class Reference <Container <Opinion> >;
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	template class Reference <Container <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > > >;
+	template class Reference <Container <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > > >;
 #endif
 template class Reference <Container <Pair <pair <int, int>, Tile> > >;
 template class Reference <Container <Pair <string, Skill> > >;
@@ -287,13 +288,13 @@ template class Reference <Engines :: Game>;
 template class Reference <Engines :: GUI_Engine>;
 template class Reference <Engines :: Input_Engine>;
 template class Reference <Engines :: Log>;
+template class Reference <Engines :: Render_Engine>;
 template class Reference <Engines :: Settings>;
 #ifdef RADAKAN_DEBUG
 	template class Reference <Engines :: Tracker>;
 #endif
 template class Reference <GUI>;
-template class Reference <Items :: Characters :: Character>;
-template class Reference <Items :: Characters :: Player_Character>;
+template class Reference <Items :: Character>;
 template class Reference <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Reference <Items :: Container_Item <Items :: Item> >;
 template class Reference <Items :: Item>;
@@ -307,66 +308,64 @@ template class Reference <Location <Strategies :: Actions :: Action> >;
 template class Reference <Location <Strategies :: Behaviors :: Behavior> >;
 template class Reference <Location <Strategies :: Game_Modes :: Game_Mode> >;
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	template class Reference <Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > >;
+	template class Reference <Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >;
 #endif
 template class Reference <Map <pair <int, int>, Tile> >;
 template class Reference <Map <string, Skill> >;
 template class Reference <Mesh_Data>;
 template class Reference <Messages :: Battle_Message>;
 template class Reference <Messages :: Conversation_Message>;
-template class Reference <Messages :: Message <Items :: Characters :: Character> >;
+template class Reference <Messages :: Message <Items :: Character> >;
 template class Reference <Messages :: Message <Object> >;
 template class Reference <Model>;
 template class Reference <Movable_Model>;
 template class Reference <Object>;
-template class Reference <Observer <Messages :: Message <Items :: Characters :: Character> > >;
+template class Reference <Observer <Messages :: Message <Items :: Character> > >;
 template class Reference <Observer <Messages :: Message <Object> > >;
 template class Reference <Observer <Object> >;
 template class Reference <Opinion>;
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	template class Reference <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > >;
+	template class Reference <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >;
 #endif
 template class Reference <Pair <pair <int, int>, Tile> >;
 template class Reference <Pair <string, Skill> >;
 template class Reference <Play_GUI>;
 template class Reference <Set <GUI> >;
-template class Reference <Set <Items :: Characters :: Character> >;
+template class Reference <Set <Items :: Character> >;
 template class Reference <Set <Items :: Item> >;
-template class Reference <Set <Messages :: Message <Items :: Characters :: Character> > >;
+template class Reference <Set <Messages :: Message <Items :: Character> > >;
 template class Reference <Set <Model> >;
 template class Reference <Set <Object> >;
-template class Reference <Set <Observer <Messages :: Message <Items :: Characters :: Character> > > >;
+template class Reference <Set <Observer <Messages :: Message <Items :: Character> > > >;
 template class Reference <Set <Observer <Object> > >;
 template class Reference <Set <Opinion> >;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Reference <Set <Sound_Sample> >;
 #endif
 template class Reference <Set <Strategies :: Game_Modes :: Game_Mode> >;
-//	template class Reference <Set <Strategies :: Strategy <Items :: Characters :: Character> > >;
+//	template class Reference <Set <Strategies :: Strategy <Items :: Character> > >;
 template class Reference <Set <Tile> >;
 template class Reference <Skill>;
 template class Reference <Slot <Strategies :: Game_Modes :: Game_Mode> >;
-//	template class Reference <Slot <Strategies :: Strategy <Items :: Characters :: Character> > >;
+//	template class Reference <Slot <Strategies :: Strategy <Items :: Character> > >;
 template class Reference <Slot <Tile> >;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Reference <Sound_Sample>;
 #endif
 template class Reference <State_Machine <Tile> >;
 template class Reference <Strategies :: Game_Modes :: Game_Mode>;
-//	template class Reference <Strategies :: Strategy <Items :: Characters :: Character> >;
+//	template class Reference <Strategies :: Strategy <Items :: Character> >;
 template class Reference <Strategies :: Actions :: Action>;
 template class Reference <Strategies :: Actions :: Fight>;
 template class Reference <Strategies :: Behaviors :: Behavior>;
 template class Reference <Strategies :: Behaviors :: AI>;
+template class Reference <Strategies :: Behaviors :: Player>;
 template class Reference <Strategies :: Game_Modes :: Menu>;
 template class Reference <Strategies :: Game_Modes :: Play>;
 //	template class Reference <Strategies :: Strategy_State_Machine <Engines :: Game> >;
-//	template class Reference <Strategies :: Strategy_State_Machine <Items :: Characters :: Character> >;
+//	template class Reference <Strategies :: Strategy_State_Machine <Items :: Character> >;
 template class Reference <Tile>;
 template class Reference <World>;
-
-template bool Reference <Items :: Characters :: Character> ::
-	operator== (const Reference <Items :: Characters :: Player_Character> & other) const;
 
 template <class FROM, class TO> void convert (const FROM & from)
 {
@@ -376,7 +375,7 @@ template <class FROM, class TO> void convert (const FROM & from)
 template void convert
 	<
 		Reference <Engines :: Input_Engine>,
-		Reference <Observer <Messages :: Message <Items :: Characters :: Character> > >
+		Reference <Observer <Messages :: Message <Items :: Character> > >
 	>
 	(const Reference <Engines :: Input_Engine> & from);
 template void convert
@@ -387,10 +386,10 @@ template void convert
 	(const Reference <Engines :: Input_Engine> & from);
 template void convert
 	<
-		Reference <Items :: Characters :: Character>,
-		Reference <Observer <Messages :: Message <Items :: Characters :: Character> > >
+		Reference <Items :: Character>,
+		Reference <Observer <Messages :: Message <Items :: Character> > >
 	>
-	(const Reference <Items :: Characters :: Character> & from);
+	(const Reference <Items :: Character> & from);
 template void convert
 	<
 		Reference <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >,
@@ -411,20 +410,14 @@ template void convert
 	(const Reference <Items :: Container_Item <Items :: Item> > & from);
 template void convert
 	<
-		Reference <Items :: Characters :: Player_Character>,
-		Reference <Items :: Characters :: Character>
-	>
-	(const Reference <Items :: Characters :: Player_Character> & from);
-template void convert
-	<
-		Reference <Items :: Characters :: Character>,
+		Reference <Items :: Character>,
 		Reference <Items :: Item>
 	>
-	(const Reference <Items :: Characters :: Character> & from);
+	(const Reference <Items :: Character> & from);
 template void convert
 	<
 		Reference <Messages :: Conversation_Message>,
-		Reference <Messages :: Message <Items :: Characters :: Character> >
+		Reference <Messages :: Message <Items :: Character> >
 	>
 	(const Reference <Messages :: Conversation_Message> & from);
 template void convert
@@ -442,7 +435,7 @@ template void convert
 template void convert
 	<
 		Reference <Play_GUI>,
-		Reference <Observer <Messages :: Message <Items :: Characters :: Character> > >
+		Reference <Observer <Messages :: Message <Items :: Character> > >
 	>
 	(const Reference <Play_GUI> & from);
 template void convert
@@ -465,26 +458,26 @@ template void convert
 	(const Reference <Tile> & from);
 
 template bool Reference <Items :: Item> ::
-	is_castable <Items :: Characters :: Character> () const;
+	is_castable <Items :: Character> () const;
 template bool Reference <Items :: Item> ::
 	is_castable <Items :: Static_Item> () const;
-template bool Reference <Messages :: Message <Items :: Characters :: Character> > ::
+template bool Reference <Messages :: Message <Items :: Character> > ::
 	is_castable <Messages :: Battle_Message> () const;
-template bool Reference <Messages :: Message <Items :: Characters :: Character> > ::
+template bool Reference <Messages :: Message <Items :: Character> > ::
 	is_castable <Messages :: Conversation_Message> () const;
 template bool Reference <Strategies :: Behaviors :: Behavior> ::
 	is_castable <Strategies :: Behaviors :: AI> () const;
 
-template Reference <Items :: Characters :: Character> Reference <Items :: Item> ::
-	cast <Items :: Characters :: Character> ();
+template Reference <Items :: Character> Reference <Items :: Item> ::
+	cast <Items :: Character> ();
 template Reference <Movable_Model> Reference <Model> ::
 	cast <Movable_Model> ();
 template Reference <Strategies :: Behaviors :: AI> Reference <Strategies :: Behaviors :: Behavior> ::
 	cast <Strategies :: Behaviors :: AI> ();
 
 template const Reference <Messages :: Battle_Message>
-	Reference <Messages :: Message <Items :: Characters :: Character> > ::
+	Reference <Messages :: Message <Items :: Character> > ::
 	cast_const <Messages :: Battle_Message> () const;
 template const Reference <Messages :: Conversation_Message>
-	Reference <Messages :: Message <Items :: Characters :: Character> > ::
+	Reference <Messages :: Message <Items :: Character> > ::
 	cast_const <Messages :: Conversation_Message> () const;

@@ -1,7 +1,7 @@
 #include <OgreSceneNode.h>
 
 #include "engines/log.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "messages/battle_message.hpp"
 #include "movable_model.hpp"
 #include "set.hpp"
@@ -24,12 +24,12 @@ string Fight ::
 Fight ::
 	Fight
 	(
-		Reference <Items :: Characters :: Character> new_character,
+		Reference <Items :: Character> new_character,
 		Reference <Behaviors :: AI> new_ai
 	) :
 	Object (new_character . get_name () + "'s fight action"),
 	Action (new_character, new_ai),
-	targets (new Set <Items :: Characters :: Character> (me . get_name () + "'s targets"))
+	targets (new Set <Items :: Character> (me . get_name () + "'s targets"))
 {
 	Engines :: Log :: show (character . get_name (true) + " becomes aggressive!");
 
@@ -54,14 +54,14 @@ bool Fight ::
 	const
 {
 	//	'assert' can't handle double templates.
-	//	assert (Strategy <Action, Items :: Characters :: Character> :: is_initialized ());
+	//	assert (Strategy <Action, Items :: Character> :: is_initialized ());
 	
 	return true;
 }
 
 //	virtual
 Reference <Action> Fight ::
-	transit (const Reference <Messages :: Message <Items :: Characters :: Character> > & message)
+	transit (const Reference <Messages :: Message <Items :: Character> > & message)
 {
 	assert (is_initialized ());
 
@@ -71,7 +71,7 @@ Reference <Action> Fight ::
 		{
 			//	The following line doesn't have to return true.
 			targets -> add
-				(const_cast <Reference <Items :: Characters :: Character> &>
+				(const_cast <Reference <Items :: Character> &>
 					(message -> from));
 		}
 	}
@@ -81,7 +81,7 @@ Reference <Action> Fight ::
 		return Reference <Action> ();
 	}
 
-	Reference <Items :: Characters :: Character> target = targets -> get_child ();
+	Reference <Items :: Character> target = targets -> get_child ();
 	Reference <Movable_Model> npc_model (character -> get_movable_model ());
 
 	Ogre :: Vector3 target_direction

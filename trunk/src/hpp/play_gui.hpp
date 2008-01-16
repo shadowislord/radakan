@@ -19,10 +19,7 @@ namespace Radakan
 	
 	namespace Items
 	{
-		namespace Characters
-		{
-			class Character;
-		}
+		class Character;
 	}
 	
 	namespace Messages
@@ -33,8 +30,8 @@ namespace Radakan
 	class Play_GUI :
 		protected Singleton <Play_GUI>,
 		public GUI,
-		public Observable <Messages :: Message <Items :: Characters :: Character> >,
-		public Observer <Messages :: Message <Items :: Characters :: Character> >
+		public Observable <Messages :: Message <Items :: Character> >,
+		public Observer <Messages :: Message <Items :: Character> >
 	{
 		public :
 			Play_GUI
@@ -53,7 +50,7 @@ namespace Radakan
 			///	Add 'message' to the conversation options.
 			///	Pass 'terminate' to clear the list.
 			virtual void call
-				(const Reference <Messages :: Message <Items :: Characters :: Character> > & message);
+				(const Reference <Messages :: Message <Items ::Character> > & message);
 
 		protected :
 			#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
@@ -64,7 +61,7 @@ namespace Radakan
 			#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 				boost :: shared_ptr <CEGUI :: Listbox> chat_window;
 				
-				Reference <Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > >
+				Reference <Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >
 					options;
 			#endif
 	};

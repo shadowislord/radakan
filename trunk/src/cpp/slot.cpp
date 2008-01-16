@@ -124,7 +124,7 @@ template <class T> Reference <T> Slot <T> ::
 
 #include "engines/game.hpp"
 #include "gui.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "items/container_item.hpp"
 #include "messages/message.hpp"
 #include "model.hpp"
@@ -138,9 +138,9 @@ template class Slot <GUI>;
 template class Slot <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Slot <Items :: Container_Item <Items :: Item> >;
 template class Slot <Items :: Item>;
-template class Slot <Messages :: Message <Items :: Characters :: Character> >;
+template class Slot <Messages :: Message <Items :: Character> >;
 template class Slot <Model>;
-template class Slot <Observer <Messages :: Message <Items :: Characters :: Character> > >;
+template class Slot <Observer <Messages :: Message <Items :: Character> > >;
 template class Slot <Observer <Object> >;
 template class Slot <Skill>;
 template class Slot <Strategies :: Actions :: Action>;

@@ -2,7 +2,7 @@
 #include "engines/input_engine.hpp"
 #include "engines/log.hpp"
 #include "gui.hpp"
-#include "items/characters/player_character.hpp"
+#include "items/character.hpp"
 #include "messages/message.hpp"
 #include "strategies/game_modes/menu.hpp"
 #include "strategies/game_modes/play.hpp"
@@ -70,15 +70,15 @@ Reference <Game_Mode> Menu ::
 	//	un-pause
 	if (Engines :: Input_Engine :: get () -> has_command ("return"))
 	{
-		if (Items :: Characters :: Player_Character :: get () -> is_dead ())
-		{
-			Engines :: Log :: show ("You're dead and cannot return to the game.");
-		}
-		else
+		if (Items :: Character :: get_player_character () -> is_alive ())
 		{
 			Engines :: Log :: log (me) << "Game resumed" << endl;
 			
 			return Play :: get ();
+		}
+		else
+		{
+			Engines :: Log :: show ("You're dead and cannot return to the game.");
 		}
 	}
 

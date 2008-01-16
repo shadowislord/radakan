@@ -31,7 +31,7 @@ namespace Radakan
 			static const int min_z;
 			static const int max_z;
 
-			World (boost :: shared_ptr <Ogre :: SceneManager> scene_manager);
+			World ();
 			virtual ~World ();
 			virtual bool is_initialized () const;
 

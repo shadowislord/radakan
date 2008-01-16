@@ -1,5 +1,5 @@
 #include "engines/log.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "strategies/actions/action.hpp"
 #include "strategies/behaviors/ai.hpp"
 
@@ -19,7 +19,7 @@ string Action ::
 Action ::
 	Action
 	(
-		Reference <Items :: Characters :: Character> new_character,
+		Reference <Items :: Character> new_character,
 		Reference <Behaviors :: AI> new_ai
 	) :
 	Object ("The name doesn't matter. This is an abstract base class."),
@@ -47,7 +47,7 @@ bool Action ::
 	const
 {
 	//	'assert' can't handle double templates.
-	//	assert (Strategy <Action, Items :: Characters :: Character> :: is_initialized ());
+	//	assert (Strategy <Action, Items :: Character> :: is_initialized ());
 	
 	return true;
 }

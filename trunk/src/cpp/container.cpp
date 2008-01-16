@@ -104,7 +104,7 @@ template <class T> bool Container <T> ::
 #include "engines/audio_engine.hpp"
 #include "engines/game.hpp"
 #include "gui.hpp"
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "items/container_item.hpp"
 #include "messages/message.hpp"
 #include "model.hpp"
@@ -118,19 +118,19 @@ template <class T> bool Container <T> ::
 #include "tile.hpp"
 
 template class Container <GUI>;
-template class Container <Items :: Characters :: Character>;
+template class Container <Items :: Character>;
 template class Container <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Container <Items :: Container_Item <Items :: Item> >;
 template class Container <Items :: Item>;
-template class Container <Messages :: Message <Items :: Characters :: Character> >;
+template class Container <Messages :: Message <Items :: Character> >;
 template class Container <Model>;
 template class Container <Object>;
-template class Container <Observer <Messages :: Message <Items :: Characters :: Character> > >;
+template class Container <Observer <Messages :: Message <Items :: Character> > >;
 template class Container <Observer <Messages :: Message <Object> > >;
 template class Container <Observer <Object> >;
 template class Container <Opinion>;
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	template class Container <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > >;
+	template class Container <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >;
 #endif
 template class Container <Pair <pair <int, int>, Tile> >;
 template class Container <Pair <string, Skill> >;

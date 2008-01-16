@@ -69,12 +69,12 @@ template <class T, class U> void Strategy_State_Machine <T, U> ::
 	}
 }
 
-#include "items/characters/character.hpp"
+#include "items/character.hpp"
 #include "strategies/actions/action.hpp"
 #include "strategies/behaviors/behavior.hpp"
 #include "strategies/game_modes/game_mode.hpp"
 
-template class Strategy_State_Machine <Strategies :: Actions :: Action, Items :: Characters :: Character>;
+template class Strategy_State_Machine <Strategies :: Actions :: Action, Items :: Character>;
 template class Strategy_State_Machine
-	<Strategies :: Behaviors :: Behavior, Items :: Characters :: Character>;
+	<Strategies :: Behaviors :: Behavior, Items :: Character>;
 template class Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object>;

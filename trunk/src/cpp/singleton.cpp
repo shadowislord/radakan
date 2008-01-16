@@ -78,12 +78,13 @@ template <class T> bool Singleton <T> ::
 #include "engines/conversation_engine.hpp"
 #include "engines/game.hpp"
 #include "engines/gui_engine.hpp"
+#include "engines/input_engine.hpp"
 //	#include "engines/plugin_manager.hpp"
+#include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
 #include "engines/tracker.hpp"
-#include "engines/input_engine.hpp"
-#include "items/characters/player_character.hpp"
 #include "play_gui.hpp"
+#include "strategies/behaviors/player.hpp"
 #include "strategies/game_modes/menu.hpp"
 #include "strategies/game_modes/play.hpp"
 #include "world.hpp"
@@ -98,11 +99,12 @@ template class Singleton <Engines :: GUI_Engine>;
 template class Singleton <Engines :: Input_Engine>;
 template class Singleton <Engines :: Log>;
 //	template class Singleton <Engines :: Plugin_Manager>;
+template class Singleton <Engines :: Render_Engine>;
 template class Singleton <Engines :: Settings>;
 template class Singleton <Play_GUI>;
-template class Singleton <Items :: Characters :: Player_Character>;
 //	template class Singleton <Plugins :: Battle_Plugin>;
 //	template class Singleton <Plugins :: Conversation_Plugin>;
+template class Singleton <Strategies :: Behaviors :: Player>;
 template class Singleton <Strategies :: Game_Modes :: Menu>;
 template class Singleton <Strategies :: Game_Modes :: Play>;
 template class Singleton <World>;
