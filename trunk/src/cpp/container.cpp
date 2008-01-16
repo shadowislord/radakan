@@ -5,10 +5,6 @@
 using namespace std;
 using namespace Radakan;
 
-// Windows.h has a macro called max (retarded ms!) which conflicts with this STL method!
-#ifdef max()
-#undef max()
-#endif
 
 //	static
 template <class T> string Container <T> ::

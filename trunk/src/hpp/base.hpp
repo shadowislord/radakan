@@ -20,6 +20,9 @@
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 	#define WIN32_LEAN_AND_MEAN
 
+	// Windows.h has a macro called max (retarded ms!) which conflicts with this STL method!
+	#define NOMINMAX
+
 	#include <windows.h>
 
 	#if _MSC_VER
@@ -29,6 +32,8 @@
 
 	#define RADAKAN_WINDOWS
 #endif
+
+
 
 using namespace std;
 
