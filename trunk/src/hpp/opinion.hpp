@@ -9,7 +9,10 @@ namespace Radakan
 {
 	namespace Items
 	{
-		class Character;
+		namespace Characters
+		{
+			class Character;
+		}
 	}
 	
 	class Opinion :
@@ -18,7 +21,7 @@ namespace Radakan
 		public :
 			static string get_class_name ();
 
-			Opinion (const Reference <Items :: Character> & other);
+			Opinion (const Reference <Items :: Characters :: Character> & other);
 			virtual ~Opinion ();
 			virtual bool is_initialized () const;
 

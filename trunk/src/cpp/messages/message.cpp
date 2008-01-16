@@ -52,8 +52,16 @@ template <class T> bool Message <T> ::
 	return Object :: is_initialized ();
 }
 
-#include "engines/game.hpp"
-#include "items/character.hpp"
+//	virtual
+template <class T> Reference <Message <T> > Message <T> ::
+	copy ()
+	const
+{
+	return Reference <Message <T> >
+		(new Message <T> (me . get_name () + "'s copy", from, to));
+}
 
-template class Message <Engines :: Game>;
-template class Message <Items :: Character>;
+#include "items/characters/character.hpp"
+
+template class Message <Items :: Characters :: Character>;
+template class Message <Object>;

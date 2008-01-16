@@ -2,45 +2,43 @@
 #include <OgreSceneManager.h>
 
 #include "engines/conversation_engine.hpp"
-#include "engines/game.hpp"
 #include "engines/gui_engine.hpp"
 #include "engines/input_engine.hpp"
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
-#include "items/npc.hpp"
-#include "items/player_character.hpp"
-#include "messages/conversation_message.hpp"
+#include "items/characters/player_character.hpp"
+#include "messages/message.hpp"
 #include "movable_model.hpp"
-#include "play_state_gui.hpp"
+#include "play_gui.hpp"
 #include "set.hpp"
-#include "strategies/menu_state.hpp"
-#include "strategies/play_state.hpp"
+#include "strategies/game_modes/menu.hpp"
+#include "strategies/game_modes/play.hpp"
 #include "tile.hpp"
 #include "world.hpp"
 
 using namespace std;
 using namespace Radakan;
 using namespace Radakan :: Strategies;
+using namespace Radakan :: Strategies :: Game_Modes;
 
 //	static
-string Play_State ::
+string Play ::
 	get_class_name ()
 {
-	return "Play_State";
+	return "Play";
 }
 
 //  constructor
-Play_State ::
-	Play_State
+Play ::
+	Play
 	(
 		boost :: shared_ptr <Ogre :: RenderWindow> window,
 		boost :: shared_ptr <Ogre :: SceneManager> scene_manager
 	):
 	Object ("play state", true),	//	Here 'true' means 'prevent automatic destruction'.
-	gui (Engines :: GUI_Engine :: get () -> create_gui <Play_State_GUI> ("play.xml")),
 	camera (scene_manager -> createCamera ("camera"))
 {
-	Engines :: Log :: trace (me, Play_State :: get_class_name (), "", "~scene_manager~");
+	Engines :: Log :: trace (me, Play :: get_class_name (), "", "~scene_manager~");
 
 	camera -> setNearClipDistance (0.001);
 	camera -> setFarClipDistance (150);
@@ -48,60 +46,61 @@ Play_State ::
 	Ogre :: Root :: getSingleton () . getRenderSystem () -> _setViewport
 		(window -> addViewport (camera . get ()));
 
-	Engines :: Conversation_Engine :: get () -> register_observer (gui);
-	gui -> Observable <Messages :: Message <Items :: Character> > :: register_observer
-		(Engines :: Input_Engine :: get ());
+	gui = Engines :: GUI_Engine :: get () -> create_gui <Play_GUI> ("play.xml");
 
-	assert (Play_State :: is_initialized ());
+	assert (Play :: is_initialized ());
 }
 
 //  destructor
-Play_State ::
-	~Play_State ()
+Play ::
+	~Play ()
 {
-	Engines :: Log :: trace (me, Play_State :: get_class_name (), "~");
-	assert (Play_State :: is_initialized ());
+	Engines :: Log :: trace (me, Play :: get_class_name (), "~");
+	assert (Play :: is_initialized ());
 
 	prepare_for_destruction ();
 }
 
 //	virtual
-bool Play_State ::
+bool Play ::
 	is_initialized ()
 	const
 {
-//	Engines :: Log :: trace (me, Play_State :: get_class_name (), "is_initialized");
-	assert (Singleton <Play_State> :: is_initialized ());
-	assert (Strategy <Engines :: Game> :: is_initialized ());
+//	Engines :: Log :: trace (me, Play :: get_class_name (), "is_initialized");
+	assert (Singleton <Play> :: is_initialized ());
+	
+	//	'assert' can't handle double templates.
+	//	assert (Strategy <Strategies :: Game_Modes :: Game_Mode, Object> :: is_initialized ());
 
 	return true;
 }
 
 //	virtual
-Reference <Strategy <Engines :: Game> > Play_State ::
-	transit (const Reference <Messages :: Message <Engines :: Game> > & message)
+Reference <Game_Mode> Play ::
+	transit (const Reference <Messages :: Message <Object> > & message)
 {
 	assert (is_initialized ());
 
 	//	quit
-	if (message == Messages :: Message <Engines :: Game> :: terminate)
+	if (message == Messages :: Message <Object> :: terminate)
 	{
-		return Reference <Strategy <Engines :: Game> > ();
+		return Reference <Game_Mode> ();
 	}
 
 	//	menu
-	if (Items :: Player_Character :: get () -> is_dead ()
+	if (Items :: Characters :: Player_Character :: get () -> is_dead ()
 		|| Engines :: Input_Engine :: get () -> has_command ("menu"))
 	{
-		return Menu_State :: get ();
+		return Menu :: get ();
 	}
 
-	const Reference <Messages :: Message <Items :: Character> > conversation_option
-		= Engines :: Input_Engine :: get () -> get_conversation_option ();
+	const Reference <Messages :: Message <Items :: Characters :: Character> >
+		conversation_option
+			= Engines :: Input_Engine :: get () -> get_conversation_option ();
 	if (conversation_option . points_to_object ())
 	{
-		assert (conversation_option -> from == Items :: Player_Character :: get ());
-		Items :: Player_Character :: get () -> call_observers (conversation_option);
+		assert (conversation_option -> from == Items :: Characters :: Player_Character :: get ());
+		Items :: Characters :: Player_Character :: get () -> call_observers (conversation_option);
 	}
 
 	World :: get () -> update ();
@@ -109,52 +108,46 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 	Engines :: GUI_Engine :: get () -> set_active_gui (gui);
 
 	float relative_destination_movement_speed = 0;
-	if (Engines :: Input_Engine :: get () -> is_key_pressed
-		(Engines :: Settings :: get () -> key_bindings ["go_forward"], false))
+	if (Engines :: Input_Engine :: get () -> has_command ("go forward", false))
 	{
 		relative_destination_movement_speed = 1;
 	}
-	else if (Engines :: Input_Engine :: get () -> is_key_pressed
-		(Engines :: Settings :: get () -> key_bindings ["go_backward"], false))
+	else if (Engines :: Input_Engine :: get () -> has_command ("go backward", false))
 	{
 		relative_destination_movement_speed = - 0.7;
 		Engines :: Log :: log (me) << "Going backwards: - 0.7" << endl;
 	}
-	Items :: Player_Character :: get () -> get_movable_model () -> move
+	Items :: Characters :: Player_Character :: get () -> get_movable_model () -> move
 		(relative_destination_movement_speed);
 
 	float relative_destination_turn_speed = 0;
-	if (Engines :: Input_Engine :: get () -> is_key_pressed
-		(Engines :: Settings :: get () -> key_bindings ["turn_left"], false))
+	if (Engines :: Input_Engine :: get () -> has_command ("turn left", false))
 	{
 		relative_destination_turn_speed = 1;
 	}
-	else if (Engines :: Input_Engine :: get () -> is_key_pressed
-		(Engines :: Settings :: get () -> key_bindings ["turn_right"], false))
+	else if (Engines :: Input_Engine :: get () -> has_command ("turn right", false))
 	{
 		relative_destination_turn_speed = - 1;
 	}
-	Items :: Player_Character :: get () -> get_movable_model () -> turn
+	Items :: Characters :: Player_Character :: get () -> get_movable_model () -> turn
 		(relative_destination_turn_speed);
 
-	//	reset your orientation
-	if (Engines :: Input_Engine :: get () -> has_command ("reset"))
-	{
-		Items :: Player_Character :: get () -> get_movable_model () -> reset ();
-	}
-
 	//	select a target
-	if (Engines :: Input_Engine :: get () -> has_command ("select_target"))
+	if (Engines :: Input_Engine :: get () -> has_command ("select target"))
 	{
 		if (character_target . points_to_object () || item_target . points_to_object ())
 		{
 			item_target . reset_pointee ();
 			character_target . reset_pointee ();
+			Engines :: Log :: show
+				("Target deselected.");
 		}
 		else
 		{
-			character_target = World :: get () -> get_active_state () -> npcs -> get_child ();
-			Engines :: Log :: show ("Target: " + character_target . get_name (true));
+			character_target
+				= World :: get () -> get_active_state () -> characters -> get_child ();
+			Engines :: Log :: show
+				("Target selected: " + character_target . get_name (true));
 		}
 	}
 
@@ -165,7 +158,8 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 	{
 		if (character_target . points_to_object ())
 		{
-			Items :: Player_Character :: get () -> hit ("agressive", character_target);
+			Items :: Characters :: Player_Character :: get () -> hit
+				("aggressive", character_target);
 		}
 		else
 		{
@@ -179,7 +173,7 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 		if (character_target . points_to_object ())
 		{
 			Reference <Items :: Container_Item <Items :: Item> > player_hand
-				= Items :: Player_Character :: get () -> right_hand;
+				= Items :: Characters :: Player_Character :: get () -> right_hand;
 			Reference <Items :: Container_Item <Items :: Item> > npc_hand
 				= character_target -> right_hand;
 
@@ -208,6 +202,20 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 		}
 	}
 
+	//	jump
+	if (Engines :: Input_Engine :: get () -> has_command ("jump"))
+	{
+		Engines :: Log :: show ("Sadly, jumping is not supported yet.");
+	}
+
+	//	reset your orientation
+	if (Engines :: Input_Engine :: get () -> has_command ("reset"))
+	{
+		Items :: Characters :: Player_Character :: get ()
+			-> get_movable_model () -> reset ();
+		Engines :: Log :: show ("Your orientation is reset.");
+	}
+
 	const Ogre :: Vector3 & mouse_position = Engines :: Input_Engine :: get ()
 		-> get_mouse_position (Engines :: Input_Engine :: relative);
 
@@ -222,8 +230,8 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 	{
 		if (mouse_position . x != 0)
 		{
-			Items :: Player_Character :: get () -> get_movable_model () -> turn
-				(- Ogre :: Math :: Sign (mouse_position . x));
+			Items :: Characters :: Player_Character :: get () -> get_movable_model ()
+				-> turn (- Ogre :: Math :: Sign (mouse_position . x));
 		}
 
 		if (mouse_position . y != 0)
@@ -240,8 +248,10 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 
 	camera -> setPosition
 	(
-		Items :: Player_Character :: get () -> get_movable_model () -> node -> getPosition ()
-			+ Items :: Player_Character :: get () -> get_movable_model () -> get_top_direction ()
+		Items :: Characters :: Player_Character :: get ()
+			-> get_movable_model () -> node -> getPosition ()
+			+ Items :: Characters :: Player_Character :: get ()
+				-> get_movable_model () -> get_top_direction ()
 			* Engines :: Settings :: get () -> get_camera_distance ()
 	);
 	camera -> setOrientation
@@ -249,10 +259,12 @@ Reference <Strategy <Engines :: Game> > Play_State ::
 		make_quaternion
 		(
 			Engines :: Settings :: get () -> get_vertical_camera_angle (),
-			Items :: Player_Character :: get () -> get_movable_model () -> get_side_direction ()
+			Items :: Characters :: Player_Character :: get ()
+				-> get_movable_model () -> get_side_direction ()
 		)
-		* Items :: Player_Character :: get () -> get_movable_model () -> node -> getOrientation ()
+		* Items :: Characters :: Player_Character :: get ()
+			-> get_movable_model () -> node -> getOrientation ()
 	);
 
-	return Reference <Strategy <Engines :: Game> > (this);
+	return Reference <Game_Mode> (this);
 }

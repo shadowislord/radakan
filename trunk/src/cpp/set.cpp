@@ -149,30 +149,33 @@ template <class T> Reference <T> Set <T> ::
 #include "engines/audio_engine.hpp"
 #include "engines/game.hpp"
 #include "gui.hpp"
+#include "items/characters/character.hpp"
 #include "items/container_item.hpp"
-#include "items/npc.hpp"
 #include "messages/conversation_message.hpp"
 #include "model.hpp"
 #include "movable_model.hpp"
 #include "opinion.hpp"
-#include "strategies/strategy.hpp"
+#include "strategies/actions/action.hpp"
+#include "strategies/behaviors/behavior.hpp"
+#include "strategies/game_modes/game_mode.hpp"
 #include "tile.hpp"
 
 template class Set <GUI>;
-template class Set <Items :: Character>;
+template class Set <Items :: Characters :: Character>;
 template class Set <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Set <Items :: Container_Item <Items :: Item> >;
 template class Set <Items :: Item>;
-template class Set <Items :: NPC>;
-template class Set <Messages :: Message <Items :: Character> >;
+template class Set <Messages :: Message <Items :: Characters :: Character> >;
 template class Set <Model>;
 template class Set <Object>;
-template class Set <Observer <Messages :: Message <Items :: Character> > >;
+template class Set <Observer <Messages :: Message <Items :: Characters :: Character> > >;
+template class Set <Observer <Messages :: Message <Object> > >;
 template class Set <Observer <Object> >;
 template class Set <Opinion>;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Set <Sound_Sample>;
 #endif
-template class Set <Strategies :: Strategy <Engines :: Game> >;
-template class Set <Strategies :: Strategy <Items :: Character> >;
+template class Set <Strategies :: Actions :: Action>;
+template class Set <Strategies :: Behaviors :: Behavior>;
+template class Set <Strategies :: Game_Modes :: Game_Mode>;
 template class Set <Tile>;

@@ -29,6 +29,9 @@ namespace Radakan
 				virtual ~Message ();
 				virtual bool is_initialized () const;
 
+				//	Overload 'copy ()' in all subclasses.
+				virtual Reference <Message <T> > copy () const;
+
 				///	'from' can refer to 'NULL'.
 				Reference <T> from;
 

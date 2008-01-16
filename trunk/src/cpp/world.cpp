@@ -5,7 +5,7 @@
 #include <OgreOdeStepper.h>
 
 #include "engines/log.hpp"
-#include "items/player_character.hpp"
+#include "items/characters/player_character.hpp"
 #include "map.hpp"
 #include "messages/message.hpp"
 #include "movable_model.hpp"
@@ -133,15 +133,6 @@ void World ::
 
 	if ((! has_active_state ()) || (tile != get_active_state ()))
 	{
-		if (has_active_state () && Items :: Player_Character :: is_instantiated ())
-		{
-			if (! tile -> contains (Items :: Player_Character :: get () -> get_movable_model ()))
-			{
-				get_active_state () -> move
-					(Items :: Player_Character :: get () -> get_movable_model (), tile);
-			}
-		}
-
 		State_Machine <Tile> :: set_active_state (tile);
 	}
 }
@@ -159,13 +150,16 @@ void World ::
 
 	#ifdef RADAKAN_DEBUG
 		Engines :: Log :: log (me) << "Turn length: " << last_turn_length << " seconds" << endl;
+		Engines :: Log :: log (me) << get_FPS () << endl;
 
 		turn ++;
 
 		Engines :: Log :: log (me) << "Turn " << turn << " started" << endl;
 	#endif
 
-	Ogre :: Vector3 position = Items :: Player_Character :: get () -> get_movable_model () -> node -> getPosition ();
+	Ogre :: Vector3 position
+		= Items :: Characters :: Player_Character :: get ()
+			-> get_movable_model () -> node -> getPosition ();
 
 	const int x = int (floor (position . x / Tile :: side_length));
 	const int z = int (floor (position . z / Tile :: side_length));
@@ -190,9 +184,9 @@ void World ::
 	ogre_ode_world -> synchronise ();
 	ogre_ode_world -> clearContacts ();
 
-	//	run the AI for all nearby NPCs
-	Items :: Player_Character :: get () -> call_observers
-		(Messages :: Message <Items :: Character> :: update);
+	//	Run the AI for all nearby NPCs.
+	Items :: Characters :: Player_Character :: get () -> call_observers
+		(Messages :: Message <Items :: Characters :: Character> :: update);
 }
 const float & World ::
 	get_last_turn_length ()

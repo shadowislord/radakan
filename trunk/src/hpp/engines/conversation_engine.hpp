@@ -14,7 +14,10 @@ namespace Radakan
 {
 	namespace Items
 	{
-		class Character;
+		namespace Characters
+		{
+			class Character;
+		}
 	}
 
 	namespace Messages
@@ -28,7 +31,7 @@ namespace Radakan
 		///	comments missing
 		class Conversation_Engine :
 			public Singleton <Conversation_Engine>,
-			public Observable <Messages :: Message <Items :: Character> >
+			public Observable <Messages :: Message <Items :: Characters :: Character> >
 		{
 			public :
 				static string get_class_name ();
@@ -37,13 +40,15 @@ namespace Radakan
 				virtual ~Conversation_Engine ();
 				virtual bool is_initialized () const;
 				
-				void list_options (Reference <Items :: Character> listener);
+				void list_options (Reference <Items :: Characters :: Character> listener);
 
 			private :
+				void load_options
+					(const TiXmlElement * element, Reference <Items :: Characters :: Character> listener);
 				bool evaluate_condition
-					(const TiXmlElement * element, Reference <Items :: Character> subject);
+					(const TiXmlElement * element, Reference <Items :: Characters :: Character> subject);
 				bool evaluate_expression
-					(const TiXmlAttribute * attribute, Reference <Items :: Character> subject);
+					(const TiXmlAttribute * attribute, Reference <Items :: Characters :: Character> subject);
 			
 				boost :: scoped_ptr <TiXmlDocument> behavior;
 		};

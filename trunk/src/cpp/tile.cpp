@@ -11,8 +11,7 @@
 
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
-#include "items/npc.hpp"
-#include "items/player_character.hpp"
+#include "items/characters/player_character.hpp"
 #include "items/static_item.hpp"
 #include "movable_model.hpp"
 #include "set.hpp"
@@ -41,9 +40,9 @@ Tile ::
 	),
 	coordinates (new_coordinates),
 	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
-	npcs (new Set <Items :: NPC> (name + "'s NPCs")),
+	characters (new Set <Items :: Characters :: Character> (name + "'s characters")),
 	space (new OgreOde :: SimpleSpace (World :: get () -> ogre_ode_world . get (), World :: get () -> ogre_ode_world -> getDefaultSpace ())),
-	doc (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/world/tile/" + name + ".xml"))
+	doc (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/tile/" + name + ".xml"))
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
 
@@ -154,19 +153,11 @@ bool Tile ::
 	bool check = Location <Model> :: add (model);
 	assert (check);
 
-	if (model -> item . is_castable <Items :: NPC> ())
+	if (model -> item . is_castable <Items :: Characters :: Character> ())
 	{
-		Engines :: Log :: log (me) << model -> item << " will be added to the list of NPCs..." << endl;
-		assert (model -> item . points_to_object ());
-		assert (model -> item -> is_initialized ());
-		Reference <Items :: NPC> temp (model -> item . cast <Items :: NPC> ());
-		assert (temp . points_to_object ());
-		assert (temp -> is_initialized ());
-		
-		bool check = npcs -> add (temp);
+		bool check = characters -> add
+			(model -> item . cast <Items :: Characters :: Character> ());
 		assert (check);
-		
-		Engines :: Log :: log (me) << model -> item << " was added to the list of NPCs." << endl;
 	}
 
 	model -> set_space (space);
@@ -184,9 +175,9 @@ bool Tile ::
 	assert (contains (model));
 	assert (destination -> is_initialized ());
 
-	if (model -> item . is_castable <Items :: NPC> ())
+	if (model -> item . is_castable <Items :: Characters :: Character> ())
 	{
-		npcs -> drop (model -> item . cast <Items :: NPC> ());
+		characters -> drop (model -> item . cast <Items :: Characters :: Character> ());
 	}
 
 	bool check = Location <Model> :: move (model, destination);
@@ -202,12 +193,12 @@ void Tile ::
 	assert (is_initialized ());
 
 	string item_name;
-	element . QueryValueAttribute <string> ("name", & item_name);
+	element . QueryStringAttribute ("name", & item_name);
 	
 	assert (element . Attribute ("item") != NULL);
 	TiXmlDocument item_prototype
 	(
-		Engines :: Settings :: get () -> radakan_path + "/data/world/prototype/" + element . Attribute ("item") + ".xml"
+		Engines :: Settings :: get () -> radakan_path + "/data/item_prototype/" + element . Attribute ("item") + ".xml"
 	);
 	Reference <Items :: Item> item (load_item (item_prototype, item_name));
 
@@ -299,13 +290,16 @@ Reference <Items :: Item> Tile ::
 		{
 			assert (! item_name . empty ());
 		
-			item . reset_pointee (new Items :: NPC (item_name, mass, size, mesh_data));
+			item = Items :: Characters :: Character
+				:: create_npc (item_name, mass, size, mesh_data);
 		}
 		else if (type == string ("player"))
 		{
 			assert (! item_name . empty ());
 		
-			item . reset_pointee (new Items :: Player_Character (item_name, mass, size, mesh_data));
+			item . reset_pointee
+				(new Items :: Characters :: Player_Character
+					(item_name, mass, size, mesh_data));
 		}
 		else
 		{

@@ -2,12 +2,20 @@
 #define RADAKAN_GAME_HPP
 
 #include "singleton.hpp"
-#include "strategies/strategy_state_machine.hpp"
+#include "strategy_state_machine.hpp"
 
 using namespace std;
 
 namespace Radakan
 {
+	namespace Strategies
+	{
+		namespace Game_Modes
+		{
+			class Game_Mode;
+		}
+	}
+	
 	namespace Engines
 	{
 
@@ -15,7 +23,7 @@ namespace Radakan
 		class Game :
 			public virtual Object,
 			protected Singleton <Game>,
-			private Strategies :: Strategy_State_Machine <Game>
+			private Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object>
 		{
 			public :
 				static string get_class_name ();

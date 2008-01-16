@@ -13,7 +13,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 <!-- '&lt;' means 'less than' and '&gt;' means 'greater than'. -->
 
 <behavior>
-	<if active_state="Alive_State" active_alive_state="none">
+	<if action="none">
 		<dialog>
 			<options>
 				<option say="Hello." />
@@ -27,7 +27,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 					<reaction say="What can I do for you?" />
 				</if>
 				<elseif like="&lt;0.2">
-					<reaction say="To the death!" shout="true" active_alive_state="Battle_State" />
+					<reaction say="To the death!" shout="true" action="Fight" />
 				</elseif>
 				<elseif fear="&gt;0.8">
 					<reaction say="I'll do everything you say." />
@@ -38,7 +38,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 			</reactions>
 		</dialog>
 	</if>
-	<if active_state="Alive_State" active_alive_state="Chat_State">
+	<if action="Conversate">
 		<dialog>
 			<options>
 				<option say="Where can I find the blacksmith, please?" />
@@ -68,52 +68,53 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 		</dialog>
 		<dialog>
 			<options>
+				<option say="Something wrong?" />
+			</options>
+			<reactions>
 				<if like="&gt;0.7">
-					<option say="Something wrong?" />
+					<reaction say="Yes, I just have been robbed..." know="robbers" />
 				</if>
-			</options>
-			<reactions>
-				<reaction say="Yes, I just have been robbed..." know="robbers" />
+				<else>
+					<reaction say="No, not at all." />
+				</else>
 			</reactions>
 		</dialog>
-		<dialog>
-			<options>
-				<if know="robbers">
+		<if know="robbers">
+			<dialog>
+				<options>
 					<option say="Don't worry. I'll handle those robbers." />
-				</if>
-			</options>
-			<reactions>
-				<reaction say="Thank you!" />
-			</reactions>
-		</dialog>
-		<dialog>
-			<options>
-				<if know="robbers" have="dagger">
-					<option say="Here, your dagger" effect="like" />
-				</if>
-			</options>
-			<reactions>
-				<reaction say="Thank you so much..." />
-			</reactions>
-		</dialog>
+				</options>
+				<reactions>
+					<reaction say="Thank you!" />
+				</reactions>
+			</dialog>
+			<if have="dagger">
+				<dialog>
+					<options>
+						<option say="Here, your dagger" effect="like" />
+					</options>
+					<reactions>
+						<reaction say="Thank you so much..." />
+					</reactions>
+				</dialog>
+			</if>
+		</if>
 		<dialog>
 			<options>
 				<option say="Bye." />
-				<option action="Walk away without saying a word." effect="weird" />
+				<option do="Walk away without saying a word." effect="weird" />
 			</options>
 			<reactions>
-				<reaction say="Bye." active_alive_state="none" />
+				<reaction say="Bye." action="none" />
 			</reactions>
 		</dialog>
 	</if>
-	<if active_state="Alive_State">
-		<dialog>
-			<options>
-				<option action="Hit." effect="angry" />
-			</options>
-			<reactions>
-				<reaction action="Hit." active_alive_state="Battle_State" />
-			</reactions>
-		</dialog>
-	</if>
+	<dialog>
+		<options>
+			<option do="Hit." effect="angry" />
+		</options>
+		<reactions>
+			<reaction do="Hit." action="Fight" />
+		</reactions>
+	</dialog>
 </behavior>

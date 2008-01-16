@@ -156,7 +156,7 @@ bool Input_Engine ::
 
 //	virtual
 void Input_Engine ::
-	call (const Reference <Messages :: Message <Items :: Character> > & message)
+	call (const Reference <Messages :: Message <Items :: Characters :: Character> > & message)
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "call", message . get_name ());
 	assert (is_initialized ());
@@ -189,7 +189,6 @@ void Input_Engine ::
 	relative_mouse_position = Ogre :: Vector3 (0, 0, 0);
 	mouse -> capture ();
 
-	gui_command = "";	//	reset it, in case of a unhandeled button
 	GUI_Engine :: get () -> set_mouse_position (get_mouse_position ());
 	if (is_mouse_button_pressed (left_mouse_button, true))
 	{
@@ -197,14 +196,14 @@ void Input_Engine ::
 	}
 }
 
-const Reference <Messages :: Message <Items :: Character> > Input_Engine ::
+const Reference <Messages :: Message <Items :: Characters :: Character> > Input_Engine ::
 	get_conversation_option ()
 {
 	assert (is_initialized ());
 
 	if (conversation_option . points_to_object ())
 	{
-		const Reference <Messages :: Message <Items :: Character> > result = conversation_option;
+		const Reference <Messages :: Message <Items :: Characters :: Character> > result = conversation_option;
 
 		conversation_option . reset_pointee ();
 
@@ -216,25 +215,6 @@ const Reference <Messages :: Message <Items :: Character> > Input_Engine ::
 	{
 		return conversation_option;	//	refers to 'NULL'
 	}
-}
-
-bool Input_Engine ::
-	is_key_pressed (string key, bool reset)
-{
-	assert (is_initialized ());
-
-	if (0 < pressed_keys . count (key))
-	{
-		string to_be = "is";
-		if (reset)
-		{
-			pressed_keys . erase (key);
-			to_be = "was";
-		}
-		Engines :: Log :: log (me) << "Key '" << key << "' " << to_be << " pressed." << endl;
-		return true;
-	}
-	return false;
 }
 
 bool Input_Engine ::
@@ -271,16 +251,17 @@ const Ogre :: Vector3 & Input_Engine ::
 }
 
 bool Input_Engine ::
-	has_command (string command_name)
+	has_command (string command_name, bool reset)
 {
 	Engines :: Log :: trace (me, Input_Engine :: get_class_name (), "has_command", command_name);
 	assert (is_initialized ());
 
 	if (gui_command == command_name)
 	{
-		gui_command = "";	//	Automatically reset.
-
-		return true;
+		if (reset)
+		{
+			gui_command = "";
+		}
 	}
 	else
 	{
@@ -294,9 +275,20 @@ bool Input_Engine ::
 		else
 		{
 			//	Is that key shortcut pressed?
-			return is_key_pressed (key_binding -> second, true);
+			string & key = key_binding -> second;
+			if (0 == pressed_keys . count (key))
+			{
+				return false;
+			}
+			
+			if (reset)
+			{
+				pressed_keys . erase (key);
+			}
 		}
 	}
+	
+	return true;
 }
 
 //	virtual

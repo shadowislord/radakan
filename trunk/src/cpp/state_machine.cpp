@@ -114,11 +114,14 @@ template <class T> const boost :: shared_ptr <vector <string> > State_Machine <T
 //	to avert linking errors:
 #include "engines/game.hpp"
 #include "gui.hpp"
-#include "items/character.hpp"
-#include "strategies/strategy.hpp"
+#include "items/characters/character.hpp"
+#include "strategies/actions/action.hpp"
+#include "strategies/behaviors/behavior.hpp"
+#include "strategies/game_modes/game_mode.hpp"
 #include "tile.hpp"
 
-template class State_Machine <Strategies :: Strategy <Engines :: Game> >;
-template class State_Machine <Strategies :: Strategy <Items :: Character> >;
+template class State_Machine <Strategies :: Actions :: Action>;
+template class State_Machine <Strategies :: Behaviors :: Behavior>;
+template class State_Machine <Strategies :: Game_Modes :: Game_Mode>;
 template class State_Machine <GUI>;
 template class State_Machine <Tile>;

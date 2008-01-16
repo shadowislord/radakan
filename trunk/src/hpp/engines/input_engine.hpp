@@ -5,6 +5,7 @@
 #include <OISMouse.h>
 
 #include "observer.hpp"
+#include "pointer.hpp"
 #include "singleton.hpp"
 
 using namespace std;
@@ -24,7 +25,10 @@ namespace Radakan
 
 	namespace Items
 	{
-		class Character;
+		namespace Characters
+		{
+			class Character;
+		}
 	}
 	
 	namespace Messages
@@ -39,7 +43,7 @@ namespace Radakan
 		///	Input_Engine records all player input.
 		class Input_Engine :
 			public Singleton <Input_Engine>,
-			public Observer <Messages :: Message <Items :: Character> >,
+			public Observer <Messages :: Message <Items :: Characters :: Character> >,
 			public Observer <Object>,
 			public OIS :: KeyListener,
 			public OIS :: MouseListener
@@ -61,15 +65,14 @@ namespace Radakan
 
 				void capture ();
 				
-				const Reference <Messages :: Message <Items :: Character> >
+				const Reference <Messages :: Message <Items :: Characters :: Character> >
 					get_conversation_option ();
-				bool is_key_pressed (string key, bool reset);
 				bool is_mouse_button_pressed (string button, bool reset);
 				const Ogre :: Vector3 & get_mouse_position (bool relative = absolute) const;
-				bool has_command (string command_name);
+				bool has_command (string command_name, bool reset = true);
 
 				virtual void call
-					(const Reference <Messages :: Message <Items :: Character> > & message);
+					(const Reference <Messages :: Message <Items :: Characters :: Character> > & message);
 				virtual void call (const Reference <Object> & message);
 				
 			private :
@@ -93,7 +96,7 @@ namespace Radakan
 				
 				///	Only one conversation option can be clicked at once.
 				///	Note: 'conversation_option' isn't a really good name.
-				Pointer <Messages :: Message <Items :: Character> > conversation_option;
+				Pointer <Messages :: Message <Items :: Characters :: Character> > conversation_option;
 				
 				Ogre :: Vector3 relative_mouse_position;
 				Ogre :: Vector3 absolute_mouse_position;

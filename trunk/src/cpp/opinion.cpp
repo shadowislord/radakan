@@ -1,5 +1,5 @@
 #include "engines/log.hpp"
-#include "items/character.hpp"
+#include "items/characters/character.hpp"
 #include "opinion.hpp"
 #include "world.hpp"
 
@@ -15,7 +15,7 @@ string Opinion ::
 
 //  constructor
 Opinion ::
-	Opinion (const Reference <Items :: Character> & other) :
+	Opinion (const Reference <Items :: Characters :: Character> & other) :
 	Object ("opinion about " + other . get_name ()),
 	about (other . get_name (true)),
 	like (0.5),

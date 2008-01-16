@@ -1,5 +1,5 @@
 #include "engines/log.hpp"
-#include "items/character.hpp"
+#include "items/characters/character.hpp"
 #include "messages/battle_message.hpp"
 #include "messages/conversation_message.hpp"
 #include "map.hpp"
@@ -8,10 +8,12 @@
 #include "set.hpp"
 #include "skill.hpp"
 #include "slot.hpp"
+#include "strategies/behaviors/ai.hpp"
 
 using namespace std;
 using namespace Radakan;
 using namespace Radakan :: Items;
+using namespace Radakan :: Items :: Characters;
 
 //	static
 string Character ::
@@ -28,14 +30,15 @@ Reference <Set <Character> > Character ::
 Character ::
 	Character
 	(
+		string new_name,
 		float new_mass,
 		Ogre :: Vector3 new_size,
 		const Reference <Mesh_Data> new_mesh_data
 	) :
-	Object ("The name doesn't matter as this class is an abstact class."),
+	Object (new_name),
 	Container_Item <Item>
 	(
-		"The name doesn't matter as this class is an abstact class.",
+		new_name,
 		new_mass,
 		new_size,
 		new_mesh_data
@@ -82,7 +85,7 @@ Character ::
 	//	Container_Item <Item> :: add (feet);
 
 	//	Make sure no body parts are added anymore.
-	seal ();
+	Container <Items :: Item> :: seal ();
 
 	Reference <Character> this_character (this);
 
@@ -125,6 +128,12 @@ bool Character ::
 	return true;
 }
 
+bool Character ::
+	is_dead () const
+{
+	return ! has_active_state ();
+}
+
 Reference <Movable_Model> Character ::
 	get_movable_model ()
 	const
@@ -149,6 +158,29 @@ void Character ::
 	call_observers (temp);
 }
 
+void Character ::
+	call (const Reference <Messages :: Message <Character> > & message)
+{
+	assert (is_initialized ());
+
+	if (message == Messages :: Message <Character> :: update)
+	{
+		return;
+	}
+	else if (message == Messages :: Message <Character> :: terminate)
+	{
+		Engines :: Log :: show (me . get_name (true) + " died!");
+		
+		return;
+	}
+	else
+	{
+		//	The NPCs message are showed in the log, to let the player know.
+		Engines :: Log :: show
+			(message -> from . get_name (true) + ": " + message . get_name (true));
+	}
+}
+
 float Character ::
 	get_skill (const string & skill_name)
 	const
@@ -167,4 +199,24 @@ float Character ::
 	}
 
 	return skills -> look_up (skill_name) -> get_value ();
+}
+
+//	static
+Reference <Item> Character ::
+	create_npc
+	(
+		string new_name,
+		float new_mass,
+		Ogre :: Vector3 new_size,
+		const Reference <Mesh_Data> new_mesh_data
+	)
+{
+	Reference <Character> temp
+		(new Character (new_name, new_mass, new_size, new_mesh_data));
+
+	temp -> set_active_state
+		(Reference <Strategies :: Behaviors :: Behavior>
+			(new Strategies :: Behaviors :: AI (temp)));
+
+	return Reference <Item> (temp);
 }

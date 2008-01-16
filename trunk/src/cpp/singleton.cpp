@@ -78,17 +78,16 @@ template <class T> bool Singleton <T> ::
 #include "engines/conversation_engine.hpp"
 #include "engines/game.hpp"
 #include "engines/gui_engine.hpp"
-#include "items/player_character.hpp"
 //	#include "engines/plugin_manager.hpp"
 #include "engines/settings.hpp"
 #include "engines/tracker.hpp"
 #include "engines/input_engine.hpp"
-#include "strategies/menu_state.hpp"
-#include "strategies/play_state.hpp"
+#include "items/characters/player_character.hpp"
+#include "play_gui.hpp"
+#include "strategies/game_modes/menu.hpp"
+#include "strategies/game_modes/play.hpp"
 #include "world.hpp"
 
-template class Singleton <Strategies :: Menu_State>;
-template class Singleton <Strategies :: Play_State>;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Singleton <Engines :: Audio_Engine>;
 #endif
@@ -100,14 +99,13 @@ template class Singleton <Engines :: Input_Engine>;
 template class Singleton <Engines :: Log>;
 //	template class Singleton <Engines :: Plugin_Manager>;
 template class Singleton <Engines :: Settings>;
-
-
-template class Singleton <Items :: Player_Character>;
+template class Singleton <Play_GUI>;
+template class Singleton <Items :: Characters :: Player_Character>;
 //	template class Singleton <Plugins :: Battle_Plugin>;
 //	template class Singleton <Plugins :: Conversation_Plugin>;
+template class Singleton <Strategies :: Game_Modes :: Menu>;
+template class Singleton <Strategies :: Game_Modes :: Play>;
 template class Singleton <World>;
-
-
 #ifdef RADAKAN_DEBUG
 	template class Singleton <Engines :: Tracker>;
 #endif

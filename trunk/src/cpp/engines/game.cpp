@@ -13,8 +13,8 @@
 #include "engines/settings.hpp"
 #include "engines/tracker.hpp"
 #include "messages/message.hpp"
-#include "strategies/menu_state.hpp"
-#include "strategies/play_state.hpp"
+#include "strategies/game_modes/menu.hpp"
+#include "strategies/game_modes/play.hpp"
 #include "world.hpp"
 
 using namespace std;
@@ -124,9 +124,18 @@ Game ::
 	new World (scene_manager);
 
 	new Conversation_Engine ();
-	new Strategies :: Play_State (window, scene_manager);
-	set_active_state (Strategies :: Play_State :: get ());
-	new Strategies :: Menu_State ();
+	new Strategies :: Game_Modes :: Menu ();
+	new Strategies :: Game_Modes :: Play (window, scene_manager);
+	set_active_state (Strategies :: Game_Modes :: Play :: get ());
+
+	Log :: show
+		("Radakan is a single-player sandbox 3D RPG...");
+	Log :: show
+		("...in a dark dynamic fantasy world.");
+	Log :: show
+		("Check the player guide:");
+	Log :: show
+		("http://radakan.org/index.php?title=Category:Player_guide");
 
 	assert (is_initialized ());
 }
@@ -138,8 +147,8 @@ Game ::
 	assert (is_initialized ());
 
 	Conversation_Engine :: uninstantiate ();
-	Strategies :: Play_State :: uninstantiate ();
-	Strategies :: Menu_State :: uninstantiate ();
+	Strategies :: Game_Modes :: Menu :: uninstantiate ();
+	Strategies :: Game_Modes :: Play :: uninstantiate ();
 	World :: uninstantiate ();
 	Settings :: uninstantiate ();
 	GUI_Engine :: uninstantiate ();
@@ -161,7 +170,7 @@ bool Game ::
 	const
 {
 	assert (Singleton <Game> :: is_initialized ());
-	assert (Strategies :: Strategy_State_Machine <Game> :: is_initialized ());
+	//	assert (Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object> :: is_initialized ());	//	'assert' can't handle double templates.
 
 	return true;
 }
@@ -175,16 +184,16 @@ void Game ::
 	{
 		if (window -> isClosed ())
 		{
-			Strategies :: Strategy_State_Machine <Game> :: run
-				(Messages :: Message <Game> :: terminate);
+			Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object> :: run
+				(Messages :: Message <Object> :: terminate);
 		}
 		else
 		{
 			Input_Engine :: get () -> capture ();
 			Ogre :: WindowEventUtilities :: messagePump ();
 
-			Strategies :: Strategy_State_Machine <Game> :: run
-				(Messages :: Message <Game> :: update);
+			Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object> :: run
+				(Messages :: Message <Object> :: update);
 
 			bool check = root -> renderOneFrame ();
 			assert (check);

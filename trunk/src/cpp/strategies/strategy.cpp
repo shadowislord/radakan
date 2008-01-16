@@ -6,28 +6,28 @@ using namespace Radakan;
 using namespace Radakan :: Strategies;
 
 //	static
-template <class T> string Strategy <T> ::
+template <class T, class U> string Strategy <T, U> ::
 	get_class_name ()
 {
-	return "Strategy <" + T:: get_class_name () + ">";
+	return "Strategy <" + T :: get_class_name () + ", " + U :: get_class_name () + ">";
 }
 
 //  constructor
-template <class T> Strategy <T> ::
+template <class T, class U> Strategy <T, U> ::
 	Strategy () :
 	Object ("The name doesn't matter as this class is an abstact class.")
 {
-	Engines :: Log :: trace (this -> me, Strategy <T> :: get_class_name (), "");
+	Engines :: Log :: trace (this -> me, Strategy <T, U> :: get_class_name (), "");
 	assert (Strategy :: is_initialized ());
 
 	//	Do nothing.
 }
 
 //  destructor
-template <class T> Strategy <T> ::
+template <class T, class U> Strategy <T, U> ::
 	~Strategy ()
 {
-	Engines :: Log :: trace (this -> me, Strategy <T> :: get_class_name (), "~");
+	Engines :: Log :: trace (this -> me, Strategy <T, U> :: get_class_name (), "~");
 	assert (Strategy :: is_initialized ());
 
 	//	Do nothing.
@@ -36,7 +36,7 @@ template <class T> Strategy <T> ::
 }
 
 //	virtual
-template <class T> bool Strategy <T> ::
+template <class T, class U> bool Strategy <T, U> ::
 	is_initialized ()
 	const
 {
@@ -45,8 +45,11 @@ template <class T> bool Strategy <T> ::
 	return true;
 }
 
-#include "engines/game.hpp"
-#include "items/character.hpp"
+#include "items/characters/character.hpp"
+#include "strategies/actions/action.hpp"
+#include "strategies/behaviors/behavior.hpp"
+#include "strategies/game_modes/game_mode.hpp"
 
-template class Strategy <Engines :: Game>;
-template class Strategy <Items :: Character>;
+template class Strategy <Actions :: Action, Items :: Characters :: Character>;
+template class Strategy <Behaviors :: Behavior, Items :: Characters :: Character>;
+template class Strategy <Game_Modes :: Game_Mode, Object>;

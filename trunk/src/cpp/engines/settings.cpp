@@ -35,7 +35,7 @@ Settings ::
 	radakan_path = radakan_config -> getSetting ("radakan_path", "directories");
 	ogre_media_path = radakan_config -> getSetting ("ogre_media_path", "directories");
 
-	Ogre :: ConfigFile :: SettingsIterator keys_iterator = radakan_config -> getSettingsIterator ("keyboard");
+	Ogre :: ConfigFile :: SettingsIterator keys_iterator = radakan_config -> getSettingsIterator ("key bindings");
 	while (keys_iterator . hasMoreElements ())
 	{
 		Log :: log (me) << "mapping '" << keys_iterator . peekNextKey () << "' to '" << keys_iterator . peekNextValue () << "'..." << endl;

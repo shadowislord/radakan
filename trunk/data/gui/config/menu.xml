@@ -1,24 +1,24 @@
 <GUILayout>
 	<Window Type="DefaultWindow" Name="menu">
 		<Window Type="TaharezLook/Button" Name="menu-return">
-			<Property Name="UnifiedPosition" Value="{{0.45,0},{0.44,0}}" />
+			<Property Name="UnifiedPosition" Value="{{0.45,0},{0.34,0}}" />
 			<Property Name="UnifiedSize" Value="{{0.1,0},{0.04,0}}" />
 			<Property Name="Text" Value="Return" />
 		</Window>
 		<Window Type="TaharezLook/Button" Name="menu-statistics">
-			<Property Name="UnifiedPosition" Value="{{0.45,0},{0.48,0}}" />
+			<Property Name="UnifiedPosition" Value="{{0.45,0},{0.38,0}}" />
 			<Property Name="UnifiedSize" Value="{{0.1,0},{0.04,0}}" />
 			<Property Name="Text" Value="Statistics" />
 		</Window>
 		<Window Type="TaharezLook/Button" Name="menu-quit">
-			<Property Name="UnifiedPosition" Value="{{0.45,0},{0.52,0}}" />
+			<Property Name="UnifiedPosition" Value="{{0.45,0},{0.42,0}}" />
 			<Property Name="UnifiedSize" Value="{{0.1,0},{0.04,0}}" />
 			<Property Name="Text" Value="Quit" />
 		</Window>
 		<Window Type="TaharezLook/Listbox" Name="menu-log">
-			<Property Name="UnifiedPosition" Value="{{0.70,0},{0.70,0}}" />
-			<Property Name="UnifiedSize" Value="{{0.30,0},{0.26,0}}" />
-			<Property Name="Alpha" Value="0.65" />
+			<Property Name="UnifiedPosition" Value="{{0.00,0},{0.80,0}}" />
+			<Property Name="UnifiedSize" Value="{{1.00,0},{0.20,0}}" />
+			<Property Name="Alpha" Value="0.60" />
 		</Window>
 	</Window>
 </GUILayout>

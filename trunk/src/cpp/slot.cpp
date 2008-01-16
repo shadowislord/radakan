@@ -124,23 +124,26 @@ template <class T> Reference <T> Slot <T> ::
 
 #include "engines/game.hpp"
 #include "gui.hpp"
-#include "items/character.hpp"
+#include "items/characters/character.hpp"
 #include "items/container_item.hpp"
 #include "messages/message.hpp"
 #include "model.hpp"
 #include "skill.hpp"
-#include "strategies/strategy.hpp"
+#include "strategies/actions/action.hpp"
+#include "strategies/behaviors/behavior.hpp"
+#include "strategies/game_modes/game_mode.hpp"
 #include "tile.hpp"
 
 template class Slot <GUI>;
 template class Slot <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Slot <Items :: Container_Item <Items :: Item> >;
 template class Slot <Items :: Item>;
-template class Slot <Messages :: Message <Items :: Character> >;
+template class Slot <Messages :: Message <Items :: Characters :: Character> >;
 template class Slot <Model>;
-template class Slot <Observer <Messages :: Message <Items :: Character> > >;
+template class Slot <Observer <Messages :: Message <Items :: Characters :: Character> > >;
 template class Slot <Observer <Object> >;
 template class Slot <Skill>;
-template class Slot <Strategies :: Strategy <Engines :: Game> >;
-template class Slot <Strategies :: Strategy <Items :: Character> >;
+template class Slot <Strategies :: Actions :: Action>;
+template class Slot <Strategies :: Behaviors :: Behavior>;
+template class Slot <Strategies :: Game_Modes :: Game_Mode>;
 template class Slot <Tile>;

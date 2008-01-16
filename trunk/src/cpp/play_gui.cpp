@@ -1,7 +1,10 @@
+#include "engines/conversation_engine.hpp"
+#include "engines/input_engine.hpp"
 #include "engines/log.hpp"
+#include "items/characters/character.hpp"
 #include "map.hpp"
 #include "messages/conversation_message.hpp"
-#include "play_state_gui.hpp"
+#include "play_gui.hpp"
 
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 	#include <OgreCEGUIRenderer.h>
@@ -17,14 +20,14 @@ using namespace std;
 using namespace Radakan;
 
 //	static
-string Play_State_GUI ::
+string Play_GUI ::
 	get_class_name ()
 {
-	return "Play_State_GUI";
+	return "Play_GUI";
 }
 
-Play_State_GUI ::
-	Play_State_GUI
+Play_GUI ::
+ Play_GUI
 	(
 		string new_name
 		#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
@@ -41,7 +44,7 @@ Play_State_GUI ::
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 		,
 		options
-			(new Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > ("options"))
+			(new Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > ("options"))
 	#endif
 {
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
@@ -65,21 +68,27 @@ Play_State_GUI ::
 
 		chat_window -> setSortingEnabled (true);
 	#endif
+
+	Engines :: Conversation_Engine :: get () -> register_observer
+		(Reference <Observer <Messages :: Message <Items :: Characters :: Character> > >
+			(this));
+	Observable <Messages :: Message <Items :: Characters :: Character> >
+		:: register_observer (Engines :: Input_Engine :: get ());
 	
 	assert (is_initialized ());
 }
 
-Play_State_GUI ::
-	~Play_State_GUI ()
+Play_GUI ::
+	~Play_GUI ()
 {
-	Engines :: Log :: trace (me, Play_State_GUI :: get_class_name (), "~");
+	Engines :: Log :: trace (me, Play_GUI :: get_class_name (), "~");
 	assert (is_initialized ());
 
 	prepare_for_destruction ();
 }
 
 //	virtual
-bool Play_State_GUI ::
+bool Play_GUI ::
 	is_initialized ()
 	const
 {
@@ -93,13 +102,13 @@ bool Play_State_GUI ::
 }
 
 //	virtual
-void Play_State_GUI ::
-	call (const Reference <Messages :: Message <Items :: Character> > & message)
+void Play_GUI ::
+	call (const Reference <Messages :: Message <Items :: Characters :: Character> > & message)
 {
 	assert (is_initialized ());
 
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-		if (message == Messages :: Message <Items :: Character> :: terminate)
+		if (message == Messages :: Message <Items :: Characters :: Character> :: terminate)
 		{
 			//	If there are old options, remove them.
 			options -> clear ();
@@ -114,9 +123,9 @@ void Play_State_GUI ::
 			
 			options -> add
 			(
-				Reference <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> > >
+				Reference <Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> > >
 				(
-					new Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> >
+					new Pair <CEGUI :: ListboxItem *, Messages :: Message <Items :: Characters :: Character> >
 						(item, message)
 				)
 			);
@@ -132,10 +141,10 @@ void Play_State_GUI ::
 }
 
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	bool Play_State_GUI ::
+	bool Play_GUI ::
 		handle_event (const CEGUI :: EventArgs & arguments)
 	{
-		Engines :: Log :: trace (me, Play_State_GUI :: get_class_name (), "handle_event", "~arguments~");
+		Engines :: Log :: trace (me, Play_GUI :: get_class_name (), "handle_event", "~arguments~");
 		assert (is_initialized ());
 
 		// I had to declare this outside due to scoping.
@@ -164,14 +173,14 @@ void Play_State_GUI ::
 		{
 			if (chat_window -> getSelectedCount () != 0)
 			{
-				Reference <Messages :: Message <Items :: Character> > message
+				Reference <Messages :: Message <Items :: Characters :: Character> > message
 					= options -> look_up (chat_window -> getFirstSelectedItem ());
 				assert (message . points_to_object ());
 				assert (message -> is_initialized ());
 
 				chat_window -> clearAllSelections ();
 
-				Observable <Messages :: Message <Items :: Character> > :: call_observers (message);
+				Observable <Messages :: Message <Items :: Characters :: Character> > :: call_observers (message);
 			}
 
 			return true;

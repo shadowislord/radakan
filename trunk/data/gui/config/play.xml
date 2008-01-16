@@ -7,44 +7,49 @@
 			<Property Name="FrameEnabled" Value="false" />
 			<Property Name="Image" Value="set:Logo image:Logo" />
 		</Window>
-		<Window Type="TaharezLook/StaticText" Name="play-intro">
-			<Property Name="UnifiedPosition" Value="{{0,104},{0.00,0}}" />
-			<Property Name="UnifiedSize" Value="{{0.60,0},{0.05,0}}" />
-			<Property Name="Text" Value="Radakan is a single-player sandbox 3D RPG in a dark dynamic fantasy world." />
-		</Window>
 
 		<!--bottom left-->
+		<Window Type="TaharezLook/Listbox" Name="play-chat">
+			<Property Name="UnifiedPosition" Value="{{0.00,0},{0.80,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.50,0},{0.16,0}}" />
+			<Property Name="Alpha" Value="0.60" />
+		</Window>
 		<Window Type="TaharezLook/Button" Name="play-menu">
 			<Property Name="UnifiedPosition" Value="{{0.00,0},{0.96,0}}" />
 			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
 			<Property Name="Text" Value="Menu" />
 		</Window>
-		
-		<!--bottom right-->
-		<Window Type="TaharezLook/Listbox" Name="play-chat">
-			<Property Name="UnifiedPosition" Value="{{0.00,0},{0.70,0}}" />
-			<Property Name="UnifiedSize" Value="{{0.30,0},{0.26,0}}" />
-			<Property Name="Alpha" Value="0.60" />
-		</Window>
-		<Window Type="TaharezLook/Listbox" Name="play-log">
-			<Property Name="UnifiedPosition" Value="{{0.70,0},{0.70,0}}" />
-			<Property Name="UnifiedSize" Value="{{0.30,0},{0.26,0}}" />
-			<Property Name="Alpha" Value="0.60" />
-		</Window>
 		<Window Type="TaharezLook/Button" Name="play-reset">
-			<Property Name="UnifiedPosition" Value="{{0.70,0},{0.96,0}}" />
+			<Property Name="UnifiedPosition" Value="{{0.20,0},{0.96,0}}" />
 			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
 			<Property Name="Text" Value="Reset" />
+		</Window>
+		
+		<!--bottom right-->
+		<Window Type="TaharezLook/Listbox" Name="play-log">
+			<Property Name="UnifiedPosition" Value="{{0.50,0},{0.80,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.50,0},{0.16,0}}" />
+			<Property Name="Alpha" Value="0.60" />
+		</Window>
+		<Window Type="TaharezLook/Button" Name="play-jump">
+			<Property Name="UnifiedPosition" Value="{{0.60,0},{0.96,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
+			<Property Name="Text" Value="Jump" />
+		</Window>
+		<Window Type="TaharezLook/Button" Name="play-target">
+			<Property Name="UnifiedPosition" Value="{{0.70,0},{0.96,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
+			<Property Name="Text" Value="Select target" />
 		</Window>
 		<Window Type="TaharezLook/Button" Name="play-hit">
 			<Property Name="UnifiedPosition" Value="{{0.80,0},{0.96,0}}" />
 			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
 			<Property Name="Text" Value="Hit" />
 		</Window>
-		<Window Type="TaharezLook/Button" Name="play-move">
+		<Window Type="TaharezLook/Button" Name="play-give">
 			<Property Name="UnifiedPosition" Value="{{0.90,0},{0.96,0}}" />
 			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
-			<Property Name="Text" Value="Move" />
+			<Property Name="Text" Value="Give" />
 		</Window>
 	</Window>
 </GUILayout>

@@ -5,15 +5,21 @@
 radakan_path=C:/games/radakan
 ogre_media_path=C:/OgreSDK/media
 
-[keyboard]
-forward=w
-backward=s
-left=a
-right=d
+[key bindings]
+go forward=w
+go backward=s
+turn left=a
+turn right=d
+select target=t
+hit=h
+give=g
+jump=space
+reset=r
+menu=escape
 
 [gameplay]
-# these affect all movable characters
-turn_speed = 300
-movement_speed = 100
-
-
+# These affect all characters.
+movement_reaction = 500
+maximal_movement_speed = 4
+turn_reaction = 50
+maximal_turn_speed = 4

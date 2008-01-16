@@ -2,7 +2,7 @@
 #include "engines/input_engine.hpp"
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
-#include "play_state_gui.hpp"
+#include "play_gui.hpp"
 
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 	#include <CEGUIImagesetManager.h>
@@ -150,11 +150,6 @@ template <class T> Reference <T> GUI_Engine ::
 
 	result -> Observable <Object> :: register_observer (Input_Engine :: get ());
 
-	if (! has_active_state ())
-	{
-		set_active_state (result);
-	}
-
 	return result;
 }
 
@@ -172,4 +167,4 @@ void GUI_Engine ::
 }
 
 template Reference <GUI> GUI_Engine :: create_gui (string configuration_file);
-template Reference <Play_State_GUI> GUI_Engine :: create_gui (string configuration_file);
+template Reference <Play_GUI> GUI_Engine :: create_gui (string configuration_file);

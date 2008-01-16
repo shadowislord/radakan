@@ -1,11 +1,13 @@
 #include "engines/log.hpp"
-#include "items/player_character.hpp"
+#include "items/characters/player_character.hpp"
 #include "items/weapon.hpp"
 #include "messages/conversation_message.hpp"
+#include "strategies/behaviors/player.hpp"
 
 using namespace std;
 using namespace Radakan;
 using namespace Radakan :: Items;
+using namespace Radakan :: Items :: Characters;
 
 //	static
 string Player_Character ::
@@ -26,13 +28,16 @@ Player_Character ::
 	Object (new_name),
 	Character
 	(
+		"Doesn't matter.",
 		new_mass,
 		new_size,
 		new_mesh_data
-	),
-	dead (false)
+	)
 {
 	Engines :: Log :: trace (me, Player_Character :: get_class_name (), "", new_name, to_string (new_mass), to_string (new_size), new_mesh_data . get_name ());
+
+	set_active_state (Reference <Strategies :: Behaviors :: Behavior>
+		(new Strategies :: Behaviors :: Player (Reference <Character> (this))));
 
 	bool check = back -> add (Reference <Container_Item <Item> > (new Container_Item <Item> ("Backpack", 3, Ogre :: Vector3 (0.3, 0.5, 0.2), Reference <Mesh_Data> ())));
 	assert (check);
@@ -61,24 +66,6 @@ bool Player_Character ::
 	return Character :: is_initialized ();
 }
 
-//	virtual
-bool Player_Character ::
-	is_dead () const
-{
-	return dead;
-}
-
-//	virtual
-void Player_Character ::
-	die ()
-{
-	assert (is_initialized ());
-	dead = true;
-
-	Engines :: Log :: show ("Your character died!");
-}
-
-//	virtual
 void Player_Character ::
 	call (const Reference <Messages :: Message <Character> > & message)
 {
@@ -90,11 +77,13 @@ void Player_Character ::
 	}
 	else if (message == Messages :: Message <Character> :: terminate)
 	{
-		die ();
+		Engines :: Log :: show (me . get_name (true) + " died!");
+		
+		return;
 	}
 	else
 	{
-		//	I show the NPC's message in the log, to let the player know.
+		//	The NPCs message are showed in the log, to let the player know.
 		Engines :: Log :: show
 			(message -> from . get_name (true) + ": " + message . get_name (true));
 	}

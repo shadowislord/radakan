@@ -84,7 +84,7 @@ void Battle_Engine ::
 	
 	if (max_distance < distance)
 	{
-		Engines :: Log :: show ("Target is out of range: "
+		Engines :: Log :: show ("Your target is out of range: "
 			+ to_string (distance) + " > " + to_string (max_distance));
 		return;
 	}

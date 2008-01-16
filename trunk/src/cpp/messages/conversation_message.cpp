@@ -1,7 +1,7 @@
 #include <tinyxml.h>
 
 #include "engines/log.hpp"
-#include "items/character.hpp"
+#include "items/characters/character.hpp"
 #include "messages/conversation_message.hpp"
 
 using namespace std;
@@ -19,12 +19,12 @@ string Conversation_Message ::
 Conversation_Message ::
 	Conversation_Message
 	(
-		const TiXmlElement * new_option,
-		Reference <Items :: Character> new_from,
-		Reference <Items :: Character> new_to
+		Reference <Items :: Characters :: Character> new_from,
+		Reference <Items :: Characters :: Character> new_to,
+		const TiXmlElement * new_option
 	) :
 	Object (create_name (new_option)),
-	Message <Items :: Character> ("Doesn't matter.", new_from, new_to),
+	Message <Items :: Characters :: Character> ("Doesn't matter.", new_from, new_to),
 	option (new_option)
 {
 	Engines :: Log :: trace (me, Conversation_Message :: get_class_name ());
@@ -50,6 +50,15 @@ bool Conversation_Message ::
 	const
 {
 	return Object :: is_initialized ();
+}
+
+//	virtual
+Reference <Message <Items :: Characters :: Character> > Conversation_Message ::
+	copy ()
+	const
+{
+	return Reference <Message <Items :: Characters :: Character> >
+		(new Conversation_Message (from, to, option));
 }
 
 Reference <Conversation_Message> Conversation_Message ::
@@ -78,9 +87,9 @@ Reference <Conversation_Message> Conversation_Message ::
 	}
 
 	const TiXmlElement * reaction = temp -> ToElement ();
-	assert (reaction);
+	assert (reaction != NULL);
 
-	return Reference <Conversation_Message> (new Conversation_Message (reaction, to, from));
+	return Reference <Conversation_Message> (new Conversation_Message (to, from, reaction));
 }
 
 //	private & static
@@ -104,9 +113,9 @@ string Conversation_Message ::
 		}
 		result += "\"" + * option -> Attribute (string ("say")) + "\" ";
 	}
-	else if (option -> Attribute ("action") != NULL)
+	else if (option -> Attribute ("do") != NULL)
 	{
-		result += * option -> Attribute (string ("action"));
+		result += * option -> Attribute (string ("do"));
 	}
 
 	assert (! result . empty ());

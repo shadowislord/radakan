@@ -131,15 +131,19 @@ template <class T> Reference <T> Location <T> ::
 //	to avert linking errors:
 #include "engines/game.hpp"
 #include "gui.hpp"
-#include "items/character.hpp"
+#include "items/characters/character.hpp"
 #include "items/container_item.hpp"
 #include "model.hpp"
-#include "strategies/strategy.hpp"
+#include "strategies/actions/action.hpp"
+#include "strategies/behaviors/behavior.hpp"
+#include "strategies/game_modes/game_mode.hpp"
 
 template class Location <GUI>;
 template class Location <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Location <Items :: Container_Item <Items :: Item> >;
 template class Location <Items :: Item>;
 template class Location <Model>;
-template class Location <Strategies :: Strategy <Engines :: Game> >;
-template class Location <Strategies :: Strategy <Items :: Character> >;
+template class Location <Strategies :: Actions :: Action>;
+template class Location <Strategies :: Behaviors :: Behavior>;
+template class Location <Strategies :: Game_Modes :: Game_Mode>;
+
