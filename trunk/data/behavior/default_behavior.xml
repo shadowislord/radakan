@@ -13,41 +13,41 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 <!-- '&lt;' means 'less than' and '&gt;' means 'greater than'. -->
 
 <behavior>
-	<if action="none">
+	<if_npc action="none">
 		<dialog>
 			<options>
 				<option say="Hello." />
-				<if charisma="&gt;1.2">
+				<if_player charisma="&gt;1.2">
 					<option say="Greetings, my name is ${name}." effect="like" />
-				</if>
+				</if_player>
 				<option say="You there!" shout="true" effect="intimidation" />
 			</options>
 			<reactions>
-				<if like="&gt;0.5">
+				<if_npc likes="&gt;0.5">
 					<reaction say="What can I do for you?" />
-				</if>
-				<elseif like="&lt;0.2">
+				</if_npc>
+				<else_if_npc likes="&lt;0.2">
 					<reaction say="To the death!" shout="true" action="Fight" />
-				</elseif>
-				<elseif fear="&gt;0.8">
+				</else_if_npc>
+				<else_if_npc fears="&gt;0.8">
 					<reaction say="I'll do everything you say." />
-				</elseif>
+				</else_if_npc>
 				<else>
 					<reaction say="Hello." />
 				</else>
 			</reactions>
 		</dialog>
-	</if>
-	<if action="Conversate">
+	</if_npc>
+	<if_npc action="Conversate">
 		<dialog>
 			<options>
 				<option say="Where can I find the blacksmith, please?" />
 				<option say="Tell me where the blacksmth is. Now!" effect="intimidation" />
 			</options>
 			<reactions>
-				<if fear="&gt;0.6">
+				<if_npc fears="&gt;0.6">
 					<reaction say="At the market place, next to the temple." />
-				</if>
+				</if_npc>
 				<else>
 					<reaction say="You can find him at the market place, next to the temple." />
 				</else>
@@ -58,9 +58,9 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 				<option say="Give me that shiny dagger." effect="intimidation" />
 			</options>
 			<reactions>
-				<if fear="&gt;0.8">
+				<if_npc fears="&gt;0.8">
 					<reaction say="Of course..." />
-				</if>
+				</if_npc>
 				<else>
 					<reaction say="Help, a thief!" shout="true" />
 				</else>
@@ -71,15 +71,15 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 				<option say="Something wrong?" />
 			</options>
 			<reactions>
-				<if like="&gt;0.7">
+				<if_npc likes="&gt;0.7">
 					<reaction say="Yes, I just have been robbed..." know="robbers" />
-				</if>
+				</if_npc>
 				<else>
 					<reaction say="No, not at all." />
 				</else>
 			</reactions>
 		</dialog>
-		<if know="robbers">
+		<if_player knows="robbers">
 			<dialog>
 				<options>
 					<option say="Don't worry. I'll handle those robbers." />
@@ -88,7 +88,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 					<reaction say="Thank you!" />
 				</reactions>
 			</dialog>
-			<if have="dagger">
+			<if_player has="dagger">
 				<dialog>
 					<options>
 						<option say="Here, your dagger" effect="like" />
@@ -97,8 +97,8 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 						<reaction say="Thank you so much..." />
 					</reactions>
 				</dialog>
-			</if>
-		</if>
+			</if_player>
+		</if_player>
 		<dialog>
 			<options>
 				<option say="Bye." />
@@ -108,7 +108,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 				<reaction say="Bye." action="none" />
 			</reactions>
 		</dialog>
-	</if>
+	</if_npc>
 	<dialog>
 		<options>
 			<option do="Hit." effect="angry" />
