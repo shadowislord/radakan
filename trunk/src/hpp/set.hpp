@@ -17,7 +17,7 @@ namespace Radakan
 		public :
 			static string get_class_name ();
 
-			Set (string name = "", int new_maximal_size = Container <T> :: unlimited);
+			Set (string name = "", unsigned int new_maximal_size = Container <T> :: unlimited());
 			virtual ~Set ();
 			virtual bool is_initialized () const;
 			

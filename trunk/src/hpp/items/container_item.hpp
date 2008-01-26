@@ -25,7 +25,7 @@ namespace Radakan
 					float new_mass,
 					Ogre :: Vector3 new_size,
 					const Reference <Mesh_Data> new_mesh_data,
-					int new_maximal_size = Container <T> :: unlimited
+					int new_maximal_size = Container <T> :: unlimited()
 				);
 				virtual ~Container_Item ();
 				virtual bool is_initialized () const;

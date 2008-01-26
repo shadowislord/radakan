@@ -13,8 +13,10 @@ template <class T> string Container <T> ::
 	return "Container <" + T :: get_class_name () + ">";
 }
 
-template <class T> const unsigned int Container <T> ::
-	unlimited = numeric_limits<unsigned int>::max ();
+template <class T> unsigned int Container <T> :: unlimited()
+{
+	return numeric_limits<unsigned int>::max ();
+}
 
 //  constructor
 template <class T> Container <T> ::

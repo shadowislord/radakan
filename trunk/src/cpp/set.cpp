@@ -13,7 +13,7 @@ template <class T> string Set <T> ::
 
 //  constructor
 template <class T> Set <T> ::
-	Set (string name, int new_maximal_size) :
+	Set (string name, unsigned int new_maximal_size) :
 	Object (name),
 	Container <T> (new_maximal_size),
 	children (new set <Reference <T> >)

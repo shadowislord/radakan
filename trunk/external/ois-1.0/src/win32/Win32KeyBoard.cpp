@@ -58,7 +58,8 @@ void Win32Keyboard::_initialize()
 
 	HWND hwin = ((Win32InputManager*)mCreator)->getWindowHandle();
 
-	if(FAILED(mKeyboard->SetCooperativeLevel( hwin, coopSetting)))
+	int error;
+	if(FAILED(error = mKeyboard->SetCooperativeLevel( hwin, coopSetting)))
 		OIS_EXCEPT( E_General, "Win32Keyboard::Win32Keyboard >> coop error!");
 
 	if( mBuffered )

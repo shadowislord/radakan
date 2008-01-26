@@ -10,21 +10,25 @@ set(Fmod_FOUND "NO")
 
 if(WIN32)
     find_path(Fmod_INCLUDE_DIR "fmod.h"
+		"D:/Projects/Radakn/fmodapi375win/api/inc"
         "D:/ScatteredLands/fmodapi375win/api/inc"
         "D:/Projects/ScatteredLands/fmodapi375win/api/inc"
         "C:/Fmod/api/inc")
 
     find_path(Fmod_LIB_RELEASE "fmodvc.lib" 
+		"D:/Projects/Radakn/fmodapi375win/api/lib"
         "D:/ScatteredLands/fmodapi375win/api/lib"
         "D:/Projects/ScatteredLands/fmodapi375win/api/lib"
         "C:/Fmod/api/lib")
 
     find_path(Fmod_LIB_DEBUG "fmodvc.lib" 
+		"D:/Projects/Radakn/fmodapi375win/api/lib"
         "D:/ScatteredLands/fmodapi375win/api/lib"
         "D:/Projects/ScatteredLands/fmodapi375win/api/lib"
         "C:/Fmod/api/lib")
 
     find_path(Fmod_BIN_DIR "fmod.dll" 
+		"D:/Projects/Radakn/fmodapi375win/api"
         "D:/ScatteredLands/fmodapi375win/api"
         "D:/Projects/ScatteredLands/fmodapi375win/api"
         "C:/Fmod/apib")

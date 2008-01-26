@@ -174,8 +174,7 @@ void GUI ::
 					<< "Fallig back to unsafe type casts."
 					<< endl;
 
-				window_event_arguments
-					= . reset ((const CEGUI :: WindowEventArgs *) (& arguments));
+				window_event_arguments . reset ((const CEGUI :: WindowEventArgs *) (& arguments));
 			}
 		#endif
 

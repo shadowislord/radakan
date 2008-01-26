@@ -8,13 +8,16 @@ set(SRC_FILES   "src/OgreOdeObject.cpp"
                 "src/OgreOdeVehicle.cpp")
 
 set(INCLUDE_DIRS    ${Ogre_INCLUDE_DIR}
-		    "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include"
+					"${RADAKAN_SOURCE_DIR}/external/ode-0.9/include"
+					"${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include"
                     "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
                     )            
 
 include_directories( ${INCLUDE_DIRS} )                
 link_directories(   ${Ogre_LIB_RELEASE}
                     ${Ogre_LIB_DEBUG} 
+					"${OGRE_HOME}/Dependencies/Lib/Debug"
+					"${OGRE_HOME}/Dependencies/Lib/Release"
                     ${RADAKAN_BINARY_DIR}/ogreode_core
                     ${RADAKAN_BINARY_DIR}/prefab
                     ${RADAKAN_BINARY_DIR}/tinyxml)

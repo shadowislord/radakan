@@ -7,6 +7,7 @@ set(Boost_FOUND "NO")
 
 if(WIN32)
     find_path(Boost_INCLUDE_DIR "boost/regex.h"
+		"D:/Projects/Radakan/Boost/include/boost-1_33_1"
         "D:/ScatteredLands/Boost/include/boost-1_33_1"
         "D:/ScatteredLands/Boost/include/boost-1_33_1" 
         "D:/Projects/ScatteredLands/boost/include/boost-1_33_1" 

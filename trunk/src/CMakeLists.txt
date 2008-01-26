@@ -25,10 +25,11 @@ set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/src/hpp"
 					"${RADAKAN_SOURCE_DIR}/external/tinyxml-2.5.3"
 					"${RADAKAN_SOURCE_DIR}/external/ois-1.0/includes"
 					${Ogre_INCLUDE_DIR}
+					"${RADAKAN_SOURCE_DIR}/external/ode-0.9/include"
 					"${Ogre_SAMPLES_DIR}/include")
 
 if("${GUI_MODE}" STREQUAL "${CEGUI}")
-    set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CEGUI_INCLUDE_DIR} "${Ogre_INCLUDE_DIR}/cegui")
+    set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CEGUI_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR}/CEGUI "${OGRE_CEGUI_RENDERER_INCLUDE}")
 endif("${GUI_MODE}" STREQUAL "${CEGUI}")
 
 if("${SOUND_MODE}" STREQUAL "${Audiere}")
@@ -74,12 +75,14 @@ if(WIN32)
 		debug tinyxml
 		debug prefab
 		debug ogreode_core
+		debug ode
+		debug CEGUIBase_d
 		debug ois)
 else(WIN32)
 	set(DEBUG_LIBS debug OgreMain
 		debug tinyxml
 		debug prefab
-		debug ogreode_core
+		debug ogreode_core		
 		debug ois)
 endif(WIN32)
 
@@ -88,6 +91,8 @@ set(RELEASE_LIBS
 	optimized tinyxml
 	optimized prefab
 	optimized ogreode_core
+	optimized CEGUIBase
+	optimized ode
 	optimized ois)
 
 if(WIN32)

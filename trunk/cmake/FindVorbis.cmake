@@ -7,16 +7,19 @@
 
 if(WIN32)
     find_path(Vorbis_INCLUDE_DIR "vorbis/Vorbis.h"
+		"D:/Projects/Radakan/vorbis/include"
         "D:/ScatteredLands/vorbis/include"
         "D:/Projects/ScatteredLands/vorbis/include"
 	    "C:/vorbis/include")
 
     find_path(Vorbis_LIB_RELEASE "vorbis.lib"
+		"D:/Projects/Radakan/vorbis/lib/releaselib"
         "D:/ScatteredLands/vorbis/lib/releaselib"
         "D:/Projects/ScatteredLands/vorbis/lib/releaselib"
         "C:/vorbis/lib/releaselib")
 
     find_path(Vorbis_LIB_DEBUG "vorbis.lib"
+		"D:Projects/Radakan/vorbis/lib/debuglib"
         "D:/ScatteredLands/vorbis/lib/debuglib"
         "D:/Projects/ScatteredLands/vorbis/lib/debuglib"
         "C:/vorbis/lib/releaselib")

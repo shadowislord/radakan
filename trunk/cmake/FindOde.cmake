@@ -10,19 +10,19 @@ find_package(Ogre)
 if(WIN32)
     find_path(Ode_INCLUDE_DIR "ode/Ode.h"
         ${Ogre_INCLUDE_DIR}
-        "D:/ScatteredLands/ode_0_8/include"        
+        "D:/Projects/Radakan/ode_0_8/include"        
         "E:/Projects/ScatteredLands/ode-0.8/include"        
 	    "C:/ode/include")
 
     find_path(Ode_LIB_RELEASE "ode.lib" 
         ${Ogre_LIB_RELEASE}
-        "D:/ScatteredLands/ode_0_8/lib/releaselib" 
+        "D:/Projects/Radakan/ode_0_8/lib/releaselib" 
         "E:/Projects/ScatteredLands/ode-0.8/lib/releaselib"        
         "C:/ode/lib/releaselib")
 
     find_path(Ode_LIB_DEBUG "ode.lib" 
         ${Ogre_LIB_DEBUG}
-        "D:/ScatteredLands/ode_0_8/lib/debuglib" 
+        "D:/Projects/Radakan/ode_0_8/lib/debuglib" 
         "E:/Projects/ScatteredLands/ode-0.8/lib/debuglib"        
         "C:/ode/lib/releaselib")
 

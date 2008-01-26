@@ -33,7 +33,7 @@ namespace Radakan
 			virtual Reference <T> get_another_child () const;
 			
 		protected :
-			Location (unsigned int new_maximal_size = Container <T> :: unlimited);
+			Location (unsigned int new_maximal_size = Container <T> :: unlimited());
 
 		private :
 			///	This can either be a Slot or a Set.

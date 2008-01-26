@@ -7,16 +7,19 @@
 
 if(WIN32)
     find_path(Ogg_INCLUDE_DIR "ogg/Ogg.h"
+		"D:/Projects/Radakan/ogg/include"
         "D:/ScatteredLands/ogg/include"
         "D:/Projects/ScatteredLands/ogg/include"
 	    "C:/ogg/include")
 
     find_path(Ogg_LIB_RELEASE "ogg.lib"
+		"D:/Projects/Radakan/ogg/lib/releaselib"
         "D:/ScatteredLands/ogg/lib/releaselib"
         "D:/Projects/ScatteredLands/ogg/lib/releaselib"
         "C:/ogg/lib/releaselib")
 
     find_path(Ogg_LIB_DEBUG "ogg.lib"
+		"D:/Projects/Radakan/ogg/lib/debuglib"
         "D:/ScatteredLands/ogg/lib/debuglib"
         "D:/Projects/ScatteredLands/ogg/lib/debuglib"
         "C:/ogg/lib/releaselib")

@@ -13,13 +13,13 @@ set(OGRE_HOME "$ENV{OGRE_HOME}")
 if(WIN32)
     if(MSVC80)
         find_path(Ogre_INCLUDE_DIR "Ogre.h"
-            "${OGRE_HOME}/include")
+            "${OGRE_HOME}/OgreMain/include")
 
-        find_path(Ogre_SAMPLES_DIR "include/Bezier.h"
+        find_path(Ogre_SAMPLES_DIR "BezierPatch/include/Bezier.h"
             "${OGRE_HOME}/samples")
 
-        find_path(Ogre_BIN_DIR "release/ogremain.dll"
-            "${OGRE_HOME}/bin")
+        find_path(Ogre_BIN_DIR "ogremain.dll"
+            "${OGRE_HOME}/lib")
 
         find_path(Ogre_LIB_RELEASE "OgreMain.lib" 
 	        "${OGRE_HOME}/lib")
@@ -28,13 +28,13 @@ if(WIN32)
             "${OGRE_HOME}/lib")
     else(MSVC80)
         find_path(Ogre_INCLUDE_DIR "Ogre.h"
-            "${OGRE_HOME}/include")
+            "${OGRE_HOME}/OgreMain/include")
 
-        find_path(Ogre_SAMPLES_DIR "include/Bezier.h"
+        find_path(Ogre_SAMPLES_DIR "BezierPatch/include/Bezier.h"
             "${OGRE_HOME}/samples")
 
-        find_path(Ogre_BIN_DIR "release/ogremain.dll"
-            "${OGRE_HOME}/bin")
+        find_path(Ogre_BIN_DIR "ogremain.dll"
+            "${OGRE_HOME}/lib")
 
         find_path(Ogre_LIB_RELEASE "OgreMain.lib" 
 	        "${OGRE_HOME}/lib")
