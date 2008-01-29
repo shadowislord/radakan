@@ -68,7 +68,7 @@ Tile ::
 		float z;
 		const float scale = 0.06;
 		string tree_name;
-		
+
 		for (int i = 0; i < trees_one_a_line; i ++)
 		{
 			for (int j = 0; j < trees_one_a_line; j ++)
@@ -161,7 +161,7 @@ bool Tile ::
 	}
 
 	model -> set_space (space);
-	
+
 	return true;
 }
 
@@ -193,8 +193,11 @@ void Tile ::
 	assert (is_initialized ());
 
 	string item_name;
-	element . QueryStringAttribute ("name", & item_name);
-	
+	if (element . Attribute ("name") != NULL)
+	{
+	    item_name = element . Attribute ("name");
+	}
+
 	assert (element . Attribute ("item") != NULL);
 	TiXmlDocument item_prototype
 	(
@@ -219,7 +222,7 @@ void Tile ::
 	{
 		model . reset_pointee (new Movable_Model (item, model_position));
 	}
-	
+
 	bool check = add (model);
 	assert (check);
 
@@ -231,12 +234,12 @@ Reference <Items :: Item> Tile ::
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "load_item", document . Value ());
 	assert (is_initialized ());
-	
+
 	bool check = document . LoadFile ();
 	assert (check);
 	assert (! document . Error ());
 	TiXmlElement * item_element = document . RootElement ();
-	
+
 	Engines :: Log :: log (me) << "item_element: " << item_element -> Value () << endl;
 
 	string type = item_element -> Attribute ("type");
@@ -258,12 +261,17 @@ Reference <Items :: Item> Tile ::
 
 	Reference <Mesh_Data> mesh_data (new Mesh_Data (mesh_file_name));
 
-	mesh_element -> QueryStringAttribute ("material", & mesh_data -> material_file_name);
 	mesh_element -> QueryFloatAttribute ("scale", & mesh_data -> scale);
+	if (mesh_element -> Attribute ("material") != NULL)
+	{
+	    mesh_data -> material_file_name = mesh_element -> Attribute ("material");
+	}
+
 	if (mesh_element -> Attribute ("solid") != NULL)
 	{
 		mesh_data -> solid = mesh_element -> Attribute ("solid") == string ("true");
 	}
+
 	if (mesh_element -> Attribute ("visible") != NULL)
 	{
 		mesh_data -> visible = mesh_element -> Attribute ("visible") == string ("true");
@@ -281,7 +289,7 @@ Reference <Items :: Item> Tile ::
 	if (type == string ("static_item") || type == string ("plane"))
 	{
 		assert (item_name . empty ());
-		
+
 		item . reset_pointee (new Items :: Static_Item (mass, size, mesh_data));
 	}
 	else
@@ -289,7 +297,7 @@ Reference <Items :: Item> Tile ::
 		if ((type == string ("npc")) || (type == string ("player character")))
 		{
 			assert (! item_name . empty ());
-		
+
 			item = Reference <Items :: Item>
 				(new Items :: Character (item_name, mass, size, mesh_data, type));
 		}
