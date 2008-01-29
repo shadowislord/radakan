@@ -12,6 +12,14 @@ namespace Radakan
 		class Character;
 	}
 	
+	namespace Messages
+	{
+		namespace Communications
+		{
+			class Communication;
+		}
+	}
+	
 	namespace Strategies
 	{
 		namespace Behaviors
@@ -22,7 +30,7 @@ namespace Radakan
 		namespace Actions
 		{
 			class Action :
-				public Strategy <Action, Items :: Character>
+				public Strategy <Action, Messages :: Communications :: Communication>
 			{
 				public :
 					static string get_class_name ();
@@ -36,8 +44,8 @@ namespace Radakan
 					virtual bool is_initialized () const;
 					
 					virtual Reference <Action> transit
-						(const Reference <Messages :: Message <Items :: Character> > & message) = 0;
-					//	'get_action_name ()' returns the name of a subclass.
+						(Reference <Messages :: Communications :: Communication> message) = 0;
+					///	'get_action_name ()' returns the name of a subclass.
 					virtual string get_action_name () = 0;
 
 					Reference <Items :: Character> character;

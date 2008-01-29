@@ -1,8 +1,7 @@
-#ifndef RADAKAN_CHARACTERS_CHARACTER_HPP
-#define RADAKAN_CHARACTERS_CHARACTER_HPP
+#ifndef RADAKAN_ITEMS_CHARACTER_HPP
+#define RADAKAN_ITEMS_CHARACTER_HPP
 
 #include "items/container_item.hpp"
-#include "observable.hpp"
 #include "observer.hpp"
 #include "strategy_state_machine.hpp"
 #include "strategies/behaviors/behavior.hpp"
@@ -16,7 +15,12 @@ namespace Radakan
 
 	namespace Messages
 	{
-		template <class T> class Message;
+		namespace Communications
+		{
+			class Communication;
+		}
+		
+		class Nothing;
 	}
 	
 	class Movable_Model;
@@ -27,15 +31,12 @@ namespace Radakan
 
 		///	All characters observe each other.
 		class Character :
-			public Observable <Messages :: Message <Character> >,
-			public Observer <Messages :: Message <Character> >,
 			public Container_Item <Item>,
+			public Observer <Messages :: Nothing>,
 			public Strategy_State_Machine
-				<Strategies :: Behaviors :: Behavior, Character>
+				<Strategies :: Behaviors :: Behavior,
+					Messages :: Nothing>
 		{
-			private :
-				static Reference <Set <Character> > characters;
-
 			public :
 				static string get_class_name ();
 
@@ -58,15 +59,15 @@ namespace Radakan
 				virtual ~Character ();
 				virtual bool is_initialized () const;
 
-				void drop (Reference <Strategies :: Behaviors :: Behavior> behavior);
+				///	'drop (...)' overrides the default.
+				virtual void drop
+					(Reference <Strategies :: Behaviors :: Behavior> behavior);
 
-				virtual void call (const Reference <Messages :: Message <Character> > & message);
+				virtual void call (Reference <Messages :: Nothing> message);
 
 				bool is_alive () const;
 
 				Reference <Movable_Model> get_movable_model () const;
-
-				void hit (string fight_mode, Reference <Character> target);
 
 				float get_skill (const string & skill_name) const;
 
@@ -83,9 +84,6 @@ namespace Radakan
 
 				mutable Reference <Map <string, Skill> > skills;
 
-				Pointer <Items :: Character> character_target;
-				Pointer <Items :: Item> item_target;
-
 			private :
 				template <class T> void behave ();
 
@@ -94,4 +92,4 @@ namespace Radakan
 	}
 }
 
-#endif	//	RADAKAN_CHARACTERS_CHARACTER_HPP
+#endif	// RADAKAN_ITEMS_CHARACTER_HPP

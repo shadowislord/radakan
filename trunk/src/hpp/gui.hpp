@@ -1,9 +1,7 @@
 #ifndef RADAKAN_GUI_HPP
 #define RADAKAN_GUI_HPP
 
-#include "observable.hpp"
 #include "observer.hpp"
-#include "resident.hpp"
 
 using namespace std;
 
@@ -19,22 +17,15 @@ using namespace std;
 
 namespace Radakan
 {
-	namespace Engines
-	{
-		class Conversation_Engine;
-		class Log;
-	}
-
 	namespace Messages
 	{
-		template <class T> class Message;
+		class List_Update;
 	}
 
 	///	I'm a graphical user interface.
 	class GUI :
-		public Resident <GUI>,
-		public Observable <Object>,	//	I pass messages to the input engine.
-		public Observer <Object>	//	The log pass messages to me.
+		//	I display text messages in lists.
+		public Observer <Messages :: List_Update>
 	{
 		public :
 			GUI
@@ -54,7 +45,7 @@ namespace Radakan
 				boost :: shared_ptr <CEGUI :: Window> root_window;
 			#endif
 
-			virtual void call (const Reference <Object> & message);
+			virtual void call (Reference <Messages :: List_Update> message);
 
 		protected :
 			#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
@@ -66,10 +57,8 @@ namespace Radakan
 				void subscribe (CEGUI :: Window & window);
 
 				boost :: shared_ptr <CEGUI :: SubscriberSlot> subscriber;
-
-				boost :: shared_ptr <CEGUI :: Listbox> log_window;
+				boost :: scoped_ptr <map <string, boost :: shared_ptr <CEGUI :: Listbox> > > lists;
 			#endif
-
 	};
 }
 

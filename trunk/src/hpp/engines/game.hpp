@@ -8,6 +8,11 @@ using namespace std;
 
 namespace Radakan
 {
+	namespace Messages
+	{
+		class Nothing;
+	}
+	
 	namespace Strategies
 	{
 		namespace Game_Modes
@@ -23,7 +28,8 @@ namespace Radakan
 		class Game :
 			public virtual Object,
 			protected Singleton <Game>,
-			private Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object>
+			public Strategy_State_Machine
+				<Strategies :: Game_Modes :: Game_Mode, Messages :: Nothing>
 		{
 			public :
 				static string get_class_name ();

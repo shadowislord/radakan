@@ -41,11 +41,6 @@
 			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
 			<Property Name="Text" Value="Select target" />
 		</Window>
-		<Window Type="TaharezLook/Button" Name="play-hit">
-			<Property Name="UnifiedPosition" Value="{{0.80,0},{0.96,0}}" />
-			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />
-			<Property Name="Text" Value="Hit" />
-		</Window>
 		<Window Type="TaharezLook/Button" Name="play-give">
 			<Property Name="UnifiedPosition" Value="{{0.90,0},{0.96,0}}" />
 			<Property Name="UnifiedSize" Value="{{0.10,0},{0.04,0}}" />

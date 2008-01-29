@@ -92,7 +92,7 @@ void Movable_Model ::
 void Movable_Model ::
 	turn (float relative_destination_turn_speed, Ogre :: Vector3 ax)
 {
-	//	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "turn", to_string (relative_target_turn_speed), to_string (ax));
+	//	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "turn", to_string (relative_destination_turn_speed), to_string (ax));
 	assert (Model :: is_initialized ());
 	assert (Ogre :: Math :: Abs (relative_destination_turn_speed) <= 1);
 

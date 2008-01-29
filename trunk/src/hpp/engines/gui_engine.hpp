@@ -26,8 +26,8 @@ namespace Radakan
 	{
 		///	GUI_Engine manages the GUIs.
 		class GUI_Engine :
-			public Singleton <GUI_Engine>,
-			public State_Machine <GUI>
+			public State_Machine <GUI>,
+			public Singleton <GUI_Engine>
 		{
 			public :
 				GUI_Engine ();
@@ -43,14 +43,14 @@ namespace Radakan
 				
 				void render () const;
 
-				template <class T> Reference <T> create_gui (string configuration_file);
+				Reference <GUI> create_gui (string configuration_file);
 
 			private :
 				//	TODO solve the problems that occur when renderer is a plain object
 				//	instead of a pointer.
-				boost :: shared_ptr <CEGUI :: OgreCEGUIRenderer> renderer;
+				boost :: scoped_ptr <CEGUI :: OgreCEGUIRenderer> renderer;
 				
-				boost :: shared_ptr <CEGUI :: System> system;
+				boost :: scoped_ptr <CEGUI :: System> system;
 		};
 	}
 }

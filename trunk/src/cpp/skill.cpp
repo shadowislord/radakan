@@ -22,7 +22,7 @@ Skill ::
 	Object (new_name),
 	experience (initial_experience, 0, Mathematics :: infinite)
 {
-	Engines :: Log :: trace (me, Skill :: get_class_name (), "", new_name, "~initial_experience~");
+	Engines :: Log :: trace (me, Skill :: get_class_name (), "", new_name, to_string (initial_experience));
 
 	assert (Skill :: is_initialized ());
 }

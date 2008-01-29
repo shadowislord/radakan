@@ -30,8 +30,8 @@
 		{
 			///	Audio_Engine is the music and sound engine.
 			class Audio_Engine :
-				public Singleton <Audio_Engine>,
-				private Set <Sound_Sample>
+				private Set <Sound_Sample>,
+				public Singleton <Audio_Engine>
 			{
 				public :
 					static string get_class_name ();

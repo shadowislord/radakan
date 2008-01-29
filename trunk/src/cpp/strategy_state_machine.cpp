@@ -49,7 +49,7 @@ template <class T, class U> bool Strategy_State_Machine <T, U> ::
 }
 
 template <class T, class U> void Strategy_State_Machine <T, U> ::
-	run (const Reference <Messages :: Message <U> > & message)
+	run (Reference <U> message)
 {
 	assert (is_initialized ());
 
@@ -69,12 +69,15 @@ template <class T, class U> void Strategy_State_Machine <T, U> ::
 	}
 }
 
-#include "items/character.hpp"
+#include "messages/communications/communication.hpp"
+#include "messages/nothing.hpp"
 #include "strategies/actions/action.hpp"
 #include "strategies/behaviors/behavior.hpp"
 #include "strategies/game_modes/game_mode.hpp"
 
-template class Strategy_State_Machine <Strategies :: Actions :: Action, Items :: Character>;
 template class Strategy_State_Machine
-	<Strategies :: Behaviors :: Behavior, Items :: Character>;
-template class Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object>;
+	<Strategies :: Actions :: Action, Messages :: Communications :: Communication>;
+template class Strategy_State_Machine
+	<Strategies :: Behaviors :: Behavior, Messages :: Nothing>;
+template class Strategy_State_Machine
+	<Strategies :: Game_Modes :: Game_Mode, Messages :: Nothing>;

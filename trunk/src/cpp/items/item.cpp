@@ -10,7 +10,7 @@ using namespace Radakan :: Items;
 string Item ::
 	get_class_name ()
 {
-	return "Item";
+	return "Items :: Item";
 }
 
 //  constructor

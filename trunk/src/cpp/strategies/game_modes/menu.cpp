@@ -1,9 +1,9 @@
 #include "engines/gui_engine.hpp"
-#include "engines/input_engine.hpp"
+#include "engines/input/command_reader.hpp"
 #include "engines/log.hpp"
 #include "gui.hpp"
 #include "items/character.hpp"
-#include "messages/message.hpp"
+#include "messages/nothing.hpp"
 #include "strategies/game_modes/menu.hpp"
 #include "strategies/game_modes/play.hpp"
 #include "world.hpp"
@@ -17,7 +17,7 @@ using namespace Radakan :: Strategies :: Game_Modes;
 string Menu ::
 	get_class_name ()
 {
-	return "Menu";
+	return "Strategies :: Game_Modes :: Menu";
 }
 
 //  constructor
@@ -26,8 +26,6 @@ Menu ::
 	Object ("menu", true)	//	Here 'true' means 'prevent automatic destruction'.
 {
 	Engines :: Log :: trace (me, Menu :: get_class_name ());
-
-	gui = Engines :: GUI_Engine :: get () -> create_gui <GUI> ("menu.xml");
 
 	assert (is_initialized ());
 }
@@ -54,21 +52,19 @@ bool Menu ::
 
 //	virtual
 Reference <Game_Mode> Menu ::
-	transit (const Reference <Messages :: Message <Object> > & message)
+	transit (Reference <Messages :: Nothing> message)
 {
 	assert (is_initialized ());
+	assert (! message . points_to_object ());
 
 	//	quit
-	if ((message == Messages :: Message <Object> :: terminate)
-		|| Engines :: Input_Engine :: get () -> has_command ("quit"))
+	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "quit"))
 	{
 		return Reference <Game_Mode> ();
 	}
 
-	Engines :: GUI_Engine :: get () -> set_active_gui (gui);
-
 	//	un-pause
-	if (Engines :: Input_Engine :: get () -> has_command ("return"))
+	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "return"))
 	{
 		if (Items :: Character :: get_player_character () -> is_alive ())
 		{
@@ -82,11 +78,7 @@ Reference <Game_Mode> Menu ::
 		}
 	}
 
-	//	FPS
-	if (Engines :: Input_Engine :: get () -> has_command ("statistics"))
-	{
-		Engines :: Log :: show (World :: get () -> get_FPS ());
-	}
+	Engines :: GUI_Engine :: get () -> set_active_gui (gui);
 
 	return Reference <Game_Mode> (this);
 }

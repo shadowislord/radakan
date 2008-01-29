@@ -17,16 +17,9 @@ template <class T> string Observable <T> ::
 
 //  constructor
 template <class T> Observable <T> ::
-	Observable (int maximum_number_of_observers) :
+	Observable () :
 	Object ("The name doesn't matter as this class is an abstact class."),
-	//	Set a custom context to evade problems with the dependencies.
-	observers
-	(
-		maximum_number_of_observers == 1
-		? (Reference <Container <Observer <T> > > (new Slot <Observer <T> > (name + "'s observers")))
-		: (Reference <Container <Observer <T> > > (new Set  <Observer <T> >
-			(name + "'s observers", maximum_number_of_observers)))
-	)
+	observers (new Set  <Observer <T> > (me . get_name (true) + "'s observers"))
 {
 	Engines :: Log :: trace (me, Observable :: get_class_name (), "");
 	
@@ -79,17 +72,15 @@ template <class T> void Observable <T> ::
 	assert (check);
 }
 
-template <class T> void Observable <T> ::
-	drop_observer (Reference <Observer <T> > observer)
-{
-	assert (is_initialized ());
-
-	observers -> drop (observer);
-}
-
 //	to avert linking errors:
-#include "items/character.hpp"
-#include "messages/message.hpp"
+#include "messages/button_event.hpp"
+#include "messages/communications/communication.hpp"
+#include "messages/list_event.hpp"
+#include "messages/list_update.hpp"
+#include "messages/nothing.hpp"
 
-template class Observable <Messages :: Message <Items ::Character> >;
-template class Observable <Object>;
+template class Observable <Messages :: Button_Event>;
+template class Observable <Messages :: Communications :: Communication>;
+template class Observable <Messages :: List_Event>;
+template class Observable <Messages :: List_Update>;
+template class Observable <Messages :: Nothing>;

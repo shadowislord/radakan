@@ -1,5 +1,5 @@
-#ifndef RADAKAN_STRATEGIES_ACTIONS_FIGHT_HPP
-#define RADAKAN_STRATEGIES_ACTIONS_FIGHT_HPP
+#ifndef RADAKAN_STRATEGIES_ACTIONS_FIGHTING_HPP
+#define RADAKAN_STRATEGIES_ACTIONS_FIGHTING_HPP
 
 #include "strategies/actions/action.hpp"
 
@@ -12,23 +12,23 @@ namespace Radakan
 		namespace Actions
 		{
 		
-			///	Fight is the action strategy for fighting NPCs.
-			class Fight :
+			///	Fighting is the action strategy for fighting NPCs.
+			class Fighting :
 				public Action
 			{
 				public :
 					static string get_class_name ();
 					
-					Fight
+					Fighting
 					(
 						Reference <Items :: Character> new_character,
 						Reference <Behaviors :: AI> new_ai
 					);
-					virtual ~Fight ();
+					virtual ~Fighting ();
 					virtual bool is_initialized () const;
 					
 					virtual Reference <Action> transit
-						(const Reference <Messages :: Message <Items :: Character> > & message);
+						(Reference <Messages :: Communications :: Communication> message);
 
 					virtual string get_action_name ();
 
@@ -39,4 +39,4 @@ namespace Radakan
 	}
 }
 
-#endif	//	RADAKAN_STRATEGIES_ACTIONS_FIGHT_HPP
+#endif	//	RADAKAN_STRATEGIES_ACTIONS_FIGHTING_HPP

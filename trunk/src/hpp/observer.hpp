@@ -7,6 +7,11 @@ using namespace std;
 
 namespace Radakan
 {
+	namespace Messages
+	{
+		class Message;
+	}
+	
 	///	Observer is an abstract base class for the observer pattern.
 	template <class T> class Observer :
 		public virtual Object
@@ -18,7 +23,7 @@ namespace Radakan
 			
 			static string get_class_name ();
 			
-			virtual void call (const Reference <T> & message) = 0;
+			virtual void call (Reference <T> message) = 0;
 			
 		protected :
 			Observer ();

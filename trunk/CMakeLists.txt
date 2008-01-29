@@ -15,13 +15,11 @@ message (STATUS "Sound mode: ${SOUND_MODE}")
 
 if("${SOUND_MODE}" STREQUAL "${Audiere}")
     subdirs(    "external/ois-1.0"
-				"external/ode-0.9"
                 "external/ogreaddons/ogreode"
                 "external/audiere"				
                 "src" )
 else("${SOUND_MODE}" STREQUAL "${Audiere}")
     subdirs(    "external/ois-1.0"
-				"external/ode-0.9"
                 "external/ogreaddons/ogreode"
                 "src" )
 endif("${SOUND_MODE}" STREQUAL "${Audiere}")

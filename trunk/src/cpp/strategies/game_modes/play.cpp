@@ -1,16 +1,16 @@
-#include <OgreRoot.h>
-#include <OgreSceneManager.h>
-
 #include "engines/gui_engine.hpp"
-#include "engines/input_engine.hpp"
+#include "engines/input/command_reader.hpp"
+#include "engines/mediator.hpp"
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
 #include "items/character.hpp"
-#include "messages/message.hpp"
-#include "play_gui.hpp"
+#include "messages/nothing.hpp"
 #include "strategies/game_modes/menu.hpp"
 #include "strategies/game_modes/play.hpp"
 #include "world.hpp"
+
+#include <OgreRoot.h>
+#include <OgreSceneManager.h>
 
 using namespace std;
 using namespace Radakan;
@@ -30,8 +30,6 @@ Play ::
 	Object ("play state", true)	//	Here 'true' means 'prevent automatic destruction'.
 {
 	Engines :: Log :: trace (me, Play :: get_class_name ());
-
-	gui = Engines :: GUI_Engine :: get () -> create_gui <Play_GUI> ("play.xml");
 
 	assert (Play :: is_initialized ());
 }
@@ -62,33 +60,30 @@ bool Play ::
 
 //	virtual
 Reference <Game_Mode> Play ::
-	transit (const Reference <Messages :: Message <Object> > & message)
+	transit (Reference <Messages :: Nothing>)
 {
 	assert (is_initialized ());
 	assert (Items :: Character :: get_player_character () -> is_alive ());
 
 	//	quit
-	if (message == Messages :: Message <Object> :: terminate)
+	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "quit"))
 	{
 		return Reference <Game_Mode> ();
 	}
 
-	assert (message == Messages :: Message <Object> :: update);
-
-	const Reference <Messages :: Message <Items :: Character> >
-		conversation_option
-			= Engines :: Input_Engine :: get () -> get_conversation_option ();
-	if (conversation_option . points_to_object ())
+	//	menu
+	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "menu"))
 	{
-		assert (conversation_option -> from == Items :: Character :: get_player_character ());
-		Items :: Character :: get_player_character () -> call_observers (conversation_option);
+		return Menu :: get ();
 	}
+	
+	Engines :: Mediator :: get () -> call_observers <Messages :: Nothing>
+		(Messages :: Nothing :: get ());
 
 	World :: get () -> update ();
 
-	//	menu
-	if (Engines :: Input_Engine :: get () -> has_command ("menu")
-		|| ! Items :: Character :: get_player_character () -> is_alive ())
+	//	If the player character is dead, go to the menu.
+	if (! Items :: Character :: get_player_character () -> is_alive ())
 	{
 		return Menu :: get ();
 	}

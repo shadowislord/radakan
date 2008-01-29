@@ -88,7 +88,7 @@ template <class T> void State_Machine <T> ::
 	//	Engines :: Log :: trace (me, State_Machine <T> :: get_class_name (), "set_active_state", new_state, bool_to_string (old_state_stay));
 	assert (State_Machine <T> :: is_initialized ());
 
-	if (! contains (new_state))	//	This also works for NULL.
+	if (! contains (new_state))	//	This also works when 'new_state' is empty.
 	{
 		if (has_active_state ())
 		{
@@ -112,15 +112,14 @@ template <class T> const boost :: shared_ptr <vector <string> > State_Machine <T
 }
 
 //	to avert linking errors:
-#include "engines/game.hpp"
 #include "gui.hpp"
 #include "strategies/actions/action.hpp"
 #include "strategies/behaviors/behavior.hpp"
 #include "strategies/game_modes/game_mode.hpp"
 #include "tile.hpp"
 
+template class State_Machine <GUI>;
 template class State_Machine <Strategies :: Actions :: Action>;
 template class State_Machine <Strategies :: Behaviors :: Behavior>;
 template class State_Machine <Strategies :: Game_Modes :: Game_Mode>;
-template class State_Machine <GUI>;
 template class State_Machine <Tile>;

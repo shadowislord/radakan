@@ -24,7 +24,7 @@ namespace Radakan
 	}
 	
 	///	A Tile is a square piece (64 m x 64 m) of the world.
-	///	Tile data is stored under trunk/data/world/tile/.
+	///	Tile data is stored under 'trunk/data/world/tile/'.
 	class Tile :
 		public Location <Model>
 	{
@@ -33,7 +33,11 @@ namespace Radakan
 			
 			static const int side_length;
 
-			Tile (pair <int, int> new_coordinates);
+			Tile
+			(
+				pair <int, int> new_coordinates,
+				boost :: shared_ptr <OgreOde :: SimpleSpace> new_space
+			);
 			virtual ~Tile ();
 			virtual bool is_initialized () const;
 			

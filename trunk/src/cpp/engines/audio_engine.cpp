@@ -29,7 +29,7 @@
 	string Audio_Engine ::
 		get_class_name ()
 	{
-		return "Audio_Engine";
+		return "Engines :: Audio_Engine";
 	}
 
 	Audio_Engine ::

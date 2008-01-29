@@ -18,38 +18,39 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 			<options>
 				<option say="Hello." />
 				<if_player charisma="&gt;1.2">
-					<option say="Greetings, my name is ${name}." effect="like" />
+					<converse say="Greetings, my name is ${name}." effect="like" />
 				</if_player>
 				<option say="You there!" shout="true" effect="intimidation" />
 			</options>
 			<reactions>
-				<if_npc likes="&gt;0.5">
-					<reaction say="What can I do for you?" />
+				<if_npc likes_player="&gt;0.5">
+					<converse say="What can I do for you?" />
 				</if_npc>
-				<else_if_npc likes="&lt;0.2">
-					<reaction say="To the death!" shout="true" action="Fight" />
+				<else_if_npc likes_player="&lt;0.2">
+					<converse say="To the death!" tone="shout" />
+					<fight stance="aggressive" />
 				</else_if_npc>
-				<else_if_npc fears="&gt;0.8">
-					<reaction say="I'll do everything you say." />
+				<else_if_npc fears_player="&gt;0.8">
+					<converse say="I'll do everything you say." />
 				</else_if_npc>
 				<else>
-					<reaction say="Hello." />
+					<converse say="Hello." />
 				</else>
 			</reactions>
 		</dialog>
 	</if_npc>
-	<if_npc action="Conversate">
+	<if_npc action="Converse">
 		<dialog>
 			<options>
 				<option say="Where can I find the blacksmith, please?" />
 				<option say="Tell me where the blacksmth is. Now!" effect="intimidation" />
 			</options>
 			<reactions>
-				<if_npc fears="&gt;0.6">
-					<reaction say="At the market place, next to the temple." />
+				<if_npc fears_player="&gt;0.6">
+					<converse say="At the market place, next to the temple." />
 				</if_npc>
 				<else>
-					<reaction say="You can find him at the market place, next to the temple." />
+					<converse say="You can find him at the market place, next to the temple." />
 				</else>
 			</reactions>
 		</dialog>
@@ -58,11 +59,11 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 				<option say="Give me that shiny dagger." effect="intimidation" />
 			</options>
 			<reactions>
-				<if_npc fears="&gt;0.8">
-					<reaction say="Of course..." />
+				<if_npc fears_player="&gt;0.8">
+					<converse say="Of course..." />
 				</if_npc>
 				<else>
-					<reaction say="Help, a thief!" shout="true" />
+					<converse say="Help, a thief!" shout="true" />
 				</else>
 			</reactions>
 		</dialog>
@@ -71,11 +72,11 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 				<option say="Something wrong?" />
 			</options>
 			<reactions>
-				<if_npc likes="&gt;0.7">
-					<reaction say="Yes, I just have been robbed..." know="robbers" />
+				<if_npc likes_player="&gt;0.7">
+					<converse say="Yes, I just have been robbed..." know="robbers" />
 				</if_npc>
 				<else>
-					<reaction say="No, not at all." />
+					<converse say="No, not at all." />
 				</else>
 			</reactions>
 		</dialog>
@@ -85,7 +86,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 					<option say="Don't worry. I'll handle those robbers." />
 				</options>
 				<reactions>
-					<reaction say="Thank you!" />
+					<converse say="Thank you!" />
 				</reactions>
 			</dialog>
 			<if_player has="dagger">
@@ -94,7 +95,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 						<option say="Here, your dagger" effect="like" />
 					</options>
 					<reactions>
-						<reaction say="Thank you so much..." />
+						<converse say="Thank you so much..." />
 					</reactions>
 				</dialog>
 			</if_player>
@@ -105,7 +106,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 				<option do="Walk away without saying a word." effect="weird" />
 			</options>
 			<reactions>
-				<reaction say="Bye." action="none" />
+				<converse say="Bye." action="none" target="deselect" />
 			</reactions>
 		</dialog>
 	</if_npc>
@@ -114,7 +115,7 @@ Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like a
 			<option do="Hit." effect="angry" />
 		</options>
 		<reactions>
-			<reaction do="Hit." action="Fight" />
+				<fight stance="defensive" />
 		</reactions>
 	</dialog>
 </behavior>

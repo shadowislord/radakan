@@ -37,7 +37,7 @@ namespace Radakan
 
 		private :
 			///	This can either be a Slot or a Set.
-			Pointer <Container <T> > implementation;
+			Reference <Container <T> > implementation;
 	};
 }
 

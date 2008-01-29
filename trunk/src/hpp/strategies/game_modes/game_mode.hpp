@@ -9,12 +9,17 @@ namespace Radakan
 {
 	class GUI;
 	
+	namespace Messages
+	{
+		class Nothing;
+	}
+	
 	namespace Strategies
 	{
 		namespace Game_Modes
 		{
 			class Game_Mode :
-				public Strategy <Game_Mode, Object>
+				public Strategy <Game_Mode, Messages :: Nothing>
 			{
 				public :
 					static string get_class_name ();
@@ -24,10 +29,10 @@ namespace Radakan
 					virtual bool is_initialized () const;
 					
 					virtual Reference <Game_Mode> transit
-						(const Reference <Messages :: Message <Object> > & message) = 0;
+						(Reference <Messages :: Nothing> message) = 0;
 
 				protected :
-					Pointer <GUI> gui;
+					Reference <GUI> gui;
 			};
 		}
 	}

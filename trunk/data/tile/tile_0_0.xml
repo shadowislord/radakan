@@ -11,5 +11,5 @@
 	<model item="fence_4" x="14" y="0" z="1" />
 	<model item="fence_5" x="18" y="0" z="1" />
 
-	<model item="player" x="15" y="2" z="17.5" name="John" />
+	<model item="player_character" x="15" y="2" z="17.5" name="John" />
 </tile>

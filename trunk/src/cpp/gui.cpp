@@ -1,7 +1,9 @@
-#include "container.hpp"
 #include "engines/log.hpp"
+#include "engines/mediator.hpp"
 #include "gui.hpp"
-#include "messages/message.hpp"
+#include "messages/button_event.hpp"
+#include "messages/list_event.hpp"
+#include "messages/list_update.hpp"
 
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 	#include <OgreCEGUIRenderer.h>
@@ -42,43 +44,60 @@ GUI ::
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 		CEGUI :: Window * temp;
 
-		if (root_window -> isChild ("play-log"))
+		for (unsigned int i = 0; i < root_window -> getChildCount (); i ++)
 		{
-			temp = root_window -> getChild ("play-log");
-		}
-		else
-		{
-			assert (root_window -> isChild ("menu-log"));
+			temp = root_window -> getChildAtIdx (i);
+			if (temp -> getType () == "Listbox")
+			{
+				string window_name = temp -> getName () . c_str ();
+				
+				//	Convert 'abc-def' to 'def' using 'abc.xml'.
+				window_name = without (window_name, without (name, ".xml") + "-");
 			
-			temp = root_window -> getChild ("menu-log");
+				#ifdef RADAKAN_TARIQWALJI
+					try
+					{
+				#endif
+
+				lists -> insert
+				(
+					pair <string, boost :: shared_ptr <CEGUI :: Listbox> >
+					(
+						window_name,
+						boost :: shared_ptr <CEGUI :: Listbox>
+						(
+							boost :: polymorphic_downcast
+								<CEGUI :: Listbox *, CEGUI :: Window> (temp)
+						)
+					)
+				);
+
+				#ifdef RADAKAN_TARIQWALJI
+					}
+					catch (__non_rtti_object e)
+					{
+						Engines :: Log :: log (me)
+							<< "List '" << window_name
+							<< "' could not be dynamically cast. Falling back to unsafe casting."
+							<< endl;
+						lists -> insert
+						(
+							pair <string, boost :: shared_ptr <CEGUI :: Listbox> >
+							(
+								window_name, boost :: shared_ptr <CEGUI :: Listbox>
+									((CEGUI :: Listbox *) (temp))
+							)
+						);
+					}
+				#endif
+			}
 		}
-		
-		#ifdef RADAKAN_TARIQWALJI
-			try
-			{
-		#endif
-
-			log_window . reset (dynamic_cast <CEGUI :: Listbox *> (temp));
-
-		#ifdef RADAKAN_TARIQWALJI
-			}
-			catch (__non_rtti_object e)
-			{
-				Engines :: Log :: error (me)
-					<< "Log window could not be dynamically cast. Falling back to unsafe casting."
-					<< endl;
-				log_window . reset ((CEGUI :: Listbox *) (temp));
-			}
-		#endif
-		
-		assert (log_window);	//	Make sure it doesn't point to NULL.
 
 		subscribe (* root_window . get ());
 	#endif
 
-	#ifdef RADAKAN_DEBUG
-		Engines :: Log :: get () -> register_observer (Reference <Observer <Object> > (this));
-	#endif
+	Engines :: Mediator :: get () -> register_observer <Messages :: List_Update>
+		(Reference <Observer <Messages :: List_Update> > (this));
 
 	assert (is_initialized ());
 }
@@ -100,7 +119,7 @@ bool GUI ::
 	assert (Object :: is_initialized ());
 
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-		assert (log_window);
+		assert (lists);
 	#endif
 
 	return true;
@@ -108,18 +127,29 @@ bool GUI ::
 
 //	virtual
 void GUI ::
-	call (const Reference <Object> & message)
+	call (Reference <Messages :: List_Update> message)
 {
 	Engines :: Log :: trace (me, GUI :: get_class_name (), "call", message . get_name ());
 	assert (is_initialized ());
 	assert (message . points_to_object ());
 	assert (message -> is_initialized ());
-
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-		CEGUI :: ListboxItem * item
-			= new CEGUI :: ListboxTextItem (message . get_name (true));
-		log_window -> addItem (item);
-		log_window -> ensureItemIsVisible (log_window -> getItemCount ());
+		assert (0 < lists -> count (message -> list_name));
+
+		boost :: shared_ptr <CEGUI :: Listbox> list
+			= lists -> find (message -> list_name) -> second;
+
+		if (message -> reset)
+		{
+			list -> resetList ();
+		}
+
+		for (set <string> :: const_iterator i = message -> items -> begin ();
+			i != message -> items -> end (); i ++)
+		{
+			list -> addItem (new CEGUI :: ListboxTextItem (* i));
+			list -> ensureItemIsVisible (list -> getItemCount ());
+		}
 	#endif
 }
 
@@ -151,7 +181,7 @@ void GUI ::
 	bool GUI ::
 		handle_event (const CEGUI :: EventArgs & arguments)
 	{
-		Engines :: Log :: trace (me, GUI :: get_class_name (), "handle_event", "~arguments~");
+		Engines :: Log :: trace (me, GUI :: get_class_name (), "handle_event", "@arguments@");
 		assert (is_initialized ());
 
 		// I had to declare this outside due to scoping.
@@ -162,7 +192,9 @@ void GUI ::
 			{
 		#endif
 
-			window_event_arguments . reset (dynamic_cast <const CEGUI :: WindowEventArgs *> (& arguments));
+			window_event_arguments . reset
+				(boost :: polymorphic_cast <const CEGUI :: WindowEventArgs *>
+					(& arguments));
 			assert (window_event_arguments);
 
 		#ifdef RADAKAN_TARIQWALJI
@@ -178,9 +210,35 @@ void GUI ::
 			}
 		#endif
 
-		string caption (window_event_arguments -> window -> getText () . c_str ());
+		if (window_event_arguments -> window -> getType () == "Listbox")
+		{
+			boost :: scoped_ptr <CEGUI ::Listbox> listbox
+				(boost :: polymorphic_cast <CEGUI ::Listbox *>
+					(window_event_arguments -> window));
 
-		call_observers (Reference <Object> (new Object (to_lower_case (caption))));
+			if (listbox -> getSelectedCount () != 0)
+			{
+				string caption (window_event_arguments -> window -> getText () . c_str ());
+			
+				Reference <Messages :: List_Event> message
+					(new Messages :: List_Event (caption));
+
+				listbox -> clearAllSelections ();
+
+				Engines :: Mediator :: get ()
+					-> call_observers <Messages :: List_Event> (message);
+			}
+		}
+		else
+		{
+			string caption (window_event_arguments -> window -> getText () . c_str ());
+			
+			Reference <Messages :: Button_Event> message
+				(new Messages :: Button_Event (to_lower_case (caption)));
+
+			Engines :: Mediator :: get ()
+				-> call_observers <Messages :: Button_Event> (message);
+		}
 
 		return true;
 	}

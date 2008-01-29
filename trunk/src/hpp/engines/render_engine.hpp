@@ -30,11 +30,16 @@ namespace Radakan
 				boost :: shared_ptr <Ogre :: RenderWindow> get_window ();
 				boost :: shared_ptr <Ogre :: SceneManager> get_scene_manager ();
 
+				float get_FPS () const;
+
 			private :
 				boost :: shared_ptr <Ogre :: Root> root;
 				boost :: shared_ptr <Ogre :: RenderWindow> window;
 				boost :: shared_ptr <Ogre :: SceneManager> scene_manager;
 				boost :: scoped_ptr <Ogre :: Camera> camera;
+				
+				unsigned int turn;
+				boost :: scoped_ptr <Ogre :: Timer> timer;
 		};
 	}
 }

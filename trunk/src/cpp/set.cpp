@@ -87,7 +87,6 @@ template <class T> bool Set <T> ::
 		return false;
 	}
 
-	//	We can't use <= or >= here, because 'Container <T> :: unlimited < 0'.
 	if (children -> size () == Container <T> :: maximal_size)
 	{
 		Engines :: Log :: log (this -> me) << additive << " could not be added. I'm full." << endl;
@@ -147,11 +146,14 @@ template <class T> Reference <T> Set <T> ::
 
 //	to avert linking errors:
 #include "engines/audio_engine.hpp"
-#include "engines/game.hpp"
 #include "gui.hpp"
 #include "items/character.hpp"
 #include "items/container_item.hpp"
-#include "messages/conversation_message.hpp"
+#include "messages/button_event.hpp"
+#include "messages/communications/communication.hpp"
+#include "messages/list_event.hpp"
+#include "messages/list_update.hpp"
+#include "messages/nothing.hpp"
 #include "model.hpp"
 #include "movable_model.hpp"
 #include "opinion.hpp"
@@ -165,12 +167,14 @@ template class Set <Items :: Character>;
 template class Set <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Set <Items :: Container_Item <Items :: Item> >;
 template class Set <Items :: Item>;
-template class Set <Messages :: Message <Items :: Character> >;
+template class Set <Messages :: Communications :: Communication>;
 template class Set <Model>;
 template class Set <Object>;
-template class Set <Observer <Messages :: Message <Items :: Character> > >;
-template class Set <Observer <Messages :: Message <Object> > >;
-template class Set <Observer <Object> >;
+template class Set <Observer <Messages :: Button_Event> >;
+template class Set <Observer <Messages :: Communications :: Communication> >;
+template class Set <Observer <Messages :: List_Event> >;
+template class Set <Observer <Messages :: List_Update> >;
+template class Set <Observer <Messages :: Nothing> >;
 template class Set <Opinion>;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Set <Sound_Sample>;

@@ -4,6 +4,7 @@
 #include "engines/settings.hpp"
 #include "items/character.hpp"
 #include "movable_model.hpp"
+#include "strategies/behaviors/player.hpp"
 
 #include <OgreRenderSystem.h>
 #include <OgreRenderWindow.h>
@@ -34,7 +35,9 @@ Render_Engine ::
 				Settings :: get () -> radakan_path + "/log/ogre.txt"
 			)
 		)
-	)
+	),
+	turn (0)/*,
+	timer (new Ogre :: Timer ())*/
 {
 	Engines :: Log :: trace (me, Render_Engine :: get_class_name ());
 	
@@ -44,14 +47,21 @@ Render_Engine ::
 		abort ();
 	}
 
+	Engines :: Log :: trace (me, Render_Engine :: get_class_name (), "", "A");
 	window . reset (root -> initialise (true, "Radakan"));
+	Engines :: Log :: trace (me, Render_Engine :: get_class_name (), "", "B");
 	scene_manager . reset (root -> createSceneManager (Ogre :: ST_GENERIC));
+	Engines :: Log :: trace (me, Render_Engine :: get_class_name (), "", "C");
 	camera . reset (scene_manager -> createCamera ("camera"));
+	Engines :: Log :: trace (me, Render_Engine :: get_class_name (), "", "D");
 
 	camera -> setNearClipDistance (0.001);
 	camera -> setFarClipDistance (150);
 
+	Engines :: Log :: trace (me, Render_Engine :: get_class_name (), "", "E");
 	root -> getRenderSystem () -> _setViewport (window -> addViewport (camera . get ()));
+
+	Engines :: Log :: trace (me, Render_Engine :: get_class_name (), "", "(end)");
 }
 
 Render_Engine ::
@@ -78,30 +88,19 @@ void Render_Engine ::
 {
 	assert (Object :: is_initialized ());
 
+	turn ++;
+
 	camera -> setPosition
-	(
-		Items :: Character :: get_player_character ()
-			-> get_movable_model () -> node -> getPosition ()
-			+ Items :: Character :: get_player_character ()
-				-> get_movable_model () -> get_top_direction ()
-			* Engines :: Settings :: get () -> get_camera_distance ()
-	);
+		(Strategies :: Behaviors :: Player :: get () -> get_camera_position ());
 	camera -> setOrientation
-	(
-		make_quaternion
-		(
-			Engines :: Settings :: get () -> get_vertical_camera_angle (),
-			Items :: Character :: get_player_character ()
-				-> get_movable_model () -> get_side_direction ()
-		)
-		* Items :: Character :: get_player_character ()
-			-> get_movable_model () -> node -> getOrientation ()
-	);
+		(Strategies :: Behaviors :: Player :: get () -> get_camera_orientation ());
 
 	bool check = root -> renderOneFrame ();
 	assert (check);
 	
 	GUI_Engine :: get () -> render ();
+
+	Log :: log (me) << "FPS: " << get_FPS () << endl;
 }
 
 boost :: shared_ptr <Ogre :: RenderWindow> Render_Engine ::
@@ -118,4 +117,12 @@ boost :: shared_ptr <Ogre :: SceneManager> Render_Engine ::
 	assert (Object :: is_initialized ());
 
 	return scene_manager;
+}
+
+float Render_Engine ::
+	get_FPS () const
+{
+	assert (is_initialized ());
+
+	return turn / (0.001 * timer -> getMilliseconds ());
 }

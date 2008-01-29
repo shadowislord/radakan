@@ -14,8 +14,8 @@ namespace Radakan
 		{
 			///	Menu is the strategy for the game when displaying the menu.
 			class Menu :
-				public Singleton <Menu>,
-				public Game_Mode
+				public Game_Mode,
+				public Singleton <Menu>
 			{
 				public :
 					Menu ();
@@ -25,7 +25,7 @@ namespace Radakan
 					static string get_class_name ();
 					
 					virtual Reference <Game_Mode> transit
-						(const Reference <Messages :: Message <Object> > & message);
+						(Reference <Messages :: Nothing> message);
 			};
 		}
 	}

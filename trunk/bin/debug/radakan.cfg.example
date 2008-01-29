@@ -5,21 +5,31 @@
 radakan_path=C:/games/radakan
 ogre_media_path=C:/OgreSDK/media
 
-[key bindings]
+[general]
+show dialog=true
+
+[key bindings: meta]
+menu=escape
+
+[key bindings: menu]
+return=r
+statistics=s
+quit=q
+
+[key bindings: play]
 go forward=w
 go backward=s
 turn left=a
 turn right=d
+jump=space
 select target=t
 hit=h
 give=g
-jump=space
 reset=r
-menu=escape
 
 [gameplay]
 # These affect all characters.
-movement_reaction = 500
-maximal_movement_speed = 4
-turn_reaction = 50
-maximal_turn_speed = 4
+movement reaction=500
+maximal movement speed=4
+turn reaction=50
+maximal turn speed=4

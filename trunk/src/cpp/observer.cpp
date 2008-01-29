@@ -44,9 +44,14 @@ template <class T> bool Observer <T> ::
 }
 
 //	to avert linking errors:
-#include "items/character.hpp"
-#include "messages/message.hpp"
+#include "messages/button_event.hpp"
+#include "messages/communications/communication.hpp"
+#include "messages/list_event.hpp"
+#include "messages/list_update.hpp"
+#include "messages/nothing.hpp"
 
-template class Observer <Messages :: Message <Items :: Character> >;
-template class Observer <Messages :: Message <Object> >;
-template class Observer <Object>;
+template class Observer <Messages :: Button_Event>;
+template class Observer <Messages :: Communications :: Communication>;
+template class Observer <Messages :: List_Event>;
+template class Observer <Messages :: List_Update>;
+template class Observer <Messages :: Nothing>;

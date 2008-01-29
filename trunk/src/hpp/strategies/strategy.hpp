@@ -7,11 +7,6 @@ using namespace std;
 
 namespace Radakan
 {
-	namespace Messages
-	{
-		template <class T> class Message;
-	}
-
 	namespace Strategies
 	{
 		///	I'm the abstract base class for the strategy pattern.
@@ -30,10 +25,8 @@ namespace Radakan
 
 				///	Don't call this method directly,
 				///	let it be called by Strategy_State_Machine.
-				///	I return myself to continue next time.
-				///	I return NULL when I should be destructed.
-				virtual Reference <T> transit
-					(const Reference <Messages :: Message <U> > & message) = 0;
+				///	'transit (...)' returns the next active strategy state.
+				virtual Reference <T> transit (Reference <U> message) = 0;
 				
 			protected :
 				Strategy ();

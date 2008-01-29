@@ -33,15 +33,19 @@ const int Tile ::
 	side_length (64);
 
 Tile ::
-	Tile (pair <int, int> new_coordinates) :
+	Tile
+	(
+		pair <int, int> new_coordinates,
+		boost :: shared_ptr <OgreOde :: SimpleSpace> new_space
+	) :
 	Object
 	(
 		"tile_" + to_string (new_coordinates . first) + "_" + to_string (new_coordinates . second)
 	),
 	coordinates (new_coordinates),
-	position (side_length * Ogre :: Vector3	(coordinates . first, 0, coordinates . second)),
+	position (side_length * Ogre :: Vector3 (coordinates . first, 0, coordinates . second)),
 	characters (new Set <Items :: Character> (name + "'s characters")),
-	space (new OgreOde :: SimpleSpace (World :: get () -> ogre_ode_world . get (), World :: get () -> ogre_ode_world -> getDefaultSpace ())),
+	space (new_space),
 	doc (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/tile/" + name + ".xml"))
 {
 	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
@@ -112,9 +116,6 @@ Tile ::
 	represent (Item :: create ("Pot 2", "pot_2.mesh", 0, 0), - 14, 0, - 10, 0.0008);
 	represent (Item :: create ("Pine tree", "pine_tree_2.mesh", 0, 0, false), - 18, 1.4, - 18, 0.06);
 	*/
-
-	//	set a floor
-	new OgreOde :: InfinitePlaneGeometry (Ogre :: Plane (y_axis, 0), World :: get () -> ogre_ode_world . get (), space . get ());
 
 	Engines :: Log :: log (me) << "Tile loaded" << endl;
 

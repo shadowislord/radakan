@@ -4,6 +4,7 @@
 #include <OgreOdeWorld.h>
 
 #include "engines/log.hpp"
+#include "engines/render_engine.hpp"
 #include "items/static_item.hpp"
 #include "model.hpp"
 #include "slot.hpp"
@@ -29,7 +30,7 @@ Model ::
 	geometry (create_geometry (item)),
 	entity
 	(
-		World :: get () -> ogre_ode_world -> getSceneManager () -> createEntity
+		Engines :: Render_Engine :: get () -> get_scene_manager () -> createEntity
 		(
 			name + "'s entity", item -> mesh_data -> file_name
 		)
@@ -90,7 +91,8 @@ Model ::
 	
 	assert (node -> numAttachedObjects () == 1);
 
-	World :: get () -> ogre_ode_world -> getSceneManager () -> destroyMovableObject (entity . get ());
+	Engines :: Render_Engine :: get () -> get_scene_manager ()
+		-> destroyMovableObject (entity . get ());
 
 	assert (node -> numAttachedObjects () == 0);
 
@@ -164,7 +166,20 @@ boost :: shared_ptr <OgreOde :: Geometry> Radakan :: create_geometry
 	assert (item -> is_initialized ());
 	assert (! item -> has_model ());
 
-	boost :: shared_ptr <OgreOde :: Geometry> geometry (new OgreOde :: BoxGeometry (item -> size, World :: get () -> ogre_ode_world . get ()));
-
-	return geometry;
+	if (item -> size . y <= 0.01)
+	{
+		return boost :: shared_ptr <OgreOde :: Geometry>
+		(
+			new OgreOde :: InfinitePlaneGeometry
+				(Ogre :: Plane (y_axis, 0), World :: get () -> ogre_ode_world . get ())
+		);
+	}
+	else
+	{
+		return boost :: shared_ptr <OgreOde :: Geometry>
+		(
+			new OgreOde :: BoxGeometry
+				(item -> size, World :: get () -> ogre_ode_world . get ())
+		);
+	}
 }

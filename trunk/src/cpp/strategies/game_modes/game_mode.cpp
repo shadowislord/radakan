@@ -1,4 +1,8 @@
 #include "engines/log.hpp"
+#include "engines/gui_engine.hpp"
+#include "engines/settings.hpp"
+#include "gui.hpp"
+#include "messages/nothing.hpp"
 #include "strategies/game_modes/game_mode.hpp"
 
 using namespace std;
@@ -10,15 +14,16 @@ using namespace Radakan :: Strategies :: Game_Modes;
 string Game_Mode ::
 	get_class_name ()
 {
-	return "Game_Mode";
+	return "Strategies :: Game_Modes :: Game_Mode";
 }
 
 //  constructor
 Game_Mode ::
 	Game_Mode () :
-	Object ("The name doesn't matter. This is an abstract base class.")
+	Object ("The name doesn't matter. This is an abstract base class."),
+	gui (Engines :: GUI_Engine :: get () -> create_gui (me . get_name (true) + ".xml"))
 {
-	//	Do nothing.
+	Engines :: Settings :: get () -> load_key_bindings (me . get_name (true));
 
 	assert (is_initialized ());
 }
@@ -43,4 +48,3 @@ bool Game_Mode ::
 	
 	return true;
 }
-

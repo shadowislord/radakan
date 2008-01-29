@@ -12,7 +12,7 @@ using namespace Radakan :: Strategies :: Actions;
 string Action ::
 	get_class_name ()
 {
-	return "Action";
+	return "Strategies :: Actions :: Action";
 }
 
 //  constructor
@@ -47,7 +47,7 @@ bool Action ::
 	const
 {
 	//	'assert' can't handle double templates.
-	//	assert (Strategy <Action, Items :: Character> :: is_initialized ());
+	//	assert (Strategy <Action, Messages :: Communications :: Communication> :: is_initialized ());
 	
 	return true;
 }

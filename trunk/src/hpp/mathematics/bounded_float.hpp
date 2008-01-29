@@ -25,8 +25,13 @@ namespace Radakan
 				Bounded_Float operator= (const Bounded_Float &);
 				
 				Bounded_Float operator+= (float);
-				
+				Bounded_Float operator+= (const Bounded_Float &);
+				Bounded_Float operator-= (float);
+				Bounded_Float operator-= (const Bounded_Float &);
 				Bounded_Float operator*= (float);
+				Bounded_Float operator*= (const Bounded_Float &);
+				Bounded_Float operator/= (float);
+				Bounded_Float operator/= (const Bounded_Float &);
 
 				bool operator> (float) const;
 				bool operator> (const Bounded_Float &) const;

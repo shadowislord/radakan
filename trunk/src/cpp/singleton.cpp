@@ -75,15 +75,19 @@ template <class T> bool Singleton <T> ::
 
 #include "engines/audio_engine.hpp"
 #include "engines/battle_engine.hpp"
-#include "engines/conversation_engine.hpp"
 #include "engines/game.hpp"
 #include "engines/gui_engine.hpp"
-#include "engines/input_engine.hpp"
+#include "engines/input/command_data.hpp"
+#include "engines/input/command_reader.hpp"
+#include "engines/input/mouse_data.hpp"
+#include "engines/input/mouse_reader.hpp"
+#include "engines/input/registrator.hpp"
+#include "engines/mediator.hpp"
+#include "engines/mediator_implementation.hpp"
 //	#include "engines/plugin_manager.hpp"
 #include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
 #include "engines/tracker.hpp"
-#include "play_gui.hpp"
 #include "strategies/behaviors/player.hpp"
 #include "strategies/game_modes/menu.hpp"
 #include "strategies/game_modes/play.hpp"
@@ -93,15 +97,19 @@ template <class T> bool Singleton <T> ::
 	template class Singleton <Engines :: Audio_Engine>;
 #endif
 //	template class Singleton <Engines :: Battle_Engine>;
-template class Singleton <Engines :: Conversation_Engine>;
 template class Singleton <Engines :: Game>;
 template class Singleton <Engines :: GUI_Engine>;
-template class Singleton <Engines :: Input_Engine>;
+template class Singleton <Engines :: Input :: Command_Data>;
+template class Singleton <Engines :: Input :: Command_Reader>;
+template class Singleton <Engines :: Input :: Mouse_Data>;
+template class Singleton <Engines :: Input :: Mouse_Reader>;
+template class Singleton <Engines :: Input :: Registrator>;
 template class Singleton <Engines :: Log>;
+template class Singleton <Engines :: Mediator>;
+template class Singleton <Engines :: Mediator_Implementation>;
 //	template class Singleton <Engines :: Plugin_Manager>;
 template class Singleton <Engines :: Render_Engine>;
 template class Singleton <Engines :: Settings>;
-template class Singleton <Play_GUI>;
 //	template class Singleton <Plugins :: Battle_Plugin>;
 //	template class Singleton <Plugins :: Conversation_Plugin>;
 template class Singleton <Strategies :: Behaviors :: Player>;

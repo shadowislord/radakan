@@ -31,10 +31,18 @@ float Bounded_Float ::
 
 void Bounded_Float :: set_value (float new_value)
 {
-	assert (minimum <= new_value);
-	assert (new_value <= maximum);
-
-	value = new_value;
+	if (new_value <= minimum)
+	{
+		value = minimum;
+	}
+	else if (maximum <= new_value)
+	{
+		value = maximum;
+	}
+	else
+	{
+		value = new_value;
+	}
 }
 
 //	=
@@ -53,6 +61,13 @@ Bounded_Float Bounded_Float ::
 
 //	+=
 Bounded_Float Bounded_Float ::
+	operator+= (const Bounded_Float & operand)
+{
+	set_value (value + operand . get_value ());
+	
+	return * this;
+}
+Bounded_Float Bounded_Float ::
 	operator+= (float operand)
 {
 	set_value (value + operand);
@@ -60,11 +75,50 @@ Bounded_Float Bounded_Float ::
 	return * this;
 }
 
+//	-=
+Bounded_Float Bounded_Float ::
+	operator-= (const Bounded_Float & operand)
+{
+	set_value (value - operand . get_value ());
+	
+	return * this;
+}
+Bounded_Float Bounded_Float ::
+	operator-= (float operand)
+{
+	set_value (value - operand);
+	
+	return * this;
+}
+
 //	*=
+Bounded_Float Bounded_Float ::
+	operator*= (const Bounded_Float & operand)
+{
+	set_value (value * operand . get_value ());
+	
+	return * this;
+}
 Bounded_Float Bounded_Float ::
 	operator*= (float operand)
 {
 	set_value (value * operand);
+	
+	return * this;
+}
+
+//	/=
+Bounded_Float Bounded_Float ::
+	operator/= (const Bounded_Float & operand)
+{
+	set_value (value / operand . get_value ());
+	
+	return * this;
+}
+Bounded_Float Bounded_Float ::
+	operator/= (float operand)
+{
+	set_value (value / operand);
 	
 	return * this;
 }

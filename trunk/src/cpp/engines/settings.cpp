@@ -14,19 +14,9 @@ string Settings ::
 	return "Settings";
 }
 
-//	static
-const float Settings ::
-	min_vertical_camera_angle (- Ogre :: Math :: HALF_PI);
-
-//	static
-const float Settings ::
-	max_vertical_camera_angle (Ogre :: Math :: HALF_PI);
-
 Settings ::
 	Settings (string path_to_config) :
 	Object ("settings", true),	//	Here 'true' means 'prevent automatic destruction'.
-	camera_distance (0.72),
-	vertical_camera_angle (0),
 	radakan_config (new Ogre :: ConfigFile ())
 {
 	//	Load the Radakan configuration file
@@ -35,16 +25,9 @@ Settings ::
 	radakan_path = radakan_config -> getSetting ("radakan_path", "directories");
 	ogre_media_path = radakan_config -> getSetting ("ogre_media_path", "directories");
 
-	Ogre :: ConfigFile :: SettingsIterator keys_iterator = radakan_config -> getSettingsIterator ("key bindings");
-	while (keys_iterator . hasMoreElements ())
-	{
-		Log :: log (me) << "mapping '" << keys_iterator . peekNextKey () << "' to '" << keys_iterator . peekNextValue () << "'..." << endl;
-		key_bindings [keys_iterator . peekNextKey ()] = keys_iterator . peekNextValue ();
-		Log :: log (me) << "done" << endl;
-		keys_iterator . moveNext ();
-		Log :: log (me) << "done" << endl;
-	}
 
+	load_key_bindings ("meta");
+	
 	//	Load the string values and convert them from string to float.
 	movement_reaction
 		= to_float (radakan_config -> getSetting ("movement_reaction", "gameplay"));
@@ -75,45 +58,36 @@ bool Settings ::
 	return Object :: is_initialized ();
 }
 
-const float & Settings ::
-	get_camera_distance ()
-	const
-{
-	assert (is_initialized ());
-
-	return camera_distance;
-}
-
 void Settings ::
-	increase_camera_distance (float distance)
+	load_key_bindings (string game_mode_name)
 {
 	assert (is_initialized ());
-
-	camera_distance += distance;
-}
-
-const float & Settings ::
-	get_vertical_camera_angle ()
-	const
-{
-	assert (is_initialized ());
-
-	return vertical_camera_angle;
-}
-
-void Settings ::
-	increase_vertical_camera_angle (float angle)
-{
-	assert (is_initialized ());
-
-	vertical_camera_angle += angle;
-
-	if (vertical_camera_angle < min_vertical_camera_angle)
+	
+	Ogre :: ConfigFile :: SettingsIterator keys_iterator
+		= radakan_config -> getSettingsIterator ("key bindings: " + game_mode_name);
+	while (keys_iterator . hasMoreElements ())
 	{
-		vertical_camera_angle = min_vertical_camera_angle;
+		key_bindings [game_mode_name + " - " + keys_iterator . peekNextKey ()]
+			= keys_iterator . peekNextValue ();
+		keys_iterator . moveNext ();
 	}
-	else if (max_vertical_camera_angle < vertical_camera_angle)
+}
+
+string Settings ::
+	get_key_name (string game_mode_name, string command)
+	const
+{
+	assert (is_initialized ());
+
+	map <string, string> :: const_iterator result
+		= key_bindings . find (game_mode_name + " - " + command);
+
+	if (result == key_bindings . end ())
 	{
-		vertical_camera_angle = max_vertical_camera_angle;
+		return "";
+	}
+	else
+	{
+		return result -> second;
 	}
 }

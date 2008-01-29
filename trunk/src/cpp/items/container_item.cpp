@@ -10,7 +10,7 @@ using namespace Radakan :: Items;
 template <class T> string Container_Item <T> ::
 	get_class_name ()
 {
-	return "Container_Item <" + T :: get_class_name () + ">";
+	return "Items :: Container_Item <" + T :: get_class_name () + ">";
 }
 
 //  constructor

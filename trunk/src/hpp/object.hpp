@@ -7,14 +7,7 @@ using namespace std;
 
 namespace Radakan
 {
-	const Ogre :: Vector3 x_axis (1, 0, 0);
-	const Ogre :: Vector3 y_axis (0, 1, 0);	//	upwards
-	const Ogre :: Vector3 z_axis (0, 0, 1);
 
-	const Ogre :: Vector3 zero_vector (0, 0, 0);
-
-	string to_string (const Ogre :: Vector3 & vector);
-	
 	///	I'm the abstract base class for all Radakan classes.
 	///	I can't be copied, consider a reference of me instead.
 	class Object :

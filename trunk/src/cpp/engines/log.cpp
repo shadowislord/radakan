@@ -2,10 +2,9 @@
 #include <sstream>
 
 #include "engines/log.hpp"
+#include "engines/mediator.hpp"
 #include "engines/settings.hpp"
-#ifdef RADAKAN_DEBUG
-	#include "world.hpp"
-#endif
+#include "messages/list_update.hpp"
 
 using namespace std;
 using namespace Radakan;
@@ -15,7 +14,7 @@ using namespace Radakan :: Engines;
 string Log ::
 	get_class_name ()
 {
-	return "Log";
+	return "Engines :: Log";
 }
 
 //  constructor
@@ -69,7 +68,6 @@ ostream & Log ::
 {
 	#ifdef RADAKAN_DEBUG
 		cout << endl;
-		cout << "= turn " << World :: get_turn () << " =" << endl;
 		cout << logger << " reports:" << endl;
 		return cout << "\t";
 	#else
@@ -83,10 +81,8 @@ void Log ::
 {
 	trace (get (), Log :: get_class_name (), "show", message_contents);
 	
-	if (is_instantiated ())
-	{
-		get () -> call_observers (Reference <Object> (new Object (message_contents)));
-	}
+	Mediator :: get () -> call_observers <Messages :: List_Update>
+		(Messages :: List_Update :: create (message_contents, "log"));
 }
 
 //	static

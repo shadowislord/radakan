@@ -29,8 +29,13 @@ namespace Radakan
 			///	AI is the basic strategy for living NPCs.
 			class AI :
 				public Behavior,
-				public Strategy_State_Machine <Actions :: Action, Items :: Character>
+				public Strategy_State_Machine
+					<Actions :: Action, Messages :: Communications :: Communication>
 			{
+				private :
+					static boost :: scoped_ptr <map <unsigned int, TiXmlDocument> >
+						all_behavior_files;
+
 				public :
 					static string get_class_name ();
 					
@@ -38,18 +43,31 @@ namespace Radakan
 					virtual ~AI ();
 					virtual bool is_initialized () const;
 					
+					///	The message is stored.
+					virtual void call
+						(Reference <Messages :: Communications :: Communication> message);
+
+					///	My FSM will process the last stored message.
 					virtual Reference <Behavior> transit
-						(const Reference <Messages :: Message <Items :: Character> > & message);
+						(Reference <Messages :: Nothing> message);
+
+					virtual bool evaluate_condition (const TiXmlElement * element);
+					virtual bool evaluate_expression (const TiXmlAttribute * attribute);
 
 					string get_current_action_name () const;
 
 					void set_action (string action_name);
 
+					const boost :: shared_ptr <set <TiXmlDocument> >
+						get_behavior_files () const;
+
 					//	'calm' can vary from 0 to 1.
 					Mathematics :: Bounded_Float calm;
 
 				private :
-					Reference <Set <Messages :: Message <Items :: Character> > > sensory_buffer;
+					boost :: scoped_ptr <set <TiXmlDocument> > behavior_files;
+					
+					Reference <Set <Messages :: Communications :: Communication> > sensory_buffer;
 					Reference <Set <Opinion> > opinions;
 			};
 		}

@@ -2,7 +2,6 @@
 #define RADAKAN_LOG_HPP
 
 #include "singleton.hpp"
-#include "observable.hpp"
 
 using namespace std;
 
@@ -13,8 +12,7 @@ namespace Radakan
 
 		///	Log provides a logging system.
 		class Log :
-			public Singleton <Log>,
-			public Observable <Object>
+			public Singleton <Log>
 		{
 			public :
 				static string get_class_name ();
@@ -23,7 +21,10 @@ namespace Radakan
 
 				static ostream & error (const Reference_Base & logger);
 				static ostream & log (const Reference_Base & logger);
+
+				//	'show (...)' passes the message to my observers.
 				static void show (string message);
+				
 				static void trace
 				(
 					const Reference_Base & logger,

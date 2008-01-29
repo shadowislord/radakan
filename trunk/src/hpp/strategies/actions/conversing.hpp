@@ -1,5 +1,5 @@
-#ifndef RADAKAN_STRATEGIES_ACTIONS_CONVERSATE_HPP
-#define RADAKAN_STRATEGIES_ACTIONS_CONVERSATE_HPP
+#ifndef RADAKAN_STRATEGIES_ACTIONS_CONVERSING_HPP
+#define RADAKAN_STRATEGIES_ACTIONS_CONVERSING_HPP
 
 #include "strategies/actions/action.hpp"
 
@@ -12,23 +12,23 @@ namespace Radakan
 		namespace Actions
 		{
 		
-			///	Conversate is the action strategy for conversating NPCs.
-			class Conversate :
+			///	Conversing is the action strategy for conversating NPCs.
+			class Conversing :
 				public Action
 			{
 				public :
 					static string get_class_name ();
 					
-					Conversate
+					Conversing
 					(
 						Reference <Items :: Character> new_character,
 						Reference <Behaviors :: AI> new_ai
 					);
-					virtual ~Conversate ();
+					virtual ~Conversing ();
 					virtual bool is_initialized () const;
 					
 					virtual Reference <Action> transit
-						(const Reference <Messages :: Message <Items :: Character> > & message);
+						(Reference <Messages :: Communications :: Communication> message);
 
 					virtual string get_action_name ();
 
@@ -41,4 +41,4 @@ namespace Radakan
 	}
 }
 
-#endif	//	RADAKAN_STRATEGIES_ACTIONS_CONVERSATE_HPP
+#endif	//	RADAKAN_STRATEGIES_ACTIONS_CONVERSING_HPP

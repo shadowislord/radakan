@@ -2,32 +2,32 @@
 
 #include "engines/log.hpp"
 #include "items/character.hpp"
-#include "messages/conversation_message.hpp"
+#include "messages/communications/converse.hpp"
 
 using namespace std;
 using namespace Radakan;
 using namespace Radakan :: Messages;
+using namespace Radakan :: Messages :: Communications;
 
 //	static
-string Conversation_Message ::
+string Converse ::
 	get_class_name ()
 {
-	return "Conversation_Message";
+	return "Messages :: Communications :: Converse";
 }
 
 //  constructor
-Conversation_Message ::
-	Conversation_Message
+Converse ::
+	Converse
 	(
 		Reference <Items :: Character> new_from,
 		Reference <Items :: Character> new_to,
 		const TiXmlElement * new_option
 	) :
-	Object (create_name (new_option)),
-	Message <Items :: Character> ("Doesn't matter.", new_from, new_to),
+	Communication (create_name (new_option), new_from, new_to),
 	option (new_option)
 {
-	Engines :: Log :: trace (me, Conversation_Message :: get_class_name ());
+	Engines :: Log :: trace (me, Converse :: get_class_name ());
 	
 	//	Do nothing.
 	
@@ -35,17 +35,17 @@ Conversation_Message ::
 }
 
 //  destructor
-Conversation_Message ::
-	~Conversation_Message ()
+Converse ::
+	~Converse ()
 {
-	Engines :: Log :: trace (me, Conversation_Message :: get_class_name (), "~");
+	Engines :: Log :: trace (me, Converse :: get_class_name (), "~");
 	assert (is_initialized ());
 
 	prepare_for_destruction ();
 }
 
 //	virtual
-bool Conversation_Message ::
+bool Converse ::
 	is_initialized ()
 	const
 {
@@ -53,15 +53,13 @@ bool Conversation_Message ::
 }
 
 //	virtual
-Reference <Message <Items :: Character> > Conversation_Message ::
-	copy ()
-	const
+string Converse ::
+	get_communication_name ()
 {
-	return Reference <Message <Items :: Character> >
-		(new Conversation_Message (from, to, option));
+	return get_class_name ();
 }
 
-Reference <Conversation_Message> Conversation_Message ::
+Reference <Communication> Converse ::
 	get_reaction ()
 	const
 {
@@ -89,11 +87,11 @@ Reference <Conversation_Message> Conversation_Message ::
 	const TiXmlElement * reaction = temp -> ToElement ();
 	assert (reaction != NULL);
 
-	return Reference <Conversation_Message> (new Conversation_Message (to, from, reaction));
+	return Reference <Converse> (new Converse (to, from, reaction));
 }
 
 //	private & static
-string Conversation_Message ::
+string Converse ::
 	create_name (const TiXmlElement * option)
 {
 	assert (option != NULL);

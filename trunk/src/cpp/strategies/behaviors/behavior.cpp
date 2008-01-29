@@ -1,4 +1,5 @@
 #include "engines/log.hpp"
+#include "engines/mediator.hpp"
 #include "items/character.hpp"
 #include "strategies/behaviors/behavior.hpp"
 
@@ -11,7 +12,7 @@ using namespace Radakan :: Strategies :: Behaviors;
 string Behavior ::
 	get_class_name ()
 {
-	return "Behavior";
+	return "Strategies :: Behaviors :: Behavior";
 }
 
 //  constructor
@@ -20,7 +21,12 @@ Behavior ::
 	Object ("The name doesn't matter. This is an abstract base class."),
 	character (new_character)
 {
-	//	Do nothing.
+	Reference <Observer <Messages :: Communications :: Communication> > this_behavior
+		(this);
+
+	Engines :: Mediator :: get ()
+		-> register_observer <Messages :: Communications :: Communication>
+			(this_behavior);
 
 	assert (is_initialized ());
 }
@@ -41,7 +47,7 @@ bool Behavior ::
 	const
 {
 	//	'assert' can't handle double templates.
-	//	assert (Strategy <Behavior, Items :: Character> :: is_initialized ());
+	//	assert (Strategy <Behavior, Messages :: Nothing> :: is_initialized ());
 	
 	return true;
 }

@@ -19,7 +19,7 @@ set(SRC_FILES 	"OgreOdePrecompiledHeaders.cpp"
 		"OgreOdeWorld.cpp" )
 
 set(INCLUDE_DIRS   	${Ogre_INCLUDE_DIR}
-					"${RADAKAN_SOURCE_DIR}/external/ode-0.9/include"
+					${Ode_INCLUDE_DIR}
 		            "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include" )            
 
 include_directories( ${INCLUDE_DIRS} )                
@@ -27,7 +27,7 @@ link_directories(   ${Ogre_LIB_RELEASE} ${Ogre_LIB_DEBUG})
 add_library( ogreode_core SHARED ${SRC_FILES} )
 
 if(WIN32)
-    set(DEBUG_LIBS      debug ode 
+    set(DEBUG_LIBS      debug ode
     	   		    debug OgreMain_d)
 else(WIN32)
     set(DEBUG_LIBS      debug ode 

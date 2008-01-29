@@ -25,7 +25,7 @@ set(INCLUDE_DIRS    "${RADAKAN_SOURCE_DIR}/src/hpp"
 					"${RADAKAN_SOURCE_DIR}/external/tinyxml-2.5.3"
 					"${RADAKAN_SOURCE_DIR}/external/ois-1.0/includes"
 					${Ogre_INCLUDE_DIR}
-					"${RADAKAN_SOURCE_DIR}/external/ode-0.9/include"
+					${Ode_INCLUDE_DIR}
 					"${Ogre_SAMPLES_DIR}/include")
 
 if("${GUI_MODE}" STREQUAL "${CEGUI}")

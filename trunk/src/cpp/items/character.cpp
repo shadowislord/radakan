@@ -1,8 +1,7 @@
 #include "engines/log.hpp"
 #include "items/character.hpp"
-#include "messages/battle_message.hpp"
-#include "messages/conversation_message.hpp"
 #include "map.hpp"
+#include "messages/nothing.hpp"
 #include "movable_model.hpp"
 #include "pair.hpp"
 #include "set.hpp"
@@ -19,7 +18,7 @@ using namespace Radakan :: Items;
 string Character ::
 	get_class_name ()
 {
-	return "Character";
+	return "Items :: Character";
 }
 
 //	static
@@ -28,10 +27,6 @@ Reference <Character> Character ::
 {
 	return Strategies :: Behaviors :: Player :: get () -> character;
 }
-
-//	static
-Reference <Set <Character> > Character ::
-	characters (new Set <Character> ("characters (static)"));
 
 //  constructor
 Character ::
@@ -106,20 +101,6 @@ Character ::
 		behave <Strategies :: Behaviors :: AI> ();
 	}
 
-	Reference <Character> this_character (this);
-
-	for (Pointer <Character> character = characters -> get_child ();
-		character . points_to_object (); character = characters -> get_another_child ())
-	{
-		register_observer (character);
-		character -> register_observer (this_character);
-	}
-
-	check = characters -> add (this_character);
-	assert (check);
-
-	register_observer (this_character);
-
 	assert (is_initialized ());
 }
 
@@ -140,8 +121,7 @@ bool Character ::
 	is_initialized ()
 	const
 {
-	assert (Observable <Messages :: Message <Character> > :: is_initialized ());
-	assert (Observer <Messages :: Message <Character> > :: is_initialized ());
+	assert (Observer <Messages :: Nothing> :: is_initialized ());
 	assert (Container_Item <Item> :: is_initialized ());
 
 	return true;
@@ -179,23 +159,11 @@ Reference <Movable_Model> Character ::
 }
 
 void Character ::
-	hit (string fight_mode, Reference <Character> target)
+	call (Reference <Messages :: Nothing>)
 {
 	assert (is_initialized ());
 
-	Engines :: Log :: show (me . get_name (true) + " hits " + target . get_name (true) + "!");
-
-	Reference <Messages :: Message <Character> > temp
-		(new Messages :: Battle_Message (fight_mode, Reference <Character> (this), target));
-	call_observers (temp);
-}
-
-void Character ::
-	call (const Reference <Messages :: Message <Character> > & message)
-{
-	assert (is_initialized ());
-
-	run (message);
+	run (Messages :: Nothing :: get ());
 }
 
 float Character ::
@@ -210,8 +178,8 @@ float Character ::
 	{
 		skills -> add
 		(
-			Reference <Pair <string, Skill> >
-				(new Pair <string, Skill> (skill_name, Reference <Skill> (new Skill (skill_name))))
+			Pair <string, Skill> :: create
+				(skill_name, Reference <Skill> (new Skill (skill_name)))
 		);
 	}
 

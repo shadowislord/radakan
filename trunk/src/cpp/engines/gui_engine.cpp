@@ -1,10 +1,9 @@
-#include "engines/conversation_engine.hpp"
 #include "engines/gui_engine.hpp"
-#include "engines/input_engine.hpp"
 #include "engines/log.hpp"
 #include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
-#include "play_gui.hpp"
+#include "gui.hpp"
+#include "strategies/behaviors/player.hpp"
 
 #if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 	#include <CEGUIImagesetManager.h>
@@ -23,7 +22,7 @@ using namespace Radakan :: Engines;
 string GUI_Engine ::
 	get_class_name ()
 {
-	return "GUI_Engine";
+	return "Engines :: GUI_Engine";
 }
 
 GUI_Engine ::
@@ -125,14 +124,14 @@ void GUI_Engine ::
 {
 	assert (is_initialized ());
 
-	Engines :: Conversation_Engine :: get () -> list_player_options ();
+	Strategies :: Behaviors :: Player :: get () -> list_communication_options ();
 
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 		system -> renderGUI ();
 	#endif
 }
 
-template <class T> Reference <T> GUI_Engine ::
+Reference <GUI> GUI_Engine ::
 	create_gui (string configuration_file)
 {
 	assert (is_initialized ());
@@ -144,13 +143,11 @@ template <class T> Reference <T> GUI_Engine ::
 		);
 	#endif
 
-	Reference <T> result (new T (configuration_file
+	Reference <GUI> result (new GUI (configuration_file
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 		, window
 	#endif
 	));
-
-	result -> Observable <Object> :: register_observer (Input_Engine :: get ());
 
 	return result;
 }
@@ -167,6 +164,3 @@ void GUI_Engine ::
 		system -> setGUISheet (gui -> root_window . get ());
 	#endif
 }
-
-template Reference <GUI> GUI_Engine :: create_gui (string configuration_file);
-template Reference <Play_GUI> GUI_Engine :: create_gui (string configuration_file);

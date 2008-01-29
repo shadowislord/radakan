@@ -1002,18 +1002,6 @@ public:
 	}
 
     #ifdef TIXML_USE_STL
-    //	Added by Tinus.
-	int QueryStringAttribute( const std::string& name, std::string * outValue ) const
-	{
-		const TiXmlAttribute* node = attributeSet.Find( name );
-		if ( !node )
-			return TIXML_NO_ATTRIBUTE;
-
-		* outValue = node->ValueStr();
-
-		return TIXML_SUCCESS;
-	}
-
 	/** Template form of the attribute query which will try to read the
 		attribute into the specified type. Very easy, very powerful, but
 		be careful to make sure to call this with the correct type.

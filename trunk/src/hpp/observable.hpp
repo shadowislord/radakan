@@ -23,12 +23,10 @@ namespace Radakan
 			static string get_class_name ();
 
 			void call_observers (const Reference <T> & message);
-
 			void register_observer (Reference <Observer <T> > observer);
-			void drop_observer (Reference <Observer <T> > observer);
 
 		protected :
-			Observable (int maximum_number_of_observers = Container <Observer <T> > :: unlimited());
+			Observable ();
 
 		private :
 			Reference <Container <Observer <T> > > observers;

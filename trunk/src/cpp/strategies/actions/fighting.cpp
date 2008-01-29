@@ -2,10 +2,10 @@
 
 #include "engines/log.hpp"
 #include "items/character.hpp"
-#include "messages/battle_message.hpp"
+#include "messages/communications/fight.hpp"
 #include "movable_model.hpp"
 #include "set.hpp"
-#include "strategies/actions/fight.hpp"
+#include "strategies/actions/fighting.hpp"
 #include "strategies/behaviors/ai.hpp"
 
 using namespace std;
@@ -14,15 +14,15 @@ using namespace Radakan :: Strategies;
 using namespace Radakan :: Strategies :: Actions;
 
 //	static
-string Fight ::
+string Fighting ::
 	get_class_name ()
 {
-	return "Fight";
+	return "Strategies :: Actions :: Fighting";
 }
 
 //  constructor
-Fight ::
-	Fight
+Fighting ::
+	Fighting
 	(
 		Reference <Items :: Character> new_character,
 		Reference <Behaviors :: AI> new_ai
@@ -35,44 +35,43 @@ Fight ::
 
 	ai -> calm = 0;
 	
-	assert (Fight :: is_initialized ());
+	assert (Fighting :: is_initialized ());
 }
 
 //  destructor
-Fight ::
-	~Fight ()
+Fighting ::
+	~Fighting ()
 {
-	Engines :: Log :: trace (me, Fight :: get_class_name (), "~");
-	assert (Fight :: is_initialized ());
+	Engines :: Log :: trace (me, Fighting :: get_class_name (), "~");
+	assert (Fighting :: is_initialized ());
 
 	prepare_for_destruction ();
 }
 
 //	virtual
-bool Fight ::
+bool Fighting ::
 	is_initialized ()
 	const
 {
 	//	'assert' can't handle double templates.
-	//	assert (Strategy <Action, Items :: Character> :: is_initialized ());
+	//	assert (Strategy <Action, Messages :: Communications :: Communication> :: is_initialized ());
 	
 	return true;
 }
 
 //	virtual
-Reference <Action> Fight ::
-	transit (const Reference <Messages :: Message <Items :: Character> > & message)
+Reference <Action> Fighting ::
+	transit (Reference <Messages :: Communications :: Communication> message)
 {
 	assert (is_initialized ());
 
 	if (message -> to == character)
 	{
-		if (message . is_castable <Messages :: Battle_Message> ())
+		if (message . is_castable <Messages :: Communications :: Fight> ())
 		{
 			//	The following line doesn't have to return true.
 			targets -> add
-				(const_cast <Reference <Items :: Character> &>
-					(message -> from));
+				(const_cast <Reference <Items :: Character> &> (message -> from));
 		}
 	}
 
@@ -127,7 +126,7 @@ Reference <Action> Fight ::
 }
 
 //	virtual
-string Fight ::
+string Fighting ::
 	get_action_name ()
 {
 	return get_class_name ();

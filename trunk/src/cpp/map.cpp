@@ -8,7 +8,7 @@ using namespace Radakan;
 template <typename T, class U> string Map <T, U> ::
 	get_class_name ()
 {
-	return "Map <~T~, " + U :: get_class_name () + ">";
+	return "Map <@T@, " + U :: get_class_name () + ">";
 }
 
 //  constructor
@@ -123,7 +123,7 @@ template <typename T, class U> Reference <Pair <T, U> > Map <T, U> ::
 	else
 	{
 		Reference <Pair <T, U> > result
-			(new Pair <T, U> (next_child -> first, next_child -> second));
+			(Pair <T, U> :: create (next_child -> first, next_child -> second));
 		next_child ++;
 		return result;
 	}
@@ -144,16 +144,10 @@ template <typename T, class U> Reference <U> Map <T, U> ::
 	}
 }
 
-#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	#include <elements/CEGUIListboxItem.h>
-#endif
-#include "items/character.hpp"
-#include "messages/message.hpp"
+#include "messages/communications/communication.hpp"
 #include "skill.hpp"
 #include "tile.hpp"
 
-#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-	template class Map <CEGUI :: ListboxItem *, Messages :: Message <Items :: Character> >;
-#endif
+template class Map <string, Messages :: Communications :: Communication>;
 template class Map <pair <int, int>, Tile>;
 template class Map <string, Skill>;

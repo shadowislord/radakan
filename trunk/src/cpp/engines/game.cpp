@@ -4,15 +4,14 @@
 #include <OgreTextureManager.h>
 
 #include "engines/audio_engine.hpp"
-#include "engines/conversation_engine.hpp"
 #include "engines/game.hpp"
 #include "engines/gui_engine.hpp"
-#include "engines/input_engine.hpp"
+#include "engines/input/registrator.hpp"
 #include "engines/log.hpp"
 #include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
 #include "engines/tracker.hpp"
-#include "messages/message.hpp"
+#include "messages/nothing.hpp"
 #include "strategies/game_modes/menu.hpp"
 #include "strategies/game_modes/play.hpp"
 #include "world.hpp"
@@ -25,7 +24,7 @@ using namespace Radakan :: Engines;
 string Game ::
 	get_class_name ()
 {
-	return "Game";
+	return "Engines :: Game";
 }
 
 Game ::
@@ -72,7 +71,7 @@ Game ::
 	// Add gui config directory
 	Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 				(radakan_path + "/data/gui/config", "FileSystem", "gui", true);
-
+	Log :: log (me) << "A" << endl;
 	// Add gui font directory
 	Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 				(radakan_path + "/data/gui/font", "FileSystem", "gui", true);
@@ -97,19 +96,22 @@ Game ::
 
 	Ogre :: ResourceGroupManager :: getSingleton () . addResourceLocation
 				(ogre_media_path + "/models", "FileSystem", "models", true);
+	Log :: log (me) << "B" << endl;
 
 	Ogre :: MeshManager :: getSingleton () . createPlane
 		("ground.mesh", "models", Ogre :: Plane (Ogre :: Vector3 (1, 0, 0), 0), 20, 20);
+	Log :: log (me) << "C" << endl;
 
 	// Initialise our resources
 	Ogre :: ResourceGroupManager :: getSingleton () . initialiseAllResourceGroups ();
 
+	Log :: log (me) << "D" << endl;
 	//	set default mipmap level (NB some APIs ignore this)
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
+	Log :: log (me) << "E" << endl;
 
-	new Input_Engine ();
+	new Input :: Registrator ();
 	new GUI_Engine ();
-	new Conversation_Engine ();
 
 	new World ();
 
@@ -135,13 +137,12 @@ Game ::
 	Log :: trace (me, Game :: get_class_name (), "~");
 	assert (is_initialized ());
 
-	Conversation_Engine :: uninstantiate ();
 	Strategies :: Game_Modes :: Menu :: uninstantiate ();
 	Strategies :: Game_Modes :: Play :: uninstantiate ();
 	World :: uninstantiate ();
 	Settings :: uninstantiate ();
 	GUI_Engine :: uninstantiate ();
-	Input_Engine :: uninstantiate ();
+	Input :: Registrator :: uninstantiate ();
 
 	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 		Audio_Engine :: uninstantiate ();
@@ -168,23 +169,16 @@ void Game ::
 	run ()
 {
 	Log :: trace (me, Game :: get_class_name (), "run");
-	
+
 	while (has_active_state ())
 	{
-		if (Render_Engine :: get () -> get_window () -> isClosed ())
-		{
-			Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object> :: run
-				(Messages :: Message <Object> :: terminate);
-		}
-		else
-		{
-			Input_Engine :: get () -> capture ();
+		Render_Engine :: get () -> render ();
 
-			Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Object> :: run
-				(Messages :: Message <Object> :: update);
+		Input :: Registrator :: get () -> capture ();
 
-			Render_Engine :: get () -> render ();
-		}
+		//	Get the player input, and run the game logic using this input.
+		Strategy_State_Machine <Strategies :: Game_Modes :: Game_Mode, Messages :: Nothing>
+			:: run (Messages :: Nothing :: get ());
 	}
 
 	Log :: trace (me, Game :: get_class_name (), "end of run");
