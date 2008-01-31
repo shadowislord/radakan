@@ -38,7 +38,8 @@ GUI ::
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
 		,
 		root_window (new_root),
-		subscriber (new CEGUI :: SubscriberSlot (& GUI :: handle_event, this))
+		subscriber (new CEGUI :: SubscriberSlot (& GUI :: handle_event, this)),
+        lists (new map <string, boost :: shared_ptr <CEGUI :: Listbox> >)
 	#endif
 {
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
@@ -47,13 +48,15 @@ GUI ::
 		for (unsigned int i = 0; i < root_window -> getChildCount (); i ++)
 		{
 			temp = root_window -> getChildAtIdx (i);
-			if (temp -> getType () == "Listbox")
+			if (temp -> getType () . find ("Listbox"))
 			{
 				string window_name = temp -> getName () . c_str ();
-				
+
 				//	Convert 'abc-def' to 'def' using 'abc.xml'.
 				window_name = without (window_name, without (name, ".xml") + "-");
-			
+
+				Engines :: Log :: log (me) << "window_name: " << window_name << endl;
+
 				#ifdef RADAKAN_TARIQWALJI
 					try
 					{
@@ -63,12 +66,8 @@ GUI ::
 				(
 					pair <string, boost :: shared_ptr <CEGUI :: Listbox> >
 					(
-						window_name,
-						boost :: shared_ptr <CEGUI :: Listbox>
-						(
-							boost :: polymorphic_downcast
-								<CEGUI :: Listbox *, CEGUI :: Window> (temp)
-						)
+						window_name, boost :: shared_ptr <CEGUI :: Listbox>
+									((CEGUI :: Listbox *) (temp))
 					)
 				);
 
@@ -158,7 +157,7 @@ void GUI ::
 		subscribe (CEGUI :: Window & window)
 	{
 		assert (is_initialized ());
-		
+
 		CEGUI :: Window * temp;
 		for (unsigned int i = 0; i < window . getChildCount (); i ++)
 		{
@@ -219,7 +218,7 @@ void GUI ::
 			if (listbox -> getSelectedCount () != 0)
 			{
 				string caption (window_event_arguments -> window -> getText () . c_str ());
-			
+
 				Reference <Messages :: List_Event> message
 					(new Messages :: List_Event (caption));
 
@@ -232,7 +231,7 @@ void GUI ::
 		else
 		{
 			string caption (window_event_arguments -> window -> getText () . c_str ());
-			
+
 			Reference <Messages :: Button_Event> message
 				(new Messages :: Button_Event (to_lower_case (caption)));
 

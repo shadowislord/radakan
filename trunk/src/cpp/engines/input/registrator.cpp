@@ -12,7 +12,9 @@
 */
 
 #include "engines/input/command_data.hpp"
+#include "engines/input/command_reader.hpp"
 #include "engines/input/mouse_data.hpp"
+#include "engines/input/mouse_reader.hpp"
 #include "engines/input/registrator.hpp"
 #include "engines/log.hpp"
 #include "engines/render_engine.hpp"
@@ -141,6 +143,11 @@ Registrator ::
 			<< ") was detected. Update to OIS-1.0-RC1 or later." << endl;
 		abort ();
 	#endif
+
+	new Command_Data ();
+	new Command_Reader ();
+	new Mouse_Data ();
+	new Mouse_Reader ();
 
 	unsigned long window_handle;
 

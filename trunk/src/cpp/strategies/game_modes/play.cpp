@@ -27,7 +27,7 @@ string Play ::
 //  constructor
 Play ::
 	Play () :
-	Object ("play state", true)	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("play", true)	//	Here 'true' means 'prevent automatic destruction'.
 {
 	Engines :: Log :: trace (me, Play :: get_class_name ());
 
@@ -51,7 +51,7 @@ bool Play ::
 {
 //	Engines :: Log :: trace (me, Play :: get_class_name (), "is_initialized");
 	assert (Singleton <Play> :: is_initialized ());
-	
+
 	//	'assert' can't handle double templates.
 	//	assert (Strategy <Strategies :: Game_Modes :: Game_Mode, Object> :: is_initialized ());
 
@@ -76,7 +76,7 @@ Reference <Game_Mode> Play ::
 	{
 		return Menu :: get ();
 	}
-	
+
 	Engines :: Mediator :: get () -> call_observers <Messages :: Nothing>
 		(Messages :: Nothing :: get ());
 

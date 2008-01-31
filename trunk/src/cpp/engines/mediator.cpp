@@ -26,6 +26,8 @@ Mediator ::
 {
 	Engines :: Log :: trace (me, Mediator :: get_class_name ());
 
+	new Mediator_Implementation ();
+
 	assert (is_initialized ());
 }
 
@@ -62,7 +64,7 @@ template <class T> void Mediator ::
 	register_observer (Reference <Observer <T> > observer)
 {
 	assert (Mediator :: is_initialized ());
-	
+
 	Engines :: Mediator_Implementation :: get ()
 		-> Observable <T> :: register_observer (observer);
 }

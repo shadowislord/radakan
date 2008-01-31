@@ -36,11 +36,11 @@ Render_Engine ::
 			)
 		)
 	),
-	turn (0)/*,
-	timer (new Ogre :: Timer ())*/
+	turn (0),
+	timer (new Ogre :: Timer ())
 {
 	Engines :: Log :: trace (me, Render_Engine :: get_class_name ());
-	
+
 	if (! root -> showConfigDialog ())
 	{
 		Log :: error (me) << "An Ogre configuration dialog problem occurred." << endl;
@@ -97,7 +97,7 @@ void Render_Engine ::
 
 	bool check = root -> renderOneFrame ();
 	assert (check);
-	
+
 	GUI_Engine :: get () -> render ();
 
 	Log :: log (me) << "FPS: " << get_FPS () << endl;

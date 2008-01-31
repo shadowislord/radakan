@@ -8,6 +8,7 @@
 #include "engines/gui_engine.hpp"
 #include "engines/input/registrator.hpp"
 #include "engines/log.hpp"
+#include "engines/mediator.hpp"
 #include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
 #include "engines/tracker.hpp"
@@ -32,9 +33,9 @@ Game ::
 	Object ("game")
 {
 	Log :: trace (me, Game :: get_class_name (), "", path_to_config);
-	
+
 	new Settings (path_to_config);
-	
+
 	#ifdef RADAKAN_DEBUG
 		Log :: log (me) << "Debug mode is enabled." << endl;
 
@@ -45,6 +46,8 @@ Game ::
 
 		Log :: no_logs (me);
 	#endif
+
+	new Mediator ();
 
 	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 		new Audio_Engine ();

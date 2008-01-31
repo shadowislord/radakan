@@ -20,7 +20,7 @@ namespace Radakan
 			class Game_Mode;
 		}
 	}
-	
+
 	namespace Engines
 	{
 
@@ -37,7 +37,7 @@ namespace Radakan
 				Game (string path_to_config);
 				virtual ~Game ();
 				virtual bool is_initialized () const;
-				
+
 				void run ();
 		};
 	}
