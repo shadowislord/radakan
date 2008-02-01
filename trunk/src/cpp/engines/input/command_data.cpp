@@ -16,7 +16,7 @@ string Command_Data ::
 //  constructor
 Command_Data ::
 	Command_Data () :
-	Object (to_lower_case (get_class_name ()))
+	Object (to_lower_case (get_class_name ()), true)
 {
 	Log :: trace (me, Command_Data :: get_class_name ());
 

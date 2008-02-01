@@ -37,7 +37,7 @@ const string Mouse_Data ::
 //  constructor
 Mouse_Data ::
 	Mouse_Data () :
-	Object (to_lower_case (get_class_name ()))
+	Object (to_lower_case (get_class_name ()), true)
 {
 	Engines :: Log :: trace (me, Mouse_Data :: get_class_name ());
 
