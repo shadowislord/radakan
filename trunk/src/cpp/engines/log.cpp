@@ -20,7 +20,7 @@ string Log ::
 //  constructor
 Log ::
 	Log () :
-	Object ("log", true)	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("log", "singleton")
 {
 	trace (me, Log :: get_class_name (), "");
 

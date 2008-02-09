@@ -34,8 +34,7 @@ namespace Radakan
 			public Container_Item <Item>,
 			public Observer <Messages :: Nothing>,
 			public Strategy_State_Machine
-				<Strategies :: Behaviors :: Behavior,
-					Messages :: Nothing>
+				<Strategies :: Behaviors :: Behavior, Messages :: Nothing>
 		{
 			public :
 				static string get_class_name ();
@@ -52,7 +51,7 @@ namespace Radakan
 				(
 					string new_name,
 					float new_mass,
-					Ogre :: Vector3 new_size,
+					Mathematics :: Vector_3D new_size,
 					const Reference <Mesh_Data> new_mesh_data,
 					string type	//	'npc' or 'player character'
 				);

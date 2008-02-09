@@ -67,8 +67,8 @@ namespace Radakan
 				private :
 					boost :: scoped_ptr <set <TiXmlDocument> > behavior_files;
 					
-					Reference <Set <Messages :: Communications :: Communication> > sensory_buffer;
-					Reference <Set <Opinion> > opinions;
+					Reference <Container <Messages :: Communications :: Communication> > sensory_buffer;
+					Reference <Container <Opinion> > opinions;
 			};
 		}
 	}

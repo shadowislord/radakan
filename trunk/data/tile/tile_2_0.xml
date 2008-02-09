@@ -1,13 +1,13 @@
 <tile>
-	<model item="flat_ground" x="10" y="0" z="10" />
+	<model item="flat_ground" position="10, 0, 10" />
 	
-	<model item="ninja" x="12.5" y="1.1" z="11.2" name="Elevnth Ninja" />
+	<model item="ninja" position="12.5, 1.1, 11.2" name="Elevnth Ninja" />
 
-	<model item="tavern" x="10" y="0" z="10" />
+	<model item="tavern" position="10, 0, 10" />
 	
-	<model item="fence_1" x="2" y="0" z="1" />
-	<model item="fence_2" x="6" y="0" z="1" />
-	<model item="fence_3" x="10" y="0" z="1" />
-	<model item="fence_4" x="14" y="0" z="1" />
-	<model item="fence_5" x="18" y="0" z="1" />
+	<model item="fence_1" position="2, 0, 1" />
+	<model item="fence_2" position="6, 0, 1" />
+	<model item="fence_3" position="10, 0, 1" />
+	<model item="fence_4" position="14, 0, 1" />
+	<model item="fence_5" position="18, 0, 1" />
 </tile>

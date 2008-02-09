@@ -95,8 +95,12 @@ GUI ::
 		subscribe (* root_window . get ());
 	#endif
 
-	Engines :: Mediator :: get () -> register_observer <Messages :: List_Update>
-		(Reference <Observer <Messages :: List_Update> > (this));
+	add_automatic_destruction_prevention ("construction of " + get_class_name ());
+	{
+		Engines :: Mediator :: get () -> register_observer <Messages :: List_Update>
+			(Reference <Observer <Messages :: List_Update> > (this));
+	}
+	remove_automatic_destruction_prevention ("construction of " + get_class_name ());
 
 	assert (is_initialized ());
 }
@@ -209,7 +213,7 @@ void GUI ::
 			}
 		#endif
 
-		if (window_event_arguments -> window -> getType () == "Listbox")
+		if (window_event_arguments -> window -> getType () . find ("Listbox") != string :: npos)
 		{
 			boost :: scoped_ptr <CEGUI ::Listbox> listbox
 				(boost :: polymorphic_cast <CEGUI ::Listbox *>

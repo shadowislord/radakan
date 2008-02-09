@@ -50,7 +50,7 @@ namespace Radakan
 					virtual bool evaluate_condition (const TiXmlElement * element);
 					virtual bool evaluate_expression (const TiXmlAttribute * attribute);
 					
-					const Ogre :: Vector3 get_camera_position () const;
+					const Mathematics :: Vector_3D get_camera_position () const;
 					const Ogre :: Quaternion get_camera_orientation () const;
 
 					void list_communication_options ();

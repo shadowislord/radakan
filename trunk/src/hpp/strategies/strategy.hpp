@@ -14,7 +14,7 @@ namespace Radakan
 		///	see http://en.wikipedia.org/wiki/Strategy_pattern .
 		///	Use me in combination with the Strategy_State_Machine class.
 		template <class T, class U> class Strategy :
-			public Resident <T>
+			public virtual Object
 		{
 			public :
 				//	protected constructor, see below

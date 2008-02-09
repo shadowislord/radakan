@@ -38,9 +38,7 @@ string Mouse_Reader ::
 
 Mouse_Reader ::
 	Mouse_Reader () :
-
-	//	Here 'true' means 'prevent automatic destruction'.
-	Object (to_lower_case (get_class_name ()), true)	
+	Object (to_lower_case (get_class_name ()), "singleton")
 {
 	Engines :: Log :: trace (me, Mouse_Reader :: get_class_name ());
 
@@ -87,7 +85,7 @@ bool Mouse_Reader ::
 	return false;
 }
 
-const Ogre :: Vector3 & Mouse_Reader ::
+const Mathematics :: Vector_3D & Mouse_Reader ::
 	get_absolute_mouse_position ()
 	const
 {
@@ -96,7 +94,7 @@ const Ogre :: Vector3 & Mouse_Reader ::
 	return Mouse_Data :: get () -> absolute_mouse_position;
 }
 
-const Ogre :: Vector3 & Mouse_Reader ::
+const Mathematics :: Vector_3D & Mouse_Reader ::
 	get_relative_mouse_position ()
 	const
 {

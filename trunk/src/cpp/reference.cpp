@@ -40,7 +40,7 @@ template <class T> bool Reference <T> ::
 }
 
 template <class T> Reference <T> ::
-	Reference (T * new_pointee) :
+	Reference (T * new_pointee, bool weak) :
 	pointee (new_pointee),
 	parent (NULL)
 {
@@ -48,7 +48,7 @@ template <class T> Reference <T> ::
 
 	if (pointee != NULL)
 	{
-		pointee -> register_reference (* this);
+		pointee -> register_reference (* this, weak);
 	}
 
 	//	Engines :: Log :: trace (* this, get_class_name (), "", get_name (), "A", "(end)");
@@ -68,6 +68,18 @@ template <class T> Reference <T> ::
 	}
 
 	//	Engines :: Log :: trace (* this, get_class_name (), "", other . get_name (), "B", "(end)");
+}
+
+template <class T> Reference <T> ::
+	Reference (const Reference <T> & other, bool weak) :
+	Reference_Base (),	//	GCC (using '-Wall -Wextra') gives a warning without this line.
+	pointee (other . pointee),
+	parent (NULL)
+{
+	if (pointee != NULL)
+	{
+		pointee -> register_reference (* this, weak);
+	}
 }
 
 template <class T> template <class U> Reference <T> ::
@@ -121,7 +133,7 @@ template <class T> string Reference <T> ::
 	get_name (bool suppress_debug_info)
 	const
 {
-	#ifdef RADAKAN_DEBUG
+	#ifndef RADAKAN_DEBUG
 		suppress_debug_info = true;
 	#endif
 
@@ -186,6 +198,15 @@ template <class T> void Reference <T> ::
 	set_parent (Container <T> & new_parent)
 {
 	parent = & new_parent;
+}
+
+template <class T> void Reference <T> ::
+	weaken ()
+{
+	assert (points_to_object ());
+	
+	pointee -> unregister_reference (* this);
+	pointee -> register_reference (* this, true);
 }
 
 template <class T> template <class U> bool Reference <T> ::
@@ -274,10 +295,13 @@ template class Reference <Container <Observer <Messages :: List_Event> > >;
 template class Reference <Container <Observer <Messages :: List_Update> > >;
 template class Reference <Container <Observer <Messages :: Nothing> > >;
 template class Reference <Container <Opinion> >;
+template class Reference <Container <Pair <Mathematics :: Vector_3D, Tile> > >;
 template class Reference
 	<Container <Pair <string, Messages :: Communications :: Communication> > >;
-template class Reference <Container <Pair <pair <int, int>, Tile> > >;
 template class Reference <Container <Pair <string, Skill> > >;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Reference <Container <Pair <string, Sound_Sample> > >;
+#endif
 template class Reference <Container <Skill> >;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Reference <Container <Sound_Sample> >;
@@ -317,12 +341,12 @@ template class Reference
 	<Location <Items :: Container_Item <Items :: Container_Item <Items :: Item> > > >;
 template class Reference <Location <Items :: Container_Item <Items :: Item> > >;
 template class Reference <Location <Model> >;
-template class Reference <Location <Strategies :: Actions :: Action> >;
-template class Reference <Location <Strategies :: Behaviors :: Behavior> >;
-template class Reference <Location <Strategies :: Game_Modes :: Game_Mode> >;
+template class Reference <Map <Mathematics :: Vector_3D, Tile> >;
 template class Reference <Map <string, Messages :: Communications :: Communication> >;
-template class Reference <Map <pair <int, int>, Tile> >;
 template class Reference <Map <string, Skill> >;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Reference <Map <string, Sound_Sample> >;
+#endif
 template class Reference <Mesh_Data>;
 template class Reference <Messages :: Button_Event>;
 template class Reference <Messages :: Communications :: Communication>;
@@ -340,35 +364,18 @@ template class Reference <Observer <Messages :: List_Event> >;
 template class Reference <Observer <Messages :: List_Update> >;
 template class Reference <Observer <Messages :: Nothing> >;
 template class Reference <Opinion>;
+template class Reference <Pair <Mathematics :: Vector_3D, Tile> >;
 template class Reference <Pair <string, Messages :: Communications :: Communication> >;
-template class Reference <Pair <pair <int, int>, Tile> >;
 template class Reference <Pair <string, Skill> >;
-template class Reference <Set <GUI> >;
-template class Reference <Set <Items :: Character> >;
-template class Reference <Set <Items :: Item> >;
-template class Reference <Set <Messages :: Communications :: Communication> >;
-template class Reference <Set <Model> >;
-template class Reference <Set <Object> >;
-template class Reference <Set <Observer <Messages :: Communications :: Communication> > >;
-template class Reference <Set <Opinion> >;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
-	template class Reference <Set <Sound_Sample> >;
-#endif	//	RADAKAN_AUDIO_ENGINE_HPP
-template class Reference <Set <Strategies :: Game_Modes :: Game_Mode> >;
-//	template class Reference <Set <Strategies :: Strategy <Items :: Character> > >;
-template class Reference <Set <Tile> >;
+	template class Reference <Pair <string, Sound_Sample> >;
+#endif
 template class Reference <Skill>;
-#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
-	template class Reference <Slot <Strategies :: Game_Modes :: Game_Mode> >;
-#endif	//	RADAKAN_AUDIO_ENGINE_HPP
-//	template class Reference <Slot <Strategies :: Strategy <Items :: Character> > >;
 template class Reference <Slot <Tile> >;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Reference <Sound_Sample>;
 #endif	//	RADAKAN_AUDIO_ENGINE_HPP
-template class Reference <State_Machine <Tile> >;
 template class Reference <Strategies :: Game_Modes :: Game_Mode>;
-//	template class Reference <Strategies :: Strategy <Items :: Character> >;
 template class Reference <Strategies :: Actions :: Action>;
 template class Reference <Strategies :: Actions :: Fighting>;
 template class Reference <Strategies :: Behaviors :: Behavior>;
@@ -376,8 +383,6 @@ template class Reference <Strategies :: Behaviors :: AI>;
 template class Reference <Strategies :: Behaviors :: Player>;
 template class Reference <Strategies :: Game_Modes :: Menu>;
 template class Reference <Strategies :: Game_Modes :: Play>;
-//	template class Reference <Strategies :: Strategy_State_Machine <Engines :: Game> >;
-//	template class Reference <Strategies :: Strategy_State_Machine <Items :: Character> >;
 template class Reference <Tile>;
 template class Reference <World>;
 

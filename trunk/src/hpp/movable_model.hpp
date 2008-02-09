@@ -5,11 +5,16 @@
 
 using namespace std;
 
-namespace OgreOde
-{
-	class Body;
-	class Geometry;
-}
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+	namespace OgreOde
+	{
+		class Body;
+		class Geometry;
+	}
+#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+#else
+#endif
+
 namespace Radakan
 {
 	
@@ -18,7 +23,8 @@ namespace Radakan
 		public Model
 	{
 		public :
-			Movable_Model (Reference <Items :: Item> new_item, Ogre :: Vector3 position);
+			Movable_Model
+				(Reference <Items :: Item> new_item, Mathematics :: Vector_3D position);
 			virtual ~Movable_Model ();
 			virtual bool is_initialized () const;
 			
@@ -29,13 +35,20 @@ namespace Radakan
 
 			//	If no - or zero - ax specified, I'll turn around my top direction.
 			void turn
-				(float relative_destination_turn_speed, Ogre :: Vector3 ax = zero_vector);
+			(
+				float relative_destination_turn_speed,
+				Mathematics :: Vector_3D axis = Mathematics :: Vector_3D :: zero_vector
+			);
 
 			//	Reset the orientation.
 			void reset ();
 
 		private :
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 			boost :: shared_ptr <OgreOde :: Body> body;
+#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+#else
+#endif
 	};
 }
 

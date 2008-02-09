@@ -19,7 +19,7 @@
 	#include <boost/smart_ptr.hpp>
 	#include <boost/utility.hpp>
 
-	#include <OgreVector3.h>
+	#include <OgrePrerequisites.h>
 
 	#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		#define WIN32_LEAN_AND_MEAN
@@ -43,15 +43,11 @@
 	{
 		string bool_to_string (const bool & value);
 		string to_string (const float & value);
-		string to_string (const Ogre :: Vector3 & vector);
 		string to_lower_case (const string & value);
 		float to_float (const string & value);
 		string without (const string & value, const string & diff);
-
-		const Ogre :: Vector3 zero_vector (0, 0, 0);
-		const Ogre :: Vector3 x_axis (1, 0, 0);
-		const Ogre :: Vector3 y_axis (0, 1, 0);	//	upwards
-		const Ogre :: Vector3 z_axis (0, 0, 1);
 	}
+
+	#include "mathematics/vector_3d.hpp"
 
 #endif //	RADAKAN_BASE_HPP

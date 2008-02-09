@@ -3,7 +3,7 @@ INCLUDE_DIRECTORIES(
 ${BULLET_PHYSICS_SOURCE_DIR}/src }
 )
 
-ADD_LIBRARY(LibLinearMath
+ADD_LIBRARY(LibLinearMath SHARED
 		btAlignedObjectArray.h
 		btList.h
 		btPoolAllocator.h

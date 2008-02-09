@@ -23,7 +23,7 @@ string Menu ::
 //  constructor
 Menu ::
 	Menu () :
-	Object ("menu", true)	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("menu", "singleton")
 {
 	Engines :: Log :: trace (me, Menu :: get_class_name ());
 
@@ -58,13 +58,15 @@ Reference <Game_Mode> Menu ::
 	assert (! message . points_to_object ());
 
 	//	quit
-	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "quit"))
+	if (Engines :: Input :: Command_Reader :: get () -> has_command
+		(Game_Mode :: get_class_name (), "quit"))
 	{
 		return Reference <Game_Mode> ();
 	}
 
 	//	un-pause
-	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "return"))
+	if (Engines :: Input :: Command_Reader :: get () -> has_command
+		(Game_Mode :: get_class_name (), "return"))
 	{
 		if (Items :: Character :: get_player_character () -> is_alive ())
 		{

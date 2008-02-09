@@ -4,7 +4,6 @@
 #include "items/character.hpp"
 #include "messages/communications/converse.hpp"
 #include "messages/communications/fight.hpp"
-#include "movable_model.hpp"
 #include "strategies/actions/conversing.hpp"
 #include "strategies/actions/fighting.hpp"
 #include "strategies/behaviors/ai.hpp"

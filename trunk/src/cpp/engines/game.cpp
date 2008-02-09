@@ -49,10 +49,6 @@ Game ::
 
 	new Mediator ();
 
-	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
-		new Audio_Engine ();
-	#endif
-
 	new Render_Engine ();
 
 	// These strings are loaded from a configuration file using the Settings class.
@@ -102,7 +98,9 @@ Game ::
 	Log :: log (me) << "B" << endl;
 
 	Ogre :: MeshManager :: getSingleton () . createPlane
-		("ground.mesh", "models", Ogre :: Plane (Ogre :: Vector3 (1, 0, 0), 0), 20, 20);
+		("ground.mesh", "models", Ogre :: Plane
+//			(Mathematics :: Vector_3D :: x_axis, 0), 20, 20);	//	doesn't work
+			(Ogre :: Vector3 (1, 0, 0), 0), 20, 20);
 	Log :: log (me) << "C" << endl;
 
 	// Initialise our resources
@@ -113,8 +111,14 @@ Game ::
 	Ogre :: TextureManager :: getSingleton() . setDefaultNumMipmaps (5);
 	Log :: log (me) << "E" << endl;
 
+	Render_Engine :: get () -> set_skydome ("Examples/CloudySky");
+
 	new Input :: Registrator ();
 	new GUI_Engine ();
+
+	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+		new Audio_Engine ();
+	#endif
 
 	new World ();
 
@@ -145,11 +149,15 @@ Game ::
 	World :: uninstantiate ();
 	Settings :: uninstantiate ();
 	GUI_Engine :: uninstantiate ();
-	Input :: Registrator :: uninstantiate ();
+	//	Input :: Registrator :: uninstantiate ();	//	Causes a crash.
 
 	#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 		Audio_Engine :: uninstantiate ();
 	#endif
+
+	//	Render_Engine :: uninstantiate ();	//	Causes a crash.
+
+	Mediator :: uninstantiate ();
 
 	#ifdef RADAKAN_DEBUG
 		Log :: uninstantiate ();
@@ -176,6 +184,7 @@ void Game ::
 	while (has_active_state ())
 	{
 		Render_Engine :: get () -> render ();
+		GUI_Engine :: get () -> update_and_render ();
 
 		Input :: Registrator :: get () -> capture ();
 

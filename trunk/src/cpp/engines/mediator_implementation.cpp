@@ -21,7 +21,7 @@ string Mediator_Implementation ::
 //  constructor
 Mediator_Implementation ::
 	Mediator_Implementation () :
-	Object ("mediator implementation", true)	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("mediator implementation", "singleton")
 {
 	Engines :: Log :: trace (me, Mediator_Implementation :: get_class_name ());
 

@@ -40,7 +40,7 @@ namespace Radakan
 				const float mass;
 				
 				///	in cubic meters
-				const Ogre :: Vector3 size;
+				const Mathematics :: Vector_3D size;
 				
 				Reference <Mesh_Data> mesh_data;
 
@@ -48,7 +48,7 @@ namespace Radakan
 				Item
 				(
 					float new_mass,
-					Ogre :: Vector3 new_size,
+					Mathematics :: Vector_3D new_size,
 					const Reference <Mesh_Data> new_mesh_data
 				);
 

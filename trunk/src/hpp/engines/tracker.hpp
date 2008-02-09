@@ -3,7 +3,7 @@
 
 	#ifdef RADAKAN_DEBUG
 
-		#include "set.hpp"
+		#include "container.hpp"
 		#include "singleton.hpp"
 
 		using namespace std;
@@ -16,15 +16,22 @@
 				///	Tracker is used to keep track of all objects.
 				///	For tracking method calls, see Log :: trace.
 				class Tracker :
-					public Set <Object>,
 					public Singleton <Tracker>
 				{
+					public :
+						static  string get_class_name ();
+						
+						static bool is_tracking ();
+						
+					private :
+						static bool tracking;
+						
 					public :
 						Tracker ();
 						virtual ~Tracker ();
 						virtual bool is_initialized () const;
 						
-						static  string get_class_name ();
+						Reference <Container <Object> > objects;
 				};
 			}
 		}

@@ -30,6 +30,8 @@ namespace Radakan
 				boost :: shared_ptr <Ogre :: RenderWindow> get_window ();
 				boost :: shared_ptr <Ogre :: SceneManager> get_scene_manager ();
 
+				void set_skydome (string skydome_name);
+
 				float get_FPS () const;
 
 			private :

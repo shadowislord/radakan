@@ -1,14 +1,3 @@
-#include <tinyxml.h>
-
-#include <Ogre.h>
-#include <OgreStringConverter.h>
-#include <OgreException.h>
-
-#include <OgreOdeBody.h>
-#include <OgreOdeGeometry.h>
-#include <OgreOdeSpace.h>
-#include <OgreOdeWorld.h>
-
 #include "engines/log.hpp"
 #include "engines/settings.hpp"
 #include "items/character.hpp"
@@ -17,6 +6,22 @@
 #include "set.hpp"
 #include "tile.hpp"
 #include "world.hpp"
+
+#include <tinyxml.h>
+
+#include <Ogre.h>
+#include <OgreStringConverter.h>
+#include <OgreException.h>
+
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+	#include <OgreOdeBody.h>
+	#include <OgreOdeGeometry.h>
+	#include <OgreOdeSpace.h>
+	#include <OgreOdeWorld.h>
+#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	#include <btBulletDynamicsCommon.h>
+#else
+#endif
 
 using namespace std;
 using namespace Radakan;
@@ -35,31 +40,50 @@ const int Tile ::
 Tile ::
 	Tile
 	(
-		pair <int, int> new_coordinates,
+		Mathematics :: Vector_3D new_coordinates
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+		,
 		boost :: shared_ptr <OgreOde :: SimpleSpace> new_space
+#endif
 	) :
-	Object
-	(
-		"tile_" + to_string (new_coordinates . first) + "_" + to_string (new_coordinates . second)
-	),
+	Object ("tile at " + new_coordinates . to_string ()),
 	coordinates (new_coordinates),
-	position (side_length * Ogre :: Vector3 (coordinates . first, 0, coordinates . second)),
-	characters (new Set <Items :: Character> (name + "'s characters")),
+	position (side_length * coordinates),
+	characters
+	(
+		new Set <Items :: Character>
+		(
+			me . get_name () + "'s characters",
+			Container <Items :: Character> :: unlimited (),
+			true
+		)
+	),
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	space (new_space),
-	doc (new TiXmlDocument (Engines :: Settings :: get () -> radakan_path + "/data/tile/" + name + ".xml"))
+#endif
+	doc (new TiXmlDocument
+		(Engines :: Settings :: get () -> radakan_path + "/data/tile/tile_"
+			+ to_string (coordinates . x) + "_" + to_string (coordinates . z) + ".xml"))
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "", "(" + to_string (new_coordinates . first) + ", " + to_string (new_coordinates . second) + ")");
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "", coordinates . to_string ()
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+	, "@new_space@"
+#endif
+	);
 
 	bool check = doc -> LoadFile ();
 	assert (check);
 	assert (! doc -> Error ());
 	TiXmlElement * root = doc -> RootElement ();
 
+	add_automatic_destruction_prevention ("construction of " + get_class_name ());
 	for (TiXmlElement * xml_element = root -> FirstChildElement ();
 		xml_element != NULL; xml_element = xml_element -> NextSiblingElement ())
 	{
 		load_model (* xml_element);
 	}
+	remove_automatic_destruction_prevention ("construction of " + get_class_name ());
+
 
 /*	if (root -> FirstChildElement ("forest") != NULL)
 	{
@@ -161,7 +185,9 @@ bool Tile ::
 		assert (check);
 	}
 
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	model -> set_space (space);
+#endif
 
 	return true;
 }
@@ -207,12 +233,8 @@ void Tile ::
 	Reference <Items :: Item> item (load_item (item_prototype, item_name));
 
 	//	'position' is the position of this tile.
-	Ogre :: Vector3 model_position = position + Ogre :: Vector3
-	(
-		to_float (element . Attribute ("x")),
-		to_float (element . Attribute ("y")),
-		to_float (element . Attribute ("z"))
-	);
+	Mathematics :: Vector_3D model_position = position + Mathematics :: Vector_3D
+		(element . Attribute ("position"));
 
 	Pointer <Model> model;
 	if (item . is_castable <Items :: Static_Item> ())
@@ -226,8 +248,6 @@ void Tile ::
 
 	bool check = add (model);
 	assert (check);
-
-	//	TODO re-enable assert ((position + Ogre :: Vector3 (x, y, z) - model . getPosition ()) . length () < 0.01);
 }
 
 Reference <Items :: Item> Tile ::
@@ -245,15 +265,7 @@ Reference <Items :: Item> Tile ::
 
 	string type = item_element -> Attribute ("type");
 	float mass = to_float (item_element -> Attribute ("mass"));
-
-	TiXmlElement * size_element = item_element -> FirstChildElement ("size");
-	assert (size_element != NULL);
-	Ogre :: Vector3 size = Ogre :: Vector3
-	(
-		to_float (size_element -> Attribute ("x")),
-		to_float (size_element -> Attribute ("y")),
-		to_float (size_element -> Attribute ("z"))
-	);
+	Mathematics :: Vector_3D size (item_element -> Attribute ("size"));
 
 	//	TODO Do this smarter so we don't have to re-run this every time.
 	TiXmlElement * mesh_element = item_element -> FirstChildElement ("mesh");
@@ -282,7 +294,8 @@ Reference <Items :: Item> Tile ::
 	{
 		if (mesh_element -> Attribute ("rotation") == string ("true"))
 		{
-			mesh_data -> default_orientation = make_quaternion (- Ogre :: Math :: HALF_PI, x_axis);
+			mesh_data -> default_orientation = make_quaternion
+				(- Ogre :: Math :: HALF_PI, Mathematics :: Vector_3D :: x_axis);
 		}
 	}
 

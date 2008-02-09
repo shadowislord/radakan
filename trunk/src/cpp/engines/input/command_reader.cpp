@@ -17,9 +17,7 @@ string Command_Reader ::
 
 Command_Reader ::
 	Command_Reader () :
-
-	//	Here 'true' means 'prevent automatic destruction'.
-	Object (to_lower_case (get_class_name ()), true)	
+	Object (to_lower_case (get_class_name ()), "singleton")
 {
 	Engines :: Log :: trace (me, Command_Reader :: get_class_name ());
 
@@ -54,10 +52,10 @@ string Command_Reader ::
 }
 
 bool Command_Reader ::
-	has_command (Reference <Object> caller, string command_name, bool reset)
+	has_command (string caller_class, string command_name, bool reset)
 {
-	Engines :: Log :: trace (me, Command_Reader :: get_class_name (), "has_command",
-		caller . get_name (), command_name, bool_to_string (reset));
+	//	Engines :: Log :: trace (me, Command_Reader :: get_class_name (), "has_command",
+	//		caller_class, command_name, bool_to_string (reset));
 	assert (is_initialized ());
 
 	if (Command_Data :: get () -> clicked_button == command_name)
@@ -71,7 +69,7 @@ bool Command_Reader ::
 	{
 		//	Is there a key shortcut for the command?
 		string key_binding = Settings :: get () -> get_key_name
-			(caller . get_name (true), command_name);
+			(caller_class, command_name);
 		if (0 == Command_Data :: get () -> pressed_keys . count (key_binding))
 		{
 			return false;

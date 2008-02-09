@@ -19,7 +19,7 @@ template <class T> Container_Item <T> ::
 	(
 		string new_name,
 		float new_mass,
-		Ogre :: Vector3 new_size,
+		Mathematics :: Vector_3D new_size,
 		const Reference <Mesh_Data> new_mesh_data,
 		int new_maximal_size
 	) :

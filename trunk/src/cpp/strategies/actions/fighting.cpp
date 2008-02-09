@@ -83,8 +83,8 @@ Reference <Action> Fighting ::
 	Reference <Items :: Character> target = targets -> get_child ();
 	Reference <Movable_Model> npc_model (character -> get_movable_model ());
 
-	Ogre :: Vector3 target_direction
-		= (target -> get_model () -> node -> getPosition () - npc_model -> node -> getPosition ())
+	Mathematics :: Vector_3D target_direction
+		= (target -> get_model () -> get_position () - npc_model -> get_position ())
 			. normalisedCopy ();
 
 	float flee_modifier = 1.0;	// Don't flee.
@@ -94,7 +94,7 @@ Reference <Action> Fighting ::
 		flee_modifier = - 1.0;	//	Flee.
 	}
 
-	Ogre :: Vector3 front = npc_model -> get_front_direction ();
+	const Mathematics :: Vector_3D & front = npc_model -> get_front_direction ();
 
 	//	between - 1 and 1
 	float looking_to_goal = flee_modifier * target_direction . dotProduct (front);
@@ -103,15 +103,15 @@ Reference <Action> Fighting ::
 	npc_model -> turn
 	(
 		Ogre :: Math :: Sqrt (0.5 - looking_to_goal / 2.0),
-		- flee_modifier * target_direction . crossProduct (front)
+		- flee_modifier * target_direction * front
 	);
 
 	if
 	(
 		(flee_modifier == 1)
 			&& (
-				1 < npc_model -> node -> getPosition () . distance
-					(target -> get_model () -> node -> getPosition ())
+				1 < npc_model -> get_position () . distance
+					(target -> get_model () -> get_position ())
 			)
 	)
 	{

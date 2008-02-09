@@ -28,8 +28,8 @@ namespace Radakan
 					virtual bool is_initialized () const;
 
 					bool is_mouse_button_pressed (string button, bool reset);
-					const Ogre :: Vector3 & get_absolute_mouse_position () const;
-					const Ogre :: Vector3 & get_relative_mouse_position () const;
+					const Mathematics :: Vector_3D & get_absolute_mouse_position () const;
+					const Mathematics :: Vector_3D & get_relative_mouse_position () const;
 			};
 		}
 	}

@@ -1,4 +1,5 @@
 #include "engines/log.hpp"
+#include "engines/mediator.hpp"
 #include "items/character.hpp"
 #include "map.hpp"
 #include "messages/nothing.hpp"
@@ -34,7 +35,7 @@ Character ::
 	(
 		string new_name,
 		float new_mass,
-		Ogre :: Vector3 new_size,
+		Mathematics :: Vector_3D new_size,
 		const Reference <Mesh_Data> new_mesh_data,
 		string type
 	) :
@@ -55,7 +56,7 @@ Character ::
 		(
 			name + "'s back",
 			1,
-			Ogre :: Vector3 (0.5, 0.5, 0.3),
+			Mathematics :: Vector_3D (0.5, 0.5, 0.3),
 			Reference <Mesh_Data> ()
 		)
 	),
@@ -66,7 +67,7 @@ Character ::
 		(
 			name + "'s right hand",
 			1,
-			Ogre :: Vector3 (1, 0.3, 0.3),
+			Mathematics :: Vector_3D (1, 0.3, 0.3),
 			Reference <Mesh_Data> ()
 		)
 	),
@@ -74,8 +75,10 @@ Character ::
 	//	feet (new Container_Item <Shoe> ()),
 	skills (new Map <string, Skill> ("skills"))
 {
-	Engines :: Log :: trace (me, Character :: get_class_name (), "", to_string (new_mass), to_string (new_size), new_mesh_data . get_name ());
-
+	Engines :: Log :: trace (me, Character :: get_class_name (), "", to_string (new_mass),
+		new_size . to_string (), new_mesh_data . get_name ());
+	add_automatic_destruction_prevention ("construction of " + get_class_name ());
+	
 	bool check/* = Container_Item <Item> :: add (head)*/;
 	/*assert (check);*/
 	//	Container_Item <Item> :: add (body);
@@ -97,10 +100,14 @@ Character ::
 	else
 	{
 		assert (type == "npc");
-		
+
 		behave <Strategies :: Behaviors :: AI> ();
 	}
 
+	Engines :: Mediator :: get () -> register_observer <Messages :: Nothing>
+		(Reference <Observer <Messages :: Nothing> > (this));
+
+	remove_automatic_destruction_prevention ("construction of " + get_class_name ());
 	assert (is_initialized ());
 }
 
@@ -130,12 +137,9 @@ bool Character ::
 void Character ::
 	drop (Reference <Strategies :: Behaviors :: Behavior> behavior)
 {
-	if (! is_destructing ())
-	{
-		get_movable_model () -> turn (1, get_model () -> get_side_direction ());
-		
-		Engines :: Log :: show (me . get_name (true) + " died.");
-	}
+	get_movable_model () -> turn (1, get_model () -> get_side_direction ());
+	
+	Engines :: Log :: show (me . get_name (true) + " died.");
 
 	Slot <Strategies :: Behaviors :: Behavior> :: drop (behavior);
 }
@@ -152,7 +156,7 @@ Reference <Movable_Model> Character ::
 {
 	if (! movable_model . points_to_object ())
 	{
-		movable_model = get_model () . cast <Movable_Model> ();
+		movable_model . reset_pointee (get_model () . cast <Movable_Model> (), true);
 	}
 
 	return movable_model;

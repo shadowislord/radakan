@@ -19,7 +19,7 @@ template <class T> string Observable <T> ::
 template <class T> Observable <T> ::
 	Observable () :
 	Object ("The name doesn't matter as this class is an abstact class."),
-	observers (new Set  <Observer <T> > (me . get_name (true) + "'s observers"))
+	observers (new Set <Observer <T> > (me . get_name (true) + "'s observers", Container <Observer <T> > :: unlimited (), true))
 {
 	Engines :: Log :: trace (me, Observable :: get_class_name (), "");
 	

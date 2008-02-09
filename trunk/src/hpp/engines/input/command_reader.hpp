@@ -25,7 +25,7 @@ namespace Radakan
 
 					string get_communication_option ();
 					bool has_command
-						(Reference <Object> caller, string command_name, bool reset = true);
+						(string caller_class, string command_name, bool reset = true);
 			};
 		}
 	}

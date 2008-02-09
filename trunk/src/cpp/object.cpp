@@ -16,22 +16,27 @@ string Object ::
 
 //  constructor
 Object ::
-	Object (string new_name, bool new_prevent_automatic_destruction) :
+	Object (string new_name, string automatic_destruction_prevention_key) :
 	name (new_name),
-	prevent_automatic_destruction (new_prevent_automatic_destruction),
-	dependencies (new set <const Reference_Base *>),
-	status ("constructing"),
-	me (this)
+	automatic_destruction_preventions (new set <string>),
+	strong_dependencies (new set <const Reference_Base *>),
+	weak_dependencies (new set <const Reference_Base *>),
+	me (this, true)
 {
-	//	reset_pointee (this);
-	
-	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name, to_string (new_prevent_automatic_destruction));
+	add_automatic_destruction_prevention ("constructing");
+	if (! automatic_destruction_prevention_key . empty ())
+	{
+		add_automatic_destruction_prevention (automatic_destruction_prevention_key);
+	}
+
+	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name,
+		automatic_destruction_prevention_key);
 	assert (! name . empty ());
 
 	#ifdef RADAKAN_DEBUG
-		if (Engines :: Tracker :: is_instantiated ())
+		if (Engines :: Tracker :: is_tracking ())
 		{
-			bool check = Engines :: Tracker :: get () -> add (me);
+			bool check = Engines :: Tracker :: get () -> objects -> add (me);
 			assert (check);
 			//	assert (does_depend (Engines :: Tracker :: get ()));
 
@@ -43,7 +48,7 @@ Object ::
 		}
 	#endif
 
-	status = "running";
+	remove_automatic_destruction_prevention ("constructing");
 	assert (Object :: is_initialized ());
 	Engines :: Log :: trace (me, Object :: get_class_name (), "", new_name, "(end)");
 }
@@ -66,14 +71,26 @@ void Object ::
 	Engines :: Log :: trace (me, Object :: get_class_name (), "prepare_for_destruction");
 	assert (is_initialized ());
 
-	status = "destructing";
+	add_automatic_destruction_prevention ("destructing");
 
-	for (set <const Reference_Base *> :: const_iterator i = dependencies -> begin ();
-		i != dependencies -> end (); i = dependencies -> begin ())
+	for (set <const Reference_Base *> :: const_iterator i = weak_dependencies -> begin ();
+		i != weak_dependencies -> end (); i = weak_dependencies -> begin ())
 	{
 		Engines :: Log :: log (me) << (* i) -> get_name () << " is going be be destruct-ed." << endl;
 		(* i) -> destruct ();
 	}
+
+	for
+	(
+		set <const Reference_Base *> :: const_iterator i = strong_dependencies -> begin ();
+		i != strong_dependencies -> end ();
+		i = strong_dependencies -> begin ()
+	)
+	{
+		Engines :: Log :: log (me) << (* i) -> get_name () << " is going be be destruct-ed." << endl;
+		(* i) -> destruct ();
+	}
+
 }
 
 //	virtual
@@ -87,7 +104,8 @@ bool Object ::
 	assert (! name . empty ());
 
 	//	checks if dependencies contains an object
-	assert (dependencies);
+	assert (strong_dependencies);
+	assert (weak_dependencies);
 	
 	return true;
 }
@@ -100,42 +118,32 @@ bool Object ::
 	//	Engines :: Log :: trace (me, Object :: get_class_name (), "does_depend", candidate);
 	//	assert (Object :: is_initialized ());
 
-	return (0 < dependencies -> count (& candidate));
+	return (0 < strong_dependencies -> count (& candidate)
+		+ weak_dependencies -> count (& candidate));
 }
 
-bool Object ::
-	is_destructing ()
-	const
-{
-	//	Being initialized isn't necessairy here.
-
-	return status == "destructing";
-}
-
-void  Object ::
-	register_reference (const Reference_Base & reference)
+void Object ::
+	register_reference (const Reference_Base & reference, bool weak)
 	const
 {
 	//	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name ());
 	assert (Object :: is_initialized ());
 	assert (! does_depend (reference));
 
-	bool check = dependencies -> insert (& reference) . second;
-
-	assert (check);
-	assert (does_depend (reference));
-
-	/*if (name . find ("tile") != string :: npos)
+	if (weak)
 	{
-		for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
-				i ++)
-		{
-			Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
-		}
-	}*/
+		bool check = weak_dependencies -> insert (& reference) . second;
+		assert (check);
+	}
+	else
+	{
+		bool check = strong_dependencies -> insert (& reference) . second;
+		assert (check);
+	}
+	assert (does_depend (reference));
 }
 
-void  Object ::
+void Object ::
 	unregister_reference (const Reference_Base & reference)
 	const
 {
@@ -144,56 +152,61 @@ void  Object ::
 	assert (Object :: is_initialized ());
 	assert (does_depend (reference));
 
-	dependencies -> erase (& reference);
+	strong_dependencies -> erase (& reference);
+	weak_dependencies -> erase (& reference);
 
-	/*for (set <const Reference_Base *> :: iterator i = dependencies -> begin (); i != dependencies -> end ();
-			i ++)
-	{
-		Engines :: Log :: log (me) << "Dependency: " << (* i) -> get_name () << endl;
-	}*/
 
-	if (status == "constructing")
-	{
-		//	Engines :: Log :: log (me) << "I'm still constructing." << endl;
-		return;
-	}
-
-	if (status == "destructing")
-	{
-		//	Engines :: Log :: log (me) << "I'm already destructing." << endl;
-		return;
-	}
-
-	if (prevent_automatic_destruction)
+	//	Is there anything that prevents automatic destruction?
+	if (! automatic_destruction_preventions -> empty ())
 	{
 		//	Engines :: Log :: log (me) << "I will not self-destruct, because I prevent it." << endl;
 		return;
 	}
 
-	if (name . find ("static") != string :: npos)
+	if (strong_dependencies -> empty ())
 	{
-		//	Engines :: Log :: log (me) << "I will not self-destruct, because I'm a static." << endl;
-		return;
-	}
-
-	unsigned int self_destruct_criterion = 0;
-	self_destruct_criterion ++; //	I shouldn't forbid myself to self-destruct.
-
-	#ifdef RADAKAN_DEBUG
-		if (is_tracked)
-		{
-			//	The 'Tracker' should not forbid me to destruct.
-			self_destruct_criterion ++;
-		}
-	#endif
-
-	assert (dependencies -> size () >= self_destruct_criterion);
-
-	if (dependencies -> size () == self_destruct_criterion)
-	{
-		Engines :: Log :: log (me) << "I will self-destruct, because I have no more dependencies." << endl;
+		Engines :: Log :: log (me) << "I will self-destruct, because I have no more strong dependencies." << endl;
 		delete this;
 	}
 
 	//	Engines :: Log :: log (me) << "I will not self-destruct, because I have another dependency." << endl;
+}
+
+#ifdef RADAKAN_DEBUG
+	void Object ::
+		list_references ()
+		const
+	{
+		for (set <const Reference_Base *> :: iterator i = strong_dependencies -> begin ();
+			i != strong_dependencies -> end (); i ++)
+		{
+			Engines :: Log :: log (me) << "Strong dependency: " << (* * i) . get_name ()
+				<< endl;
+		}
+
+		for (set <const Reference_Base *> :: iterator i = weak_dependencies -> begin ();
+			i != weak_dependencies -> end (); i ++)
+		{
+			Engines :: Log :: log (me) << "Weak dependency: " << (* * i) . get_name () << endl;
+		}
+	}
+#endif
+
+void Object ::
+	add_automatic_destruction_prevention (string key)
+{
+	Engines :: Log :: trace (me, Object :: get_class_name (),
+		"add_automatic_destruction_prevention", key);
+
+	automatic_destruction_preventions -> insert (key);
+}
+
+void Object ::
+	remove_automatic_destruction_prevention (string key)
+{
+	Engines :: Log :: trace (me, Object :: get_class_name (),
+		"remove_automatic_destruction_prevention", key);
+		
+	bool check = automatic_destruction_preventions -> erase (key);
+	assert (check);
 }

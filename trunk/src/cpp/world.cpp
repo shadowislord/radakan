@@ -1,17 +1,25 @@
-#include <OgreOdeBody.h>	//	inclusion before 'OgreOdeWorld.h' to evade errors
-#include <OgreOdeGeometry.h>	//	inclusion before 'OgreOdeWorld.h' to evade errors
-#include <OgreOdeWorld.h>	//	inclusion before 'OgreOdeStepper.h' to evade errors
-#include <OgreOdeSpace.h>
-#include <OgreOdeStepper.h>
-
 #include "engines/log.hpp"
 #include "engines/render_engine.hpp"
-#include "items/character.hpp"
 #include "map.hpp"
 //	#include "messages/message.hpp"
-#include "movable_model.hpp"
+#include "model.hpp"
 #include "tile.hpp"
 #include "world.hpp"
+
+#include <OgreSceneManager.h>
+
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+	#include <OgreOdeBody.h>	//	inclusion before 'OgreOdeWorld.h' to evade errors
+	#include <OgreOdeGeometry.h>	//	inclusion before 'OgreOdeWorld.h' to evade errors
+	#include <OgreOdeWorld.h>	//	inclusion before 'OgreOdeStepper.h' to evade errors
+	#include <OgreOdeSpace.h>
+	#include <OgreOdeStepper.h>
+#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	#include <btBulletDynamicsCommon.h>
+#else
+	#include <pal.h>
+#endif
+
 
 using namespace std;
 using namespace Radakan;
@@ -47,12 +55,13 @@ string World ::
 
 World ::
 	World () :
-	Object ("world", true),	//	Here 'true' means 'prevent automatic destruction'.
-	root_node
-		(Engines :: Render_Engine :: get () -> get_scene_manager () -> getRootSceneNode ()),
+	Object ("world", "singleton"),
+	root_node (Engines :: Render_Engine :: get () -> get_scene_manager ()
+		-> getRootSceneNode ()),
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	ogre_ode_world
-		(new OgreOde :: World (Engines :: Render_Engine :: get () -> get_scene_manager () . get ())),
-	tiles (new Map <pair <int, int>, Tile> ("tiles")),
+		(new OgreOde :: World
+			(Engines :: Render_Engine :: get () -> get_scene_manager () . get ())),
 	step_handler
 	(
 		new OgreOde :: ForwardFixedInterpolatedStepHandler
@@ -64,38 +73,58 @@ World ::
 			max_frame_time,
 			time_scale
 		)
-	)
+	),
+#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	collision_configuration (new btDefaultCollisionConfiguration),
+	dispatcher (new btCollisionDispatcher (collision_configuration . get ())),
+	broadphase (new btSimpleBroadphase),
+	constraint_solver (new btSequentialImpulseConstraintSolver),
+	bullet_world (new btDiscreteDynamicsWorld
+	(
+		dispatcher . get (),
+		broadphase . get (),
+		constraint_solver . get (),
+		collision_configuration . get ()
+	)),
+#else
+#endif
+	tiles (new Map <Mathematics :: Vector_3D, Tile> ("tiles"))
 {
 	for (int x = min_x; x <= max_x; x ++)
 	{
 		for (int z = min_z; z <= max_z; z ++)
 		{
-			pair <int, int> coordinates (x, z);
-			tiles -> add
+			Mathematics :: Vector_3D coordinates (x, 0, z);
+
+			Reference <Tile> tile
 			(
-				Pair <pair <int, int>, Tile> :: create
+				new Tile
 				(
-					coordinates,
-					Reference <Tile>
+					coordinates
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+					,
+					boost :: shared_ptr <OgreOde :: SimpleSpace>
 					(
-						new Tile
+						new OgreOde :: SimpleSpace
 						(
-							coordinates,
-							boost :: shared_ptr <OgreOde :: SimpleSpace>
-							(
-								new OgreOde :: SimpleSpace
-								(
-									ogre_ode_world . get (),
-									ogre_ode_world -> getDefaultSpace ()
-								)
-							)
+							ogre_ode_world . get (),
+							ogre_ode_world -> getDefaultSpace ()
 						)
 					)
+#endif
 				)
+			);
+
+			Engines :: Log :: log (me) << "coordinates: " << coordinates << endl;
+
+			tiles -> add
+			(
+				Pair <Mathematics :: Vector_3D, Tile> :: create (coordinates, tile)
 			);
 		}
 	}
 
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	ogre_ode_world -> setCollisionListener (this);
 
     ogre_ode_world -> setGravity (Ogre :: Vector3 (0, - 9.81, 0));
@@ -108,8 +137,9 @@ World ::
 
 	Engines :: Log :: log (me) << "ERP: " << ogre_ode_world -> getERP () << endl;
 	Engines :: Log :: log (me) << "CFM: " << ogre_ode_world -> getCFM () << endl;
-
-	ogre_ode_world -> getSceneManager () -> setSkyDome (true, "Examples/CloudySky", 5, 8, 100);
+#else
+	bullet_world -> setGravity (btVector3 (0, - 9.81, 0));
+#endif
 }
 
 World ::
@@ -134,11 +164,12 @@ void World ::
 {
 	assert (is_initialized ());
 
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	for (int x = min_x; x <= max_x; x ++)
 	{
 		for (int z = min_z; z <= max_z; z ++)
 		{
-			tiles -> look_up (pair <int, int> (x, z)) -> space -> collide ();
+			tiles -> look_up (Mathematics :: Vector_3D (x, 0, z)) -> space -> collide ();
 		}
 	}
 
@@ -146,8 +177,26 @@ void World ::
 	ogre_ode_world -> updateDrawState ();
 	ogre_ode_world -> synchronise ();
 	ogre_ode_world -> clearContacts ();
+#else
+	bullet_world -> stepSimulation (time_step);
+
+	Pointer <Tile> tile;
+	for (int x = min_x; x <= max_x; x ++)
+	{
+		for (int z = min_z; z <= max_z; z ++)
+		{
+			tile = tiles -> look_up (Mathematics :: Vector_3D (x, 0, z));
+			for (Pointer <Model> model = tile -> get_child (); model . points_to_object ();
+				model = tile -> get_another_child ())
+			{
+				model -> sync ();
+			}
+		}
+	}
+#endif
 }
 
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 bool World ::
 	collision (OgreOde :: Contact * contact)
 {
@@ -168,3 +217,4 @@ bool World ::
 //	Log :: log (me) << "collision: " << g1 -> getClass () << " " << g2 -> getClass () << endl;
 	return true;
 }
+#endif

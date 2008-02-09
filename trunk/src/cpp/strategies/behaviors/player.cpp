@@ -18,6 +18,8 @@
 
 #include <tinyxml.h>
 
+#include <OgreSceneNode.h>
+
 using namespace std;
 using namespace Radakan;
 using namespace Radakan :: Strategies;
@@ -27,7 +29,7 @@ using namespace Radakan :: Strategies :: Behaviors;
 string Player ::
 	get_class_name ()
 {
-	return "Player";
+	return "Strategies :: Behaviors :: Player";
 }
 
 //  constructor
@@ -40,12 +42,14 @@ Player ::
 {
 	//	Do nothing.
 
-	bool check = character -> back -> add (Reference <Items :: Container_Item <Items :: Item> > (new Items :: Container_Item <Items :: Item> ("Backpack", 3, Ogre :: Vector3 (0.3, 0.5, 0.2), Reference <Mesh_Data> ())));
+	bool check = character -> back -> add (Reference <Items :: Container_Item <Items :: Item> > (new Items :: Container_Item <Items :: Item> ("Backpack", 3, Mathematics :: Vector_3D (0.3, 0.5, 0.2), Reference <Mesh_Data> ())));
 	assert (check);
 
-	check = character -> right_hand -> add (Reference <Items :: Item> (new Items :: Weapon ("Sword", 4, Ogre :: Vector3 (0.1, 0.2, 0.3), Reference <Mesh_Data> (), 5, 6, 7, 8, 9, 10)));
+	check = character -> right_hand -> add (Reference <Items :: Item> (new Items :: Weapon ("Sword", 4, Mathematics :: Vector_3D (0.1, 0.2, 0.3), Reference <Mesh_Data> (), 5, 6, 7, 8, 9, 10)));
 	assert (check);
 
+	Engines :: Settings :: get () -> load_key_bindings (get_class_name ());
+	
 	assert (Player :: is_initialized ());
 }
 
@@ -93,12 +97,13 @@ Reference <Behavior> Player ::
 
 	float relative_destination_movement_speed = 0;
 	if (Engines :: Input :: Command_Reader :: get ()
-		-> has_command (me, "go forward", false))
+		-> has_command (get_class_name (), "go forward", false))
 	{
 		relative_destination_movement_speed = 1;
+		Engines :: Log :: log (me) << "Going forward" << endl;
 	}
 	else if (Engines :: Input :: Command_Reader :: get ()
-		-> has_command (me, "go backward", false))
+		-> has_command (get_class_name (), "go backward", false))
 	{
 		relative_destination_movement_speed = - 0.7;
 		Engines :: Log :: log (me) << "Going backwards: - 0.7" << endl;
@@ -108,20 +113,22 @@ Reference <Behavior> Player ::
 
 	float relative_destination_turn_speed = 0;
 	if (Engines :: Input :: Command_Reader :: get ()
-		-> has_command (me, "turn left", false))
+		-> has_command (get_class_name (), "turn left", false))
 	{
 		relative_destination_turn_speed = 1;
+		Engines :: Log :: log (me) << "Turn left" << endl;
 	}
 	else if (Engines :: Input :: Command_Reader :: get ()
-		-> has_command (me, "turn right", false))
+		-> has_command (get_class_name (), "turn right", false))
 	{
 		relative_destination_turn_speed = - 1;
+		Engines :: Log :: log (me) << "Turn right" << endl;
 	}
 	character -> get_movable_model () -> turn (relative_destination_turn_speed);
 
 	//	Select a target.
 	if (Engines :: Input :: Command_Reader :: get ()
-		-> has_command (me, "select target"))
+		-> has_command (get_class_name (), "select target"))
 	{
 		if (character_target . points_to_object ()
 			|| item_target . points_to_object ())
@@ -142,7 +149,8 @@ Reference <Behavior> Player ::
 	}
 
 	//	Give the weapon to your target or take it back.
-	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "give"))
+	if (Engines :: Input :: Command_Reader :: get () -> has_command
+		(get_class_name (), "give"))
 	{
 		if (character_target . points_to_object ())
 		{
@@ -177,19 +185,21 @@ Reference <Behavior> Player ::
 	}
 
 	//	jump
-	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "jump"))
+	if (Engines :: Input :: Command_Reader :: get () -> has_command
+		(get_class_name (), "jump"))
 	{
 		Engines :: Log :: show ("Sadly, jumping is not supported yet.");
 	}
 
 	//	reset your orientation
-	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "reset"))
+	if (Engines :: Input :: Command_Reader :: get () -> has_command
+		(get_class_name (), "reset"))
 	{
 		character -> get_movable_model () -> reset ();
 		Engines :: Log :: show ("Your orientation is reset.");
 	}
 
-	const Ogre :: Vector3 & mouse_position = Engines :: Input :: Mouse_Reader :: get ()
+	const Mathematics :: Vector_3D & mouse_position = Engines :: Input :: Mouse_Reader :: get ()
 		-> get_relative_mouse_position ();
 
 	if
@@ -270,14 +280,14 @@ bool Player ::
 	return (is_smaller != larger);
 }
 
-const Ogre :: Vector3 Player ::
+const Mathematics :: Vector_3D Player ::
 	get_camera_position ()
 	const
 {
 	assert (is_initialized ());
 
-	return character -> get_movable_model () -> node -> getPosition ()
-		+ camera_distance * character -> get_movable_model () -> get_top_direction ();
+	return camera_distance * character -> get_movable_model () -> get_top_direction ()
+		+ character -> get_movable_model () -> get_position ();
 }
 
 const Ogre :: Quaternion Player ::
@@ -288,8 +298,7 @@ const Ogre :: Quaternion Player ::
 
 	return make_quaternion
 		(vertical_camera_angle . get_value (),
-			character -> get_movable_model () -> get_side_direction ())
-		* character -> get_movable_model () -> node -> getOrientation ();
+			character -> get_movable_model () -> get_side_direction ());
 }
 
 void Player ::

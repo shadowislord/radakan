@@ -21,7 +21,7 @@ Static_Item ::
 	Static_Item
 	(
 		float new_mass,
-		Ogre :: Vector3 new_size,
+		Mathematics :: Vector_3D new_size,
 		const Reference <Mesh_Data> new_mesh_data
 	) :
 	Object ("static item " + to_string (counter ++) + " (based on " + new_mesh_data . get_name () + ")"),

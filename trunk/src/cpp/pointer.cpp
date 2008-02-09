@@ -66,7 +66,7 @@ template <class T> Pointer <T> ::
 }
 
 template <class T> void Pointer <T> ::
-	reset_pointee (T * new_pointee)
+	reset_pointee (T * new_pointee, bool weak)
 {
 	if (Reference <T> :: pointee != NULL)
 	{
@@ -77,13 +77,21 @@ template <class T> void Pointer <T> ::
 
 	if (Reference <T> :: pointee != NULL)
 	{
-		Reference <T> :: pointee -> register_reference (* this);
+		Reference <T> :: pointee -> register_reference (* this, weak);
 	}
+}
+
+template <class T> void Pointer <T> ::
+	reset_pointee (const Reference <T> & other, bool weak)
+{
+	reset_pointee (other . pointee, weak);
 }
 
 //	to avert linking errors:
 #include "container.hpp"
-#include "engines/audio_engine.hpp"
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	#include "engines/audio_engine.hpp"
+#endif
 #include "gui.hpp"
 #include "items/character.hpp"
 #include "messages/button_event.hpp"
@@ -100,9 +108,6 @@ template <class T> void Pointer <T> ::
 #include "strategies/game_modes/game_mode.hpp"
 #include "tile.hpp"
 
-#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
-	template class Pointer <Sound_Sample>;
-#endif
 template class Pointer <GUI>;
 template class Pointer <Items :: Character>;
 template class Pointer <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
@@ -112,9 +117,6 @@ template class Pointer <Location <Items :: Item> >;
 template class Pointer <Location <Items :: Container_Item <Items :: Container_Item <Items :: Item> > > >;
 template class Pointer <Location <Items :: Container_Item <Items :: Item> > >;
 template class Pointer <Location <Model> >;
-template class Pointer <Location <Strategies :: Actions :: Action> >;
-template class Pointer <Location <Strategies :: Behaviors :: Behavior> >;
-template class Pointer <Location <Strategies :: Game_Modes :: Game_Mode> >;
 template class Pointer <Messages :: Communications :: Communication>;
 template class Pointer <Model>;
 template class Pointer <Movable_Model>;
@@ -125,10 +127,16 @@ template class Pointer <Observer <Messages :: List_Event> >;
 template class Pointer <Observer <Messages :: List_Update> >;
 template class Pointer <Observer <Messages :: Nothing> >;
 template class Pointer <Opinion>;
+template class Pointer <Pair <Mathematics :: Vector_3D, Tile> >;
 template class Pointer <Pair <string, Messages :: Communications :: Communication> >;
-template class Pointer <Pair <pair <int, int>, Tile> >;
 template class Pointer <Pair <string, Skill> >;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Pointer <Pair <string, Sound_Sample> >;
+#endif
 template class Pointer <Skill>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Pointer <Sound_Sample>;
+#endif
 template class Pointer <Strategies :: Actions :: Action>;
 template class Pointer <Strategies :: Behaviors :: Behavior>;
 template class Pointer <Strategies :: Game_Modes :: Game_Mode>;

@@ -7,6 +7,7 @@ using namespace std;
 
 namespace Radakan
 {
+
 	///	I'm the abstract base class for all strategy based state machines.
 	///	Derive me for each class that uses strategies.
 	template <class T, class U> class Strategy_State_Machine :

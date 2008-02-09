@@ -21,13 +21,6 @@ string Radakan ::
 }
 
 string Radakan ::
-	to_string (const Ogre :: Vector3 & vector)
-{
-	return "(" + to_string (vector . x) + ", " + to_string (vector . y) + ", "
-												+ to_string (vector . z) + ")";
-}
-
-string Radakan ::
 	to_lower_case (const string & value)
 {
 	string result = value;

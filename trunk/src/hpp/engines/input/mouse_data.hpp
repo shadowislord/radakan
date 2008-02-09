@@ -31,8 +31,8 @@ namespace Radakan
 					///	Multiple mouse buttons can be pressed at once.
 					set <string> pressed_mouse_buttons;
 
-					Ogre :: Vector3 relative_mouse_position;
-					Ogre :: Vector3 absolute_mouse_position;
+					Mathematics :: Vector_3D relative_mouse_position;
+					Mathematics :: Vector_3D absolute_mouse_position;
 			};
 		}
 	}

@@ -60,7 +60,7 @@ bool AI ::
 	const
 {
 	//	'assert' can't handle double templates.
-	//	assert (Strategy <Behavior, Messages :: Nothing> :: is_initialized ());
+	//	assert (Strategy <Behavior> :: is_initialized ());
 
 	return true;
 }

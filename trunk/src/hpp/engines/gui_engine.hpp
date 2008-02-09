@@ -6,17 +6,13 @@
 
 using namespace std;
 
-namespace CEGUI
-{
-	class OgreCEGUIRenderer;
-	class System;
-}
-
-namespace Ogre
-{
-	class RenderWindow;
-	class SceneManager;
-}
+#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+	namespace CEGUI
+	{
+		class OgreCEGUIRenderer;
+		class System;
+	}
+#endif
 
 namespace Radakan
 {
@@ -38,19 +34,15 @@ namespace Radakan
 				
 				void set_active_gui (Reference <GUI> gui);
 
-				void set_mouse_position (const Ogre :: Vector3 & new_position);
-				void left_mouse_button_click ();
-				
-				void render () const;
+				void update_and_render ();
 
 				Reference <GUI> create_gui (string configuration_file);
 
 			private :
-				//	TODO solve the problems that occur when renderer is a plain object
-				//	instead of a pointer.
-				boost :: scoped_ptr <CEGUI :: OgreCEGUIRenderer> renderer;
-				
-				boost :: scoped_ptr <CEGUI :: System> system;
+				#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+					boost :: scoped_ptr <CEGUI :: OgreCEGUIRenderer> renderer;
+					boost :: scoped_ptr <CEGUI :: System> system;
+				#endif
 		};
 	}
 }

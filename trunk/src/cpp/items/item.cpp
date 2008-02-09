@@ -18,7 +18,7 @@ Item ::
 	Item
 	(
 		float new_mass,
-		Ogre :: Vector3 new_size,
+		Mathematics :: Vector_3D new_size,
 		const Reference <Mesh_Data> new_mesh_data
 	) :
 	Object ("The name doesn't matter is this is an abstact base class."),
@@ -32,7 +32,7 @@ Item ::
 		Item :: get_class_name (),
 		"",
 		to_string (mass),
-		to_string (size),
+		new_size . to_string (),
 		mesh_data . get_name ()
 	);
 	assert (0 <= mass);
@@ -104,7 +104,7 @@ void Item ::
 	assert (new_model . points_to_object ());
 	assert (new_model -> is_initialized ());
 
-	model = new_model;
+	model . reset_pointee (new_model, true);
 
 	assert (has_model ());
 	assert (is_initialized ());

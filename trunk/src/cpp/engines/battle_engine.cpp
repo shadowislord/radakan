@@ -15,7 +15,7 @@ string Battle_Engine ::
 
 Battle_Engine ::
 	Battle_Engine () :
-	Object ("battle engine", true),	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("battle engine", "singleton"),
 	max_distance (1),
 	generator (42u),
 	uniform_real_distribution (0, 1),
@@ -78,8 +78,8 @@ void Battle_Engine ::
 
 	float distance =
 		(
-			attacker . get_model () . node . getPosition ()
-			- defender . get_model () . node . getPosition ()
+			attacker -> get_model () -> get_position ()
+			- defender -> get_model () -> get_position ()
 		) . length ();
 	
 	if (max_distance < distance)

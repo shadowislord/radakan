@@ -27,7 +27,7 @@ string Play ::
 //  constructor
 Play ::
 	Play () :
-	Object ("play", true)	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("play", "singleton")
 {
 	Engines :: Log :: trace (me, Play :: get_class_name ());
 
@@ -66,21 +66,24 @@ Reference <Game_Mode> Play ::
 	assert (Items :: Character :: get_player_character () -> is_alive ());
 
 	//	quit
-	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "quit"))
+	if (Engines :: Input :: Command_Reader :: get () -> has_command
+		(Game_Mode :: get_class_name (), "quit"))
 	{
 		return Reference <Game_Mode> ();
 	}
 
 	//	menu
-	if (Engines :: Input :: Command_Reader :: get () -> has_command (me, "menu"))
+	if (Engines :: Input :: Command_Reader :: get () -> has_command
+		(Game_Mode :: get_class_name (), "menu"))
 	{
 		return Menu :: get ();
 	}
 
+	World :: get () -> update ();
+
+	//	Update all characters.
 	Engines :: Mediator :: get () -> call_observers <Messages :: Nothing>
 		(Messages :: Nothing :: get ());
-
-	World :: get () -> update ();
 
 	//	If the player character is dead, go to the menu.
 	if (! Items :: Character :: get_player_character () -> is_alive ())

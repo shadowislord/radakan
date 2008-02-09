@@ -16,16 +16,18 @@ template <class T> string Location <T> ::
 
 //  constructor
 template <class T> Location <T> ::
-	Location (unsigned int new_maximal_size) :
-	Object ("The name doesn't matter as this class is an abstact class."),
+	Location (unsigned int new_maximal_size, bool new_weak_children) :
+	Object ("The name doesn't matter."),
+	Container <T> (new_maximal_size, new_weak_children),
 	implementation
 	(
 		new_maximal_size == 1
 		? (Reference <Container <T> >
-			(new Slot <T> (this -> me . get_name (true) + "'s implementation")))
+			(new Slot <T> (this -> me . get_name (true) + "'s implementation",
+				new_weak_children)))
 		: (Reference <Container <T> >
-			(new Set  <T> (this -> me . get_name (true) + "'s implementation",
-				new_maximal_size)))
+			(new Set <T> (this -> me . get_name (true) + "'s implementation",
+				new_maximal_size, new_weak_children)))
 	)
 {
 	Engines :: Log :: trace (this -> me, Location <T> :: get_class_name ());
@@ -127,17 +129,10 @@ template <class T> Reference <T> Location <T> ::
 }
 
 //	to avert linking errors:
-#include "items/character.hpp"
 #include "items/container_item.hpp"
 #include "model.hpp"
-#include "strategies/actions/action.hpp"
-#include "strategies/behaviors/behavior.hpp"
-#include "strategies/game_modes/game_mode.hpp"
 
 template class Location <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Location <Items :: Container_Item <Items :: Item> >;
 template class Location <Items :: Item>;
 template class Location <Model>;
-template class Location <Strategies :: Actions :: Action>;
-template class Location <Strategies :: Behaviors :: Behavior>;
-template class Location <Strategies :: Game_Modes :: Game_Mode>;

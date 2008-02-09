@@ -13,12 +13,12 @@ template <class T> string Set <T> ::
 
 //  constructor
 template <class T> Set <T> ::
-	Set (string name, unsigned int new_maximal_size) :
-	Object (name),
-	Container <T> (new_maximal_size),
+	Set (string new_name, unsigned int new_maximal_size, bool new_weak_children) :
+	Object (new_name),
+	Container <T> (new_maximal_size, new_weak_children),
 	children (new set <Reference <T> >)
 {
-	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "", name, to_string (new_maximal_size));
+	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "", new_name, to_string (new_maximal_size), bool_to_string (new_weak_children));
 
 	//	Do nothing.
 
@@ -96,7 +96,11 @@ template <class T> bool Set <T> ::
 	pair <Next_Child_Type, bool> result = children -> insert (additive);
 	assert (result . second);
 	const_cast <Reference <T> &> (* result . first) . set_parent (* this);
-		
+	if (Container <T> :: weak_children)
+	{
+		const_cast <Reference <T> &> (* result . first) . weaken ();
+	}
+	
 	assert (Set <T> :: is_initialized ());
 	return true;
 }
@@ -107,7 +111,7 @@ template <class T> void Set <T> ::
 {
 	Engines :: Log :: trace (this -> me, Set <T> :: get_class_name (), "drop", dropped . get_name ());
 	assert (Set <T> :: is_initialized ());
-	assert ((! Container <T> :: is_sealed ()) || Object :: is_destructing ());
+	assert (! Container <T> :: is_sealed ());
 	assert (dropped -> is_initialized ());
 	assert (contains (dropped));
 
@@ -145,8 +149,6 @@ template <class T> Reference <T> Set <T> ::
 }
 
 //	to avert linking errors:
-#include "engines/audio_engine.hpp"
-#include "gui.hpp"
 #include "items/character.hpp"
 #include "items/container_item.hpp"
 #include "messages/button_event.hpp"
@@ -155,14 +157,9 @@ template <class T> Reference <T> Set <T> ::
 #include "messages/list_update.hpp"
 #include "messages/nothing.hpp"
 #include "model.hpp"
-#include "movable_model.hpp"
 #include "opinion.hpp"
-#include "strategies/actions/action.hpp"
-#include "strategies/behaviors/behavior.hpp"
-#include "strategies/game_modes/game_mode.hpp"
-#include "tile.hpp"
 
-template class Set <GUI>;
+//	template class Set <GUI>;
 template class Set <Items :: Character>;
 template class Set <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Set <Items :: Container_Item <Items :: Item> >;
@@ -176,10 +173,3 @@ template class Set <Observer <Messages :: List_Event> >;
 template class Set <Observer <Messages :: List_Update> >;
 template class Set <Observer <Messages :: Nothing> >;
 template class Set <Opinion>;
-#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
-	template class Set <Sound_Sample>;
-#endif
-template class Set <Strategies :: Actions :: Action>;
-template class Set <Strategies :: Behaviors :: Behavior>;
-template class Set <Strategies :: Game_Modes :: Game_Mode>;
-template class Set <Tile>;

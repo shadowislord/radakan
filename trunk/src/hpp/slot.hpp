@@ -14,7 +14,7 @@ namespace Radakan
 		public :
 			static string get_class_name ();
 
-			Slot (string new_name);
+			Slot (string new_name, bool new_weak_children = false);
 			virtual ~Slot ();
 			virtual bool is_initialized () const;
 

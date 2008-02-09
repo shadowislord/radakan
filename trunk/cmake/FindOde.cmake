@@ -26,13 +26,13 @@ if(WIN32)
 
 else(WIN32)
 	find_path(Ode_INCLUDE_DIR "ode.h"
-		"/usr/local/include/ode")
+		"/usr/include/ode")
 
 	find_path(Ode_LIB_RELEASE "libode.so"
-		"/usr/local/lib")
+		"/usr/lib")
 
 	find_path(Ode_LIB_DEBUG "libode.so"
-		"/usr/local/lib")
+		"/usr/lib")
 endif(WIN32)
 
 set(Ode_FOUND 0)

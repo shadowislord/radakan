@@ -16,7 +16,7 @@ string Settings ::
 
 Settings ::
 	Settings (string path_to_config) :
-	Object ("settings", true),	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("settings", "singleton"),
 	radakan_config (new Ogre :: ConfigFile ())
 {
 	//	Load the Radakan configuration file
@@ -24,9 +24,6 @@ Settings ::
 
 	radakan_path = radakan_config -> getSetting ("radakan_path", "directories");
 	ogre_media_path = radakan_config -> getSetting ("ogre_media_path", "directories");
-
-
-	load_key_bindings ("meta");
 	
 	//	Load the string values and convert them from string to float.
 	movement_reaction

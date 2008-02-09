@@ -17,7 +17,7 @@ namespace Radakan
 		public :
 			static string get_class_name ();
 
-			Map (string name);
+			Map (string name, bool new_weak_children = false);
 			virtual ~Map ();
 			virtual bool is_initialized () const;
 			

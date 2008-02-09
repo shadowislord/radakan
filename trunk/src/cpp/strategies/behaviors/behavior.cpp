@@ -19,14 +19,18 @@ string Behavior ::
 Behavior ::
 	Behavior (Reference <Items :: Character> new_character) :
 	Object ("The name doesn't matter. This is an abstract base class."),
-	character (new_character)
+	character (new_character, true)
 {
-	Reference <Observer <Messages :: Communications :: Communication> > this_behavior
-		(this);
+	add_automatic_destruction_prevention ("construction of " + get_class_name ());
+	{
+		Reference <Observer <Messages :: Communications :: Communication> > this_behavior
+			(this);
 
-	Engines :: Mediator :: get ()
-		-> register_observer <Messages :: Communications :: Communication>
-			(this_behavior);
+		Engines :: Mediator :: get ()
+			-> register_observer <Messages :: Communications :: Communication>
+				(this_behavior);
+	}
+	remove_automatic_destruction_prevention ("construction of " + get_class_name ());
 
 	assert (is_initialized ());
 }

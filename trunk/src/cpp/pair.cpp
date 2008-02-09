@@ -49,10 +49,16 @@ template <typename T, class U> Pair <T, U> ::
 
 }
 
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	#include "engines/audio_engine.hpp"
+#endif
 #include "messages/communications/communication.hpp"
 #include "skill.hpp"
 #include "tile.hpp"
 
+template class Pair <Mathematics :: Vector_3D, Tile>;
 template class Pair <string, Messages :: Communications :: Communication>;
-template class Pair <pair <int, int>, Tile>;
 template class Pair <string, Skill>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Pair <string, Sound_Sample>;
+#endif

@@ -8,13 +8,16 @@ using namespace std;
 class TiXmlDocument;
 class TiXmlElement;
 
-namespace OgreOde
-{
-	class SimpleSpace;
-}
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+	namespace OgreOde
+	{
+		class SimpleSpace;
+	}
+#endif
 
 namespace Radakan
 {
+	template <class T> class Container;
 	class Model;
 
 	namespace Items
@@ -35,8 +38,11 @@ namespace Radakan
 
 			Tile
 			(
-				pair <int, int> new_coordinates,
+				Mathematics :: Vector_3D new_coordinates
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+				,
 				boost :: shared_ptr <OgreOde :: SimpleSpace> new_space
+#endif
 			);
 			virtual ~Tile ();
 			virtual bool is_initialized () const;
@@ -44,12 +50,14 @@ namespace Radakan
 			virtual bool add (Reference <Model> model);
 			virtual bool move (Reference <Model> model, Reference <Container <Model> > destination);
 
-			const pair <int, int> coordinates;
-			const Ogre :: Vector3 position;
+			const Mathematics :: Vector_3D coordinates;
+			const Mathematics :: Vector_3D position;
 
-			Reference <Set <Items :: Character> > characters;
+			Reference <Container <Items :: Character> > characters;
 
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 			boost :: shared_ptr <OgreOde :: SimpleSpace> space;
+#endif
 
 		private :
 			void load_model (TiXmlElement & element);

@@ -2,7 +2,6 @@
 #define RADAKAN_AUDIO_ENGINE_HPP
 
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
-	#include "set.hpp"
 	#include "singleton.hpp"
 
 	#include <audiere.h>
@@ -11,6 +10,7 @@
 
 	namespace Radakan
 	{
+		template <typename T, class U> class Map;
 
 		///	for static soundfiles, like .WAV, .MP2, .MP3, .OGG and .RAW
 		class Sound_Sample :
@@ -30,7 +30,6 @@
 		{
 			///	Audio_Engine is the music and sound engine.
 			class Audio_Engine :
-				private Set <Sound_Sample>,
 				public Singleton <Audio_Engine>
 			{
 				public :
@@ -47,6 +46,7 @@
 
 				private :
 					bool silent;
+					Reference <Map <string, Sound_Sample> > sounds;
 			};
 		}
 	}

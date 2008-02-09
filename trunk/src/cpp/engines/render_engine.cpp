@@ -1,9 +1,7 @@
 #include "engines/log.hpp"
-#include "engines/gui_engine.hpp"
 #include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
 #include "items/character.hpp"
-#include "movable_model.hpp"
 #include "strategies/behaviors/player.hpp"
 
 #include <OgreRenderSystem.h>
@@ -23,17 +21,14 @@ string Render_Engine ::
 
 Render_Engine ::
 	Render_Engine () :
-	Object ("render engine", true),	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("render engine", "singleton"),
 	root
 	(
-		boost :: shared_ptr <Ogre :: Root>
+		new Ogre :: Root
 		(
-			new Ogre :: Root
-			(
-				Settings :: get () -> radakan_path + "/data/plugins.cfg",
-				Settings :: get () -> radakan_path + "/data/ogre.cfg",
-				Settings :: get () -> radakan_path + "/log/ogre.txt"
-			)
+			Settings :: get () -> radakan_path + "/data/plugins.cfg",
+			Settings :: get () -> radakan_path + "/data/ogre.cfg",
+			Settings :: get () -> radakan_path + "/log/ogre.txt"
 		)
 	),
 	turn (0),
@@ -41,9 +36,17 @@ Render_Engine ::
 {
 	Engines :: Log :: trace (me, Render_Engine :: get_class_name ());
 
-	if (! root -> showConfigDialog ())
+	if (root -> restoreConfig ())
 	{
-		Log :: error (me) << "An Ogre configuration dialog problem occurred." << endl;
+		Log :: log (me) << "Ogre's configuration is successfully loaded." << endl;
+	}
+	else if (root -> showConfigDialog ())
+	{
+		Log :: log (me) << "Ogre's configuration is saved." << endl;
+	}
+	else
+	{
+		Log :: error (me) << "An Ogre configuration problem occurred." << endl;
 		abort ();
 	}
 
@@ -98,8 +101,6 @@ void Render_Engine ::
 	bool check = root -> renderOneFrame ();
 	assert (check);
 
-	GUI_Engine :: get () -> render ();
-
 	Log :: log (me) << "FPS: " << get_FPS () << endl;
 }
 
@@ -118,6 +119,15 @@ boost :: shared_ptr <Ogre :: SceneManager> Render_Engine ::
 
 	return scene_manager;
 }
+
+void Render_Engine ::
+	set_skydome (string skydome_name)
+{
+	assert (Object :: is_initialized ());
+
+	scene_manager -> setSkyDome (true, skydome_name, 5, 8, 100);
+}
+
 
 float Render_Engine ::
 	get_FPS () const

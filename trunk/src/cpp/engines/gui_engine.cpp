@@ -1,4 +1,5 @@
 #include "engines/gui_engine.hpp"
+#include "engines/input/mouse_reader.hpp"
 #include "engines/log.hpp"
 #include "engines/render_engine.hpp"
 #include "engines/settings.hpp"
@@ -27,7 +28,7 @@ string GUI_Engine ::
 
 GUI_Engine ::
 	GUI_Engine () :
-	Object ("gui engine", true)	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("gui engine", "singleton")
 {
 	Engines :: Log :: trace (me, GUI_Engine :: get_class_name ());
 
@@ -76,7 +77,7 @@ GUI_Engine ::
 GUI_Engine ::
 	~GUI_Engine ()
 {
-	Engines :: Log :: trace (me, GUI_Engine :: get_class_name (), "~");
+	Log :: trace (me, GUI_Engine :: get_class_name (), "~");
 	assert (is_initialized ());
 
 	prepare_for_destruction ();
@@ -97,36 +98,31 @@ bool GUI_Engine ::
 	return true;
 }
 
-void GUI_Engine ::
-	set_mouse_position (const Ogre :: Vector3 & new_position)
-{
-	assert (is_initialized ());
-
-	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-		system -> injectMousePosition (new_position . x, new_position . y);
-	#endif
-}
 
 void GUI_Engine ::
-	left_mouse_button_click ()
-{
-	assert (is_initialized ());
-
-	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
-		system -> injectMouseButtonDown (CEGUI :: LeftButton);
-		system -> injectMouseButtonUp (CEGUI :: LeftButton);
-	#endif
-}
-
-void GUI_Engine ::
-	render ()
-	const
+	update_and_render ()
 {
 	assert (is_initialized ());
 
 	Strategies :: Behaviors :: Player :: get () -> list_communication_options ();
 
+	if (Input :: Mouse_Reader :: get () -> is_mouse_button_pressed
+		(Input :: Mouse_Reader :: get_left_mouse_button (), true))
+	{
+		Log :: log (me) << "Left mouse button clicked." << endl;
+	
+		#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+			system -> injectMouseButtonDown (CEGUI :: LeftButton);
+			system -> injectMouseButtonUp (CEGUI :: LeftButton);
+		#endif
+	}
+
+
 	#if RADAKAN_GUI_MODE == RADAKAN_CEGUI_MODE
+		const Mathematics :: Vector_3D & position
+			= Input :: Mouse_Reader :: get () -> get_absolute_mouse_position ();
+
+		system -> injectMousePosition (position . x, position . y);
 		system -> renderGUI ();
 	#endif
 }

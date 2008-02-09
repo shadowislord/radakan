@@ -17,6 +17,7 @@
 #include "engines/input/mouse_reader.hpp"
 #include "engines/input/registrator.hpp"
 #include "engines/log.hpp"
+#include "engines/mediator.hpp"
 #include "engines/render_engine.hpp"
 
 #include <OgreRenderWindow.h>
@@ -133,7 +134,7 @@ string Registrator ::
 
 Registrator ::
 	Registrator () :
-	Object ("registrator", true)	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("registrator", "singleton")
 {
 	Engines :: Log :: trace (me, Registrator :: get_class_name ());
 
@@ -209,6 +210,11 @@ Registrator ::
 	mouse -> getMouseState () . height
 		= Render_Engine :: get () -> get_window () -> getHeight ();
 
+	Mediator :: get () -> register_observer <Messages :: Button_Event>
+		(Reference <Observer <Messages :: Button_Event> > (this));
+	Mediator :: get () -> register_observer <Messages :: List_Event>
+		(Reference <Observer <Messages :: List_Event> > (this));
+
 	assert (is_initialized ());
 }
 
@@ -277,7 +283,7 @@ void Registrator ::
 	//	'mouse -> capture ()' does nothing if the mouse didn't move this turn.
 	//	So we manually set the relative key position.
 	Engines :: Input :: Mouse_Data :: get () -> relative_mouse_position
-		= Ogre :: Vector3 (0, 0, 0);
+		= Mathematics :: Vector_3D (0, 0, 0);
 	mouse -> capture ();
 
 	if (Render_Engine :: get () -> get_window () -> isClosed ())
@@ -324,9 +330,9 @@ bool Registrator ::
 	const OIS :: Axis & y = mouse_event . state . Y;
 	const OIS :: Axis & z = mouse_event . state . Z;
 	Engines :: Input :: Mouse_Data :: get () -> absolute_mouse_position
-		= Ogre :: Vector3 (x . abs, y . abs, z . abs);
+		= Mathematics :: Vector_3D (x . abs, y . abs, z . abs);
 	Engines :: Input :: Mouse_Data :: get () -> relative_mouse_position
-		= Ogre :: Vector3 (x . rel, y . rel, z . rel);
+		= Mathematics :: Vector_3D (x . rel, y . rel, z . rel);
 
 	return true;
 }
@@ -336,6 +342,8 @@ bool Registrator ::
 	mousePressed (const OIS :: MouseEvent &, OIS :: MouseButtonID id)
 {
 	assert (is_initialized ());
+
+	Log :: log (me) << "Left mouse button clicked?" << endl;
 
 	Engines :: Input :: Mouse_Data :: get () -> pressed_mouse_buttons
 		. insert (to_string (id));

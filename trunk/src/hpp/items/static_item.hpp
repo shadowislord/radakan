@@ -20,7 +20,7 @@ namespace Radakan
 				Static_Item
 				(
 					float new_mass,
-					Ogre :: Vector3 new_size,
+					Mathematics :: Vector_3D new_size,
 					const Reference <Mesh_Data> new_mesh_data
 				);
 				virtual ~Static_Item ();

@@ -33,7 +33,7 @@ namespace Radakan
 					virtual string get_action_name ();
 
 				private :
-					Reference <Set <Items :: Character> > targets;
+					Reference <Container <Items :: Character> > targets;
 			};
 		}
 	}

@@ -52,7 +52,7 @@ template <class T> void Resident <T> ::
 	assert (! location . points_to_object ());
 	assert (new_location . points_to_object ());
 
-	location = new_location;
+	location . reset_pointee (new_location, true);
 }
 
 template <class T> void Resident <T> ::
@@ -68,17 +68,10 @@ template <class T> void Resident <T> ::
 }
 
 //	to avert linking errors:
-#include "items/character.hpp"
 #include "items/container_item.hpp"
 #include "model.hpp"
-#include "strategies/actions/action.hpp"
-#include "strategies/behaviors/behavior.hpp"
-#include "strategies/game_modes/game_mode.hpp"
 
 template class Resident <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Resident <Items :: Container_Item <Items :: Item> >;
 template class Resident <Items :: Item>;
 template class Resident <Model>;
-template class Resident <Strategies :: Actions :: Action>;
-template class Resident <Strategies :: Behaviors :: Behavior>;
-template class Resident <Strategies :: Game_Modes :: Game_Mode>;

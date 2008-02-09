@@ -9,7 +9,7 @@ namespace Radakan
 {
 	namespace Messages
 	{
-		class Message;
+		class Nothing;
 	}
 	
 	///	Observer is an abstract base class for the observer pattern.

@@ -21,9 +21,10 @@ template <class T> unsigned int Container <T> :: unlimited ()
 
 //  constructor
 template <class T> Container <T> ::
-	Container (unsigned int new_maximal_size) :
+	Container (unsigned int new_maximal_size, bool new_weak_children) :
 	Object ("Doesn't matter."),
 	maximal_size (new_maximal_size),
+	weak_children (new_weak_children),
 	sealed (false)
 {
 	Engines :: Log :: trace (me, Container <T> :: get_class_name (), "", name, to_string (new_maximal_size));
@@ -101,7 +102,9 @@ template <class T> bool Container <T> ::
 }
 
 //	to avert linking errors:
-#include "engines/audio_engine.hpp"
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	#include "engines/audio_engine.hpp"
+#endif	//	RADAKAN_AUDIO_ENGINE_HPP
 #include "gui.hpp"
 #include "items/character.hpp"
 #include "items/container_item.hpp"
@@ -133,13 +136,16 @@ template class Container <Observer <Messages :: List_Event> >;
 template class Container <Observer <Messages :: List_Update> >;
 template class Container <Observer <Messages :: Nothing> >;
 template class Container <Opinion>;
+template class Container <Pair <Mathematics :: Vector_3D, Tile> >;
 template class Container <Pair <string, Messages :: Communications :: Communication> >;
-template class Container <Pair <pair <int, int>, Tile> >;
 template class Container <Pair <string, Skill> >;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Container <Pair <string, Sound_Sample> >;
+#endif	//	RADAKAN_AUDIO_ENGINE_HPP
 template class Container <Skill>;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Container <Sound_Sample>;
-#endif	//	RADAKAN_AUDIO_ENGINE_HPP
+#endif
 template class Container <Strategies :: Actions :: Action>;
 template class Container <Strategies :: Behaviors :: Behavior>;
 template class Container <Strategies :: Game_Modes :: Game_Mode>;

@@ -7,18 +7,13 @@ using namespace std;
 
 namespace Radakan
 {
-	namespace Items
-	{
-		class Character;
-	}
-	
 	class Opinion :
 		public Object
 	{
 		public :
 			static string get_class_name ();
 
-			Opinion (const Reference <Items :: Character> & other);
+			Opinion (const Reference <Object> & other);
 			virtual ~Opinion ();
 			virtual bool is_initialized () const;
 

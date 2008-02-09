@@ -20,8 +20,9 @@ namespace Radakan
 			bool operator!= (const Reference <T> & other) const;
 			bool operator< (const Reference <T> & other) const;
 
-			Reference (T * new_pointee = NULL);
+			Reference (T * new_pointee = NULL, bool weak = false);
 			Reference (const Reference <T> & other);
+			Reference (const Reference <T> & other, bool weak);
 			template <class U> Reference (const Reference <U> & other);
 			virtual ~Reference ();
 
@@ -37,6 +38,9 @@ namespace Radakan
 
 			bool points_to_object () const;
 			void set_parent (Container <T> & new_parent);
+
+			///	Converts a strong reference into a weak one.
+			void weaken ();
 
 			template <class U> bool is_castable () const;
 			template <class U> Reference <U> cast ();

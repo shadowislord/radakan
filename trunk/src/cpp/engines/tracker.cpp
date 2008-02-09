@@ -1,6 +1,7 @@
 #include "engines/log.hpp"
 #include "engines/tracker.hpp"
 #include "pointer.hpp"
+#include "set.hpp"
 
 #ifdef RADAKAN_DEBUG
 	using namespace std;
@@ -13,13 +14,30 @@
 	{
 		return "Tracker";
 	}
+	
+	//	static
+	bool Tracker ::
+		is_tracking ()
+	{
+		return tracking;
+	}
+
+	//	static
+	bool Tracker ::
+		tracking (false);
 
 	//  constructor
 	Tracker ::
 		Tracker () :
-		Object ("tracker", true)	//	Here 'true' means 'prevent automatic destruction'.
+		Object ("tracker", "singleton"),
+		objects
+			(new Set <Object>
+				("tracker's objects", Container <Object> :: unlimited (), true))
 	{
 		Log :: trace (me, Tracker :: get_class_name ());
+		
+		tracking = true;
+		
 		assert (Tracker :: is_initialized ());
 	}
 
@@ -32,13 +50,15 @@
 
 		prepare_for_destruction ();
 
-		for (Pointer <Object> i = get_child (); i . points_to_object ();
-			i = get_another_child ())
+		for (Pointer <Object> i = objects -> get_child (); i . points_to_object ();
+			i = objects -> get_another_child ())
 		{
 			Log :: log (me) << "Warning: " << i << " was not destructed." << endl;
+
+			i -> list_references ();
 		}
 		
-		assert (Tracker :: get () -> is_empty ());
+		assert (objects -> is_empty ());
 	}
 
 	//	virtual

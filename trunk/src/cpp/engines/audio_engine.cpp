@@ -2,6 +2,7 @@
 	#include "engines/audio_engine.hpp"
 	#include "engines/log.hpp"
 	#include "engines/settings.hpp"
+	#include "map.hpp"
 
 	using namespace std;
 	using namespace Radakan;
@@ -34,7 +35,8 @@
 
 	Audio_Engine ::
 		Audio_Engine () :
-		Object ("audio engine")
+		Object ("audio engine"),
+		sounds (new Map <string, Sound_Sample> ("sounds"))
 	{
 		silent = false;
 
@@ -60,11 +62,6 @@
 		assert (is_initialized ());
 
 		prepare_for_destruction ();
-
-		if (! silent)
-		{
-			FSOUND_Close ();
-		}
 	}
 
 	//	virtual
@@ -80,7 +77,7 @@
 	{
 		if (! silent)
 		{
-			get_child () -> play ();
+			sounds -> get_child () -> get_child () -> play ();
 		}
 	}
 
@@ -93,7 +90,11 @@
 			string extension = file_name . substr (file_name . size () - 3);
 			if (extension == "ogg")
 			{
-				bool check = add (Reference <Sound_Sample> (new Sound_Sample (file_name)));
+				bool check = sounds -> add
+				(
+					Pair <string, Sound_Sample> :: create
+						(file_name, Reference <Sound_Sample> (new Sound_Sample (file_name)))
+				);
 				assert (check);
 			}
 			else if (extension == "mp3")

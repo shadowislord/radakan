@@ -17,7 +17,11 @@ namespace Radakan
 
 			static unsigned int unlimited ();
 
-			Container (unsigned int new_maximal_size = unlimited ());
+			Container
+			(
+				unsigned int new_maximal_size = unlimited (),
+				bool new_weak_children = false
+			);
 			virtual ~Container ();
 			virtual bool is_initialized () const;
 
@@ -50,6 +54,8 @@ namespace Radakan
 			virtual Reference <T> get_another_child () const = 0;
 
 			const unsigned int maximal_size;
+
+			const bool weak_children;
 
 		private :
 			bool sealed;

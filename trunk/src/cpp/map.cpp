@@ -13,8 +13,9 @@ template <typename T, class U> string Map <T, U> ::
 
 //  constructor
 template <typename T, class U> Map <T, U> ::
-	Map (string name) :
+	Map (string name, bool new_weak_children) :
 	Object (name),
+	Container <Pair <T, U> > (Container <Pair <T, U> > :: unlimited (), new_weak_children),
 	children (new map <T, Reference <U> >)
 {
 	Engines :: Log :: trace (this -> me, Map <T, U> :: get_class_name ());
@@ -43,8 +44,7 @@ template <typename T, class U> bool Map <T, U> ::
 	is_initialized ()
 	const
 {
-	//	TODO Make the next line work.
-	//	assert (Container <Pair <T, U> > :: is_initialized ());
+	assert ((Container <Pair <T, U> > :: is_initialized ()));
 	
 	return true;
 }
@@ -78,7 +78,18 @@ template <typename T, class U> bool Map <T, U> ::
 	Engines :: Log :: trace
 		(this -> me, Map <T, U> :: get_class_name (), "add", additive . get_name ());
 	
-	children -> insert (pair <T, Reference <U> > (additive -> first, additive -> get_child ()));
+	pair <Next_Child_Type, bool> result = children -> insert
+		(pair <T, Reference <U> > (additive -> first, additive -> get_child ()));
+	Engines :: Log :: log (this -> me) << "map insert: "
+		<< result . first -> second . get_name () << endl;
+	assert (result . second);
+	/*	TODO
+
+	const_cast <Reference <U> &> (result . first -> second) . set_parent (* this);
+	if (Container <Pair <T, U> > :: weak_children)
+	{
+		const_cast <Reference <U> &> (result . first -> second) . weaken ();
+	}*/
 	
 	return true;
 }
@@ -89,7 +100,10 @@ template <typename T, class U> void Map <T, U> ::
 {
 	Engines :: Log :: trace (this -> me, Map <T, U> :: get_class_name (), "drop", dropped . get_name ());
 	assert (Map :: is_initialized ());
-	assert ((! Container <Pair <T, U> > :: is_sealed ()) || Object :: is_destructing ());
+
+	//	GCC needs the additional '(...)' to understand this:
+	assert ((! Container <Pair <T, U> > :: is_sealed ()));
+	
 	assert (dropped -> is_initialized ());
 	assert (contains (dropped));
 
@@ -144,10 +158,16 @@ template <typename T, class U> Reference <U> Map <T, U> ::
 	}
 }
 
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	#include "engines/audio_engine.hpp"
+#endif
 #include "messages/communications/communication.hpp"
 #include "skill.hpp"
 #include "tile.hpp"
 
+template class Map <Mathematics :: Vector_3D, Tile>;
 template class Map <string, Messages :: Communications :: Communication>;
-template class Map <pair <int, int>, Tile>;
 template class Map <string, Skill>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Map <string, Sound_Sample>;
+#endif

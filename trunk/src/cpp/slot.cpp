@@ -13,9 +13,9 @@ template <class T> string Slot <T> ::
 
 //  constructor
 template <class T> Slot <T> ::
-	Slot (string new_name) :
+	Slot (string new_name, bool new_weak_children) :
 	Object (new_name),
-	Container <T> (1)
+	Container <T> (1, new_weak_children)
 {
 	Engines :: Log :: trace (this -> Object :: me, Slot :: get_class_name (), "");
 	
@@ -83,7 +83,14 @@ template <class T> bool Slot <T> ::
 		return false;
 	}
 
-	child = added;
+	if (Container <T> :: weak_children)
+	{
+		child . reset_pointee (added, true);
+	}
+	else
+	{
+		child = added;
+	}
 
 	return true;
 }
@@ -94,7 +101,7 @@ template <class T> void Slot <T> ::
 {
 	Engines :: Log :: trace (this -> me, Slot <T> :: get_class_name (), "drop", dropped . get_name ());
 	assert (Slot <T> :: is_initialized ());
-	assert ((! Container <T> :: is_sealed ()) || Object :: is_destructing ());
+	assert (! Container <T> :: is_sealed ());
 	assert (dropped . points_to_object ());
 	assert (dropped -> is_initialized ());
 	assert (contains (dropped));
@@ -122,8 +129,10 @@ template <class T> Reference <T> Slot <T> ::
 	return Reference <T> ();
 }
 
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	#include "engines/audio_engine.hpp"
+#endif
 #include "gui.hpp"
-#include "items/character.hpp"
 #include "items/container_item.hpp"
 #include "messages/communications/communication.hpp"
 #include "model.hpp"
@@ -140,6 +149,9 @@ template class Slot <Items :: Item>;
 template class Slot <Messages :: Communications :: Communication>;
 template class Slot <Model>;
 template class Slot <Skill>;
+#if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
+	template class Slot <Sound_Sample>;
+#endif
 template class Slot <Strategies :: Actions :: Action>;
 template class Slot <Strategies :: Behaviors :: Behavior>;
 template class Slot <Strategies :: Game_Modes :: Game_Mode>;

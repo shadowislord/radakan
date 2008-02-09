@@ -22,7 +22,7 @@ string Mediator ::
 //  constructor
 Mediator ::
 	Mediator () :
-	Object ("mediator", true)	//	Here 'true' means 'prevent automatic destruction'.
+	Object ("mediator", "singleton")
 {
 	Engines :: Log :: trace (me, Mediator :: get_class_name ());
 
@@ -39,6 +39,8 @@ Mediator ::
 	assert (is_initialized ());
 
 	prepare_for_destruction ();
+
+	Mediator_Implementation :: uninstantiate ();
 }
 
 //	virtual

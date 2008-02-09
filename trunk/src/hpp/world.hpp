@@ -1,15 +1,24 @@
 #ifndef RADAKAN_WORLD_HPP
 #define RADAKAN_WORLD_HPP
 
-#include <OgreOdeCollision.h>
-
 #include "singleton.hpp"
 #include "state_machine.hpp"
 
-namespace OgreOde
-{
-	class ForwardFixedInterpolatedStepHandler;
-}
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+	#include <OgreOdeCollision.h>
+
+	namespace OgreOde
+	{
+		class ForwardFixedInterpolatedStepHandler;
+	}
+#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	class btBroadphaseInterface;
+	class btCollisionConfiguration;
+	class btConstraintSolver;
+	class btDiscreteDynamicsWorld;
+	class btDispatcher;
+#else
+#endif
 
 namespace Radakan
 {
@@ -19,8 +28,12 @@ namespace Radakan
 	
 	///	World contains all basic 'environment' data.
 	class World :
-		public Singleton <World>,
+		public Singleton <World>
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+		,
 		public OgreOde :: CollisionListener
+#else
+#endif
 	{
 		public:
 			///	These are the tile position limits, not the item position limits.
@@ -35,9 +48,12 @@ namespace Radakan
 			
 			static string get_class_name ();
 			
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 			///	Called by OgreOde whenever a collision occurs,
 			///	so that we can modify the contact parameters.
 			virtual bool collision (OgreOde :: Contact * contact);
+#else
+#endif
 			
 			void update ();
 
@@ -45,15 +61,28 @@ namespace Radakan
 			Reference <Container <Model> > get_close_models (Reference <Model> by);
 			
 			boost :: scoped_ptr <Ogre :: SceneNode> root_node;
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 			boost :: scoped_ptr <OgreOde :: World> ogre_ode_world;
+#endif
 			
 		private :
-			//	The coordinates of a tile are expressed as (x, z).
-			Reference <Map <pair <int, int>, Tile> > tiles;
-			
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 			///	enables fps control
 			boost :: scoped_ptr <OgreOde :: ForwardFixedInterpolatedStepHandler>
 				step_handler;
+#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+			boost :: scoped_ptr <btCollisionConfiguration> collision_configuration;
+			boost :: scoped_ptr <btDispatcher> dispatcher;
+			boost :: scoped_ptr <btBroadphaseInterface> broadphase;
+			boost :: scoped_ptr <btConstraintSolver> constraint_solver;
+
+		public :
+			boost :: scoped_ptr <btDiscreteDynamicsWorld> bullet_world;
+
+		private :
+#endif
+		
+			Reference <Map <Mathematics :: Vector_3D, Tile> > tiles;
 	};
 }
 

@@ -20,7 +20,7 @@ namespace Radakan
 				///	Some Windows compilers give an error otherwise.
 				Object ();
 			#endif
-			Object (string new_name, bool new_prevent_automatic_destruction = false);
+			Object (string new_name, string automatic_destruction_prevention_key = "");
 			virtual ~Object ();
 			virtual bool is_initialized () const;
 			
@@ -31,19 +31,28 @@ namespace Radakan
 			///	Each reference to me will be un-set.
 			void prepare_for_destruction ();
 
-			void register_reference (const Reference_Base & reference) const;
+			void register_reference
+				(const Reference_Base & reference, bool weak = false) const;
 
 			void unregister_reference (const Reference_Base & reference) const;
 
+			#ifdef RADAKAN_DEBUG	
+				void list_references () const;
+			#endif
+
 			bool is_destructing () const;
+
+			///	'key' may not be the empty string.
+			void add_automatic_destruction_prevention (string key);
+			void remove_automatic_destruction_prevention (string key);
 			
 			const string name;
 			
-			bool prevent_automatic_destruction;
-
 		private :
 			bool has_dependency () const;
 			bool does_depend (const Reference_Base & candidate) const;
+
+			boost :: scoped_ptr <set <string> > automatic_destruction_preventions;
 
 			#ifdef RADAKAN_DEBUG	
 				bool is_tracked;
@@ -51,10 +60,11 @@ namespace Radakan
 
 			///	I store my dependencies as const to reduce the number of casts,
 			///	but they are 'const_cast'-ed, at my destruction.
-			mutable boost :: scoped_ptr <set <const Reference_Base *> > dependencies;
+			mutable boost :: scoped_ptr <set <const Reference_Base *> > strong_dependencies;
 
-			///	'status' can be 'constructing', 'running' or 'destructing'.
-			string status;
+			///	I store my dependencies as const to reduce the number of casts,
+			///	but they are 'const_cast'-ed, at my destruction.
+			mutable boost :: scoped_ptr <set <const Reference_Base *> > weak_dependencies;
 
 		public :
 			Reference <Object> me;

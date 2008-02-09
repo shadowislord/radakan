@@ -1,9 +1,9 @@
 #ifndef RADAKAN_SINGLETON_HPP
 #define RADAKAN_SINGLETON_HPP
 
-#include <OgreSingleton.h>
-
 #include "object.hpp"
+
+#include <OgreSingleton.h>
 
 using namespace std;
 

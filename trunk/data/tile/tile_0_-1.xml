@@ -1,5 +1,5 @@
 <tile>
-	<model item="flat_ground" x="10" y="0" z="10" />
+	<model item="flat_ground" position="10, 0, 10" />
 	
-	<model item="ninja" x="12.5" y="1.1" z="11.2" name="Fourth Ninja" />
+	<model item="ninja" position="12.5, 1.1, 11.2" name="Fourth Ninja" />
 </tile>
