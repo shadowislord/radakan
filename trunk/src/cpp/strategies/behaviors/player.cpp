@@ -290,15 +290,16 @@ const Mathematics :: Vector_3D Player ::
 		+ character -> get_movable_model () -> get_position ();
 }
 
-const Ogre :: Quaternion Player ::
+const Mathematics :: Quaternion Player ::
 	get_camera_orientation ()
 	const
 {
 	assert (is_initialized ());
 
-	return make_quaternion
+	return Mathematics :: Quaternion
 		(vertical_camera_angle . get_value (),
-			character -> get_movable_model () -> get_side_direction ());
+			character -> get_movable_model () -> get_side_direction ())
+		* character -> get_movable_model () -> get_orientation ();
 }
 
 void Player ::

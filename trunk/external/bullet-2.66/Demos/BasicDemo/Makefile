@@ -34,10 +34,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/t/dev/radakan/trunk/external/bullet-2.66
+CMAKE_SOURCE_DIR = /home/t/dev/radakan/trunk/external/bullet-2.66/Demos
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/t/dev/radakan/trunk/external/bullet-2.66
+CMAKE_BINARY_DIR = /home/t/dev/radakan/trunk/external/bullet-2.66/Demos
 
 # Include the progress variables for this target.
 include CMakeFiles/progress.make
@@ -63,63 +63,63 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(CMAKE_COMMAND) -E cmake_progress_start /home/t/dev/radakan/trunk/external/bullet-2.66/CMakeFiles $(CMAKE_ALL_PROGRESS)
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f CMakeFiles/Makefile2 Demos/BasicDemo/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/t/dev/radakan/trunk/external/bullet-2.66/CMakeFiles 0
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(CMAKE_COMMAND) -E cmake_progress_start /home/t/dev/radakan/trunk/external/bullet-2.66/Demos/CMakeFiles $(CMAKE_ALL_PROGRESS)
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f CMakeFiles/Makefile2 BasicDemo/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/t/dev/radakan/trunk/external/bullet-2.66/Demos/CMakeFiles 0
 
 # The main clean target
 clean:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f CMakeFiles/Makefile2 Demos/BasicDemo/clean
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f CMakeFiles/Makefile2 BasicDemo/clean
 
 # The main clean target
 clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f CMakeFiles/Makefile2 Demos/BasicDemo/preinstall
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f CMakeFiles/Makefile2 BasicDemo/preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f CMakeFiles/Makefile2 Demos/BasicDemo/preinstall
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f CMakeFiles/Makefile2 BasicDemo/preinstall
 
 # clear depends
 depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 
 # Convenience name for target.
-Demos/BasicDemo/CMakeFiles/BasicDemo.dir/rule:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f CMakeFiles/Makefile2 Demos/BasicDemo/CMakeFiles/BasicDemo.dir/rule
+BasicDemo/CMakeFiles/BasicDemo.dir/rule:
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f CMakeFiles/Makefile2 BasicDemo/CMakeFiles/BasicDemo.dir/rule
 
 # Convenience name for target.
-BasicDemo: Demos/BasicDemo/CMakeFiles/BasicDemo.dir/rule
+BasicDemo: BasicDemo/CMakeFiles/BasicDemo.dir/rule
 
 # fast build rule for target.
 BasicDemo/fast:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f Demos/BasicDemo/CMakeFiles/BasicDemo.dir/build.make Demos/BasicDemo/CMakeFiles/BasicDemo.dir/build
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f BasicDemo/CMakeFiles/BasicDemo.dir/build.make BasicDemo/CMakeFiles/BasicDemo.dir/build
 
 # target to build an object file
 BasicDemo.o:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f Demos/BasicDemo/CMakeFiles/BasicDemo.dir/build.make Demos/BasicDemo/CMakeFiles/BasicDemo.dir/BasicDemo.o
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f BasicDemo/CMakeFiles/BasicDemo.dir/build.make BasicDemo/CMakeFiles/BasicDemo.dir/BasicDemo.o
 
 # target to preprocess a source file
 BasicDemo.i:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f Demos/BasicDemo/CMakeFiles/BasicDemo.dir/build.make Demos/BasicDemo/CMakeFiles/BasicDemo.dir/BasicDemo.i
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f BasicDemo/CMakeFiles/BasicDemo.dir/build.make BasicDemo/CMakeFiles/BasicDemo.dir/BasicDemo.i
 
 # target to generate assembly for a file
 BasicDemo.s:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f Demos/BasicDemo/CMakeFiles/BasicDemo.dir/build.make Demos/BasicDemo/CMakeFiles/BasicDemo.dir/BasicDemo.s
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f BasicDemo/CMakeFiles/BasicDemo.dir/build.make BasicDemo/CMakeFiles/BasicDemo.dir/BasicDemo.s
 
 # target to build an object file
 main.o:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f Demos/BasicDemo/CMakeFiles/BasicDemo.dir/build.make Demos/BasicDemo/CMakeFiles/BasicDemo.dir/main.o
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f BasicDemo/CMakeFiles/BasicDemo.dir/build.make BasicDemo/CMakeFiles/BasicDemo.dir/main.o
 
 # target to preprocess a source file
 main.i:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f Demos/BasicDemo/CMakeFiles/BasicDemo.dir/build.make Demos/BasicDemo/CMakeFiles/BasicDemo.dir/main.i
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f BasicDemo/CMakeFiles/BasicDemo.dir/build.make BasicDemo/CMakeFiles/BasicDemo.dir/main.i
 
 # target to generate assembly for a file
 main.s:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(MAKE) -f Demos/BasicDemo/CMakeFiles/BasicDemo.dir/build.make Demos/BasicDemo/CMakeFiles/BasicDemo.dir/main.s
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(MAKE) -f BasicDemo/CMakeFiles/BasicDemo.dir/build.make BasicDemo/CMakeFiles/BasicDemo.dir/main.s
 
 # Help Target
 help::
@@ -146,5 +146,5 @@ help::
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/t/dev/radakan/trunk/external/bullet-2.66 && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/t/dev/radakan/trunk/external/bullet-2.66/Demos && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 

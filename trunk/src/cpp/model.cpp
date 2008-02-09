@@ -39,7 +39,17 @@ Model ::
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	geometry (create_geometry (item)),
 #elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-	motion_state (new btDefaultMotionState),
+	motion_state
+	(
+		new btDefaultMotionState
+		(
+			btTransform
+			(
+				item -> mesh_data -> default_orientation . to_bullet(),
+				position . to_bullet ()
+			)
+		)
+	),
 	collision_shape (create_collsion_shape (item)),
 	body (new btRigidBody (btRigidBody :: btRigidBodyConstructionInfo
 		(item -> mass, motion_state . get (), collision_shape . get ()))),
@@ -75,6 +85,7 @@ Model ::
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	entity -> setUserObject (geometry . get ());
 #elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	
 #else
 #endif
 
@@ -184,7 +195,7 @@ Mathematics :: Vector_3D Model ::
 	return node -> getOrientation () * Mathematics :: Vector_3D :: y_axis;
 }
 
-Ogre :: Quaternion Model ::
+Mathematics :: Quaternion Model ::
 	get_orientation () const
 {
 	assert (Model :: is_initialized ());
@@ -208,22 +219,18 @@ void Model ::
 	sync ()
 {
 	btTransform transformation;
-
 	motion_state -> getWorldTransform (transformation);
 
-	btQuaternion orientation (transformation . getRotation ());
-	node -> setOrientation
-		(orientation . x (), orientation . y (), orientation . z (), orientation . w ());
+	Engines :: Log :: log (me) << "old orientation: " << node -> getOrientation () << endl;
+	node -> setOrientation (Mathematics :: Quaternion (transformation . getRotation ()));
+	Engines :: Log :: log (me) << "new orientation: " << node -> getOrientation () << endl;
+
+	Engines :: Log :: log (me) << "old position: " << node -> getPosition () << endl;
 	node -> setPosition (Mathematics :: Vector_3D (transformation . getOrigin ()));
+	Engines :: Log :: log (me) << "new position: " << node -> getPosition () << endl;
 }
 #else
 #endif
-
-Ogre :: Quaternion Radakan :: make_quaternion
-	(float radian_angle, Mathematics :: Vector_3D axis)
-{
-	return Ogre :: Quaternion (Ogre :: Radian (radian_angle), axis);
-}
 
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 boost :: shared_ptr <OgreOde :: Geometry> Radakan ::
@@ -264,12 +271,12 @@ boost :: shared_ptr <btCollisionShape> Radakan ::
 	if (item -> size . y <= 0.01)
 	{
 		return boost :: shared_ptr <btCollisionShape>
-			(new btStaticPlaneShape (btVector3 (0, 1, 0), 0));
+			(new btStaticPlaneShape (Mathematics :: Vector_3D :: y_axis . to_bullet (), 0));
 	}
 	else
 	{
 		return boost :: shared_ptr <btCollisionShape>
-			(new btBoxShape (btVector3 (1, 1, 1)));
+			(new btBoxShape (item -> size . to_bullet ()));
 	}
 }
 #else

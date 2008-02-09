@@ -48,6 +48,7 @@
 		string without (const string & value, const string & diff);
 	}
 
+	#include "mathematics/quaternion.hpp"
 	#include "mathematics/vector_3d.hpp"
 
 #endif //	RADAKAN_BASE_HPP

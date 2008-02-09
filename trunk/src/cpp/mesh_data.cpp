@@ -17,6 +17,7 @@ Mesh_Data ::
 	Object ("mesh based on " + new_file_name),
 	file_name (new_file_name),
 	material_file_name (""),
+	default_orientation (Mathematics :: Quaternion :: identity),
 	scale (1),
 	solid (true),
 	visible (true)

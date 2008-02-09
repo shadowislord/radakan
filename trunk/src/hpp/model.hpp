@@ -49,7 +49,7 @@ namespace Radakan
 			Mathematics :: Vector_3D get_side_direction () const;
 			Mathematics :: Vector_3D get_top_direction () const;
 
-			Ogre :: Quaternion get_orientation () const;
+			Mathematics :: Quaternion get_orientation () const;
 
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 			void set_space (boost :: shared_ptr <OgreOde :: Space> new_space);
@@ -73,8 +73,6 @@ namespace Radakan
 #endif
 			boost :: scoped_ptr <Ogre :: Entity> entity;
 	};
-
-	Ogre :: Quaternion make_quaternion (float radian_angle, Mathematics :: Vector_3D axis);
 
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	boost :: shared_ptr <OgreOde :: Geometry> create_geometry (Reference <Items :: Item> item);

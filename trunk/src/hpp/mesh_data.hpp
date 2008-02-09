@@ -20,7 +20,7 @@ namespace Radakan
 
 			const string file_name;
 
-			Ogre :: Quaternion default_orientation;
+			Mathematics :: Quaternion default_orientation;
 
 			///	Default: empty
 			string material_file_name;

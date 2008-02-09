@@ -264,7 +264,11 @@ Reference <Items :: Item> Tile ::
 	Engines :: Log :: log (me) << "item_element: " << item_element -> Value () << endl;
 
 	string type = item_element -> Attribute ("type");
-	float mass = to_float (item_element -> Attribute ("mass"));
+	float mass = 0;
+	if (item_element -> Attribute ("mass") != NULL)
+	{
+	    mass = to_float (item_element -> Attribute ("mass"));
+	}
 	Mathematics :: Vector_3D size (item_element -> Attribute ("size"));
 
 	//	TODO Do this smarter so we don't have to re-run this every time.
@@ -290,13 +294,10 @@ Reference <Items :: Item> Tile ::
 		mesh_data -> visible = mesh_element -> Attribute ("visible") == string ("true");
 	}
 
-	if (mesh_element -> Attribute ("rotation") != NULL)
+	if (mesh_element -> Attribute ("orientation") != NULL)
 	{
-		if (mesh_element -> Attribute ("rotation") == string ("true"))
-		{
-			mesh_data -> default_orientation = make_quaternion
-				(- Ogre :: Math :: HALF_PI, Mathematics :: Vector_3D :: x_axis);
-		}
+		mesh_data -> default_orientation
+			= Mathematics :: Quaternion (mesh_element -> Attribute ("orientation"));
 	}
 
 	Pointer <Items :: Item> item;

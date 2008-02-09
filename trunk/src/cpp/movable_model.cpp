@@ -142,7 +142,7 @@ void Movable_Model ::
 	assert (Model :: is_initialized ());
 
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-	body -> setOrientation (Ogre :: Quaternion (1, 0, 0, 0));
+	body -> setOrientation (Mathematics :: Quaternion :: identity);
 	body -> setPosition (body -> getPosition ()
 		+ (2 - body -> getPosition () . y) * Mathematics :: Vector_3D :: y_axis);
 	body -> setLinearVelocity (Mathematics :: Vector_3D :: zero_vector);

@@ -1,5 +1,5 @@
-<item_prototype type="static_item" mass="10" size="5, 3, 5">
-	<mesh file_name="building.mesh" scale="0.08" rotation="true" />
+<item_prototype type="static_item" size="5, 3, 5">
+	<mesh file_name="building.mesh" scale="0.08" orientation="0.707107, -0.707107, 0, 0" />
 </item_prototype>
 
 <!--
