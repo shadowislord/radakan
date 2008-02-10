@@ -80,8 +80,7 @@ template <typename T, class U> bool Map <T, U> ::
 	
 	pair <Next_Child_Type, bool> result = children -> insert
 		(pair <T, Reference <U> > (additive -> first, additive -> get_child ()));
-	Engines :: Log :: log (this -> me) << "map insert: "
-		<< result . first -> second . get_name () << endl;
+	Engines :: Log :: log (this -> me) << "map insert: " << result . first -> second << endl;
 	assert (result . second);
 	/*	TODO
 

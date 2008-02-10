@@ -8,15 +8,11 @@ ogre_media_path=C:/OgreSDK/media
 [general]
 show dialog=true
 
-[key bindings: meta]
+[key bindings: Strategies :: Game_Modes :: Game_Mode]
 menu=escape
-
-[key bindings: menu]
-return=r
-statistics=s
 quit=q
 
-[key bindings: play]
+[key bindings: Strategies :: Behaviors :: Player]
 go forward=w
 go backward=s
 turn left=a

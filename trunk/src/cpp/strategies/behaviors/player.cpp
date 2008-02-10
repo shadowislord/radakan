@@ -48,7 +48,7 @@ Player ::
 	check = character -> right_hand -> add (Reference <Items :: Item> (new Items :: Weapon ("Sword", 4, Mathematics :: Vector_3D (0.1, 0.2, 0.3), Reference <Mesh_Data> (), 5, 6, 7, 8, 9, 10)));
 	assert (check);
 
-	Engines :: Settings :: get () -> load_key_bindings ("play");
+	Engines :: Settings :: get () -> load_key_bindings (get_class_name ());
 	
 	assert (Player :: is_initialized ());
 }

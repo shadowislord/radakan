@@ -60,7 +60,7 @@ template <class T> void Container <T> ::
 {
 	for (Pointer <T> child (get_child ()); child . points_to_object (); child = get_child ())
 	{
-		Engines :: Log :: log (this -> me) << "Dropping child " << child . get_name () << "..." << endl;
+		Engines :: Log :: log (this -> me) << "Dropping child " << child << "..." << endl;
 		
 		drop (child);
 	}

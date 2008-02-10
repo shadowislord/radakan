@@ -27,7 +27,6 @@ namespace Radakan
 			///	Call 'prepare_for_destruction ()' at the beginning of the
 			///	destructor of each non-abstract subclass.
 			///	Don't worry about calling it twice.
-			///	'destructing' is set to 'true'.
 			///	Each reference to me will be un-set.
 			void prepare_for_destruction ();
 
@@ -40,10 +39,10 @@ namespace Radakan
 				void list_references () const;
 			#endif
 
-			bool is_destructing () const;
-
 			///	'key' may not be the empty string.
 			void add_automatic_destruction_prevention (string key);
+			
+			///	'key' may not be the empty string.
 			void remove_automatic_destruction_prevention (string key);
 			
 			const string name;

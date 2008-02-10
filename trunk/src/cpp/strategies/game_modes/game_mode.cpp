@@ -23,7 +23,7 @@ Game_Mode ::
 	Object ("The name doesn't matter. This is an abstract base class."),
 	gui (Engines :: GUI_Engine :: get () -> create_gui (me . get_name (true) + ".xml"))
 {
-	Engines :: Settings :: get () -> load_key_bindings (me . get_name (true));
+	Engines :: Settings :: get () -> load_key_bindings (get_class_name ());
 
 	assert (is_initialized ());
 }

@@ -126,14 +126,9 @@ void Object ::
 	register_reference (const Reference_Base & reference, bool weak)
 	const
 {
-	if(weak)
-	{
-		Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name (), "week" );
-	}
-	else
-	{
-		Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference", reference . get_name (), "strong" );
-	}
+	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference",
+		reference . get_name (), (weak ? "weak" : "strong" ));
+
 	assert (Object :: is_initialized ());
 	assert (! does_depend (reference));
 
@@ -154,7 +149,7 @@ void Object ::
 	unregister_reference (const Reference_Base & reference)
 	const
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "unregister_reference", reference . get_name (), "strong");
+	Engines :: Log :: trace (me, Object :: get_class_name (), "unregister_reference", reference . get_name ());
 	
 	assert (Object :: is_initialized ());
 	assert (does_depend (reference));
@@ -162,11 +157,10 @@ void Object ::
 	strong_dependencies -> erase (& reference);
 	weak_dependencies -> erase (& reference);
 
-
 	//	Is there anything that prevents automatic destruction?
 	if (! automatic_destruction_preventions -> empty ())
 	{
-		//	Engines :: Log :: log (me) << "I will not self-destruct, because I prevent it." << endl;
+		//	Engines :: Log :: log (me) << "I will not self-destruct, because it's prevented." << endl;
 		return;
 	}
 
@@ -176,7 +170,7 @@ void Object ::
 		delete this;
 	}
 
-	//	Engines :: Log :: log (me) << "I will not self-destruct, because I have another dependency." << endl;
+	//	Engines :: Log :: log (me) << "I will not self-destruct, because I have another strong dependency." << endl;
 }
 
 #ifdef RADAKAN_DEBUG
@@ -187,14 +181,13 @@ void Object ::
 		for (set <const Reference_Base *> :: iterator i = strong_dependencies -> begin ();
 			i != strong_dependencies -> end (); i ++)
 		{
-			Engines :: Log :: log (me) << "Strong dependency: " << (* * i) . get_name ()
-				<< endl;
+			Engines :: Log :: log (me) << "Strong dependency: " << * * i << endl;
 		}
 
 		for (set <const Reference_Base *> :: iterator i = weak_dependencies -> begin ();
 			i != weak_dependencies -> end (); i ++)
 		{
-			Engines :: Log :: log (me) << "Weak dependency: " << (* * i) . get_name () << endl;
+			Engines :: Log :: log (me) << "Weak dependency: " << * * i << endl;
 		}
 	}
 #endif
