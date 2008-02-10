@@ -470,3 +470,7 @@ template const Reference <Messages :: Communications :: Fight>
 template const Reference <Messages :: Communications :: Converse>
 	Reference <Messages :: Communications :: Communication> ::
 	cast_const <Messages :: Communications :: Converse> () const;
+template bool Reference <Messages :: Communications :: Communication> ::
+	is_castable <Messages :: Communications :: Converse> () const;
+template bool Reference <Messages :: Communications :: Communication> ::
+	is_castable <Messages :: Communications :: Fight> () const;
