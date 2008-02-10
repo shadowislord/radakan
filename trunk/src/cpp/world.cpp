@@ -90,6 +90,23 @@ World ::
 #endif
 	tiles (new Map <Mathematics :: Vector_3D, Tile> ("tiles"))
 {
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+	ogre_ode_world -> setCollisionListener (this);
+
+    ogre_ode_world -> setGravity (Ogre :: Vector3 (0, - 9.81, 0));
+    //	ogre_ode_world -> setCFM (10e-5);	//	fine tune to make a realistic simulation
+    //	ogre_ode_world -> setERP (0.8);
+    ogre_ode_world -> setAutoSleep (true);
+    ogre_ode_world -> setContactCorrectionVelocity (1.0);
+	//	The following line causes an error in Ogre.
+	//	ogre_ode_world -> setShowDebugGeometries (true);
+
+	Engines :: Log :: log (me) << "ERP: " << ogre_ode_world -> getERP () << endl;
+	Engines :: Log :: log (me) << "CFM: " << ogre_ode_world -> getCFM () << endl;
+#else
+	bullet_world -> setGravity (btVector3 (0, - 9.81, 0));
+#endif
+	
 	for (int x = min_x; x <= max_x; x ++)
 	{
 		for (int z = min_z; z <= max_z; z ++)
@@ -123,23 +140,6 @@ World ::
 			);
 		}
 	}
-
-#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-	ogre_ode_world -> setCollisionListener (this);
-
-    ogre_ode_world -> setGravity (Ogre :: Vector3 (0, - 9.81, 0));
-    //	ogre_ode_world -> setCFM (10e-5);	//	fine tune to make a realistic simulation
-    //	ogre_ode_world -> setERP (0.8);
-    ogre_ode_world -> setAutoSleep (true);
-    ogre_ode_world -> setContactCorrectionVelocity (1.0);
-	//	The following line causes an error in Ogre.
-	//	ogre_ode_world -> setShowDebugGeometries (true);
-
-	Engines :: Log :: log (me) << "ERP: " << ogre_ode_world -> getERP () << endl;
-	Engines :: Log :: log (me) << "CFM: " << ogre_ode_world -> getCFM () << endl;
-#else
-	bullet_world -> setGravity (btVector3 (0, - 9.81, 0));
-#endif
 }
 
 World ::

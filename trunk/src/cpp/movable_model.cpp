@@ -31,8 +31,8 @@ Movable_Model ::
 	Object (new_item . get_name () + "'s movable model"),
 	Model (new_item, position)
 {
-	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "", new_item . get_name (),
-		position . to_string ());
+	Engines :: Log :: trace (me, Movable_Model :: get_class_name (), "",
+		new_item . get_name (), position . to_string ());
 
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	body . reset (new OgreOde :: Body (World :: get () -> ogre_ode_world . get (), name));
@@ -78,7 +78,7 @@ void Movable_Model ::
 	assert (Model :: is_initialized ());
 	assert (Ogre :: Math :: Abs (relative_destination_movement_speed) <= 1);
 
-	if (relative_destination_movement_speed < 0)
+	if (relative_destination_movement_speed != 0)
 	{
 		Engines :: Log :: log (me) << "relative_destination_movement_speed: "
 			<< relative_destination_movement_speed << endl;
@@ -100,6 +100,7 @@ void Movable_Model ::
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	body -> setForce (force);
 #elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	body -> applyCentralForce (force . to_bullet ());
 #else
 #endif
 }
@@ -115,6 +116,12 @@ void Movable_Model ::
 	if (axis == Mathematics :: Vector_3D :: zero_vector)
 	{
 		axis = get_top_direction ();
+	}
+
+	if (relative_destination_turn_speed != 0)
+	{
+		Engines :: Log :: log (me) << "relative_destination_turn_speed: "
+			<< relative_destination_turn_speed << endl;
 	}
 
 	//	This line works for both Bullet and OgreOde:
@@ -148,6 +155,18 @@ void Movable_Model ::
 	body -> setLinearVelocity (Mathematics :: Vector_3D :: zero_vector);
 	body -> setForce (Mathematics :: Vector_3D :: zero_vector);
 #elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	body -> clearForces ();
+
+	btTransform transformation
+	(
+		Mathematics :: Quaternion :: identity . to_bullet (),
+		(Mathematics :: Vector_3D
+		(
+			get_position () + (2 - get_position () . y) * Mathematics :: Vector_3D :: y_axis
+		)) . to_bullet ()
+	);
+	//	motion_state -> getWorldTransform (transformation);
+	body -> getMotionState () -> getWorldTransform (transformation);	//	Does this do the same?
 #else
 #endif
 }

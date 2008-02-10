@@ -126,8 +126,8 @@ void Object ::
 	register_reference (const Reference_Base & reference, bool weak)
 	const
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference",
-		reference . get_name (), (weak ? "weak" : "strong" ));
+	//	Engines :: Log :: trace (me, Object :: get_class_name (), "register_reference",
+	//		reference . get_name (), (weak ? "weak" : "strong" ));
 
 	assert (Object :: is_initialized ());
 	assert (! does_depend (reference));
@@ -149,7 +149,8 @@ void Object ::
 	unregister_reference (const Reference_Base & reference)
 	const
 {
-	Engines :: Log :: trace (me, Object :: get_class_name (), "unregister_reference", reference . get_name ());
+	//	Engines :: Log :: trace (me, Object :: get_class_name (), "unregister_reference",
+		//	reference . get_name ());
 	
 	assert (Object :: is_initialized ());
 	assert (does_depend (reference));

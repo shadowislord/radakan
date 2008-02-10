@@ -85,7 +85,7 @@ Model ::
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	entity -> setUserObject (geometry . get ());
 #elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-	
+	World :: get () -> bullet_world -> addRigidBody (body . get ());
 #else
 #endif
 
@@ -219,7 +219,8 @@ void Model ::
 	sync ()
 {
 	btTransform transformation;
-	motion_state -> getWorldTransform (transformation);
+	//	motion_state -> getWorldTransform (transformation);
+	body -> getMotionState () -> getWorldTransform (transformation);	//	Does this do the same?
 
 	Engines :: Log :: log (me) << "old orientation: " << node -> getOrientation () << endl;
 	node -> setOrientation (Mathematics :: Quaternion (transformation . getRotation ()));
