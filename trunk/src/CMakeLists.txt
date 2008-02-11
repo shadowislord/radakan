@@ -7,11 +7,9 @@ if("${GUI_MODE}" STREQUAL "${CEGUI}")
 	find_package(CEGUI)
 endif("${GUI_MODE}" STREQUAL "${CEGUI}")
 
-if("${PHYSICS_MODE}" STREQUAL "${Bullet}")
-	find_package(Bullet)
-else("${PHYSICS_MODE}" STREQUAL "${Bullet}")
+if("${PHYSICS_MODE}" STREQUAL "${OgreOde}")
 	find_package(Ode)
-endif("${PHYSICS_MODE}" STREQUAL "${Bullet}")
+endif("${PHYSICS_MODE}" STREQUAL "${OgreOde}")
 
 if("${SOUND_MODE}" STREQUAL "${Audiere}")
 	find_package(Ogg)

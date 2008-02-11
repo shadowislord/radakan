@@ -12,16 +12,18 @@ set(OGRE_HOME "$ENV{OGRE_HOME}")
 if(WIN32)
     if(MSVC80)
         find_path(CEGUI_INCLUDE_DIR "CEGUI/CEGUI.h"
-            "${OGRE_HOME}/Dependencies/include")
+            "${OGRE_HOME}/Dependencies/include"
+			"${OGRE_HOME}/include")
 
 		find_path(OGRE_CEGUI_RENDERER_INCLUDE "OgreCEGUIRenderer.h"	
-			"${OGRE_HOME}/Samples/Common/CEGUIRenderer/include")
+			"${OGRE_HOME}/Samples/Common/CEGUIRenderer/include"
+			"${OGRE_HOME}/Samples/include")
 			
         find_path(CEGUI_LIB_RELEASE "CEGUIBase.lib" 
-	        "${OGRE_HOME}/Dependencies/lib/Release")
+	        "${OGRE_HOME}/lib")
 
         find_path(CEGUI_LIB_DEBUG "CEGUIBase_d.lib" 
-            "${OGRE_HOME}/Dependencies/lib/Debug")
+            "${OGRE_HOME}/lib")
     endif(MSVC80)
 else(WIN32)
     find_path(CEGUI_INCLUDE_DIR "CEGUI.h"
