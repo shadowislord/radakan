@@ -30,17 +30,18 @@ namespace Radakan
 			
 			static string get_class_name ();
 			
-			//	I'll move in my front direction.
-			void move (float relative_destination_movement_speed);
+			///	I'll move in my front direction.
+			///	
+			void move (float relative_destination_linear_velocity);
 
-			//	If no - or zero - ax specified, I'll turn around my top direction.
+			///	If no - or zero - axis specified, I'll turn around my top direction.
 			void turn
 			(
-				float relative_destination_turn_speed,
+				float relative_destination_angular_velocity,
 				Mathematics :: Vector_3D axis = Mathematics :: Vector_3D :: zero_vector
 			);
 
-			//	Reset the orientation.
+			///	Reset the position and orientation.
 			void reset ();
 
 		private :

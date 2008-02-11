@@ -456,6 +456,10 @@ template bool Reference <Items :: Item> ::
 	is_castable <Items :: Character> () const;
 template bool Reference <Items :: Item> ::
 	is_castable <Items :: Static_Item> () const;
+template bool Reference <Messages :: Communications :: Communication> ::
+	is_castable <Messages :: Communications :: Converse> () const;
+template bool Reference <Messages :: Communications :: Communication> ::
+	is_castable <Messages :: Communications :: Fight> () const;
 
 template Reference <Items :: Character> Reference <Items :: Item> ::
 	cast <Items :: Character> ();
@@ -470,7 +474,3 @@ template const Reference <Messages :: Communications :: Fight>
 template const Reference <Messages :: Communications :: Converse>
 	Reference <Messages :: Communications :: Communication> ::
 	cast_const <Messages :: Communications :: Converse> () const;
-template bool Reference <Messages :: Communications :: Communication> ::
-	is_castable <Messages :: Communications :: Converse> () const;
-template bool Reference <Messages :: Communications :: Communication> ::
-	is_castable <Messages :: Communications :: Fight> () const;

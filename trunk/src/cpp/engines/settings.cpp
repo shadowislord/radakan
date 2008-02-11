@@ -17,7 +17,8 @@ string Settings ::
 Settings ::
 	Settings (string path_to_config) :
 	Object ("settings", "singleton"),
-	radakan_config (new Ogre :: ConfigFile ())
+	radakan_config (new Ogre :: ConfigFile ()),
+	key_bindings (new map <string, string>)
 {
 	//	Load the Radakan configuration file
 	radakan_config -> load (path_to_config + "/radakan.cfg");
@@ -27,13 +28,13 @@ Settings ::
 	
 	//	Load the string values and convert them from string to float.
 	movement_reaction
-		= to_float (radakan_config -> getSetting ("movement_reaction", "gameplay"));
+		= to_float (radakan_config -> getSetting ("movement reaction", "gameplay"));
 	maximal_movement_speed
-		= to_float (radakan_config -> getSetting ("maximal_movement_speed", "gameplay"));
+		= to_float (radakan_config -> getSetting ("maximal movement speed", "gameplay"));
 	turn_reaction
-		= to_float (radakan_config -> getSetting ("turn_reaction", "gameplay"));
+		= to_float (radakan_config -> getSetting ("turn reaction", "gameplay"));
 	maximal_turn_speed
-		= to_float (radakan_config -> getSetting ("maximal_turn_speed", "gameplay"));
+		= to_float (radakan_config -> getSetting ("maximal turn speed", "gameplay"));
 
 	assert (is_initialized ());
 }
@@ -64,8 +65,14 @@ void Settings ::
 		= radakan_config -> getSettingsIterator ("key bindings: " + game_mode_name);
 	while (keys_iterator . hasMoreElements ())
 	{
-		key_bindings [game_mode_name + " - " + keys_iterator . peekNextKey ()]
-			= keys_iterator . peekNextValue ();
+		key_bindings -> insert
+		(
+			pair <string, string>
+			(
+				game_mode_name + " - " + keys_iterator . peekNextKey (),
+				keys_iterator . peekNextValue ()
+			)
+		);
 		keys_iterator . moveNext ();
 	}
 }
@@ -77,9 +84,9 @@ string Settings ::
 	assert (is_initialized ());
 
 	map <string, string> :: const_iterator result
-		= key_bindings . find (game_mode_name + " - " + command);
+		= key_bindings -> find (game_mode_name + " - " + command);
 
-	if (result == key_bindings . end ())
+	if (result == key_bindings -> end ())
 	{
 		return "";
 	}

@@ -37,11 +37,23 @@ namespace Radakan
 		public Location <Items :: Item>
 	{
 		public :
+			static string get_class_name ();
+		
+		private :
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+			boost :: shared_ptr <OgreOde :: Geometry> create_geometry
+				(Reference <Items :: Item> item);
+#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+			boost :: shared_ptr <btCollisionShape> create_collsion_shape
+				(Reference <Items :: Item> item);
+			static Mathematics :: Vector_3D get_local_inertia
+				(boost :: shared_ptr <btCollisionShape> shape, float mass);
+#endif
+
+		public :
 			Model (Reference <Items :: Item> new_item, Mathematics :: Vector_3D position);
 			virtual ~Model ();
 			virtual bool is_initialized () const;
-			
-			static string get_class_name ();
 			
 			Mathematics :: Vector_3D get_position () const;
 			
@@ -73,14 +85,6 @@ namespace Radakan
 #endif
 			boost :: scoped_ptr <Ogre :: Entity> entity;
 	};
-
-#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-	boost :: shared_ptr <OgreOde :: Geometry> create_geometry (Reference <Items :: Item> item);
-#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-	boost :: shared_ptr <btCollisionShape> create_collsion_shape
-		(Reference <Items :: Item> item);
-#else
-#endif
 }
 
 #endif	//	RADAKAN_MODEL_HPP

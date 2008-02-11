@@ -39,7 +39,7 @@ namespace Radakan
 				boost :: scoped_ptr <Ogre :: ConfigFile> radakan_config;
 
 				//	'key_bindings' maps a game_mode + command to a key name.
-				map <string, string> key_bindings;
+				boost :: scoped_ptr <map <string, string> > key_bindings;
 		};
 	}
 }

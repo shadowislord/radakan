@@ -29,6 +29,67 @@ string Model ::
 	return "Model";
 }
 
+#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
+	//	static
+	boost :: shared_ptr <OgreOde :: Geometry> Model ::
+		create_geometry (Reference <Items :: Item> item)
+	{
+		assert (item . points_to_object ());
+		assert (item -> is_initialized ());
+		assert (! item -> has_model ());
+
+		if (item -> size . y <= 0.01)
+		{
+			return boost :: shared_ptr <OgreOde :: Geometry>
+			(
+				new OgreOde :: InfinitePlaneGeometry
+				(
+					Ogre :: Plane (Mathematics :: Vector_3D :: y_axis, 0),
+					World :: get () -> ogre_ode_world . get ()
+				)
+			);
+		}
+		else
+		{
+			return boost :: shared_ptr <OgreOde :: Geometry>
+			(
+				new OgreOde :: BoxGeometry
+					(item -> size, World :: get () -> ogre_ode_world . get ())
+			);
+		}
+	}
+#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	//	static
+	boost :: shared_ptr <btCollisionShape> Model ::
+		create_collsion_shape (Reference <Items :: Item> item)
+	{
+		assert (item . points_to_object ());
+		assert (item -> is_initialized ());
+		assert (! item -> has_model ());
+
+		if (item -> size . y <= 0.01)
+		{
+			return boost :: shared_ptr <btCollisionShape>
+				(new btStaticPlaneShape (Mathematics :: Vector_3D :: y_axis . to_bullet (), 0));
+		}
+		else
+		{
+			return boost :: shared_ptr <btCollisionShape>
+				(new btBoxShape (item -> size . to_bullet ()));
+		}
+	}
+
+	//	static
+	Mathematics :: Vector_3D Model ::
+		get_local_inertia (boost :: shared_ptr <btCollisionShape> shape, float mass)
+	{
+		btVector3 temp;
+		shape -> calculateLocalInertia (mass, temp);
+
+		return Mathematics :: Vector_3D (temp);
+	}
+#endif
+
 //  constructor
 Model ::
 	Model (Reference <Items :: Item> new_item, Mathematics :: Vector_3D position) :
@@ -51,8 +112,19 @@ Model ::
 		)
 	),
 	collision_shape (create_collsion_shape (item)),
-	body (new btRigidBody (btRigidBody :: btRigidBodyConstructionInfo
-		(item -> mass, motion_state . get (), collision_shape . get ()))),
+	body
+	(
+		new btRigidBody
+		(
+			btRigidBody :: btRigidBodyConstructionInfo
+			(
+				item -> mass,
+				motion_state . get (),
+				collision_shape . get (),
+				get_local_inertia (collision_shape, item -> mass) . to_bullet ()
+			)
+		)
+	),
 #else
 #endif
 	entity
@@ -222,63 +294,8 @@ void Model ::
 	//	motion_state -> getWorldTransform (transformation);
 	body -> getMotionState () -> getWorldTransform (transformation);	//	Does this do the same?
 
-	Engines :: Log :: log (me) << "old orientation: " << node -> getOrientation () << endl;
-	node -> setOrientation (Mathematics :: Quaternion (transformation . getRotation ()));
-	Engines :: Log :: log (me) << "new orientation: " << node -> getOrientation () << endl;
-
-	Engines :: Log :: log (me) << "old position: " << node -> getPosition () << endl;
 	node -> setPosition (Mathematics :: Vector_3D (transformation . getOrigin ()));
-	Engines :: Log :: log (me) << "new position: " << node -> getPosition () << endl;
-}
-#else
-#endif
-
-#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-boost :: shared_ptr <OgreOde :: Geometry> Radakan ::
-	create_geometry (Reference <Items :: Item> item)
-{
-	assert (item . points_to_object ());
-	assert (item -> is_initialized ());
-	assert (! item -> has_model ());
-
-	if (item -> size . y <= 0.01)
-	{
-		return boost :: shared_ptr <OgreOde :: Geometry>
-		(
-			new OgreOde :: InfinitePlaneGeometry
-			(
-				Ogre :: Plane (Mathematics :: Vector_3D :: y_axis, 0),
-				World :: get () -> ogre_ode_world . get ()
-			)
-		);
-	}
-	else
-	{
-		return boost :: shared_ptr <OgreOde :: Geometry>
-		(
-			new OgreOde :: BoxGeometry
-				(item -> size, World :: get () -> ogre_ode_world . get ())
-		);
-	}
-}
-#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-boost :: shared_ptr <btCollisionShape> Radakan ::
-	create_collsion_shape (Reference <Items :: Item> item)
-{
-	assert (item . points_to_object ());
-	assert (item -> is_initialized ());
-	assert (! item -> has_model ());
-
-	if (item -> size . y <= 0.01)
-	{
-		return boost :: shared_ptr <btCollisionShape>
-			(new btStaticPlaneShape (Mathematics :: Vector_3D :: y_axis . to_bullet (), 0));
-	}
-	else
-	{
-		return boost :: shared_ptr <btCollisionShape>
-			(new btBoxShape (item -> size . to_bullet ()));
-	}
+	node -> setOrientation (Mathematics :: Quaternion (transformation . getRotation ()));
 }
 #else
 #endif

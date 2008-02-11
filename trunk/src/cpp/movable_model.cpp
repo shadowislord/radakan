@@ -86,16 +86,21 @@ void Movable_Model ::
 
 	//	This line works for both Bullet and OgreOde:
 	Mathematics :: Vector_3D current_speed (body -> getLinearVelocity ());
+	
+	//	I don't know why this needs a '-', but it works for me. --Tinus
+	Mathematics :: Vector_3D ideal_speed
+	(
+		- relative_destination_movement_speed
+			* Engines :: Settings :: get () -> maximal_movement_speed
+			* get_front_direction ()
+	);
 
-	//	I don't know why 'get_front_direction ()' needs a '-',
-	//	but it works for me. --Tinus
-	Mathematics :: Vector_3D force =  Engines :: Settings :: get () -> movement_reaction
-		* (
-			relative_destination_movement_speed
-				* Engines :: Settings :: get () -> maximal_movement_speed
-				* (- get_front_direction ())
-			- current_speed
-		);
+	Mathematics :: Vector_3D force = Engines :: Settings :: get () -> movement_reaction
+		* (ideal_speed - current_speed);
+	if (relative_destination_movement_speed != 0)
+	{
+		Engines :: Log :: log (me) << "force: " << force << endl;
+	}
 
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	body -> setForce (force);
@@ -125,19 +130,29 @@ void Movable_Model ::
 	}
 
 	//	This line works for both Bullet and OgreOde:
-	Mathematics :: Vector_3D current_angular_momentum (body -> getAngularVelocity ());
+	Mathematics :: Vector_3D current_angular_velocity (body -> getAngularVelocity ());
 	
+	//	I don't know why this needs a '-', but it works for me. --Tinus
+	Mathematics :: Vector_3D ideal_speed
+	(
+		relative_destination_turn_speed
+			* Engines :: Settings :: get () -> maximal_turn_speed
+			* axis
+	);
+
 	Mathematics :: Vector_3D torque = Engines :: Settings :: get () -> turn_reaction
-		* (
-			relative_destination_turn_speed
-				* Engines :: Settings :: get () -> maximal_turn_speed
-				* axis
-			- current_angular_momentum
-		);
+		* (ideal_speed - current_angular_velocity);
+	
+	if (relative_destination_turn_speed != 0)
+	{
+		Engines :: Log :: log (me) << "torque: " << torque << endl;
+	}
+
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	body -> setTorque (torque);
 #elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-	body -> applyTorque (torque . to_bullet ());
+//	body -> applyTorque (torque . to_bullet ());
+	body -> applyTorqueImpulse (torque . to_bullet ());
 #else
 #endif
 }
