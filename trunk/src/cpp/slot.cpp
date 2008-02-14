@@ -135,7 +135,6 @@ template <class T> Reference <T> Slot <T> ::
 #include "gui.hpp"
 #include "items/container_item.hpp"
 #include "messages/communications/communication.hpp"
-#include "model.hpp"
 #include "skill.hpp"
 #include "strategies/actions/action.hpp"
 #include "strategies/behaviors/behavior.hpp"
@@ -147,7 +146,6 @@ template class Slot <Items :: Container_Item <Items :: Container_Item <Items :: 
 template class Slot <Items :: Container_Item <Items :: Item> >;
 template class Slot <Items :: Item>;
 template class Slot <Messages :: Communications :: Communication>;
-template class Slot <Model>;
 template class Slot <Skill>;
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Slot <Sound_Sample>;

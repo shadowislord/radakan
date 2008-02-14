@@ -130,9 +130,7 @@ template <class T> Reference <T> Location <T> ::
 
 //	to avert linking errors:
 #include "items/container_item.hpp"
-#include "model.hpp"
 
 template class Location <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Location <Items :: Container_Item <Items :: Item> >;
 template class Location <Items :: Item>;
-template class Location <Model>;

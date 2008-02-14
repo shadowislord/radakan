@@ -1,3 +1,4 @@
+#include "body.hpp"
 #include "engines/input/command_reader.hpp"
 #include "engines/input/mouse_reader.hpp"
 #include "engines/log.hpp"
@@ -9,11 +10,8 @@
 #include "items/weapon.hpp"
 #include "messages/communications/converse.hpp"
 #include "messages/communications/fight.hpp"
-#include "movable_model.hpp"
 #include "set.hpp"
-#include "strategies/behaviors/ai.hpp"
 #include "strategies/behaviors/player.hpp"
-#include "tile.hpp"
 #include "world.hpp"
 
 #include <tinyxml.h>
@@ -108,8 +106,7 @@ Reference <Behavior> Player ::
 		relative_destination_movement_speed = - 0.7;
 		Engines :: Log :: log (me) << "Going backwards: - 0.7" << endl;
 	}
-	character -> get_movable_model () -> move
-		(relative_destination_movement_speed);
+	character -> get_body () -> move (relative_destination_movement_speed);
 
 	float relative_destination_turn_speed = 0;
 	if (Engines :: Input :: Command_Reader :: get ()
@@ -124,7 +121,7 @@ Reference <Behavior> Player ::
 		relative_destination_turn_speed = - 1;
 		Engines :: Log :: log (me) << "Turn right" << endl;
 	}
-	character -> get_movable_model () -> turn (relative_destination_turn_speed);
+	character -> get_body () -> turn (relative_destination_turn_speed);
 
 	//	Select a target.
 	if (Engines :: Input :: Command_Reader :: get ()
@@ -195,12 +192,12 @@ Reference <Behavior> Player ::
 	if (Engines :: Input :: Command_Reader :: get () -> has_command
 		(get_class_name (), "reset"))
 	{
-		character -> get_movable_model () -> reset ();
+		character -> get_body () -> reset ();
 		Engines :: Log :: show ("Your orientation is reset.");
 	}
 
-	const Mathematics :: Vector_3D & mouse_position = Engines :: Input :: Mouse_Reader :: get ()
-		-> get_relative_mouse_position ();
+	const Mathematics :: Vector_3D & mouse_position
+		= Engines :: Input :: Mouse_Reader :: get () -> get_relative_mouse_position ();
 
 	if
 	(
@@ -213,14 +210,13 @@ Reference <Behavior> Player ::
 	{
 		if (mouse_position . x != 0)
 		{
-			character -> get_movable_model ()
+			character -> get_body ()
 				-> turn (- Ogre :: Math :: Sign (mouse_position . x));
 		}
 
 		if (mouse_position . y != 0)
 		{
-			vertical_camera_angle -= mouse_position . y
-				/ (10 * Engines :: Render_Engine :: get () -> get_FPS ());
+			vertical_camera_angle -= 0.01 * mouse_position . y;
 		}
 	}
 
@@ -280,14 +276,23 @@ bool Player ::
 	return (is_smaller != larger);
 }
 
+//	virtual
+const boost :: shared_ptr <set <TiXmlDocument> > Player ::
+	get_behavior_files ()
+	const
+{
+	//	Return an empty set.
+	return boost :: shared_ptr <set <TiXmlDocument> > (new set <TiXmlDocument>);
+}
+
 const Mathematics :: Vector_3D Player ::
 	get_camera_position ()
 	const
 {
 	assert (is_initialized ());
 
-	return camera_distance * character -> get_movable_model () -> get_top_direction ()
-		+ character -> get_movable_model () -> get_position ();
+	return camera_distance * character -> get_body () -> get_top_direction ()
+		+ character -> get_body () -> get_position ();
 }
 
 const Mathematics :: Quaternion Player ::
@@ -298,8 +303,8 @@ const Mathematics :: Quaternion Player ::
 
 	return Mathematics :: Quaternion
 		(vertical_camera_angle . get_value (),
-			character -> get_movable_model () -> get_side_direction ())
-		* character -> get_movable_model () -> get_orientation ();
+			character -> get_body () -> get_side_direction ())
+		* character -> get_body () -> get_orientation ();
 }
 
 void Player ::
@@ -313,8 +318,7 @@ void Player ::
 		if (character_target != character)
 		{
 			boost :: shared_ptr <set <TiXmlDocument> > behavior_files
-				= character_target -> get_active_state ()
-					. cast <Strategies :: Behaviors :: AI> () -> get_behavior_files ();
+				= character_target -> get_active_state () -> get_behavior_files ();
 
 			for (set <TiXmlDocument> :: iterator file = behavior_files -> begin ();
 				file != behavior_files -> end (); file ++)

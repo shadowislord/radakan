@@ -73,6 +73,9 @@ template <class T> bool Singleton <T> ::
 	return true;
 }
 
+#if RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	#include "bullet_world.hpp"
+#endif
 #include "engines/audio_engine.hpp"
 #include "engines/battle_engine.hpp"
 #include "engines/game.hpp"
@@ -93,6 +96,9 @@ template <class T> bool Singleton <T> ::
 #include "strategies/game_modes/play.hpp"
 #include "world.hpp"
 
+#if RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	template class Singleton <Bullet_World>;
+#endif
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	template class Singleton <Engines :: Audio_Engine>;
 #endif

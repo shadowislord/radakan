@@ -27,13 +27,6 @@ namespace Radakan
 
 			///	Default: '1'
 			float scale;
-			
-			///	'false' means that you can pass through it.
-			///	Default: 'true'
-			bool solid;
-
-			///	Default: 'true'
-			bool visible;
 	};
 }
 

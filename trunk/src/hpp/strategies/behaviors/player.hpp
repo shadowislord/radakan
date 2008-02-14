@@ -50,16 +50,19 @@ namespace Radakan
 					virtual bool evaluate_condition (const TiXmlElement * element);
 					virtual bool evaluate_expression (const TiXmlAttribute * attribute);
 					
+					virtual const boost :: shared_ptr <set <TiXmlDocument> >
+						get_behavior_files () const;
+					
 					const Mathematics :: Vector_3D get_camera_position () const;
 					const Mathematics :: Quaternion get_camera_orientation () const;
-
+					
 					void list_communication_options ();
-
+					
 				private :
 					void load_communication_options (const TiXmlElement * element);
 						
 					float camera_distance;
-
+					
 					///	in radians
 					Mathematics :: Bounded_Float vertical_camera_angle;
 			};

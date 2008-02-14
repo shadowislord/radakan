@@ -53,6 +53,9 @@ namespace Radakan
 					virtual bool evaluate_condition (const TiXmlElement * element) = 0;
 					virtual bool evaluate_expression (const TiXmlAttribute * attribute) = 0;
 					
+					virtual const boost :: shared_ptr <set <TiXmlDocument> >
+						get_behavior_files () const = 0;
+
 					Reference <Items :: Character> character;
 
 					///	At least one of the targets shouldn't target anything.

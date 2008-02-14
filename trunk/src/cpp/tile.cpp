@@ -2,25 +2,16 @@
 #include "engines/settings.hpp"
 #include "items/character.hpp"
 #include "items/static_item.hpp"
-#include "movable_model.hpp"
 #include "set.hpp"
 #include "tile.hpp"
 #include "world.hpp"
 
 #include <tinyxml.h>
 
-#include <Ogre.h>
-#include <OgreStringConverter.h>
-#include <OgreException.h>
-
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	#include <OgreOdeBody.h>
 	#include <OgreOdeGeometry.h>
 	#include <OgreOdeSpace.h>
-	#include <OgreOdeWorld.h>
-#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-	#include <btBulletDynamicsCommon.h>
-#else
 #endif
 
 using namespace std;
@@ -160,33 +151,32 @@ bool Tile ::
 	is_initialized ()
 	const
 {
-	assert (Location <Model> :: is_initialized ());
+	assert (Location <Items :: Item> :: is_initialized ());
 
 	return true;
 }
 
 //	virtual
 bool Tile ::
-	add (Reference <Model> model)
+	add (Reference <Items :: Item> item)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "add", model ->name);
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "add", item . get_name ());
 	assert (is_initialized ());
-	assert (model . points_to_object ());
-	assert (model -> is_initialized ());
-	assert (! contains (model));
+	assert (item . points_to_object ());
+	assert (item -> is_initialized ());
+	assert (! contains (item));
 
-	bool check = Location <Model> :: add (model);
+	bool check = Location <Items :: Item> :: add (item);
 	assert (check);
 
-	if (model -> item . is_castable <Items :: Character> ())
+	if (item . is_castable <Items :: Character> ())
 	{
-		bool check = characters -> add
-			(model -> item . cast <Items :: Character> ());
+		bool check = characters -> add (item . cast <Items :: Character> ());
 		assert (check);
 	}
 
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-	model -> set_space (space);
+	item -> set_space (space);
 #endif
 
 	return true;
@@ -194,20 +184,20 @@ bool Tile ::
 
 //	virtual
 bool Tile ::
-	move (Reference <Model> model, Reference <Container <Model> > destination)
+	move (Reference <Items :: Item> item, Reference <Container <Items :: Item> > destination)
 {
-	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", model . get_name (), destination . get_name ());
+	Engines :: Log :: trace (me, Tile :: get_class_name (), "move", item . get_name (), destination . get_name ());
 	assert (is_initialized ());
-	assert (model -> is_initialized ());
-	assert (contains (model));
+	assert (item -> is_initialized ());
+	assert (contains (item));
 	assert (destination -> is_initialized ());
 
-	if (model -> item . is_castable <Items :: Character> ())
+	if (item . is_castable <Items :: Character> ())
 	{
-		characters -> drop (model -> item . cast <Items :: Character> ());
+		characters -> drop (item . cast <Items :: Character> ());
 	}
 
-	bool check = Location <Model> :: move (model, destination);
+	bool check = Location <Items :: Item> :: move (item, destination);
 	assert (check);
 
 	return true;
@@ -236,17 +226,9 @@ void Tile ::
 	Mathematics :: Vector_3D model_position = position + Mathematics :: Vector_3D
 		(element . Attribute ("position"));
 
-	Pointer <Model> model;
-	if (item . is_castable <Items :: Static_Item> ())
-	{
-		model . reset_pointee (new Model (item, model_position));
-	}
-	else
-	{
-		model . reset_pointee (new Movable_Model (item, model_position));
-	}
+	item -> appear (model_position, Mathematics :: Quaternion :: identity);
 
-	bool check = add (model);
+	bool check = add (item);
 	assert (check);
 }
 
@@ -284,14 +266,16 @@ Reference <Items :: Item> Tile ::
 	    mesh_data -> material_file_name = mesh_element -> Attribute ("material");
 	}
 
+	bool solid = true;
 	if (mesh_element -> Attribute ("solid") != NULL)
 	{
-		mesh_data -> solid = mesh_element -> Attribute ("solid") == string ("true");
+		solid = mesh_element -> Attribute ("solid") == string ("true");
 	}
 
+	bool visible = true;
 	if (mesh_element -> Attribute ("visible") != NULL)
 	{
-		mesh_data -> visible = mesh_element -> Attribute ("visible") == string ("true");
+		visible = mesh_element -> Attribute ("visible") == string ("true");
 	}
 
 	if (mesh_element -> Attribute ("orientation") != NULL)

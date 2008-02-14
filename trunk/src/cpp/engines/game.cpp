@@ -120,7 +120,8 @@ Game ::
 		new Audio_Engine ();
 	#endif
 
-	new World ();
+	//	This calls the constructor of either 'Bullet_World' or 'Ogre_Ode_World'.
+	World :: create ();
 
 	new Strategies :: Game_Modes :: Menu ();
 	new Strategies :: Game_Modes :: Play ();

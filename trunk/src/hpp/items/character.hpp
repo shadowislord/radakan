@@ -23,8 +23,6 @@ namespace Radakan
 		class Nothing;
 	}
 	
-	class Movable_Model;
-
 	namespace Items
 	{
 		template <class T> class Container_Item;
@@ -66,8 +64,6 @@ namespace Radakan
 
 				bool is_alive () const;
 
-				Reference <Movable_Model> get_movable_model () const;
-
 				float get_skill (const string & skill_name) const;
 
 				const string specie;
@@ -85,8 +81,6 @@ namespace Radakan
 
 			private :
 				template <class T> void behave ();
-
-				mutable Pointer <Movable_Model> movable_model;
 		};
 	}
 }

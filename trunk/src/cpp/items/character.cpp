@@ -1,9 +1,10 @@
+#include "body.hpp"
 #include "engines/log.hpp"
 #include "engines/mediator.hpp"
 #include "items/character.hpp"
 #include "map.hpp"
 #include "messages/nothing.hpp"
-#include "movable_model.hpp"
+#include "model.hpp"
 #include "pair.hpp"
 #include "set.hpp"
 #include "skill.hpp"
@@ -137,7 +138,7 @@ bool Character ::
 void Character ::
 	drop (Reference <Strategies :: Behaviors :: Behavior> behavior)
 {
-	get_movable_model () -> turn (1, get_model () -> get_side_direction ());
+	get_body () -> turn (1, get_body () -> get_side_direction ());
 	
 	Engines :: Log :: show (me . get_name (true) + " died.");
 
@@ -148,18 +149,6 @@ bool Character ::
 	is_alive () const
 {
 	return has_active_state ();
-}
-
-Reference <Movable_Model> Character ::
-	get_movable_model ()
-	const
-{
-	if (! movable_model . points_to_object ())
-	{
-		movable_model . reset_pointee (get_model () . cast <Movable_Model> (), true);
-	}
-
-	return movable_model;
 }
 
 void Character ::

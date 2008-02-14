@@ -113,8 +113,6 @@ template <class T> bool Container <T> ::
 #include "messages/list_event.hpp"
 #include "messages/list_update.hpp"
 #include "messages/nothing.hpp"
-#include "model.hpp"
-#include "movable_model.hpp"
 #include "opinion.hpp"
 #include "pair.hpp"
 #include "skill.hpp"
@@ -128,7 +126,6 @@ template class Container <Items :: Container_Item <Items :: Container_Item <Item
 template class Container <Items :: Container_Item <Items :: Item> >;
 template class Container <Items :: Item>;
 template class Container <Messages :: Communications :: Communication>;
-template class Container <Model>;
 template class Container <Object>;
 template class Container <Observer <Messages :: Button_Event> >;
 template class Container <Observer <Messages :: Communications :: Communication> >;

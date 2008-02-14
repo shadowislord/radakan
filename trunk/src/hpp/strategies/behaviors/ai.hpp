@@ -58,7 +58,7 @@ namespace Radakan
 
 					void set_action (string action_name);
 
-					const boost :: shared_ptr <set <TiXmlDocument> >
+					virtual const boost :: shared_ptr <set <TiXmlDocument> >
 						get_behavior_files () const;
 
 					//	'calm' can vary from 0 to 1.
@@ -67,7 +67,8 @@ namespace Radakan
 				private :
 					boost :: scoped_ptr <set <TiXmlDocument> > behavior_files;
 					
-					Reference <Container <Messages :: Communications :: Communication> > sensory_buffer;
+					Reference <Container <Messages :: Communications :: Communication> >
+						sensory_buffer;
 					Reference <Container <Opinion> > opinions;
 			};
 		}

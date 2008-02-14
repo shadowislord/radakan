@@ -1,9 +1,9 @@
 #include <OgreSceneNode.h>
 
+#include "body.hpp"
 #include "engines/log.hpp"
 #include "items/character.hpp"
 #include "messages/communications/fight.hpp"
-#include "movable_model.hpp"
 #include "set.hpp"
 #include "strategies/actions/fighting.hpp"
 #include "strategies/behaviors/ai.hpp"
@@ -81,10 +81,10 @@ Reference <Action> Fighting ::
 	}
 
 	Reference <Items :: Character> target = targets -> get_child ();
-	Reference <Movable_Model> npc_model (character -> get_movable_model ());
+	Reference <Body> npc_body (character -> get_body ());
 
 	Mathematics :: Vector_3D target_direction
-		= (target -> get_model () -> get_position () - npc_model -> get_position ())
+		= (target -> get_body () -> get_position () - npc_body -> get_position ())
 			. normalisedCopy ();
 
 	float flee_modifier = 1.0;	// Don't flee.
@@ -94,13 +94,13 @@ Reference <Action> Fighting ::
 		flee_modifier = - 1.0;	//	Flee.
 	}
 
-	const Mathematics :: Vector_3D & front = npc_model -> get_front_direction ();
+	const Mathematics :: Vector_3D & front = npc_body -> get_front_direction ();
 
 	//	between - 1 and 1
 	float looking_to_goal = flee_modifier * target_direction . dotProduct (front);
 	
 	//	The more I look to my goal, the less I'll turn.
-	npc_model -> turn
+	npc_body -> turn
 	(
 		Ogre :: Math :: Sqrt (0.5 - looking_to_goal / 2.0),
 		- flee_modifier * target_direction * front
@@ -110,16 +110,16 @@ Reference <Action> Fighting ::
 	(
 		(flee_modifier == 1)
 			&& (
-				1 < npc_model -> get_position () . distance
-					(target -> get_model () -> get_position ())
+				1 < npc_body -> get_position () . distance
+					(target -> get_body () -> get_position ())
 			)
 	)
 	{
-		npc_model -> move (0.5 + looking_to_goal / 2.0);
+		npc_body -> move (0.5 + looking_to_goal / 2.0);
 	}
 	else
 	{
-		npc_model -> move (0);
+		npc_body -> move (0);
 	}
 
 	return Reference <Action> (this);

@@ -78,8 +78,8 @@ void Battle_Engine ::
 
 	float distance =
 		(
-			attacker -> get_model () -> get_position ()
-			- defender -> get_model () -> get_position ()
+			attacker -> get_body () -> get_position ()
+			- defender -> get_body () -> get_position ()
 		) . length ();
 	
 	if (max_distance < distance)

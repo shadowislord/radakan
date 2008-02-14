@@ -29,171 +29,41 @@ string Model ::
 	return "Model";
 }
 
-#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-	//	static
-	boost :: shared_ptr <OgreOde :: Geometry> Model ::
-		create_geometry (Reference <Items :: Item> item)
-	{
-		assert (item . points_to_object ());
-		assert (item -> is_initialized ());
-		assert (! item -> has_model ());
-
-		if (item -> size . y <= 0.01)
-		{
-			return boost :: shared_ptr <OgreOde :: Geometry>
-			(
-				new OgreOde :: InfinitePlaneGeometry
-				(
-					Ogre :: Plane (Mathematics :: Vector_3D :: y_axis, 0),
-					World :: get () -> ogre_ode_world . get ()
-				)
-			);
-		}
-		else
-		{
-			return boost :: shared_ptr <OgreOde :: Geometry>
-			(
-				new OgreOde :: BoxGeometry
-					(item -> size, World :: get () -> ogre_ode_world . get ())
-			);
-		}
-	}
-#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-	//	static
-	boost :: shared_ptr <btCollisionShape> Model ::
-		create_collsion_shape (Reference <Items :: Item> item)
-	{
-		assert (item . points_to_object ());
-		assert (item -> is_initialized ());
-		assert (! item -> has_model ());
-
-		if (item -> size . y <= 0.01)
-		{
-			return boost :: shared_ptr <btCollisionShape>
-				(new btStaticPlaneShape (Mathematics :: Vector_3D :: y_axis . to_bullet (), 0));
-		}
-		else
-		{
-			return boost :: shared_ptr <btCollisionShape>
-				(new btBoxShape (item -> size . to_bullet ()));
-		}
-	}
-
-	//	static
-	Mathematics :: Vector_3D Model ::
-		get_local_inertia (boost :: shared_ptr <btCollisionShape> shape, float mass)
-	{
-		btVector3 temp;
-		shape -> calculateLocalInertia (mass, temp);
-
-		return Mathematics :: Vector_3D (temp);
-	}
-#endif
-
 //  constructor
 Model ::
-	Model (Reference <Items :: Item> new_item, Mathematics :: Vector_3D position) :
-	Object (new_item . get_name () + "'s model"),
-	Location <Items :: Item> (1),	//	A Model corresponds to a single Item.
-	item (new_item),
+	Model
+	(
+		Reference <Mesh_Data> mesh_data,
+		Mathematics :: Vector_3D position,
+		Mathematics :: Quaternion orientation
+	) :
+	Object (mesh_data . get_name () + "'s model"),
 	node (World :: get () -> root_node -> createChildSceneNode (name)),
-#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-	geometry (create_geometry (item)),
-#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-	motion_state
-	(
-		new btDefaultMotionState
-		(
-			btTransform
-			(
-				item -> mesh_data -> default_orientation . to_bullet(),
-				position . to_bullet ()
-			)
-		)
-	),
-	collision_shape (create_collsion_shape (item)),
-	body
-	(
-		new btRigidBody
-		(
-			btRigidBody :: btRigidBodyConstructionInfo
-			(
-				item -> mass,
-				motion_state . get (),
-				collision_shape . get (),
-				get_local_inertia (collision_shape, item -> mass) . to_bullet ()
-			)
-		)
-	),
-#else
-#endif
 	entity
 	(
 		Engines :: Render_Engine :: get () -> get_scene_manager () -> createEntity
 		(
-			name + "'s entity", item -> mesh_data -> file_name
+			name + "'s entity", mesh_data -> file_name
 		)
 	)
 {
-	Engines :: Log :: trace (me, Model :: get_class_name (), "", new_item . get_name (),
-		position . to_string ());
-	assert (item . points_to_object ());
-	assert (item -> is_initialized ());
+	Engines :: Log :: trace (me, Model :: get_class_name (), "", mesh_data . get_name (),
+		position . to_string (), orientation . to_string ());
 
-	add_automatic_destruction_prevention ("construction of " + get_class_name ());
-	add (item);
-	remove_automatic_destruction_prevention ("construction of " + get_class_name ());
-	seal ();
-
-//	World :: get () . root_node . addChild (this);
+//	World :: get () . root_node . addChild (node :: get ());
 
 	node -> setPosition (position);
-	node -> setScale (item -> mesh_data -> scale, item -> mesh_data -> scale,
-		item -> mesh_data -> scale);
+	node -> setScale (mesh_data -> scale, mesh_data -> scale, mesh_data -> scale);
 	node -> attachObject (entity . get ());
 
 	assert (node -> numAttachedObjects () == 1);
 	
-#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-	entity -> setUserObject (geometry . get ());
-#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-	World :: get () -> bullet_world -> addRigidBody (body . get ());
-#else
-#endif
-
-	if (item . is_castable <Items :: Static_Item> ())
+	if (! mesh_data -> material_file_name . empty ())
 	{
-		Engines :: Log :: log (me) << "I'm a static model." << endl;
-
-#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-		geometry -> setUserObject (entity . get ());
-		geometry -> setPosition (position);
-#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-#else
-#endif
+		entity -> setMaterialName (mesh_data -> material_file_name);
 	}
 
-	add_automatic_destruction_prevention ("construction of " + get_class_name ());
-	{
-		item -> set_model (Reference <Model> (this));
-	}
-	remove_automatic_destruction_prevention ("construction of " + get_class_name ());
-
-#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
-	if (! item -> mesh_data -> solid)
-	{
-		geometry -> disable ();
-	}
-#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-#else
-#endif
-
-	if (! item -> mesh_data -> material_file_name . empty ())
-	{
-		entity -> setMaterialName (item -> mesh_data -> material_file_name);
-	}
-
-	node -> setOrientation (item -> mesh_data -> default_orientation);
+	node -> setOrientation (orientation * mesh_data -> default_orientation);
 
 	assert (Model :: is_initialized ());
 }
@@ -224,8 +94,7 @@ bool Model ::
 	is_initialized ()
 	const
 {
-	assert (this -> Location <Items :: Item> :: is_initialized ());
-	assert (is_sealed ());
+	assert (Object :: is_initialized ());
 	assert (node -> getParent () != NULL);
 	assert (World :: get () -> root_node . get () != NULL);
 	
@@ -235,67 +104,18 @@ bool Model ::
 	return true;
 }
 
-Mathematics :: Vector_3D Model ::
-	get_position () const
-{
-	assert (Model :: is_initialized ());
-
-	return node -> getPosition ();
-}
-
-Mathematics :: Vector_3D Model ::
-	get_front_direction () const
-{
-	assert (Model :: is_initialized ());
-
-	return node -> getOrientation () * Mathematics :: Vector_3D :: z_axis;
-}
-
-Mathematics :: Vector_3D Model ::
-	get_side_direction () const
-{
-	assert (Model :: is_initialized ());
-
-	return node -> getOrientation () * Mathematics :: Vector_3D :: x_axis;
-}
-
-Mathematics :: Vector_3D Model ::
-	get_top_direction () const
-{
-	assert (Model :: is_initialized ());
-
-	return node -> getOrientation () * Mathematics :: Vector_3D :: y_axis;
-}
-
-Mathematics :: Quaternion Model ::
-	get_orientation () const
-{
-	assert (Model :: is_initialized ());
-
-	return node -> getOrientation ();
-}
-
-#if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 void Model ::
-	set_space (boost :: shared_ptr <OgreOde :: Space> new_space)
+	set_position (Mathematics :: Vector_3D position)
 {
-	/*boost :: shared_ptr <OgreOde :: Space> old_space (geometry -> getSpace ());
-	if (old_space)
-	{
-		old_space -> removeGeometry (* geometry . get ());
-	}*/
-	new_space -> addGeometry (* geometry . get ());
-}
-#elif RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
-void Model ::
-	sync ()
-{
-	btTransform transformation;
-	//	motion_state -> getWorldTransform (transformation);
-	body -> getMotionState () -> getWorldTransform (transformation);	//	Does this do the same?
+	assert (is_initialized ());
 
-	node -> setPosition (Mathematics :: Vector_3D (transformation . getOrigin ()));
-	node -> setOrientation (Mathematics :: Quaternion (transformation . getRotation ()));
+	node -> setPosition (position);
 }
-#else
-#endif
+
+void Model ::
+	set_orientation (Mathematics :: Quaternion orientation)
+{
+	assert (is_initialized ());
+	
+	node -> setOrientation (orientation);
+}

@@ -1,6 +1,23 @@
+/*
+	static scene item
+	- model (always)
+	- body: static
+
+	character
+	- model (always)
+	- body: dynamic
+
+	inventory item
+	- model: sometimes
+	- body: sometimes - dynamic
+*/
+
+#include "body.hpp"
 #include "engines/log.hpp"
 #include "items/item.hpp"
 #include "model.hpp"
+
+#include <OgreSceneNode.h>
 
 using namespace std;
 using namespace Radakan;
@@ -24,6 +41,8 @@ Item ::
 	Object ("The name doesn't matter is this is an abstact base class."),
 	mass (new_mass),
 	size (new_size),
+	solid (true),
+	containable (true),
 	mesh_data (new_mesh_data)
 {
 	Engines :: Log :: trace
@@ -58,11 +77,6 @@ Item ::
 	
 	//	'prepare_for_destruction ();' hasn't to be called,
 	//	because this is an abstract base class.
-	
-	if (has_model ())
-	{
-		remove_model ();
-	}
 }
 
 //	virtual
@@ -95,47 +109,34 @@ float Item ::
 }
 
 void Item ::
-	set_model (Reference <Model> new_model)
+	appear (Mathematics :: Vector_3D position, Mathematics :: Quaternion orientation)
 {
-	Engines :: Log :: trace (me, Item :: get_class_name (), "set_model", new_model . get_name ());
+	Engines :: Log :: trace (me, Item :: get_class_name (), "appear");
 	
 	assert (Item :: is_initialized ());
-	assert (! has_model ());
-	assert (new_model . points_to_object ());
-	assert (new_model -> is_initialized ());
+	assert (! model . points_to_object ());
 
-	model . reset_pointee (new_model, true);
+	model . reset_pointee (Reference <Model> (new Model (mesh_data, position, orientation)));
 
-	assert (has_model ());
-	assert (is_initialized ());
-}
-
-bool Item ::
-	has_model () const
-{
-	assert (Item :: is_initialized ());
-	
-	return model . points_to_object ();
+	body . reset_pointee (Body :: create (mass, size, position, orientation));
 }
 
 void Item ::
-	remove_model ()
+	disappear ()
 {
 	assert (Item :: is_initialized ());
-	assert (has_model ());
+	assert (model . points_to_object ());
 
-	//	The body destructs the item, not the other way around.
-	
+	body . reset_pointee ();
 	model . reset_pointee ();
 }
 
-Reference <Model> Item ::
-	get_model () const
+Reference <Body> Item ::
+	get_body () const
 {
 	assert (Item :: is_initialized ());
-	assert (has_model ());
 	
-	return model;
+	return body;
 }
 
 float Item ::
@@ -145,3 +146,15 @@ float Item ::
 
 	return size . x * size . y * size . z;
 }
+
+#if RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+void Item ::
+	sync_model ()
+{
+	assert (body . points_to_object ());
+	assert (model . points_to_object ());
+
+	model -> set_position (body -> get_position ());
+	model -> set_orientation (body -> get_orientation ());
+}
+#endif

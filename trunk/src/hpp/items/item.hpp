@@ -9,7 +9,8 @@ using namespace std;
 namespace Radakan
 {
 	class Model;
-
+	class Body;
+	
 	namespace Items
 	{
 		///	Item is the base class for all in-game items.
@@ -24,26 +25,33 @@ namespace Radakan
 				
 				virtual float get_total_mass () const;
 
-				///	Don't use this method directely.
-				void set_model (Reference <Model> new_model);
-				
-				bool has_model () const;
-				
-				///	Don't use this method directely, use 'model . destruct ();' if possible.
-				void remove_model ();
-				
-				Reference <Model> get_model () const;
+				///	OgreOde doesn't need syncronization.
+				#if RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+					void sync_model ();
+				#endif
 
+				void appear
+					(Mathematics :: Vector_3D position, Mathematics :: Quaternion orientation);
+				void disappear ();
+
+				///	'get_body ()' may return an empty reference.
+				Reference <Body> get_body () const;
+				
 				float get_volume () const;
-
+				
 				///	in kilograms
+				///	'0 mass' means I'm a static item.
 				const float mass;
 				
 				///	in cubic meters
 				const Mathematics :: Vector_3D size;
 				
-				Reference <Mesh_Data> mesh_data;
-
+				///	'false' means that you can pass through it.
+				///	Default: 'true'
+				const bool solid;
+				
+				const bool containable;
+				
 			protected :
 				Item
 				(
@@ -51,9 +59,12 @@ namespace Radakan
 					Mathematics :: Vector_3D new_size,
 					const Reference <Mesh_Data> new_mesh_data
 				);
-
+				
 			private :
+				Reference <Mesh_Data> mesh_data;
+				
 				Pointer <Model> model;
+				Pointer <Body> body;
 		};
 	}
 }

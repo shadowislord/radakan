@@ -69,9 +69,7 @@ template <class T> void Resident <T> ::
 
 //	to avert linking errors:
 #include "items/container_item.hpp"
-#include "model.hpp"
 
 template class Resident <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
 template class Resident <Items :: Container_Item <Items :: Item> >;
 template class Resident <Items :: Item>;
-template class Resident <Model>;

@@ -18,7 +18,6 @@ class TiXmlElement;
 namespace Radakan
 {
 	template <class T> class Container;
-	class Model;
 
 	namespace Items
 	{
@@ -29,7 +28,7 @@ namespace Radakan
 	///	A Tile is a square piece (64 m x 64 m) of the world.
 	///	Tile data is stored under 'trunk/data/world/tile/'.
 	class Tile :
-		public Location <Model>
+		public Location <Items :: Item>
 	{
 		public :
 			static string get_class_name ();
@@ -47,8 +46,12 @@ namespace Radakan
 			virtual ~Tile ();
 			virtual bool is_initialized () const;
 			
-			virtual bool add (Reference <Model> model);
-			virtual bool move (Reference <Model> model, Reference <Container <Model> > destination);
+			virtual bool add (Reference <Items :: Item> item);
+			virtual bool move
+			(
+				Reference <Items :: Item> item,
+				Reference <Container <Items :: Item> > destination
+			);
 
 			const Mathematics :: Vector_3D coordinates;
 			const Mathematics :: Vector_3D position;

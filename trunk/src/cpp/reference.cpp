@@ -237,6 +237,11 @@ template <class T> template <class U> const Reference <U> Reference <T> ::
 }
 
 //	to avert linking errors:
+#include "body.hpp"
+#if RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	#include "bullet_body.hpp"
+	#include "bullet_world.hpp"
+#endif
 #include "container.hpp"
 #include "engines/audio_engine.hpp"
 #include "engines/battle_engine.hpp"
@@ -266,7 +271,6 @@ template <class T> template <class U> const Reference <U> Reference <T> ::
 #include "messages/list_update.hpp"
 #include "messages/nothing.hpp"
 #include "model.hpp"
-#include "movable_model.hpp"
 #include "opinion.hpp"
 #include "skill.hpp"
 #include "slot.hpp"
@@ -279,6 +283,11 @@ template <class T> template <class U> const Reference <U> Reference <T> ::
 #include "tile.hpp"
 #include "world.hpp"
 
+template class Reference <Body>;
+#if RADAKAN_PHYSICS_MODE == RADAKAN_BULLET_MODE
+	template class Reference <Bullet_Body>;
+	template class Reference <Bullet_World>;
+#endif
 template class Reference <Container <GUI> >;
 template class Reference <Container <Items :: Character> >;
 template class Reference
@@ -286,7 +295,6 @@ template class Reference
 template class Reference <Container <Items :: Container_Item <Items :: Item> > >;
 template class Reference <Container <Items :: Item> >;
 template class Reference <Container <Messages :: Communications :: Communication> >;
-template class Reference <Container <Model> >;
 template class Reference <Container <Object> >;
 template class Reference <Container <Observer <Messages :: Button_Event> > >;
 template class Reference
@@ -340,7 +348,6 @@ template class Reference <Location <Items :: Item> >;
 template class Reference
 	<Location <Items :: Container_Item <Items :: Container_Item <Items :: Item> > > >;
 template class Reference <Location <Items :: Container_Item <Items :: Item> > >;
-template class Reference <Location <Model> >;
 template class Reference <Map <Mathematics :: Vector_3D, Tile> >;
 template class Reference <Map <string, Messages :: Communications :: Communication> >;
 template class Reference <Map <string, Skill> >;
@@ -356,7 +363,6 @@ template class Reference <Messages :: List_Event>;
 template class Reference <Messages :: List_Update>;
 template class Reference <Messages :: Nothing>;
 template class Reference <Model>;
-template class Reference <Movable_Model>;
 template class Reference <Object>;
 template class Reference <Observer <Messages :: Button_Event> >;
 template class Reference <Observer <Messages :: Communications :: Communication> >;
@@ -429,12 +435,6 @@ template void convert
 	(const Reference <Messages :: Communications :: Converse> & from);
 template void convert
 	<
-		Reference <Movable_Model>,
-		Reference <Model>
-	>
-	(const Reference <Movable_Model> & from);
-template void convert
-	<
 		Reference <Strategies :: Game_Modes :: Menu>,
 		Reference <Strategies :: Game_Modes :: Game_Mode>
 	>
@@ -448,7 +448,7 @@ template void convert
 template void convert
 	<
 		Reference <Tile>,
-		Reference <Container <Model> >
+		Reference <Container <Items :: Item> >
 	>
 	(const Reference <Tile> & from);
 
@@ -463,8 +463,6 @@ template bool Reference <Messages :: Communications :: Communication> ::
 
 template Reference <Items :: Character> Reference <Items :: Item> ::
 	cast <Items :: Character> ();
-template Reference <Movable_Model> Reference <Model> ::
-	cast <Movable_Model> ();
 template Reference <Strategies :: Behaviors :: AI> Reference <Strategies :: Behaviors :: Behavior> ::
 	cast <Strategies :: Behaviors :: AI> ();
 

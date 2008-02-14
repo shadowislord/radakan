@@ -92,6 +92,7 @@ template <class T> void Pointer <T> ::
 #if RADAKAN_AUDIO_MODE == RADAKAN_AUDIERE_MODE
 	#include "engines/audio_engine.hpp"
 #endif
+#include "body.hpp"
 #include "gui.hpp"
 #include "items/character.hpp"
 #include "messages/button_event.hpp"
@@ -99,7 +100,7 @@ template <class T> void Pointer <T> ::
 #include "messages/list_event.hpp"
 #include "messages/list_update.hpp"
 #include "messages/nothing.hpp"
-#include "movable_model.hpp"
+#include "model.hpp"
 #include "opinion.hpp"
 #include "pair.hpp"
 #include "skill.hpp"
@@ -108,6 +109,7 @@ template <class T> void Pointer <T> ::
 #include "strategies/game_modes/game_mode.hpp"
 #include "tile.hpp"
 
+template class Pointer <Body>;
 template class Pointer <GUI>;
 template class Pointer <Items :: Character>;
 template class Pointer <Items :: Container_Item <Items :: Container_Item <Items :: Item> > >;
@@ -116,10 +118,8 @@ template class Pointer <Items :: Item>;
 template class Pointer <Location <Items :: Item> >;
 template class Pointer <Location <Items :: Container_Item <Items :: Container_Item <Items :: Item> > > >;
 template class Pointer <Location <Items :: Container_Item <Items :: Item> > >;
-template class Pointer <Location <Model> >;
 template class Pointer <Messages :: Communications :: Communication>;
 template class Pointer <Model>;
-template class Pointer <Movable_Model>;
 template class Pointer <Object>;
 template class Pointer <Observer <Messages :: Button_Event> >;
 template class Pointer <Observer <Messages :: Communications :: Communication> >;

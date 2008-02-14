@@ -156,7 +156,6 @@ template <class T> Reference <T> Set <T> ::
 #include "messages/list_event.hpp"
 #include "messages/list_update.hpp"
 #include "messages/nothing.hpp"
-#include "model.hpp"
 #include "opinion.hpp"
 
 //	template class Set <GUI>;
@@ -165,7 +164,6 @@ template class Set <Items :: Container_Item <Items :: Container_Item <Items :: I
 template class Set <Items :: Container_Item <Items :: Item> >;
 template class Set <Items :: Item>;
 template class Set <Messages :: Communications :: Communication>;
-template class Set <Model>;
 template class Set <Object>;
 template class Set <Observer <Messages :: Button_Event> >;
 template class Set <Observer <Messages :: Communications :: Communication> >;

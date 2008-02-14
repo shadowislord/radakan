@@ -2,7 +2,6 @@
 #include "items/character.hpp"
 #include "messages/communications/converse.hpp"
 #include "messages/communications/fight.hpp"
-#include "movable_model.hpp"
 #include "set.hpp"
 #include "strategies/actions/conversing.hpp"
 #include "strategies/actions/fighting.hpp"
@@ -89,8 +88,8 @@ Reference <Behavior> AI ::
 		sensory_buffer -> drop (actual_message);
 	}
 
-	character -> get_movable_model () -> move (0);
-	character -> get_movable_model () -> turn (0);
+/*	character -> get_body () -> move (0);
+	character -> get_body () -> turn (0);*/
 
 	if (actual_message . is_castable <Messages :: Communications :: Fight> ())
 	{
