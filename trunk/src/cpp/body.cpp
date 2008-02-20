@@ -90,16 +90,15 @@ Mathematics :: Vector_3D Body ::
 }
 
 void Body ::
-	move (float relative_destination_movement_speed)
+	walk (float relative_destination_movement_speed)
 {
-	assert (Body :: is_initialized ());
-	assert (Ogre :: Math :: Abs (relative_destination_movement_speed) <= 1);
-
 	if (relative_destination_movement_speed != 0)
 	{
 		Engines :: Log :: log (me) << "relative_destination_movement_speed: "
 			<< relative_destination_movement_speed << endl;
 	}
+	assert (Body :: is_initialized ());
+	assert (Ogre :: Math :: Abs (relative_destination_movement_speed) <= 1);
 
 	//	I don't know why this needs a '-', but it works for me. --Tinus
 	Mathematics :: Vector_3D ideal_speed
@@ -111,6 +110,10 @@ void Body ::
 
 	Mathematics :: Vector_3D force = Engines :: Settings :: get () -> movement_reaction
 		* (ideal_speed - get_linear_velocity ());
+
+	force = force - (force . dotProduct (Mathematics :: Vector_3D :: y_axis))
+		* Mathematics :: Vector_3D :: y_axis;
+		
 	if (relative_destination_movement_speed != 0)
 	{
 		Engines :: Log :: log (me) << "force: " << force << endl;
@@ -122,20 +125,17 @@ void Body ::
 void Body ::
 	turn (float relative_destination_turn_speed, Mathematics :: Vector_3D axis)
 {
-	Engines :: Log :: trace (me, Body :: get_class_name (), "turn",
-		to_string (relative_destination_turn_speed), axis . to_string ());
+	if (relative_destination_turn_speed != 0)
+	{
+		Engines :: Log :: trace (me, Body :: get_class_name (), "turn",
+			to_string (relative_destination_turn_speed), axis . to_string ());
+	}
 	assert (Body :: is_initialized ());
 	assert (Ogre :: Math :: Abs (relative_destination_turn_speed) <= 1);
 
 	if (axis == Mathematics :: Vector_3D :: zero_vector)
 	{
 		axis = get_top_direction ();
-	}
-
-	if (relative_destination_turn_speed != 0)
-	{
-		Engines :: Log :: log (me) << "relative_destination_turn_speed: "
-			<< relative_destination_turn_speed << endl;
 	}
 
 	//	I don't know why this needs a '-', but it works for me. --Tinus
@@ -155,4 +155,17 @@ void Body ::
 	}
 
 	apply_torque (torque);
+}
+
+void Body ::
+	jump ()
+{
+	Engines :: Log :: trace (me, Body :: get_class_name (), "jump");
+	
+	assert (Body :: is_initialized ());
+
+	if (true)
+	{
+		apply_force (Mathematics :: Vector_3D (0, 100, 0) . to_bullet ());
+	}
 }

@@ -3,7 +3,7 @@ INCLUDE_DIRECTORIES(
 ${RADAKAN_SOURCE_DIR}/external/bullet-2.66/src }
 )
 
-ADD_LIBRARY(LibLinearMath 
+ADD_LIBRARY(LibLinearMath SHARED
 		btAlignedObjectArray.h
 		btList.h
 		btPoolAllocator.h

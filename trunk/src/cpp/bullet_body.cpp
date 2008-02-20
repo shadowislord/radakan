@@ -77,6 +77,13 @@
 		)
 	)
 	{
+		if (0 < mass)
+		{
+			body -> setActivationState (DISABLE_DEACTIVATION);
+		}
+
+		body -> setFriction (0.1);
+	
 		Singleton <Bullet_World> :: get () -> add_body (body);
 	}
 
@@ -162,10 +169,12 @@
 		Engines :: Log :: trace (me, Bullet_Body :: get_class_name (), "reset");
 		assert (Bullet_Body :: is_initialized ());
 
-		//	body -> setOrientation (Mathematics :: Quaternion :: identity);
 		body -> translate (2 * Mathematics :: Vector_3D :: y_axis . to_bullet ());
-		apply_force (Mathematics :: Vector_3D :: zero_vector);
-		apply_torque (Mathematics :: Vector_3D :: zero_vector);
+		
+		btTransform transformation;
+		transformation . setRotation (Mathematics :: Quaternion :: identity . to_bullet ());
+		motion_state -> setWorldTransform (transformation);
+		body -> setMotionState (motion_state . get ());
 	}
 
 #endif

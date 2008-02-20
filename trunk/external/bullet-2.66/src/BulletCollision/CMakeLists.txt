@@ -4,7 +4,7 @@ ${RADAKAN_SOURCE_DIR}/external/bullet-2.66/src }
 )
 
 	
-ADD_LIBRARY(LibBulletCollision 
+ADD_LIBRARY(LibBulletCollision SHARED
 				BroadphaseCollision/btAxisSweep3.cpp
 				BroadphaseCollision/btAxisSweep3.h
 				BroadphaseCollision/btBroadphaseProxy.cpp

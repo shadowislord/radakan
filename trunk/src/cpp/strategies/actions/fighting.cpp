@@ -115,11 +115,11 @@ Reference <Action> Fighting ::
 			)
 	)
 	{
-		npc_body -> move (0.5 + looking_to_goal / 2.0);
+		npc_body -> walk (0.5 + looking_to_goal / 2.0);
 	}
 	else
 	{
-		npc_body -> move (0);
+		npc_body -> walk (0);
 	}
 
 	return Reference <Action> (this);

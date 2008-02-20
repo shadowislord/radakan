@@ -45,8 +45,7 @@ namespace Radakan
 			virtual Mathematics :: Vector_3D get_linear_velocity () const = 0;
 			virtual Mathematics :: Vector_3D get_angular_velocity () const = 0;
 
-			///	I'll move in my front direction.
-			void move (float relative_destination_linear_velocity);
+			void walk (float relative_destination_linear_velocity);
 
 			///	If no - or zero - axis specified, I'll turn around my top direction.
 			void turn
@@ -54,6 +53,8 @@ namespace Radakan
 				float relative_destination_angular_velocity,
 				Mathematics :: Vector_3D axis = Mathematics :: Vector_3D :: zero_vector
 			);
+
+			void jump ();
 			
 			virtual void apply_force (Mathematics :: Vector_3D force) = 0;
 			virtual void apply_torque (Mathematics :: Vector_3D torque) = 0;

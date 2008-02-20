@@ -3,7 +3,7 @@ ${RADAKAN_SOURCE_DIR}/external/bullet-2.66/src }
 )
 
 	
-ADD_LIBRARY(LibBulletDynamics 
+ADD_LIBRARY(LibBulletDynamics SHARED
 
 	ConstraintSolver/btContactConstraint.cpp
 	ConstraintSolver/btContactConstraint.h

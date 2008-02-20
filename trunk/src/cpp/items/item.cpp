@@ -116,7 +116,8 @@ void Item ::
 	assert (Item :: is_initialized ());
 	assert (! model . points_to_object ());
 
-	model . reset_pointee (Reference <Model> (new Model (mesh_data, position, orientation)));
+	model . reset_pointee
+		(Reference <Model> (new Model (mesh_data, position, orientation, size)));
 
 	body . reset_pointee (Body :: create (mass, size, position, orientation));
 }

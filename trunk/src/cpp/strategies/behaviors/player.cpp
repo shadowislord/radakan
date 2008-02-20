@@ -106,7 +106,7 @@ Reference <Behavior> Player ::
 		relative_destination_movement_speed = - 0.7;
 		Engines :: Log :: log (me) << "Going backwards: - 0.7" << endl;
 	}
-	character -> get_body () -> move (relative_destination_movement_speed);
+	character -> get_body () -> walk (relative_destination_movement_speed);
 
 	float relative_destination_turn_speed = 0;
 	if (Engines :: Input :: Command_Reader :: get ()
@@ -122,6 +122,21 @@ Reference <Behavior> Player ::
 		Engines :: Log :: log (me) << "Turn right" << endl;
 	}
 	character -> get_body () -> turn (relative_destination_turn_speed);
+
+	//	jump
+	if (Engines :: Input :: Command_Reader :: get () -> has_command
+		(get_class_name (), "jump"))
+	{
+		character -> get_body () -> jump ();
+	}
+
+	//	reset your orientation
+	if (Engines :: Input :: Command_Reader :: get () -> has_command
+		(get_class_name (), "reset"))
+	{
+		character -> get_body () -> reset ();
+		Engines :: Log :: show ("Your orientation is reset.");
+	}
 
 	//	Select a target.
 	if (Engines :: Input :: Command_Reader :: get ()
@@ -179,21 +194,6 @@ Reference <Behavior> Player ::
 		{
 			Engines :: Log :: show ("No target selected.");
 		}
-	}
-
-	//	jump
-	if (Engines :: Input :: Command_Reader :: get () -> has_command
-		(get_class_name (), "jump"))
-	{
-		Engines :: Log :: show ("Sadly, jumping is not supported yet.");
-	}
-
-	//	reset your orientation
-	if (Engines :: Input :: Command_Reader :: get () -> has_command
-		(get_class_name (), "reset"))
-	{
-		character -> get_body () -> reset ();
-		Engines :: Log :: show ("Your orientation is reset.");
 	}
 
 	const Mathematics :: Vector_3D & mouse_position

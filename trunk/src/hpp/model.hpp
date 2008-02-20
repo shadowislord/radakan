@@ -26,7 +26,8 @@ namespace Radakan
 			(
 				Reference <Mesh_Data> mesh_data,
 				Mathematics :: Vector_3D position,
-				Mathematics :: Quaternion orientation
+				Mathematics :: Quaternion orientation,
+				Mathematics :: Vector_3D bounding_box	//	For debugging
 			);
 			virtual ~Model ();
 			virtual bool is_initialized () const;
@@ -37,7 +38,9 @@ namespace Radakan
 			///	Default: 'true'
 			bool visible;
 			
-		protected :
+		private :
+			Mathematics :: Quaternion default_orientation;
+			
 			boost :: shared_ptr <Ogre :: SceneNode> node;
 			boost :: scoped_ptr <Ogre :: Entity> entity;
 	};

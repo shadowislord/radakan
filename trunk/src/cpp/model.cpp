@@ -7,6 +7,7 @@
 
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
+#include <OgreManualObject.h>
 
 #if RADAKAN_PHYSICS_MODE == RADAKAN_OGREODE_MODE
 	#include <OgreOdeGeometry.h>
@@ -35,9 +36,11 @@ Model ::
 	(
 		Reference <Mesh_Data> mesh_data,
 		Mathematics :: Vector_3D position,
-		Mathematics :: Quaternion orientation
+		Mathematics :: Quaternion orientation,
+		Mathematics :: Vector_3D bouding_box
 	) :
 	Object (mesh_data . get_name () + "'s model"),
+	default_orientation (mesh_data -> default_orientation),
 	node (World :: get () -> root_node -> createChildSceneNode (name)),
 	entity
 	(
@@ -52,7 +55,8 @@ Model ::
 
 //	World :: get () . root_node . addChild (node :: get ());
 
-	node -> setPosition (position);
+	set_position (position);
+	set_orientation (orientation * default_orientation);
 	node -> setScale (mesh_data -> scale, mesh_data -> scale, mesh_data -> scale);
 	node -> attachObject (entity . get ());
 
@@ -63,8 +67,41 @@ Model ::
 		entity -> setMaterialName (mesh_data -> material_file_name);
 	}
 
-	node -> setOrientation (orientation * mesh_data -> default_orientation);
-
+	Ogre :: ManualObject * box = Engines :: Render_Engine :: get ()
+		-> get_scene_manager () -> createManualObject (me . get_name () + "'s box");
+	
+	box -> begin ("BaseWhiteNoLighting", Ogre :: RenderOperation :: OT_LINE_STRIP);
+	
+	box -> position (0,					0,					0);
+	box -> position (0,					0,					bouding_box . z);
+	box -> position (0,					bouding_box . y,	0);
+	box -> position (0,					bouding_box . y,	bouding_box . z);
+	box -> position (bouding_box . x,	0,					0);
+	box -> position (bouding_box . x,	0,					bouding_box . z);
+	box -> position (bouding_box . x,	bouding_box . y,	0);
+	box -> position (bouding_box . x,	bouding_box . y,	bouding_box . z);
+	
+	box -> index (0);
+	box -> index (1);
+	box -> index (3);
+	box -> index (2);
+	box -> index (0);
+	box -> index (4);
+	box -> index (5);
+	box -> index (7);
+	box -> index (6);
+	box -> index (4);
+	box -> index (5);
+	box -> index (1);
+	box -> index (3);
+	box -> index (7);
+	box -> index (6);
+	box -> index (2);
+	
+	box -> end ();
+	
+	node -> attachObject (box);
+	
 	assert (Model :: is_initialized ());
 }
 
@@ -99,7 +136,7 @@ bool Model ::
 	assert (World :: get () -> root_node . get () != NULL);
 	
 	assert (node -> getParent () == World :: get () -> root_node . get ());
-	assert (node -> numAttachedObjects () <= 2);
+///	assert (node -> numAttachedObjects () <= 2);
 
 	return true;
 }
@@ -117,5 +154,5 @@ void Model ::
 {
 	assert (is_initialized ());
 	
-	node -> setOrientation (orientation);
+	node -> setOrientation (orientation * default_orientation);
 }

@@ -27,5 +27,5 @@ reset=r
 # These affect all characters.
 movement reaction=500
 maximal movement speed=4
-turn reaction=50
+turn reaction=5000
 maximal turn speed=4

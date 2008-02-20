@@ -1,3 +1,4 @@
+#include "body.hpp"
 #include "engines/log.hpp"
 #include "items/character.hpp"
 #include "messages/communications/converse.hpp"
@@ -88,8 +89,8 @@ Reference <Behavior> AI ::
 		sensory_buffer -> drop (actual_message);
 	}
 
-/*	character -> get_body () -> move (0);
-	character -> get_body () -> turn (0);*/
+	character -> get_body () -> walk (0);
+	character -> get_body () -> turn (0);
 
 	if (actual_message . is_castable <Messages :: Communications :: Fight> ())
 	{
