@@ -8,7 +8,7 @@ set(SRC_FILES   "src/OgreOdeObject.cpp"
                 "src/OgreOdeVehicle.cpp")
 
 set(INCLUDE_DIRS    ${Ogre_INCLUDE_DIR}
-					${Ode_INCLUDE_DIR}
+					"${RADAKAN_SOURCE_DIR}/external/ode-0.9/include"
 					"${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/include"
                     "${RADAKAN_SOURCE_DIR}/external/ogreaddons/ogreode/prefab/include"
                     )

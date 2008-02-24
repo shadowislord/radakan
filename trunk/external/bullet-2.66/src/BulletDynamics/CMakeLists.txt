@@ -2,9 +2,7 @@ INCLUDE_DIRECTORIES(
 ${RADAKAN_SOURCE_DIR}/external/bullet-2.66/src }
 )
 
-	
-ADD_LIBRARY(LibBulletDynamics SHARED
-
+SET(SOURCE_FILES 
 	ConstraintSolver/btContactConstraint.cpp
 	ConstraintSolver/btContactConstraint.h
 	ConstraintSolver/btConeTwistConstraint.cpp
@@ -33,3 +31,9 @@ ADD_LIBRARY(LibBulletDynamics SHARED
 	Vehicle/btWheelInfo.cpp
 	Vehicle/btWheelInfo.h
 )
+
+if(WIN32)
+	ADD_LIBRARY(LibBulletDynamics ${SOURCE_FILES})
+else(WIN32)
+	ADD_LIBRARY(LibBulletDynamics SHARED ${SOURCE_FILES})
+endif(WIN32)

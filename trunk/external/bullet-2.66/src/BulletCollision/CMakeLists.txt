@@ -3,9 +3,7 @@ INCLUDE_DIRECTORIES(
 ${RADAKAN_SOURCE_DIR}/external/bullet-2.66/src }
 )
 
-	
-ADD_LIBRARY(LibBulletCollision SHARED
-				BroadphaseCollision/btAxisSweep3.cpp
+SET(SOURCE_FILES 				BroadphaseCollision/btAxisSweep3.cpp
 				BroadphaseCollision/btAxisSweep3.h
 				BroadphaseCollision/btBroadphaseProxy.cpp
 				BroadphaseCollision/btBroadphaseProxy.h
@@ -131,3 +129,10 @@ ADD_LIBRARY(LibBulletCollision SHARED
 				NarrowPhaseCollision/btVoronoiSimplexSolver.cpp
 				NarrowPhaseCollision/btVoronoiSimplexSolver.h
 )
+
+if(WIN32)
+	ADD_LIBRARY(LibBulletCollision ${SOURCE_FILES})
+else(WIN32)
+	ADD_LIBRARY(LibBulletCollision SHARED ${SOURCE_FILES})
+endif(WIN32)
+

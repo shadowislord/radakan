@@ -3,7 +3,7 @@ INCLUDE_DIRECTORIES(
 ${RADAKAN_SOURCE_DIR}/external/bullet-2.66/src }
 )
 
-ADD_LIBRARY(LibLinearMath SHARED
+SET(SOURCE_FILES 
 		btAlignedObjectArray.h
 		btList.h
 		btPoolAllocator.h
@@ -31,5 +31,11 @@ ADD_LIBRARY(LibLinearMath SHARED
 		btGeometryUtil.cpp
 		btAlignedAllocator.cpp
 )
+
+if(WIN32)
+	ADD_LIBRARY(LibLinearMath ${SOURCE_FILES})
+else(WIN32)
+	ADD_LIBRARY(LibLinearMath SHARED ${SOURCE_FILES})
+endif(WIN32)
 
 

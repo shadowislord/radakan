@@ -12,17 +12,21 @@ set(OGRE_HOME "$ENV{OGRE_HOME}")
 if(WIN32)
     if(MSVC80)
         find_path(CEGUI_INCLUDE_DIR "CEGUI/CEGUI.h"
+			"D:/Projects/Radakan/Ogre_Deps/CEGUI-0.5.0/include"
             "${OGRE_HOME}/Dependencies/include"
 			"${OGRE_HOME}/include")
 
 		find_path(OGRE_CEGUI_RENDERER_INCLUDE "OgreCEGUIRenderer.h"	
+			"D:/Projects/Radakan/Ogre_Deps/CEGUI-0.5.0/include"
 			"${OGRE_HOME}/Samples/Common/CEGUIRenderer/include"
 			"${OGRE_HOME}/Samples/include")
 			
         find_path(CEGUI_LIB_RELEASE "CEGUIBase.lib" 
+            "D:/Projects/Radakan/Ogre_Deps/CEGUI-0.5.0/lib"
 	        "${OGRE_HOME}/lib")
 
         find_path(CEGUI_LIB_DEBUG "CEGUIBase_d.lib" 
+			"D:/Projects/Radakan/Ogre_Deps/CEGUI-0.5.0/lib"
             "${OGRE_HOME}/lib")
     endif(MSVC80)
 else(WIN32)
