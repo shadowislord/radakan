@@ -123,7 +123,7 @@ public class MaxiUploader extends SwingWorker<Void, Void> {
             dos.writeBytes(ENDLINE);
             
             
-            dos.writeBytes("THIS IS A VERY BEATIFUL FILE.. LALALALDFASdf");
+            dos.writeBytes("FILE DATA GOES HERE");
             remaining = 0;
             
 //            int chunkRemaining = (int) Math.min(remaining, buffer.length);
