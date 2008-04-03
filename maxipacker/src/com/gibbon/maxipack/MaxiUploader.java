@@ -1,27 +1,20 @@
 package com.gibbon.maxipack;
 
 import java.awt.Desktop;
-import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.swing.JOptionPane;
@@ -88,17 +81,30 @@ public class MaxiUploader extends SwingWorker<Void, Void> {
      * @param data Input data to create the hash from
      * @return Hash as a string of hex
      */
-    private String makeMD5Hash(byte[] data){
-        digester.update(data);
+    private String makeMD5Hash(byte[] data, int offset, int len){
+        digester.update(data, offset, len);
         BigInteger bi = new BigInteger(digester.digest());
         return bi.toString(16);
     }
     
     private void sendNextChunk(int chunkID) {
         try {
+            int chunkRemaining = (int) Math.min(remaining, buffer.length);
+            int bufferOffset = 0;
+            
+            while (chunkRemaining > 0) {
+                int bytesRead = in.read(buffer, 0, chunkRemaining);
+                                
+                bufferOffset += bytesRead;
+                remaining -= bytesRead;
+                chunkRemaining -= bytesRead;
+            }
+                  
             // should be something like
             // http://www.radakan.org/upload.php?chunk_id=15
-            URL chunkURL = new URL(uploadURL.toString() + "?chunk_id=" + chunkID);
+            URL chunkURL = new URL(uploadURL.toString() 
+                                 + "?chunk_id=" + chunkID 
+                                 + "&hash=" + makeMD5Hash(buffer, 0, bufferOffset));
 
             HttpURLConnection conn = (HttpURLConnection) chunkURL.openConnection();
             
@@ -122,22 +128,9 @@ public class MaxiUploader extends SwingWorker<Void, Void> {
             dos.writeBytes("Content-Type: application/octet-stream");
             dos.writeBytes(ENDLINE);
             dos.writeBytes(ENDLINE);
-            
-            
-            dos.writeBytes("FILE DATA GOES HERE");
-            remaining = 0;
-            
-//            int chunkRemaining = (int) Math.min(remaining, buffer.length);
-//            int bytesRead = in.read(buffer, 0, chunkRemaining);
-//            
-//            while (chunkRemaining > 0) {
-//                dos.write(buffer, 0, bytesRead);
-//                remaining -= bytesRead;
-//                chunkRemaining -= bytesRead;
-//                System.out.println("Uploaded: "+bytesRead+" bytes");
-//                bytesRead = in.read(buffer, 0, chunkRemaining);
-//            }
 
+            dos.write(buffer, 0, bufferOffset);
+           
             // send multipart form data necesssary after file data...
             dos.writeBytes(ENDLINE);
             dos.writeBytes(HYPHENS + BOUNDARY + HYPHENS + ENDLINE);
