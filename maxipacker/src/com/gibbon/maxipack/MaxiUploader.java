@@ -1,5 +1,6 @@
 package com.gibbon.maxipack;
 
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -145,7 +146,8 @@ public class MaxiUploader extends SwingWorker<Void, Void> {
             dos.flush();
             dos.close();
 
-            FileWriter fos = new FileWriter(new File("C:\\chunk" + chunkID + ".html"));
+            File tempFile = File.createTempFile("chunk"+chunkID, ".html");
+            FileWriter fos = new FileWriter(tempFile);
 
             // Get response data.
             BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -156,6 +158,8 @@ public class MaxiUploader extends SwingWorker<Void, Void> {
             r.close();
             fos.close();
 
+            Desktop.getDesktop().browse(tempFile.toURI());
+            
             // update progress bar
             setProgress((int) (((filesize - remaining) * 100) / filesize));
         } catch (MalformedURLException ex) {
