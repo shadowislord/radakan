@@ -49,7 +49,7 @@ public class LoadingController extends Controller {
     @Override
     public void update(float tpf) {
         if (loadingComplete){
-            fadeTime += tpf;
+            fadeTime += 0.016666;
             color.a = 1f - (fadeTime / totalFadeTime);
             if (fadeTime > totalFadeTime){
                 // detach pass from PassManager

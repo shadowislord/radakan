@@ -1,6 +1,5 @@
 package com.gibbon.radakan;
 
-import com.gibbon.jme.context.ConfigFrame;
 import com.gibbon.jme.context.ExitListenerPass;
 import com.gibbon.jme.context.InputPass;
 import com.gibbon.jme.context.JmeContext;
@@ -9,15 +8,20 @@ import com.gibbon.jme.context.PassType;
 import com.gibbon.jme.context.RenderPass;
 import com.gibbon.jme.context.SoundPass;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
-import com.gibbon.mfkarpg.terrain.splatting.CXTerrainPass;
-import com.gibbon.mfkarpg.terrain.splatting.TerrainPass;
+import com.gibbon.meshparser.MaterialLoader;
+import com.gibbon.meshparser.SceneGraphDump;
+import com.gibbon.radakan.config.ConfigFrame;
+import com.gibbon.radakan.error.ErrorReporter;
 import com.gibbon.radakan.menu.LoadingController;
 import com.gibbon.radakan.player.PlayerController;
+import com.gibbon.radakan.tile.TileLoader;
+import com.gibbon.radakan.tile.TypeLoader;
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.CollisionTree;
 import com.jme.bounding.CollisionTreeManager;
 import com.jme.image.Image;
 import com.jme.image.Texture;
+import com.jme.light.PointLight;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
@@ -27,9 +31,12 @@ import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.Skybox;
 import com.jme.scene.Spatial;
+import com.jme.scene.TriMesh;
+import com.jme.scene.VBOInfo;
 import com.jme.scene.shape.Quad;
 import com.jme.scene.state.AlphaState;
 import com.jme.scene.state.CullState;
+import com.jme.scene.state.LightState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.system.GameSettings;
@@ -41,11 +48,10 @@ import com.jmex.audio.AudioSystem;
 import com.jmex.audio.AudioTrack;
 import com.jmex.audio.MusicTrackQueue;
 import com.jmex.audio.MusicTrackQueue.RepeatType;
-import com.jmex.terrain.TerrainPage;
-import com.jmex.terrain.util.RawHeightMap;
 import com.model.md5.ModelNode;
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.Callable;
@@ -58,7 +64,6 @@ public class Main {
     private static Node walkableNode = new Node("walkable");
     private static Node rootNode     = new Node("root");
     
-    private static CXTerrainPass terrainPass;
     private static RenderPass    renderPass;
     private static RenderPass    skyPass;
     private static InputPass     inputPass;
@@ -66,7 +71,6 @@ public class Main {
     private static LoadingController loading;
     
     public static void setupLocators(){
-   
             String root = System.getProperty("user.dir");
             
             // setup audio locators
@@ -98,7 +102,7 @@ public class Main {
     }
     
     public static Texture loadTexture(String name, boolean flipY){
-        return TextureManager.loadTexture(name,Texture.MM_LINEAR_LINEAR,Texture.FM_LINEAR,0.0f,flipY);
+        return TextureManager.loadTexture(name,Texture.MM_LINEAR_LINEAR,Texture.FM_LINEAR,1.0f,flipY);
     }
     
     /**
@@ -109,7 +113,7 @@ public class Main {
      * @return
      */
     public static Texture loadTextureUI(String name, boolean flipY){
-        return TextureManager.loadTexture(name,Texture.MM_LINEAR_LINEAR,Texture.FM_LINEAR,Image.GUESS_FORMAT_NO_S3TC,0.0f,flipY);
+        return TextureManager.loadTexture(name,Texture.MM_NONE, Texture.FM_LINEAR,Image.GUESS_FORMAT_NO_S3TC,0.0f,flipY);
     }
     
     public static Skybox loadSkybox(final JmeContext cx){
@@ -122,12 +126,20 @@ public class Main {
             }
         };
         
-        sky.setTexture(Skybox.DOWN,  loadTexture("sky_down.dds", false));
-        sky.setTexture(Skybox.UP,    loadTexture("sky_up.dds", false));
-        sky.setTexture(Skybox.EAST,  loadTexture("sky_east.dds", false));
-        sky.setTexture(Skybox.WEST,  loadTexture("sky_west.dds", false));
-        sky.setTexture(Skybox.NORTH, loadTexture("sky_north.dds", false));
-        sky.setTexture(Skybox.SOUTH, loadTexture("sky_south.dds", false));
+//        sky.setTexture(Skybox.DOWN,  loadTexture("sky_down.dds", false));
+//        sky.setTexture(Skybox.UP,    loadTexture("sky_up.dds", false));
+//        sky.setTexture(Skybox.EAST,  loadTexture("sky_east.dds", false));
+//        sky.setTexture(Skybox.WEST,  loadTexture("sky_west.dds", false));
+//        sky.setTexture(Skybox.NORTH, loadTexture("sky_north.dds", false));
+//        sky.setTexture(Skybox.SOUTH, loadTexture("sky_south.dds", false));
+        
+        sky.setTexture(Skybox.DOWN,  loadTexture("cloud_down.jpg", true));
+        sky.setTexture(Skybox.UP,    loadTexture("cloud_up.jpg", true));
+        
+        sky.setTexture(Skybox.WEST,  loadTexture("cloud_1.jpg", true));
+        sky.setTexture(Skybox.NORTH,  loadTexture("cloud_2.jpg", true));
+        sky.setTexture(Skybox.EAST, loadTexture("cloud_4.jpg", true));
+        sky.setTexture(Skybox.SOUTH, loadTexture("cloud_3.jpg", true));
         
         sky.setRenderQueueMode(Renderer.QUEUE_SKIP);
         
@@ -141,70 +153,87 @@ public class Main {
         return sky;
     }
     
-    public static CXTerrainPass loadTerrain(JmeContext cx){
+    public static void setVbo(Spatial spatial){
+        spatial.setIsCollidable(true);
+        
+        if (spatial instanceof Node){
+            Node n = (Node)spatial;
+            if (n.getChildren() == null)
+                return;
+            
+            for (Spatial s: n.getChildren()){
+                setVbo(s);
+            }
+        }else if (spatial instanceof TriMesh){
+            TriMesh mesh = (TriMesh) spatial;
+            mesh.setVBOInfo(new VBOInfo(true));
+            //if (mesh.getName().equalsIgnoreCase("terrain")){
+                System.out.println("MESH: "+mesh+" is COLLIDABLE");
+                mesh.setIsCollidable(true);
+                CollisionTreeManager.getInstance().generateCollisionTree(CollisionTree.AABB_TREE, mesh, true);
+            //}
+        }
+    }
+    
+    public static Spatial loadTerrain(JmeContext cx) throws IOException{
         CollisionTreeManager.getInstance().setTreeType(CollisionTree.AABB_TREE);
         
-        URL heights = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "spirits.int16le");
-        RawHeightMap heightMap = new RawHeightMap(heights, 129, RawHeightMap.FORMAT_16BITLE, false);
+//        URL bootstrap = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "bootstrap.jme");
+//        if (bootstrap == null)
+//            throw new IllegalStateException("Cannot find world file");
+//        
+//        final Spatial world = (Spatial) BinaryImporter.getInstance().load(bootstrap);
         
-        Vector3f terrainScale = new Vector3f(5, 0.003f, 6);
-        heightMap.setHeightScale(0.001f);
-        //MidPointHeightMap heightMap = new MidPointHeightMap(128, 1.9f);
-        //Vector3f terrainScale = new Vector3f(5,1,5);
-        //TerrainBlock terrain = new TerrainBlock("Terrain", heightMap.getSize(), terrainScale,
-        //                                   heightMap.getHeightMap(),
-        //                                   new Vector3f(0, 0, 0), false);
-        TerrainPage terrain = new TerrainPage("Terrain", 33, heightMap.getSize(),
-                terrainScale, heightMap.getHeightMap(), false);
+        SimpleResourceLocator srl = new SimpleResourceLocator(new File("D:\\TileStore2\\").toURI());
+        ResourceLocatorTool.addResourceLocator("tile", srl);
+        ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, srl);
+        ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl);
         
-        Texture lightmap = loadTexture("lightmap.tga", false);
-        Texture basetex = loadTexture("baserock.dds", false);
+        MaterialLoader mloader = new MaterialLoader();
+        mloader.load(new FileInputStream("D:\\TileStore2\\area.material"));
         
-        Texture alphatex0 = loadTexture("darkrockalpha3.tga", true);
-        Texture alphatex1 = loadTexture("deadalpha3.tga", true);
-        Texture alphatex2 = loadTexture("grassalpha3.tga", true);
-        Texture alphatex3 = loadTexture("roadalpha3.tga", true);
+        TypeLoader tloader = new TypeLoader();
+        tloader.load(new FileInputStream("D:\\TileStore2\\area_types.xml"));
         
-        Texture detailtex0 = loadTexture("darkrock.dds", false);
-        Texture detailtex1 = loadTexture("deadgrass.dds", false);
-        Texture detailtex2 = loadTexture("nicegrass.dds", false);
-        Texture detailtex3 = loadTexture("road.dds", false);
-
-        // Create the terrain pass
-        CXTerrainPass tPass = new CXTerrainPass();
-        tPass.setRenderMode(TerrainPass.MODE_BEST);
+        TileLoader loader = new TileLoader(true);
+        loader.setTypes(tloader.getTypeMap());
+        loader.setMaterials(mloader.getMaterials());
         
-        // Add a terrain model to the pass
-        tPass.addTerrain(terrain);
+        final Node world = new Node("WORLD");
         
-        tPass.setTileScale(90);
+        Spatial tile = loader.loadTile(0, 0);
+        world.attachChild(tile);
         
-        // Add the tiles
-        tPass.addDetail(basetex,null);
-        tPass.addDetail(detailtex0,alphatex0);
-        tPass.addDetail(detailtex1,alphatex1);
-        tPass.addDetail(detailtex2,alphatex2);
-        tPass.addDetail(detailtex3,alphatex3);
-        tPass.setLightmap(lightmap, 2.0f);
+        tile = loader.loadTile(-1, 0);
+        tile.setLocalTranslation(64, 0, 0);
+        world.attachChild(tile);
         
-        ZBufferState zbuf = cx.getRenderer().createZBufferState();
-        zbuf.setFunction(ZBufferState.CF_LESS);
-        tPass.setPassState(zbuf);
+        tile = loader.loadTile(0, -1);
+        tile.setLocalTranslation(0, 0, -64);
+        world.attachChild(tile);
         
-        CullState cull = cx.getRenderer().createCullState();
-        cull.setCullMode(CullState.CS_BACK);
-        tPass.setPassState(cull);
+        tile = loader.loadTile(-1, -1);
+        tile.setLocalTranslation(64, 0, -64);
+        world.attachChild(tile);
         
-        terrain.updateRenderState();
+        world.setModelBound(new BoundingBox());
+        world.updateModelBound();
         
-        terrain.setModelBound(new BoundingBox());
-        terrain.updateModelBound();
-        //test protection
-        CollisionTreeManager.getInstance().generateCollisionTree(CollisionTree.AABB_TREE, terrain, true);
+        if (cx.getRenderer().supportsVBO()){
+            cx.execute(new Callable<Void>(){
+                public Void call(){
+                    setVbo(world);
+                    return null;
+                }
+            });
+        }
         
-        walkableNode.attachChild(terrain);
+//        world.lockBounds();
+//        world.lockBranch();
+//        world.lockShadows();
+//        world.lockTransforms();
         
-        return tPass;
+        return world;
     }
     
     public static JmeContext loadDisplay(){
@@ -212,23 +241,25 @@ public class Main {
             GameSettings gs = new PreferencesGameSettings(Preferences.userRoot().node("Radakan"));
             ConfigFrame config = new ConfigFrame(gs);
             config.setVisible(true);
+            config.requestFocus();
             config.waitFor();
 
             // set custom settings here
-            gs.set("title", "Radakan Prototype 0.05");
+            gs.set("title", Radakan.getGameName() + " " + Radakan.getVersionPrefix() + " " + Radakan.getGameVersion());
             gs.setSamples(0);
             gs.setFramerate(60);
-
-            JmeContext cx = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
+            gs.setVerticalSync(true);
+            
+            final JmeContext cx = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
             cx.setSettings(gs);
             cx.start();
             cx.waitFor();
-
+            
             return cx;
         } catch (InstantiationException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            ErrorReporter.reportError("Failed to initialize Display implementor", ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            ErrorReporter.reportError("Recieved interrupt while waiting for Display", ex);
         }
         
         return null;
@@ -265,8 +296,7 @@ public class Main {
         as.setBlendEnabled(true);
         as.setSrcFunction(AlphaState.SB_SRC_ALPHA);
         as.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
-        
-        
+
         Quad background = new Quad("Background", width, height * aspect );
         background.setRenderQueueMode(Renderer.QUEUE_ORTHO);
         background.setColorBuffer(0, null);
@@ -274,10 +304,9 @@ public class Main {
         background.setLocalTranslation(new Vector3f(width / 2f, height * aspect / 2f, 0.0f));
 
         TextureState texState = r.createTextureState();
-        Texture tex = loadTextureUI("logo.png", true);
+        Texture tex = loadTextureUI("logo.tga", true);
         texState.setTexture(tex);
         background.setRenderState(texState);
-        
         
         Quad background2 = new Quad("Background2", width / 2f, (height * aspect) / 2f );
         background2.setRenderQueueMode(Renderer.QUEUE_ORTHO);
@@ -286,7 +315,7 @@ public class Main {
         background2.setLocalTranslation(new Vector3f(width / 2f, height / 3f, 0.0f));
 
         texState = r.createTextureState();
-        tex = loadTextureUI("loadingtext.png", true);
+        tex = loadTextureUI("loadingtext.tga", true);
         texState.setTexture(tex);
         background2.setRenderState(texState);
         
@@ -316,104 +345,143 @@ public class Main {
     }
     
     public static void doLoading(JmeContext cx){
-        // set basic rendering states
-        ZBufferState zbuf = cx.getRenderer().createZBufferState();
-        zbuf.setFunction(ZBufferState.CF_LESS);
-        rootNode.setRenderState(zbuf);
-        
-        CullState cull = cx.getRenderer().createCullState();
-        cull.setCullMode(CullState.CS_BACK);
-        rootNode.setRenderState(cull);
-        
-        System.out.println("1");
-        
-        // load character
-        ModelNode hank = CharacterLoader.loadCharacter(
-                                ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "hank.md5mesh"), 
-                                ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "hank.md5anim"),
-                                ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "hank_walk.md5anim"),
-                                "hank");
-        
-        hank.setLocalTranslation(new Vector3f(-213, 0, -120));
-        
-        Quaternion q = new Quaternion();
-        q.fromAngles(-FastMath.HALF_PI, 0, 0);
-        
-        Spatial child = hank.getChild(0);
-        child.setLocalScale(0.25f);
-        child.setLocalRotation(q);
-        child.setLocalTranslation(-3.5f, 0, 0);
-        
-        System.out.println("2");
-        
-        // bind controls to character
-        PlayerController pc = new PlayerController(hank, cx.getRenderer().getCamera(), walkableNode);
-        hank.addController(pc);
-        rootNode.attachChild(hank);
-        
-        System.out.println("3");
-        
-        // update input every frame
-        inputPass = new InputPass(pc.getHandler(), false);
-        
-        // do not attach walkableNode to scene graph
-        // because TerrainPass already renders the terrain in walkableNode
-        //rootNode.attachChild(walkableNode);
-        
-        System.out.println("4");
-        
-        // load sky
-        Skybox sky = loadSkybox(cx);
+        try{
+            // set basic rendering states
+            ZBufferState zbuf = cx.getRenderer().createZBufferState();
+            zbuf.setFunction(ZBufferState.CF_LESS);
+            rootNode.setRenderState(zbuf);
 
-        System.out.println("5");
-        
-        rootNode.updateGeometricState(0, true);
-        rootNode.updateRenderState();
-        
-        System.out.println("6");
-        
-        skyPass = new RenderPass(PassType.PRE_RENDER, "sky");
-        skyPass.add(sky);
-        
-        renderPass = new RenderPass(PassType.RENDER, "scene");
-        renderPass.add(rootNode);
-        
-        System.out.println("7");
-        
-        terrainPass = loadTerrain(cx);
-        
-        System.out.println("8");
-        
-        loading.notifyComplete();
+            CullState cull = cx.getRenderer().createCullState();
+            cull.setCullMode(CullState.CS_BACK);
+            rootNode.setRenderState(cull);
+
+            File optFile = new File(System.getProperty("user.dir"), "/data/models/hank.jme");
+            // load character
+            ModelNode hank = CharacterLoader.loadCharacter(
+                                    ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "hank.md5mesh"), 
+                                    ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "hank.md5anim"),
+                                    ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "hank_walk.md5anim"),
+                                    optFile,
+                                    "hank");
+
+            hank.setLocalTranslation(new Vector3f(0, 10, 0));
+
+            Quaternion q = new Quaternion();
+            q.fromAngles(-FastMath.HALF_PI, 0, 0);
+
+            Spatial child = hank.getChild(0);
+            child.setLocalScale(0.04f);
+            child.setLocalRotation(q);
+            child.setLocalTranslation(-0.65f, 0, 0);
+            hank.updateModelBound();
+            hank.updateWorldBound();
+
+            // bind controls to character
+            PlayerController pc = new PlayerController(hank, cx.getRenderer().getCamera(), walkableNode);
+            hank.addController(pc);
+            rootNode.attachChild(hank);
+
+            Spatial terrain = null;
+            try{
+                terrain = loadTerrain(cx);
+            } catch (IOException ex){
+                ErrorReporter.reportError("IO Error while reading terrain", ex);
+            }
+
+            walkableNode.attachChild(terrain);
+
+            // update input every frame
+            inputPass = new InputPass(pc.getHandler(), false);
+
+            // do not attach walkableNode to scene graph
+            // because TerrainPass already renders the terrain in walkableNode
+            rootNode.attachChild(walkableNode);
+
+            LightState ls = cx.getRenderer().createLightState();
+            PointLight light = new PointLight();
+            light.setEnabled(true);
+            light.setAmbient(ColorRGBA.darkGray);
+            light.setDiffuse(new ColorRGBA(.9f, .9f, .7f, 1f));
+            light.setSpecular(ColorRGBA.white);
+            light.setLocation(new Vector3f(256,420,420));
+            light.setShadowCaster(true);
+            ls.attach(light);
+
+            light = new PointLight();
+            light.setEnabled(true);
+            light.setAmbient(new ColorRGBA(.2f, .2f, .3f, 1f));
+            light.setDiffuse(ColorRGBA.white);
+            light.setSpecular(ColorRGBA.black);
+            light.setLocation(new Vector3f(-400,100,-400));
+            light.setShadowCaster(false);
+            ls.attach(light);
+
+            rootNode.setRenderState(ls);
+
+            // load sky
+            //Skybox sky = loadSkybox(cx);
+
+            rootNode.updateGeometricState(0, true);
+            rootNode.updateRenderState();
+
+            skyPass = new RenderPass(PassType.PRE_RENDER, "sky");
+            //skyPass.add(sky);
+
+            renderPass = new RenderPass(PassType.RENDER, "scene");
+            renderPass.add(rootNode);
+
+            System.gc();
+            loading.notifyComplete();
+        } catch (Throwable t){
+            ErrorReporter.reportError("Exception occured while loading", t);
+        }
     }
     
     public static void doAttachScene(JmeContext cx){
         cx.getPassManager().add(inputPass);
         cx.getPassManager().add(skyPass);
         cx.getPassManager().add(renderPass);
-        cx.getPassManager().add(terrainPass);
     }
     
     public static void main(String[] args){
+        Logger.getLogger("").addHandler(new ErrorReporter.ErrorHandler());
         Logger.getLogger("").setLevel(Level.WARNING);
+        //System.setProperty("org.lwjgl.util.Debug", "true");
         
-        JmeContext cx = loadDisplay();
+        try{
+            Thread.sleep(500);
+        }catch (InterruptedException ex){
+        }
         
-        setupLocators();
-        loadPasses(cx);
-   
-        // initialize sound
-        // loading screen theme
-        SoundPass sp = new SoundPass();
-        loadMusic();
-        cx.getPassManager().add(sp);
-        
-        Spatial menu = loadMenu(cx);
-        // give a special name so that LoadingController can detach it
-        RenderPass menuPass = new RenderPass(PassType.POST_RENDER, "menu");
-        menuPass.add(menu);
-        cx.getPassManager().add(menuPass);
-        
+            JmeContext cx = loadDisplay();
+
+            setupLocators();
+            loadPasses(cx);
+
+            // initialize sound
+            // loading screen theme
+            if (cx.getSettings().isMusic()){
+                SoundPass sp = new SoundPass();
+                AudioSystem.getSystem().setMasterGain(cx.getSettings().getFloat("GameMusicVolume", 1f));
+                loadMusic();
+                cx.getPassManager().add(sp);
+            }
+
+            cx.execute(new Callable<Void>(){
+                public Void call(){
+                    Thread.currentThread().setUncaughtExceptionHandler(new ErrorReporter.ErrorHandler());
+                    Radakan.querySystemInfo();
+                    return null;
+                }
+            });
+            
+            Spatial menu = loadMenu(cx);
+            // give a special name so that LoadingController can detach it
+
+            RenderPass menuPass = new RenderPass(PassType.POST_RENDER, "menu");
+            menuPass.add(menu);
+            cx.getPassManager().add(menuPass);
+
         doLoading(cx);
     }
     

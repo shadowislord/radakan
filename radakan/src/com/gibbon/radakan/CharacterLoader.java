@@ -7,11 +7,16 @@ package com.gibbon.radakan;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.scene.Controller;
+import com.jme.scene.Spatial;
+import com.jme.util.export.binary.BinaryExporter;
+import com.jme.util.export.binary.BinaryImporter;
 import com.model.md5.JointAnimation;
 import com.model.md5.ModelNode;
 import com.model.md5.controller.JointController;
+import com.model.md5.importer.MD5Importer;
 import com.model.md5.importer.resource.AnimImporter;
 import com.model.md5.importer.resource.MeshImporter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,33 +44,48 @@ public class CharacterLoader {
         reader.eolIsSignificant(true);
         return reader;
     }
-
-    public static ModelNode loadCharacter(URL model, URL anim_stand, URL anim_walk, String name) {
+    
+    public static ModelNode loadCharacter(URL model, URL anim_stand, URL anim_walk, File optFile, String name) {
         try {
-            StreamTokenizer st = createReader(model.openStream());
-            MeshImporter mi = new MeshImporter(st);
-            ModelNode node = mi.loadMesh(name);
-            node.setModelBound(new BoundingBox());
-            node.updateModelBound();
-            node.updateWorldBound();
-            assert node.getWorldBound() != null;
+            ModelNode node;
             
-            st = createReader(anim_stand.openStream());
-            AnimImporter ai = new AnimImporter(st);
-            JointAnimation stand = ai.loadAnim("stand");
-            stand.setFrameRate(10);
-            
-            st = createReader(anim_walk.openStream());
-            ai = new AnimImporter(st);
-            JointAnimation walk = ai.loadAnim("walk");
-            walk.setFrameRate(40);
-            
-            JointController controller = new JointController(node.getJoints());
-            controller.setRepeatType(Controller.RT_WRAP);
-            controller.addAnimation(walk);
-            controller.addAnimation(stand);
-            controller.setActive(true);
-            node.addController(controller);
+            if (!optFile.exists()){
+                StreamTokenizer st = createReader(model.openStream());
+                MeshImporter mi = new MeshImporter(st);
+                node = mi.loadMesh(name);
+                node.setModelBound(new BoundingBox());
+                node.updateModelBound();
+                node.updateWorldBound();
+                assert node.getWorldBound() != null;
+
+                st = createReader(anim_stand.openStream());
+                AnimImporter ai = new AnimImporter(st);
+                JointAnimation stand = ai.loadAnim("stand");
+                stand.setFrameRate(10);
+
+                st = createReader(anim_walk.openStream());
+                ai = new AnimImporter(st);
+                JointAnimation walk = ai.loadAnim("walk");
+                walk.setFrameRate(40);
+
+                JointController controller = new JointController(node.getJoints());
+                controller.setRepeatType(Controller.RT_WRAP);
+                controller.addAnimation(walk);
+                controller.addAnimation(stand);
+                controller.setActive(true);
+                node.addController(controller);
+                
+                optFile.createNewFile();
+                BinaryExporter.getInstance().save(node, optFile);
+            }else{
+                node = (ModelNode) BinaryImporter.getInstance().load(optFile);
+                
+                if (node.getWorldBound() == null){
+                    node.updateModelBound();
+                    node.updateWorldBound();
+                    assert node.getWorldBound() != null;
+                }
+            }
             
             return node;
         } catch (IOException ex) {

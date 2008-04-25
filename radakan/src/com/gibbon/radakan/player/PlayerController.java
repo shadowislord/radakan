@@ -5,7 +5,9 @@ import com.jme.bounding.BoundingBox;
 import com.jme.input.ChaseCamera;
 import com.jme.input.InputHandler;
 import com.jme.input.ThirdPersonHandler;
+import com.jme.intersection.CollisionData;
 import com.jme.intersection.PickData;
+import com.jme.intersection.TriangleCollisionResults;
 import com.jme.intersection.TrianglePickResults;
 import com.jme.math.FastMath;
 import com.jme.math.Ray;
@@ -25,14 +27,14 @@ public class PlayerController extends Controller {
     private ModelNode player;
     private Node walkableNode;
     private Camera cam;
-    private ChaseCamera chaser;
+    private ChaseCamera chaser = null;
     private ThirdPersonHandler input;
+    private JointController animControl;
     
     private Ray camRay = new Ray(new Vector3f(), new Vector3f(0,-1,0));
     private float terrainHeight = Float.NaN;
     private float playerHeight;
     
-    private Vector3f tempVec = new Vector3f();
     private Vector3f lastLoc = new Vector3f();
     private boolean isWalking = false;
     
@@ -40,16 +42,20 @@ public class PlayerController extends Controller {
         this.player = player;
         this.cam = camera;
         this.walkableNode = walkableNode;
-        //camResults.setCheckDistance(true);
+        camResults.setCheckDistance(true);
         
         playerHeight = ((BoundingBox)player.getWorldBound()).yExtent;
         lastLoc.set(player.getLocalTranslation());
         
+        animControl = (JointController) player.getController(0);
+        
         JmeContext.get().execute(new Callable<Void>(){
             public Void call(){
-                Vector3f targetOffset = new Vector3f(0, playerHeight * 1.5f * 0.25f, 0);
+                Vector3f targetOffset = new Vector3f(0, playerHeight * 0.7f, 0);
                 chaser = new ChaseCamera(cam, player);
                 chaser.setTargetOffset(targetOffset);
+                chaser.setMinDistance(playerHeight * 2.0f);
+                chaser.setMaxDistance(playerHeight * 5.0f);
 
                 HashMap<String, Object> handlerProps = new HashMap<String, Object>();
                 handlerProps.put(ThirdPersonHandler.PROP_DOGRADUAL, "true");
@@ -58,7 +64,7 @@ public class PlayerController extends Controller {
                 handlerProps.put(ThirdPersonHandler.PROP_CAMERAALIGNEDMOVE, "true");
 
                 input = new ThirdPersonHandler(player, cam, handlerProps);
-                input.setActionSpeed(10f);
+                input.setActionSpeed(1f);
                 
                 return null;
             }
@@ -70,14 +76,8 @@ public class PlayerController extends Controller {
     }
     
     TrianglePickResults camResults = new TrianglePickResults() {
-
         @Override
         public void processPick() {
-//            int total = 0;
-//            for (int i = 0; i < getNumber(); i++) {
-//                total += getPickData(i).getTargetTris().size();
-//            }
-
             if (getNumber() > 0) {
                 // get the state of the triangle picking
                 PickData pData = getPickData(0);
@@ -110,41 +110,70 @@ public class PlayerController extends Controller {
                 // if the player's feet are at the origin
                 // this is 0
                 terrainHeight = loc.y;
+            }else{
+                terrainHeight = Float.NaN;
             }
         }
     };
     
+    TriangleCollisionResults colResults = new TriangleCollisionResults();
+    
     @Override
     public void update(float tpf) {
+        if (chaser == null)
+            return;
+        
         chaser.update(tpf);
+
+//        camRay.getOrigin().set(cam.getLocation());
+//        camResults.clear();
+//        walkableNode.calculatePick(camRay, camResults);
+//        
+//        float camMinHeight = terrainHeight + 2f;
+//        if (!Float.isInfinite(camMinHeight) && !Float.isNaN(camMinHeight)) {
+//            cam.getLocation().y = camMinHeight;
+//            cam.update();
+//        }
         
-        camRay.getOrigin().set(cam.getLocation());
-        camResults.clear();
-        walkableNode.calculatePick(camRay, camResults);
-        
-        float camMinHeight = terrainHeight + 2f;
-        if (!Float.isInfinite(camMinHeight) && !Float.isNaN(camMinHeight)
-                && cam.getLocation().y <= camMinHeight) {
-            cam.getLocation().y = camMinHeight;
-            cam.update();
-        }
-        
-        camRay.getOrigin().set(player.getLocalTranslation());
-        camRay.getOrigin().y += playerHeight / 2f;
-        camResults.clear();
-        walkableNode.calculatePick(camRay, camResults);
-        
-        float characterMinHeight = terrainHeight + playerHeight / 4f;
-        if (!Float.isInfinite(characterMinHeight) && !Float.isNaN(characterMinHeight)) {
-            player.getLocalTranslation().y = characterMinHeight;
-        }
-        
-        if (!player.getLocalTranslation().equals(lastLoc) && !isWalking){
-            ((JointController)player.getController(0)).setActiveAnimation("walk");
+        boolean moving = input.isWalkingBackwards() || input.isStrafing() || input.isWalkingForward();
+        if (moving && !isWalking){
+            animControl.setActiveAnimation("walk", .05f);
+            animControl.setSpeed(1.5f);
             isWalking = true;
-        }else if (player.getLocalTranslation().equals(lastLoc) && isWalking){
-            ((JointController)player.getController(0)).setActiveAnimation("stand");
+        }else if (!moving && isWalking){
+            animControl.setActiveAnimation("stand", .5f);
+            animControl.setSpeed(1f);
             isWalking = false;
+        }
+        
+        boolean collided = false;
+//        if (moving){
+//            colResults.clear();
+//            walkableNode.findCollisions(player, colResults);
+//            for (int i = 0; i < colResults.getNumber(); i++){
+//                CollisionData data = colResults.getCollisionData(i);
+//                if (!data.getTargetMesh().getName().contains(".terrain")){
+//                    player.setLocalTranslation(lastLoc);
+//                    collided = true;
+//                }
+//            }
+//        }
+        
+        if (!collided){
+            camRay.getOrigin().set(player.getLocalTranslation());
+            camRay.getOrigin().y += playerHeight;
+            camResults.clear();
+            walkableNode.calculatePick(camRay, camResults);
+
+            float characterMinHeight = terrainHeight + playerHeight;
+//            if (!Float.isInfinite(characterMinHeight) && !Float.isNaN(characterMinHeight) && ( Math.abs(characterMinHeight-lastLoc.y) < playerHeight) ) {
+//                player.getLocalTranslation().y = characterMinHeight;
+//                
+//            }
+            if (!Float.isInfinite(characterMinHeight) && !Float.isNaN(characterMinHeight) ) {
+                player.getLocalTranslation().y = characterMinHeight;
+                
+            }
         }
         
         lastLoc.set(player.getLocalTranslation());
