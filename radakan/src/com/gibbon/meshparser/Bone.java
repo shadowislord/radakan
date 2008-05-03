@@ -13,10 +13,15 @@
  * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.gibbon.radakan.tile;
+package com.gibbon.meshparser;
 
-public class ItemType {
-    String type;
-    String meshName;
-    boolean solid;
+import com.jme.math.Matrix4f;
+
+public class Bone {
+    
+    int index;
+    String name;
+    Bone parent;
+    Matrix4f bindingMatrix;
+
 }
