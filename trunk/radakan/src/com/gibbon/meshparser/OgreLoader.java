@@ -1,3 +1,18 @@
+/*
+ * Radakan RPG is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Radakan RPG is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.gibbon.meshparser;
 
 import com.jme.animation.AnimationController;
@@ -12,14 +27,10 @@ import com.jme.math.Vector3f;
 import com.jme.scene.Controller;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
-import com.jme.scene.batch.GeomBatch;
 import com.jme.scene.batch.TriangleBatch;
-import com.jme.util.BoneDebugger;
 import com.jme.util.geom.BufferUtils;
 
 import com.jme.util.resource.ResourceLocatorTool;
-import java.applet.Applet;
-import java.applet.AppletContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -31,14 +42,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.SAXException;
 
@@ -54,9 +67,12 @@ public class OgreLoader {
 
     private static final Logger logger = Logger.getLogger(OgreLoader.class.getName());
     
+    private Bone[] boneList;
     private Map<String, Material> materialMap;
     private boolean Z_up_to_Y_up = true;
+    
     private static final Matrix4f convertMatrix;
+    private static final boolean DEBUG = true;
     
     static {
         convertMatrix = new Matrix4f();
@@ -64,6 +80,11 @@ public class OgreLoader {
         Matrix4f rot2 = new Matrix4f();
         rot2.fromAngleAxis(FastMath.PI, Vector3f.UNIT_Z);
         convertMatrix.multLocal(rot2);
+    }
+    
+    public void println(String str){
+        if (DEBUG)
+            System.out.println(str);
     }
     
     private Node getChildNode(Node node, String name) {
@@ -82,7 +103,7 @@ public class OgreLoader {
     private void printAttributes(Node node){
         NamedNodeMap map = node.getAttributes();
         for (int i = 0; i < map.getLength(); i++){
-            System.out.println("ATTRIB: "+map.item(i).getNodeName());
+            println("ATTRIB: "+map.item(i).getNodeName());
         }
     }
     
@@ -118,7 +139,7 @@ public class OgreLoader {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(url.openStream());
 
-            System.out.println("MESH: "+url.getFile());
+            println("MESH("+url.getFile()+")");
             
             return loadMesh(doc);
         } catch (ParserConfigurationException ex) {
@@ -148,14 +169,21 @@ public class OgreLoader {
                 return 0;
         }
         
+        @Override
+        public String toString(){
+            return "KEY(bone="+bone.getName()+", t="+time+")";
+        }
+        
     }
     
-    private Bone[] loadSkeleton(URL url){
+    private Bone loadSkeleton(URL url){
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(url.openStream());
 
             NodeList nodes = doc.getElementsByTagName("skeleton");
+            
+            println("SKELETON("+url.getFile()+")");
             
             return loadSkeleton(nodes.item(0));
         } catch (ParserConfigurationException ex) {
@@ -174,6 +202,16 @@ public class OgreLoader {
         float length = getFloatAttribute(animation, "length");
 
         BoneAnimation anim = new BoneAnimation(name);
+        anim.setInterpolate(true);
+        println("ANIM("+name+", len="+length+")");
+        
+        // list to store keyframes from ALL tracks
+        // they will be sorted and later added onto the BoneAnimation
+        List<Keyframe> frames = new ArrayList<Keyframe>();
+        
+        // the bones that have animation tracks associated with them
+        // animation processing will only effect those bones
+        Set<Bone> bonesWithTracks = new HashSet<Bone>();
         
         Node tracks = getChildNode(animation, "tracks");
         Node track = tracks.getFirstChild();
@@ -182,11 +220,12 @@ public class OgreLoader {
                 track = track.getNextSibling();
                 continue;
             }
-
-            List<Keyframe> frames = new ArrayList<Keyframe>();
+            
             Bone bone = boneMap.get(getAttribute(track, "bone"));
-
             Node keyframe = getChildNode(track, "keyframes").getFirstChild();
+            
+            bonesWithTracks.add(bone);
+            
             while (keyframe != null){
                 if (!keyframe.getNodeName().equals("keyframe")){
                     keyframe = keyframe.getNextSibling();
@@ -201,6 +240,7 @@ public class OgreLoader {
                 frame.time = getFloatAttribute(keyframe, "time");
                 frame.bone = bone;
                 if (translate != null){
+                    // FIXME: The Z and Y axis are flipped here!!
                     frame.translate = new Vector3f(getFloatAttribute(translate,"x"),
                                                    getFloatAttribute(translate,"y"),
                                                    getFloatAttribute(translate,"z"));
@@ -211,6 +251,7 @@ public class OgreLoader {
                 if (rotate != null){
                     frame.rotate = new Quaternion();
                     Node raxis = getChildNode(rotate, "axis");
+                    // FIXME: The Z and Y axis are flipped here!!
                     Vector3f axis = new Vector3f(getFloatAttribute(raxis, "x"),
                                                  getFloatAttribute(raxis, "y"),
                                                  getFloatAttribute(raxis, "z"));
@@ -220,50 +261,93 @@ public class OgreLoader {
                     frame.rotate = new Quaternion();
                 }
                 
+                // Scale doesn't do anything !?
                 if (scale != null){
-                    frame.scale = new Vector3f(getFloatAttribute(scale,"x"),
-                                               getFloatAttribute(scale,"y"),
-                                               getFloatAttribute(scale,"z"));
+                    if (getAttribute(scale, "factor") != null){
+                        float factor = Float.parseFloat(getAttribute(scale, "factor"));
+                        frame.scale = new Vector3f(factor, factor, factor);
+                    }else{
+                        frame.scale = new Vector3f(getFloatAttribute(scale,"x"),
+                                                   getFloatAttribute(scale,"y"),
+                                                   getFloatAttribute(scale,"z"));
+                    }
                 }else{
                     frame.scale = new Vector3f(1,1,1);
                 }
                 
-
                 frames.add(frame);
                 
                 keyframe = keyframe.getNextSibling();
             }
 
-            BoneTransform transform = new BoneTransform(bone, frames.size());
+            track = track.getNextSibling();
+        }
+        
+        // sort animation keyframe list
+        Keyframe[] animFrames = new Keyframe[frames.size()];
+        animFrames = frames.toArray(animFrames);
+        Arrays.sort(animFrames);
+        
+        // create an array of times
+        List<Float> frameTimes = new ArrayList<Float>();
+        for (int i = 0; i < animFrames.length; i++){
+            float time = animFrames[i].time;
+            if (frameTimes.isEmpty() || frameTimes.get(frameTimes.size()-1).floatValue() < time){
+                frameTimes.add(time);
+            }
+        }
+        
+        int[] lerpTimes = new int[frameTimes.size()];
+        float[] times = new float[frameTimes.size()];
+        for (int i = 0; i < frameTimes.size(); i++){
+            times[i] = frameTimes.get(i);
+            lerpTimes[i] = BoneAnimation.LINEAR;
+        }
+        
+        anim.setInterpolationTypes(lerpTimes);
+        anim.setTimes(times);
+        
+        for (Bone bone : bonesWithTracks){
+            BoneTransform transform = new BoneTransform(bone, times.length);
+            transform.setBone(bone);
             
-            float[] times = new float[frames.size()];
-            for (int k = 0; k < frames.size(); k++){
-                Keyframe frame = frames.get(k);
-                times[k] = frame.time;
+            // k = the keyframe index
+            for (int k = 0; k < times.length; k++) {
+                Keyframe frame = null;
+                
+                // find a keyframe for this point of time
+                for (int i = 0; i < animFrames.length; i++){
+                    if (animFrames[i].bone == bone && animFrames[i].time == times[k]){
+                        frame = animFrames[i];
+                    }
+                }
+                
+                if (frame == null){
+                    throw new UnsupportedOperationException("Cannot find keyframe at time "+times[k]+" and bone "+bone.getName());
+                }
+                
                 transform.setTranslation(k, frame.translate);
                 transform.setRotation(k, frame.rotate);
             }
             
             anim.addBoneTransforms(transform);
-            anim.setTimes(times);
-            anim.setEndFrame(frames.size()-1);
-            
-            // needs to have the same times as the bone transform
-
-            track = track.getNextSibling();
         }
+
+        anim.setStartFrame(0);
+        anim.setEndFrame(times.length - 1);
         
         return anim;
     }
  
-    private Bone[] loadSkeleton(Node skeleton){
+    private Bone loadSkeleton(Node skeleton){
         Node bones = getChildNode(skeleton, "bones");
         
-        Bone rootBone = new Bone("OgreSkeleton");
+        //Bone rootBone = new Bone("OgreSkeleton");
+        Bone rootBone = null;
         Map<String, Bone> boneMap = new HashMap<String, Bone>();
         Map<Integer, Bone> indexedBoneMap = new HashMap<Integer, Bone>();
-        indexedBoneMap.put(Integer.valueOf(0), rootBone);
-        boneMap.put("OgreSkeleton", rootBone);
+        //indexedBoneMap.put(Integer.valueOf(0), rootBone);
+        //boneMap.put("OgreSkeleton", rootBone);
         
         Vector3f vpos   = new Vector3f(0, 0, 0);
         Quaternion vrot = new Quaternion();
@@ -294,7 +378,10 @@ public class OgreLoader {
                           getFloatAttribute(axis, "y"),
                           getFloatAttribute(axis, "z"));
 
-                vaxis.normalizeLocal();
+                if (vaxis.length() != 1.0){
+                    logger.warning("Rotation axis not normalized");
+                    vaxis.normalizeLocal();
+                }
                 
                 vrot.fromAngleNormalAxis(getFloatAttribute(rot, "angle"), vaxis);
                 bone.getLocalRotation().set(vrot);
@@ -313,8 +400,11 @@ public class OgreLoader {
             }
             
             boneMap.put(boneName, bone);
-            indexedBoneMap.put(id+1, bone);
+            //indexedBoneMap.put(id+1, bone);
+            indexedBoneMap.put(id, bone);
 
+            bone.updateWorldVectors();
+            
             boneNode = boneNode.getNextSibling();
         }
         
@@ -339,10 +429,11 @@ public class OgreLoader {
             // attach bone to parent
             parent.attachChild(bone);
             
+            // next parent in skeleton file
             boneparent = boneparent.getNextSibling();
         }
         
-        Bone[] boneList = new Bone[indexedBoneMap.size()];
+        boneList = new Bone[indexedBoneMap.size()];
         
         // find bones without a parent and attach them to the skeleton
         // also assign the bones to the bonelist
@@ -350,49 +441,67 @@ public class OgreLoader {
             Bone bone = entry.getValue();
             boneList[entry.getKey()] = bone;
             
-            if (bone == rootBone)
-                continue;
-                
+            //if (bone == rootBone)
+            //    continue;
+            
             if (bone.getParent() == null){
-                rootBone.attachChild(bone);
+                //rootBone.attachChild(bone);
+                rootBone = bone;
+                println("BONE"+entry.getKey()+"(name="+bone.getName()+")");
+            }else{
+                println("BONE"+entry.getKey()+"(name="+bone.getName()+", parent="+bone.getParent().getName()+")");
             }
         }
+        
+        // Note: animationlinks not supported
         
         // assign the animations
         AnimationController ac = new AnimationController();
         ac.setRepeatType(Controller.RT_WRAP);
         
-        Node animations = getChildNode(skeleton, "animations");
-        if (animations != null){
-            Node animation = animations.getFirstChild();
-            while (animation != null){
-                if (!animation.getNodeName().equals("animation")){
-                    animation = animation.getNextSibling();
-                    continue;
-                }
-
-                BoneAnimation anim = loadAnimation(animation, boneMap);
-                ac.addAnimation(anim);
-                if (ac.getActiveAnimation() == null)
-                    ac.setActiveAnimation(anim);
-
-                animation = animation.getNextSibling();
-            }
-        }
+//        Node animations = getChildNode(skeleton, "animations");
+//        if (animations != null){
+//            Node animation = animations.getFirstChild();
+//            while (animation != null){
+//                if (!animation.getNodeName().equals("animation")){
+//                    animation = animation.getNextSibling();
+//                    continue;
+//                }
+//
+//                BoneAnimation anim = loadAnimation(animation, boneMap);
+//                ac.addAnimation(anim);
+//                if (ac.getActiveAnimation() == null)
+//                    ac.setActiveAnimation(anim);
+//
+//                animation = animation.getNextSibling();
+//            }
+//        }
         
-        //boneList[0].addController(ac);
+//        rootBone.addController(ac);
 
-        return boneList;
+        return rootBone;
     }
     
+    /**
+     * Loads a submesh from an XML node
+     * 
+     * @param submesh XML node
+     * @param skin The node used to construct the skin used for animation. null if the mesh is static
+     * @param boneList A list of bones, should be correctly indexed as in the skeleton. null if the mesh is static
+     * @return
+     */
     private TriangleBatch loadSubmesh(Node submesh, SkinNode skin, Bone[] boneList){
+        // triangle mesh to represent the geometry
         TriangleBatch batch = new TriangleBatch();
+        
+        // try to load a material if it is defined
         batch.setName(getAttribute(submesh, "material"));
         
         String material = getAttribute(submesh, "material");
         if (material != null)
             applyMaterial(material, batch);
         
+        // get the geometry and faces XML nodes
         Node geometry = getChildNode(submesh, "geometry");
         Node faces    = getChildNode(submesh, "faces");
         
@@ -401,79 +510,124 @@ public class OgreLoader {
             return null;
         }
         
-        int vcount = Integer.parseInt(getAttribute(geometry, "vertexcount"));
+        int vertexCount = Integer.parseInt(getAttribute(geometry, "vertexcount"));
+        
         Node vertexbuffer = getChildNode(geometry, "vertexbuffer");
+        
+        // allocate and create the geometry buffers if they are defined in the mesh file
         FloatBuffer vb = null;
         FloatBuffer nb = null;
         FloatBuffer cb = null;
         FloatBuffer[] tb = null;
-        if (getAttribute(vertexbuffer, "positions").equalsIgnoreCase("true")){
-            vb = BufferUtils.createFloatBuffer(vcount*3);
+        
+        // vertex positions
+        String hasPositions = getAttribute(vertexbuffer, "positions");
+        if (hasPositions != null && hasPositions.equalsIgnoreCase("true")){
+            vb = BufferUtils.createFloatBuffer(vertexCount*3);
         }else{
             logger.warning("Mesh is missing vertices! will not render properly");
         }
-        if (getAttribute(vertexbuffer, "normals").equalsIgnoreCase("true")){
-            nb = BufferUtils.createFloatBuffer(vcount*3);
+        
+        // vertex normals
+        String hasNormals = getAttribute(vertexbuffer, "normals");
+        if (hasNormals != null && hasNormals.equalsIgnoreCase("true")){
+            nb = BufferUtils.createFloatBuffer(vertexCount*3);
         }
+        
+        // texture coordinates
+        // FIXME: Only supports 2D texture coordinates
         int texbuffersN = 0;
         String texbuffers = getAttribute(vertexbuffer, "texture_coords");
         if (texbuffers != null){
             texbuffersN = Integer.parseInt(texbuffers);
             tb = new FloatBuffer[texbuffersN];
             for (int i = 0; i < texbuffersN; i++)
-                tb[i] = BufferUtils.createFloatBuffer(vcount*2);
+                tb[i] = BufferUtils.createFloatBuffer(vertexCount*2);
         }
-        String hasColors = getAttribute(vertexbuffer, "colours_diffuse");
-        if (hasColors != null && hasColors.equalsIgnoreCase("true")){
-            cb = BufferUtils.createFloatBuffer(vcount*4);
+        String dimensions = getAttribute(vertexbuffer, "texture_coord_dimensions_0");
+        if (dimensions != null && !dimensions.equalsIgnoreCase("2")){
+            logger.warning("Illegal number of texcoord dimensions! Only U and V will be used");
         }
         
-        // Read vertex data
+        
+        // vertex colors
+        String hasColors = getAttribute(vertexbuffer, "colours_diffuse");
+        if (hasColors != null && hasColors.equalsIgnoreCase("true")){
+            cb = BufferUtils.createFloatBuffer(vertexCount*4);
+        }
+        
+        // specular/secondary colors
+        // not supported as of jME 1.0, ignore
+        String hasSpecular = getAttribute(vertexbuffer, "colours_specular");
+        if (hasSpecular != null && hasSpecular.equalsIgnoreCase("true")){
+            logger.warning("Specular colors are not supported!");
+        }
+        
+        // FIXME: Tangents and binormals not supported
+        
+        // Read the vertexbuffer
         Node vertex = vertexbuffer.getFirstChild();
         while (vertex != null){
-            if (vertex.getNodeName().equals("vertex")){       
-                if (vb != null){
-                    Node position = getChildNode(vertex, "position");
-                    if (Z_up_to_Y_up){
-                        vb.put(-getFloatAttribute(position, "x"))
-                          .put(getFloatAttribute(position, "z"))
-                          .put(getFloatAttribute(position, "y"));
-                    }else{
-                        vb.put(getFloatAttribute(position, "x"))
-                          .put(getFloatAttribute(position, "y"))
-                          .put(getFloatAttribute(position, "z"));
-                    }
-                }
+            if (!vertex.getNodeName().equals("vertex")){  
+                vertex = vertex.getNextSibling();
+                continue;
+            }
 
-                if (nb != null){
-                    Node normal = getChildNode(vertex, "normal");
-                    nb.put(getFloatAttribute(normal, "x"))
-                      .put(getFloatAttribute(normal, "y"))
-                      .put(getFloatAttribute(normal, "z"));
+            if (vb != null){
+                Node position = getChildNode(vertex, "position");
+                if (Z_up_to_Y_up){
+                    // Note: this is mostly used for conversion
+                    // between blender's coordinate system
+                    // to jME's. Not very accurate yet.
+                    vb.put(-getFloatAttribute(position, "x"))
+                      .put(+getFloatAttribute(position, "z"))
+                      .put(+getFloatAttribute(position, "y"));
+                }else{
+                    vb.put(getFloatAttribute(position, "x"))
+                      .put(getFloatAttribute(position, "y"))
+                      .put(getFloatAttribute(position, "z"));
                 }
+            }
 
-                if (tb != null){
-                    for (int i = 0; i < texbuffersN; i++){
-                        Node texcoord = getChildNode(vertex, "texcoord");
-                        tb[i].put(getFloatAttribute(texcoord, "u"))
-                             .put(getFloatAttribute(texcoord, "v"));
-                    }
+            if (nb != null){
+                Node normal = getChildNode(vertex, "normal");
+                nb.put(getFloatAttribute(normal, "x"))
+                  .put(getFloatAttribute(normal, "y"))
+                  .put(getFloatAttribute(normal, "z"));
+            }
+
+            if (tb != null){
+                // FIXME: How are multi UV coordinates defined? I don't know. 
+                // Only single UV coordinate supported as of now.
+                for (int i = 0; i < texbuffersN; i++){
+                    Node texcoord = getChildNode(vertex, "texcoord");
+                    tb[i].put(getFloatAttribute(texcoord, "u"))
+                         .put(getFloatAttribute(texcoord, "v"));
                 }
+            }
 
-                if (cb != null){
-                    Node color = getChildNode(vertex, "colour_diffuse");
-                    String[] vals = getAttribute(color, "value").split(" ");
+            if (cb != null){
+                Node color = getChildNode(vertex, "colour_diffuse");
+                String[] vals = getAttribute(color, "value").split(" ");
+                if (vals.length == 4){
                     cb.put(Float.parseFloat(vals[0]))
                       .put(Float.parseFloat(vals[1]))
                       .put(Float.parseFloat(vals[2]))
                       .put(Float.parseFloat(vals[3]));
+                }else if (vals.length == 3){
+                    cb.put(Float.parseFloat(vals[0]))
+                      .put(Float.parseFloat(vals[1]))
+                      .put(Float.parseFloat(vals[2]))
+                      .put(1.0f);
+                }else{
+                    logger.warning("Must have 3 or 4 floats for color!");
                 }
             }
             
             vertex = vertex.getNextSibling();
         }
         
-        // Read faces
+        // Read face/triangle data
         int count = Integer.parseInt(getAttribute(faces, "count"));
         Node face = faces.getFirstChild();
         IntBuffer ib = BufferUtils.createIntBuffer(count*3);
@@ -531,7 +685,8 @@ public class OgreLoader {
 
                         // need to add 1 here since boneList[0] is the OgreSkeleton node
                         // (not in the actual hierarchy)
-                        Bone bone = boneList[boneIndex+1];
+                        //Bone bone = boneList[boneIndex+1];
+                        Bone bone = boneList[boneIndex];
                         skin.addBoneInfluence(batchNum, vertIndex, bone, weight);
                     }
 
@@ -552,26 +707,25 @@ public class OgreLoader {
         com.jme.scene.Node root = new com.jme.scene.Node("OgreModel");
         
         Node skeletonlink = getChildNode(nodes.item(0), "skeletonlink");
-        Bone[] boneList = null;
         SkinNode skin = null;
         if (skeletonlink != null){
             String name = getAttribute(skeletonlink, "name") + ".xml";
 
             URL skeletonURL = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, name);
-            boneList = loadSkeleton(skeletonURL);
+            Bone rootBone = loadSkeleton(skeletonURL);
             
             TriMesh geom = new TriMesh("OgreMesh");
             geom.clearBatches();
             
             skin = new SkinNode("OgreSkin");
-            skin.setSkeleton(boneList[0]);
+            skin.setSkeleton(rootBone);
             skin.setSkin(geom);
             
             // skin is the root now
             root.attachChild(skin);
             
             // also attach skeleton
-            root.attachChild(boneList[0]);
+            root.attachChild(rootBone);
         }
         
         Node submeshesNode = getChildNode(nodes.item(0), "submeshes");
@@ -597,11 +751,27 @@ public class OgreLoader {
             submesh = submesh.getNextSibling();
         }
         
-        if (skin != null){
-            skin.normalizeWeights();
-            skin.regenInfluenceOffsets();
-        }
+        Node submeshnamesNode = getChildNode(nodes.item(0), "submeshnames");
+        Node submeshname = submeshnamesNode.getFirstChild();
+        while (submeshname != null){
+            if (!submeshname.getNodeName().equals("submeshname")){
+                submeshname = submeshname.getNextSibling();
+                continue;
+            }
             
+            int index = Integer.parseInt(getAttribute(submeshname, "index"));
+            String name = getAttribute(submeshname, "name");
+            
+            root.getChild(index).setName(name);
+            
+            submeshname = submeshname.getNextSibling();
+        }
+        
+//        if (skin != null){
+//            skin.normalizeWeights();
+//            skin.regenInfluenceOffsets();
+//        }
+        
         root.updateGeometricState(0, true);
         root.updateRenderState();
         

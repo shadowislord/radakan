@@ -13,10 +13,12 @@
  * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.gibbon.radakan.tile;
+package com.gibbon.meshparser;
 
-public class ItemType {
-    String type;
-    String meshName;
-    boolean solid;
+import java.util.Map;
+
+public class Animation {
+
+    Map<Integer, Keyframe[]> frames;
+    
 }
