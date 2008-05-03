@@ -15,23 +15,21 @@
 
 package com.gibbon.radakan.error;
 
+import java.io.CharArrayWriter;
+import java.io.PrintWriter;
+
 public class ErrorFrame extends javax.swing.JFrame {
     
     /** Creates new form ErrorFrame */
     public ErrorFrame(String description, Throwable ex) {
-        StackTraceElement firstElement = ex.getStackTrace()[0];
-        
-        StringBuffer report = new StringBuffer();
-        report.append(description).append('\n');
-        report.append(ex.getClass().getSimpleName()+": "+ex.getLocalizedMessage()).append('\n');
-        report.append(" at ")
-              .append(firstElement.getFileName())
-              .append(':')
-              .append(firstElement.getLineNumber())
-              .append('\n');
+        CharArrayWriter w = new CharArrayWriter();
+        PrintWriter sw = new PrintWriter(w);
+        sw.println(description);
+        ex.printStackTrace(sw);
+        sw.close();
         
         initComponents();
-        txtReport.setText(report.toString());
+        txtReport.setText(w.toString());
     }
     
     /** This method is called from within the constructor to
