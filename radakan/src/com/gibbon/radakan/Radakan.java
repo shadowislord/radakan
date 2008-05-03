@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GLContext;
 
 public class Radakan {
 
-    public static ContextCapabilities caps = GLContext.getCapabilities();
+    public static ContextCapabilities caps;
     
     public static String vendor;
     public static String renderer;
@@ -36,6 +36,8 @@ public class Radakan {
     public static String alVersion;
     
     public static void querySystemInfo(){
+        caps = GLContext.getCapabilities();
+        
         if (AudioSystem.isCreated()){
             alVersion = AL10.alGetString(AL10.AL_VERSION);
             alRenderer = AL10.alGetString(AL10.AL_RENDERER);

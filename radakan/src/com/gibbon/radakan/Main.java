@@ -275,6 +275,12 @@ public class Main {
             ErrorReporter.reportError("Failed to initialize Display implementor", ex);
         } catch (InterruptedException ex) {
             ErrorReporter.reportError("Recieved interrupt while waiting for Display", ex);
+        } catch (Throwable ex){
+            if (ex instanceof UnsatisfiedLinkError && ex.getMessage().equals("no lwjgl in java.library.path")){
+                ErrorReporter.reportError("The native library \""+System.mapLibraryName("lwjgl")+"\" cannot be found", ex);
+            }else{
+                ErrorReporter.reportError("Error while creating 3D display", ex);
+            }
         }
         
         return null;
