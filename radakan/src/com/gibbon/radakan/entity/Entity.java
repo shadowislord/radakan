@@ -15,37 +15,43 @@
 
 package com.gibbon.radakan.entity;
 
-/*import java.util.*;*/
 import com.jme.bounding.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class Entity {
-	public enum Type {
-		CONTAINER, NPC, PLAIN, PLAYER_CHARACTER
+	public static class Type {
+	    public String type;
+	    public String meshName;
+	    public boolean solid;
+	    public boolean container;
+	    public Character.Type characterType;
+	    public boolean visible;
+		public float mass;
+		public BoundingVolume boundingVolume;
+    
+	    public static Map<String, Type> map = new HashMap<String, Type>();
 	}
-	
-	public Entity (String newName, Type type, String newMeshName, float newMass, BoundingVolume newBoundingVolume) {
-		this (newName, type, newMeshName, newMass, newBoundingVolume, "no specie");
-	}
-
-	public Entity (String newName, Type type, String newMeshName, float newMass, BoundingVolume newBoundingVolume, 
-			String newSpecie) {
+ 	
+	public Entity (String newName, String typeName) {
+		Type type = Type.map.get(typeName);
 		name = newName;
-		mass = newMass;
-		boundingVolume = newBoundingVolume;
+		mass = type.mass;
+		boundingVolume = type.boundingVolume;
 		
-		if (type == Type.CONTAINER) {
+		if (type.container) {
 			container = new ItemContainer ();
 		} else {
 			container = null;
 		}
 		
-		if ((type == Type.NPC) || (type == Type.PLAYER_CHARACTER)) {
-			character = new Character (this, type, newSpecie);
-		} else {
+		if (type.characterType == null) {
 			character = null;
+		} else {
+			character = new Character (this, type.characterType);
 		}
 		
-		meshName = newMeshName;
+		meshName = type.meshName;
 	}
 	
 	float getTotalMass() {

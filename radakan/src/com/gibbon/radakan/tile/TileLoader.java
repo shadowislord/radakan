@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
 
 public class TileLoader {
 
-    private Map<String, ItemType> itemMap;
+    private Map<String, Entity.Type> itemMap;
     private Map<String, Material> materialMap;
     private boolean Z_up_to_Y_up = true;
     
@@ -74,7 +74,7 @@ public class TileLoader {
                 String item = getAttribute(model, "item");
                 String modelName = getAttribute(model, "name");
                 
-                ItemType type = itemMap.get(item);
+                Entity.Type type = itemMap.get(item);
                 
                 if (type == null){
                     throw new IllegalStateException("Cannot find type: "+item);
@@ -146,7 +146,7 @@ public class TileLoader {
         return rootNode;
     }
     
-    public void setTypes(Map<String, ItemType> typesMap){
+    public void setTypes(Map<String, Entity.Type> typesMap){
         itemMap = typesMap;
     }
     

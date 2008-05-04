@@ -12,7 +12,7 @@ public final class Equipment {
 	}
 	
 	public Equipment (String ownersName) {
-		replace(Slot.BACKPACK, new Entity(ownersName+"'s Backpack", Entity.Type.CONTAINER, "missing meshname", 3, null));
+		replace(Slot.BACKPACK, new Entity(ownersName+"'s Backpack", "backpack"));
 		/*replace(Slot.RIGHTHANDITEM, new Weapon ("Sword", Item.Type.PLAIN, 4, null));*/
 	}
 	

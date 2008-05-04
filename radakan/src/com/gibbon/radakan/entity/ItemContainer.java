@@ -18,13 +18,62 @@ package com.gibbon.radakan.entity;
 import java.util.*;
 
 
-public class ItemContainer extends HashSet <Entity> {
-	float getTotalMass() {
+public class ItemContainer implements Set <Entity> {
+	
+	public boolean add(Entity o) {
+		return items.add(o);
+	}
+	public boolean addAll(Collection c) {
+		return items.addAll(c);
+    }
+	public void clear() {
+		items.clear();
+	}
+	public boolean contains(Object o) {
+		return items.contains(o);	
+	}
+	public boolean containsAll(Collection c) {
+		return items.containsAll(c);	
+	}
+	public boolean equals(Object o) {
+		return items.equals(o);
+	}
+	public int hashCode() {
+		return items.hashCode();
+	}
+	public boolean isEmpty() {
+		return items.isEmpty();
+	}
+	public Iterator<Entity> iterator() {
+		return items.iterator();
+	}
+	public boolean remove(Object o) {
+		return items.remove(o);
+	}
+	public boolean removeAll(Collection collection) {
+		return items.removeAll(collection);
+	}
+	public boolean retainAll(Collection collection) {
+		return items.retainAll(collection);
+	}
+	public int size() {
+		return items.size();
+	}
+	public Object[] toArray() {
+		return items.toArray();
+	}
+	public Object[] toArray(Object[] a) {
+		return items.toArray(a);
+	}
+	
+	public float getTotalMass() {
 		float result = 0;
-		for (Entity item : this)
+		for (Entity item : items)
 		{
 			result += item.getTotalMass();
 		}
 		return result;
 	}
+	
+	private HashSet <Entity> items;
 }
