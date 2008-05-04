@@ -18,6 +18,7 @@ package com.gibbon.radakan.tile;
 import com.gibbon.meshparser.Material;
 import com.gibbon.meshparser.OgreLoader;
 import com.gibbon.radakan.error.ErrorReporter;
+import com.gibbon.radakan.entity.*;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.scene.PassNode;

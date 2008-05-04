@@ -15,12 +15,17 @@
 
 package com.gibbon.radakan.ai;
 
+import com.gibbon.radakan.entity.Entity;
+
 public abstract class Communication {
-    public Communication (Character newFrom, Character newTo) {
+    public Communication (String newName, Entity newFrom, Entity newTo) {
+    	name = newName;
         from = newFrom;
         to = newTo;
     }
     
-    final public Character from;
-    final public Character to;
+    final public Entity from;
+    final public Entity to;
+    
+    final String name;
 }

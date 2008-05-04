@@ -15,6 +15,8 @@
 
 package com.gibbon.radakan.ai;
 
+import com.gibbon.radakan.entity.Character;
+
 //	import java.util.*;
 
 public abstract class Action implements Strategy <Communication, Action> {

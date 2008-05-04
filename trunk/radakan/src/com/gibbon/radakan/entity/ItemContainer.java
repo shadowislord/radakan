@@ -13,10 +13,18 @@
  * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.gibbon.radakan.ai;
+package com.gibbon.radakan.entity;
 
-/*import java.util.*;*/
+import java.util.*;
 
-public class Item {
-	
+
+public class ItemContainer extends HashSet <Entity> {
+	float getTotalMass() {
+		float result = 0;
+		for (Entity item : this)
+		{
+			result += item.getTotalMass();
+		}
+		return result;
+	}
 }
