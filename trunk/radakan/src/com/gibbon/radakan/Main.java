@@ -26,11 +26,11 @@ import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.meshparser.MaterialLoader;
 import com.gibbon.meshparser.SceneGraphDump;
 import com.gibbon.radakan.config.ConfigFrame;
+import com.gibbon.radakan.entity.*;
 import com.gibbon.radakan.error.ErrorReporter;
 import com.gibbon.radakan.menu.LoadingController;
 import com.gibbon.radakan.player.PlayerController;
 import com.gibbon.radakan.tile.TileLoader;
-import com.gibbon.radakan.tile.TypeLoader;
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.CollisionTree;
 import com.jme.bounding.CollisionTreeManager;
@@ -211,7 +211,7 @@ public class Main {
         tloader.load(new FileInputStream("D:\\TileStore2\\area_types.xml"));
         
         TileLoader loader = new TileLoader(true);
-        loader.setTypes(tloader.getTypeMap());
+        loader.setTypes(Entity.Type.map);
         loader.setMaterials(mloader.getMaterials());
         
         final Node world = new Node("WORLD");

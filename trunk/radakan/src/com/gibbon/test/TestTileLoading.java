@@ -22,9 +22,8 @@ import com.gibbon.jme.context.UpdatePass;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.meshparser.MaterialLoader;
 import com.gibbon.radakan.config.ConfigFrame;
-
+import com.gibbon.radakan.entity.*;
 import com.gibbon.radakan.tile.TileLoader;
-import com.gibbon.radakan.tile.TypeLoader;
 import com.jme.bounding.BoundingBox;
 import com.jme.input.KeyInput;
 import com.jme.light.PointLight;
@@ -66,7 +65,7 @@ public class TestTileLoading {
             
             TileLoader loader = new TileLoader(false);
             loader.setMaterials(mloader.getMaterials());
-            loader.setTypes(tloader.getTypeMap());
+            loader.setTypes(Entity.Type.map);
 
             Node root = new Node("root");
             

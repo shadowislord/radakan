@@ -15,46 +15,39 @@
 
 package com.gibbon.radakan.entity;
 
-import java.util.*;
 import com.gibbon.radakan.ai.ArtificialIntelligence;
 import com.gibbon.radakan.ai.Behavior;
 import com.gibbon.radakan.ai.Nothing;
 import com.gibbon.radakan.ai.Player;
 import com.gibbon.radakan.ai.Skill;
 import com.gibbon.radakan.ai.StrategyStateMachine;
-import com.gibbon.radakan.entity.Entity.Type;
+import java.util.*;
 
 ///	All characters observe each other.
 public final class Character  {
+	public class Type {
+	    public String specie;
+	    public boolean playerCharacter;
+	    public boolean male;
+	}
 	
-	public Character (Entity newEntity, Type type, String newSpecie) {
+	public Character(Entity newEntity, Type type) {
 		entity = newEntity;
 
 		Behavior behavior = null;
-		if(type == Type.PLAIN) {
+		if(type.playerCharacter) {
 			behavior = new Player(entity);
-		}
-		else if(type == Type.PLAIN) {
+		} else {
 			behavior = new ArtificialIntelligence(entity);
 		}
 		stateMachine = new StrategyStateMachine <Nothing, Behavior> (behavior);
 		
-		if (type == Type.NPC || type == Type.PLAYER_CHARACTER) {
-			skills = new HashMap<String, Skill>();
-			equipment = new Equipment(entity.name);
-		} else {
-			skills = null;
-			equipment = null;
-		}
+		skills = new HashMap<String, Skill>();
+		equipment = new Equipment(entity.name);
 		
-		specie = newSpecie;
+		specie = type.specie;
+		male = type.male;
 	}
-
-	static String Arachnyd;
-	static String Grogg;
-	static String Harpy;
-	static String Inferno;
-	static String Xemna;
 
 	public void call(Nothing message) {
 		stateMachine.run(Nothing.get());
@@ -69,4 +62,5 @@ public final class Character  {
 	public final Map<String, Skill> skills;
 	public final Equipment equipment;
 	public final String specie;
+	public final boolean male;
 };
