@@ -15,12 +15,14 @@
 
 package com.gibbon.radakan.ai;
 
+import com.gibbon.radakan.entity.Entity;
+
 /*import java.util.*;*/
 
 public abstract class Behavior implements EventListener<Communication>, Strategy<Nothing, Behavior> {
 
-	public Behavior(Character newCharacter) {
-		character = newCharacter;
+	public Behavior(Entity newItem) {
+		item = newItem;
         
 		Mediator.communicationMediator.registerListener((EventListener<Communication>)this);
 	}
@@ -34,9 +36,7 @@ public abstract class Behavior implements EventListener<Communication>, Strategy
 
 	public HashSet <TiXmlDocument> getBehaviorFiles();*/
 
-	final public Character character;
+	final public Entity item;
 
-	///	At least one of the targets shouldn't target anything.
-	public Character characterTarget;
-	/*private Item itemTarget;*/
+	public Entity target;
 };

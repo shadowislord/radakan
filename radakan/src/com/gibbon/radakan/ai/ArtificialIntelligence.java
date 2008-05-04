@@ -17,16 +17,17 @@ package com.gibbon.radakan.ai;
 
 import java.util.*;
 
+import com.gibbon.radakan.entity.Entity;
+
 ///	ArtificialIntelligence is the basic strategy for living NPCs.
 public class ArtificialIntelligence extends Behavior {
     /*private static Set <TiXmlDocument> allBehaviorFiles = new Map <TiXmlDocument> ();*/
 
-    public ArtificialIntelligence(Character newCharacter) {
-    	super(newCharacter);
-        calm(1, 0, 1);
+    public ArtificialIntelligence(Entity newEntity) {
+    	super(newEntity);
     }
 
-        ///	The message is stored.
+    ///	The message is stored.
     public void call(Communication message) {
             //	We'll store a copy of the message for now, and process it on the next 'transit'.
         sensoryBuffer.add(message);
@@ -34,18 +35,10 @@ public class ArtificialIntelligence extends Behavior {
 
     ///	My FSM will process the last stored message.
     public Behavior transit(Nothing message) {
-        Communication actualMessage;
+       /* character.getBody().walk(0);
+        character.getBody().turn(0);*/
 
-        if(! sensoryBuffer.isEmpty()) {
-            actualMessage = sensoryBuffer.remove();
-
-            sensoryBuffer.remove(actualMessage);
-        }
-
-        character.getBody().walk(0);
-        character.getBody().turn(0);
-
-        stateMachine.run(actualMessage);
+        stateMachine.run(sensoryBuffer.poll());
 
         return (Behavior)this;
     }
@@ -96,7 +89,7 @@ public class ArtificialIntelligence extends Behavior {
 	}
 	*/
 
-    public String getCurrentActionName() {
+     public String getCurrentActionName() {
         if(stateMachine.hasState()) {
             return stateMachine.getState().getClass().getName();
         }
@@ -105,21 +98,21 @@ public class ArtificialIntelligence extends Behavior {
         }
     }
     
-    /*
+   /*
 
     void setAction(String actionName) {
     	if(actionName != getCurrentActionName()) {
-    			setState(<Actions.Action>
+    			setState(Action
     				(new Actions.Conversing
     					(character.lock(), boost.dynamicPointerCast <ArtificialIntelligence>(this))));
     		}
-    			setState(<Actions.Action>
+    			setState(Action
     				(new Actions.Fighting
     					(character.lock(), boost.dynamicPointerCast <ArtificialIntelligence>(this))));
     		}
     		else {
     			
-    			setState(<Actions.Action>());
+    			setState(null);
     		}
     	}
     }
@@ -128,7 +121,7 @@ public class ArtificialIntelligence extends Behavior {
     /* Set <TiXmlDocument> getBehaviorFiles();*/
 
     //	'calm' can vary from 0 to 1.
-    BoundedFloat calm;
+    float calm = 1;
 
     StrategyStateMachine <Communication, Action> stateMachine;
 

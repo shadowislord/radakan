@@ -15,6 +15,8 @@
 
 package com.gibbon.radakan.ai;
 
+import com.gibbon.radakan.entity.Character;
+
 public final class Opinion {
     public Opinion(Character new_about) {
         about = new_about;

@@ -20,7 +20,7 @@ import java.util.Vector;
 ///	StateMachine is the abstract base class for all state machines.
 class StateMachine <StateType> {
 	public StateMachine (StateType newState) {
-		state = newState;
+		setState(newState);
 	}
 	
 	public Boolean hasState(){
