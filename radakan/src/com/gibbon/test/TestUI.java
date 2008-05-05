@@ -17,12 +17,17 @@ import java.util.prefs.Preferences;
 import org.fenggui.Display;
 import org.fenggui.Label;
 import org.fenggui.composites.Window;
+import org.fenggui.menu.MenuBar;
+import org.fenggui.menu.MenuItem;
+import org.fenggui.menu.Menu;
+import org.fenggui.event.IMenuItemPressedListener;
+import org.fenggui.event.MenuItemPressedEvent;
 import org.fenggui.util.Point;
 
 public class TestUI {
 
     public static void main(String[] args){
-        Logger.getLogger("").setLevel(Level.WARNING);
+        //Logger.getLogger("").setLevel(Level.WARNING);
         
         GameSettings settings
                 = new PreferencesGameSettings(Preferences.userRoot().node("test-jmecontext"));
@@ -75,7 +80,33 @@ public class TestUI {
                 test.setPosition(new Point(display.getWidth() / 2 - test.getWidth() / 2,
                                            display.getHeight() / 2 - test.getHeight() / 2));
                 
+                Menu menuFile = new Menu();
+                MenuItem itemFileExit = new MenuItem("Exit");
+                itemFileExit.addMenuItemPressedListener(
+                        new IMenuItemPressedListener(){
+                            public void menuItemPressed(MenuItemPressedEvent event){
+                                cx.dispose();
+                                //System.exit(0);
+                            }
+                        }
+                );
+                        
+                
+                menuFile.addItem(itemFileExit);
+                
+                MenuBar menuBar = new MenuBar();
+                menuBar.registerSubMenu(menuFile, "File");
+                
+                display.addWidget(menuBar);
+                
+                menuBar.updateMinSize(); // we have not layouted anything yet...
+		menuBar.setX(0);
+		menuBar.setY(display.getHeight() - menuBar.getMinHeight());
+		menuBar.setSize(display.getWidth(), menuBar.getMinHeight());
+		menuBar.setShrinkable(false);
+                
                 display.displayPopUp(test);
+                display.layout();
             }
 
             public void destroy(Display display) {

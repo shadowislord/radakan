@@ -19,6 +19,11 @@ import com.jme.system.DisplaySystem;
 import com.jme.system.SystemProvider;
 import com.jme.util.Timer;
 
+/**
+ * A dummy SystemProvider to glue original jME code with the JmeContext system
+ * 
+ * @author Momoko_Fan
+ */
 public class ContextSystemProvider implements SystemProvider {
     
     protected ContextDisplaySystem display;

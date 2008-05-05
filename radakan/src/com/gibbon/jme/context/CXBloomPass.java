@@ -65,6 +65,7 @@ import java.net.URL;
  * @author Joshua Slack - Enhancements and reworking to use a single
  *         texrenderer, ability to reuse existing back buffer, faster blur,
  *         throttling speed-up, etc.
+ * @author Momoko_Fan - Ported to JmeContext system
  */
 public class CXBloomPass extends RenderPass {
 
@@ -127,7 +128,12 @@ public class CXBloomPass extends RenderPass {
         resetParameters();
     }
 
-    
+    /**
+     * Initializes RTT, textures and models.<br/>
+     * Only used internally, do not call.
+     * 
+     * @param cx
+     */
     @Override
     public void initPass(JmeContext cx){
         super.initPass(cx);
@@ -239,12 +245,24 @@ public class CXBloomPass extends RenderPass {
     }
     private final SpatialsRenderNode spatialsRenderNode = new SpatialsRenderNode();
 
+    /**
+     * Update the throttle value and other misc. <br/>
+     * Only used internally, do not call this method.
+     * 
+     * @param cx
+     */
     @Override
     protected void doUpdate(JmeContext cx) {
         super.doUpdate(cx);
         sinceLast += cx.getPassManager().getTPF();
     }
 
+    /**
+     * Renders this pass. <br/>
+     * Only used internally, do not call this method.
+     * 
+     * @param cx
+     */
     @Override
     public void doRender(JmeContext cx) {
         Renderer r = cx.getRenderer();
@@ -348,10 +366,16 @@ public class CXBloomPass extends RenderPass {
         this.exposurePow = exposurePow;
     }
 
+    /**
+     * @return The minimum exposure required in a pixel for it to be 'bloomed'.
+     */
     public float getExposureCutoff() {
         return exposureCutoff;
     }
 
+    /**
+     * @param exposureCutoff The minimum exposure required in a pixel for it to be 'bloomed'.
+     */
     public void setExposureCutoff(float exposureCutoff) {
         this.exposureCutoff = exposureCutoff;
     }
@@ -363,19 +387,34 @@ public class CXBloomPass extends RenderPass {
     public void setBlurIntensityMultiplier(float blurIntensityMultiplier) {
         this.blurIntensityMultiplier = blurIntensityMultiplier;
     }
-
+    
+    /**
+     * @return The number of blur passes
+     */
     public int getNrBlurPasses() {
         return nrBlurPasses;
     }
 
+    /**
+     * Set the number of blur passes.<br/>
+     * Higher number increases the bloom blurring effect, but reduces performance drastically.
+     * 
+     * @param nrBlurPasses
+     */
     public void setNrBlurPasses(int nrBlurPasses) {
         this.nrBlurPasses = nrBlurPasses;
     }
 
+    /**
+     * @return True if the already rendered scene is used for blooming.
+     */
     public boolean useCurrentScene() {
         return useCurrentScene;
     }
 
+    /**
+     * @param useCurrentScene Causes the bloom pass to bloom the scene already rendered to the screen
+     */
     public void setUseCurrentScene(boolean useCurrentScene) {
         this.useCurrentScene = useCurrentScene;
     }

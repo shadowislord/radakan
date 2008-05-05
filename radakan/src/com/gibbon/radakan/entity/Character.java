@@ -19,7 +19,7 @@ import com.gibbon.radakan.ai.ArtificialIntelligence;
 import com.gibbon.radakan.ai.Behavior;
 import com.gibbon.radakan.ai.Nothing;
 import com.gibbon.radakan.ai.Player;
-import com.gibbon.radakan.ai.Skill;
+//import com.gibbon.radakan.ai.Skill;
 import com.gibbon.radakan.ai.StrategyStateMachine;
 import java.util.*;
 
@@ -42,7 +42,7 @@ public final class Character  {
 		}
 		stateMachine = new StrategyStateMachine <Nothing, Behavior> (behavior);
 		
-		skills = new HashMap<String, Skill>();
+//		skills = new HashMap<String, Skill>();
 		equipment = new Equipment(entity.name);
 		
 		specie = type.specie;
@@ -59,7 +59,7 @@ public final class Character  {
 
 	public final Entity2 entity;
 	public final StrategyStateMachine <Nothing, Behavior> stateMachine;
-	public final Map<String, Skill> skills;
+//	public final Map<String, Skill> skills;
 	public final Equipment equipment;
 	public final String specie;
 	public final boolean male;

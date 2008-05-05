@@ -25,11 +25,8 @@ import com.jme.renderer.lwjgl.LWJGLPbufferTextureRenderer;
 import com.jme.renderer.lwjgl.LWJGLRenderer;
 import com.jme.renderer.lwjgl.LWJGLTextureRenderer;
 import com.jme.system.DisplaySystem;
-import com.jme.system.GameSettings;
-import com.jme.system.PreferencesGameSettings;
 import com.jmex.awt.JMECanvas;
 import java.awt.Canvas;
-import java.util.prefs.Preferences;
 import org.lwjgl.opengl.RenderTexture;
 
 /**
@@ -39,54 +36,99 @@ import org.lwjgl.opengl.RenderTexture;
  */
 public class ContextDisplaySystem extends DisplaySystem {
     
+    /**
+     * Do not call this method. Done automatically by JmeContext.
+     */
     public ContextDisplaySystem(){
         system = new ContextSystemProvider(this);
         created = true;
     }
     
+    /**
+     * @return null
+     */
     public String getAdapter() {
         return null;
     }
 
+    /**
+     * @return null
+     */
     public String getDriverVersion() {
         return null;
     }
 
+    /**
+     * @return null
+     */
     public String getDisplayVendor() {
         return null;
     }
 
+    /**
+     * @return null
+     */
     public String getDisplayRenderer() {
         return null;
     }
 
+    /**
+     * @return null
+     */
     public String getDisplayAPIVersion() {
         return null;
     }
 
+    /**
+     * @return true
+     */
     public boolean isValidDisplayMode(int width, int height, int bpp, int freq) {
         return true;
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void setVSyncEnabled(boolean enabled) {
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void setTitle(String title) {
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void createWindow(int w, int h, int bpp, int frq, boolean fs) {
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void createHeadlessWindow(int w, int h, int bpp) {
     }
 
+    /**
+     * @param w
+     * @param h
+     * @return null
+     */
     public Canvas createCanvas(int w, int h){
         return null;
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void recreateWindow(int w, int h, int bpp, int frq, boolean fs) {
     }
 
+    /**
+     * @return The renderer of the currently bound JmeContext
+     * @see JmeContext.get()
+     */
     public Renderer getRenderer() {
         if (JmeContext.get()==null)
             return null;
@@ -94,24 +136,48 @@ public class ContextDisplaySystem extends DisplaySystem {
         return JmeContext.get().getRenderer();
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void setRenderer(Renderer r) {
     }
 
+    /**
+     * @return true if the currently bound JmeContext is active
+     */
     public boolean isActive() {
         return JmeContext.get().isActive();
     }
 
+    /**
+     * @return false
+     */
     public boolean isClosing() {
         return false;
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void reset() {
     }
 
+    /**
+     * Closes the current bound JmeContext, but should actually do nothing..
+     */
     public void close() {
         JmeContext.get().dispose();
     }
 
+    /**
+     * Creates a TextureRenderer object<br/>
+     * Since this functionality is not supported by JmeContext, this method will do it.
+     * 
+     * @param width
+     * @param height
+     * @param target
+     * @return
+     */
     public TextureRenderer createTextureRenderer(int width, int height, Target target) {
         // XXX: LWJGL specific code here, JmeContext interface required for texturerenderer contextes.
         
@@ -145,31 +211,58 @@ public class ContextDisplaySystem extends DisplaySystem {
         return textureRenderer;
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     protected void updateDisplayBGC() {
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void setIcon(Image[] iconImages) {
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void setCurrentCanvas(JMECanvas canvas) {
     }
 
+    /**
+     * Returns the rendercontext of the currently bound JmeContext
+     */
     public RenderContext getCurrentContext() {
         return JmeContext.get().getRenderContext();
     }
 
+    /**
+     * Does absolutely nothing..
+     */
     public void initForCanvas(int width, int height) {
     }
 
+    /**
+     * ?
+     * I don't know why it does what it does.
+     * 
+     * @param contextKey
+     * @return
+     */
     public RenderContext removeContext(Object contextKey) {
         RenderContext context = JmeContext.get().getRenderContext();
         JmeContext.get().dispose();
         return context;
     }
 
+    /**
+     * New method in jME 2.0. Doesn't do anything.
+     * 
+     * @param locX
+     * @param locY
+     */
     @Override
     public void moveWindowTo(int locX, int locY) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 

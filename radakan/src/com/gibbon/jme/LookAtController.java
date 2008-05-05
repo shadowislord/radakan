@@ -20,6 +20,12 @@ import com.jme.math.Vector3f;
 import com.jme.scene.Controller;
 import com.jme.scene.Spatial;
 
+/**
+ * Makes the spatial always look at a certain target
+ * (a Spatial or a Vector3)
+ * 
+ * @author Momoko_Fan
+ */
 public class LookAtController extends Controller {
 
     private Vector3f up;
@@ -30,22 +36,45 @@ public class LookAtController extends Controller {
     private Vector3f tmpV = new Vector3f();
     private Quaternion tmpQ = new Quaternion();
     
+    /**
+     * Creates a new LookAtController that will always face <code>target</code>
+     * 
+     * @param source The spatial to control
+     * @param target The target to face
+     */
     public LookAtController(Spatial source, Vector3f target){
         this.source = source;
         this.target = target;
         up = Vector3f.UNIT_Y;
     }
     
+    /**
+     * Creates a new LookAtController that will always face <code>target</code><br/>
+     * Since the target is a spatial, the lookat position could change over time.
+     * 
+     * @param source The spatial to control
+     * @param target The target to face
+     */
     public LookAtController(Spatial source, Spatial target){
         this.source = source;
         this.targetSpatial = target;
         up = Vector3f.UNIT_Y;
     }
     
+    /**
+     * Sets the UP vector of the source spatial for use in facing
+     * 
+     * @param up The UP vector
+     */
     public void setUpVector(Vector3f up){
         this.up = up;
     }
     
+    /**
+     * Updates this controller, only used internally by jME code.
+     * 
+     * @param tpf Time per frame (1 / fps)
+     */
     public void update(float tpf) {
         if (!isActive())
             return;

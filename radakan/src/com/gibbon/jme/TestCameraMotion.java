@@ -23,6 +23,11 @@ import com.jme.scene.Controller;
 import com.jme.scene.shape.Box;
 import com.jme.util.geom.BufferUtils;
 
+/**
+ * Tests the CurveOnceController
+ * 
+ * @author Momoko_Fan
+ */
 public class TestCameraMotion extends SimpleGame {
     
     private ColorRGBA[] colors;
