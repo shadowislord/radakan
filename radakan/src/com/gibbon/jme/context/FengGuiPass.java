@@ -1,31 +1,47 @@
-package com.gibbon.jme.context;
+/*
+ * Radakan is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Radakan is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-import com.gibbon.jme.context.JmeContext;
-import com.gibbon.jme.context.Pass;
-import com.gibbon.jme.context.PassType;
+package com.gibbon.jme.context;
 
 import com.jme.input.KeyInput;
 import com.jme.input.KeyInputListener;
-
 import com.jme.input.MouseInput;
+import com.jme.input.MouseInputListener;
+
 import org.fenggui.Display;
 import org.fenggui.FengGUI;
 import org.fenggui.render.Binding;
 import org.fenggui.render.lwjgl.AWTGLCanvasBinding;
 import org.fenggui.render.lwjgl.LWJGLBinding;
+import org.fenggui.render.lwjgl.EventHelper;
 
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
-public class FengGuiPass extends Pass implements KeyInputListener {
+public class FengGuiPass extends Pass {
 
     private Display display;
     private boolean shaders;
+    private GuiManager manager;
+    private FengJMEListener listener;
     
-    public FengGuiPass(){
+    public FengGuiPass(GuiManager manager){
         super(PassType.POST_RENDER, "FengGUI-UserInterface");
+        this.manager = manager;
     }
     
     @Override
@@ -36,6 +52,7 @@ public class FengGuiPass extends Pass implements KeyInputListener {
             GL20.glUseProgram(0);
         }
 
+        manager.update(display, cx.getPassManager().getTPF());
         display.display();
     }
 
@@ -51,17 +68,17 @@ public class FengGuiPass extends Pass implements KeyInputListener {
         }
         
         display = FengGUI.createDisplay(binding);
+        this.listener = new FengJMEListener(display);
         
-        KeyInput.get().addListener(this);
-        MouseInput.get();
+        KeyInput.get().addListener(listener);
+        MouseInput.get().addListener(listener);
+        
+        manager.create(display);
     }
 
     @Override
     public void cleanPass(JmeContext cx) {
-    }
-
-    public void onKey(char keyChar, int keyNum, boolean pressed) {
-        
+        manager.destroy(display);
     }
 
 }

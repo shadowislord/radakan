@@ -1,22 +1,25 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.meshparser;
 
 import com.gibbon.radakan.error.ErrorReporter;
 import com.jme.image.Texture;
+import com.jme.image.Texture.MagnificationFilter;
+import com.jme.image.Texture.MinificationFilter;
+import com.jme.image.Texture.WrapMode;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
@@ -133,7 +136,9 @@ public class MaterialLoader {
             URL texURL = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, texName);
             
             if (texURL != null){
-                Texture t = TextureManager.loadTexture(texURL, Texture.MM_LINEAR_LINEAR, Texture.FM_LINEAR, 0.0f, false);
+                Texture t = TextureManager.loadTexture(texURL, 
+                                                       MinificationFilter.Trilinear, 
+                                                       MagnificationFilter.Bilinear, 0.0f, false);
                 tex.setTexture(t, unit);
             }
             
@@ -143,9 +148,9 @@ public class MaterialLoader {
             String mode = nextStatement();
             Texture t = tex.getTexture(unit);
             if (mode.equals("wrap")){
-                t.setWrap(Texture.WM_WRAP_S_WRAP_T);
+                t.setWrap(WrapMode.Repeat);
             }else{
-                t.setWrap(Texture.WM_CLAMP_S_CLAMP_T);
+                t.setWrap(WrapMode.Clamp);
             }
             println("ADDRESS MODE: "+mode);
         }else if (stat_name.equals("filtering")){
@@ -153,8 +158,8 @@ public class MaterialLoader {
             String mode = nextStatement();
             Texture t = tex.getTexture(unit);
             if (mode.equals("trilinear")){
-                t.setFilter(Texture.FM_LINEAR);
-                t.setMipmapState(Texture.MM_LINEAR_LINEAR);
+                t.setMinificationFilter(MinificationFilter.Trilinear);
+                t.setMagnificationFilter(MagnificationFilter.Bilinear);
             }else{
                 // ??
             }

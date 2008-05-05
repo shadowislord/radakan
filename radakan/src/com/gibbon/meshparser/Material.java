@@ -1,23 +1,23 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.meshparser;
 
 import com.gibbon.jme.context.JmeContext;
 import com.jme.renderer.Renderer;
-import com.jme.scene.SceneElement;
+import com.jme.scene.Spatial;
 import com.jme.scene.state.RenderState;
 import com.jme.system.DisplaySystem;
 
@@ -45,7 +45,7 @@ public final class Material {
         return states[stateType];
     }
     
-    public void apply(SceneElement obj){
+    public void apply(Spatial obj){
         if (transparent)
             obj.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
         else 

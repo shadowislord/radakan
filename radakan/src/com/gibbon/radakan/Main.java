@@ -1,16 +1,16 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.radakan;
@@ -24,18 +24,23 @@ import com.gibbon.jme.context.RenderPass;
 import com.gibbon.jme.context.SoundPass;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.meshparser.MaterialLoader;
-import com.gibbon.meshparser.SceneGraphDump;
 import com.gibbon.radakan.config.ConfigFrame;
 import com.gibbon.radakan.entity.*;
 import com.gibbon.radakan.error.ErrorReporter;
 import com.gibbon.radakan.menu.LoadingController;
 import com.gibbon.radakan.player.PlayerController;
 import com.gibbon.radakan.tile.TileLoader;
+
+import com.gibbon.radakan.tile.TypeLoader;
 import com.jme.bounding.BoundingBox;
-import com.jme.bounding.CollisionTree;
+import com.jme.bounding.CollisionTree.Type;
 import com.jme.bounding.CollisionTreeManager;
-import com.jme.image.Image;
+
+import com.jme.image.Image.Format;
 import com.jme.image.Texture;
+import com.jme.image.Texture.MagnificationFilter;
+import com.jme.image.Texture.MinificationFilter;
+
 import com.jme.light.PointLight;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
@@ -45,15 +50,19 @@ import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.Skybox;
+import com.jme.scene.Skybox.Face;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
 import com.jme.scene.VBOInfo;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.state.AlphaState;
+import com.jme.scene.state.BlendState;
+import com.jme.scene.state.BlendState.DestinationFunction;
+import com.jme.scene.state.BlendState.SourceFunction;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
+import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
 import com.jme.util.TextureManager;
@@ -117,7 +126,7 @@ public class Main {
     }
     
     public static Texture loadTexture(String name, boolean flipY){
-        return TextureManager.loadTexture(name,Texture.MM_LINEAR_LINEAR,Texture.FM_LINEAR,1.0f,flipY);
+        return TextureManager.loadTexture(name,MinificationFilter.Trilinear,MagnificationFilter.Bilinear,1.0f,flipY);
     }
     
     /**
@@ -128,7 +137,7 @@ public class Main {
      * @return
      */
     public static Texture loadTextureUI(String name, boolean flipY){
-        return TextureManager.loadTexture(name,Texture.MM_NONE, Texture.FM_LINEAR,Image.GUESS_FORMAT_NO_S3TC,0.0f,flipY);
+        return TextureManager.loadTexture(name,MinificationFilter.BilinearNoMipMaps, MagnificationFilter.Bilinear,Format.GuessNoCompression,0.0f,flipY);
     }
     
     public static Skybox loadSkybox(final JmeContext cx){
@@ -148,18 +157,18 @@ public class Main {
 //        sky.setTexture(Skybox.NORTH, loadTexture("sky_north.dds", false));
 //        sky.setTexture(Skybox.SOUTH, loadTexture("sky_south.dds", false));
         
-        sky.setTexture(Skybox.DOWN,  loadTexture("cloud_down.jpg", true));
-        sky.setTexture(Skybox.UP,    loadTexture("cloud_up.jpg", true));
+        sky.setTexture(Face.Down,loadTexture("cloud_down.jpg", true));
+        sky.setTexture(Face.Up,  loadTexture("cloud_up.jpg", true));
         
-        sky.setTexture(Skybox.WEST,  loadTexture("cloud_1.jpg", true));
-        sky.setTexture(Skybox.NORTH,  loadTexture("cloud_2.jpg", true));
-        sky.setTexture(Skybox.EAST, loadTexture("cloud_4.jpg", true));
-        sky.setTexture(Skybox.SOUTH, loadTexture("cloud_3.jpg", true));
+        sky.setTexture(Face.West,  loadTexture("cloud_1.jpg", true));
+        sky.setTexture(Face.North,  loadTexture("cloud_2.jpg", true));
+        sky.setTexture(Face.East, loadTexture("cloud_4.jpg", true));
+        sky.setTexture(Face.South, loadTexture("cloud_3.jpg", true));
         
         sky.setRenderQueueMode(Renderer.QUEUE_SKIP);
         
         ZBufferState zbuf = cx.getRenderer().createZBufferState();
-        zbuf.setFunction(ZBufferState.CF_ALWAYS);
+        zbuf.setFunction(TestFunction.Always);
         zbuf.setWritable(false);
         sky.setRenderState(zbuf);
         
@@ -185,13 +194,13 @@ public class Main {
             //if (mesh.getName().equalsIgnoreCase("terrain")){
                 System.out.println("MESH: "+mesh+" is COLLIDABLE");
                 mesh.setIsCollidable(true);
-                CollisionTreeManager.getInstance().generateCollisionTree(CollisionTree.AABB_TREE, mesh, true);
+                CollisionTreeManager.getInstance().generateCollisionTree(Type.AABB, mesh, true);
             //}
         }
     }
     
     public static Spatial loadTerrain(JmeContext cx) throws IOException{
-        CollisionTreeManager.getInstance().setTreeType(CollisionTree.AABB_TREE);
+        CollisionTreeManager.getInstance().setTreeType(Type.AABB);
         
 //        URL bootstrap = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "bootstrap.jme");
 //        if (bootstrap == null)
@@ -211,7 +220,7 @@ public class Main {
         tloader.load(new FileInputStream("D:\\TileStore2\\area_types.xml"));
         
         TileLoader loader = new TileLoader(true);
-        loader.setTypes(Entity.Type.map);
+        loader.setTypes(Entity2.Type.map);
         loader.setMaterials(mloader.getMaterials());
         
         final Node world = new Node("WORLD");
@@ -260,7 +269,7 @@ public class Main {
             config.waitFor();
 
             // set custom settings here
-            gs.set("title", Radakan.getGameName() + " " + Radakan.getVersionPrefix() + " " + Radakan.getGameVersion());
+            gs.set("title", SysInfo.getGameName() + " " + SysInfo.getVersionPrefix() + " " + SysInfo.getGameVersion());
             gs.setSamples(0);
             gs.setFramerate(60);
             gs.setVerticalSync(true);
@@ -313,14 +322,14 @@ public class Main {
         //      to get correct results.. so random
         float aspect = height / width;
         
-        AlphaState as = r.createAlphaState();
+        BlendState as = r.createBlendState();
         as.setBlendEnabled(true);
-        as.setSrcFunction(AlphaState.SB_SRC_ALPHA);
-        as.setDstFunction(AlphaState.DB_ONE_MINUS_SRC_ALPHA);
+        as.setSourceFunction(SourceFunction.SourceAlpha);
+        as.setDestinationFunction(DestinationFunction.OneMinusSourceAlpha);
 
         Quad background = new Quad("Background", width, height * aspect );
         background.setRenderQueueMode(Renderer.QUEUE_ORTHO);
-        background.setColorBuffer(0, null);
+        background.setColorBuffer(null);
         background.setDefaultColor(ColorRGBA.white);
         background.setLocalTranslation(new Vector3f(width / 2f, height * aspect / 2f, 0.0f));
 
@@ -331,7 +340,7 @@ public class Main {
         
         Quad background2 = new Quad("Background2", width / 2f, (height * aspect) / 2f );
         background2.setRenderQueueMode(Renderer.QUEUE_ORTHO);
-        background2.setColorBuffer(0, null);
+        background2.setColorBuffer(null);
         background2.setDefaultColor(ColorRGBA.white);
         background2.setLocalTranslation(new Vector3f(width / 2f, height / 3f, 0.0f));
 
@@ -369,11 +378,11 @@ public class Main {
         try{
             // set basic rendering states
             ZBufferState zbuf = cx.getRenderer().createZBufferState();
-            zbuf.setFunction(ZBufferState.CF_LESS);
+            zbuf.setFunction(TestFunction.LessThan);
             rootNode.setRenderState(zbuf);
 
             CullState cull = cx.getRenderer().createCullState();
-            cull.setCullMode(CullState.CS_BACK);
+            cull.setCullFace(CullState.Face.Back);
             rootNode.setRenderState(cull);
 
             File optFile = new File(System.getProperty("user.dir"), "/data/models/hank.jme");
@@ -491,7 +500,7 @@ public class Main {
             cx.execute(new Callable<Void>(){
                 public Void call(){
                     Thread.currentThread().setUncaughtExceptionHandler(new ErrorReporter.ErrorHandler());
-                    Radakan.querySystemInfo();
+                    SysInfo.querySystemInfo();
                     return null;
                 }
             });

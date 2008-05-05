@@ -36,6 +36,8 @@ import com.jme.bounding.BoundingSphere;
 import com.jme.curve.Curve;
 import com.jme.curve.CurveController;
 import com.jme.image.Texture;
+import com.jme.image.Texture.MagnificationFilter;
+import com.jme.image.Texture.MinificationFilter;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Controller;
@@ -43,6 +45,7 @@ import com.jme.scene.TriMesh;
 import com.jme.scene.shape.Box;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
+import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.util.TextureManager;
 import com.jme.util.geom.BufferUtils;
 
@@ -57,7 +60,7 @@ public class TestCatmullRomCurve extends SimpleGame {
 
     public static void main(String[] args) {
         TestCatmullRomCurve app = new TestCatmullRomCurve();
-        app.setDialogBehaviour(ALWAYS_SHOW_PROPS_DIALOG);
+        app.setConfigShowMode(ConfigShowMode.AlwaysShow);
         app.start();
     }
 
@@ -81,14 +84,14 @@ public class TestCatmullRomCurve extends SimpleGame {
         colors[1] = new ColorRGBA(1, 0, 0, 1);
         colors[2] = new ColorRGBA(1, 1, 0, 1);
         colors[3] = new ColorRGBA(0, 0, 1, 1);
-        curve.setColorBuffer(0, BufferUtils.createFloatBuffer(colors));
+        curve.setColorBuffer(BufferUtils.createFloatBuffer(colors));
 
         Vector3f min = new Vector3f(-0.1f, -0.1f, -0.1f);
         Vector3f max = new Vector3f(0.1f, 0.1f, 0.1f);
 
         ZBufferState buf = display.getRenderer().createZBufferState();
         buf.setEnabled(true);
-        buf.setFunction(ZBufferState.CF_LEQUAL);
+        buf.setFunction(TestFunction.LessThanOrEqualTo);
 
         TriMesh t = new Box("Control 1", min, max);
         t.setModelBound(new BoundingSphere());
@@ -133,8 +136,9 @@ public class TestCatmullRomCurve extends SimpleGame {
                 TextureManager.loadTexture(
                 TestCatmullRomCurve.class.getClassLoader().getResource(
                 "jmetest/data/images/Monkey.jpg"),
-                Texture.MM_LINEAR,
-                Texture.FM_LINEAR));
+                MinificationFilter.BilinearNoMipMaps,
+                MagnificationFilter.Bilinear));
+        
         box.setRenderState(ts);
 
         rootNode.setRenderState(buf);

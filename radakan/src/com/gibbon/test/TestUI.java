@@ -1,16 +1,23 @@
 package com.gibbon.test;
 
+import com.gibbon.jme.context.ExitListenerPass;
 import com.gibbon.jme.context.FengGuiPass;
+import com.gibbon.jme.context.GuiManager;
+import com.gibbon.jme.context.InputPass;
 import com.gibbon.jme.context.JmeContext;
-import com.gibbon.jme.context.RenderPass;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.radakan.config.ConfigFrame;
 import com.gibbon.radakan.error.ErrorReporter;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import org.fenggui.Display;
+import org.fenggui.Label;
+import org.fenggui.composites.Window;
+import org.fenggui.util.Point;
 
 public class TestUI {
 
@@ -22,23 +29,65 @@ public class TestUI {
         
         settings.set("title", "Test User Interface");
         
-        JmeContext cx = null;
+        JmeContext context = null;
         try{
             ConfigFrame g = new ConfigFrame(settings);
             g.setVisible(true);
             g.waitFor();
 
-            cx = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
-            cx.setSettings(settings);
-            cx.start();
-            cx.waitFor();
+            context = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
+            context.setSettings(settings);
+            context.start();
+            context.waitFor();
         } catch (Exception ex){
             ErrorReporter.reportError("Error while initializing display", ex);
         }
         
-        cx.getPassManager().loadDefaultPasses();
+        final JmeContext cx = context;
+
+        // add input pass
+        InputPass input = new InputPass(null, true);
+        cx.getPassManager().add(input);
         
-        FengGuiPass ui = new FengGuiPass();
+        // add exit listener
+        ExitListenerPass elp = new ExitListenerPass(new Callable<Object>(){
+            public Object call() throws Exception {
+                cx.dispose();
+                System.exit(0);
+                return null;
+            }
+        });
+        cx.getPassManager().add(elp);
+        
+        // create gui
+        GuiManager manager = new GuiManager(){
+            public void create(Display display) {
+                Window test = new Window(true, false, false);
+                test.setLayoutManager(new org.fenggui.layout.RowLayout(false));
+                
+                test.setTitle("This is a FengGUI window!!!");
+                
+                Label label = new Label("And this is a FengGUI label!!");
+                test.getContentContainer().addWidget(label);
+                
+                test.pack();
+                
+                test.setPosition(new Point(display.getWidth() / 2 - test.getWidth() / 2,
+                                           display.getHeight() / 2 - test.getHeight() / 2));
+                
+                display.displayPopUp(test);
+            }
+
+            public void destroy(Display display) {
+            }
+
+            public void update(Display display, float tpf) {
+            }
+
+        };
+        
+        // add gui pass
+        FengGuiPass ui = new FengGuiPass(manager);
         cx.getPassManager().add(ui);
     }
     

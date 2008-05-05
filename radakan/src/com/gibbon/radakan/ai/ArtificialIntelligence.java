@@ -1,29 +1,29 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.radakan.ai;
 
 import java.util.*;
 
-import com.gibbon.radakan.entity.Entity;
+import com.gibbon.radakan.entity.Entity2;
 
 ///	ArtificialIntelligence is the basic strategy for living NPCs.
 public class ArtificialIntelligence extends Behavior {
     /*private static Set <TiXmlDocument> allBehaviorFiles = new Map <TiXmlDocument> ();*/
 
-    public ArtificialIntelligence(Entity newEntity) {
+    public ArtificialIntelligence(Entity2 newEntity) {
     	super(newEntity);
     }
 
@@ -121,6 +121,7 @@ public class ArtificialIntelligence extends Behavior {
     /* Set <TiXmlDocument> getBehaviorFiles();*/
 
     //	'calm' can vary from 0 to 1.
+
     float calm = 1;
 
     StrategyStateMachine <Communication, Action> stateMachine;

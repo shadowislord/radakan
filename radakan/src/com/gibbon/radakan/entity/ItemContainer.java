@@ -1,16 +1,16 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.radakan.entity;
@@ -18,9 +18,9 @@ package com.gibbon.radakan.entity;
 import java.util.*;
 
 
-public class ItemContainer implements Set <Entity> {
+public class ItemContainer implements Set <Entity2> {
 	
-	public boolean add(Entity o) {
+	public boolean add(Entity2 o) {
 		return items.add(o);
 	}
 	public boolean addAll(Collection c) {
@@ -44,7 +44,7 @@ public class ItemContainer implements Set <Entity> {
 	public boolean isEmpty() {
 		return items.isEmpty();
 	}
-	public Iterator<Entity> iterator() {
+	public Iterator<Entity2> iterator() {
 		return items.iterator();
 	}
 	public boolean remove(Object o) {
@@ -68,12 +68,12 @@ public class ItemContainer implements Set <Entity> {
 	
 	public float getTotalMass() {
 		float result = 0;
-		for (Entity item : items)
+		for (Entity2 item : items)
 		{
 			result += item.getTotalMass();
 		}
 		return result;
 	}
 	
-	private HashSet <Entity> items;
+	private HashSet <Entity2> items;
 }
