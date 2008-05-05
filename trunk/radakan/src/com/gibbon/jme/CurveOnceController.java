@@ -42,6 +42,11 @@ import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
 import java.io.IOException;
 
+/**
+ * This is a curve controller for cameras and cinematic sequences..
+ * 
+ * @author Frederik Bülthoff (?)
+ */
 public class CurveOnceController extends Controller {
 
     private static final long serialVersionUID = 1L;
@@ -57,6 +62,13 @@ public class CurveOnceController extends Controller {
     private Vector3f lastPoint = new Vector3f();    // ***** added 
     private boolean disableAfter;                   // ***** added
 
+    /**
+     * Create a new CurveOnce controller that moves the spatial <code>mover</code>
+     * with the path specified by <code>curve</code>
+     * 
+     * @param curve The curve to control the spatial
+     * @param mover The spatial to control
+     */
     public CurveOnceController(Curve curve, Spatial mover) {
         this.curve = curve;
         this.mover = mover;
@@ -67,6 +79,16 @@ public class CurveOnceController extends Controller {
         setSpeed(1.0f);
     }
 
+    /**
+     * A CurveOnceController that is only effected by certain times
+     * Can be used in a setup where the camera has to move on the curve only
+     * at certain times.
+     * 
+     * @param curve
+     * @param mover
+     * @param minTime
+     * @param maxTime
+     */
     public CurveOnceController(Curve curve, Spatial mover, float minTime, float maxTime){
         this.curve = curve;
         this.mover = mover;
@@ -75,22 +97,46 @@ public class CurveOnceController extends Controller {
         setRepeatType(Controller.RT_CLAMP);
     }
 
+    /**
+     * Sets the UP vector<br/>
+     * This is usually 0, 1, 0 in jME and Radakan
+     * 
+     * @param up
+     */
     public void setUpVector(Vector3f up) {
         this.up = up;
     }
 
+    /**
+     * I don't know what this does..
+     * 
+     * @param value
+     */
     public void setOrientationPrecision(float value) {
         orientationPrecision = value;
     }
 
+    /**
+     * If true, rotate the spatial in addition to moving it
+     * 
+     * @param value True to rotate the spatial
+     */
     public void setAutoRotation(boolean value) {
         autoRotation = value;
     }
 
+    /**
+     * @return Whether to rotate the spatial to face the curve or not
+     */
     public boolean isAutoRotating() {
         return autoRotation;
     }
 
+    /**
+     * Updates this controller, should only be used internally by jME.
+     * 
+     * @param time Time per frame (1 / fps)
+     */
     public void update(float time) {
         if (mover == null || curve == null || up == null) {
             return;
@@ -163,14 +209,29 @@ public class CurveOnceController extends Controller {
         }
     }
 
+    /**
+     * @return If true, disable this controller when the end time is reached
+     */
     private boolean isDisableAfterClamp() {   // ***** added
         return disableAfter;
     }
 
+    /**
+     * Set whether to disable this controller when the end time is reached
+     * 
+     * @param disableAfter
+     * @see setTimes
+     */
     public void setDisableAfterClamp(boolean disableAfter) {   // ***** added
         this.disableAfter = disableAfter;
     }
 
+    /**
+     * Serialize this Controller
+     * 
+     * @param e
+     * @throws java.io.IOException
+     */
     @Override
     public void write(JMEExporter e) throws IOException {
         super.write(e);
@@ -183,6 +244,12 @@ public class CurveOnceController extends Controller {
         capsule.write(autoRotation, "autoRotation", false);
     }
 
+    /**
+     * De-serialize this controller
+     * 
+     * @param e
+     * @throws java.io.IOException
+     */
     @Override
     public void read(JMEImporter e) throws IOException {
         super.read(e);

@@ -11,9 +11,8 @@ import org.lwjgl.opengl.GL11;
  * and 3 stereo presentation modes (anaglyph, side by side, opengl stereo buffers)
  * 
  * To use stereo buffer mode, the display must be initialized with a 
- * stereo setting (requires dedicated hardware).
- * Before passing GameSettings to the JmeContext, 
- * set "GameStereo" to "true".
+ * stereo setting (requires dedicated hardware) and before passing GameSettings to the JmeContext, 
+ * "GameStereo" must be set to "true".
  * 
  * @author Momoko_Fan
  */
@@ -41,13 +40,45 @@ public class StereoRenderPass extends RenderPass {
     }
     
     public enum StereoMode {
+        /**
+         * Stereo information is trasferred using seperate color channels
+         * Left eye is sent with the red color channel, while the right eye is sent
+         * as teal (green & blue) color channel.
+         */
         ANAGLYPH,
+        
+        /**
+         * Stereo information is transferred using OpenGL's dedicated stereo buffers.
+         * Requires special hardware that supports stereo mode and driver, such as
+         * nVidia consumer stereo driver.
+         * In addition, the OpenGL context must be initialized in stereo mode,
+         * set the "GameStereo" parameter on the GameSettings passed to JmeContext to "true".
+         */
         STEREO_BUFFER,
+        
+        /**
+         * Stereo information is rendered seperately to each part of the screen.
+         * The left half of the display contains the left eye, while the right half contains the right eye.
+         */
         SIDE_BY_SIDE
     }
     
+    /**
+     * The type of projection to use to create a stereo rendering.
+     */
     public enum ProjectionMode{
+        /**
+         * Simple offset moves the camera a bit to the left and a bit to the right to create
+         * the stereo effect. It's equivelant to putting two cameras parallel to each over side by side.
+         */
         SIMPLE_OFFSET,
+        
+        /**
+         * Assymetric frustum is a more advanced stereo projection mode that takes 
+         * focus into account. It is a more accurate representation of how two eyes
+         * would percieve the environment with a focus plane. Unfortunately it can also
+         * cause more strain to the eye since it must adjust to the effects of simulating focus.
+         */
         ASYMMETRIC_FRUSTUM
     }
     
@@ -55,10 +86,16 @@ public class StereoRenderPass extends RenderPass {
         super("StereoRender");
     }
     
+    /**
+     * Sets how the render pass transffers stereo information to the framebuffer.
+     */
     public void setMode(StereoMode mode){
         this.mode = mode;
     }
     
+    /**
+     * Sets the method that the render pass uses to simulate stereo with two cameras.
+     */
     public void setProjection(ProjectionMode mode){
         pMode = mode;
     }
@@ -85,6 +122,9 @@ public class StereoRenderPass extends RenderPass {
         return IOD;
     }
     
+    /**
+     * Sets up the camera frustum for a left or right eye.
+     */
     protected void setFrustum(JmeContext cx, CameraSide side){
         Camera cam = cx.getRenderer().getCamera();
         

@@ -27,6 +27,9 @@ public class ExitListenerPass extends Pass {
     
     protected Callable<Object> exit_code;
     
+    /**
+     * @param exit_code The code to execute when a termination is requested (Alt-F4, Exit button, Esc)
+     */
     public ExitListenerPass(Callable<Object> exit_code) {
         super(PassType.POST_INPUT, "ExitListener");
         if (exit_code == null){
