@@ -1,22 +1,22 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.radakan.error;
 
 import com.gibbon.jme.context.JmeContext;
-import com.gibbon.radakan.Radakan;
+import com.gibbon.radakan.SysInfo;
 import com.jmex.audio.AudioSystem;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -101,13 +101,13 @@ public class ErrorReporter {
             stream.println();
 
             stream.println("==Display settings==");
-            ContextCapabilities caps = Radakan.caps;
+            ContextCapabilities caps = SysInfo.caps;
             stream.println("Adapter: "+Display.getAdapter());
             stream.println("Driver Version: "+Display.getVersion());
-            stream.println("Vendor: "+Radakan.vendor);
-            stream.println("Renderer: "+Radakan.renderer);
-            stream.println("API Version: "+Radakan.apiVer);
-            stream.println("GLSL Version: "+Radakan.glslVer);
+            stream.println("Vendor: "+SysInfo.vendor);
+            stream.println("Renderer: "+SysInfo.renderer);
+            stream.println("API Version: "+SysInfo.apiVer);
+            stream.println("GLSL Version: "+SysInfo.glslVer);
             stream.println("Fragment Shaders: "+caps.GL_ARB_fragment_program);
             stream.println("Vertex Shaders: "+caps.GL_ARB_vertex_program);
             stream.println("Cubemaps: "+caps.GL_ARB_texture_cube_map);
@@ -118,9 +118,9 @@ public class ErrorReporter {
 
             if (AudioSystem.isCreated()){
                 stream.println("==Audio settings==");
-                stream.println("Vendor: "+Radakan.alVendor);
-                stream.println("Renderer: "+Radakan.alRenderer);
-                stream.println("Version: "+Radakan.alVersion);
+                stream.println("Vendor: "+SysInfo.alVendor);
+                stream.println("Renderer: "+SysInfo.alRenderer);
+                stream.println("Version: "+SysInfo.alVersion);
                 stream.println();
             }
             

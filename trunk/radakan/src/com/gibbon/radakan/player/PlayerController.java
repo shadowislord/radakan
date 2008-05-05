@@ -1,16 +1,16 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.radakan.player;
@@ -20,7 +20,6 @@ import com.jme.bounding.BoundingBox;
 import com.jme.input.ChaseCamera;
 import com.jme.input.InputHandler;
 import com.jme.input.ThirdPersonHandler;
-import com.jme.intersection.CollisionData;
 import com.jme.intersection.PickData;
 import com.jme.intersection.TriangleCollisionResults;
 import com.jme.intersection.TrianglePickResults;
@@ -29,8 +28,9 @@ import com.jme.math.Ray;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.scene.Controller;
+import com.jme.scene.Geometry;
 import com.jme.scene.Node;
-import com.jme.scene.batch.TriangleBatch;
+import com.jme.scene.TriMesh;
 import com.model.md5.ModelNode;
 import com.model.md5.controller.JointController;
 import java.util.HashMap;
@@ -101,7 +101,7 @@ public class PlayerController extends Controller {
                 List tris = pData.getTargetTris();
 
                 // mesh with which the collision was made
-                TriangleBatch mesh = (TriangleBatch) pData.getTargetMesh();
+                TriMesh mesh = (TriMesh) pData.getTargetMesh();
 
                 if (tris.isEmpty()) return;
                 
@@ -112,9 +112,9 @@ public class PlayerController extends Controller {
                 
                 // convert triangle to world space
                 for (int x = 0; x < vec.length; x++) {
-                    vec[x].multLocal(mesh.getParentGeom().getWorldScale());
-                    mesh.getParentGeom().getWorldRotation().mult(vec[x], vec[x]);
-                    vec[x].addLocal(mesh.getParentGeom().getWorldTranslation());
+                    vec[x].multLocal(mesh.getWorldScale());
+                    mesh.getWorldRotation().mult(vec[x], vec[x]);
+                    vec[x].addLocal(mesh.getWorldTranslation());
                 }
 
                 // find WHERE the triangle was picked.. 

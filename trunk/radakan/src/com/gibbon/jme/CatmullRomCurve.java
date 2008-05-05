@@ -83,12 +83,12 @@ public class CatmullRomCurve extends Curve {
      */
     public CatmullRomCurve(String name, Vector3f[] controlPoints) {
         super(name, controlPoints);
-        this.partPercentage = 1.0f / (getBatch(0).getVertexCount() - 1);
+        this.partPercentage = 1.0f / (getVertexCount() - 1);
         Vector3f first = new Vector3f(), second = new Vector3f(), last = new Vector3f(), beforeLast = new Vector3f();
-        BufferUtils.populateFromBuffer(first, getBatch(0).getVertexBuffer(), 0);
-        BufferUtils.populateFromBuffer(second, getBatch(0).getVertexBuffer(), 1);
-        BufferUtils.populateFromBuffer(beforeLast, getBatch(0).getVertexBuffer(), getBatch(0).getVertexCount() - 2);
-        BufferUtils.populateFromBuffer(last, getBatch(0).getVertexBuffer(), getBatch(0).getVertexCount() - 1);
+        BufferUtils.populateFromBuffer(first, getVertexBuffer(), 0);
+        BufferUtils.populateFromBuffer(second, getVertexBuffer(), 1);
+        BufferUtils.populateFromBuffer(beforeLast, getVertexBuffer(), getVertexCount() - 2);
+        BufferUtils.populateFromBuffer(last, getVertexBuffer(), getVertexCount() - 1);
         Vector3f firstTangent = second.subtract(first);
         firstTangent.normalizeLocal();
         firstTangent.multLocal(0.01f);
@@ -194,12 +194,12 @@ public class CatmullRomCurve extends Curve {
     public Vector3f getPoint(float time, Vector3f point) {
         // first point
         if (time <= 0) {
-            BufferUtils.populateFromBuffer(point, getBatch(0).getVertexBuffer(), 0);
+            BufferUtils.populateFromBuffer(point, getVertexBuffer(), 0);
             return point;
         }
         // last point.
         if (time >= 1) {
-            BufferUtils.populateFromBuffer(point, getBatch(0).getVertexBuffer(), getBatch(0).getVertexCount() - 1);
+            BufferUtils.populateFromBuffer(point, getVertexBuffer(), getVertexCount() - 1);
             return point;
         }
 
@@ -216,14 +216,14 @@ public class CatmullRomCurve extends Curve {
         if (firstPointIndex == -1) {
             tempVec1 = this.firstPoint;
         } else {
-            BufferUtils.populateFromBuffer(tempVec1, getBatch(0).getVertexBuffer(), firstPointIndex);
+            BufferUtils.populateFromBuffer(tempVec1, getVertexBuffer(), firstPointIndex);
         }
-        BufferUtils.populateFromBuffer(tempVec2, getBatch(0).getVertexBuffer(), ++firstPointIndex);
-        BufferUtils.populateFromBuffer(tempVec3, getBatch(0).getVertexBuffer(), ++firstPointIndex);
-        if (++firstPointIndex == getBatch(0).getVertexCount()) {
+        BufferUtils.populateFromBuffer(tempVec2, getVertexBuffer(), ++firstPointIndex);
+        BufferUtils.populateFromBuffer(tempVec3, getVertexBuffer(), ++firstPointIndex);
+        if (++firstPointIndex == getVertexCount()) {
             tempVec4 = this.lastPoint;
         } else {
-            BufferUtils.populateFromBuffer(tempVec4, getBatch(0).getVertexBuffer(), firstPointIndex);
+            BufferUtils.populateFromBuffer(tempVec4, getVertexBuffer(), firstPointIndex);
         }
 
         point.zero();

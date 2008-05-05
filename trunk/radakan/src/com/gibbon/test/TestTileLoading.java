@@ -1,39 +1,38 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.test;
 
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.RenderPass;
-import com.gibbon.jme.context.StereoRenderPass;
-import com.gibbon.jme.context.UpdatePass;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.meshparser.MaterialLoader;
 import com.gibbon.radakan.config.ConfigFrame;
 import com.gibbon.radakan.entity.*;
 import com.gibbon.radakan.tile.TileLoader;
-import com.jme.bounding.BoundingBox;
-import com.jme.input.KeyInput;
+import com.gibbon.radakan.tile.TypeLoader;
 import com.jme.light.PointLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.CullState;
+import com.jme.scene.state.CullState.Face;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.ZBufferState;
+import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
 
@@ -65,7 +64,7 @@ public class TestTileLoading {
             
             TileLoader loader = new TileLoader(false);
             loader.setMaterials(mloader.getMaterials());
-            loader.setTypes(Entity.Type.map);
+            loader.setTypes(Entity2.Type.map);
 
             Node root = new Node("root");
             
@@ -97,11 +96,11 @@ public class TestTileLoading {
         Node rootNode = new Node("rootNode");
         
         CullState cull = JmeContext.get().getRenderer().createCullState();
-        cull.setCullMode(CullState.CS_BACK);
+        cull.setCullFace(Face.Back);
         rootNode.setRenderState(cull);
 
         ZBufferState zbuf = JmeContext.get().getRenderer().createZBufferState();
-        zbuf.setFunction(ZBufferState.CF_LEQUAL);
+        zbuf.setFunction(TestFunction.LessThanOrEqualTo);
         zbuf.setWritable(true);
         rootNode.setRenderState(zbuf);
         

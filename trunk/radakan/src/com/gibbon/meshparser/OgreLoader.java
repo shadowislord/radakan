@@ -1,16 +1,16 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.meshparser;
@@ -26,8 +26,9 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.Controller;
 import com.jme.scene.Spatial;
+import com.jme.scene.TexCoords;
 import com.jme.scene.TriMesh;
-import com.jme.scene.batch.TriangleBatch;
+import com.jme.scene.TriMesh.Mode;
 import com.jme.util.geom.BufferUtils;
 
 import com.jme.util.resource.ResourceLocatorTool;
@@ -67,7 +68,12 @@ public class OgreLoader {
 
     private static final Logger logger = Logger.getLogger(OgreLoader.class.getName());
     
+    private TriMesh sharedgeom = new TriMesh("shared");
+    private List<TriMesh> submeshes = new ArrayList<TriMesh>();
+    private Bone rootBone;
     private Bone[] boneList;
+    private SkinNode skinnode;
+    private com.jme.scene.Node rootnode;
     private Map<String, Material> materialMap;
     private boolean Z_up_to_Y_up = true;
     
@@ -111,7 +117,7 @@ public class OgreLoader {
         return Float.parseFloat(getAttribute(node,name));
     }
     
-    private void applyMaterial(String name, TriangleBatch target){
+    private void applyMaterial(String name, Spatial target){
         if (name.contains(".")){
             int index = name.lastIndexOf(".");
             name = name.substring(0, index);
@@ -342,8 +348,6 @@ public class OgreLoader {
     private Bone loadSkeleton(Node skeleton){
         Node bones = getChildNode(skeleton, "bones");
         
-        //Bone rootBone = new Bone("OgreSkeleton");
-        Bone rootBone = null;
         Map<String, Bone> boneMap = new HashMap<String, Bone>();
         Map<Integer, Bone> indexedBoneMap = new HashMap<Integer, Bone>();
         //indexedBoneMap.put(Integer.valueOf(0), rootBone);
@@ -482,43 +486,15 @@ public class OgreLoader {
         return rootBone;
     }
     
-    /**
-     * Loads a submesh from an XML node
-     * 
-     * @param submesh XML node
-     * @param skin The node used to construct the skin used for animation. null if the mesh is static
-     * @param boneList A list of bones, should be correctly indexed as in the skeleton. null if the mesh is static
-     * @return
-     */
-    private TriangleBatch loadSubmesh(Node submesh, SkinNode skin, Bone[] boneList){
-        // triangle mesh to represent the geometry
-        TriangleBatch batch = new TriangleBatch();
+    private TriMesh loadVertexBuffer(Node vertexbuffer, int vertexCount){
+        TriMesh mesh = new TriMesh("nil");
         
-        // try to load a material if it is defined
-        batch.setName(getAttribute(submesh, "material"));
-        
-        String material = getAttribute(submesh, "material");
-        if (material != null)
-            applyMaterial(material, batch);
-        
-        // get the geometry and faces XML nodes
-        Node geometry = getChildNode(submesh, "geometry");
-        Node faces    = getChildNode(submesh, "faces");
-        
-        if (geometry == null || faces == null){
-            logger.severe("Cannot load submesh: missing geometry data");
-            return null;
-        }
-        
-        int vertexCount = Integer.parseInt(getAttribute(geometry, "vertexcount"));
-        
-        Node vertexbuffer = getChildNode(geometry, "vertexbuffer");
-        
-        // allocate and create the geometry buffers if they are defined in the mesh file
         FloatBuffer vb = null;
         FloatBuffer nb = null;
         FloatBuffer cb = null;
-        FloatBuffer[] tb = null;
+        FloatBuffer tanb = null;
+        FloatBuffer binb = null;
+        TexCoords[] tb = null;
         
         // vertex positions
         String hasPositions = getAttribute(vertexbuffer, "positions");
@@ -535,21 +511,18 @@ public class OgreLoader {
         }
         
         // texture coordinates
-        // FIXME: Only supports 2D texture coordinates
         int texbuffersN = 0;
         String texbuffers = getAttribute(vertexbuffer, "texture_coords");
         if (texbuffers != null){
             texbuffersN = Integer.parseInt(texbuffers);
-            tb = new FloatBuffer[texbuffersN];
-            for (int i = 0; i < texbuffersN; i++)
-                tb[i] = BufferUtils.createFloatBuffer(vertexCount*2);
+            tb = new TexCoords[texbuffersN];
+            for (int i = 0; i < texbuffersN; i++){
+                // read dimensions
+                int dimensions = Integer.parseInt(getAttribute(vertexbuffer, "texture_coord_dimensions_"+i));
+                tb[i] = new TexCoords(BufferUtils.createFloatBuffer(vertexCount*dimensions), dimensions);
+            }
         }
-        String dimensions = getAttribute(vertexbuffer, "texture_coord_dimensions_0");
-        if (dimensions != null && !dimensions.equalsIgnoreCase("2")){
-            logger.warning("Illegal number of texcoord dimensions! Only U and V will be used");
-        }
-        
-        
+
         // vertex colors
         String hasColors = getAttribute(vertexbuffer, "colours_diffuse");
         if (hasColors != null && hasColors.equalsIgnoreCase("true")){
@@ -563,8 +536,23 @@ public class OgreLoader {
             logger.warning("Specular colors are not supported!");
         }
         
-        // FIXME: Tangents and binormals not supported
+        // tangents
+        String hasTangents = getAttribute(vertexbuffer, "tangents");
+        int tangentDimensions = 3;
+        if (hasTangents != null && hasTangents.equalsIgnoreCase("true")){
+            String dimensionsStr = getAttribute(vertexbuffer, "tangent_dimensions");
+            if (dimensionsStr != null)
+                tangentDimensions = Integer.parseInt(dimensionsStr);
+            
+            tanb = BufferUtils.createFloatBuffer(vertexCount*tangentDimensions);
+        }
         
+        // binormals
+        String hasBinormals = getAttribute(vertexbuffer, "binormals");
+        if (hasBinormals != null && hasBinormals.equalsIgnoreCase("true")){
+            binb = BufferUtils.createFloatBuffer(vertexCount*3);
+        }
+                
         // Read the vertexbuffer
         Node vertex = vertexbuffer.getFirstChild();
         while (vertex != null){
@@ -596,13 +584,41 @@ public class OgreLoader {
                   .put(getFloatAttribute(normal, "z"));
             }
 
+            if (tanb != null){
+                Node tangent = getChildNode(vertex, "tangent");
+                tanb.put(getFloatAttribute(tangent, "x"))
+                    .put(getFloatAttribute(tangent, "y"))
+                    .put(getFloatAttribute(tangent, "z"));
+                if (tangentDimensions == 4)
+                    tanb.put(getFloatAttribute(tangent, "w"));
+            }
+            
+            if (binb != null){
+                Node binormal = getChildNode(vertex, "binormal");
+                binb.put(getFloatAttribute(binormal, "x"))
+                    .put(getFloatAttribute(binormal, "y"))
+                    .put(getFloatAttribute(binormal, "z"));
+            }
+            
             if (tb != null){
-                // FIXME: How are multi UV coordinates defined? I don't know. 
-                // Only single UV coordinate supported as of now.
-                for (int i = 0; i < texbuffersN; i++){
-                    Node texcoord = getChildNode(vertex, "texcoord");
-                    tb[i].put(getFloatAttribute(texcoord, "u"))
-                         .put(getFloatAttribute(texcoord, "v"));
+                Node texcoord = vertex.getFirstChild();
+                int texCoordIndex = 0;
+                while (texcoord != null){
+                    if (texcoord.getNodeName().equals("texcoord")){
+                        TexCoords coords = tb[texCoordIndex];
+                        FloatBuffer texbuf = coords.coords;
+                        
+                        texbuf.put(getFloatAttribute(texcoord, "u"));
+                        if (coords.perVert > 1){
+                            texbuf.put(getFloatAttribute(texcoord, "v"));
+                            if (coords.perVert == 3)
+                                texbuf.put(getFloatAttribute(texcoord, "w"));
+                        }
+                        
+                        texCoordIndex++;
+                    }
+
+                    texcoord = texcoord.getNextSibling();
                 }
             }
 
@@ -627,8 +643,83 @@ public class OgreLoader {
             vertex = vertex.getNextSibling();
         }
         
+        mesh.setVertexBuffer(vb);
+        mesh.setNormalBuffer(nb);
+        mesh.setColorBuffer(cb);
+        mesh.setTangentBuffer(tanb);
+        mesh.setBinormalBuffer(binb);
+        for (int i = 0; i < texbuffersN; i++)
+            mesh.setTextureCoords(tb[i], i);
+        
+        return mesh;
+    }
+    
+    /**
+     * Loads a submesh from an XML node
+     * 
+     * @param submesh XML node
+     * @return
+     */
+    private TriMesh loadSubmesh(Node submesh){
+        TriMesh trimesh = new TriMesh("nil");
+        
+        // try to load a material if it is defined
+        trimesh.setName(getAttribute(submesh, "material"));
+        
+        String material = getAttribute(submesh, "material");
+        if (material != null)
+            applyMaterial(material, trimesh);
+        
+        // using shared verticles?
+        boolean sharedVerts = true;
+        String usesharedvertices = getAttribute(submesh, "usesharedvertices");
+        if (usesharedvertices != null){
+            if (!usesharedvertices.equalsIgnoreCase("true"))
+                sharedVerts = false;
+        }
+        
+        // determine triangle mode
+        TriMesh.Mode trimode = null;
+        String operationtype = getAttribute(submesh, "operationtype");
+        if (operationtype.equals("triangle_list"))
+            trimode = Mode.Triangles;
+        else if (operationtype.equals("triangle_strip"))
+            trimode = Mode.Strip;
+        else if (operationtype.equals("triangle_fan"))
+            trimode = Mode.Fan;
+        
+        // check if faces definition exists (required for submesh)
+        Node faces    = getChildNode(submesh, "faces");
+        if (faces == null){
+            logger.severe("Cannot load submesh: faces definition required");
+            return null;
+        }
+        
+        TriMesh sourcegeom;
+        if (!sharedVerts){
+            Node geometry = getChildNode(submesh, "geometry");
+            Node vertexbuffer = getChildNode(geometry, "vertexbuffer");
+            
+            // inherit geometry data from unique vertex buffer defined here
+            int vertexCount = Integer.parseInt(getAttribute(geometry, "vertexcount"));
+            sourcegeom = loadVertexBuffer(vertexbuffer, vertexCount);
+        }else{
+            // inherit geometry data from shared geometry
+            sourcegeom = sharedgeom;
+        }
+        
+        trimesh.setVertexBuffer(sourcegeom.getVertexBuffer());
+        trimesh.setNormalBuffer(sourcegeom.getNormalBuffer());
+        trimesh.setColorBuffer(sourcegeom.getColorBuffer());
+        trimesh.setTangentBuffer(sourcegeom.getTangentBuffer());
+        trimesh.setBinormalBuffer(sourcegeom.getBinormalBuffer());
+        trimesh.setTextureCoords(sourcegeom.getTextureCoords());
+        
         // Read face/triangle data
-        int count = Integer.parseInt(getAttribute(faces, "count"));
+        int count = faces.getChildNodes().getLength();
+        if (getAttribute(faces, "count") != null){
+            count = Integer.parseInt(getAttribute(faces, "count"));
+        }
         Node face = faces.getFirstChild();
         IntBuffer ib = BufferUtils.createIntBuffer(count*3);
         while (face != null){
@@ -638,40 +729,29 @@ public class OgreLoader {
                 continue;
             }
             
-            Node nv1 = face.getAttributes().getNamedItem("v1");
-            Node nv2 = face.getAttributes().getNamedItem("v2");
-            Node nv3 = face.getAttributes().getNamedItem("v3");
+            String nv1 = getAttribute(face, "v1");
+            String nv2 = getAttribute(face, "v2");
+            String nv3 = getAttribute(face, "v3");
             
-            int v1 = Integer.parseInt(nv1.getNodeValue());
-            int v2 = Integer.parseInt(nv2.getNodeValue());
-            int v3 = Integer.parseInt(nv3.getNodeValue());
-            
-//            if (Z_up_to_Y_up){
-//                ib.put(v3).put(v2).put(v1);
-//            }else{
-                ib.put(v1).put(v2).put(v3);
-//            }
-            
+            ib.put(Integer.parseInt(nv1));
+            if (nv2 != null && nv3 != null)
+                ib.put(Integer.parseInt(nv2)).put(Integer.parseInt(nv3));
+                
             face = face.getNextSibling();
         }
         
-        // Assign mesh data
-        batch.setVertexBuffer(vb);
-        batch.setNormalBuffer(nb);
-        batch.setColorBuffer(cb);
-        batch.setIndexBuffer(ib);
-        for (int i = 0; i < texbuffersN; i++)
-            batch.setTextureBuffer(tb[i], i);
-        
+        // Assign index buffer
+        trimesh.setIndexBuffer(ib);
+
         // Read weights
         Node boneassignments = getChildNode(submesh, "boneassignments");
         
         // ignore weights if no skeleton defined
-        if (skin != null){
-            int batchNum = skin.getSkin().getBatchCount();
+        if (skinnode != null){
+            int geomIndex = skinnode.getSkins().getQuantity();
             
             // add ourselves to the SkinNode
-            skin.getSkin().addBatch(batch);
+            skinnode.addSkin(trimesh);
             
             if (boneassignments != null){
                 // assign weights to skin
@@ -687,15 +767,18 @@ public class OgreLoader {
                         // (not in the actual hierarchy)
                         //Bone bone = boneList[boneIndex+1];
                         Bone bone = boneList[boneIndex];
-                        skin.addBoneInfluence(batchNum, vertIndex, bone, weight);
+                        skinnode.addBoneInfluence(geomIndex, vertIndex, bone, weight);
                     }
 
                     assignment = assignment.getNextSibling();
                 }
             }
+        }else{
+            // attach ourselves to the rootnode
+            rootnode.attachChild(trimesh);
         }
        
-        return batch;
+        return trimesh;
     }
     
     private Spatial loadMesh(Document doc){
@@ -704,28 +787,22 @@ public class OgreLoader {
             logger.severe("Cannot load mesh: missing top element");
             return new com.jme.scene.Node("nothing");
         }
-        com.jme.scene.Node root = new com.jme.scene.Node("OgreModel");
-        
+
         Node skeletonlink = getChildNode(nodes.item(0), "skeletonlink");
-        SkinNode skin = null;
         if (skeletonlink != null){
             String name = getAttribute(skeletonlink, "name") + ".xml";
 
+            skinnode = new SkinNode("OgreSkinnedModel");
+            rootnode = skinnode;
             URL skeletonURL = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, name);
-            Bone rootBone = loadSkeleton(skeletonURL);
+            rootBone = loadSkeleton(skeletonURL);
             
-            TriMesh geom = new TriMesh("OgreMesh");
-            geom.clearBatches();
-            
-            skin = new SkinNode("OgreSkin");
-            skin.setSkeleton(rootBone);
-            skin.setSkin(geom);
-            
-            // skin is the root now
-            root.attachChild(skin);
-            
+            skinnode.setSkeleton(rootBone);
+
             // also attach skeleton
-            root.attachChild(rootBone);
+            skinnode.attachChild(rootBone);
+        }else{
+            rootnode = new com.jme.scene.Node("OgreStaticModel");
         }
         
         Node submeshesNode = getChildNode(nodes.item(0), "submeshes");
@@ -734,18 +811,7 @@ public class OgreLoader {
             if (submesh.getNodeType() != Node.TEXT_NODE
                             && submesh.getNodeType() != Node.COMMENT_NODE) {
 
-                TriangleBatch batch = loadSubmesh(submesh, skin, boneList);
-                if (batch != null && skin == null) {
-                    TriMesh mesh = new TriMesh(batch.getName());
-                    mesh.removeBatch(0);
-                    mesh.addBatch(batch);
-
-//                    Quaternion q = new Quaternion();
-//                    q.fromAngles(-FastMath.HALF_PI, 0, 0);
-//                    mesh.setLocalRotation(q);
-
-                    root.attachChild(mesh);
-                }
+                loadSubmesh(submesh);
             }
             
             submesh = submesh.getNextSibling();
@@ -762,7 +828,7 @@ public class OgreLoader {
             int index = Integer.parseInt(getAttribute(submeshname, "index"));
             String name = getAttribute(submeshname, "name");
             
-            root.getChild(index).setName(name);
+            rootnode.getChild(index).setName(name);
             
             submeshname = submeshname.getNextSibling();
         }
@@ -772,10 +838,10 @@ public class OgreLoader {
 //            skin.regenInfluenceOffsets();
 //        }
         
-        root.updateGeometricState(0, true);
-        root.updateRenderState();
+        rootnode.updateGeometricState(0, true);
+        rootnode.updateRenderState();
         
-        return root;
+        return rootnode;
     }
 
     

@@ -1,16 +1,16 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.radakan.entity;
@@ -31,7 +31,7 @@ public final class Character  {
 	    public boolean male;
 	}
 	
-	public Character(Entity newEntity, Type type) {
+	public Character(Entity2 newEntity, Type type) {
 		entity = newEntity;
 
 		Behavior behavior = null;
@@ -57,7 +57,7 @@ public final class Character  {
 		return stateMachine.hasState();
 	}
 
-	public final Entity entity;
+	public final Entity2 entity;
 	public final StrategyStateMachine <Nothing, Behavior> stateMachine;
 	public final Map<String, Skill> skills;
 	public final Equipment equipment;

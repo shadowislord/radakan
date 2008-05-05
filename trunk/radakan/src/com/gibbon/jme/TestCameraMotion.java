@@ -1,16 +1,16 @@
 /*
- * Radakan RPG is free software: you can redistribute it and/or modify
+ * Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Radakan RPG is distributed in the hope that it will be useful,
+ * Radakan is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Radakan RPG.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.gibbon.jme;
@@ -31,7 +31,7 @@ public class TestCameraMotion extends SimpleGame {
 
     public static void main(String[] args){
         TestCameraMotion test = new TestCameraMotion();
-        test.setDialogBehaviour(SimpleGame.ALWAYS_SHOW_PROPS_DIALOG);
+        test.setConfigShowMode(ConfigShowMode.AlwaysShow);
         test.start();
     }
     
@@ -47,7 +47,7 @@ public class TestCameraMotion extends SimpleGame {
         colors = new ColorRGBA[2];
         colors[0] = new ColorRGBA(0, 1, 0, 1);
         colors[1] = new ColorRGBA(0, 0, 1, 1);
-        curve.setColorBuffer(0, BufferUtils.createFloatBuffer(colors));
+        curve.setColorBuffer(BufferUtils.createFloatBuffer(colors));
 
         CurveOnceController cc = new CurveOnceController(curve, camNode);
         cc.setActive(false);
