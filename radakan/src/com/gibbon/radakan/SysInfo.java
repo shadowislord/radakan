@@ -51,7 +51,7 @@ public class SysInfo {
     }
     
     public static String getGameVersion(){
-        return "0.15";
+        return "0.25";
     }
     
     public static String getVersionPrefix(){

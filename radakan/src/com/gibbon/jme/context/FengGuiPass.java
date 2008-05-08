@@ -18,10 +18,10 @@ package com.gibbon.jme.context;
 import com.jme.input.KeyInput;
 import com.jme.input.MouseInput;
 
+import com.jme.scene.state.lwjgl.LWJGLTextureState;
 import org.fenggui.Display;
 import org.fenggui.FengGUI;
 import org.fenggui.render.Binding;
-import org.fenggui.render.lwjgl.AWTGLCanvasBinding;
 import org.fenggui.render.lwjgl.LWJGLBinding;
 
 import org.lwjgl.opengl.AWTGLCanvas;
@@ -56,6 +56,10 @@ public class FengGuiPass extends Pass {
         }
 
         manager.update(display, cx.getPassManager().getTPF());
+        
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        
         display.display();
     }
 
@@ -63,13 +67,7 @@ public class FengGuiPass extends Pass {
     public void initPass(JmeContext cx) {
         shaders = GLContext.getCapabilities().GL_ARB_shader_objects;
         
-        Binding binding = null;
-        if (cx.getCanvas() != null){
-            binding = new AWTGLCanvasBinding((AWTGLCanvas)cx.getCanvas());
-        }else{
-            binding = new LWJGLBinding();
-        }
-        
+        Binding binding = new LWJGLBinding();
         display = FengGUI.createDisplay(binding);
         this.listener = new FengJMEListener(display);
         
