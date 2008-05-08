@@ -6,23 +6,27 @@ import com.gibbon.jme.context.GuiManager;
 import com.gibbon.jme.context.InputPass;
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
+import com.gibbon.radakan.cinematic.Cinematic;
 import com.gibbon.radakan.config.ConfigFrame;
 import com.gibbon.radakan.error.ErrorReporter;
+
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+
 import org.fenggui.Display;
-import org.fenggui.Label;
-import org.fenggui.composites.Window;
-import org.fenggui.menu.MenuBar;
-import org.fenggui.menu.MenuItem;
-import org.fenggui.menu.Menu;
-import org.fenggui.event.IMenuItemPressedListener;
-import org.fenggui.event.MenuItemPressedEvent;
-import org.fenggui.util.Point;
+import org.fenggui.FengGUI;
+import org.fenggui.layout.StaticLayout;
+import org.fenggui.theme.XMLTheme;
+import org.fenggui.theme.xml.IXMLStreamableException;
 
 public class TestUI {
 
@@ -32,7 +36,7 @@ public class TestUI {
         GameSettings settings
                 = new PreferencesGameSettings(Preferences.userRoot().node("test-jmecontext"));
         
-        settings.set("title", "Test User Interface");
+        settings.set("title", "Test Main Menu");
         
         JmeContext context = null;
         try{
@@ -40,6 +44,9 @@ public class TestUI {
             g.setVisible(true);
             g.waitFor();
 
+//            settings.setWidth(720);
+//            settings.setHeight(480);
+            
             context = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
             context.setSettings(settings);
             context.start();
@@ -49,7 +56,7 @@ public class TestUI {
         }
         
         final JmeContext cx = context;
-
+        
         // add input pass
         InputPass input = new InputPass(null, true);
         cx.getPassManager().add(input);
@@ -66,50 +73,41 @@ public class TestUI {
         
         // create gui
         GuiManager manager = new GuiManager(){
+            
+            private Cinematic c;
+            
             public void create(Display display) {
-                Window test = new Window(true, false, false);
-                test.setLayoutManager(new org.fenggui.layout.RowLayout(false));
+                try {
+                    FengGUI.setTheme(new XMLTheme("data/themes/QtCurve.xml"));
+                } catch (IOException ex) {
+                    ErrorReporter.reportError("Error while reading theme file QtCurve.xml", ex);
+                } catch (IXMLStreamableException ex) {
+                    ErrorReporter.reportError("Error while parsing XML theme file", ex);
+                }
                 
-                test.setTitle("This is a FengGUI window!!!");
-                
-                Label label = new Label("And this is a FengGUI label!!");
-                test.getContentContainer().addWidget(label);
-                
-                test.pack();
-                
-                test.setPosition(new Point(display.getWidth() / 2 - test.getWidth() / 2,
-                                           display.getHeight() / 2 - test.getHeight() / 2));
-                
-                Menu menuFile = new Menu();
-                MenuItem itemFileExit = new MenuItem("Exit");
-                itemFileExit.addMenuItemPressedListener(
-                        new IMenuItemPressedListener(){
-                            public void menuItemPressed(MenuItemPressedEvent event){
-                                cx.dispose();
-                                //System.exit(0);
-                            }
-                        }
-                );
-                        
-                
-                menuFile.addItem(itemFileExit);
-                
-                MenuBar menuBar = new MenuBar();
-                menuBar.registerSubMenu(menuFile, "File");
-                
-                display.addWidget(menuBar);
-                
-                menuBar.updateMinSize(); // we have not layouted anything yet...
-		menuBar.setX(0);
-		menuBar.setY(display.getHeight() - menuBar.getMinHeight());
-		menuBar.setSize(display.getWidth(), menuBar.getMinHeight());
-		menuBar.setShrinkable(false);
-                
-                display.displayPopUp(test);
-                display.layout();
+                try {
+//                MainMenu menu = new MainMenu(display.getWidth(), display.getHeight());
+//                display.addWidget(menu);
+//                
+//                StaticLayout.center(menu, display);
+                    URL url = new File("E:\\RADAKAN\\data\\cinematic\\final.mpg").toURI().toURL();
+                    c = new Cinematic(url, display.getWidth(), display.getHeight());
+                    display.addWidget(c);
+
+                    StaticLayout.center(c, display);
+                    
+                    c.realize();
+                    c.play();
+                    
+                    display.layout();
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(TestUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             public void destroy(Display display) {
+                c.dispose();
+                System.out.println("Cinematic disposed");
             }
 
             public void update(Display display, float tpf) {

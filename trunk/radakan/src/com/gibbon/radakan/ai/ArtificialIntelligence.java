@@ -128,7 +128,7 @@ public class ArtificialIntelligence extends Behavior {
 
     /*private Set <TiXmlDocument> behaviorFiles;*/
 
-    private Queue<Communication> sensoryBuffer = new ArrayDeque<Communication>();
+    private Queue<Communication> sensoryBuffer = new java.util.LinkedList<Communication>();
     private Set<Opinion> opinions = new HashSet<Opinion>();
 };
 

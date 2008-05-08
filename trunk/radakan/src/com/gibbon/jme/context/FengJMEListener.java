@@ -103,7 +103,7 @@ public class FengJMEListener implements MouseInputListener, KeyInputListener {
         }
     }
 
-    @Override
+
     public void onKey(char character, int keyCode, boolean pressed) {
         keyHandled = false;
         Key key = mapKeyEvent();
@@ -117,7 +117,7 @@ public class FengJMEListener implements MouseInputListener, KeyInputListener {
             keyHandled = disp.fireKeyReleasedEvent(character, key);
         }
     }
-
+    
     /**
      * Helper method that maps LWJGL key events to FengGUI.
      * @return The Key enumeration of the last key pressed.
@@ -219,4 +219,5 @@ public class FengJMEListener implements MouseInputListener, KeyInputListener {
 
         return keyClass;
     }
+
 }

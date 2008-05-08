@@ -60,6 +60,9 @@ public class LWJGLDisplay extends Thread implements JmeDisplay {
     private UncaughtExceptionHandler exHandler;
     
     protected DisplayMode getDisplayMode(GameSettings gs) throws LWJGLException{
+        if (!gs.isFullscreen())
+            return new DisplayMode(gs.getWidth(), gs.getHeight());
+            
         DisplayMode m = null;
         for (DisplayMode dm: Display.getAvailableDisplayModes()){
             if (dm.getWidth()==gs.getWidth() 
@@ -179,6 +182,9 @@ public class LWJGLDisplay extends Thread implements JmeDisplay {
                 context.getPassManager().run(context);
                 
                 r.displayBackBuffer();
+                
+                if (!active.get())
+                    break;
                 
                 if (fps > 0)
                     Display.sync(fps);

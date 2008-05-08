@@ -141,7 +141,6 @@ public class ResourceManager {
         final ResourceLoader<T> loader = loaderMap.get(resourceType);
         executor.submit(
                 new Callable<Object>(){
-                    @Override
                     public Object call() throws ExecutionException {
                         try {
                             loadingResourcesSet.add(resourceName);
