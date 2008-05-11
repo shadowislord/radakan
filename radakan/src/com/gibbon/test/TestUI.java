@@ -85,24 +85,24 @@ public class TestUI {
                     ErrorReporter.reportError("Error while parsing XML theme file", ex);
                 }
                 
-                try {
-//                MainMenu menu = new MainMenu(display.getWidth(), display.getHeight());
-//                display.addWidget(menu);
-//                
-//                StaticLayout.center(menu, display);
-                    URL url = new File("E:\\RADAKAN\\data\\cinematic\\final.mpg").toURI().toURL();
-                    c = new Cinematic(url, display.getWidth(), display.getHeight());
-                    display.addWidget(c);
-
-                    StaticLayout.center(c, display);
-                    
-                    c.realize();
-                    c.play();
+//                try {
+                MainMenu menu = new MainMenu(display.getWidth(), display.getHeight());
+                display.addWidget(menu);
+                
+                StaticLayout.center(menu, display);
+//                    URL url = new File("E:\\RADAKAN\\data\\cinematic\\final.mpg").toURI().toURL();
+//                    c = new Cinematic(url, display.getWidth(), display.getHeight());
+//                    display.addWidget(c);
+//
+//                    StaticLayout.center(c, display);
+//                    
+//                    c.realize();
+//                    c.play();
                     
                     display.layout();
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(TestUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
+//                } catch (MalformedURLException ex) {
+//                    Logger.getLogger(TestUI.class.getName()).log(Level.SEVERE, null, ex);
+//                }
             }
 
             public void destroy(Display display) {
