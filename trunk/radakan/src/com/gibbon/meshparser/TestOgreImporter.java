@@ -28,12 +28,15 @@ import java.io.IOException;
 public class TestOgreImporter {
 
     public static void main(String[] args) throws IOException{
-        File root = new File("D:\\Test Anim Import\\");
-//        File f = new File("D:\\TileStore\\WoodenHouse.cld.mesh.xml");
-        File f2 = new File("D:\\Test Anim Import\\Scene.material");
+        String uris1[] = {
+            "C:\\Users\\Kirill\\Desktop\\xemna\\",
+            "C:\\Users\\Kirill\\Desktop\\xemna\\xemnaHead.material",
+            "C:\\Users\\Kirill\\Desktop\\xemna\\xemnaHead.mesh.xml"
+        };
         
-        File f = new File("D:\\Test Anim Import\\Cylinder.001.mesh.xml");
-        //File f2 = new File("E:\\Knight\\knight.material");
+        File root = new File(uris1[0]);
+        File mat = new File(uris1[1]);
+        File model = new File(uris1[2]);
         
         new DummyDisplaySystem();
         
@@ -42,11 +45,11 @@ public class TestOgreImporter {
         ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, srl);
         
         MaterialLoader matLoader = new MaterialLoader();
-        matLoader.load(new FileInputStream(f2));
+        matLoader.load(new FileInputStream(mat));
         
         OgreLoader loader = new OgreLoader();
         loader.setMaterials(matLoader.getMaterials());
-        Spatial spatial = loader.loadModel(f.toURI().toURL(), true);
+        Spatial spatial = loader.loadModel(model.toURI().toURL(), true);
         
         //SceneGraphDump.dump(spatial);
         
