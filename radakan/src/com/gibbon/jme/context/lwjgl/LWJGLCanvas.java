@@ -35,8 +35,10 @@ import com.jme.system.JmeException;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Drawable;
@@ -49,8 +51,8 @@ public class LWJGLCanvas extends AWTGLCanvas {
     private LWJGLContext context;
     private boolean vsync;
     private PixelFormat pf;
-    private volatile boolean active = false;
-    private boolean needRestart = false;
+    private AtomicBoolean active = new AtomicBoolean(false);
+    private AtomicBoolean needRestart = new AtomicBoolean(false);
     
     private Object startupLock = new Object();
     
@@ -60,8 +62,9 @@ public class LWJGLCanvas extends AWTGLCanvas {
         this.pf = pf;
         
         addComponentListener(new ComponentAdapter() {
+            @Override
             public void componentResized(ComponentEvent ce) {
-                needRestart = true;
+                needRestart.set(true);
             }
         });
         
@@ -89,17 +92,19 @@ public class LWJGLCanvas extends AWTGLCanvas {
     }
     
     public void restart(){
-        needRestart = true;
+        needRestart.set(true);
     }
     
     void shutdown(){
-        active = false;
+        active.set(false);
     }
     
-    public void waitFor() throws InterruptedException{
-        synchronized (startupLock){
-            while (!active){
-                startupLock.wait();
+    public void waitFor() throws InterruptedException {
+        if (!SwingUtilities.isEventDispatchThread()){
+            synchronized (startupLock){
+                while (!active.get()){
+                    startupLock.wait();
+                }
             }
         }
     }
@@ -112,7 +117,7 @@ public class LWJGLCanvas extends AWTGLCanvas {
         context.getRenderer().setBackgroundColor(ColorRGBA.black);
         context.contextInit();
         synchronized (startupLock){
-            active = true;
+            active.set(true);
             startupLock.notifyAll();
         }
         // main loop is handled in paintGL (defined by AWTGLCanvas in LWJGL)
@@ -127,25 +132,25 @@ public class LWJGLCanvas extends AWTGLCanvas {
         // getContext returns the LWJGL's library context, not Jme's
         // If it's null then the canvas has been removed from the frame
         if (getContext()==null)
-            active = false;
+            active.set(false);
         
         // User ordered disposal, dispose context resources from the context thread
-        if (!active && context!=null){
+        if (!active.get() && context!=null){
             context.contextDispose();
             logger.info("Canvas disposed");
             return;
-        }else if (!active)
+        }else if (!active.get())
             return;
         
-        if (needRestart)
+        if (needRestart.get())
             context.contextRestart();
         
-        context.setThreadContext(context);
+        LWJGLContext.setThreadContext(context);
         
         LWJGLRenderer r = (LWJGLRenderer) context.getRenderer();
         
         r.clearBuffers();
-
+        
         context.getTimer().update();
         context.getPassManager().run(context);
         //r.displayBackBuffer();
@@ -164,7 +169,7 @@ public class LWJGLCanvas extends AWTGLCanvas {
     }
     
     public boolean isActive(){
-        return active;
+        return active.get();
     }
 
     PixelFormat getPixelFormat() {

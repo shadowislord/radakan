@@ -33,7 +33,6 @@ import com.jme.scene.TriMesh.Mode;
 import com.jme.util.geom.BufferUtils;
 
 import com.jme.util.resource.ResourceLocatorTool;
-import com.jmex.model.animation.KeyframeController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -46,7 +45,6 @@ import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -70,31 +68,77 @@ public class OgreLoader {
 
     private static final Logger logger = Logger.getLogger(OgreLoader.class.getName());
     
+    /**
+     * sharedgeom contains all the sharedgeometry vertexbuffers defined in the mesh
+     * file combined together. The vertexes are referenced by the submeshes through the index buffers.
+     * Since jME does not really support shared vertex buffers yet, those are reference
+     * copied into the submeshes' trimeshes.
+     */
     private TriMesh sharedgeom = new TriMesh("sharedgeom");
-    private List<TriMesh> submeshes = new ArrayList<TriMesh>();
+    
+    /**
+     * The root bone of the skeleton, or null if a skeleton is not defined for this mesh file.
+     * The assumption is made that all skeletons contain a single root bone.
+     */
     private Bone rootBone;
+    
+    /**
+     * An array containing all the bones in the skeleton. 
+     * The bone index in the skeleton file is the same as the index in this array.
+     */
     private Bone[] boneList;
+    
+    /**
+     * The SkinNode for the skeleton, or null if no skeleton is defined.
+     * The skins in this node are the submeshes with no geometry sharing.
+     * Submeshes that share geometry must be attached directly to the skinnode
+     * as they do not have any bone assignments (bone assignments are defined
+     * only for the shared geometry instead of it's submeshes).
+     */
     private SkinNode skinnode;
+    
+    /**
+     * The node representing this mesh file. This is eqivelant to the skinnode
+     * variable if a skeleton is defined.
+     */
     private com.jme.scene.Node rootnode;
+    
+    /**
+     * A mapping of the material names to the material object.
+     * The mapping of materials must be seperately loaded by the MaterialLoader,
+     * or generated in code.
+     */
     private Map<String, Material> materialMap;
+    
+    /**
+     * If this variable is true, the loader will attempt 
+     * to convert from Z-up (e.g Blender3D) coordinate system 
+     * to a Y-up (e.g jME, OpenGL) coordinate system.
+     * This parameter is now obsolete as the Blender3D mesh exporter
+     * is able to do this operation.
+     */
     private boolean Z_up_to_Y_up = true;
     
-    private static final Matrix4f convertMatrix;
+    /**
+     * Show debugging messages of OgreLoaders or not.
+     */
     private static final boolean DEBUG = true;
     
-    static {
-        convertMatrix = new Matrix4f();
-        convertMatrix.fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_X);
-        Matrix4f rot2 = new Matrix4f();
-        rot2.fromAngleAxis(FastMath.PI, Vector3f.UNIT_Z);
-        convertMatrix.multLocal(rot2);
-    }
-    
+    /**
+     * Print a debugging message to standard output.
+     */
     public void println(String str){
         if (DEBUG)
             System.out.println(str);
     }
     
+    /**
+     * Returns the first XML child tag with the specified name.
+     * 
+     * @param node The node to search children of
+     * @param name The name of the node to search for, case-sensitive.
+     * @return The child with the specified name, or null if none exists.
+     */
     private Node getChildNode(Node node, String name) {
         Node child = node.getFirstChild();
         while (child != null && !child.getNodeName().equals(name) ){
@@ -103,6 +147,13 @@ public class OgreLoader {
         return child;
     }
     
+    /**
+     * Returns an attribute of the specified tag with the name provided.
+     * 
+     * @param node
+     * @param name
+     * @return
+     */
     private String getAttribute(Node node, String name){
         Node att = node.getAttributes().getNamedItem(name);
         return att == null ? null : att.getNodeValue();
@@ -116,15 +167,24 @@ public class OgreLoader {
         return Integer.parseInt(getAttribute(node,name));
     }
     
+    /**
+     * Applies a named material to the specified spatial.
+     * 
+     * @param name
+     * @param target
+     */
     private void applyMaterial(String name, Spatial target){
+        // if the name contains an extension, make sure to remove it from the name
         if (name.contains(".")){
             int index = name.lastIndexOf(".");
             name = name.substring(0, index);
         }
         
+        // no materials mapping defined, do not apply any materials
         if (materialMap == null)
             return;
         
+        // find the named material and apply it to the target
         Material mat = materialMap.get(name);
         if (mat != null){
             mat.apply(target);
@@ -133,19 +193,32 @@ public class OgreLoader {
         }
     }
     
+    /**
+     * Specify the mapping of materials to use when reading submeshes.
+     * @param materials
+     */
     public void setMaterials(Map<String, Material> materials){
         materialMap = materials;
     }
     
+    /**
+     * Load a MESH.XML model from the specified URL.
+     * 
+     * @param url The URL that specifies the mesh.xml file
+     * @param Z_up Whether to flip the model from Z-up to Y-up
+     * @return
+     */
     public Spatial loadModel(URL url, boolean Z_up){
         try {
             Z_up_to_Y_up = Z_up;
             
+            // read the xml document
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(url.openStream());
 
             println("MESH("+url.getFile()+")");
             
+            // return the loaded mesh
             return loadMesh(doc);
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(OgreLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -158,6 +231,10 @@ public class OgreLoader {
         return null;
     }
     
+    /**
+     * A Keyframe class which is only used for sorting all the tracks' keyframes.
+     * Used for bone animation only.
+     */
     private static class Keyframe implements Comparable<Keyframe> {
         Bone bone;
         float time;
@@ -165,6 +242,12 @@ public class OgreLoader {
         Quaternion rotate;
         Vector3f scale;
 
+        /**
+         * A keyframe is greater than another keyframe if it's time is greater.
+         * 
+         * @param other
+         * @return
+         */
         public int compareTo(Keyframe other) {
             if (this.time > other.time)
                 return 1;
@@ -181,8 +264,15 @@ public class OgreLoader {
         
     }
     
+    /**
+     * Load a SKELETON.XML model from the specified URL.
+     * 
+     * @param url The URL that specifies the skeleton.xml file
+     * @return
+     */
     private Bone loadSkeleton(URL url){
         try {
+            // create a document
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(url.openStream());
 
