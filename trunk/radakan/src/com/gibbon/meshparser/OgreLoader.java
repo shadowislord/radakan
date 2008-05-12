@@ -293,6 +293,7 @@ public class OgreLoader {
     }
     
     private BoneAnimation loadAnimation(Node animation, Map<String, Bone> boneMap){
+        // read the name and length (in seconds) of the animation
         String name = getAttribute(animation, "name");
         float length = getFloatAttribute(animation, "length");
 
@@ -308,6 +309,7 @@ public class OgreLoader {
         // animation processing will only effect those bones
         Set<Bone> bonesWithTracks = new HashSet<Bone>();
         
+        // skeleton -> animations -> animation -> tracks
         Node tracks = getChildNode(animation, "tracks");
         Node track = tracks.getFirstChild();
         while (track != null){
@@ -317,10 +319,10 @@ public class OgreLoader {
             }
             
             Bone bone = boneMap.get(getAttribute(track, "bone"));
-            Node keyframe = getChildNode(track, "keyframes").getFirstChild();
-            
             bonesWithTracks.add(bone);
             
+            // tracks -> keyframes -> keyframe
+            Node keyframe = getChildNode(track, "keyframes").getFirstChild();
             while (keyframe != null){
                 if (!keyframe.getNodeName().equals("keyframe")){
                     keyframe = keyframe.getNextSibling();
@@ -392,6 +394,8 @@ public class OgreLoader {
             }
         }
         
+        // interpolation times, only used
+        // for the jME animation system
         int[] lerpTimes = new int[frameTimes.size()];
         float[] times = new float[frameTimes.size()];
         for (int i = 0; i < frameTimes.size(); i++){
@@ -402,6 +406,7 @@ public class OgreLoader {
         anim.setInterpolationTypes(lerpTimes);
         anim.setTimes(times);
         
+        // add the bone transformes to the bones
         for (Bone bone : bonesWithTracks){
             BoneTransform transform = new BoneTransform(bone, times.length);
             transform.setBone(bone);
@@ -435,18 +440,19 @@ public class OgreLoader {
     }
  
     private Bone loadSkeleton(Node skeleton){
-        Node bones = getChildNode(skeleton, "bones");
-        
+        // maps the name of a bone to itself
         Map<String, Bone> boneMap = new HashMap<String, Bone>();
+        
+        // maps the index of a bone to itself
         Map<Integer, Bone> indexedBoneMap = new HashMap<Integer, Bone>();
-        //indexedBoneMap.put(Integer.valueOf(0), rootBone);
-        //boneMap.put("OgreSkeleton", rootBone);
         
         Vector3f vpos   = new Vector3f(0, 0, 0);
         Quaternion vrot = new Quaternion();
         Vector3f vscale = new Vector3f(1, 1, 1);
         Vector3f vaxis = new Vector3f(1, 0, 0);
         
+        // skeleton -> bones -> bone
+        Node bones = getChildNode(skeleton, "bones");
         Node boneNode = bones.getFirstChild();
         while (boneNode != null){
             if (!boneNode.getNodeName().equals("bone")){
@@ -501,7 +507,7 @@ public class OgreLoader {
             boneNode = boneNode.getNextSibling();
         }
         
-        // read bonehierarchy
+        // skeleton -> bonehierarchy -> boneparent
         Node bonehierarchy = getChildNode(skeleton, "bonehierarchy");
         Node boneparent = bonehierarchy.getFirstChild();
         while (boneparent != null){
@@ -546,36 +552,42 @@ public class OgreLoader {
             }
         }
         
-        // Note: animationlinks not supported
+        // FIXME: animationlinks not supported currently
         
         // assign the animations
         AnimationController ac = new AnimationController();
         ac.setRepeatType(Controller.RT_WRAP);
         
-//        Node animations = getChildNode(skeleton, "animations");
-//        if (animations != null){
-//            Node animation = animations.getFirstChild();
-//            while (animation != null){
-//                if (!animation.getNodeName().equals("animation")){
-//                    animation = animation.getNextSibling();
-//                    continue;
-//                }
-//
-//                BoneAnimation anim = loadAnimation(animation, boneMap);
-//                ac.addAnimation(anim);
-//                if (ac.getActiveAnimation() == null)
-//                    ac.setActiveAnimation(anim);
-//
-//                animation = animation.getNextSibling();
-//            }
-//        }
+        Node animations = getChildNode(skeleton, "animations");
+        if (animations != null){
+            Node animation = animations.getFirstChild();
+            while (animation != null){
+                if (!animation.getNodeName().equals("animation")){
+                    animation = animation.getNextSibling();
+                    continue;
+                }
+
+                BoneAnimation anim = loadAnimation(animation, boneMap);
+                ac.addAnimation(anim);
+                if (ac.getActiveAnimation() == null)
+                    ac.setActiveAnimation(anim);
+
+                animation = animation.getNextSibling();
+            }
+        }
         
-//        rootBone.addController(ac);
+        rootBone.addController(ac);
 
         return rootBone;
     }
     
+    /**
+     * Append a vertexbuffer element onto a TriMesh
+     * @param target
+     * @param vertexbuffer
+     */
     private void loadVertexBuffer(TriMesh target, Node vertexbuffer){
+        // read all buffers
         FloatBuffer vb = target.getVertexBuffer();
         FloatBuffer nb = target.getNormalBuffer();
         FloatBuffer cb = target.getColorBuffer();
@@ -654,7 +666,7 @@ public class OgreLoader {
                 binb = BufferUtils.createFloatBuffer(target.getVertexCount()*3);
         }
         
-        // set the buffers if any were created
+        // set the buffers in case any were created
         target.setVertexBuffer(vb);
         target.setNormalBuffer(nb);
         target.setColorBuffer(cb);
@@ -762,6 +774,7 @@ public class OgreLoader {
     private TriMesh loadSubmesh(Node submesh){
         TriMesh trimesh = new TriMesh("nil");
         
+        // ==material==
         // try to load a material if it is defined
         trimesh.setName(getAttribute(submesh, "material"));
         
@@ -769,6 +782,7 @@ public class OgreLoader {
         if (material != null)
             applyMaterial(material, trimesh);
         
+        // ==usesharedvertices==
         // using shared verticles?
         boolean sharedVerts = true;
         String usesharedvertices = getAttribute(submesh, "usesharedvertices");
@@ -777,6 +791,7 @@ public class OgreLoader {
                 sharedVerts = false;
         }
         
+        // ==operationtype==
         // determine triangle mode
         TriMesh.Mode trimode = null;
         String operationtype = getAttribute(submesh, "operationtype");
@@ -788,19 +803,14 @@ public class OgreLoader {
             trimode = Mode.Fan;
         trimesh.setMode(trimode);
         
-        // check if faces definition exists (required for submesh)
-        Node faces = getChildNode(submesh, "faces");
-        if (faces == null){
-            logger.severe("Cannot load submesh: faces definition required");
-            return null;
-        }
-        
         if (!sharedVerts){
+            // ==geometry==
             Node geometry = getChildNode(submesh, "geometry");
             int vertexCount = getIntAttribute(geometry, "vertexcount");
             
             trimesh.setVertexCount(vertexCount);
             
+            // ==vertexbuffer==
             Node vertexbuffer = geometry.getFirstChild();
             while (vertexbuffer != null){
                 if (vertexbuffer.getNodeName().equals("vertexbuffer")){
@@ -819,11 +829,21 @@ public class OgreLoader {
             trimesh.setTextureCoords(sharedgeom.getTextureCoords());
         }
         
+        // ==faces==
+        // check if faces definition exists (required for submesh)
+        Node faces = getChildNode(submesh, "faces");
+        if (faces == null){
+            logger.severe("Cannot load submesh: faces definition required");
+            return null;
+        }
+        
         // Read face/triangle data
         int count = faces.getChildNodes().getLength();
         if (getAttribute(faces, "count") != null){
             count = getIntAttribute(faces, "count");
         }
+        
+        // mesh -> submesh -> faces -> face
         Node face = faces.getFirstChild();
         IntBuffer ib = BufferUtils.createIntBuffer(count*3);
         while (face != null){
@@ -847,7 +867,7 @@ public class OgreLoader {
         // Assign index buffer
         trimesh.setIndexBuffer(ib);
 
-        // Read weights
+        // ==boneassignments==
         Node boneassignments = getChildNode(submesh, "boneassignments");
         
         // ignore weights if no skeleton defined
@@ -860,9 +880,10 @@ public class OgreLoader {
             skinnode.addSkin(trimesh);
             
             if (boneassignments != null){
+                
+                // ==vertexboneassignment==
                 // assign weights to skin
                 Node assignment = boneassignments.getFirstChild();
-
                 while (assignment != null){
                     if (assignment.getNodeName().equals("vertexboneassignment")){
                         int vertIndex = Integer.parseInt(getAttribute(assignment, "vertexindex"));
@@ -894,6 +915,7 @@ public class OgreLoader {
             return new com.jme.scene.Node("nothing");
         }
 
+        // ==skeletonlink==
         Node skeletonlink = getChildNode(nodes.item(0), "skeletonlink");
         if (skeletonlink != null){
             String name = getAttribute(skeletonlink, "name") + ".xml";
@@ -913,6 +935,7 @@ public class OgreLoader {
             rootnode = new com.jme.scene.Node("OgreStaticModel");
         }
         
+        // ==sharedgeometry==
         Node sharedgeometryNode = getChildNode(nodes.item(0), "sharedgeometry");
         if (sharedgeometryNode != null){
             int vertexCount = getIntAttribute(sharedgeometryNode, "vertexcount");
@@ -929,18 +952,21 @@ public class OgreLoader {
             }
         }
         
+        // ==submeshes==
         Node submeshesNode = getChildNode(nodes.item(0), "submeshes");
         Node submesh = submeshesNode.getFirstChild();
         while (submesh != null){
             if (submesh.getNodeType() != Node.TEXT_NODE
                             && submesh.getNodeType() != Node.COMMENT_NODE) {
-
+                // ==submesh==
                 loadSubmesh(submesh);
             }
             
             submesh = submesh.getNextSibling();
         }
         
+        // ==boneassignments==
+        // for sharedgeometry only
         Node boneassignments = getChildNode(nodes.item(0), "boneassignments");
         if (boneassignments != null){
             // bone assignments defined for shared geometry,
@@ -962,6 +988,7 @@ public class OgreLoader {
             }
         }
         
+        // ==submeshnames==
         Node submeshnamesNode = getChildNode(nodes.item(0), "submeshnames");
         if (submeshnamesNode != null){
             Node submeshname = submeshnamesNode.getFirstChild();
