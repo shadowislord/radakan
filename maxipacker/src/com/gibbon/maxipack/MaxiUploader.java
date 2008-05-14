@@ -1,22 +1,18 @@
 package com.gibbon.maxipack;
 
-import java.awt.Desktop;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
@@ -25,12 +21,18 @@ import javax.swing.SwingWorker;
  * files to a server using HTTP post
  * @author Momoko_Fan
  */
-public class MaxiUploader extends SwingWorker<Void, Void> {
+public class MaxiUploader extends SwingWorker<Void, String> implements PostProgressListener {
 
     /**
      * Algorithm name to generate the file hash
      */
     private static final String HASH_ALGORITHM = "MD5";
+    
+    /**
+     * The maximum amount of bytes that a server can accept at once
+     */
+    private static final int CHUNK_SIZE = 2 * 1024 * 1024;
+    //private static final int CHUNK_SIZE = 100;
     
     /**
      * The chunk to be uploaded next
@@ -43,6 +45,14 @@ public class MaxiUploader extends SwingWorker<Void, Void> {
     private long remaining;
     
     /**
+     * Remaining bytes needed to be uploaded, more accurate than 'remaining'
+     * as it is updated live as the bytes are sent to the server.
+     * Used by MaxiProgressOutputStream when updating progress bar to 
+     * show more accurate progress of the upload.
+     */
+    private long liveRemaining;
+    
+    /**
      * File size
      */
     private long filesize;
@@ -53,152 +63,118 @@ public class MaxiUploader extends SwingWorker<Void, Void> {
     private InputStream in;
     
     /**
-     * The URL to upload the file to
-     */
-    private URL uploadURL;
-    
-    /**
      * MessageDigest to create the file hashes
      */
     private MessageDigest digester;
     
-    /*
-     * 2 MB buffer
-     * Each chunk is 2MB
+    /**
+     * Name of the file to upload
      */
-    private byte[] buffer = new byte[1024 * 1024 * 2];
+    private String filename;
     
-    private String filename = "debug.txt";
-    
-    // Some constants used for sending multipart messages
-    private static final String ENDLINE = "\r\n";
-    private static final String HYPHENS = "--";
-    private static final String BOUNDARY = "*****";
     
     /**
-     * Create a hash in hex format for the given data
-     * 
-     * @param data Input data to create the hash from
-     * @return Hash as a string of hex
+     * buffer for doing read/write operations.
+     * Size is half the amount of bytes the server can accept, as a safeguard.
      */
-    private String makeMD5Hash(byte[] data, int offset, int len){
-        digester.update(data, offset, len);
+    private byte[] buffer = new byte[CHUNK_SIZE];
+    
+    /**
+     * If the uploading is proceeding smoothly, this is true.
+     * If an error has occured, this is false.
+     */
+    private boolean success;
+    
+    /**
+     * The url returned by the server that says where the file is.
+     * This is non-null only after the uploading has finished.
+     */
+    private String fileServerPath;
+    
+    /**
+     * The MD5 hash for the file returned by the server.
+     * This is non-null only after the uploading has finished.
+     */
+    private String fileServerMD5;
+    
+    private String speedString = "0 B/s";
+    
+    private String makeMD5Hash(){
         BigInteger bi = new BigInteger(digester.digest());
         return bi.toString(16);
     }
     
-    private void sendNextChunk(int chunkID) {
-        try {
-            int chunkRemaining = (int) Math.min(remaining, buffer.length);
-            int bufferOffset = 0;
-            
-            while (chunkRemaining > 0) {
-                int bytesRead = in.read(buffer, 0, chunkRemaining);
-                                
-                bufferOffset += bytesRead;
-                remaining -= bytesRead;
-                chunkRemaining -= bytesRead;
-            }
-                  
-            // should be something like
-            // http://www.radakan.org/upload.php?chunk_id=15
-            URL chunkURL = new URL(uploadURL.toString() 
-                                 + "?chunk_id=" + chunkID 
-                                 + "&hash=" + makeMD5Hash(buffer, 0, bufferOffset));
-
-            HttpURLConnection conn = (HttpURLConnection) chunkURL.openConnection();
-            
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            conn.setUseCaches(false);
-
-            // Use a post method.
-            conn.setRequestMethod("POST");
-
-            conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + BOUNDARY);
-            conn.setRequestProperty("Cache-Control", "no-cache");
-            
-            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-            
-            dos.writeBytes(HYPHENS + BOUNDARY + ENDLINE);
-            dos.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + filename + "\"" + ENDLINE);
-            dos.writeBytes(ENDLINE);
-
-            dos.writeBytes("Content-Type: application/octet-stream");
-            dos.writeBytes(ENDLINE);
-            dos.writeBytes(ENDLINE);
-
-            dos.write(buffer, 0, bufferOffset);
-           
-            // send multipart form data necesssary after file data...
-            dos.writeBytes(ENDLINE);
-            dos.writeBytes(HYPHENS + BOUNDARY + HYPHENS + ENDLINE);
-
-            // close streams
-            dos.flush();
-            dos.close();
-
-            File tempFile = File.createTempFile("chunk"+chunkID, ".html");
-            FileWriter fos = new FileWriter(tempFile);
-
-            // Get response data.
-            BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            while (r.ready()) {
-                fos.write(r.readLine());
-                fos.write("\r\n");
-            }
-            r.close();
-            fos.close();
-
-            Desktop.getDesktop().browse(tempFile.toURI());
-            
-            // update progress bar
-            setProgress((int) (((filesize - remaining) * 100) / filesize));
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-            MaxiPanel.showError(ex.getLocalizedMessage());
-        } catch (IOException ex) {
-            // This would be a common error
-            // add some error messages here..
-            ex.printStackTrace();
-
-            if (ex instanceof FileNotFoundException) {
-                MaxiPanel.showError("File does not exist: " + ex.getLocalizedMessage());
-            } else {
-                MaxiPanel.showError(ex.getLocalizedMessage());
-            }
-        }
-
+    private boolean checkMD5Match(){
+        BigInteger bi = new BigInteger(fileServerMD5, 16);
+        byte[] hisMd5 = bi.toByteArray();
+        byte[] myMd5  = digester.digest();
+        
+        return Arrays.equals(hisMd5, myMd5);
     }
     
-    public MaxiUploader(File toUpload, URL where){
+    @Override
+    public void process(List<String> chunks){
+        firePropertyChange("speed", speedString, chunks.get(chunks.size()-1));
+        speedString = chunks.get(chunks.size()-1);
+    }
+    
+    public void bytesSent(PostOutputStream out, int num){
+        liveRemaining -= num;
+        
+        
+        int progress = (int) (((filesize - liveRemaining) * 100) / filesize);
+        
+        setProgress(progress);
+    }
+    
+    public void transferSpeed(PostOutputStream out, int speed) {
+        StringBuffer sb = new StringBuffer();
+        
+        if      (speed < 1024)        sb.append(speed).append(" B/s");
+        else if (speed < 1024 * 1024) sb.append(speed / 1024).append(" KB/s");
+        else                          sb.append(speed / 1024 * 1024).append(" MB/s"); 
+        
+        publish(sb.toString());
+    }
+    
+    public MaxiUploader(File toUpload){
         try {
-            in = new BufferedInputStream(new FileInputStream(toUpload));
             digester = MessageDigest.getInstance(HASH_ALGORITHM);
-            uploadURL = where;
             filesize = toUpload.length();
             remaining = filesize;
+            liveRemaining = remaining;
+            filename = toUpload.getName();
+            
+            in = new BufferedInputStream(new FileInputStream(toUpload));
+            DigestInputStream dis = new DigestInputStream(in, digester);
+            in = dis;
         } catch (FileNotFoundException ex) {
             // shouldn't happen since we check
             // for errors elsewhere
             ex.printStackTrace();
-            MaxiPanel.showError(ex.getLocalizedMessage());
+            MaxiApplet.showError(ex.getLocalizedMessage());
         } catch (NoSuchAlgorithmException ex){
             // if you specify a HASH_ALGORITHM that doesn't exist
-            // or is not supported on this syste it happens
+            // or is not supported on this system it happens
             ex.printStackTrace();
-            MaxiPanel.showError(ex.getLocalizedMessage());
+            MaxiApplet.showError(ex.getLocalizedMessage());
         }
     }
     
     @Override
     protected Void doInBackground() throws Exception {
-        setProgress(1);
+        setProgress(0);
         
-        while (remaining > 0 && !isCancelled())
-            sendNextChunk(curChunk++);
+        while (remaining > 0 && !isCancelled()){
+            success = sendNextChunk(curChunk++); 
+            if (!success){
+                break;
+            }
+        }
         
+        if (success){
+            success = reform();
+        }
         setProgress(100);
         
         return null;
@@ -207,12 +183,93 @@ public class MaxiUploader extends SwingWorker<Void, Void> {
     @Override
     protected void done(){
         //Toolkit.getDefaultToolkit().beep();
-        JOptionPane.showMessageDialog(MaxiPanel.INSTANCE, 
-                                      "File uploaded successfuly",
-                                      "Success",
-                                      JOptionPane.INFORMATION_MESSAGE);
+        if (success){
+            StringBuffer sb = new StringBuffer();
+            sb.append("File uploaded successfuly.\n")
+              .append("File path is: "+fileServerPath+"\n")
+              .append("MD5 hash: "+fileServerMD5+"\n")
+              .append("Matches with server? "+(checkMD5Match() ? "OK" : "NO"));
+            
+            JOptionPane.showMessageDialog(MaxiUploadPanel.INSTANCE, 
+                                          sb.toString(),
+                                          "Success",
+                                          JOptionPane.INFORMATION_MESSAGE);
+        }
         
-        MaxiPanel.INSTANCE.exitUploadState();
+        MaxiUploadPanel.INSTANCE.exitUploadState();
+    }
+    
+    /**
+     * Force server to reconstruct file
+     */
+    protected boolean reform(){
+        Server.requestMessage("Reform requested for file "+filename);
+        Response r = Server.doRequest("reform", "filename="+filename);
+
+        if (r != null){
+            if (r.containsKey("url")){
+                fileServerPath = r.getProperty("url");
+                System.out.println("URL: "+fileServerPath);
+            }
+            if (r.containsKey("md5")){
+                fileServerMD5 = r.getProperty("md5");
+                System.out.println("Server MD5: "+fileServerMD5);
+                System.out.println("My MD5: "+makeMD5Hash());
+            }
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Sends the next chunk with the provided ID
+     * @param chunkID
+     */
+    private boolean sendNextChunk(int chunkID) {
+        try {
+            // we only use half the allowed filesize for uploading
+            int chunkRemaining = (int) Math.min(remaining, CHUNK_SIZE / 2);
+            int bufferOffset = 0;
+            
+            while (chunkRemaining > 0) {
+                int bytesRead = in.read(buffer, bufferOffset, chunkRemaining);
+                
+                bufferOffset += bytesRead;
+                remaining -= bytesRead;
+                chunkRemaining -= bytesRead;
+            }
+
+            Server.requestMessage("Sending upload for user \"" + Server.getUserName() + "\" and chunk#"+chunkID);
+            Response r = Server.postFile("upload", true, "chunk_id="+chunkID, filename, buffer, bufferOffset, this);
+            
+            if (r == null){
+                MaxiApplet.showError("A server error has occured!");
+                return false; // we failed
+            }
+            
+            liveRemaining = remaining;
+            setProgress((int) (((filesize - remaining) * 100) / filesize));
+            
+            return true; // we succeeded
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+            MaxiApplet.showError(ex.getLocalizedMessage());
+        } catch (IOException ex) {
+            // This would be a common error
+            // add some error messages here..
+            ex.printStackTrace();
+            if (ex instanceof FileNotFoundException) {
+                MaxiApplet.showError("File does not exist: " + ex.getLocalizedMessage());
+            } else {
+                MaxiApplet.showError(ex.getLocalizedMessage());
+            }
+        } catch (Throwable ex){
+            ex.printStackTrace();
+        }
+
+        return false;
     }
 
 }
