@@ -124,6 +124,11 @@ public class MaxiUploader extends SwingWorker<Void, String> implements PostProgr
         
         int progress = (int) (((filesize - liveRemaining) * 100) / filesize);
         
+        if (progress < 0)
+            progress = 0;
+        else if (progress > 100)
+            progress = 100;
+        
         setProgress(progress);
     }
     
@@ -204,7 +209,8 @@ public class MaxiUploader extends SwingWorker<Void, String> implements PostProgr
      */
     protected boolean reform(){
         Server.requestMessage("Reform requested for file "+filename);
-        Response r = Server.doRequest("reform", "filename="+filename);
+        String encodedFilename = filename.replaceAll(" ", "+");
+        Response r = Server.doRequest("reform", "filename="+encodedFilename);
 
         if (r != null){
             if (r.containsKey("url")){
