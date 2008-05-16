@@ -64,7 +64,6 @@ public class TestTileLoading {
             
             TileLoader loader = new TileLoader(false);
             loader.setMaterials(mloader.getMaterials());
-            loader.setTypes(Entity2.Type.map);
 
             Node root = new Node("root");
             
