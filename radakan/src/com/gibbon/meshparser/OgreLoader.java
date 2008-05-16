@@ -20,8 +20,6 @@ import com.jme.animation.Bone;
 import com.jme.animation.BoneAnimation;
 import com.jme.animation.BoneTransform;
 import com.jme.animation.SkinNode;
-import com.jme.math.FastMath;
-import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.Controller;
@@ -272,6 +270,9 @@ public class OgreLoader {
      */
     private Bone loadSkeleton(URL url){
         try {
+            if (url == null)
+                return null;
+            
             // create a document
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(url.openStream());
@@ -587,6 +588,8 @@ public class OgreLoader {
      * @param vertexbuffer
      */
     private void loadVertexBuffer(TriMesh target, Node vertexbuffer){
+        println("Reading vertex buffer for: "+target.getName());
+        
         // read all buffers
         FloatBuffer vb = target.getVertexBuffer();
         FloatBuffer nb = target.getNormalBuffer();
@@ -787,9 +790,12 @@ public class OgreLoader {
         boolean sharedVerts = true;
         String usesharedvertices = getAttribute(submesh, "usesharedvertices");
         if (usesharedvertices != null){
-            if (!usesharedvertices.equalsIgnoreCase("true"))
+            if (!usesharedvertices.equalsIgnoreCase("true")){
                 sharedVerts = false;
+            }
         }
+        
+        println("Using sharedverts for "+trimesh.getName()+"? "+sharedVerts);
         
         // ==operationtype==
         // determine triangle mode
@@ -945,6 +951,7 @@ public class OgreLoader {
             Node vertexbuffer = sharedgeometryNode.getFirstChild();
             while (vertexbuffer != null){
                 if (vertexbuffer.getNodeName().equals("vertexbuffer")){
+                    println("Loaded shared geometry data!");
                     loadVertexBuffer(sharedgeom, vertexbuffer);
                 }
                 

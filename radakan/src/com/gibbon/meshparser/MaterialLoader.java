@@ -147,6 +147,9 @@ public class MaterialLoader {
             reader.nextToken();
             String mode = nextStatement();
             Texture t = tex.getTexture(unit);
+            if (t == null)
+                return;
+            
             if (mode.equals("wrap")){
                 t.setWrap(WrapMode.Repeat);
             }else{
@@ -157,6 +160,9 @@ public class MaterialLoader {
             reader.nextToken();
             String mode = nextStatement();
             Texture t = tex.getTexture(unit);
+            if (t == null)
+                return;
+            
             if (mode.equals("trilinear")){
                 t.setMinificationFilter(MinificationFilter.Trilinear);
                 t.setMagnificationFilter(MagnificationFilter.Bilinear);
