@@ -17,6 +17,7 @@ package com.gibbon.meshparser;
 
 import com.jme.math.Matrix4f;
 import com.jme.scene.Controller;
+import com.jme.scene.state.GLSLShaderObjectsState;
 
 public class SkeletonController extends Controller {
 

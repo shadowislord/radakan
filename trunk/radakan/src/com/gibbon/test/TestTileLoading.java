@@ -15,6 +15,8 @@
 
 package com.gibbon.test;
 
+import com.gibbon.jme.DoomCameraLoader;
+import com.gibbon.jme.LookAtController;
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.RenderPass;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
@@ -26,6 +28,7 @@ import com.gibbon.radakan.tile.TypeLoader;
 import com.jme.light.PointLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.CameraNode;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.CullState;
@@ -41,6 +44,7 @@ import com.jme.util.resource.SimpleResourceLocator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -49,21 +53,22 @@ public class TestTileLoading {
 
     private static Spatial createObjects(JmeContext cx) {
         try {
-            SimpleResourceLocator srl = new SimpleResourceLocator(new File("D:\\TileStore2\\").toURI());
-            SimpleResourceLocator srl2 = new SimpleResourceLocator(new File("D:\\TileStore\\").toURI());
+            SimpleResourceLocator srl = new SimpleResourceLocator(new File("data/tiles/").toURI());
+            SimpleResourceLocator srl2 = new SimpleResourceLocator(new File("data/tiles/").toURI());
             
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, srl);
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl2);
             ResourceLocatorTool.addResourceLocator("tile", srl);
             
             TypeLoader tloader = new TypeLoader();
-            tloader.load(new FileInputStream("D:\\TileStore2\\world4_types.xml"));
+            tloader.load(new FileInputStream("data/tiles/area_types.xml"));
 
             MaterialLoader mloader = new MaterialLoader();
-            mloader.load(new FileInputStream("D:\\TileStore2\\world4.material"));
+            mloader.load(new FileInputStream("data/tiles/area.material"));
             
             TileLoader loader = new TileLoader(false);
             loader.setMaterials(mloader.getMaterials());
+            loader.setTypes(tloader.getTypeMap());
 
             Node root = new Node("root");
             
@@ -72,7 +77,6 @@ public class TestTileLoading {
             Spatial t01 = loader.loadTile(0, -1);
             Spatial t11 = loader.loadTile(-1, -1);
 
-            
             t00.setLocalTranslation(0, 0, 0);
             t10.setLocalTranslation(-64, 0, 0);
             t01.setLocalTranslation(0, -64, 0);
@@ -91,8 +95,22 @@ public class TestTileLoading {
         return null;
     }
     
+    
+    
     public static Spatial initRoot(){
         Node rootNode = new Node("rootNode");
+        
+//        CameraNode camNode = new CameraNode("camera", JmeContext.get().getRenderer().getCamera());
+//        rootNode.attachChild(camNode);
+//        DoomCameraLoader camloader = new DoomCameraLoader();
+//        try{
+//            camloader.load(new FileInputStream("D:\\place_cam.md5camera"), camNode);
+//        } catch (IOException ex){
+//            ex.printStackTrace();
+//        }
+//        
+//        LookAtController lookAt = new LookAtController(camNode, Vector3f.ZERO);
+//        camNode.addController(lookAt);
         
         CullState cull = JmeContext.get().getRenderer().createCullState();
         cull.setCullFace(Face.Back);
@@ -114,6 +132,7 @@ public class TestTileLoading {
         light.setEnabled(true);
         lightState.attach(light);
 
+//        rootNode.attachChild(camloader.getPositionCurve());
         //Add dummy objects to rootNode
         rootNode.attachChild(createObjects(JmeContext.get()));
 		
@@ -141,6 +160,15 @@ public class TestTileLoading {
         cx.waitFor();
         
         cx.getPassManager().loadDefaultPasses();
+//        cx.getPassManager().add(new InputPass(null, false));
+//        cx.getPassManager().add(new ExitListenerPass(
+//                        new Callable<Object>(){
+//                            public Object call(){
+//                                JmeContext.get().dispose();
+//                                System.exit(0);
+//                                return null;
+//                            }
+//                        }));
         
         final RenderPass rp = new RenderPass();
         rp.add(initRoot());
@@ -150,6 +178,8 @@ public class TestTileLoading {
         //rp.setEyeDistance(3.0f);
         
         cx.getPassManager().add(rp);
+        
+        
         
 //        UpdatePass up = new UpdatePass(){
 //            @Override

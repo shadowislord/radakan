@@ -75,6 +75,11 @@ public class OgreLoader {
     private TriMesh sharedgeom = new TriMesh("sharedgeom");
     
     /**
+     * List of submeshes. Contains all submeshes in the file.
+     */
+    private List<TriMesh> submeshes = new ArrayList<TriMesh>();
+    
+    /**
      * The root bone of the skeleton, or null if a skeleton is not defined for this mesh file.
      * The assumption is made that all skeletons contain a single root bone.
      */
@@ -115,7 +120,7 @@ public class OgreLoader {
      * This parameter is now obsolete as the Blender3D mesh exporter
      * is able to do this operation.
      */
-    private boolean Z_up_to_Y_up = true;
+    private boolean Z_up_to_Y_up = false;
     
     /**
      * Show debugging messages of OgreLoaders or not.
@@ -208,7 +213,7 @@ public class OgreLoader {
      */
     public Spatial loadModel(URL url, boolean Z_up){
         try {
-            Z_up_to_Y_up = Z_up;
+            //Z_up_to_Y_up = Z_up;
             
             // read the xml document
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -588,8 +593,6 @@ public class OgreLoader {
      * @param vertexbuffer
      */
     private void loadVertexBuffer(TriMesh target, Node vertexbuffer){
-        println("Reading vertex buffer for: "+target.getName());
-        
         // read all buffers
         FloatBuffer vb = target.getVertexBuffer();
         FloatBuffer nb = target.getNormalBuffer();
@@ -631,7 +634,8 @@ public class OgreLoader {
                     dimensions = Integer.parseInt(dim);
                 }
                 
-                TexCoords coords = new TexCoords(BufferUtils.createFloatBuffer(target.getVertexCount()*dimensions), dimensions);
+                FloatBuffer texCoords = BufferUtils.createFloatBuffer(target.getVertexCount()*dimensions);
+                TexCoords coords = new TexCoords(texCoords, dimensions);
                 tb.add(coords);
             }
         }
@@ -776,6 +780,7 @@ public class OgreLoader {
      */
     private TriMesh loadSubmesh(Node submesh){
         TriMesh trimesh = new TriMesh("nil");
+        trimesh.getTextureCoords().clear();
         
         // ==material==
         // try to load a material if it is defined
@@ -794,8 +799,6 @@ public class OgreLoader {
                 sharedVerts = false;
             }
         }
-        
-        println("Using sharedverts for "+trimesh.getName()+"? "+sharedVerts);
         
         // ==operationtype==
         // determine triangle mode
@@ -910,6 +913,8 @@ public class OgreLoader {
             // attach ourselves to the rootnode
             rootnode.attachChild(trimesh);
         }
+        
+        submeshes.add(trimesh);
        
         return trimesh;
     }
@@ -951,7 +956,6 @@ public class OgreLoader {
             Node vertexbuffer = sharedgeometryNode.getFirstChild();
             while (vertexbuffer != null){
                 if (vertexbuffer.getNodeName().equals("vertexbuffer")){
-                    println("Loaded shared geometry data!");
                     loadVertexBuffer(sharedgeom, vertexbuffer);
                 }
                 
@@ -1013,6 +1017,71 @@ public class OgreLoader {
                 submeshname = submeshname.getNextSibling();
             }
         }
+        
+        // ==poses==
+        Node posesNode = getChildNode(nodes.item(0), "poses");
+        List<Pose> poses = new ArrayList<Pose>();
+        if (posesNode != null){
+            Node poseNode = posesNode.getFirstChild();
+            while (poseNode != null){
+                if (poseNode.getNodeName().equals("pose")){
+                    TriMesh target = null;
+                    if (getAttribute(poseNode, "target").equals("mesh")){
+                        target = sharedgeom;
+                    }else{
+                        if (getAttribute(poseNode, "index") == null)
+                            target = submeshes.get(0);
+                        else
+                            target = submeshes.get(getIntAttribute(poseNode, "index"));
+                    }
+                    
+                    Pose p = MeshAnimationLoader.loadPose(poseNode, target);
+                    poses.add(p);
+                }
+
+                poseNode = poseNode.getNextSibling();
+            }
+        }
+        
+        Node animationsNode = getChildNode(nodes.item(0), "animations");
+        if (animationsNode != null){
+            Map<String, MeshAnimation> animations = new HashMap<String, MeshAnimation>();
+            Node animationNode = animationsNode.getFirstChild();
+            while (animationNode != null){
+                if (animationNode.getNodeName().equals("animation")){
+                    MeshAnimation anim = MeshAnimationLoader.loadMeshAnimation(
+                                                    animationNode, 
+                                                    poses, 
+                                                    sharedgeom, 
+                                                    submeshes);
+                    animations.put(anim.getName(), anim);
+                }
+                animationNode = animationNode.getNextSibling();
+            }
+            
+            MeshAnimationController animController = new MeshAnimationController(animations);
+            animController.setAnimation("bsBrowMove");
+            animController.setRepeatType(Controller.RT_WRAP);
+            rootnode.addController(animController);
+        }else if (posesNode != null){
+//            Map<TriMesh, List<Pose>> trimeshPoses = new HashMap<TriMesh, List<Pose>>();
+//            
+//            // find the poses for each mesh
+//            for (Pose p : poses){
+//                List<Pose> poseList = trimeshPoses.get(p.getTarget());
+//                if (poseList == null){
+//                    poseList = new ArrayList<Pose>();
+//                    trimeshPoses.put(p.getTarget(), poseList);
+//                }
+//                
+//                poseList.add(p);
+//            }
+//            
+//            for (Map.Entry<TriMesh, List<Pose>> poseEntry: trimeshPoses){
+//                PoseController
+//            }
+        }
+        
 //        if (skin != null){
 //            skin.normalizeWeights();
 //            skin.regenInfluenceOffsets();

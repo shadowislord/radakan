@@ -37,7 +37,6 @@ public class SpecialStateRenderPass extends RenderPass {
     private boolean bones = false;
     private boolean normals = false;
     private boolean bounds = false;
-    private boolean backfaces = false;
     
     public enum SpecialState {
         
@@ -138,11 +137,6 @@ public class SpecialStateRenderPass extends RenderPass {
         this.bones = bones;
     }
     
-    public void setBackfaces(boolean backfaces){
-        this.backfaces = backfaces;
-        setState(getState());
-    }
-    
     @Override
     public void doUpdate(JmeContext cx){
         super.doUpdate(cx);
@@ -193,25 +187,25 @@ public class SpecialStateRenderPass extends RenderPass {
                 setPassState(ws);
                 setPassState(nms);
                 setPassState(nls);
-                if (!backfaces) setPassState(cull);
                 break;
             case SOLID:
                 setForceDefaults(true);
                 setPassState(ls);
                 setPassState(zbuf);
-                if (!backfaces) setPassState(cull);
                 break;
             case TEXTURED:
                 setForceDefaults(true);
                 setPassState(zbuf);
-                if (!backfaces) setPassState(cull);
                 setPassState(ms);
                 passStates[RenderState.RS_TEXTURE] = null;
                 break;
             case MATERIAL:
                 setForceDefaults(false);
-                setPassState(zbuf);
-                if (!backfaces) setPassState(cull);
+                break;
+        }
+        
+        for (Spatial model : spatials){
+            model.updateRenderState();
         }
     }
     
