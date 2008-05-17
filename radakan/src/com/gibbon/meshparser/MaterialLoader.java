@@ -21,6 +21,9 @@ import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.state.BlendState;
+import com.jme.scene.state.BlendState.DestinationFunction;
+import com.jme.scene.state.BlendState.SourceFunction;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
@@ -45,7 +48,7 @@ public class MaterialLoader {
     
     private StreamTokenizer reader;
     private Map<String, Material> materialMap;
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     
     public MaterialLoader() {
     }
@@ -226,10 +229,10 @@ public class MaterialLoader {
             String mode = nextStatement();
             if (mode.equals("alpha_blend")){
                 material.transparent = true;
-//                AlphaState as = (AlphaState) material.getState(RenderState.RS_ALPHA);
-//                as.setBlendEnabled(true);
-//                as.setSrcFunction(AlphaState.SB_ZERO);
-//                as.setDstFunction(AlphaState.DB_ZERO);
+                BlendState as = (BlendState) material.getState(RenderState.RS_BLEND);
+                as.setBlendEnabled(true);
+                as.setSourceFunction(SourceFunction.SourceAlpha);
+                as.setDestinationFunction(DestinationFunction.OneMinusSourceAlpha);
 //                
 //                CullState cs = (CullState) material.getState(RenderState.RS_CULL);
 //                cs.setCullMode(CullState.CS_FRONT_AND_BACK);

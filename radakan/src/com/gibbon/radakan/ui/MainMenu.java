@@ -1,4 +1,4 @@
-package com.gibbon.test;
+package com.gibbon.radakan.ui;
 
 import com.gibbon.radakan.SysInfo;
 import com.gibbon.radakan.error.ErrorReporter;

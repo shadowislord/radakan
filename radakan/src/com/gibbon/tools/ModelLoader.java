@@ -3,6 +3,7 @@ package com.gibbon.tools;
 import com.gibbon.meshparser.Material;
 import com.gibbon.meshparser.MaterialLoader;
 import com.gibbon.meshparser.OgreLoader;
+import com.gibbon.meshparser.SceneLoader;
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingVolume;
 import com.jme.math.Vector3f;
@@ -85,10 +86,19 @@ public final class ModelLoader {
         }
         
         OgreLoader loader = new OgreLoader();
+        loader.setMaterials(materials);
         return loader.loadModel(file.toURI().toURL(), false);
     }
     
-    public static Spatial scale(Spatial model) {
+    public static Spatial loadDotScene(File file) throws IOException{
+        SceneLoader loader = new SceneLoader();
+        FileInputStream in = new FileInputStream(file);
+        loader.load(in);
+        in.close();
+        return loader.getScene();
+    }
+    
+    public static Spatial scaleAndCenter(Spatial model) {
         if (model != null) {
             // scale model to maximum extent of 5.0
             model.updateGeometricState(0, true);
@@ -112,7 +122,9 @@ public final class ModelLoader {
                     Node scaledModel = new Node( "scaled model" );
                     scaledModel.attachChild( model );
                     scaledModel.setLocalScale( 40.0f / maxExtent );
+                    scaledModel.setLocalTranslation(center.negate());
                     System.out.println("Model size: "+maxExtent);
+                    System.out.println("Model position: "+center);
                     model = scaledModel;
                 }
             }
@@ -123,6 +135,7 @@ public final class ModelLoader {
     public static Spatial loadModel(File file, String ext) throws IOException{
         MultiFormatResourceLocator locator 
                 = new MultiFormatResourceLocator(file.getParentFile().toURI(), "png", "dds", "tga", "bmp", "jpg", "wbmp", "gif");
+        locator.setTrySpecifiedFormatFirst(true);
         ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, locator);
         
         SimpleResourceLocator locator2 = new SimpleResourceLocator(file.getParentFile().toURI());
@@ -162,6 +175,8 @@ public final class ModelLoader {
             model = loadDAEModel(file);
         }else if (ext.equalsIgnoreCase("xml")){
             model = loadMeshModel(file);
+        }else if (ext.equalsIgnoreCase("scene")){
+            model = loadDotScene(file);
         }else{
             JOptionPane.showMessageDialog(
                              null,

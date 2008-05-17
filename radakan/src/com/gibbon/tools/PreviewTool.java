@@ -8,28 +8,30 @@ import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
 import com.jme.scene.shape.Sphere;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.BlendState.DestinationFunction;
 import com.jme.scene.state.BlendState.SourceFunction;
+import com.jme.scene.state.CullState;
+import com.jme.scene.state.CullState.Face;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.util.TextureManager;
 import java.awt.Canvas;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class PreviewTool extends javax.swing.JFrame {
     
@@ -39,7 +41,8 @@ public class PreviewTool extends javax.swing.JFrame {
     
     private SpecialStateRenderPass render;
     private Spatial model;
-    private boolean coordSysConvert = false;
+    private Node rootNode = new Node("rootNode");
+    private CullState backFaces;
     
     private JFileChooser chooser;
     private FileNameExtensionFilter jme = new FileNameExtensionFilter("jMonkey Engine binary model (*.jme)","jme");
@@ -53,11 +56,14 @@ public class PreviewTool extends javax.swing.JFrame {
     private FileNameExtensionFilter three_ds = new FileNameExtensionFilter("3D Studio 3D Scene (*.3ds)","3ds");
     private FileNameExtensionFilter ase = new FileNameExtensionFilter("3ds Max ASCII Export File (*.ase)","ase");
     private FileNameExtensionFilter meshxml = new FileNameExtensionFilter("Ogre3D Mesh XML (*.xml)", "xml");
+    private FileNameExtensionFilter scene = new FileNameExtensionFilter("Ogre3D dotScene (*.scene)", "scene");
     private FileNameExtensionFilter import_combo = new FileNameExtensionFilter("All supported formats (*.md2, *.md3, *.obj, *.ms3d, *.dae, *.3ds, *.ase, *.md5mesh, *.x3d, *.xml)",
-                                                                       "md2", "md3", "obj", "ms3d", "dae", "3ds", "ase", "md5mesh", "x3d", "xml");
+                                                                       "md2", "md3", "obj", "ms3d", "dae", "3ds", "ase", "md5mesh", "x3d", "xml", "scene");
     
     
     public PreviewTool() {
+        Logger.getLogger("").setLevel(Level.WARNING);
+        
         initComponents();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -74,6 +80,7 @@ public class PreviewTool extends javax.swing.JFrame {
         chooser.addChoosableFileFilter(three_ds);
         chooser.addChoosableFileFilter(ase);
         chooser.addChoosableFileFilter(meshxml);
+        chooser.addChoosableFileFilter(scene);
         chooser.addChoosableFileFilter(import_combo);
         chooser.setFileFilter(import_combo);
         
@@ -89,7 +96,8 @@ public class PreviewTool extends javax.swing.JFrame {
                     glCanvas.addMouseMotionListener(handler);
 
                     render = new SpecialStateRenderPass();
-
+                    render.add(rootNode);
+                    
                     model = new Sphere("sphere", 30, 20, 10);
                     model.getLocalRotation().fromAngles(-FastMath.HALF_PI, 0, 0);
                     model.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
@@ -104,20 +112,28 @@ public class PreviewTool extends javax.swing.JFrame {
                     TextureManager.COMPRESS_BY_DEFAULT = false;
                     TextureState ts = cx.getRenderer().createTextureState();
                     ts.setEnabled(true);
-                    URL url = new File("E:\\RADAKAN\\data\\images\\Monkey.jpg").toURI().toURL();
+                    URL url = new File("data\\images\\Monkey.jpg").toURI().toURL();
                     ts.setTexture(TextureManager.loadTexture(url, MinificationFilter.Trilinear, 
                                                                   MagnificationFilter.Bilinear, 1.0f, true));
                     model.setRenderState(ts);
                     
+                    rootNode.attachChild(model);
+                    
+                    
                     ZBufferState zbuf = cx.getRenderer().createZBufferState();
                     zbuf.setFunction(TestFunction.LessThan);
                     zbuf.setWritable(true);
-                    model.setRenderState(zbuf);
+                    rootNode.setRenderState(zbuf);
                     
-                    model.updateGeometricState(0.0f, true);
-                    model.updateRenderState();
+                    backFaces = cx.getRenderer().createCullState();
+                    backFaces.setCullFace(Face.Back);
+                    rootNode.setRenderState(backFaces);
                     
-                    render.add(model);
+                    rootNode.updateGeometricState(0.0f, true);
+                    rootNode.updateRenderState();
+                    
+                    JmeContext.get().getRenderer().getCamera().setLocation(new Vector3f(0, 0, -50));
+                    
                     cx.getPassManager().add(render);
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(PreviewTool.class.getName()).log(Level.SEVERE, null, ex);
@@ -382,19 +398,18 @@ public class PreviewTool extends javax.swing.JFrame {
                 if (i > 0){
                     String ext = selected.getName().substring(i+1);
                     try{
-                        render.remove(model);
+                        rootNode.detachAllChildren();
                         model = ModelLoader.loadModel(selected, ext);
                         
                         if (model == null)
                             return;
                         
-                        model = ModelLoader.scale(model);
+                        model = ModelLoader.scaleAndCenter(model);
                         
-                        model.updateGeometricState(0, true);
-                        model.updateRenderState();
+                        rootNode.attachChild(model);
                         
-                        render.clear();
-                        render.add(model);
+                        rootNode.updateGeometricState(0, true);
+                        rootNode.updateRenderState();
                     } catch (Throwable ex){
                         JOptionPane.showMessageDialog(this, 
                                                       "Failed to load model.\nReason: "+ex.toString(), 
@@ -420,19 +435,20 @@ public class PreviewTool extends javax.swing.JFrame {
     }//GEN-LAST:event_chkNormalsActionPerformed
 
     private void chkBackfacesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBackfacesActionPerformed
-        render.setBackfaces(chkBackfaces.isSelected());
+        backFaces.setEnabled(!chkBackfaces.isSelected());
+        rootNode.updateRenderState();
     }//GEN-LAST:event_chkBackfacesActionPerformed
 
     private void chkConvertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkConvertActionPerformed
         if (chkConvert.isSelected()){
             Quaternion q = new Quaternion();
             q.fromAngles(-FastMath.HALF_PI, FastMath.PI, 0);
-            model.setLocalRotation(q);
+            rootNode.setLocalRotation(q);
         }else{
-            model.setLocalRotation(new Quaternion());
+            rootNode.setLocalRotation(new Quaternion());
         }
         
-        model.updateGeometricState(0, true);
+        rootNode.updateGeometricState(0, true);
     }//GEN-LAST:event_chkConvertActionPerformed
     
     /**

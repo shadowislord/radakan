@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 
 import com.jme.app.SimpleGame;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
+import com.jme.scene.shape.Quad;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
 
@@ -45,26 +47,6 @@ public class TestLoadJMEModel extends SimpleGame {
 //			System.out.println(ioe.getMessage());
 //		}
 
-        // Verifies scenegraph.
-//		if (model != null) {
-//			System.out.print(model.getName());
-//			System.out.println(" " + model.getClass());
-//			model.getClass().cast(model);
-////			System.out.println("\t" + model.getQuantity());
-//			for (Spatial sp : model.getChildren()) {
-//				Node no = (Node) sp;
-//				System.out.print("\n\t" + no.getName());
-//				System.out.println(" " + model.getClass());
-////				System.out.println("\t\t" + no.getQuantity());
-//				for (Spatial sp1 : no.getChildren()) {
-//					//Node no1 = (Node) sp1;
-//					System.out.print("\n\t\t" + sp1.getName());
-//					System.out.println(" " + sp1.getClass());
-//				}
-//			}
-////			System.out.println(model.getControllerCount());
-//		}
-
         // Load Ogre XML mesh file and material
         String uris1[] = {
             "C:\\Users\\Kirill\\Desktop\\xemna\\",
@@ -73,15 +55,15 @@ public class TestLoadJMEModel extends SimpleGame {
         };
 
         String uris3[] = {
-            "D:\\Test Anim Import\\",
-            "D:\\Test Anim Import\\Scene.material",
-            "D:\\Test Anim Import\\Cube.012.mesh.xml"
+            "E:\\RADAKAN\\data\\tiles\\",
+            "E:\\RADAKAN\\data\\tiles\\area.material",
+            "E:\\RADAKAN\\data\\tiles\\myscene.scene"
         };
 
         File root = new File(uris3[0]);
         File matRes = new File(uris3[1]);
         File meshRes = new File(uris3[2]);
-
+        
         SimpleResourceLocator srl = new SimpleResourceLocator(root.toURI());
         ResourceLocatorTool.addResourceLocator(
                 ResourceLocatorTool.TYPE_TEXTURE, srl);
@@ -89,15 +71,21 @@ public class TestLoadJMEModel extends SimpleGame {
                 srl);
 
         try {
-            MaterialLoader matLoader = new MaterialLoader();
-            matLoader.load(new FileInputStream(matRes));
+//            MaterialLoader matLoader = new MaterialLoader();
+//            matLoader.load(new FileInputStream(matRes));
+//
+//            OgreLoader meshLoader = new OgreLoader();
+//            meshLoader.setMaterials(matLoader.getMaterials());
+//
+//            Node model = (Node) meshLoader.loadModel(meshRes.toURI().toURL(), false);
 
-            OgreLoader meshLoader = new OgreLoader();
-            meshLoader.setMaterials(matLoader.getMaterials());
-
-            Node model = (Node) meshLoader.loadModel(meshRes.toURI().toURL(), false);
-
-            rootNode.attachChild(model);
+            SceneLoader loader = new SceneLoader();
+            loader.load(new FileInputStream(meshRes));
+            
+            rootNode.attachChild(loader.getScene());
+            
+            rootNode.updateGeometricState(0, true);
+            rootNode.updateRenderState();
         } catch (Exception e) {
             e.printStackTrace();
         }

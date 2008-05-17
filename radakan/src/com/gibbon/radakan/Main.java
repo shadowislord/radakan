@@ -15,42 +15,30 @@
 
 package com.gibbon.radakan;
 
-import com.gibbon.jme.context.ExitListenerPass;
 import com.gibbon.jme.context.InputPass;
 import com.gibbon.jme.context.JmeContext;
-import com.gibbon.jme.context.PassManager;
 import com.gibbon.jme.context.PassType;
 import com.gibbon.jme.context.RenderPass;
 import com.gibbon.jme.context.SoundPass;
-import com.gibbon.jme.context.lwjgl.LWJGLContext;
-import com.gibbon.meshparser.MaterialLoader;
-import com.gibbon.radakan.config.ConfigFrame;
+import com.gibbon.meshparser.SceneLoader;
 import com.gibbon.radakan.entity.*;
 import com.gibbon.radakan.error.ErrorReporter;
 import com.gibbon.radakan.menu.LoadingController;
 import com.gibbon.radakan.player.PlayerController;
-import com.gibbon.radakan.tile.TileLoader;
 
-import com.gibbon.radakan.tile.TypeLoader;
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.CollisionTree.Type;
 import com.jme.bounding.CollisionTreeManager;
 
-import com.jme.image.Image.Format;
 import com.jme.image.Texture;
-import com.jme.image.Texture.MagnificationFilter;
-import com.jme.image.Texture.MinificationFilter;
 
 import com.jme.light.PointLight;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
-import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
-import com.jme.scene.Skybox;
-import com.jme.scene.Skybox.Face;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
 import com.jme.scene.VBOInfo;
@@ -63,25 +51,19 @@ import com.jme.scene.state.LightState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.state.ZBufferState.TestFunction;
-import com.jme.system.GameSettings;
-import com.jme.system.PreferencesGameSettings;
-import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
-import com.jme.util.resource.SimpleResourceLocator;
 import com.jmex.audio.AudioSystem;
 import com.jmex.audio.AudioTrack;
 import com.jmex.audio.MusicTrackQueue;
 import com.jmex.audio.MusicTrackQueue.RepeatType;
 import com.model.md5.ModelNode;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 
 public class Main {
 
@@ -93,90 +75,7 @@ public class Main {
     private static InputPass     inputPass;
     
     private static LoadingController loading;
-    
-    public static void setupLocators(){
-            String root = System.getProperty("user.dir");
-            
-            // setup audio locators
-            URI musicDir = new File(root, "/data/music/").toURI();
-            SimpleResourceLocator audio = new SimpleResourceLocator(musicDir);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_AUDIO, audio);
 
-            // setup texture locators
-            URI terDir = new File(root, "/data/terrain/").toURI();
-            URI skyDir = new File(root, "/data/sky/").toURI();
-            URI texDir = new File(root, "/data/textures/").toURI();
-
-            SimpleResourceLocator ter = new SimpleResourceLocator(terDir);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, ter);
-            SimpleResourceLocator tex = new SimpleResourceLocator(texDir);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
-            SimpleResourceLocator sky = new SimpleResourceLocator(skyDir);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, sky);
-            
-            // setup shader locators
-            URI shaderDir = new File(root, "/data/shaders/").toURI();
-            SimpleResourceLocator shader = new SimpleResourceLocator(shaderDir);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_SHADER, shader);
-            
-            // setup model locators
-            URI modelDir = new File(root, "/data/models/").toURI();
-            SimpleResourceLocator model = new SimpleResourceLocator(modelDir);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, model);
-    }
-    
-    public static Texture loadTexture(String name, boolean flipY){
-        return TextureManager.loadTexture(name,MinificationFilter.Trilinear,MagnificationFilter.Bilinear,1.0f,flipY);
-    }
-    
-    /**
-     * Loads an image but doesn't compress it
-     * 
-     * @param name
-     * @param flipY
-     * @return
-     */
-    public static Texture loadTextureUI(String name, boolean flipY){
-        return TextureManager.loadTexture(name,MinificationFilter.BilinearNoMipMaps, MagnificationFilter.Bilinear,Format.GuessNoCompression,0.0f,flipY);
-    }
-    
-    public static Skybox loadSkybox(final JmeContext cx){
-        Skybox sky = new Skybox("sky", 2f, 2f, 2f){
-            @Override
-            public void updateGeometricState(float tpf, boolean initiator){
-                Camera cam = cx.getRenderer().getCamera();
-                setLocalTranslation(cam.getLocation());
-                super.updateGeometricState(tpf, initiator);
-            }
-        };
-        
-//        sky.setTexture(Skybox.DOWN,  loadTexture("sky_down.dds", false));
-//        sky.setTexture(Skybox.UP,    loadTexture("sky_up.dds", false));
-//        sky.setTexture(Skybox.EAST,  loadTexture("sky_east.dds", false));
-//        sky.setTexture(Skybox.WEST,  loadTexture("sky_west.dds", false));
-//        sky.setTexture(Skybox.NORTH, loadTexture("sky_north.dds", false));
-//        sky.setTexture(Skybox.SOUTH, loadTexture("sky_south.dds", false));
-        
-        sky.setTexture(Face.Down,loadTexture("cloud_down.jpg", true));
-        sky.setTexture(Face.Up,  loadTexture("cloud_up.jpg", true));
-        
-        sky.setTexture(Face.West,  loadTexture("cloud_1.jpg", true));
-        sky.setTexture(Face.North,  loadTexture("cloud_2.jpg", true));
-        sky.setTexture(Face.East, loadTexture("cloud_4.jpg", true));
-        sky.setTexture(Face.South, loadTexture("cloud_3.jpg", true));
-        
-        sky.setRenderQueueMode(Renderer.QUEUE_SKIP);
-        
-        ZBufferState zbuf = cx.getRenderer().createZBufferState();
-        zbuf.setFunction(TestFunction.Always);
-        zbuf.setWritable(false);
-        sky.setRenderState(zbuf);
-        
-        sky.updateRenderState();
-        
-        return sky;
-    }
-    
     public static void setVbo(Spatial spatial){
         spatial.setIsCollidable(true);
         
@@ -208,37 +107,16 @@ public class Main {
 //        
 //        final Spatial world = (Spatial) BinaryImporter.getInstance().load(bootstrap);
         
-        SimpleResourceLocator srl = new SimpleResourceLocator(new File("D:\\TileStore2\\").toURI());
-        ResourceLocatorTool.addResourceLocator("tile", srl);
-        ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, srl);
-        ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl);
-        
-        MaterialLoader mloader = new MaterialLoader();
-        mloader.load(new FileInputStream("D:\\TileStore2\\area.material"));
-        
-        TypeLoader tloader = new TypeLoader();
-        tloader.load(new FileInputStream("D:\\TileStore2\\area_types.xml"));
-        
-        TileLoader loader = new TileLoader(true);
-        loader.setTypes(Entity2.Type.map);
-        loader.setMaterials(mloader.getMaterials());
-        
         final Node world = new Node("WORLD");
         
-        Spatial tile = loader.loadTile(0, 0);
-        world.attachChild(tile);
+        SceneLoader loader = new SceneLoader();
         
-        tile = loader.loadTile(-1, 0);
-        tile.setLocalTranslation(64, 0, 0);
-        world.attachChild(tile);
+        URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "area.scene");
+        InputStream in = url.openStream();
+        loader.load(in);
+        in.close();
         
-        tile = loader.loadTile(0, -1);
-        tile.setLocalTranslation(0, 0, -64);
-        world.attachChild(tile);
-        
-        tile = loader.loadTile(-1, -1);
-        tile.setLocalTranslation(64, 0, -64);
-        world.attachChild(tile);
+        world.attachChild(loader.getScene());
         
         world.setModelBound(new BoundingBox());
         world.updateModelBound();
@@ -260,59 +138,7 @@ public class Main {
         return world;
     }
     
-    public static JmeContext loadDisplay(){
-        try {
-            GameSettings gs = new PreferencesGameSettings(Preferences.userRoot().node("Radakan"));
-            ConfigFrame config = new ConfigFrame(gs);
-            config.setVisible(true);
-            config.requestFocus();
-            config.waitFor();
-
-            // set custom settings here
-            gs.set("title", SysInfo.getGameName() + " " + SysInfo.getVersionPrefix() + " " + SysInfo.getGameVersion());
-            gs.setSamples(0);
-            gs.setFramerate(60);
-            gs.setVerticalSync(true);
-            
-            final JmeContext cx = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
-            cx.setSettings(gs);
-            cx.start();
-            cx.waitFor();
-            
-            return cx;
-        } catch (InstantiationException ex) {
-            ErrorReporter.reportError("Failed to initialize Display implementor", ex);
-        } catch (InterruptedException ex) {
-            ErrorReporter.reportError("Recieved interrupt while waiting for Display", ex);
-        } catch (Throwable ex){
-            if (ex instanceof UnsatisfiedLinkError && ex.getMessage().equals("no lwjgl in java.library.path")){
-                ErrorReporter.reportError("The native library \""+System.mapLibraryName("lwjgl")+"\" cannot be found", ex);
-            }else{
-                ErrorReporter.reportError("Error while creating 3D display", ex);
-            }
-        }
-        
-        return null;
-    }
-    
-    public static void loadPasses(JmeContext cx){
-        final PassManager pm = cx.getPassManager();
-        pm.execute(new Callable<Object>(){
-            public Object call(){
-                pm.add(new ExitListenerPass(
-                        new Callable<Object>(){
-                            public Object call(){
-                                JmeContext.get().dispose();
-                                System.exit(0);
-                                return null;
-                            }
-                        }));
-                return null;
-            }
-        });
-    }
-    
-    public static Spatial loadMenu(JmeContext cx){
+    public static Spatial loadLoadingScreen(JmeContext cx){
         Renderer r = cx.getRenderer();
         
         float width = r.getWidth();
@@ -334,7 +160,7 @@ public class Main {
         background.setLocalTranslation(new Vector3f(width / 2f, height * aspect / 2f, 0.0f));
 
         TextureState texState = r.createTextureState();
-        Texture tex = loadTextureUI("logo.tga", true);
+        Texture tex = Setup.loadTextureUI("logo.tga", true);
         texState.setTexture(tex);
         background.setRenderState(texState);
         
@@ -345,7 +171,7 @@ public class Main {
         background2.setLocalTranslation(new Vector3f(width / 2f, height / 3f, 0.0f));
 
         texState = r.createTextureState();
-        tex = loadTextureUI("loadingtext.tga", true);
+        tex = Setup.loadTextureUI("loadingtext.tga", true);
         texState.setTexture(tex);
         background2.setRenderState(texState);
         
@@ -483,10 +309,10 @@ public class Main {
         }catch (InterruptedException ex){
         }
         
-            JmeContext cx = loadDisplay();
+            JmeContext cx = Setup.loadDisplay();
 
-            setupLocators();
-            loadPasses(cx);
+            Setup.setupLocators();
+            Setup.loadPasses(cx);
 
             // initialize sound
             // loading screen theme
@@ -505,7 +331,7 @@ public class Main {
                 }
             });
             
-            Spatial menu = loadMenu(cx);
+            Spatial menu = loadLoadingScreen(cx);
             // give a special name so that LoadingController can detach it
 
             RenderPass menuPass = new RenderPass(PassType.POST_RENDER, "menu");

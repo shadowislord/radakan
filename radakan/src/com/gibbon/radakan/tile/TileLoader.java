@@ -21,16 +21,11 @@ import com.gibbon.radakan.error.ErrorReporter;
 import com.gibbon.radakan.entity.*;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
-import com.jme.scene.PassNode;
-import com.jme.scene.PassNodeState;
 import com.jme.scene.Spatial;
 import com.jme.util.resource.ResourceLocatorTool;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,9 +36,15 @@ import org.xml.sax.SAXException;
 
 public class TileLoader {
 
-    private Map<String, Entity2.Type> itemMap;
+    private Map<String, ItemType> itemMap;
     private Map<String, Material> materialMap;
-    private boolean Z_up_to_Y_up = true;
+    private boolean Z_up_to_Y_up = false;
+    
+    private static final Quaternion conversion = new Quaternion();
+    
+    static {
+        conversion.fromAngles(-FastMath.HALF_PI, FastMath.PI, 0);
+    }
     
     public TileLoader(boolean Z_up){
         Z_up_to_Y_up = Z_up;
@@ -66,15 +67,12 @@ public class TileLoader {
         Node model = tile.getFirstChild();
         com.jme.scene.Node rootNode = new com.jme.scene.Node(name);
         
-        if (model == null)
-            System.out.println("A");
-        
         while (model != null){
             if (model.getNodeName().equals("model")){
                 String item = getAttribute(model, "item");
                 String modelName = getAttribute(model, "name");
                 
-                Entity2.Type type = itemMap.get(item);
+                ItemType type = itemMap.get(item);
                 
                 if (type == null){
                     throw new IllegalStateException("Cannot find type: "+item);
@@ -83,7 +81,7 @@ public class TileLoader {
                 URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, type.meshName + ".xml");
                 OgreLoader loader = new OgreLoader();
                 loader.setMaterials(materialMap);
-                Spatial spatial = loader.loadModel(url, Z_up_to_Y_up);
+                Spatial spatial = loader.loadModel(url, false);
                 spatial.setName(modelName);
                 spatial.setIsCollidable(type.solid);
                 
@@ -95,31 +93,35 @@ public class TileLoader {
                     spatial.setLocalTranslation(-Float.parseFloat(pos[0]),
                                                 Float.parseFloat(pos[2]),
                                                 Float.parseFloat(pos[1]));
+                    
                 }else{
                   spatial.setLocalTranslation(Float.parseFloat(pos[0]),
                                               Float.parseFloat(pos[1]),
                                               Float.parseFloat(pos[2]));
                 }
                 
-                if (Z_up_to_Y_up){
-                    spatial.getLocalRotation().fromAngles(Float.parseFloat(rot[0]),
-                                                          Float.parseFloat(rot[2]),
-                                                          -Float.parseFloat(rot[1]));
-                    
-//                    spatial.getLocalRotation().set(Float.parseFloat(rot[0]),
-//                                                   Float.parseFloat(rot[2]),
-//                                                   Float.parseFloat(rot[1]),
-//                                                   Float.parseFloat(rot[3]));
-                }else{
-                    spatial.getLocalRotation().fromAngles(Float.parseFloat(rot[0]),
-                                                          Float.parseFloat(rot[1]),
-                                                          Float.parseFloat(rot[2]));
-//                    spatial.getLocalRotation().set(Float.parseFloat(rot[0]),
-//                                                   Float.parseFloat(rot[1]),
-//                                                   Float.parseFloat(rot[2]),
-//                                                   Float.parseFloat(rot[3]));
-                }
+//                  conversion.multLocal(spatial.getLocalTranslation());
+                  
+//                if (Z_up_to_Y_up){
+//                    spatial.getLocalRotation().fromAngles(Float.parseFloat(rot[0]),
+//                                                          Float.parseFloat(rot[2]),
+//                                                          -Float.parseFloat(rot[1]));
+//                    
+////                    spatial.getLocalRotation().set(Float.parseFloat(rot[0]),
+////                                                   Float.parseFloat(rot[2]),
+////                                                   Float.parseFloat(rot[1]),
+////                                                   Float.parseFloat(rot[3]));
+//                }else{
+//                    spatial.getLocalRotation().fromAngles(Float.parseFloat(rot[0]),
+//                                                          Float.parseFloat(rot[1]),
+//                                                          Float.parseFloat(rot[2]));
+                    spatial.getLocalRotation().set(Float.parseFloat(rot[0]),
+                                                   Float.parseFloat(rot[1]),
+                                                   Float.parseFloat(rot[2]),
+                                                   Float.parseFloat(rot[3]));
+//                }
                 
+//                    spatial.getLocalRotation().multLocal(conversion);
                 spatial.getLocalRotation().normalize();
                 
                 if (Z_up_to_Y_up){
@@ -127,15 +129,14 @@ public class TileLoader {
                                                 Float.parseFloat(scale[2]),
                                                 Float.parseFloat(scale[1]));
                 }else{
-                    
                     spatial.getLocalScale().set(Float.parseFloat(scale[0]),
                                                 Float.parseFloat(scale[1]),
                                                 Float.parseFloat(scale[2]));
                 }
                 
-                System.out.println("--"+spatial.getName()+"--");
-                System.out.println("Position: "+spatial.getLocalTranslation());
-                System.out.println("Scale: "+spatial.getLocalRotation());
+//                System.out.println("--"+spatial.getName()+"--");
+//                System.out.println("Position: "+spatial.getLocalTranslation());
+//                System.out.println("Scale: "+spatial.getLocalRotation());
                     
                 rootNode.attachChild(spatial);
             }
@@ -146,7 +147,7 @@ public class TileLoader {
         return rootNode;
     }
     
-    public void setTypes(Map<String, Entity2.Type> typesMap){
+    public void setTypes(Map<String, ItemType> typesMap){
         itemMap = typesMap;
     }
     
