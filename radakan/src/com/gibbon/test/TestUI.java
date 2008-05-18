@@ -2,35 +2,34 @@ package com.gibbon.test;
 
 import com.gibbon.radakan.ui.MainMenu;
 import com.gibbon.jme.context.ExitListenerPass;
-import com.gibbon.jme.context.FengGuiPass;
-import com.gibbon.jme.context.GuiManager;
 import com.gibbon.jme.context.InputPass;
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
-import com.gibbon.radakan.cinematic.Cinematic;
+import com.gibbon.radakan.Setup;
 import com.gibbon.radakan.config.ConfigFrame;
 import com.gibbon.radakan.error.ErrorReporter;
 
+import com.gibbon.radakan.ui.MainMenu;
+import com.gibbon.radakan.ui.MainMenu;
+import com.gibbon.radakan.ui.UIManager;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
-import org.fenggui.Display;
-import org.fenggui.FengGUI;
-import org.fenggui.layout.StaticLayout;
-import org.fenggui.theme.XMLTheme;
-import org.fenggui.theme.xml.IXMLStreamableException;
 
 public class TestUI {
 
+    public static void initGame(JmeContext cx){
+        // create gui
+        Setup.loadGuiPass(cx);
+        UIManager.setXMLTheme("data/themes/QtCurve.xml");
+        
+        MainMenu menu = new MainMenu();
+        UIManager.setContext(menu, false);
+    }
+    
     public static void main(String[] args){
         //Logger.getLogger("").setLevel(Level.WARNING);
         
@@ -72,53 +71,7 @@ public class TestUI {
         });
         cx.getPassManager().add(elp);
         
-        // create gui
-        GuiManager manager = new GuiManager(){
-            
-            private Cinematic c;
-            
-            public void create(Display display) {
-                try {
-                    FengGUI.setTheme(new XMLTheme("data/themes/QtCurve.xml"));
-                } catch (IOException ex) {
-                    ErrorReporter.reportError("Error while reading theme file QtCurve.xml", ex);
-                } catch (IXMLStreamableException ex) {
-                    ErrorReporter.reportError("Error while parsing XML theme file", ex);
-                }
-                
-//                try {
-                MainMenu menu = new MainMenu(display.getWidth(), display.getHeight());
-                display.addWidget(menu);
-                
-                StaticLayout.center(menu, display);
-//                    URL url = new File("E:\\RADAKAN\\data\\cinematic\\final.mpg").toURI().toURL();
-//                    c = new Cinematic(url, display.getWidth(), display.getHeight());
-//                    display.addWidget(c);
-//
-//                    StaticLayout.center(c, display);
-//                    
-//                    c.realize();
-//                    c.play();
-                    
-                    display.layout();
-//                } catch (MalformedURLException ex) {
-//                    Logger.getLogger(TestUI.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-            }
-
-            public void destroy(Display display) {
-                c.dispose();
-                System.out.println("Cinematic disposed");
-            }
-
-            public void update(Display display, float tpf) {
-            }
-
-        };
-        
-        // add gui pass
-        FengGuiPass ui = new FengGuiPass(manager);
-        cx.getPassManager().add(ui);
+        initGame(cx);
     }
     
 }

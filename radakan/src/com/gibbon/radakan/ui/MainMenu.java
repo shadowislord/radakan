@@ -4,13 +4,10 @@ import com.gibbon.radakan.SysInfo;
 import com.gibbon.radakan.error.ErrorReporter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.fenggui.Button;
 import org.fenggui.Container;
 import org.fenggui.Label;
 import org.fenggui.background.PixmapBackground;
-import org.fenggui.layout.Alignment;
 import org.fenggui.layout.RowLayout;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.render.Binding;
@@ -21,7 +18,7 @@ import org.fenggui.util.Color;
 import org.fenggui.util.Spacing;
 import org.lwjgl.opengl.GL11;
 
-public class MainMenu extends Container {
+public class MainMenu extends Container implements UIContext {
 
     public static Font STONEHEDGE_SMALL;
     public static Font ARKHAM_BUTTONS;
@@ -72,7 +69,7 @@ public class MainMenu extends Container {
         return c;
     }
     
-    public MainMenu(int width, int height){
+    public void buildGUI(){
         buildFonts();
         
         try{
@@ -99,6 +96,12 @@ public class MainMenu extends Container {
             
             logo.setExpandable(false);
             logo.setShrinkable(false);
+            
+            int width = UIManager.width;
+            int height = UIManager.height;
+            
+            if (width != 800 || height != 600)
+                throw new IOException("ur an idiot: "+width+"x"+height);
             
             int logoWidth = (int)((width / 4.5f) * 3f);
             int logoHeight = (int)(height / 4.5f);

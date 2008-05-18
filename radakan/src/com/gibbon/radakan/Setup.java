@@ -1,11 +1,13 @@
 package com.gibbon.radakan;
 
 import com.gibbon.jme.context.ExitListenerPass;
+import com.gibbon.jme.context.FengGuiPass;
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.PassManager;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.radakan.config.ConfigFrame;
 import com.gibbon.radakan.error.ErrorReporter;
+import com.gibbon.radakan.ui.UIManager;
 import com.jme.image.Image.Format;
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
@@ -23,8 +25,6 @@ import java.util.prefs.Preferences;
 
 public class Setup {
 
-    
-    
     public static void loadPasses(JmeContext cx){
         final PassManager pm = cx.getPassManager();
         pm.execute(new Callable<Object>(){
@@ -40,6 +40,12 @@ public class Setup {
                 return null;
             }
         });
+    }
+    
+    public static void loadGuiPass(JmeContext cx){
+        FengGuiPass fg = new FengGuiPass(UIManager.getInstance());
+        cx.getPassManager().add(fg);
+        fg.waitFor();
     }
     
     public static JmeContext loadDisplay(){

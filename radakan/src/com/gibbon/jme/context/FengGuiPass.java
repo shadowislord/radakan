@@ -18,13 +18,11 @@ package com.gibbon.jme.context;
 import com.jme.input.KeyInput;
 import com.jme.input.MouseInput;
 
-import com.jme.scene.state.lwjgl.LWJGLTextureState;
 import org.fenggui.Display;
 import org.fenggui.FengGUI;
 import org.fenggui.render.Binding;
 import org.fenggui.render.lwjgl.LWJGLBinding;
 
-import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
