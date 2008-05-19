@@ -16,7 +16,7 @@ public class MainMenu2 extends Container implements UIContext {
 	public void buildGUI(){
 		try{
 			
-	        Pixmap bgImage = new Pixmap(Binding.getInstance().getTexture("data/images/background.png"));
+	        Pixmap bgImage = new Pixmap(Binding.getInstance().getTexture("data/images/background2.png"));
 	        setBilinearFilter(bgImage.getTexture());
 	        PixmapBackground bg = new PixmapBackground(bgImage);
 	        bg.setScaled(true);
