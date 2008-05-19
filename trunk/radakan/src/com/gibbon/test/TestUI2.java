@@ -28,21 +28,17 @@ public class TestUI2 {
     }
     
     public static void main(String[] args){
-        //Logger.getLogger("").setLevel(Level.WARNING);
-        
         GameSettings settings
                 = new PreferencesGameSettings(Preferences.userRoot().node("test-jmecontext"));
         
         settings.set("title", "Test Main Menu");
         
         JmeContext context = null;
+        
         try{
             ConfigFrame g = new ConfigFrame(settings);
             g.setVisible(true);
             g.waitFor();
-
-//            settings.setWidth(720);
-//            settings.setHeight(480);
             
             context = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
             context.setSettings(settings);
