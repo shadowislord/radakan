@@ -1,6 +1,7 @@
-package com.gibbon.meshparser;
+package com.gibbon.meshparser.anim;
 
-import com.gibbon.meshparser.PoseTrack.PoseFrame;
+import com.gibbon.meshparser.*;
+import com.gibbon.meshparser.anim.PoseTrack.PoseFrame;
 import com.jme.math.Vector3f;
 import com.jme.scene.TriMesh;
 import java.util.ArrayList;

@@ -140,7 +140,7 @@ public abstract class JmeContext {
     }
     
     /**
-     * @see create(renderSystem,type,parent)
+     * @see #create
      */
     public static JmeContext create(Class<? extends JmeContext> renderSystem, int type) throws InstantiationException{
         return create(renderSystem,type,null);
@@ -149,7 +149,7 @@ public abstract class JmeContext {
     /**
      * Same as create(Class,int) but instead uses a string to look up the class.
      * 
-     * @see create(Class,int)
+     * @see #create
      * @throws InstantiationException If the rendersystem class could not be found or failed to initialize
      */
     public static JmeContext create(String renderSystemClassName, int type, JmeContext parent) throws InstantiationException {
@@ -173,7 +173,7 @@ public abstract class JmeContext {
     }
     
     /**
-     * @see create(renderSystemClassName,type,parent)
+     * @see #create
      */
     public static JmeContext create(String renderSystemClassName, int type) throws InstantiationException{
         return create(renderSystemClassName,type,null);
@@ -342,7 +342,7 @@ public abstract class JmeContext {
      * Sets the context's parent/master.
      * Must be used before the context is initialized with start()
      *
-     * @see create(renderSystem,type,parent)
+     * @see #create
      * @throws IllegalStateException If start() has been called on this context
      */
     public abstract void setParentContext(JmeContext parent);

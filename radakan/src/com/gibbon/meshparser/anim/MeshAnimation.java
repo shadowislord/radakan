@@ -1,4 +1,6 @@
-package com.gibbon.meshparser;
+package com.gibbon.meshparser.anim;
+
+import com.gibbon.meshparser.*;
 
 public class MeshAnimation {
 

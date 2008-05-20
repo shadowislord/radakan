@@ -127,7 +127,7 @@ public class ContextDisplaySystem extends DisplaySystem {
 
     /**
      * @return The renderer of the currently bound JmeContext
-     * @see JmeContext.get()
+     * @see JmeContext#get()
      */
     public Renderer getRenderer() {
         if (JmeContext.get()==null)
@@ -176,7 +176,7 @@ public class ContextDisplaySystem extends DisplaySystem {
      * @param width
      * @param height
      * @param target
-     * @return
+     * @return The created texture renderer.
      */
     public TextureRenderer createTextureRenderer(int width, int height, Target target) {
         // XXX: LWJGL specific code here, JmeContext interface required for texturerenderer contextes.
@@ -247,7 +247,7 @@ public class ContextDisplaySystem extends DisplaySystem {
      * I don't know why it does what it does.
      * 
      * @param contextKey
-     * @return
+     * @return the render context removed
      */
     public RenderContext removeContext(Object contextKey) {
         RenderContext context = JmeContext.get().getRenderContext();

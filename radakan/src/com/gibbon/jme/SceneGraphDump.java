@@ -13,7 +13,7 @@
  * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.gibbon.meshparser;
+package com.gibbon.jme;
 
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingCapsule;
@@ -41,6 +41,11 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import java.util.Arrays;
 
+/**
+ * This class is mostly commented out as the code doesn't work with jME2.0
+ * 
+ * @author Momoko_Fan
+ */
 public final class SceneGraphDump {
 
     private SceneGraphDump(){

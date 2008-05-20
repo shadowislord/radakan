@@ -8,6 +8,8 @@ import com.jme.scene.Controller;
 import com.jme.scene.Spatial;
 
 /**
+ * A catmullrom curve controller for cameras. Used for cutscenes in Radakan.
+ * 
  * @author Andreas Grabner
  */
 public class CameraAnimationController extends Controller {

@@ -21,12 +21,11 @@ public interface ResourceHandler<T> {
     public void handle(String resourceName, T data);
     
     /**
-     * ResourceHandler should return true
+     * @return ResourceHandler should return true
      * if the <code>handle()</code> method
      * should run in the rendering thread.
      * If false, the handle method will
      * be called in the loading thread.
-     * @return
      */
     public boolean runInRender();
     

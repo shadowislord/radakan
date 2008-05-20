@@ -33,7 +33,7 @@ public class XMLUtil {
      * 
      * @param node
      * @param name
-     * @return
+     * @return The attribute if its defined, or null.
      */
     public static String getAttribute(Node node, String name){
         Node att = node.getAttributes().getNamedItem(name);
