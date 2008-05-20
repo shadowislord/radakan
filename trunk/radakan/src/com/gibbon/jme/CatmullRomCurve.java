@@ -43,7 +43,7 @@ import com.jme.scene.Spatial;
 import com.jme.util.geom.BufferUtils;
 
 /**
- * <code>CatmullRomCurve</code>
+ * <code>CatmullRomCurve</code> implementation for jME.
  * 
  * @see <a href="http://www.mvps.org/directx/articles/catmull/">Catmull-Rom Splines</a>
  * @author Frederik Bülthoff

@@ -35,7 +35,7 @@ public interface FileSystem {
      * 
      * @param mode
      * @param name
-     * @return
+     * @return Buffer opened for the specified access mode
      * @throws java.io.IOException
      */
     public ByteBuffer openBuffer(AccessMode mode, String name) throws IOException;

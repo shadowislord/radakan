@@ -9,7 +9,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StreamTokenizer;
 
-
+/**
+ * Loads MD5Camera files and creates a CameraAnimationController for it.
+ * 
+ * @author Momoko_Fan
+ */
 public class DoomCameraLoader {
 
     private CameraAnimationController camera;

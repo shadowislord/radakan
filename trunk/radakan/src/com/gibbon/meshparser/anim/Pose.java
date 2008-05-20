@@ -1,4 +1,4 @@
-package com.gibbon.meshparser;
+package com.gibbon.meshparser.anim;
 
 import com.jme.math.Vector3f;
 import com.jme.scene.TriMesh;

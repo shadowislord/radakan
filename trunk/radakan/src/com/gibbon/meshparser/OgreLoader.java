@@ -15,6 +15,10 @@
 
 package com.gibbon.meshparser;
 
+import com.gibbon.meshparser.anim.Pose;
+import com.gibbon.meshparser.anim.MeshAnimation;
+import com.gibbon.meshparser.anim.MeshAnimationController;
+import com.gibbon.meshparser.anim.MeshAnimationLoader;
 import com.jme.animation.AnimationController;
 import com.jme.animation.Bone;
 import com.jme.animation.BoneAnimation;
@@ -209,7 +213,7 @@ public class OgreLoader {
      * 
      * @param url The URL that specifies the mesh.xml file
      * @param Z_up Whether to flip the model from Z-up to Y-up
-     * @return
+     * @return The model loaded
      */
     public Spatial loadModel(URL url, boolean Z_up){
         try {

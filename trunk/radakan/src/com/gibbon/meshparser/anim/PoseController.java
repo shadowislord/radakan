@@ -1,5 +1,6 @@
-package com.gibbon.meshparser;
+package com.gibbon.meshparser.anim;
 
+import com.gibbon.meshparser.anim.Pose;
 import com.jme.scene.Controller;
 import com.jme.scene.TriMesh;
 import com.jme.util.geom.BufferUtils;

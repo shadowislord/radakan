@@ -220,7 +220,7 @@ public class CurveOnceController extends Controller {
      * Set whether to disable this controller when the end time is reached
      * 
      * @param disableAfter
-     * @see setTimes
+     * @see #setTimes
      */
     public void setDisableAfterClamp(boolean disableAfter) {   // ***** added
         this.disableAfter = disableAfter;

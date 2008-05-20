@@ -1,10 +1,12 @@
-package com.gibbon.meshparser;
+package com.gibbon.meshparser.anim;
 
+import com.gibbon.meshparser.*;
 import com.jme.scene.Controller;
 import com.jme.scene.TriMesh;
 import com.jme.util.geom.BufferUtils;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,38 +14,51 @@ public class MeshAnimationController extends Controller {
 
     private TriMesh[] targets;
     private FloatBuffer[] originalVertBufs;
-    private Map<String, MeshAnimation> animationMap;
-    private MeshAnimation animation = null;
+    private WeightBuffer[] weightBufs;
+    
+    private Map<String, Animation> animationMap;
+    
+    private Animation animation;
+    
     private float time = 0f;
     
-    public MeshAnimationController(Map<String, MeshAnimation> animations){
-        animationMap = animations;
+    public MeshAnimationController(TriMesh[] targets,
+                                   WeightBuffer[] weightBufs,
+                                   Map<String, MeshAnimation> meshAnims,
+                                   Map<String, BoneAnimation> boneAnims){
         
-        // collect the targets of this mesh animation controller from
-        // the animations
-        List<TriMesh> targetsList = new ArrayList<TriMesh>();
-        List<FloatBuffer> vertBufsList = new ArrayList<FloatBuffer>();
+        animationMap = new HashMap<String, Animation>();
         
-        for (MeshAnimation anim : animations.values()){
-            for (Track track : anim.getTracks()){
-                if (!targetsList.contains(track.getTarget())){
-                    // create a copy of the mesh verticles
-                    FloatBuffer meshVertBuf = track.getTarget().getVertexBuffer();
-                    FloatBuffer originalVertBuf = BufferUtils.createFloatBuffer(meshVertBuf.capacity());
-                    
-                    meshVertBuf.rewind();
-                    originalVertBuf.rewind();
-                    
-                    originalVertBuf.put(meshVertBuf);
-                    
-                    vertBufsList.add(originalVertBuf);
-                    targetsList.add(track.getTarget());
-                }
+        for (BoneAnimation banim : boneAnims.values()){
+            if (!animationMap.containsKey(banim.getName())){
+                MeshAnimation manim = meshAnims.get(banim.getName());
+                Animation anim = new Animation(banim, manim);
+                animationMap.put(banim.getName(), anim);
             }
         }
         
-        targets = targetsList.toArray(new TriMesh[0]);
-        originalVertBufs = vertBufsList.toArray(new FloatBuffer[0]);
+        for (MeshAnimation manim : meshAnims.values()){
+            if (!animationMap.containsKey(manim.getName())){
+                animationMap.put(manim.getName(), new Animation(null, manim));
+            }
+        }
+        
+        this.targets = targets;
+        this.weightBufs = weightBufs;
+        originalVertBufs = new FloatBuffer[targets.length];
+        
+        for (int i = 0; i < targets.length; i++){
+            FloatBuffer meshVertBuf = targets[i].getVertexBuffer();
+            FloatBuffer originalVertBuf = BufferUtils.createFloatBuffer(meshVertBuf.capacity());
+
+            meshVertBuf.rewind();
+            originalVertBuf.rewind();
+
+            originalVertBuf.put(meshVertBuf);
+            
+            originalVertBufs[i] = originalVertBuf;
+        }
+        
     }
 
     public void setAnimation(String name){
@@ -56,8 +71,8 @@ public class MeshAnimationController extends Controller {
     }
     
     public float getAnimationLength(String name){
-        MeshAnimation anim = animationMap.get(name);
-        
+        Animation anim = animationMap.get(name);
+
         if (anim == null)
             throw new NullPointerException();
         

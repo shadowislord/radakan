@@ -25,17 +25,74 @@ public class ControllerFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        cmbControl = new javax.swing.JComboBox();
+        lblControl = new javax.swing.JLabel();
+        chkActive = new javax.swing.JCheckBox();
+        pnlProperties = new javax.swing.JPanel();
+        pnlEditor = new javax.swing.JPanel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        lblControl.setText("Controller: ");
+
+        chkActive.setText("Enabled");
+
+        pnlProperties.setBorder(javax.swing.BorderFactory.createTitledBorder("Controller Properties"));
+
+        org.jdesktop.layout.GroupLayout pnlEditorLayout = new org.jdesktop.layout.GroupLayout(pnlEditor);
+        pnlEditor.setLayout(pnlEditorLayout);
+        pnlEditorLayout.setHorizontalGroup(
+            pnlEditorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 205, Short.MAX_VALUE)
+        );
+        pnlEditorLayout.setVerticalGroup(
+            pnlEditorLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 193, Short.MAX_VALUE)
+        );
+
+        org.jdesktop.layout.GroupLayout pnlPropertiesLayout = new org.jdesktop.layout.GroupLayout(pnlProperties);
+        pnlProperties.setLayout(pnlPropertiesLayout);
+        pnlPropertiesLayout.setHorizontalGroup(
+            pnlPropertiesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlPropertiesLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(pnlEditor, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlPropertiesLayout.setVerticalGroup(
+            pnlPropertiesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlPropertiesLayout.createSequentialGroup()
+                .add(pnlEditor, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 400, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(pnlProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(lblControl)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(cmbControl, 0, 173, Short.MAX_VALUE))
+                    .add(chkActive))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 300, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(lblControl)
+                    .add(cmbControl, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(chkActive)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(pnlProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -53,6 +110,11 @@ public class ControllerFrame extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chkActive;
+    private javax.swing.JComboBox cmbControl;
+    private javax.swing.JLabel lblControl;
+    private javax.swing.JPanel pnlEditor;
+    private javax.swing.JPanel pnlProperties;
     // End of variables declaration//GEN-END:variables
     
 }

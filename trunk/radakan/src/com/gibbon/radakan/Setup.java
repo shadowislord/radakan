@@ -124,7 +124,7 @@ public class Setup {
      * 
      * @param name
      * @param flipY
-     * @return
+     * @return The texture loaded
      */
     public static Texture loadTextureUI(String name, boolean flipY){
         return TextureManager.loadTexture(name,MinificationFilter.BilinearNoMipMaps, MagnificationFilter.Bilinear,Format.GuessNoCompression,0.0f,flipY);
