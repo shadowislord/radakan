@@ -5,10 +5,11 @@ import java.io.IOException;
 import org.fenggui.Container;
 import org.fenggui.Label;
 import org.fenggui.background.PixmapBackground;
-import org.fenggui.layout.StaticLayout;
+import org.fenggui.background.PlainBackground;
 import org.fenggui.render.Binding;
 import org.fenggui.render.ITexture;
 import org.fenggui.render.Pixmap;
+import org.fenggui.util.Color;
 import org.lwjgl.opengl.GL11;
 
 import com.gibbon.radakan.SysInfo;
@@ -26,7 +27,15 @@ public class MainMenu2 extends UIContext {
 	        setBilinearFilter(bgImage.getTexture());
 	        PixmapBackground bg = new PixmapBackground(bgImage);
 	        bg.setScaled(true);
-	        getAppearance().add(bg);   
+	        getAppearance().add(bg);
+	        
+	        Container alphaFade = new Container();
+	        alphaFade.setXY(0,0);
+	        alphaFade.setSize(UIManager.width, UIManager.height);
+	        alphaFade.getAppearance().add(new PlainBackground
+	        		(new Color(0f, 0f, 0f, 0.8f)));
+	        addWidget(alphaFade);
+	        
 		}catch(IOException e){
 			ErrorReporter.reportError("Failed building Main Menu", e);
 		}
