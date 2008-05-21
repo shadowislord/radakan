@@ -3,27 +3,38 @@ package com.gibbon.radakan.ui;
 import java.io.IOException;
 
 import org.fenggui.Container;
+import org.fenggui.Label;
 import org.fenggui.background.PixmapBackground;
+import org.fenggui.layout.StaticLayout;
 import org.fenggui.render.Binding;
 import org.fenggui.render.ITexture;
 import org.fenggui.render.Pixmap;
 import org.lwjgl.opengl.GL11;
 
+import com.gibbon.radakan.SysInfo;
 import com.gibbon.radakan.error.ErrorReporter;
 
 public class MainMenu2 extends Container implements UIContext {
 	
 	public void buildGUI(){
 		try{
+            setLayoutManager(new StaticLayout());
+            
+            Label version = new Label();
+            version.setText(SysInfo.getVersionPrefix() + " " +
+                            SysInfo.getGameVersion());
 			
 	        Pixmap bgImage = new Pixmap(Binding.getInstance().getTexture("data/images/background2.png"));
 	        setBilinearFilter(bgImage.getTexture());
 	        PixmapBackground bg = new PixmapBackground(bgImage);
 	        bg.setScaled(true);
 	        getAppearance().add(bg);
+	        
 		}catch(IOException e){
 			ErrorReporter.reportError("Failed building Main Menu", e);
 		}
+		
+		layout();
 	}
 	
     public void setBilinearFilter(ITexture tex){
