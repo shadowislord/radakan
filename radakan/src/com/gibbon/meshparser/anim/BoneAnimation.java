@@ -6,7 +6,6 @@ public class BoneAnimation {
     private float length;
     
     private BoneTrack[] tracks;
-    private Skeleton skeleton;
     
     public BoneAnimation(String name, float length){
         this.name = name;
@@ -21,9 +20,8 @@ public class BoneAnimation {
         return length;
     }
     
-    public void setData(Skeleton skeleton, BoneTrack[] tracks){
+    public void setData(BoneTrack[] tracks){
         this.tracks = tracks;
-        this.skeleton = skeleton;
     }
     
     public BoneTrack[] getTracks(){
@@ -34,8 +32,6 @@ public class BoneAnimation {
         for (int i = 0; i < tracks.length; i++){
             tracks[i].setTime(time);
         }
-        
-        skeleton.updateWorldTransforms();
     }
     
 }

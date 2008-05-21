@@ -18,7 +18,7 @@ import org.fenggui.util.Color;
 import org.fenggui.util.Spacing;
 import org.lwjgl.opengl.GL11;
 
-public class MainMenu extends Container implements UIContext {
+public class MainMenu extends UIContext {
 
     public static Font STONEHEDGE_SMALL;
     public static Font ARKHAM_BUTTONS;

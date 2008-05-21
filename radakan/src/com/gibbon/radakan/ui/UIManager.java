@@ -11,6 +11,7 @@ import org.fenggui.FengGUI;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.theme.XMLTheme;
 import org.fenggui.theme.xml.IXMLStreamableException;
+import org.fenggui.util.Dimension;
 
 public class UIManager extends Container implements GuiManager {
 
@@ -47,6 +48,9 @@ public class UIManager extends Container implements GuiManager {
                 // detach the old context
                 getInstance().removeAllWidgets();
 
+                context.setMinSize(width, height);
+                context.setSizeToMinSize();
+                
                 // build the gui
                 context.buildGUI();
                 
@@ -54,7 +58,7 @@ public class UIManager extends Container implements GuiManager {
                 getInstance().addWidget(context);
                 
                 StaticLayout.center(context, getInstance());
-                
+
                 return null;
             }
         });
@@ -62,10 +66,14 @@ public class UIManager extends Container implements GuiManager {
 
     public void create(Display display) {
         display.addWidget(singleton);
-        StaticLayout.center(this, display);
         
         width = display.getWidth();
         height = display.getHeight();
+        
+        setMinSize(width, height);
+        setSizeToMinSize();
+        
+        StaticLayout.center(this, display);
     }
 
     public void destroy(Display display) {
