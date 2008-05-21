@@ -20,7 +20,6 @@ public class WeightBuffer {
         shader.setAttributePointer("indexes", 4, false, true, 0, indexes);
         shader.setAttributePointer("weights", 4, true, 0, weights);
         
-        shader.setUniform(name, value, rowMajor);
     }
     
 }

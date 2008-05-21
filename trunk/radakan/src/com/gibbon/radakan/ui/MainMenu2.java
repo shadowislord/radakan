@@ -14,12 +14,10 @@ import org.lwjgl.opengl.GL11;
 import com.gibbon.radakan.SysInfo;
 import com.gibbon.radakan.error.ErrorReporter;
 
-public class MainMenu2 extends Container implements UIContext {
+public class MainMenu2 extends UIContext {
 	
 	public void buildGUI(){
 		try{
-            setLayoutManager(new StaticLayout());
-            
             Label version = new Label();
             version.setText(SysInfo.getVersionPrefix() + " " +
                             SysInfo.getGameVersion());
@@ -28,13 +26,10 @@ public class MainMenu2 extends Container implements UIContext {
 	        setBilinearFilter(bgImage.getTexture());
 	        PixmapBackground bg = new PixmapBackground(bgImage);
 	        bg.setScaled(true);
-	        getAppearance().add(bg);
-	        
+	        getAppearance().add(bg);   
 		}catch(IOException e){
 			ErrorReporter.reportError("Failed building Main Menu", e);
 		}
-		
-		layout();
 	}
 	
     public void setBilinearFilter(ITexture tex){

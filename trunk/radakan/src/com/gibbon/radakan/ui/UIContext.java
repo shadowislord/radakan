@@ -1,10 +1,15 @@
 package com.gibbon.radakan.ui;
 
-import org.fenggui.IContainer;
+import org.fenggui.Container;
 import org.fenggui.IWidget;
+import org.fenggui.layout.StaticLayout;
 
-public interface UIContext extends IWidget {
+public abstract class UIContext extends Container {
 
-    public void buildGUI();
+    public UIContext(){
+        setLayoutManager(new StaticLayout());
+    }
+    
+    public abstract void buildGUI();
     
 }

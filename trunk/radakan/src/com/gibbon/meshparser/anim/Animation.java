@@ -25,6 +25,14 @@ public class Animation {
         }
     }
     
+    public boolean hasMeshAnimation(){
+        return meshAnim != null;
+    }
+    
+    public boolean hasBoneAnimation(){
+        return boneAnim != null;
+    }
+    
     public String getName(){
         return name;
     }

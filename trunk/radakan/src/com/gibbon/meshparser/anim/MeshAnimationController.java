@@ -2,31 +2,41 @@ package com.gibbon.meshparser.anim;
 
 import com.gibbon.meshparser.*;
 import com.jme.scene.Controller;
+import com.jme.scene.Geometry;
 import com.jme.scene.TriMesh;
-import com.jme.util.geom.BufferUtils;
+import com.jme.scene.state.GLSLShaderDataLogic;
+import com.jme.scene.state.GLSLShaderObjectsState;
+import com.jme.scene.state.RenderState;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MeshAnimationController extends Controller {
 
-    private TriMesh[] targets;
-    private FloatBuffer[] originalVertBufs;
-    private WeightBuffer[] weightBufs;
+    private static boolean forceSWskinning = false;
+    
+    private OgreMesh[] targets;
+    private Skeleton skeleton;
     
     private Map<String, Animation> animationMap;
-    
     private Animation animation;
-    
     private float time = 0f;
     
-    public MeshAnimationController(TriMesh[] targets,
-                                   WeightBuffer[] weightBufs,
+    private boolean resetToBindEveryFrame = false;
+
+    private class SkinningShaderLogic implements GLSLShaderDataLogic {
+        public void applyData(GLSLShaderObjectsState shader, Geometry geom) {
+            skeleton.sendToShader(shader);
+            ((OgreMesh)geom).getWeightBuffer().sendToShader(shader);  
+        }
+    }
+    
+    public MeshAnimationController(OgreMesh[] meshes,
+                                   Skeleton skeleton,
                                    Map<String, MeshAnimation> meshAnims,
                                    Map<String, BoneAnimation> boneAnims){
         
+        this.skeleton = skeleton;
         animationMap = new HashMap<String, Animation>();
         
         for (BoneAnimation banim : boneAnims.values()){
@@ -43,30 +53,46 @@ public class MeshAnimationController extends Controller {
             }
         }
         
-        this.targets = targets;
-        this.weightBufs = weightBufs;
-        originalVertBufs = new FloatBuffer[targets.length];
+        this.targets = meshes;
+
+        SkinningShaderLogic logic = null;
+        if (isHardwareSkinning()){
+            logic = new SkinningShaderLogic();
+        }
         
         for (int i = 0; i < targets.length; i++){
-            FloatBuffer meshVertBuf = targets[i].getVertexBuffer();
-            FloatBuffer originalVertBuf = BufferUtils.createFloatBuffer(meshVertBuf.capacity());
-
-            meshVertBuf.rewind();
-            originalVertBuf.rewind();
-
-            originalVertBuf.put(meshVertBuf);
+            // does this mesh has any pose/morph animation tracks?
+            boolean hasMeshAnim = false;
+            animsearch: for (MeshAnimation anim : meshAnims.values()){
+                for (Track t : anim.getTracks()){
+                    if (t.getTarget() == targets[i]){
+                        hasMeshAnim = true;
+                        break animsearch;
+                    }
+                }
+            }
             
-            originalVertBufs[i] = originalVertBuf;
+            if (isHardwareSkinning()){
+                GLSLShaderObjectsState glsl = (GLSLShaderObjectsState) targets[i].getRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
+                glsl.setShaderDataLogic(logic);
+            }
         }
+        
         
     }
 
+    public boolean isHardwareSkinning(){
+        return !forceSWskinning && GLSLShaderObjectsState.isSupported();
+    }
+    
     public void setAnimation(String name){
         animation = animationMap.get(name);
         
         if (animation == null)
             throw new NullPointerException();
         
+        resetToBindEveryFrame = animation.hasMeshAnimation() || !isHardwareSkinning();
+            
         time = 0;
     }
     
@@ -86,13 +112,9 @@ public class MeshAnimationController extends Controller {
     
     private void resetToBind(){
         for (int i = 0; i < targets.length; i++){
-            FloatBuffer meshVertBuf = targets[i].getVertexBuffer();
-            FloatBuffer originalVertBuf = originalVertBufs[i];
-        
-            meshVertBuf.rewind();
-            originalVertBuf.rewind();
-            
-            meshVertBuf.put(originalVertBuf);
+            if (targets[i].hasBindPose()){
+                targets[i].restoreBindPose();
+            }
         }
     }
     
@@ -129,10 +151,30 @@ public class MeshAnimationController extends Controller {
         }
         
         // reset the meshes verticles to bind position
-        resetToBind();
+        if (resetToBindEveryFrame)
+            resetToBind();
         
         // apply the tracks for the current time
         animation.setTime(time);
+        
+        if (animation.hasBoneAnimation()){
+            skeleton.updateWorldTransforms();
+            
+            if (isHardwareSkinning()){
+                for (int i = 0; i < targets.length; i++){
+                    GLSLShaderObjectsState glsl = 
+                            (GLSLShaderObjectsState) 
+                                    targets[i].getRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
+                    
+                    if (glsl != null){
+                        // update attribute and uniform variables
+                        // for each mesh
+                        skeleton.sendToShader(glsl);
+                        targets[i].getWeightBuffer().sendToShader(glsl);
+                    }
+                }
+            }
+        }
         
         // increment the time
         time += tpf * getSpeed();
