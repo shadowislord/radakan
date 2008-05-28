@@ -1063,10 +1063,10 @@ public class OgreLoader {
                 animationNode = animationNode.getNextSibling();
             }
             
-            MeshAnimationController animController = new MeshAnimationController(animations);
-            animController.setAnimation("bsBrowMove");
-            animController.setRepeatType(Controller.RT_WRAP);
-            rootnode.addController(animController);
+            // FIXME: PLZ
+            //MeshAnimationController animController = new MeshAnimationController(animations);
+            //animController.setRepeatType(Controller.RT_WRAP);
+            //rootnode.addController(animController);
         }else if (posesNode != null){
 //            Map<TriMesh, List<Pose>> trimeshPoses = new HashMap<TriMesh, List<Pose>>();
 //            

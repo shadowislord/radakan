@@ -21,7 +21,9 @@ import com.jme.scene.Spatial;
 import com.jme.scene.state.RenderState;
 import com.jme.system.DisplaySystem;
 
-
+/**
+ * Represents a single Ogre3D material object.
+ */
 public final class Material {
     
     private final String name;

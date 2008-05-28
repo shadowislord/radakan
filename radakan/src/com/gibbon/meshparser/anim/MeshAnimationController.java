@@ -1,14 +1,26 @@
+/*
+ * Radakan is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Radakan is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.gibbon.meshparser.anim;
 
 import com.gibbon.meshparser.*;
 import com.jme.scene.Controller;
 import com.jme.scene.Geometry;
-import com.jme.scene.TriMesh;
 import com.jme.scene.state.GLSLShaderDataLogic;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
-import java.nio.FloatBuffer;
-import java.util.HashMap;
 import java.util.Map;
 
 public class MeshAnimationController extends Controller {
@@ -26,61 +38,69 @@ public class MeshAnimationController extends Controller {
 
     private class SkinningShaderLogic implements GLSLShaderDataLogic {
         public void applyData(GLSLShaderObjectsState shader, Geometry geom) {
+            // send bone data
             skeleton.sendToShader(shader);
+            
+            // send weight buffer (indexes + weights)
             ((OgreMesh)geom).getWeightBuffer().sendToShader(shader);  
         }
     }
     
     public MeshAnimationController(OgreMesh[] meshes,
                                    Skeleton skeleton,
-                                   Map<String, MeshAnimation> meshAnims,
-                                   Map<String, BoneAnimation> boneAnims){
+                                   Map<String, Animation> anims){
         
         this.skeleton = skeleton;
-        animationMap = new HashMap<String, Animation>();
-        
-        for (BoneAnimation banim : boneAnims.values()){
-            if (!animationMap.containsKey(banim.getName())){
-                MeshAnimation manim = meshAnims.get(banim.getName());
-                Animation anim = new Animation(banim, manim);
-                animationMap.put(banim.getName(), anim);
-            }
-        }
-        
-        for (MeshAnimation manim : meshAnims.values()){
-            if (!animationMap.containsKey(manim.getName())){
-                animationMap.put(manim.getName(), new Animation(null, manim));
-            }
-        }
-        
-        this.targets = meshes;
-
-        SkinningShaderLogic logic = null;
-        if (isHardwareSkinning()){
-            logic = new SkinningShaderLogic();
-        }
-        
+        animationMap = anims;
+        targets = meshes;
+ 
+        // what a messy loop..
+        // finds which meshes need their pose (vertex buffer)
+        // saved as a copy.
+        // if the mesh data is going to be modified by the CPU
+        // then a copy must be made.
+        // a target's mesh will be modified in two cases:
+        // 1) if it has mesh animations
+        // 2) if it has bone animations and hardware skinning is not supported
         for (int i = 0; i < targets.length; i++){
             // does this mesh has any pose/morph animation tracks?
-            boolean hasMeshAnim = false;
-            animsearch: for (MeshAnimation anim : meshAnims.values()){
-                for (Track t : anim.getTracks()){
-                    if (t.getTarget() == targets[i]){
-                        hasMeshAnim = true;
-                        break animsearch;
+            animsearch: {
+                for (Animation anim : animationMap.values()){
+                    MeshAnimation manim = anim.getMeshAnimation();
+                    BoneAnimation banim = anim.getBoneAnimation();
+                    
+                    if (manim != null){
+                        for (Track t : manim.getTracks()){
+                            if (t.getTarget() == targets[i]){
+                                targets[i].clearBindPose();
+                                targets[i].saveCurrentToBindPose();
+                                break animsearch;
+                            }
+                        }
                     }
+                    
+                    if (banim != null && !isHardwareSkinning()){
+                        targets[i].clearBindPose();
+                        targets[i].saveCurrentToBindPose();
+                        break animsearch;
+                    }  
                 }
             }
-            
-            if (isHardwareSkinning()){
-                GLSLShaderObjectsState glsl = (GLSLShaderObjectsState) targets[i].getRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
-                glsl.setShaderDataLogic(logic);
-            }
         }
-        
-        
     }
 
+    private void assignShaderLogic(){
+        SkinningShaderLogic logic = new SkinningShaderLogic();
+        for (OgreMesh target : targets){
+            GLSLShaderObjectsState glsl = (GLSLShaderObjectsState) target.getRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
+            if (glsl == null){
+                glsl = MeshAnimationLoader.createSkinningShader();
+                target.setRenderState(glsl);
+            }
+            glsl.setShaderDataLogic(logic);
+        }
+    }
+    
     public boolean isHardwareSkinning(){
         return !forceSWskinning && GLSLShaderObjectsState.isSupported();
     }
@@ -91,8 +111,9 @@ public class MeshAnimationController extends Controller {
         if (animation == null)
             throw new NullPointerException();
         
+        resetToBind();
         resetToBindEveryFrame = animation.hasMeshAnimation() || !isHardwareSkinning();
-            
+        
         time = 0;
     }
     
@@ -173,6 +194,9 @@ public class MeshAnimationController extends Controller {
                         targets[i].getWeightBuffer().sendToShader(glsl);
                     }
                 }
+            }else{
+                // FIXME:
+                // here we update the targets verticles if no hardware skinning supported
             }
         }
         
