@@ -1,3 +1,18 @@
+/*
+ * Radakan is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Radakan is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.gibbon.meshparser.anim;
 
 import com.jme.scene.state.GLSLShaderObjectsState;
@@ -5,6 +20,11 @@ import com.jme.util.geom.BufferUtils;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
+/**
+ * WeightBuffer contains associations of vertexes to bones and their weights.
+ * The WeightBuffer can be sent to a shader or processed on the CPU 
+ * to do skinning.
+ */
 public class WeightBuffer {
 
     ByteBuffer indexes;

@@ -1,9 +1,27 @@
+/*
+ * Radakan is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Radakan is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.gibbon.meshparser.anim;
 
+import com.gibbon.jme.context.JmeContext;
 import com.gibbon.meshparser.*;
 import com.gibbon.meshparser.anim.PoseTrack.PoseFrame;
 import com.jme.math.Vector3f;
 import com.jme.scene.TriMesh;
+import com.jme.scene.state.GLSLShaderObjectsState;
+import com.jmex.terrain.TerrainPage;
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Node;
@@ -12,6 +30,44 @@ import org.w3c.dom.Node;
  * Utility class used by OgreLoader to load poses and mesh animations.
  */
 public class MeshAnimationLoader {
+    
+    public static String applySkinningShader(String shader){
+        shader = shader.replace("hw_skin_vars", "attribute vec4 weights;\n" +
+                                       "attribute vec4 matrixIndices;\n" +
+                                       "uniform mat4 BoneMatrices[256];\n");
+        shader = shader.replace("hw_skin_compute", "    vec4 index = matrixIndices;\n" +
+                                          "    vec4 weight = weights;\n" +
+                                          "\n" +
+                                          "    vec4 vPos = vec4(0.0);\n" +
+                                          "    vec4 vNormal = vec4(0.0);\n" +
+                                          "    vec4 normal = vec4(gl_Normal.xyz,0.0);\n" +
+                                          "\n" +
+                                          "    for (float i = 0.0; i < 4; i += 1.0){\n" +
+                                          "        mat4 skinMat = boneMatrices[int(index.x)];\n" +
+                                          "        vPos    += weight.x * skinMat * gl_Vertex;\n" +
+                                          "        vNormal += weight.x * skinMat * normal;\n" +
+                                          "        index = index.yzwx;\n" +
+                                          "        weight = weight.yzwx;\n" +
+                                          "    }\n" +
+                                          "\n");
+        shader = shader.replace("hw_skin_vpos", "(gl_ModelViewProjectionMatrix * vPos)");
+        shader = shader.replace("hw_skin_vnorm", "(normalize(inverseModelView * tempNormal).xyz)");
+        
+        return shader;
+    }
+    
+    public static GLSLShaderObjectsState createSkinningShader(){
+        GLSLShaderObjectsState shader = JmeContext.get().getRenderer().createGLSLShaderObjectsState();
+        String str = "hw_skin_vars\n" +
+                        "\n" +
+                        "void main(){" +
+                        "   hw_skin_compute" +
+                        "   gl_Position = hw_skin_vpos;" +
+                        "}";
+        str = applySkinningShader(str);
+        shader.load(str, null);
+        return shader;
+    }
     
     public static MeshAnimation loadMeshAnimation(Node animationNode, List<Pose> poseList, TriMesh sharedgeom, List<TriMesh> submeshes){
         String name =  XMLUtil.getAttribute(animationNode, "name");
