@@ -123,11 +123,13 @@ public class LWJGLCanvas extends AWTGLCanvas {
         // main loop is handled in paintGL (defined by AWTGLCanvas in LWJGL)
     }
 
+    @Override
     public void initGL(){
         run();
         context.getRenderer().reinit(getWidth(), getHeight());
     }
     
+    @Override
     public void paintGL(){
         // getContext returns the LWJGL's library context, not Jme's
         // If it's null then the canvas has been removed from the frame
@@ -146,6 +148,7 @@ public class LWJGLCanvas extends AWTGLCanvas {
             context.contextRestart();
         
         LWJGLContext.setThreadContext(context);
+        context.setCanvasDrawing(true);
         
         LWJGLRenderer r = (LWJGLRenderer) context.getRenderer();
         
@@ -165,7 +168,8 @@ public class LWJGLCanvas extends AWTGLCanvas {
             repaint();
         }
         
-        context.setThreadContext(null);
+        LWJGLContext.setThreadContext(null);
+        context.setCanvasDrawing(false);
     }
     
     public boolean isActive(){

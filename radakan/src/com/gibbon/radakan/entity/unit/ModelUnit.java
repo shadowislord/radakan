@@ -13,7 +13,7 @@ import java.io.IOException;
  * 
  * @author Momoko_Fan
  */
-public class ModelUnit extends AbstractUnit {
+public class ModelUnit extends AbstractUnit implements UnitEventListener {
 
     private transient Spatial model;
     private String modelName;
@@ -25,6 +25,7 @@ public class ModelUnit extends AbstractUnit {
     public void attach(Entity entity){
         super.attach(entity);
         model.setUserData("Entity", entity);
+        entity.addEventListener(this);
     }
     
     @Override
@@ -40,6 +41,14 @@ public class ModelUnit extends AbstractUnit {
     public void read(JMEImporter im) throws IOException {
         modelName = im.getCapsule(this).readString(modelName, "");
         model = ResourceManager.loadResource(Spatial.class, modelName);
+    }
+
+    public void onUnitEvent(UnitEvent event) {
+        if (event.getType().equals(UnitEvent.ENTITY_BIRTH)){
+            // add entity to world rootNode
+        }else if (event.getType().equals(UnitEvent.ENTITY_DISPOSE)){
+            // remove entity from world
+        }
     }
     
 }

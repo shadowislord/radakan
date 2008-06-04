@@ -108,12 +108,14 @@ public class ErrorReporter {
             stream.println("Renderer: "+SysInfo.renderer);
             stream.println("API Version: "+SysInfo.apiVer);
             stream.println("GLSL Version: "+SysInfo.glslVer);
-            stream.println("Fragment Shaders: "+caps.GL_ARB_fragment_program);
-            stream.println("Vertex Shaders: "+caps.GL_ARB_vertex_program);
-            stream.println("Cubemaps: "+caps.GL_ARB_texture_cube_map);
-            stream.println("Float textures: "+caps.GL_ARB_texture_float);
-            stream.println("DOT3: "+caps.GL_ARB_texture_env_dot3);
-            stream.println("Compression: "+caps.GL_EXT_texture_compression_s3tc);
+            if (caps != null){
+                stream.println("Fragment Shaders: "+caps.GL_ARB_fragment_program);
+                stream.println("Vertex Shaders: "+caps.GL_ARB_vertex_program);
+                stream.println("Cubemaps: "+caps.GL_ARB_texture_cube_map);
+                stream.println("Float textures: "+caps.GL_ARB_texture_float);
+                stream.println("DOT3: "+caps.GL_ARB_texture_env_dot3);
+                stream.println("Compression: "+caps.GL_EXT_texture_compression_s3tc);
+            }
             stream.println();
 
             if (AudioSystem.isCreated()){

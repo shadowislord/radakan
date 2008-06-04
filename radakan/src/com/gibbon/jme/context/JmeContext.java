@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
@@ -86,6 +88,7 @@ public abstract class JmeContext {
     protected boolean fullscreen, vsync;
     
     protected static ThreadLocal<JmeContext> contextLocal = new ThreadLocal<JmeContext>();
+    protected static AtomicBoolean canvasDrawing = new AtomicBoolean(false);
     
     /**
      * Returns the default context implementor.
@@ -222,7 +225,13 @@ public abstract class JmeContext {
      * exitContext() to unbind the pbuffer.<p>
      */
     public boolean inContext(){
-        return contextLocal.get()==this;
+        if (contextLocal.get()==this){
+            if (type == CONTEXT_CANVAS){
+                return canvasDrawing.get();
+            }
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -309,6 +318,22 @@ public abstract class JmeContext {
             logger.throwing("JmeContext","execute",ex);
         }
         return null;
+    }
+    
+    public void executeLater(Callable<?> action){
+        if (!isActive())
+            return;
+        
+        if (inContext()){
+            try {
+                action.call();
+                return;
+            } catch (Exception ex) {
+                logger.throwing("JmeContext","execute",ex);
+            }
+        }
+        
+        getPassManager().execute(action);
     }
     
     /**

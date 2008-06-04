@@ -110,6 +110,7 @@ public final class ModelLoader {
                 model.updateGeometricState(0, true);
                 worldBound = model.getWorldBound();
             }
+            
             if (worldBound != null){ // check not still null (no geoms)
                 Vector3f center = worldBound.getCenter();
                 

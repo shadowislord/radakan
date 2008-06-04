@@ -37,20 +37,13 @@ import com.jme.renderer.Renderer;
 import com.jme.renderer.lwjgl.LWJGLRenderer;
 import com.jme.scene.state.RenderState;
 import com.jme.system.JmeException;
-import com.jme.system.lwjgl.LWJGLSystemProvider;
 import com.jme.util.TextureManager;
 import com.jme.util.Timer;
 import com.jme.util.lwjgl.LWJGLTimer;
 import java.awt.Canvas;
-import java.util.concurrent.Callable;
-import java.util.logging.Level;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBMultisample;
-import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.Drawable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.Pbuffer;
@@ -290,6 +283,10 @@ public class LWJGLContext extends JmeContext {
             return pb.getPixelFormat();
         
         return null;
+    }
+    
+    void setCanvasDrawing(boolean drawing){
+        canvasDrawing.set(drawing);
     }
     
 }

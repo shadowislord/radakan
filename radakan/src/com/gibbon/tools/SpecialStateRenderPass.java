@@ -147,6 +147,7 @@ public class SpecialStateRenderPass extends RenderPass {
         temp.set(cam.getLeft()).multLocal(5.0f);
         temp.addLocal(cam.getLocation());
         camLight.setLocation(temp);
+        //i think a combo of concept art pans + terrain pans + other stuff
     }
     
     @Override
