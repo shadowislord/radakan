@@ -48,7 +48,7 @@ public class MaterialLoader {
     
     private StreamTokenizer reader;
     private Map<String, Material> materialMap;
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     
     public MaterialLoader() {
     }

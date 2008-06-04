@@ -1,19 +1,23 @@
-package com.gibbon.tools;
+package com.gibbon.tools.world;
 
 import com.gibbon.jme.context.JmeContext;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
+import com.jme.math.Ray;
+import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
+import com.jme.renderer.Renderer;
+import com.jme.scene.TriMesh;
 import java.awt.event.InputEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.concurrent.Callable;
 
-public class ModelCameraHandler extends MouseAdapter implements MouseMotionListener,
+public class WorldCameraHandler implements MouseListener,  MouseMotionListener,
             MouseWheelListener {
     
     java.awt.Point last = new java.awt.Point(0, 0);
@@ -22,12 +26,30 @@ public class ModelCameraHandler extends MouseAdapter implements MouseMotionListe
     private Quaternion rot = new Quaternion();
 
     private final Camera cam;
+    private final Renderer r;
 
-    public ModelCameraHandler(Camera cam){
-        this.cam=cam;
+    public WorldCameraHandler(Renderer renderer){
+        r = renderer;
+        cam = r.getCamera();
     }
 
+    public void mouseClicked(MouseEvent arg0) {
+    }
+
+    public void mouseReleased(MouseEvent arg0) {
+        if ((arg0.getModifiers() & InputEvent.BUTTON1_MASK) != 0)
+            WorldTool.setNotDoingMouseAction();
+    }
+
+    public void mouseEntered(MouseEvent arg0) {
+    }
+
+    public void mouseExited(MouseEvent arg0) {
+    }
+    
     public void mouseDragged(final MouseEvent arg0) {
+        WorldTool.setMouseXY(arg0.getX(), arg0.getY());
+        
         Callable<?> exe = new Callable() {
             public Object call() {
                 int difX = last.x - arg0.getX();
@@ -37,13 +59,13 @@ public class ModelCameraHandler extends MouseAdapter implements MouseMotionListe
                 last.y = arg0.getY();
 
                 int mods = arg0.getModifiers();
-                if ((mods & InputEvent.BUTTON1_MASK) != 0) {
+                if ((mods & InputEvent.BUTTON2_MASK) != 0) {
                     rotateCamera(Vector3f.UNIT_Y, difX * 0.0025f);
                     rotateCamera(cam.getLeft(), -difY * 0.0025f);
                 }
-                if ((mods & InputEvent.BUTTON2_MASK) != 0 && difY != 0) {
-                    zoomCamera(difY * mult);
-                }
+//                if ((mods & InputEvent.BUTTON2_MASK) != 0 && difY != 0) {
+//                    zoomCamera(difY * mult);
+//                }
                 if ((mods & InputEvent.BUTTON3_MASK) != 0) {
                     panCamera(-difX, -difY);
                 }
@@ -56,10 +78,11 @@ public class ModelCameraHandler extends MouseAdapter implements MouseMotionListe
     public void mouseMoved(MouseEvent arg0) {
     }
     
-    @Override
     public void mousePressed(MouseEvent arg0) {
         last.x = arg0.getX();
         last.y = arg0.getY();
+        if ((arg0.getModifiers() & InputEvent.BUTTON1_MASK) != 0)
+            WorldTool.setDoingMouseAction(arg0.getX(), arg0.getY());
     }
     
     public void mouseWheelMoved(final MouseWheelEvent arg0) {
@@ -106,8 +129,18 @@ public class ModelCameraHandler extends MouseAdapter implements MouseMotionListe
     }
     
     private void panCamera(float left, float up) {
-        cam.getLeft().mult(left, vector);
-        vector.scaleAdd(up, cam.getUp(), vector);
+//        cam.getLeft().mult(left, vector);
+//        vector.scaleAdd(up, cam.getUp(), vector);
+        Vector3f lockedLeft = cam.getLeft().clone();
+        lockedLeft.y = 0f;
+        lockedLeft.normalizeLocal();
+        
+        Vector3f lockedDir = cam.getDirection().clone();
+        lockedDir.y = 0f;
+        lockedDir.normalizeLocal();
+        
+        lockedLeft.mult(left, vector);
+        vector.scaleAdd(up, lockedDir, vector);
         cam.getLocation().addLocal(vector);
         focus.addLocal(vector);
         cam.onFrameChange();
@@ -120,4 +153,5 @@ public class ModelCameraHandler extends MouseAdapter implements MouseMotionListe
                 cam.getLocation());
         cam.onFrameChange();
     }
+
 }

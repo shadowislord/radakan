@@ -10,6 +10,7 @@ public class UnitEvent {
     
     public static final String ATTACH = "Attach",
                                DETACH = "Detach",
+                               ENTITY_BIRTH   = "EntityBirth",
                                ENTITY_DISPOSE = "EntityDispose";
     
     public void setSource(Unit source){

@@ -103,7 +103,7 @@ public class PassManager {
         tpf = context.getTimer().getTimePerFrame();
         
         queue.execute();
-        
+
         for (int bucket_i = 0; bucket_i < buckets.length; bucket_i++){
             Iterator<Pass> it = buckets[bucket_i].iterator();
             while (it.hasNext()){

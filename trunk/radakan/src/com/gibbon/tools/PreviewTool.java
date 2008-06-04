@@ -62,7 +62,7 @@ public class PreviewTool extends javax.swing.JFrame {
     
     
     public PreviewTool() {
-        Logger.getLogger("").setLevel(Level.WARNING);
+        //Logger.getLogger("").setLevel(Level.WARNING);
         
         initComponents();
         setLocationRelativeTo(null);
