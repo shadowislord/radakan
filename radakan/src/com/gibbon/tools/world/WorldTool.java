@@ -5,20 +5,11 @@ import com.gibbon.jme.context.RenderPass;
 import com.gibbon.jme.context.lwjgl.LWJGLCanvas;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.radakan.error.ErrorReporter;
-import com.jme.bounding.BoundingBox;
-import com.jme.light.DirectionalLight;
-import com.jme.light.PointLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.AbstractCamera;
-import com.jme.renderer.Camera;
-import com.jme.renderer.ColorRGBA;
-import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 import com.jme.scene.shape.Quad;
-import com.jme.scene.state.CullState;
-import com.jme.scene.state.CullState.Face;
-import com.jme.scene.state.LightState;
-import com.jme.scene.state.ZBufferState;
-import com.jme.scene.state.ZBufferState.TestFunction;
+import com.jme.util.geom.Debugger;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,8 +23,6 @@ public class WorldTool extends javax.swing.JFrame {
     private JmeContext context;
     
     public static Quad lilPlane = new Quad("quad", 4, 4);
-    private PointLight camLight;
-    private Node rootNode = new Node("rootNode");
     private WorldCameraHandler handler;
     private RenderPass render;
     
@@ -81,58 +70,24 @@ public class WorldTool extends javax.swing.JFrame {
                     render = new RenderPass(){
                         @Override
                         public void doUpdate(JmeContext cx){
-                            Camera cam = cx.getRenderer().getCamera();
-        
-                            Vector3f temp = camLight.getLocation();
-                            temp.set(cam.getLeft()).multLocal(5.0f);
-                            temp.addLocal(cam.getLocation());
-                            camLight.setLocation(temp);
-                            
-                            if (doingMouseAction){
-                                TerrainBrush.doMouseAction(mouseX, mouseY);
+                            if (doingMouseAction && World.getWorld() != null){
+                                Brush.doMouseAction(mouseX, mouseY);
                             }
                         }
+                        
+                        @Override
+                        public void doRender(JmeContext cx){
+                            super.doRender(cx);
+                            
+//                            if (World.getWorld() != null){
+//                                for (Spatial c : World.getWorld().getChildren()){
+//                                    Debugger.drawBounds(c, cx.getRenderer(), false);
+//                                }
+//                            }
+                                
+                        }
                     };
-                    render.add(rootNode);
                     context.getPassManager().add(render);
-                    
-                    // set some default states for the root node
-                    ZBufferState zbuf = context.getRenderer().createZBufferState();
-                    zbuf.setFunction(TestFunction.LessThan);
-                    zbuf.setWritable(true);
-                    rootNode.setRenderState(zbuf);
-                    
-                    CullState backFaces = context.getRenderer().createCullState();
-                    backFaces.setCullFace(Face.Back);
-                    rootNode.setRenderState(backFaces);
-                    
-                    LightState ls = context.getRenderer().createLightState();
-                    ls.setSeparateSpecular(true);
-                    
-                    DirectionalLight dl = new DirectionalLight();
-                    dl.setEnabled(true);
-                    dl.setDirection(new Vector3f(0,0,-1).normalizeLocal());
-                    dl.setDiffuse(new ColorRGBA(0.6f, 0.6f, 0.3f, 1.0f));
-                    ls.attach(dl);
-
-                    DirectionalLight dl2 = new DirectionalLight();
-                    dl2.setEnabled(true);
-                    dl.setDirection(new Vector3f(1,0.1f,0).normalizeLocal());
-                    dl.setDiffuse(new ColorRGBA(0.4f, 0.4f, 0.8f, 1.0f));
-                    ls.attach(dl2);
-                    
-                    camLight = new PointLight();
-                    camLight.setEnabled(true);
-                    camLight.setDiffuse(ColorRGBA.lightGray);
-                    camLight.setSpecular(ColorRGBA.white);
-                    ls.attach(camLight);
-                    rootNode.setRenderState(ls);
-                    
-                    lilPlane.setDefaultColor(ColorRGBA.red);
-                    rootNode.attachChild(lilPlane);
-                    
-                    rootNode.updateGeometricState(0.0f, true);
-                    rootNode.updateRenderState();
                     
                     // put the camera above the terrain and face the center
                     final AbstractCamera cam = (AbstractCamera) JmeContext.get().getRenderer().getCamera();
@@ -180,6 +135,7 @@ public class WorldTool extends javax.swing.JFrame {
         split = new javax.swing.JSplitPane();
         canvas = createCanvas();
         tab = new javax.swing.JTabbedPane();
+        pnlWorld = new javax.swing.JPanel();
         pnlTerrain = new javax.swing.JPanel();
         pnlTerrainBrush = new javax.swing.JPanel();
         radRaise = new javax.swing.JRadioButton();
@@ -192,6 +148,7 @@ public class WorldTool extends javax.swing.JFrame {
         lstTex = new javax.swing.JList();
         btnTexAdd = new javax.swing.JButton();
         btnTexRemove = new javax.swing.JButton();
+        pnlEntity = new javax.swing.JPanel();
         menu = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuFileNew = new javax.swing.JMenuItem();
@@ -212,6 +169,19 @@ public class WorldTool extends javax.swing.JFrame {
                 tabStateChanged(evt);
             }
         });
+
+        org.jdesktop.layout.GroupLayout pnlWorldLayout = new org.jdesktop.layout.GroupLayout(pnlWorld);
+        pnlWorld.setLayout(pnlWorldLayout);
+        pnlWorldLayout.setHorizontalGroup(
+            pnlWorldLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 199, Short.MAX_VALUE)
+        );
+        pnlWorldLayout.setVerticalGroup(
+            pnlWorldLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 404, Short.MAX_VALUE)
+        );
+
+        tab.addTab("World", pnlWorld);
 
         pnlTerrainBrush.setBorder(javax.swing.BorderFactory.createTitledBorder("Brush"));
 
@@ -348,6 +318,19 @@ public class WorldTool extends javax.swing.JFrame {
 
         tab.addTab("Texture", pnlTexture);
 
+        org.jdesktop.layout.GroupLayout pnlEntityLayout = new org.jdesktop.layout.GroupLayout(pnlEntity);
+        pnlEntity.setLayout(pnlEntityLayout);
+        pnlEntityLayout.setHorizontalGroup(
+            pnlEntityLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 199, Short.MAX_VALUE)
+        );
+        pnlEntityLayout.setVerticalGroup(
+            pnlEntityLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 404, Short.MAX_VALUE)
+        );
+
+        tab.addTab("Entity", pnlEntity);
+
         split.setRightComponent(tab);
 
         menuFile.setText("File");
@@ -389,13 +372,19 @@ public class WorldTool extends javax.swing.JFrame {
 
     private void updateEditorState(){
         switch (tab.getSelectedIndex()){
-            case 0: 
+            case 0:
+                state.editType = EditType.TILE;
+                break;
+            case 1: 
                 state.editType = EditType.TERRAIN;
+                break;
+            case 3:
+                state.editType = EditType.ENTITY;
                 break;
             default:
                 throw new RuntimeException("Unsupported operation");
         }
-        
+
         if (state.editType == EditType.TERRAIN){
             state.brushSize = sldBrushSize.getValue();
             if (radRaise.isSelected()){
@@ -404,6 +393,9 @@ public class WorldTool extends javax.swing.JFrame {
                 state.brushType = BrushType.LOWER;
             }
         }
+        
+        if (World.getWorld() != null)
+            World.getWorld().updateFromState();
     }
     
     private void tabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabStateChanged
@@ -428,15 +420,17 @@ public class WorldTool extends javax.swing.JFrame {
     }//GEN-LAST:event_menuFileExitActionPerformed
 
     private void menuFileNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFileNewActionPerformed
-        Vector3f scale = new Vector3f(2f, 2f, 2f);
+        if (World.getWorld() != null)
+            render.remove(World.getWorld());
         
-        state.terrain = WorldUtil.createGrid(64, 64, scale, null);
-        rootNode.attachChild(state.terrain);
-        rootNode.setModelBound(new BoundingBox());
-        rootNode.updateModelBound();
+        World world = new World();
+        render.add(world);
         
-        rootNode.updateGeometricState(0.0f, true);
-        rootNode.updateRenderState();
+        world.createTile(0, 0);
+//        state.terrain = WorldUtil.createGrid(64, 64, scale, null);
+//        rootNode.attachChild(state.terrain);
+        
+        World.getWorld().update();
 }//GEN-LAST:event_menuFileNewActionPerformed
     
     /**
@@ -465,10 +459,12 @@ public class WorldTool extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuFileExit;
     private javax.swing.JMenuItem menuFileNew;
     private javax.swing.JSeparator menuFileSep1;
+    private javax.swing.JPanel pnlEntity;
     private javax.swing.JPanel pnlTerrain;
     private javax.swing.JPanel pnlTerrainBrush;
     private javax.swing.JPanel pnlTexBrush;
     private javax.swing.JPanel pnlTexture;
+    private javax.swing.JPanel pnlWorld;
     private javax.swing.JRadioButton radLower;
     private javax.swing.JRadioButton radRaise;
     private javax.swing.JSlider sldBrushSize;
