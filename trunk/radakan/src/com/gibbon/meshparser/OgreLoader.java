@@ -196,7 +196,7 @@ public class OgreLoader {
         if (mat != null){
             mat.apply(target);
         }else{
-            throw new IllegalStateException("Cannot find material: "+name);
+            //throw new IllegalStateException("Cannot find material: "+name);
         }
     }
     
