@@ -13,6 +13,7 @@
  * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
 package com.gibbon.radakan.player;
 
 import com.gibbon.jme.context.JmeContext;
@@ -194,3 +195,4 @@ public class PlayerController extends Controller {
     }
 
 }
+*/

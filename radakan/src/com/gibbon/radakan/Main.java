@@ -13,6 +13,7 @@
  * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
 package com.gibbon.radakan;
 
 import com.gibbon.jme.context.InputPass;
@@ -342,3 +343,4 @@ public class Main {
     }
     
 }
+*/

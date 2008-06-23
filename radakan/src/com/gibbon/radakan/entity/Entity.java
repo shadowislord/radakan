@@ -40,6 +40,15 @@ public final class Entity extends AbstractUnit {
         this.name = name;
     }
     
+    @SuppressWarnings("unchecked")
+    public <T extends Unit> T getUnit(Class<T> clazz){
+        for (Unit u : units)
+            if (clazz.isInstance(u))
+                return (T) u;
+        
+        return null;
+    }
+    
     public void attachUnit(Unit unit){
         units.add(unit);
         unit.attach(this);

@@ -16,10 +16,13 @@ public class FileNameExtensionFilter extends FileFilter {
     
     @Override
     public boolean accept(File f) {
-        for (String format : formats)
+        if (f.isDirectory())
+            return true;
+        
+        for (String format : formats){
             if (f.getName().endsWith(format))
                 return true;
-        
+        }
         return false;
     }
 

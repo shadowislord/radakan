@@ -4,7 +4,8 @@ public enum BrushType {
 
     RAISE,
     LOWER,
-    LEVEL,
-    NOISE
+    PLATAU,
+    NOISE,
+    SMOOTH     
     
 }

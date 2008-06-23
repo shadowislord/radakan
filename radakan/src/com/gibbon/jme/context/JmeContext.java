@@ -55,7 +55,8 @@ public abstract class JmeContext {
     protected static final GameSettings defaults;
     
     static {
-        defaults = new PreferencesGameSettings(Preferences.userNodeForPackage(JmeContext.class));
+        defaults = new PreferencesGameSettings(Preferences.userNodeForPackage(JmeContext.class),
+                                                            true, null);
         
         defaults.setWidth(640);
         defaults.setHeight(480);

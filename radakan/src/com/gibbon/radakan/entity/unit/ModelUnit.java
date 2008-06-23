@@ -2,6 +2,9 @@ package com.gibbon.radakan.entity.unit;
 
 import com.gibbon.radakan.entity.Entity;
 import com.gibbon.radakan.res.ResourceManager;
+import com.gibbon.tools.world.EditorUnit;
+import com.gibbon.tools.world.World;
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
@@ -15,10 +18,11 @@ import java.io.IOException;
  */
 public class ModelUnit extends AbstractUnit implements UnitEventListener {
 
-    private transient Spatial model;
+    private transient Node model;
     private String modelName;
     
-    public ModelUnit(){
+    public ModelUnit(Node model){
+        this.model = model;
     }
     
     @Override
@@ -40,14 +44,22 @@ public class ModelUnit extends AbstractUnit implements UnitEventListener {
     @Override
     public void read(JMEImporter im) throws IOException {
         modelName = im.getCapsule(this).readString(modelName, "");
-        model = ResourceManager.loadResource(Spatial.class, modelName);
+        model = (Node) ResourceManager.loadResource(Spatial.class, modelName);
     }
 
     public void onUnitEvent(UnitEvent event) {
+        EditorUnit editor = entity.getUnit(EditorUnit.class);
+        
         if (event.getType().equals(UnitEvent.ENTITY_BIRTH)){
             // add entity to world rootNode
+            if (editor != null){
+                World.getWorld().attachModel(model);
+            }
         }else if (event.getType().equals(UnitEvent.ENTITY_DISPOSE)){
             // remove entity from world
+            if (editor != null){
+                World.getWorld().detachModel(model);
+            }
         }
     }
     

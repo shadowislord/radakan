@@ -15,11 +15,19 @@
 
 package com.gibbon.radakan.entity;
 
+import com.gibbon.meshparser.XMLUtil;
+import com.gibbon.radakan.entity.unit.ModelUnit;
 import com.gibbon.radakan.error.ErrorReporter;
+import com.gibbon.tools.ModelLoader;
+import com.gibbon.tools.world.EditorUnit;
+import com.jme.scene.SharedNode;
+import com.jme.scene.Spatial;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,29 +35,105 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-/**
- * Basic XML parser for types.xml files
- * 
- * @author Momoko_Fan
- */
 public final class EntityFactory {
 
-    private List<Node> typeXmlNodes = new ArrayList<Node>();
+    private Map<String, EntityType> entityTypeMap = new HashMap<String, EntityType>();
     
-    public EntityFactory(InputStream xmlTypes){
+    public static class EntityType {
+        // entity params
+        public String name;
+        public String type;
+        public String category;
+        
+        // model params
+        public com.jme.scene.Node model = null;
+        public float scaleStart = 1.0f, 
+                     scaleEnd   = 1.0f;
+        public float height = 0.0f;
+        public float normal_match = 1.0f;
+        
+        public String toString(){
+            return name;
+        }
+    }
+    
+    private static Spatial readModel(String path) throws IOException{
+        // path is local to the file system
+        File file = new File(System.getProperty("user.dir")+path);
+        int index = file.getName().lastIndexOf(".");
+        if (index == -1)
+            throw new IOException("No extension available for model file");
+        
+        String ext = file.getName().substring(index+1);
+        return ModelLoader.loadModel(file, ext);
+    }
+    
+    private void parseEntities(Node entitiesNode) throws IOException{
+        Node entityNode = entitiesNode.getFirstChild();
+        while (entityNode != null){
+            if (entityNode.getNodeName().equals("entitytype")){
+                EntityType ent = new EntityType();
+                
+                ent.name = XMLUtil.getAttribute(entityNode, "name");
+                ent.type = XMLUtil.getAttribute(entityNode, "type");
+                ent.category = XMLUtil.getAttribute(entityNode, "category");
+                
+                Node modelNode = XMLUtil.getChildNode(entityNode, "model");
+                if (modelNode != null){
+                    float scale  = XMLUtil.getFloatAttribute(modelNode, "scale", 1.0f);
+                    float height = XMLUtil.getFloatAttribute(modelNode, "height", 0.0f);
+                    
+                    Spatial model = readModel(XMLUtil.getAttribute(modelNode, "src"));
+                    com.jme.scene.Node node = null;
+                    if (!(model instanceof Node)){
+                        node = new com.jme.scene.Node(model+"_node");
+                        node.attachChild(model);
+                    }else{
+                        node = (com.jme.scene.Node)model;
+                    }
+                    
+                    node.getLocalScale().multLocal(scale);
+                    node.getLocalTranslation().addLocal(0.0f, height, 0.0f);
+                    ent.model = node;
+                }
+                
+                entityTypeMap.put(ent.name, ent);
+            }
+            
+            entityNode = entityNode.getNextSibling();
+        }
+    }
+    
+    public Collection<EntityType> getLoadedTypes(){
+        return entityTypeMap.values();
+    }
+    
+    public Entity produce(String typename, String name){
+        EntityType type = entityTypeMap.get(typename);
+        if (type == null)
+            return null;
+        
+        Entity ent = new Entity(name);
+        
+        EditorUnit editor = new EditorUnit(type);
+        ent.attachUnit(editor);
+        
+        if (type.model != null){
+            SharedNode node = new SharedNode(name, type.model);
+            ModelUnit model = new ModelUnit(node);
+            ent.attachUnit(model);
+        }
+        
+        return ent;
+    }
+    
+    public void load(InputStream xmlTypes){
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(xmlTypes);
             
-            Node typesNode = doc.getElementsByTagName("Types").item(0);
-            Node typeNode = typesNode.getFirstChild();
-            while (typeNode != null){
-                if (typeNode.getNodeName().equals("Type")){
-                    
-                }   
-                
-                typeNode = typeNode.getNextSibling();
-            }
+            Node entitiesNode = doc.getElementsByTagName("entities").item(0);
+            parseEntities(entitiesNode);
         } catch (SAXException ex) {
             ErrorReporter.reportError("Error while parsing XML file", ex);
         } catch (IOException ex) {
@@ -57,6 +141,9 @@ public final class EntityFactory {
         } catch (ParserConfigurationException ex) {
             ErrorReporter.reportError("Parser error", ex);
         }
+    }
+    
+    public EntityFactory(){
     }
     
 }
