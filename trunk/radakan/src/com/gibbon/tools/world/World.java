@@ -2,11 +2,10 @@ package com.gibbon.tools.world;
 
 import com.gibbon.jme.context.JmeContext;
 import com.jme.bounding.BoundingBox;
-import com.jme.image.Texture.MagnificationFilter;
-import com.jme.image.Texture.MinificationFilter;
-import com.jme.image.Texture.WrapMode;
+import com.jme.image.Texture;
 import com.jme.light.DirectionalLight;
 import com.jme.light.PointLight;
+import com.jme.light.SpotLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
@@ -17,26 +16,46 @@ import com.jme.scene.shape.Box;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.CullState.Face;
 import com.jme.scene.state.LightState;
-import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.state.ZBufferState.TestFunction;
-import com.jme.util.TextureManager;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.jme.util.export.InputCapsule;
+import com.jme.util.export.JMEExporter;
+import com.jme.util.export.JMEImporter;
+import com.jme.util.export.OutputCapsule;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class World extends Node {
 
     public static final int TILE_SIZE = 64;
-    
     private static World instance;
     
+    private TextureSet textureSet;
+    private int lightmapRes = 256;
+    private float tileScale;
     private int groupSize = 3;
     private int gridRes = 16;
-    private boolean markers = true;
-    private PointLight camLight;
+    private transient boolean markers = true;
+    private transient SpotLight camLight;
+    
+    public World(int lightmapRes, int groupSize, int gridRes){
+        this.lightmapRes = lightmapRes;
+        this.groupSize = groupSize;
+        this.gridRes = gridRes;
+        
+        loadRenderStates();
+
+        updateFromState();
+        update();
+        
+        instance = this;
+    }
     
     public World(){
+        loadRenderStates();
+    }
+    
+    private void loadRenderStates(){
         JmeContext context = JmeContext.get();
         
         // set some default states for the root node
@@ -64,17 +83,15 @@ public class World extends Node {
         dl.setDiffuse(new ColorRGBA(0.4f, 0.4f, 0.8f, 1.0f));
         ls.attach(dl2);
 
-        camLight = new PointLight();
+        camLight = new SpotLight();
         camLight.setEnabled(true);
         camLight.setDiffuse(ColorRGBA.lightGray);
         camLight.setSpecular(ColorRGBA.white);
+        camLight.setExponent(10);
+        camLight.setAngle(45);
+        
         ls.attach(camLight);
         setRenderState(ls);
-
-        updateFromState();
-        update();
-        
-        instance = this;
     }
     
     public static World getWorld(){
@@ -89,16 +106,31 @@ public class World extends Node {
         return groupSize;
     }
     
+    public int getTileSize() {
+        return TILE_SIZE;
+    }
+    
+    public int getGroupmapResolution(){
+        return lightmapRes;
+    }
+    
     @Override
     public void updateWorldData(float tpf){
         super.updateWorldData(tpf);
         
         Camera cam = JmeContext.get().getRenderer().getCamera();
-        
+
         Vector3f temp = camLight.getLocation();
         temp.set(cam.getLeft()).multLocal(5.0f);
         temp.addLocal(cam.getLocation());
         camLight.setLocation(temp);
+        
+        if (EditorState.handler != null){
+            Vector3f dir = camLight.getDirection();
+            dir.set(EditorState.handler.focus);
+            dir.subtractLocal(temp).normalizeLocal();
+            camLight.setDirection(dir);
+        }
     }
     
     public void update(){
@@ -118,28 +150,14 @@ public class World extends Node {
         markers = show;
     }
     
-    public void applyTileMaterials(Tile t){
-        try {
-            TextureManager.COMPRESS_BY_DEFAULT = false;
-            
-            TextureState ts = JmeContext.get().getRenderer().createTextureState();
-            URL url = new File("data\\images\\Monkey.jpg").toURI().toURL();
-            ts.setTexture(TextureManager.loadTexture(url, MinificationFilter.BilinearNoMipMaps, MagnificationFilter.Bilinear, 1.0f, true));
-            ts.getTexture().setWrap(WrapMode.Repeat);
-            t.setRenderState(ts);
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-        }
-    }
-    
-    public void createMarker(int x, int y){
+    public Box createMarker(int x, int y){
         if (findTile(x,y) != null || findMarker(x,y) != null)
-            return;
+            return null;
         
         Box b = new Box("MARKER_"+x+"_"+y, 
-                        new Vector3f(x * TILE_SIZE + TILE_SIZE * 0.5f, 
+                        new Vector3f(x * -TILE_SIZE - TILE_SIZE * 0.5f, 
                                      0.0f,
-                                     y * TILE_SIZE + TILE_SIZE * 0.5f), 
+                                     y * -TILE_SIZE - TILE_SIZE * 0.5f), 
                         3, 0.5f, 3);
         b.setDefaultColor(ColorRGBA.red);
         b.setColorBuffer(null);
@@ -151,30 +169,53 @@ public class World extends Node {
         b.updateModelBound();
         
         attachChild(b);
+        
+        return b;
+    }
+    
+    public boolean attachModel(Node model){
+        Vector3f pos = model.getLocalTranslation();
+        
+        int x = (int)(pos.x / -TILE_SIZE);
+        int y = (int)(pos.y / -TILE_SIZE);
+        
+        Tile t = findTile(x,y);
+        if (t == null)
+            return false;
+        
+        Vector3f delta = model.getLocalTranslation().clone();
+        t.worldToLocal(delta, pos);
+        t.attachChild(model);
+        
+        return true;
+    }
+    
+    public boolean detachModel(Node model){
+        Tile t = (Tile) model.getParent();
+        if (t == null)
+            return false;
+        
+        return t.detachChild(model) != -1;
     }
     
     public void createTile(int x, int y){
         Tile t = new Tile(x,y);
-        t.setLocalTranslation(x * TILE_SIZE, 0.0f, y * TILE_SIZE);
+        t.setLocalTranslation(x * -TILE_SIZE, 0.0f, y * -TILE_SIZE);
         
-        float scale = (float)TILE_SIZE / (gridRes-1.0f);
+        int groupX = (int) Math.floor((float)x / groupSize);
+        int groupY = (int) Math.floor((float)y / groupSize);
         
-        TriMesh grid = TerrainUtil.createGrid(gridRes, gridRes, 
-                                              new Vector3f(scale, 1f, scale), 
-                                              t);
-        grid.setName("TERRAIN_"+x+"_"+y);
-        t.setTerrain(grid);
-        
-        int groupX = (int) Math.ceil((float)x / groupSize);
-        int groupY = (int) Math.ceil((float)y / groupSize);
-        
-        Node group = findGroup(groupX, groupY);
+        TileGroup group = findGroup(groupX, groupY);
         if (group == null)
             group = createGroup(groupX, groupY);
         
         group.attachChild(t);
         
-        applyTileMaterials(t);
+        TriMesh grid = TerrainUtil.createGrid(gridRes, gridRes, 
+                                              new Vector3f(-tileScale, 1f, -tileScale), 
+                                              t);
+        grid.setName("TERRAIN_"+x+"_"+y);
+        t.setTerrain(grid);
         
         grid.setModelBound(new BoundingBox());
         grid.updateModelBound();
@@ -187,8 +228,9 @@ public class World extends Node {
         createMarker(x, y-1);
     }
     
-    public Node createGroup(int x, int y){
-        Node group = new Node("GROUP_"+x+"_"+y);
+    public TileGroup createGroup(int x, int y){
+        TileGroup group = new TileGroup(x,y);
+        group.setTextureSet(textureSet, true);
         
         group.setModelBound(new BoundingBox());
         group.updateModelBound();
@@ -202,13 +244,9 @@ public class World extends Node {
         return (Box) getChild("MARKER_"+x+"_"+y);
     }
     
-//    public Tile findTile(int x, int y){
-//        return (Tile) getChild("TILE_"+x+"_"+y);
-//    }
-
     public Tile findTile(int x, int y){
-        int groupX = (int) Math.ceil((float)x / groupSize);
-        int groupY = (int) Math.ceil((float)y / groupSize);
+        int groupX = (int) Math.floor((float)x / groupSize);
+        int groupY = (int) Math.floor((float)y / groupSize);
         Node group = findGroup(groupX, groupY);
         if (group == null)
             return null;
@@ -216,15 +254,74 @@ public class World extends Node {
         return (Tile) group.getChild("TILE_"+x+"_"+y);
     }
     
-    public Node findGroup(int x, int y){
-        return (Node) getChild("GROUP_"+x+"_"+y);
+    public TileGroup findGroup(int x, int y){
+        return (TileGroup) getChild("GROUP_"+x+"_"+y);
+    }
+    
+    public void setTextureSet(TextureSet set){
+        this.textureSet = set;
+    }
+    
+    public TextureSet getTextureSet(){
+        return textureSet;
+    }
+    
+    @Override
+    public void write(JMEExporter ex) throws IOException {
+        OutputCapsule cap = ex.getCapsule(this);
+        cap.write(lightmapRes, "MapsResolution", 256);
+        cap.write(tileScale, "TileScale", 0);
+        cap.write(groupSize, "GroupSize", 3);
+        cap.write(gridRes, "GridResolution", 16);
+        
+        ArrayList<TileGroup> groups = new ArrayList<TileGroup>();
+        for (Spatial child : children){
+            if (child.getName().startsWith("GROUP")){
+                groups.add((TileGroup)child);
+            }
+        }
+        cap.writeSavableArrayList(groups, "Groups", null);
+        
+    }
+    
+    @Override
+    public void read(JMEImporter im) throws IOException {
+        InputCapsule cap = im.getCapsule(this);
+        lightmapRes = cap.readInt("MapsResolution", 256);
+        tileScale = cap.readFloat("TileScale", 0);
+        groupSize = cap.readInt("GroupSize", 3);
+        gridRes = cap.readInt("GridResolution", 16);
+        markers = false;
+        textureSet = EditorState.getState().texSet;
+        
+        @SuppressWarnings("unchecked")
+        ArrayList<TileGroup> groups = cap.readSavableArrayList("Groups", null);
+        for (TileGroup group: groups){
+            attachChild(group);
+            for (Spatial child : group.getChildren()){
+                Tile tile = (Tile)child;
+                int x = tile.getX();
+                int y = tile.getY();
+                createMarker(x-1, y);
+                createMarker(x+1, y);
+                createMarker(x, y+1);
+                createMarker(x, y-1);
+            }
+        }
+        
+        updateFromState();
+        update();
+        
+        instance = this;
     }
     
     public void updateFromState() {
         EditorState state = EditorState.getState();
         
+        tileScale = (float)TILE_SIZE / (gridRes-1.0f);
         if (markers != (state.editType == EditType.TILE)){
             showMarkers(state.editType == EditType.TILE);
         }
     }
+
 }

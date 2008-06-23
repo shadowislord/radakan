@@ -13,6 +13,7 @@
  * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
 package com.gibbon.radakan.menu;
 
 import com.gibbon.jme.context.JmeContext;
@@ -84,3 +85,4 @@ public class LoadingController extends Controller {
     }
 
 }
+*/

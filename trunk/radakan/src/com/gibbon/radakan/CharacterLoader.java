@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/*
 package com.gibbon.radakan;
 
 import com.jme.bounding.BoundingBox;
@@ -35,10 +35,6 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Momoko_Fan
- */
 public class CharacterLoader {
 
     private static StreamTokenizer createReader(InputStream stream) {
@@ -63,6 +59,7 @@ public class CharacterLoader {
                 StreamTokenizer st = createReader(model.openStream());
                 MeshImporter mi = new MeshImporter(st);
                 node = mi.loadMesh(name);
+                
                 node.setModelBound(new BoundingBox());
                 node.updateModelBound();
                 node.updateWorldBound();
@@ -106,3 +103,4 @@ public class CharacterLoader {
     }
     
 }
+*/

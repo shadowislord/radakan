@@ -227,7 +227,7 @@ public class LWJGLContext extends JmeContext {
             defaultStates[i].setEnabled(false);
             Renderer.defaultStateList[i] = defaultStates[i];
         }
-        rc = new RenderContext();
+        rc = new RenderContext(null);
         rc.setupRecords(renderer);
         
         Camera cam = null;

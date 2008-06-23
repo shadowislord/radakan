@@ -15,7 +15,17 @@
 
 package com.gibbon.meshparser;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class XMLUtil {
     
@@ -34,6 +44,24 @@ public class XMLUtil {
         return child;
     }
     
+    public static Node loadDocument(InputStream in, String rootElementName) throws IOException{
+        try {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.parse(in);
+
+            NodeList list = doc.getElementsByTagName(rootElementName);
+            if (list.getLength() == 0) {
+                return null;
+            }
+
+            return list.item(0);
+        } catch (ParserConfigurationException ex) {
+            throw new IOException("Error occured while reading XML document: "+ex.getLocalizedMessage());
+        } catch (SAXException ex) {
+            throw new IOException("Error occured while reading XML document: "+ex.getLocalizedMessage());
+        }
+    }
+    
     /**
      * Returns an attribute of the specified tag with the name provided.
      * 
@@ -48,6 +76,12 @@ public class XMLUtil {
     
     public static float getFloatAttribute(Node node, String name){
         return Float.parseFloat(getAttribute(node,name));
+    }
+    
+    public static float getFloatAttribute(Node node, String name, float defVal){
+        String att = getAttribute(node, name);
+        if (att == null) return defVal;
+        return Float.parseFloat(att);
     }
     
     public static int getIntAttribute(Node node, String name){

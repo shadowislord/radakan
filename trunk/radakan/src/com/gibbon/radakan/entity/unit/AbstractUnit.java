@@ -36,7 +36,7 @@ public abstract class AbstractUnit implements Unit {
     /**
      * Keep a reference to the currently attached entity
      */
-    private transient Entity entity;
+    protected transient Entity entity;
     
     public void addEventListener(UnitEventListener listener) {
         listeners.add(listener);

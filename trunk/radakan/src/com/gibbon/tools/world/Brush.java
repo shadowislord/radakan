@@ -31,6 +31,8 @@ public class Brush {
             TileBrush.doMouseAction(collided, worldCoords);
         }else if (state.editType == EditType.TERRAIN){
             TerrainBrush.doMouseAction(collided, worldCoords);
+        }else if (state.editType == EditType.TEXTURE){
+            TextureBrush.doMouseAction(collided, worldCoords);
         }
     }
     

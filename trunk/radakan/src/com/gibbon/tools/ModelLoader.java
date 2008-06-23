@@ -16,7 +16,7 @@ import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
 import com.jmex.model.collada.ColladaImporter;
 import com.jmex.model.converters.*;
-import com.model.md5.importer.MD5Importer;
+//import com.model.md5.importer.MD5Importer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,7 +40,7 @@ public final class ModelLoader {
         return (Spatial) BinaryImporter.getInstance().load(out.toByteArray());
     }
     
-    public static Spatial loadMD5Model(File file) throws IOException{
+    /*public static Spatial loadMD5Model(File file) throws IOException{
         MD5Importer im = MD5Importer.getInstance();
 
         String name = file.getName();
@@ -58,8 +58,8 @@ public final class ModelLoader {
             im.loadMesh(mesh, name);
         }
 
-        return im.getModelNode();
-    }
+        return (Spatial) im.getModelNode();
+    }*/
     
     public static Spatial loadDAEModel(File file) throws IOException{
         InputStream in = new FileInputStream(file);
@@ -171,7 +171,7 @@ public final class ModelLoader {
         if (converter != null){
             model = loadModel(file, converter);
         }else if (ext.equalsIgnoreCase("md5mesh")){
-            model = loadMD5Model(file);
+            //model = loadMD5Model(file);
         }else if (ext.equalsIgnoreCase("dae")){
             model = loadDAEModel(file);
         }else if (ext.equalsIgnoreCase("xml")){

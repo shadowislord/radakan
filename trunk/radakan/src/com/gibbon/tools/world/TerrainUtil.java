@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.gibbon.tools.world;
 
+import com.jme.bounding.CollisionTreeManager;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.TexCoords;
@@ -13,10 +9,6 @@ import com.jme.util.geom.BufferUtils;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-/**
- *
- * @author Kirill
- */
 public class TerrainUtil {
 
     private static FloatBuffer writeVertexArray(int width, int height, Vector3f scale){
@@ -69,7 +61,11 @@ public class TerrainUtil {
         return store;
     }
     
-    public static void rebuildNormalArray(FloatBuffer vb, FloatBuffer nb){
+    public static void rebuildNormalArray(Tile tile){
+        TriMesh mesh = tile.getTerrain();
+        FloatBuffer vb = mesh.getVertexBuffer();
+        FloatBuffer nb = mesh.getNormalBuffer();
+        
         vb.rewind();
         nb.rewind();
         
@@ -80,21 +76,68 @@ public class TerrainUtil {
         int adj = 0, opp = 0, normalIndex = 0;
         final int size = World.getWorld().getGridResolution();
         
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
+        int myX = tile.getX();
+        int myY = tile.getY();
+        
+        Tile me = tile;
+        Tile left =  World.getWorld().findTile(myX-1, myY);
+        Tile right = World.getWorld().findTile(myX+1, myY);
+        Tile down =  World.getWorld().findTile(myX, myY+1);
+        Tile up =    World.getWorld().findTile(myX, myY-1);
+        Tile sourceAdj = null;
+        Tile sourceOpp = null;
+
+        if (left != null && left.isModified()){
+            rebuildNormalArray(left);
+        }
+        if (up != null && up.isModified()){
+            rebuildNormalArray(up);
+        }
+        
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
                 BufferUtils.populateFromBuffer(rootPoint, vb, normalIndex);
-                if (row == size - 1) {
-                    if (col == size - 1) { // last row, last col
-                        // up cross left
-                        adj = normalIndex - size;
-                        opp = normalIndex - 1;
-                    } else { // last row, except for last col
+                if (y == 0){
+                    if (x == 0){
+                        // get normal from top or left
+                        if (up != null){
+                            BufferUtils.populateFromBuffer(tempNorm, up.getTerrain().getNormalBuffer(), size*(size-1));
+                            BufferUtils.setInBuffer(tempNorm, nb, normalIndex);
+                            normalIndex++;
+                            continue;
+                        }else if (left != null){
+                            BufferUtils.populateFromBuffer(tempNorm, left.getTerrain().getNormalBuffer(), size*(size-1)+size-1);
+                            BufferUtils.setInBuffer(tempNorm, nb, normalIndex);
+                            normalIndex++;
+                            continue;
+                        }
+                    }else if (up != null){
+                        BufferUtils.populateFromBuffer(tempNorm, up.getTerrain().getNormalBuffer(), size*(size-1)+x);
+                        BufferUtils.setInBuffer(tempNorm, nb, normalIndex);
+                        normalIndex++;
+                        continue;
+                    }
+                }else if (x == 0){
+                    if (left != null){
+                        BufferUtils.populateFromBuffer(tempNorm, left.getTerrain().getNormalBuffer(), size*y+size-1);
+                        BufferUtils.setInBuffer(tempNorm, nb, normalIndex);
+                        normalIndex++;
+                        continue;
+                    }
+                }
+                
+                if (y == size - 1) {
+                    if (x == size - 1) { // last y, last x
+                      //   up cross left
+                      adj = normalIndex - size;
+                      opp = normalIndex - 1;
+                    } else { // last y, except for last x
                         // right cross up
                         adj = normalIndex + 1;
                         opp = normalIndex - size;
                     }
                 } else {
-                    if (col == size - 1) { // last column except for last row
+                    if (x == size - 1) { // last x except for last y
                         // left cross down
                         adj = normalIndex - 1;
                         opp = normalIndex + size;
@@ -106,6 +149,7 @@ public class TerrainUtil {
                 }
                 BufferUtils.populateFromBuffer(adjacentPoint, vb, adj);
                 BufferUtils.populateFromBuffer(oppositePoint, vb, opp);
+                
                 tempNorm.set(adjacentPoint).subtractLocal(rootPoint)
                         .crossLocal(oppositePoint.subtractLocal(rootPoint))
                         .normalizeLocal();
@@ -113,6 +157,11 @@ public class TerrainUtil {
                 normalIndex++;
             }
         }
+        
+        CollisionTreeManager.getInstance().updateCollisionTree(mesh);
+        mesh.updateModelBound();
+        mesh.updateGeometricState(0, true);
+        tile.clearModified();
     }
     
     private static FloatBuffer writeTexCoordArray(int width, int height, int tWidth, int tHeight, Vector2f offset, Vector2f scale){
@@ -144,18 +193,16 @@ public class TerrainUtil {
     public static TriMesh createGrid(int width, int height, Vector3f scale, Tile target) {
         int groupSize = World.getWorld().getGroupSize();
         
-        int groupX = (int) Math.ceil((float)target.getX() / groupSize);
-        int groupY = (int) Math.ceil((float)target.getY() / groupSize);
+        int groupX = target.getGroup().getX();
+        int groupY = target.getGroup().getY();
         
-        int deltaX = (target.getX()-1) % groupSize;
-        int deltaY = (target.getY()-1) % groupSize;
+        int deltaX = target.getX() - groupX * groupSize;
+        int deltaY = target.getY() - groupY * groupSize;
         
         Vector2f offset = new Vector2f((float)deltaX / groupSize,
                                        (float)deltaY / groupSize);
         Vector2f tcScale  = new Vector2f(1f / groupSize, 
                                          1f / groupSize);
-        
-        System.out.println(target.getName()+": "+offset);
         
         TriMesh store = new TriMesh("TERRAIN");
 

@@ -92,7 +92,8 @@ public class Skeleton {
             matrix.m22 *= tempV.z;
         }
         
-        shader.setUniform("skinningMats", skinningMatrixes, false);
+        // FIXME: Apply jME uniform patch
+        //shader.setUniform("skinningMats", skinningMatrixes, false);
     }
     
 }

@@ -2,16 +2,12 @@ package com.gibbon.tools.world;
 
 import com.jme.intersection.PickData;
 import com.jme.intersection.TrianglePickResults;
-import com.jme.math.FastMath;
 import com.jme.math.Ray;
-import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Geometry;
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
-import com.jme.util.geom.BufferUtils;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.List;
 
 public class WorldUtil {
@@ -63,6 +59,24 @@ public class WorldUtil {
     
     static {
         camResults.setCheckDistance(true);
+    }
+    
+    public static void addInfluenced(Spatial obj, Vector3f point, float radius, List<TriMesh> targets){
+        if (obj instanceof Node){
+            Node n = (Node) obj;
+            for (Spatial child : n.getChildren()){
+                addInfluenced(child, point, radius, targets);
+            }
+        }else if (obj instanceof TriMesh){
+            TriMesh mesh = (TriMesh)obj;
+            if (mesh.getName().startsWith("TERRAIN")){
+                float meshRadius = 64.0f;
+                // FIXME: This part does not work regardless of what I do..
+                //if (mesh.getWorldBound().getCenter().distance(point) <= (meshRadius + radius)){
+                    targets.add(mesh);
+                //}
+            }
+        }
     }
     
     public static Geometry calculatePick(Spatial scene, Ray r, Vector3f point){
