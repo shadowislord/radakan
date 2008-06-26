@@ -98,9 +98,8 @@ public final class ModelLoader {
         return loader.getScene();
     }
     
-    public static Spatial scaleAndCenter(Spatial model) {
+    public static Spatial scaleAndCenter(Spatial model, float size) {
         if (model != null) {
-            // scale model to maximum extent of 5.0
             model.updateGeometricState(0, true);
             
             BoundingVolume worldBound = model.getWorldBound();
@@ -119,14 +118,13 @@ public final class ModelLoader {
                 
                 Vector3f extent = boundingBox.getExtent( null );
                 float maxExtent = Math.max( Math.max( extent.x, extent.y ), extent.z );
+                float height = extent.y;
                 if ( maxExtent != 0 ) {
-                    Node scaledModel = new Node( "scaled model" );
-                    scaledModel.attachChild( model );
-                    scaledModel.setLocalScale( 40.0f / maxExtent );
-                    scaledModel.setLocalTranslation(center.negate());
+                    model.setLocalScale( size / maxExtent );
+                    Vector3f pos = center.negate().addLocal(0.0f, height / 2.0f, 0.0f); //.multLocal(model.getLocalScale().x);
+                    model.setLocalTranslation(pos);
                     System.out.println("Model size: "+maxExtent);
                     System.out.println("Model position: "+center);
-                    model = scaledModel;
                 }
             }
         }

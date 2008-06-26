@@ -10,6 +10,7 @@ import com.jme.scene.TriMesh;
 import com.jme.util.geom.BufferUtils;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class TerrainBrush {
@@ -96,8 +97,10 @@ public class TerrainBrush {
     public static void doMouseAction(TriMesh collided, Vector3f point){
         EditorState state = EditorState.getState();
         
-        List<TriMesh> influenced = new ArrayList<TriMesh>();
-        WorldUtil.addInfluenced(World.getWorld(), point, state.brushSize, influenced);
+        //List<TriMesh> influenced = new ArrayList<TriMesh>();
+        //WorldUtil.addInfluenced(World.getWorld(), point, state.brushSize, influenced);
+        
+        Collection<TriMesh> influenced = Brush.getCollisions(point, state.brushSize);
         
         for (TriMesh mesh : influenced){
             if (state.brushType == BrushType.RAISE){

@@ -52,8 +52,10 @@ public class WorldTool extends javax.swing.JFrame {
     private DefaultComboBoxModel texturesets;
     
     private RenderPass render;
+    private SelectionEffectPass selectionPass;
     
     private boolean doingMouseAction = false;
+    private boolean mouseActionOnce = false;
     private int mouseX = 0, mouseY = 0;
     
     private JFileChooser chooser = new JFileChooser();
@@ -70,6 +72,7 @@ public class WorldTool extends javax.swing.JFrame {
         instance.mouseX = x;
         instance.mouseY = y;
         instance.doingMouseAction = true;
+        instance.mouseActionOnce = true;
     }
     
     public static void setNotDoingMouseAction(){
@@ -218,7 +221,12 @@ public class WorldTool extends javax.swing.JFrame {
                         public void doUpdate(JmeContext cx){
                             super.doUpdate(cx);
                             if (doingMouseAction && World.getWorld() != null){
-                                Brush.doMouseAction(mouseX, mouseY);
+                                if (mouseActionOnce){
+                                    mouseActionOnce = false;
+                                    Brush.doMouseAction(mouseX, mouseY, false);
+                                }else{
+                                    Brush.doMouseAction(mouseX, mouseY, true);
+                                }
                             }
                         }
                         
@@ -236,6 +244,9 @@ public class WorldTool extends javax.swing.JFrame {
                     };
                     context.getPassManager().add(render);
                     
+                    selectionPass = new SelectionEffectPass();
+                    context.getPassManager().add(selectionPass);
+                    
                     // put the camera above the terrain and face the center
                     final AbstractCamera cam = (AbstractCamera) JmeContext.get().getRenderer().getCamera();
                     cam.setLocation(new Vector3f(0, 50, -50));
@@ -246,6 +257,7 @@ public class WorldTool extends javax.swing.JFrame {
                             cam.getProjectionMatrix();
                             cam.getModelViewMatrix();
                             cam.update();
+                            TextureManager.preloadCache(context.getRenderer());
                             return null;
                         }
                     });
@@ -312,7 +324,7 @@ public class WorldTool extends javax.swing.JFrame {
         pnlEntity = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         treeEntities = new javax.swing.JTree();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        btnSelection = new javax.swing.JToggleButton();
         menu = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuFileNew = new javax.swing.JMenuItem();
@@ -636,9 +648,19 @@ public class WorldTool extends javax.swing.JFrame {
         tab.addTab("Texture", pnlTexture);
 
         treeEntities.setRootVisible(false);
+        treeEntities.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                treeEntitiesValueChanged(evt);
+            }
+        });
         jScrollPane2.setViewportView(treeEntities);
 
-        jToggleButton1.setText("Selection Mode");
+        btnSelection.setText("Selection Mode");
+        btnSelection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelectionActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout pnlEntityLayout = new org.jdesktop.layout.GroupLayout(pnlEntity);
         pnlEntity.setLayout(pnlEntityLayout);
@@ -647,7 +669,7 @@ public class WorldTool extends javax.swing.JFrame {
             .add(pnlEntityLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(pnlEntityLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jToggleButton1)
+                    .add(btnSelection)
                     .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -657,7 +679,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 194, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jToggleButton1)
+                .add(btnSelection)
                 .addContainerGap(165, Short.MAX_VALUE))
         );
 
@@ -1145,6 +1167,23 @@ public class WorldTool extends javax.swing.JFrame {
             setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void treeEntitiesValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeEntitiesValueChanged
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) evt.getPath().getLastPathComponent();
+        if (node.getUserObject() instanceof EntityType){
+            EditorState.getState().entityType = (EntityType) node.getUserObject();
+            System.out.println("You selected: "+node.getUserObject());
+        }else{
+            EditorState.getState().entityType = null;
+        }
+    }//GEN-LAST:event_treeEntitiesValueChanged
+
+    private void btnSelectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectionActionPerformed
+        state.selectionMode = btnSelection.isSelected();
+        if (!state.selectionMode){
+            state.selection.clear();
+        }
+}//GEN-LAST:event_btnSelectionActionPerformed
     
     /**
      * @param args the command line arguments
@@ -1161,6 +1200,7 @@ public class WorldTool extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup brushTypeGroup;
+    private javax.swing.JToggleButton btnSelection;
     private javax.swing.JButton btnTSetExport;
     private javax.swing.JButton btnTSetImport;
     private javax.swing.JButton btnTexAdd;
@@ -1176,7 +1216,6 @@ public class WorldTool extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel lblStrength;
     private javax.swing.JLabel lblTStr;
     private javax.swing.JLabel lblTerrainBSize;

@@ -15,21 +15,33 @@
 
 package com.gibbon.meshparser;
 
+import com.gibbon.jme.context.JmeContext;
 import com.gibbon.radakan.error.ErrorReporter;
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import com.jme.renderer.ColorRGBA;
+import com.jme.scene.Geometry;
+import com.jme.scene.SharedMesh;
+import com.jme.scene.Spatial;
 import com.jme.scene.state.BlendState;
 import com.jme.scene.state.BlendState.DestinationFunction;
 import com.jme.scene.state.BlendState.SourceFunction;
+import com.jme.scene.state.GLSLShaderDataLogic;
+import com.jme.scene.state.GLSLShaderObjectsState;
+import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
+import com.jme.scene.state.lwjgl.LWJGLShaderObjectsState;
 import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,6 +49,7 @@ import java.io.StreamTokenizer;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * Reads OGRE3D material files<br/>
@@ -48,7 +61,7 @@ public class MaterialLoader {
     
     private StreamTokenizer reader;
     private Map<String, Material> materialMap;
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     
     public MaterialLoader() {
     }
@@ -248,6 +261,43 @@ public class MaterialLoader {
             }else{
                 zbuf.setWritable(false);
             }
+        }else if (stat_name.equals("shader")){
+            reader.nextToken();
+            File f = new File(nextStatement());
+            BufferedReader fr = new BufferedReader(new FileReader(f));
+            StringBuffer sb = new StringBuffer((int)f.length());
+            while (fr.ready()){
+                sb.append(fr.readLine()).append("\n");
+            }
+            fr.close();
+            final String vertShader = sb.toString();
+            
+            reader.nextToken();
+            f = new File(nextStatement());
+            fr = new BufferedReader(new FileReader(f));
+            sb = new StringBuffer((int)f.length()); 
+            while (fr.ready()){
+                sb.append(fr.readLine()).append("\n");
+            }
+            fr.close();
+            final String fragShader = sb.toString();
+            
+            final GLSLShaderObjectsState glsl = (GLSLShaderObjectsState) material.getState(RenderState.RS_GLSL_SHADER_OBJECTS);
+            JmeContext.get().executeLater(new Callable<Object>(){
+                public Object call(){
+                    glsl.load(vertShader, fragShader);
+                    return null;
+                }
+            });
+        }else if (stat_name.equals("uniform_int")){
+            reader.nextToken();
+            String name = nextStatement();
+            
+            reader.nextToken();
+            int value = (int) nextNumber();
+            
+            final GLSLShaderObjectsState glsl = (GLSLShaderObjectsState) material.getState(RenderState.RS_GLSL_SHADER_OBJECTS);
+            glsl.setUniform(name, value);
         }else if (stat_name.equals("texture_unit")){
             readTextureUnit(material);
         }else{

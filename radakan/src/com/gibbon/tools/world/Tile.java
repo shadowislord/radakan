@@ -48,6 +48,12 @@ public class Tile extends Node {
     public void setTerrain(TriMesh terrain){
         this.terrain = terrain;
         attachChildAt(terrain, 0);
+        
+        TileGroup group = getGroup();
+        terrain.setRenderState(group.getTerrainShader());
+        terrain.setRenderState(group.getTerrainTextureState());
+        
+        terrain.updateRenderState();
         updateModelBound();
         updateWorldBound();
     }

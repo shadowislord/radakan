@@ -36,7 +36,7 @@ public class World extends Node {
     private int groupSize = 3;
     private int gridRes = 16;
     private transient boolean markers = true;
-    private transient SpotLight camLight;
+    private transient PointLight camLight;
     
     public World(int lightmapRes, int groupSize, int gridRes){
         this.lightmapRes = lightmapRes;
@@ -83,12 +83,10 @@ public class World extends Node {
         dl.setDiffuse(new ColorRGBA(0.4f, 0.4f, 0.8f, 1.0f));
         ls.attach(dl2);
 
-        camLight = new SpotLight();
+        camLight = new PointLight();
         camLight.setEnabled(true);
         camLight.setDiffuse(ColorRGBA.lightGray);
         camLight.setSpecular(ColorRGBA.white);
-        camLight.setExponent(10);
-        camLight.setAngle(45);
         
         ls.attach(camLight);
         setRenderState(ls);
@@ -124,13 +122,6 @@ public class World extends Node {
         temp.set(cam.getLeft()).multLocal(5.0f);
         temp.addLocal(cam.getLocation());
         camLight.setLocation(temp);
-        
-        if (EditorState.handler != null){
-            Vector3f dir = camLight.getDirection();
-            dir.set(EditorState.handler.focus);
-            dir.subtractLocal(temp).normalizeLocal();
-            camLight.setDirection(dir);
-        }
     }
     
     public void update(){
@@ -143,6 +134,7 @@ public class World extends Node {
             for (Spatial s: getChildren()){
                 if (s.getName().startsWith("MARKER")){
                     s.setCullHint(show ? CullHint.Never : CullHint.Always);
+                    s.setIsCollidable(show);
                 }
             }
         }
@@ -163,6 +155,7 @@ public class World extends Node {
         b.setColorBuffer(null);
         
         b.setCullHint(markers ? CullHint.Never : CullHint.Always);
+        b.setIsCollidable(markers);
         b.setLightCombineMode(LightCombineMode.Off);
         
         b.setModelBound(new BoundingBox());
@@ -171,23 +164,6 @@ public class World extends Node {
         attachChild(b);
         
         return b;
-    }
-    
-    public boolean attachModel(Node model){
-        Vector3f pos = model.getLocalTranslation();
-        
-        int x = (int)(pos.x / -TILE_SIZE);
-        int y = (int)(pos.y / -TILE_SIZE);
-        
-        Tile t = findTile(x,y);
-        if (t == null)
-            return false;
-        
-        Vector3f delta = model.getLocalTranslation().clone();
-        t.worldToLocal(delta, pos);
-        t.attachChild(model);
-        
-        return true;
     }
     
     public boolean detachModel(Node model){

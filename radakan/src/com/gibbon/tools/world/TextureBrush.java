@@ -116,33 +116,48 @@ public class TextureBrush {
         
         for (int y = 0; y < height; y++){
             for (int x = 0; x < width; x++){
-                //byte r = buf.get(), g = buf.get(), b = buf.get();
+//                byte r = image.getData(0).get();
+                
                 manipulatePixel(image, x, y, color, false);
                 
                 texuv.set((float)x / width, (float)y / height);
 
-                float dist = texuv.distance(uv);
-
-                if (dist < radius) {
-                    dist = 1.0f - (dist / radius);
-                    float amount = intensity * dist;
-                    color.r += amount;
-                    color.g += amount;
-                    color.b += amount;
-                    //color.a += amount;
-
-                    color.clamp();
-//                    r = addByteClamp(r, amount);
-//                    g = addByteClamp(r, amount);
-//                    b = addByteClamp(r, amount);
+                float dist = texuv.distanceSquared(uv);
+//
+                if (dist < radius * radius) {
+                    dist = 1.5f - (dist / radius);
+                    //float amount = intensity * dist;
+                    float amount = intensity;
+                    if ( (amount > 0.0 && intensity > 0.0) ||
+                         (amount < 0.0 && intensity < 0.0)) {
+                        color.r += amount;
+                        color.g += amount;
+                        color.b += amount;
+                    }
+                    
+                    
+                    
+//                    //color.a += amount;
+//
+                    //color.clamp();
+                    
+                    if (intensity > 0.0){
+                        color.set(1.0f, 1.0f, 1.0f, 1.0f);
+                    }else{
+                        color.set(0.0f, 0.0f, 0.0f, 0.0f);
+                    }
                 }
                 
+                
+                
+                
+                
                 manipulatePixel(image, x, y, color, true);
-//                buf.position(buf.position()-3);
-//                buf.put(r).put(g).put(b);
+//                image.getData(0).position(image.getData(0).position()-1);
+//                image.getData(0).put(r);
             }
         }
-        
+         
         image.getData(0).rewind();
     }
     

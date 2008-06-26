@@ -34,11 +34,14 @@ public class WorldCameraHandler implements MouseListener,  MouseMotionListener,
     }
 
     public void mouseClicked(MouseEvent arg0) {
+        EditorState.lastMouseEvent = arg0;
     }
 
     public void mouseReleased(MouseEvent arg0) {
         if ((arg0.getModifiers() & InputEvent.BUTTON1_MASK) != 0)
             WorldTool.setNotDoingMouseAction();
+        
+        EditorState.lastMouseEvent = arg0;
     }
 
     public void mouseEntered(MouseEvent arg0) {
@@ -49,6 +52,7 @@ public class WorldCameraHandler implements MouseListener,  MouseMotionListener,
     
     public void mouseDragged(final MouseEvent arg0) {
         WorldTool.setMouseXY(arg0.getX(), arg0.getY());
+        EditorState.lastMouseEvent = arg0;
         
         Callable<?> exe = new Callable() {
             public Object call() {
@@ -67,7 +71,7 @@ public class WorldCameraHandler implements MouseListener,  MouseMotionListener,
 //                    zoomCamera(difY * mult);
 //                }
                 if ((mods & InputEvent.BUTTON3_MASK) != 0) {
-                    panCamera(-difX, -difY);
+                    panCamera(-difX * 0.25f, -difY * 0.25f);
                 }
                 return null;
             }
@@ -83,13 +87,15 @@ public class WorldCameraHandler implements MouseListener,  MouseMotionListener,
         last.y = arg0.getY();
         if ((arg0.getModifiers() & InputEvent.BUTTON1_MASK) != 0)
             WorldTool.setDoingMouseAction(arg0.getX(), arg0.getY());
+        
+        EditorState.lastMouseEvent = arg0;
     }
     
     public void mouseWheelMoved(final MouseWheelEvent arg0) {
         Callable<?> exe = new Callable() {
             public Object call() {
                 zoomCamera(arg0.getWheelRotation()
-                        * (arg0.isShiftDown() ? -1 : -20));
+                        * (arg0.isShiftDown() ? -1 : -10));
                 return null;
             }
         };

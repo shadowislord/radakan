@@ -404,7 +404,7 @@ public class PreviewTool extends javax.swing.JFrame {
                         if (model == null)
                             return;
                         
-                        model = ModelLoader.scaleAndCenter(model);
+                        model = ModelLoader.scaleAndCenter(model, 40.0f);
                         
                         rootNode.attachChild(model);
                         

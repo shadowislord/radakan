@@ -47,18 +47,22 @@ public class ModelUnit extends AbstractUnit implements UnitEventListener {
         model = (Node) ResourceManager.loadResource(Spatial.class, modelName);
     }
 
+    public Spatial getModel(){
+        return model;
+    }
+    
     public void onUnitEvent(UnitEvent event) {
         EditorUnit editor = entity.getUnit(EditorUnit.class);
         
         if (event.getType().equals(UnitEvent.ENTITY_BIRTH)){
             // add entity to world rootNode
-            if (editor != null){
-                World.getWorld().attachModel(model);
-            }
+            //if (editor != null){
+            //    World.getWorld().attachModel(model);
+            //}
         }else if (event.getType().equals(UnitEvent.ENTITY_DISPOSE)){
             // remove entity from world
             if (editor != null){
-                World.getWorld().detachModel(model);
+                model.removeFromParent();
             }
         }
     }

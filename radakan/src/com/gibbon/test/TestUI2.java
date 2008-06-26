@@ -29,7 +29,7 @@ public class TestUI2 {
     
     public static void main(String[] args){
         GameSettings settings
-                = new PreferencesGameSettings(Preferences.userRoot().node("test-jmecontext"));
+                = new PreferencesGameSettings(Preferences.userRoot().node("test-jmecontext"), true);
         
         settings.set("title", "Test Main Menu");
         

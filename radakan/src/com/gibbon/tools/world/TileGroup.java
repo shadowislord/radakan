@@ -1,11 +1,15 @@
 package com.gibbon.tools.world;
 
+import com.gibbon.jme.context.JmeContext;
 import com.jme.image.Image;
 import com.jme.image.Image.Format;
 import com.jme.image.Texture2D;
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
+import com.jme.scene.TriMesh;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
+import com.jme.scene.state.TextureState;
 import com.jme.scene.state.lwjgl.LWJGLShaderObjectsState;
 import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
@@ -21,6 +25,9 @@ public class TileGroup extends Node implements Savable {
     private int x, y;
     private Texture2D[] alphamaps;
     private TextureSet texSet = null;
+    
+    private TextureState textureState;
+    private GLSLShaderObjectsState shaderState;
     
     public static final Format ALPHAMAP_FORMAT = Format.Alpha8;
     
@@ -82,22 +89,44 @@ public class TileGroup extends Node implements Savable {
         return alphamaps != null;
     }
     
+    public TextureState getTerrainTextureState(){
+        return textureState;
+    }
+    
+    public GLSLShaderObjectsState getTerrainShader(){
+        return shaderState;
+    }
+    
     public void setTextureSet(TextureSet set, boolean replaceAlphamaps){
         if (set == null)
             return;
         
         texSet = set;
+        
+        textureState = JmeContext.get().getRenderer().createTextureState();
+        shaderState = set.getShader();
+        
         if (replaceAlphamaps){
-            alphamaps = set.applyMaterial(this);
+            alphamaps = set.createStateCopy(textureState);
         }else{
             // get list of dummy alphamaps
-            Texture2D[] tempMaps = set.applyMaterial(this);
+            Texture2D[] tempMaps = set.createStateCopy(textureState);
             
             // replace with this tilegroup's alphamaps
             for (int i = 0; i < tempMaps.length; i++){
                 tempMaps[i].setImage(alphamaps[i].getImage());
             }
             alphamaps = tempMaps;
+        }
+        
+        if (children == null)
+            return;
+        
+        for (Spatial child: children){
+            TriMesh mesh = ((Tile) child).getTerrain();
+            mesh.setRenderState(shaderState);
+            mesh.setRenderState(textureState);
+            mesh.updateRenderState();
         }
     }
     
