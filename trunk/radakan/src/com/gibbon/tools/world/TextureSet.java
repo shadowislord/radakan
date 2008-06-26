@@ -17,7 +17,9 @@ import com.jme.image.Texture.CombinerOperandRGB;
 import com.jme.image.Texture.CombinerSource;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
+import com.jme.image.Texture.WrapMode;
 import com.jme.image.Texture2D;
+import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.TextureState;
@@ -40,14 +42,18 @@ public class TextureSet {
     
     static {
         ByteBuffer buf = BufferUtils.createByteBuffer(2 * 2 * Image.getEstimatedByteSize(TileGroup.ALPHAMAP_FORMAT));
+        buf.put((byte)0xFF).put((byte)0xFF).put((byte)0x00).put((byte)0xFF);
+        buf.rewind();
         nilImage = new Image(TileGroup.ALPHAMAP_FORMAT, 2, 2, buf);
         nilTexture = new Texture2D();
         nilTexture.setImage(nilImage);
         nilTexture.setStoreTexture(true);
-        //nilTexture.setMagnificationFilter(MagnificationFilter.NearestNeighbor);
-        //nilTexture.setMinificationFilter(MinificationFilter.NearestNeighborNoMipMaps);
+//        nilTexture.setMagnificationFilter(MagnificationFilter.NearestNeighbor);
+//        nilTexture.setMinificationFilter(MinificationFilter.NearestNeighborNoMipMaps);
         nilTexture.setMagnificationFilter(MagnificationFilter.Bilinear);
         nilTexture.setMinificationFilter(MinificationFilter.BilinearNoMipMaps);
+        
+        nilTexture.setWrap(WrapMode.Clamp);
     }
     
     public static class Detailmap {
@@ -129,18 +135,8 @@ public class TextureSet {
         
     }
     
-    /**
-     * Applies this texture set to an object.
-     * 
-     * @param spatial
-     * @return An array of all alpha textures assigned to the material
-     */
-    public Texture2D[] applyMaterial(Spatial spatial){
+    public Texture2D[] createStateCopy(TextureState state){
         List<Texture2D> alphamaps = new ArrayList<Texture2D>();
-        
-        // must make a copy of the texture state
-        // otherwise it cannot be modified
-        TextureState state = JmeContext.get().getRenderer().createTextureState();
         
         for (int i = 0; i < texState.getNumberOfSetTextures(); i++){
             Texture texture = texState.getTexture(i);
@@ -154,27 +150,44 @@ public class TextureSet {
             state.setTexture(texture, i);
         }
         
-        // FIXME: Yes
-//        state = JmeContext.get().getRenderer().createTextureState();
-//        Texture2D tex = alphamaps.get(1);
-//        tex.setApply(ApplyMode.Combine);
-//        tex.setCombineFuncRGB(CombinerFunctionRGB.Replace);
-//        tex.setCombineFuncAlpha(CombinerFunctionAlpha.Replace);
-//        tex.setCombineSrc0RGB(CombinerSource.CurrentTexture);
-//        tex.setCombineOp0RGB(CombinerOperandRGB.SourceAlpha);
-//        tex.setCombineSrc0Alpha(CombinerSource.PrimaryColor);
-//        tex.setCombineOp0Alpha(CombinerOperandAlpha.SourceAlpha);
-//        
-//        state.setTexture(tex);
-        
-        spatial.setRenderState(state);
-        spatial.setRenderState(glsl);
-        
-        spatial.updateRenderState();
-        
-        System.out.println("SET STATE: "+spatial);
-        
         return alphamaps.toArray(new Texture2D[0]);
     }
+    
+    public GLSLShaderObjectsState getShader(){
+        return glsl;
+    }
+    
+    /**
+     * Applies this texture set to an object.
+     * 
+     * @param spatial
+     * @return An array of all alpha textures assigned to the material
+     */
+//    public Texture2D[] applyMaterial(Spatial spatial){
+//        List<Texture2D> alphamaps = new ArrayList<Texture2D>();
+//        
+//        // must make a copy of the texture state
+//        // otherwise it cannot be modified
+//        TextureState state = JmeContext.get().getRenderer().createTextureState();
+//        
+//        for (int i = 0; i < texState.getNumberOfSetTextures(); i++){
+//            Texture texture = texState.getTexture(i);
+//            
+//            if (texture.getImage() == nilImage){
+//                // create another instance, except for the data which is shared
+//                // the data will be replaced when the alphamap is painted
+//                texture = texture.createSimpleClone();
+//                alphamaps.add((Texture2D) texture);
+//            }
+//            state.setTexture(texture, i);
+//        }
+//        
+//        spatial.setRenderState(state);
+//        spatial.setRenderState(glsl);
+//        
+//        spatial.updateRenderState();
+//        
+//        return alphamaps.toArray(new Texture2D[0]);
+//    }
     
 }

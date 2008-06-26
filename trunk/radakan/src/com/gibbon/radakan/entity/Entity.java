@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public final class Entity extends AbstractUnit {
 
     private String name;
-    private ArrayList<Unit> units;
+    private ArrayList<Unit> units = new ArrayList<Unit>();
     
     public Entity(String name){
         this.name = name;
@@ -71,6 +71,14 @@ public final class Entity extends AbstractUnit {
         notifyListeners(event);
     }
     
+    public void birth(){
+        UnitEvent event = new UnitEvent();
+        event.setEntity(this);
+        event.setSource(this);
+        event.setType(UnitEvent.ENTITY_BIRTH);
+        notifyListeners(event);
+    }
+    
     public void dispose(){
         for (Unit u : units)
             detachUnit(u);
@@ -79,6 +87,7 @@ public final class Entity extends AbstractUnit {
         event.setEntity(this);
         event.setSource(this);
         event.setType(UnitEvent.ENTITY_DISPOSE);
+        notifyListeners(event);
     }
     
     public void update(float tpf){

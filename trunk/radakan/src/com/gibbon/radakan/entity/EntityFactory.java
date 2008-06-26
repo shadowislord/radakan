@@ -20,6 +20,7 @@ import com.gibbon.radakan.entity.unit.ModelUnit;
 import com.gibbon.radakan.error.ErrorReporter;
 import com.gibbon.tools.ModelLoader;
 import com.gibbon.tools.world.EditorUnit;
+import com.jme.bounding.BoundingBox;
 import com.jme.scene.SharedNode;
 import com.jme.scene.Spatial;
 import java.io.File;
@@ -52,6 +53,7 @@ public final class EntityFactory {
         public float height = 0.0f;
         public float normal_match = 1.0f;
         
+        @Override
         public String toString(){
             return name;
         }
@@ -86,14 +88,28 @@ public final class EntityFactory {
                     Spatial model = readModel(XMLUtil.getAttribute(modelNode, "src"));
                     com.jme.scene.Node node = null;
                     if (!(model instanceof Node)){
-                        node = new com.jme.scene.Node(model+"_node");
+                        node = new com.jme.scene.Node(model.getName()+"_node");
                         node.attachChild(model);
                     }else{
                         node = (com.jme.scene.Node)model;
                     }
-                    
-                    node.getLocalScale().multLocal(scale);
-                    node.getLocalTranslation().addLocal(0.0f, height, 0.0f);
+//                    node.setModelBound(new BoundingBox());
+//                    node.updateModelBound();
+//                    node.updateWorldBound();
+//                    node.updateGeometricState(0, true);
+//                    BoundingBox box = (BoundingBox) node.getWorldBound();
+//                    
+//                    node.getLocalTranslation().set(0.0f, box.yExtent / 2.0f, 0.0f);
+//                    node.getLocalScale().set(0.02f, 0.02f, 0.02f);
+//                    
+//                    //ModelLoader.scaleAndCenter(node, scale);
+//                    node.updateGeometricState(0, true);
+//                    node.lockBounds();
+//                    node.lockBranch();
+//                    node.lockTransforms();
+
+                    //node.getLocalScale().multLocal(scale);
+                    //node.getLocalTranslation().addLocal(0.0f, height, 0.0f);
                     ent.model = node;
                 }
                 
@@ -120,6 +136,10 @@ public final class EntityFactory {
         
         if (type.model != null){
             SharedNode node = new SharedNode(name, type.model);
+            node.setModelBound(new BoundingBox());
+            node.updateModelBound();
+            node.updateWorldBound();
+            node.updateGeometricState(0, true);
             ModelUnit model = new ModelUnit(node);
             ent.attachUnit(model);
         }
