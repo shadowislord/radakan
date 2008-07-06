@@ -12,4 +12,6 @@ public abstract class UIContext extends Container {
     
     public abstract void buildGUI();
     
+    public abstract void update(float tpf);
+    
 }

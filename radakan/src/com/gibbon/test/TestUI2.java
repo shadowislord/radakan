@@ -10,7 +10,8 @@ import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.radakan.Setup;
 import com.gibbon.radakan.config.ConfigFrame;
 import com.gibbon.radakan.error.ErrorReporter;
-import com.gibbon.radakan.ui.MainMenu2;
+import com.gibbon.radakan.ui.StartScreen;
+import com.gibbon.radakan.ui.StartScreenPass;
 import com.gibbon.radakan.ui.UIManager;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
@@ -23,8 +24,8 @@ public class TestUI2 {
         Setup.loadGuiPass(cx);
         UIManager.setXMLTheme("data/themes/QtCurve.xml");
         
-        MainMenu2 menu = new MainMenu2();
-        UIManager.setContext(menu, false);
+        StartScreenPass startScreen = new StartScreenPass();
+        cx.getPassManager().add(startScreen);
     }
     
     public static void main(String[] args){
@@ -50,6 +51,8 @@ public class TestUI2 {
         
         final JmeContext cx = context;
         
+//        cx.getPassManager().loadDefaultPasses();
+        
         // add input pass
         InputPass input = new InputPass(null, true);
         cx.getPassManager().add(input);
@@ -63,7 +66,6 @@ public class TestUI2 {
             }
         });
         cx.getPassManager().add(elp);
-
 
         initGame(cx);
     }

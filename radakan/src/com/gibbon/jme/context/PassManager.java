@@ -129,7 +129,7 @@ public class PassManager {
     public void loadDefaultPasses() {
         execute(new Callable<Object>(){
             public Object call(){
-                add(new InputPass(new FirstPersonHandler(JmeContext.get().getRenderer().getCamera(), 250, 1), false));
+                add(new InputPass(new FirstPersonHandler(JmeContext.get().getRenderer().getCamera(), 10, 1), false));
                 add(new ExitListenerPass(
                         new Callable<Object>(){
                             public Object call(){

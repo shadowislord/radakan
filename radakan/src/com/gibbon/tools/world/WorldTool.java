@@ -6,11 +6,13 @@ import com.gibbon.jme.context.RenderPass;
 import com.gibbon.jme.context.lwjgl.LWJGLCanvas;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.radakan.entity.EntityFactory.EntityType;
+import com.gibbon.radakan.entity.unit.ModelUnit;
 import com.gibbon.radakan.error.ErrorReporter;
 import com.gibbon.tools.FileNameExtensionFilter;
 import com.gibbon.tools.world.TextureSet.Detailmap;
 import com.jme.math.Vector3f;
 import com.jme.renderer.AbstractCamera;
+import com.jme.scene.Spatial;
 import com.jme.util.TextureManager;
 import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
@@ -61,11 +63,17 @@ public class WorldTool extends javax.swing.JFrame {
     private JFileChooser chooser = new JFileChooser();
     private File lastSavedFile = null;
     
+    public static int getMouseX(){
+        return instance.mouseX;
+    }
+    
+    public static int getMouseY(){
+        return instance.mouseY;
+    }
+    
     public static void setMouseXY(int x, int y){
         instance.mouseX = x;
         instance.mouseY = y;
-        
-        TextureManager.doTextureCleanup();
     }
     
     public static void setDoingMouseAction(int x, int y){
@@ -297,6 +305,7 @@ public class WorldTool extends javax.swing.JFrame {
         canvas = createCanvas();
         tab = new javax.swing.JTabbedPane();
         pnlWorld = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         pnlTerrain = new javax.swing.JPanel();
         pnlTerrainBrush = new javax.swing.JPanel();
         radRaise = new javax.swing.JToggleButton();
@@ -312,11 +321,10 @@ public class WorldTool extends javax.swing.JFrame {
         pnlTexBrush = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstTex = new javax.swing.JList();
-        btnTexAdd = new javax.swing.JButton();
-        btnTexRemove = new javax.swing.JButton();
         cmbTSets = new javax.swing.JComboBox();
         btnTSetImport = new javax.swing.JButton();
-        btnTSetExport = new javax.swing.JButton();
+        btnEditTSet = new javax.swing.JButton();
+        btnNewTSet = new javax.swing.JButton();
         lblTexBSize = new javax.swing.JLabel();
         sldBrushSize1 = new javax.swing.JSlider();
         sldTStr = new javax.swing.JSlider();
@@ -367,15 +375,29 @@ public class WorldTool extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Preview Lightmaps");
+        jButton1.setEnabled(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout pnlWorldLayout = new org.jdesktop.layout.GroupLayout(pnlWorld);
         pnlWorld.setLayout(pnlWorldLayout);
         pnlWorldLayout.setHorizontalGroup(
             pnlWorldLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 212, Short.MAX_VALUE)
+            .add(pnlWorldLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(jButton1)
+                .addContainerGap(81, Short.MAX_VALUE))
         );
         pnlWorldLayout.setVerticalGroup(
             pnlWorldLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 404, Short.MAX_VALUE)
+            .add(pnlWorldLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(jButton1)
+                .addContainerGap(370, Short.MAX_VALUE))
         );
 
         tab.addTab("World", pnlWorld);
@@ -535,10 +557,6 @@ public class WorldTool extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(lstTex);
 
-        btnTexAdd.setText("Add");
-
-        btnTexRemove.setText("Remove");
-
         cmbTSets.setModel(new DefaultComboBoxModel());
         cmbTSets.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -553,7 +571,19 @@ public class WorldTool extends javax.swing.JFrame {
             }
         });
 
-        btnTSetExport.setText("Export");
+        btnEditTSet.setText("Edit ...");
+        btnEditTSet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditTSetActionPerformed(evt);
+            }
+        });
+
+        btnNewTSet.setText("New ...");
+        btnNewTSet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewTSetActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout pnlTexBrushLayout = new org.jdesktop.layout.GroupLayout(pnlTexBrush);
         pnlTexBrush.setLayout(pnlTexBrushLayout);
@@ -565,13 +595,10 @@ public class WorldTool extends javax.swing.JFrame {
                     .add(cmbTSets, 0, 160, Short.MAX_VALUE)
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                     .add(pnlTexBrushLayout.createSequentialGroup()
-                        .add(btnTexAdd)
+                        .add(btnNewTSet)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnTexRemove))
-                    .add(pnlTexBrushLayout.createSequentialGroup()
-                        .add(btnTSetImport)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnTSetExport, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)))
+                        .add(btnTSetImport))
+                    .add(btnEditTSet))
                 .addContainerGap())
         );
         pnlTexBrushLayout.setVerticalGroup(
@@ -581,13 +608,11 @@ public class WorldTool extends javax.swing.JFrame {
                 .add(4, 4, 4)
                 .add(pnlTexBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnTSetImport)
-                    .add(btnTSetExport))
+                    .add(btnNewTSet))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(btnEditTSet)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 115, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(pnlTexBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(btnTexAdd)
-                    .add(btnTexRemove))
                 .addContainerGap())
         );
 
@@ -647,7 +672,6 @@ public class WorldTool extends javax.swing.JFrame {
 
         tab.addTab("Texture", pnlTexture);
 
-        treeEntities.setRootVisible(false);
         treeEntities.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 treeEntitiesValueChanged(evt);
@@ -740,11 +764,19 @@ public class WorldTool extends javax.swing.JFrame {
         menuEdit.setText("Edit");
 
         menuEditUndo.setText("Undo");
-        menuEditUndo.setEnabled(false);
+        menuEditUndo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEditUndoActionPerformed(evt);
+            }
+        });
         menuEdit.add(menuEditUndo);
 
         menuEditRedo1.setText("Redo");
-        menuEditRedo1.setEnabled(false);
+        menuEditRedo1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEditRedo1ActionPerformed(evt);
+            }
+        });
         menuEdit.add(menuEditRedo1);
         menuEdit.add(menuEditSep);
 
@@ -1168,11 +1200,26 @@ public class WorldTool extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void resetEntityView(){
+        if (state.entityTypePrototype != null){
+            Spatial model = state.entityTypePrototype.getUnit(ModelUnit.class).getModel();
+            model.removeFromParent();
+            state.entityTypePrototype = null;
+        }
+    }
+    
     private void treeEntitiesValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeEntitiesValueChanged
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) evt.getPath().getLastPathComponent();
+        
+        resetEntityView();
+        
         if (node.getUserObject() instanceof EntityType){
-            EditorState.getState().entityType = (EntityType) node.getUserObject();
-            System.out.println("You selected: "+node.getUserObject());
+            EditorState state = EditorState.getState();
+            state.entityType = (EntityType) node.getUserObject();
+            
+            state.entityTypePrototype = EntityBrush.factory.produce(state.entityType.name, "PROTOTYPE");
+//            Spatial model = state.entityTypePrototype.getUnit(ModelUnit.class).getModel();
+//            World.getWorld().update();
         }else{
             EditorState.getState().entityType = null;
         }
@@ -1184,6 +1231,43 @@ public class WorldTool extends javax.swing.JFrame {
             state.selection.clear();
         }
 }//GEN-LAST:event_btnSelectionActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        TileBrush.previewLightmaps();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnEditTSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditTSetActionPerformed
+        if (cmbTSets.getSelectedItem() != null){
+            final TextureSetEditor editor = new TextureSetEditor(this, (TextureSet) cmbTSets.getSelectedItem());
+            editor.setCallback(new Callable<Object>(){
+                public Object call(){
+                    updateTextureSetCombo();
+                    return null;
+                }
+            });
+            editor.setLocationRelativeTo(this);
+            editor.setVisible(true);
+        }
+    }//GEN-LAST:event_btnEditTSetActionPerformed
+
+    private void btnNewTSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewTSetActionPerformed
+        TextureSetEditor editor = new TextureSetEditor(this, null);
+        editor.setVisible(true);
+        editor.setCallback(new Callable<Object>(){
+            public Object call(){
+                updateTextureSetCombo();
+                return null;
+            }
+        });
+    }//GEN-LAST:event_btnNewTSetActionPerformed
+
+    private void menuEditUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditUndoActionPerformed
+        UndoManager.doUndo();
+    }//GEN-LAST:event_menuEditUndoActionPerformed
+
+    private void menuEditRedo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditRedo1ActionPerformed
+        UndoManager.doRedo();
+    }//GEN-LAST:event_menuEditRedo1ActionPerformed
     
     /**
      * @param args the command line arguments
@@ -1200,14 +1284,14 @@ public class WorldTool extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup brushTypeGroup;
+    private javax.swing.JButton btnEditTSet;
+    private javax.swing.JButton btnNewTSet;
     private javax.swing.JToggleButton btnSelection;
-    private javax.swing.JButton btnTSetExport;
     private javax.swing.JButton btnTSetImport;
-    private javax.swing.JButton btnTexAdd;
-    private javax.swing.JButton btnTexRemove;
     private java.awt.Canvas canvas;
     private javax.swing.JComboBox cmbTSets;
     private javax.swing.ButtonGroup editTypeGroup;
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;

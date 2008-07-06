@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
 import org.lwjgl.openal.AL10;
@@ -37,6 +38,8 @@ import org.lwjgl.opengl.GLContext;
 public class ErrorReporter {
 
     private static final StringBuffer log = new StringBuffer();
+    
+    private static ImageIcon splashImage;
     
     public static class ErrorHandler extends Handler implements UncaughtExceptionHandler {
 
@@ -60,10 +63,14 @@ public class ErrorReporter {
         
     }
     
+    public static void setSplashImage(ImageIcon icon){
+        splashImage = icon;
+    }
+    
     public static void reportError(String description, Throwable ex){
         ex.printStackTrace();
         
-        ErrorFrame frame = new ErrorFrame(description, ex);
+        ErrorFrame frame = new ErrorFrame(description, ex, splashImage);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.toFront();

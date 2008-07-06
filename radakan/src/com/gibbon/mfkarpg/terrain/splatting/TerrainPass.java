@@ -104,12 +104,14 @@ public class TerrainPass extends Pass {
      * Adds a detailmap, using the specified alphamap for blending.
      */
     public void addDetail(Texture detailmap, Texture alphamap, int tileScale){
-        if (alphamap == null)
+        if (alphamap == null){
             base = new BaseLayer(detailmap);
-        else{
+            if (tileScale != -1)
+                base.setScale(tileScale);
+        }else{
             AlphaDetailLayer adl = new AlphaDetailLayer(detailmap,alphamap);
             if (tileScale != -1)
-                adl.setScaleOverride(tileScale);
+                adl.setScale(tileScale);
             
             detail.add(adl);
         }

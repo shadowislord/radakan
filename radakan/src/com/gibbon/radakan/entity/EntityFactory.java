@@ -15,6 +15,8 @@
 
 package com.gibbon.radakan.entity;
 
+import com.gibbon.jme.ModelCloneUtil;
+import com.gibbon.jme.context.JmeContext;
 import com.gibbon.meshparser.XMLUtil;
 import com.gibbon.radakan.entity.unit.ModelUnit;
 import com.gibbon.radakan.error.ErrorReporter;
@@ -29,6 +31,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -85,7 +88,7 @@ public final class EntityFactory {
                     float scale  = XMLUtil.getFloatAttribute(modelNode, "scale", 1.0f);
                     float height = XMLUtil.getFloatAttribute(modelNode, "height", 0.0f);
                     
-                    Spatial model = readModel(XMLUtil.getAttribute(modelNode, "src"));
+                    final Spatial model = readModel(XMLUtil.getAttribute(modelNode, "src"));
                     com.jme.scene.Node node = null;
                     if (!(model instanceof Node)){
                         node = new com.jme.scene.Node(model.getName()+"_node");
@@ -93,10 +96,18 @@ public final class EntityFactory {
                     }else{
                         node = (com.jme.scene.Node)model;
                     }
-//                    node.setModelBound(new BoundingBox());
-//                    node.updateModelBound();
-//                    node.updateWorldBound();
-//                    node.updateGeometricState(0, true);
+                    
+                    Callable<Object> exe = new Callable<Object>(){
+                        public Object call(){
+                            model.lockMeshes();
+                            return null;
+                        }
+                    };
+                    JmeContext.get().executeLater(exe);
+                    node.setModelBound(new BoundingBox());
+                    node.updateModelBound();
+                    node.updateWorldBound();
+                    node.updateGeometricState(0, true);
 //                    BoundingBox box = (BoundingBox) node.getWorldBound();
 //                    
 //                    node.getLocalTranslation().set(0.0f, box.yExtent / 2.0f, 0.0f);
@@ -135,8 +146,10 @@ public final class EntityFactory {
         ent.attachUnit(editor);
         
         if (type.model != null){
-            SharedNode node = new SharedNode(name, type.model);
-            node.setModelBound(new BoundingBox());
+//            SharedNode node = new SharedNode(name, type.model);
+//            node.setModelBound(new BoundingBox());
+            com.jme.scene.Node node = (com.jme.scene.Node) ModelCloneUtil.cloneSmart(type.model);
+            node.setName(name);
             node.updateModelBound();
             node.updateWorldBound();
             node.updateGeometricState(0, true);

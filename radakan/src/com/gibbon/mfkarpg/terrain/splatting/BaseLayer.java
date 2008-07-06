@@ -52,23 +52,18 @@ public class BaseLayer implements Layer {
         this(null);
     }
 
-    public void setScaleOverride(float scale){
+    public void setScale(float scale){
         this.tileScale = scale;
     }
     
     public void genGLSLShaderCode(StringBuffer buf, int[] texIndices, boolean rDefined, boolean setFrag) {
-        if (tileScale == -1){
-            if (setFrag){
-                buf.append("   gl_FragColor = texture2D(tex"+texIndices[0]+",tcc);");
-            }else{
-                buf.append("   vec4 r = texture2D(tex").append(texIndices[0]).append(",tcc);\n");
-            }
+        if (tileScale == -1)
+            throw new UnsupportedOperationException();
+                    
+        if (setFrag){
+            buf.append("   gl_FragColor = texture2D(tex"+texIndices[0]+",tca * "+tileScale+");");
         }else{
-            if (setFrag){
-                buf.append("   gl_FragColor = texture2D(tex"+texIndices[0]+",tca * "+tileScale+");");
-            }else{
-                buf.append("   vec4 r = texture2D(tex").append(texIndices[0]).append(",tca * "+tileScale+");\n");
-            }
+            buf.append("   vec4 r = texture2D(tex").append(texIndices[0]).append(",tca * "+tileScale+");\n");
         }
     }
 
@@ -81,11 +76,24 @@ public class BaseLayer implements Layer {
     }
 
     public void genARBShaderCode(StringBuffer buf, int[] texIndices, boolean rDefined, boolean setFrag) {
-        if (setFrag){
-            buf.append("TEX result.color,fragment.texcoord[1],texture["+texIndices[0]+"],2D;\n");
+        if (tileScale == -1)
+            throw new UnsupportedOperationException();
+        
+        if (tileScale == 1.0){
+            if (setFrag){
+                buf.append("TEX result.color,fragment.texcoord[0],texture["+texIndices[0]+"],2D;\n");
+            }else{
+                buf.append("TEX r,fragment.texcoord[0],texture[").append(texIndices[0])
+                   .append("],2D;\n");
+            }
         }else{
-            buf.append("TEX r,fragment.texcoord[1],texture[").append(texIndices[0])
-               .append("],2D;\n");
+            buf.append("MUL c,fragment.texcoord[0], ").append(tileScale).append(";\n");
+            if (setFrag){
+                buf.append("TEX result.color,c,texture["+texIndices[0]+"],2D;\n");
+            }else{
+                buf.append("TEX r,c,texture[").append(texIndices[0])
+                   .append("],2D;\n");
+            }
         }
     }
 
@@ -107,7 +115,7 @@ public class BaseLayer implements Layer {
         
         state.pushTexture(base);
         
-        base.setScale(new Vector3f(state.getTileScale(), state.getTileScale(), 1f));
+        base.setScale(new Vector3f(tileScale, tileScale, 1f));
         
         if (state.isLightingEnabled() && (state.isPassFull() || state.isLastLayer())){
             base.setApply(ApplyMode.Combine);

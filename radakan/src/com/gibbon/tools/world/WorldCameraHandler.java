@@ -45,9 +45,11 @@ public class WorldCameraHandler implements MouseListener,  MouseMotionListener,
     }
 
     public void mouseEntered(MouseEvent arg0) {
+        EditorState.lastMouseEvent = arg0;
     }
 
     public void mouseExited(MouseEvent arg0) {
+        EditorState.lastMouseEvent = arg0;
     }
     
     public void mouseDragged(final MouseEvent arg0) {
@@ -80,6 +82,7 @@ public class WorldCameraHandler implements MouseListener,  MouseMotionListener,
     }
     
     public void mouseMoved(MouseEvent arg0) {
+        EditorState.lastMouseEvent = arg0;
     }
     
     public void mousePressed(MouseEvent arg0) {

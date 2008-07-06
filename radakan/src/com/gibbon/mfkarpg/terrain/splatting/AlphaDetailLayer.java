@@ -79,7 +79,7 @@ public class AlphaDetailLayer implements Layer {
         return tex[1];
     }
     
-    public void setScaleOverride(float scale){
+    public void setScale(float scale){
         if (scale < 1.0)
             throw new IllegalArgumentException();
                     

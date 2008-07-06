@@ -3,6 +3,7 @@ package com.gibbon.tools.world;
 import com.jme.bounding.CollisionTreeManager;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
+import com.jme.scene.Spatial;
 import com.jme.scene.TexCoords;
 import com.jme.scene.TriMesh;
 import com.jme.util.geom.BufferUtils;
@@ -161,6 +162,14 @@ public class TerrainUtil {
         CollisionTreeManager.getInstance().updateCollisionTree(mesh);
         mesh.updateModelBound();
         mesh.updateGeometricState(0, true);
+        
+        for (Spatial model : tile.getChildren()){
+            if (model.getName().startsWith("ENTITY")){
+                float h = PickUtils.getTerrainHeight(tile, model.getWorldTranslation(), null);
+                model.getLocalTranslation().y = h;
+            }
+        }
+        
         tile.clearModified();
     }
     

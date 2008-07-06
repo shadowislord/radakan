@@ -82,6 +82,10 @@ public class TextureSet {
         this.name = name;
     }
 
+    public void setName(String name){
+        this.name = name;
+    }
+    
     @Override
     public String toString(){
         return name;
@@ -104,7 +108,7 @@ public class TextureSet {
         env = new SplatEnv();
         
         BaseLayer bl = new BaseLayer(detailmaps.get(0).colormap);
-        bl.setScaleOverride(detailmaps.get(0).scale);
+        bl.setScale(detailmaps.get(0).scale);
         env.addLayer(bl);
         
         for (int i = 1; i < detailmaps.size(); i++){
@@ -113,7 +117,7 @@ public class TextureSet {
             // it is possible to know which texture is an alphamap, if it is the nilTexture
             AlphaDetailLayer adl = new AlphaDetailLayer(map.colormap, nilTexture);
             env.addLayer(adl);
-            adl.setScaleOverride(map.scale);
+            adl.setScale(map.scale);
         }
         
         LightLayer ll = new LightLayer();
