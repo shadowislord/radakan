@@ -38,6 +38,7 @@ public class EditorState implements Savable {
     // entity
     boolean selectionMode = false;
     EntityType entityType;
+    Entity entityTypePrototype;
     List<Entity> selection = new ArrayList<Entity>();
     
     public static EditorState getState(){

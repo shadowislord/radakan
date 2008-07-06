@@ -20,46 +20,32 @@ import org.lwjgl.opengl.GL11;
 
 public class MainMenu extends UIContext {
 
-    public static Font STONEHEDGE_SMALL;
-    public static Font ARKHAM_BUTTONS;
-    
     public void setBilinearFilter(ITexture tex){
         tex.bind();
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
     }
     
-    public static void buildFonts(){
-        try {
-            STONEHEDGE_SMALL    = new Font("data/themes/small.png", "data/themes/small.font");
-            ARKHAM_BUTTONS = new Font("data/themes/bigbutton.png", "data/themes/bigbutton.font");
-        } catch (FileNotFoundException ex) {
-            ErrorReporter.reportError("Font file cannot be found", ex);
-        } catch (IOException ex) {
-            ErrorReporter.reportError("Error while reading font file", ex);
-        }
-    }
-    
     public Container buildButtons(){
         Container c = new Container(new RowLayout(false));
         
         Button newGame = new Button("New Game");
-        newGame.getAppearance().setFont(ARKHAM_BUTTONS);
+        newGame.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
         newGame.getAppearance().setMargin(new Spacing(5, 5));
         c.addWidget(newGame);
         
         Button contGame = new Button("Continue Game");
-        contGame.getAppearance().setFont(ARKHAM_BUTTONS);
+        contGame.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
         contGame.getAppearance().setMargin(new Spacing(5, 5));
         c.addWidget(contGame);
         
         Button credits = new Button("Credits");
-        credits.getAppearance().setFont(ARKHAM_BUTTONS);
+        credits.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
         credits.getAppearance().setMargin(new Spacing(5, 5));
         c.addWidget(credits);
         
         Button exit = new Button("Exit");
-        exit.getAppearance().setFont(ARKHAM_BUTTONS);
+        exit.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
         exit.getAppearance().setMargin(new Spacing(5, 5));
         c.addWidget(exit);
         
@@ -70,8 +56,6 @@ public class MainMenu extends UIContext {
     }
     
     public void buildGUI(){
-        buildFonts();
-        
         try{
             setLayoutManager(new StaticLayout());
             
@@ -110,7 +94,7 @@ public class MainMenu extends UIContext {
             logo.setXY(width - logoWidth + 15, height - logoHeight - 10);
             addWidget(logo);
             
-            version.getAppearance().setFont(STONEHEDGE_SMALL);
+            version.getAppearance().setFont(Fonts.STONEHEDGE_SMALL);
             version.getAppearance().setTextColor(Color.WHITE);
             version.setSizeToMinSize();
             version.setXY(width - version.getWidth() - 20, 20);
@@ -127,6 +111,11 @@ public class MainMenu extends UIContext {
         } catch (IOException ex){
             ErrorReporter.reportError("Failed to locate background image", ex);
         }
+    }
+
+    @Override
+    public void update(float tpf) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

@@ -1,5 +1,6 @@
 package com.gibbon.tools.world;
 
+import com.acarter.scenemonitor.SceneMonitor;
 import com.gibbon.jme.context.JmeContext;
 import com.jme.bounding.BoundingBox;
 import com.jme.image.Texture;
@@ -90,6 +91,9 @@ public class World extends Node {
         
         ls.attach(camLight);
         setRenderState(ls);
+        
+//        SceneMonitor.getMonitor().showViewer(true);
+//        SceneMonitor.getMonitor().registerNode(this);
     }
     
     public static World getWorld(){
@@ -116,6 +120,7 @@ public class World extends Node {
     public void updateWorldData(float tpf){
         super.updateWorldData(tpf);
         
+        SceneMonitor.getMonitor().updateViewer(tpf);
         Camera cam = JmeContext.get().getRenderer().getCamera();
 
         Vector3f temp = camLight.getLocation();

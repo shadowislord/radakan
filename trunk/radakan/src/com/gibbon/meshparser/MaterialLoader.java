@@ -26,8 +26,10 @@ import com.jme.scene.Geometry;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.BlendState;
+import com.jme.scene.state.BlendState.BlendEquation;
 import com.jme.scene.state.BlendState.DestinationFunction;
 import com.jme.scene.state.BlendState.SourceFunction;
+import com.jme.scene.state.CullState;
 import com.jme.scene.state.GLSLShaderDataLogic;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.LightState;
@@ -119,6 +121,8 @@ public class MaterialLoader {
         color.b = (float) nextNumber();
         reader.nextToken();
         color.a = (float) nextNumber();
+        color.a = 1.0f;
+        color.clamp();
         return color;
     }
     
@@ -246,9 +250,10 @@ public class MaterialLoader {
                 as.setBlendEnabled(true);
                 as.setSourceFunction(SourceFunction.SourceAlpha);
                 as.setDestinationFunction(DestinationFunction.OneMinusSourceAlpha);
-//                
-//                CullState cs = (CullState) material.getState(RenderState.RS_CULL);
-//                cs.setCullMode(CullState.CS_FRONT_AND_BACK);
+                as.setBlendEquation(BlendEquation.Add);
+                
+                CullState cs = (CullState) material.getState(RenderState.RS_CULL);
+                cs.setCullFace(CullState.Face.None);
             }else{
                 throw new IOException("Unknown scene_blend mode: "+mode);
             }
@@ -259,7 +264,15 @@ public class MaterialLoader {
             if (enabled.equals("on")){
                 zbuf.setWritable(true);
             }else{
-                zbuf.setWritable(false);
+//                zbuf.setWritable(false);
+            }
+        }else if (stat_name.equals("lighting")){
+            reader.nextToken();
+            String enabled = nextStatement();
+            if (enabled.equals("on")){
+                material.lightingOff = false;
+            }else{
+                material.lightingOff = true;
             }
         }else if (stat_name.equals("shader")){
             reader.nextToken();

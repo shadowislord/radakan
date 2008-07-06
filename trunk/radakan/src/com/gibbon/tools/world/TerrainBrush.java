@@ -52,16 +52,6 @@ public class TerrainBrush {
         }
     }
     
-    public static void takeSample(FloatBuffer me, FloatBuffer left, FloatBuffer right, FloatBuffer up, FloatBuffer down, int size, int x, int y, Vector3f store){
-        if (x < 0){
-            x += size;
-            BufferUtils.populateFromBuffer(store, left, y*size+x);
-        }else if (x >= size){
-            x -= size;
-            BufferUtils.populateFromBuffer(store, right, y*size+x);
-        }
-    }
-    
     public static void doSmoothAction(TriMesh mesh, Vector3f point, float radius, float intensity){
         FloatBuffer vb = mesh.getVertexBuffer();
         vb.rewind();
@@ -69,7 +59,10 @@ public class TerrainBrush {
         if (mesh.getVertexCount() <= 0)
             throw new IllegalArgumentException();
         
+        float planeSize = (float)World.getWorld().getTileSize() / World.getWorld().getGridResolution();
+        
         Vector3f vertex = new Vector3f();
+        Vector3f sampler = new Vector3f();
         for (int i = 0; i < mesh.getVertexCount(); i++){
             // modify vertex
             vertex.set(vb.get(), vb.get(), vb.get());
@@ -82,8 +75,38 @@ public class TerrainBrush {
             float dist = FastMath.sqrt(dx * dx + dy * dy);
 
             if (dist < radius) {
+                // get 9 samples around point
+                float blurred = 0.0f;
+                
+                sampler.set(vertex).addLocal(0.0f, 0.0f, 0.0f);
+                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                
+                sampler.set(vertex).addLocal(planeSize, 0.0f, 0.0f);
+                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                
+                sampler.set(vertex).addLocal(-planeSize, 0.0f, 0.0f);
+                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                
+                sampler.set(vertex).addLocal(0.0f, 0.0f, planeSize);
+                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                
+                sampler.set(vertex).addLocal(0.0f, 0.0f, -planeSize);
+                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                
+                sampler.set(vertex).addLocal(planeSize, 0.0f, planeSize);
+                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                
+                sampler.set(vertex).addLocal(planeSize, 0.0f, -planeSize);
+                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                
+                sampler.set(vertex).addLocal(-planeSize, 0.0f, planeSize);
+                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                
+                sampler.set(vertex).addLocal(-planeSize, 0.0f, -planeSize);
+                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                
                 dist = 1.0f - (dist / radius);
-                vertex.addLocal(0f, intensity * dist, 0f);
+                vertex.y = intensity * dist * (blurred / 9.0f);
             }
 
             // back to model space
@@ -94,19 +117,26 @@ public class TerrainBrush {
         }
     }
     
-    public static void doMouseAction(TriMesh collided, Vector3f point){
+    public static void doMouseAction(int x, int y, boolean drag){
         EditorState state = EditorState.getState();
+        
+        Vector3f point = new Vector3f();
+        TriMesh collided = PickUtils.findClickedObject(x, y, true, point);
+        if (collided == null)
+            return;
         
         //List<TriMesh> influenced = new ArrayList<TriMesh>();
         //WorldUtil.addInfluenced(World.getWorld(), point, state.brushSize, influenced);
         
-        Collection<TriMesh> influenced = Brush.getCollisions(point, state.brushSize);
+        Collection<TriMesh> influenced = PickUtils.getCollisions(point, state.brushSize);
         
         for (TriMesh mesh : influenced){
             if (state.brushType == BrushType.RAISE){
                 doRaiseAction(mesh, point, (float) state.brushSize, state.brushStrength);
             }else if (state.brushType == BrushType.LOWER){
                 doRaiseAction(mesh, point, (float) state.brushSize, -state.brushStrength);
+            }else if (state.brushType == BrushType.SMOOTH){
+                doSmoothAction(mesh, point, (float) state.brushSize, state.brushStrength);
             }
         }
         

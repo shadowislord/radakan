@@ -41,7 +41,6 @@ import com.jme.scene.state.BlendState.TestFunction;
 import com.jme.scene.state.FragmentProgramState;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.TextureState;
-import com.jme.scene.state.lwjgl.LWJGLShaderObjectsState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,6 +69,11 @@ public class SplatEnv {
     
     public void addLayer(Layer t){
         layers.add(t);
+//        if (t instanceof AlphaDetailLayer){
+//            ((AlphaDetailLayer)t).setScale(state.tile_scale);
+//        }else if (t instanceof BaseLayer){
+//            ((BaseLayer)t).setScale(state.tile_scale);
+//        }
         refresh();
     }
     
@@ -289,12 +293,10 @@ public class SplatEnv {
 //    }
     
     protected static final String getDefaultVertexShaderDepth(){
-        return  "varying vec2 tcc, tca;\n" +
-                "varying float vDepth;\n" +
+        return  "varying float vDepth;\n" +
                 "\n" +
                 "void main(){" +
-                "   tca = gl_MultiTexCoord0.st;\n" +
-                "   tcc = gl_MultiTexCoord1.st;\n" +
+                "   gl_TexCoord[0].xy = gl_MultiTexCoord0.st;\n" +
                 "   gl_Position = ftransform();\n" +
                 "   vDepth = gl_Position.z;\n" +
                 "}\n";
@@ -360,7 +362,7 @@ public class SplatEnv {
         
         sb.append("END\n");
         
-        //System.out.println(sb.toString());
+        System.out.println(sb.toString());
         
         return sb.toString();
     }

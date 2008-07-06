@@ -88,7 +88,11 @@ public class LightLayer implements Layer {
         if (modulateScale == CombinerScale.One){
             buf.append(";\n");
         }else{
-            buf.append(" * "+modulateScale+";\n");
+            if (modulateScale == CombinerScale.Two){
+                buf.append(" * 2.0;\n");
+            }else{
+                buf.append(" * 4.0;\n");
+            }
         }
     }
 
@@ -108,6 +112,14 @@ public class LightLayer implements Layer {
         if (!rDefined)
             throw new UnsupportedOperationException("LightLayer must be the last layer in the SplatEnv");
         
+        float modScale = 1.0f;
+        
+        if (modulateScale == CombinerScale.Two){
+            modScale = 2.0f;      
+        }else if (modulateScale == CombinerScale.Four){
+            modScale = 4.0f;
+        }
+        
         if (lightmap == null){
             if (modulateScale == CombinerScale.One){
                 if (setFrag)
@@ -117,14 +129,14 @@ public class LightLayer implements Layer {
             }else{
                 buf.append("MUL r,r,fragment.color;\n");
                 if (setFrag)
-                    buf.append("MUL result.color,r,"+modulateScale+";\n");
+                    buf.append("MUL result.color,r,"+modScale+";\n");
                 else
-                    buf.append("MUL r,r,"+modulateScale+";\n");
+                    buf.append("MUL r,r,"+modScale+";\n");
             }
         }else{
             buf.append("TEX c,fragment.texcoord[0],texture[").append(texIndices[0]).append("],2D;\n");
             if (modulateScale != CombinerScale.One){
-                buf.append("MUL c,c,"+modulateScale+";\n");
+                buf.append("MUL c,c,"+modScale+";\n");
             }
             if (setFrag)
                 buf.append("MUL result.color,r,c;\n");

@@ -116,55 +116,44 @@ public class TextureBrush {
         
         for (int y = 0; y < height; y++){
             for (int x = 0; x < width; x++){
-//                byte r = image.getData(0).get();
-                
                 manipulatePixel(image, x, y, color, false);
                 
                 texuv.set((float)x / width, (float)y / height);
 
                 float dist = texuv.distanceSquared(uv);
-//
                 if (dist < radius * radius) {
                     dist = 1.5f - (dist / radius);
-                    //float amount = intensity * dist;
-                    float amount = intensity;
+                    float amount = intensity * dist;
                     if ( (amount > 0.0 && intensity > 0.0) ||
                          (amount < 0.0 && intensity < 0.0)) {
                         color.r += amount;
                         color.g += amount;
                         color.b += amount;
                     }
+
+                    color.clamp();
                     
-                    
-                    
-//                    //color.a += amount;
-//
-                    //color.clamp();
-                    
-                    if (intensity > 0.0){
-                        color.set(1.0f, 1.0f, 1.0f, 1.0f);
-                    }else{
-                        color.set(0.0f, 0.0f, 0.0f, 0.0f);
-                    }
+//                    if (intensity > 0.0){
+//                        color.set(1.0f, 1.0f, 1.0f, 1.0f);
+//                    }else{
+//                        color.set(0.0f, 0.0f, 0.0f, 0.0f);
+//                    }
                 }
                 
-                
-                
-                
-                
                 manipulatePixel(image, x, y, color, true);
-//                image.getData(0).position(image.getData(0).position()-1);
-//                image.getData(0).put(r);
             }
         }
          
         image.getData(0).rewind();
     }
     
-    public static void doMouseAction(TriMesh collided, Vector3f worldCoords) {
+    public static void doMouseAction(int x, int y, boolean drag) {
         EditorState state = EditorState.getState();
         
-        if (!collided.getName().startsWith("TERRAIN"))
+        Vector3f worldCoords = new Vector3f();
+        TriMesh collided = PickUtils.findClickedObject(x, y, true, worldCoords);
+        
+        if (collided == null || !collided.getName().startsWith("TERRAIN"))
             return;
             
         TileGroup group = (TileGroup) collided.getParent().getParent();
@@ -187,7 +176,7 @@ public class TextureBrush {
             group.setTextureSet(World.getWorld().getTextureSet(), true);
         }
         
-        final float startIntensity = 0.50f * state.brushStrength;
+        final float startIntensity = 0.03f * state.brushStrength;
         
         if (activeTex == 0){
             int count = group.getAlphamapCount();

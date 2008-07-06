@@ -18,11 +18,11 @@ package com.gibbon.meshparser;
 import com.gibbon.jme.context.JmeContext;
 import com.jme.light.DirectionalLight;
 import com.jme.light.Light;
-import com.jme.light.LightNode;
 import com.jme.light.PointLight;
 import com.jme.math.Matrix3f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.LightState;
@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -48,11 +49,16 @@ public class SceneLoader {
     private LightState ls;
     private com.jme.scene.Node scene;
     private Vector3f[] temp = new Vector3f[3];
+    private Camera lastLoadedCamera;
     
     public SceneLoader(){
         ls = DisplaySystem.getDisplaySystem().getRenderer().createLightState();
         scene = new com.jme.scene.Node("OgreScene");
         scene.setRenderState(ls);
+    }
+    
+    public Camera getCamera(){
+        return lastLoadedCamera;
     }
     
     private Node getChildNode(Node node, String name) {
@@ -70,6 +76,38 @@ public class SceneLoader {
     
     private float getFloatAttribute(Node node, String name){
         return Float.parseFloat(getAttribute(node, name));
+    }
+    
+    private Camera loadCamera(Node camera, Vector3f pos, Quaternion rot){
+        /*
+      <camera name="Camera.001" fov="32.642063" projectionType="perspective">
+        <clipping nearPlaneDist="0.100000" farPlaneDist="100.000000"/>
+      </camera>
+         */
+        final DisplaySystem display = DisplaySystem.getDisplaySystem();
+        
+        Callable<Camera> exe = new Callable<Camera>(){
+            public Camera call(){
+                return display.getRenderer().createCamera(display.getWidth(), display.getHeight());
+            }
+        };
+        Camera cam = JmeContext.get().execute(exe);
+        cam.setFrame(pos, rot);
+        
+        String name = getAttribute(camera, "name");
+        if (getAttribute(camera, "projectionType").equalsIgnoreCase("perspective")){
+            float fov = getFloatAttribute(camera, "fov");
+            Node clipping = getChildNode(camera, "clipping");
+            float nearPlane = getFloatAttribute(clipping, "nearPlaneDist");
+            float farPlane = getFloatAttribute(clipping, "farPlaneDist");
+            
+            cam.setFrustumPerspective(fov, 
+                                     (float) display.getWidth() / display.getHeight(), 
+                                     nearPlane, 
+                                     farPlane);
+        }
+        
+        return cam;
     }
     
     private Light loadLight(Node light, Vector3f pos, Quaternion rot){
@@ -169,6 +207,11 @@ public class SceneLoader {
                 Node light = getChildNode(node, "light");
                 if (light != null){
                     ls.attach(loadLight(light, pos, rot));
+                }
+                
+                Node camera = getChildNode(node, "camera");
+                if (camera != null){
+                    lastLoadedCamera = loadCamera(camera, pos, rot);
                 }
                 
                 scene.attachChild(n);

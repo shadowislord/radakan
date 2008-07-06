@@ -63,7 +63,7 @@ public class TestSplatPage extends SimplePassGame {
         
         RawHeightMap heightMap = new RawHeightMap(TestSplatPage.class
                 .getClassLoader().getResource(
-                        "jmetest/data/texture/terrain/heights.raw").getFile(), 129,
+                        "jmetest/data/texture/terrain/heights.raw"), 129,
                 RawHeightMap.FORMAT_16BITLE, false);
 
         Vector3f terrainScale = new Vector3f(5, 0.003f, 6);
@@ -148,7 +148,7 @@ public class TestSplatPage extends SimplePassGame {
         // Create the terrain pass
         TerrainPass tPass = new TerrainPass();
         
-        tPass.setRenderMode(TerrainPass.MODE_BEST);
+        tPass.setRenderMode(TerrainPass.MODE_FIXED_FUNC);
         
         // Z test
         tPass.setPassState(buf);

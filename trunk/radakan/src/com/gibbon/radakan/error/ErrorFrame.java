@@ -17,16 +17,19 @@ package com.gibbon.radakan.error;
 
 import java.io.CharArrayWriter;
 import java.io.PrintWriter;
+import javax.swing.ImageIcon;
 
 public class ErrorFrame extends javax.swing.JFrame {
     
-    /** Creates new form ErrorFrame */
-    public ErrorFrame(String description, Throwable ex) {
+    private ImageIcon splashImage;
+    
+    public ErrorFrame(String description, Throwable ex, ImageIcon icon) {
         CharArrayWriter w = new CharArrayWriter();
         PrintWriter sw = new PrintWriter(w);
         sw.println(description);
         ex.printStackTrace(sw);
         sw.close();
+        splashImage = icon;
         
         initComponents();
         txtReport.setText(w.toString());
@@ -58,7 +61,7 @@ public class ErrorFrame extends javax.swing.JFrame {
 
         lblError2.setText("A log file has been created to address the error.");
 
-        lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/splash.png"))); // NOI18N
+        lblLogo.setIcon(splashImage);
 
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
@@ -86,7 +89,7 @@ public class ErrorFrame extends javax.swing.JFrame {
         pnlBorderLayout.setVerticalGroup(
             pnlBorderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(pnlBorderLayout.createSequentialGroup()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -137,17 +140,6 @@ public class ErrorFrame extends javax.swing.JFrame {
         dispose();
         System.exit(1);
     }//GEN-LAST:event_btnCloseActionPerformed
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ErrorFrame("The parameters are invalid. ", new NumberFormatException("Cannot parse ttya\\")).setVisible(true);
-            }
-        });
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;

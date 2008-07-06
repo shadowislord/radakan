@@ -18,6 +18,7 @@ package com.gibbon.meshparser;
 import com.gibbon.jme.context.JmeContext;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Spatial;
+import com.jme.scene.Spatial.LightCombineMode;
 import com.jme.scene.state.RenderState;
 import com.jme.system.DisplaySystem;
 
@@ -31,6 +32,7 @@ public final class Material {
     
     boolean recieveShadows = false;
     boolean transparent = false;
+    boolean lightingOff = false;
     
     public Material(String name) {
         this.name = name;
@@ -52,6 +54,9 @@ public final class Material {
             obj.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
         else 
             obj.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
+        
+        if (lightingOff)
+            obj.setLightCombineMode(LightCombineMode.Off);
         
         for (int i = 0; i < states.length; i++)
             obj.setRenderState(states[i]);

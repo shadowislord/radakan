@@ -16,6 +16,7 @@ import org.fenggui.util.Dimension;
 public class UIManager extends Container implements GuiManager {
 
     private static UIManager singleton;
+    private static UIContext current = null;
     
     public static int width, height;
     
@@ -59,6 +60,8 @@ public class UIManager extends Container implements GuiManager {
                 
                 StaticLayout.center(context, getInstance());
 
+                current = context;
+                
                 return null;
             }
         });
@@ -81,6 +84,8 @@ public class UIManager extends Container implements GuiManager {
     }
 
     public void update(Display display, float tpf) {
+        if (current != null)
+            current.update(tpf);
     }
     
 }
