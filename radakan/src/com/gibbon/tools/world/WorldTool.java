@@ -58,6 +58,7 @@ public class WorldTool extends javax.swing.JFrame {
     
     private boolean doingMouseAction = false;
     private boolean mouseActionOnce = false;
+    private boolean mouseActionEnd = false;
     private int mouseX = 0, mouseY = 0;
     
     private JFileChooser chooser = new JFileChooser();
@@ -85,6 +86,7 @@ public class WorldTool extends javax.swing.JFrame {
     
     public static void setNotDoingMouseAction(){
         instance.doingMouseAction = false;
+        instance.mouseActionEnd = true;
     }
     
     public void importTextureSets(File f){
@@ -226,14 +228,24 @@ public class WorldTool extends javax.swing.JFrame {
                     // create the render pass
                     render = new RenderPass(){
                         @Override
+                        public void initPass(JmeContext cx){
+                            Thread.setDefaultUncaughtExceptionHandler(new EditorExceptionHandler());
+                        }
+                        
+                        @Override
                         public void doUpdate(JmeContext cx){
                             super.doUpdate(cx);
-                            if (doingMouseAction && World.getWorld() != null){
+                            if ((doingMouseAction || mouseActionEnd) && World.getWorld() != null){
                                 if (mouseActionOnce){
                                     mouseActionOnce = false;
-                                    Brush.doMouseAction(mouseX, mouseY, false);
+                                    Brush.doMouseAction(mouseX, mouseY, false, false);
                                 }else{
-                                    Brush.doMouseAction(mouseX, mouseY, true);
+                                    if (mouseActionEnd){
+                                        mouseActionEnd = false;
+                                        Brush.doMouseAction(mouseX, mouseY, false, true);
+                                    }else{
+                                        Brush.doMouseAction(mouseX, mouseY, true, false);
+                                    }
                                 }
                             }
                         }
@@ -672,6 +684,7 @@ public class WorldTool extends javax.swing.JFrame {
 
         tab.addTab("Texture", pnlTexture);
 
+        treeEntities.setRootVisible(false);
         treeEntities.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 treeEntitiesValueChanged(evt);
@@ -962,7 +975,8 @@ public class WorldTool extends javax.swing.JFrame {
             state.brushSize = sldBrushSize1.getValue();
             if (state.texSet != texturesets.getSelectedItem()){
                 state.texSet = (TextureSet) texturesets.getSelectedItem();
-                World.getWorld().setTextureSet(state.texSet);
+                if (World.getWorld() != null)
+                    World.getWorld().setTextureSet(state.texSet);
             }
             
             state.textureIndex = lstTex.getSelectedIndex();

@@ -51,6 +51,7 @@ public class EditorState implements Savable {
 
     public void write(JMEExporter ex) throws IOException {
         OutputCapsule cap = ex.getCapsule(this);
+        cap.write("2", "Version", "");
         cap.write(editType, "EditType", EditType.TILE);
         cap.write(brushType, "BrushType", BrushType.RAISE);
         cap.write(brushSize, "BrushSize", 5);
@@ -62,6 +63,17 @@ public class EditorState implements Savable {
 
     public void read(JMEImporter im) throws IOException {
         InputCapsule cap = im.getCapsule(this);
+        String version = cap.readString("Version", "");
+        
+        if (version == null || version.equals("")){
+            System.err.println("WARNING: No version data in file, assuming 2. Please re-save to export version.");
+            version = "2";
+        }
+        
+        if (!version.equals("2")){
+            throw new IOException("Unsupported file version!");
+        }
+        
         editType = cap.readEnum("EditType", EditType.class, EditType.TILE);
         brushType = cap.readEnum("BrushType", BrushType.class, BrushType.RAISE);
         brushSize = cap.readInt("BrushSize", 5);

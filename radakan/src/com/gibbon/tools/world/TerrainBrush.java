@@ -54,6 +54,7 @@ public class TerrainBrush {
     
     public static void doSmoothAction(TriMesh mesh, Vector3f point, float radius, float intensity){
         FloatBuffer vb = mesh.getVertexBuffer();
+        Tile t = (Tile) mesh.getParent();
         vb.rewind();
         
         if (mesh.getVertexCount() <= 0)
@@ -77,36 +78,49 @@ public class TerrainBrush {
             if (dist < radius) {
                 // get 9 samples around point
                 float blurred = 0.0f;
+                float sample;
+                int count = 0;
                 
                 sampler.set(vertex).addLocal(0.0f, 0.0f, 0.0f);
-                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
-                
+                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                if (!Float.isNaN(sample)){ blurred += sample; count++; }
+
                 sampler.set(vertex).addLocal(planeSize, 0.0f, 0.0f);
-                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(-planeSize, 0.0f, 0.0f);
-                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(0.0f, 0.0f, planeSize);
-                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(0.0f, 0.0f, -planeSize);
-                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(planeSize, 0.0f, planeSize);
-                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(planeSize, 0.0f, -planeSize);
-                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(-planeSize, 0.0f, planeSize);
-                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(-planeSize, 0.0f, -planeSize);
-                blurred += PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                if (!Float.isNaN(sample)){ blurred += sample; count++; }
+                
+                t.setModified();
                 
                 dist = 1.0f - (dist / radius);
-                vertex.y = intensity * dist * (blurred / 9.0f);
+                vertex.y = FastMath.LERP(intensity * dist * 0.10f, vertex.y, (blurred / (float)count));
             }
 
             // back to model space
@@ -117,7 +131,7 @@ public class TerrainBrush {
         }
     }
     
-    public static void doMouseAction(int x, int y, boolean drag){
+    public static void doMouseAction(int x, int y, boolean drag, boolean finish){
         EditorState state = EditorState.getState();
         
         Vector3f point = new Vector3f();
@@ -129,6 +143,12 @@ public class TerrainBrush {
         //WorldUtil.addInfluenced(World.getWorld(), point, state.brushSize, influenced);
         
         Collection<TriMesh> influenced = PickUtils.getCollisions(point, state.brushSize);
+        
+        if (!drag && !finish){
+            TerrainUndoAction undoAction = new TerrainUndoAction("Undo Terrain "+state.brushType.name(),
+                                                                 influenced.toArray(new TriMesh[0]));
+            UndoManager.registerAction(undoAction);
+        }
         
         for (TriMesh mesh : influenced){
             if (state.brushType == BrushType.RAISE){

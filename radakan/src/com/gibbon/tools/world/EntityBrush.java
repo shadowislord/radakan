@@ -38,9 +38,12 @@ public class EntityBrush {
         return factory.getLoadedTypes();
     }
     
-    public static void doMouseAction(int x, int y, boolean drag){
+    public static void doMouseAction(int x, int y, boolean drag, boolean finish){
         EditorState state = EditorState.getState();
         MouseEvent evt = EditorState.lastMouseEvent;
+        
+        if (finish)
+            return;
         
         Vector3f point = new Vector3f();
         if (state.selectionMode){

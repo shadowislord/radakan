@@ -153,6 +153,9 @@ public class SelectionEffectPass extends RenderPass {
     public void doRender(JmeContext cx){
         EditorState state = EditorState.getState();
         
+        if (World.getWorld() == null)
+            return;
+            
         saveState(cx);
         
         List<Entity> entities = state.selection;

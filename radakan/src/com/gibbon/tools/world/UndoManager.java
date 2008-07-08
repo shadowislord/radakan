@@ -13,20 +13,29 @@ public class UndoManager {
         
         if (list.size() != 0){
             UndoAction action = list.remove(list.size()-1);
-            if (redoList.size() < maxRedo){
-                redoList.add(action.restore(true));
+            UndoAction redoAction = action.restore(true);
+            System.out.println("Undid: "+action.getName());
+            
+            if (redoList.size() > maxRedo){
+                redoList.remove(0);
             }
+            redoList.add(redoAction);
         }
     }
     
     public static void doRedo(){
         if (redoList.size() != 0){
-            UndoAction redoAction = redoList.remove(list.size()-1);
+            UndoAction redoAction = redoList.remove(redoList.size()-1);
             redoAction.restore(false);
         }
     }
     
     public static void registerAction(UndoAction action){
+        if (list.size() > EditorSettings.getPrefs().getInt("MaxUndo", 40)){
+            // remove first element if not enough elements
+            list.remove(0);
+        }
         list.add(action);
+        System.out.println("Added "+action.getName());
     }
 }

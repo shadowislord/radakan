@@ -6,7 +6,10 @@ import com.jme.scene.TriMesh;
 
 public class TileBrush {
 
-    public static void doMouseAction(int x, int y, boolean drag){
+    public static void doMouseAction(int x, int y, boolean drag, boolean finish){
+        if (drag)
+            return;
+        
         Vector3f point = new Vector3f();
         TriMesh collided = PickUtils.findClickedObject(x, y, false, point);
         
