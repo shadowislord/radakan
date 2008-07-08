@@ -749,6 +749,9 @@
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
                     <Component class="javax.swing.JTree" name="treeEntities">
+                      <Properties>
+                        <Property name="rootVisible" type="boolean" value="false"/>
+                      </Properties>
                       <Events>
                         <EventHandler event="valueChanged" listener="javax.swing.event.TreeSelectionListener" parameters="javax.swing.event.TreeSelectionEvent" handler="treeEntitiesValueChanged"/>
                       </Events>

@@ -40,6 +40,7 @@ public class ErrorReporter {
     private static final StringBuffer log = new StringBuffer();
     
     private static ImageIcon splashImage;
+    private static boolean errorReported = false;
     
     public static class ErrorHandler extends Handler implements UncaughtExceptionHandler {
 
@@ -69,6 +70,11 @@ public class ErrorReporter {
     
     public static void reportError(String description, Throwable ex){
         ex.printStackTrace();
+        
+        if (errorReported)
+            return;
+        else
+            errorReported = true;
         
         ErrorFrame frame = new ErrorFrame(description, ex, splashImage);
         frame.setVisible(true);

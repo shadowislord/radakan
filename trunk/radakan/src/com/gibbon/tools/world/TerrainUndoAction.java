@@ -23,6 +23,8 @@ public class TerrainUndoAction implements UndoAction {
         this.name = name;
         
         influenced = meshes;
+        stateVertex = new FloatBuffer[meshes.length];
+        stateNormal = new FloatBuffer[meshes.length];
         for (int i = 0; i < meshes.length; i++){
             stateVertex[i] = clone(meshes[i].getVertexBuffer());
             stateNormal[i] = clone(meshes[i].getNormalBuffer());

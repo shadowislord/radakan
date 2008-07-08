@@ -59,6 +59,9 @@ public class SplatEnv {
     
     protected CombinerState state = new CombinerState();
     
+    protected boolean perPixelLighting = false;
+    protected boolean firstSpec = false;
+    
     public void copy(SplatEnv target){
         target.state.setLightingEnabled(state.isLightingEnabled());
         target.setTileScale(getTileScale());
@@ -100,6 +103,10 @@ public class SplatEnv {
 
     public void setLightingEnabled(boolean enable) {
         state.setLightingEnabled(enable);
+    }
+    
+    public void setPerPixelLighting(boolean enable){
+        perPixelLighting = enable;
     }
     
     public class CombinerState {
@@ -302,6 +309,67 @@ public class SplatEnv {
                 "}\n";
     }
     
+    protected static final String getDefaultVertexShaderPerPixel(boolean firstSpec){
+        return (firstSpec ? "#define FIRST_SPEC" : null) +
+               "uniform int n_lights;\n" +
+               "varying vec3 vLightVector[gl_MaxLights];\n" +
+               "#ifdef FIRST_SPEC\n" +
+               "    varying vec3 vHalfAngle;\n" +
+               "#else\n" +
+               "    varying vec3 vHalfAngle[gl_MaxLights];\n" +
+               "#endif\n" +
+               "void main(){\n" +
+               "    gl_Position = ftransform();\n" +
+               "    gl_TexCoord[0].xy = gl_MultiTexCoord0.st;\n" +
+
+               "    vec3 normal = normalize(gl_Normal);\n" +
+               "    vec3 binormal;\n" +
+
+               "    vec3 c1 = cross(normal, vec3(0.0, 1.0, 0.0));\n" +
+               "    vec3 c2 = cross(normal, vec3(0.0, 0.0, 1.0));\n" +
+
+               "     if(length(c1)>length(c2)){\n" +
+               "         binormal = c1;\n" +
+               "     }else{\n" +
+               "         binormal = c2;\n" +
+               "     }\n" +
+
+               "    vec3 tangent = cross(normal, binormal);\n" +
+
+               "    vec3 vNormal    = gl_NormalMatrix * normal;\n" +
+               "    vec3 vBinormal  = gl_NormalMatrix * binormal;\n" +
+               "    vec3 vTangent   = gl_NormalMatrix * tangent;\n" +
+
+               "    vec3 eye_Vertex = (gl_ModelViewMatrix * gl_Vertex).xyz;\n" +
+
+               "    for (int i = 0; i < 4; i++){\n" +
+               "       if (i < n_lights){\n" +
+               "          vec3 temp_light_vector = gl_LightSource[i].position.xyz - eye_Vertex;\n" +
+
+               "          vLightVector[i].x = dot( temp_light_vector, vTangent );\n" +
+               "          vLightVector[i].y = dot( temp_light_vector, vBinormal );\n" +
+               "          vLightVector[i].z = dot( temp_light_vector, vNormal );\n" +
+
+               "          #ifndef FIRST_SPEC\n" +
+               "              vec3 halfTemp = gl_LightSource[i].halfVector.xyz;\n" +
+
+               "              vHalfAngle[i].x = dot(halfTemp, vTangent);\n" +
+               "              vHalfAngle[i].y = dot(halfTemp, vBinormal);\n" +
+               "              vHalfAngle[i].z = dot(halfTemp, vNormal);\n" +
+               "          #endif\n" +
+               "       }\n" +
+               "    \n" +
+
+               "    #ifdef FIRST_SPEC\n" +
+               "    vec3 halfTemp = gl_LightSource[i].halfVector.xyz;\n" +
+
+               "    vHalfAngle.x = dot(halfTemp, vTangent);\n" +
+               "    vHalfAngle.y = dot(halfTemp, vBinormal);\n" +
+               "    vHalfAngle.z = dot(halfTemp, vNormal);\n" +
+               "    #endif\n" +
+               "    }\n";
+    }
+    
     public GLSLShaderObjectsState createGLSLShader(Renderer r){
         GLSLShaderObjectsState shader = r.createGLSLShaderObjectsState();
         boolean writeDepth = false;
@@ -312,7 +380,8 @@ public class SplatEnv {
             }
         }
         shader.load(
-                writeDepth ? getDefaultVertexShaderDepth() : null,
+                writeDepth ? getDefaultVertexShaderDepth() : 
+                    (perPixelLighting ? getDefaultVertexShaderPerPixel(firstSpec) : null),
                 genGLSLShader(writeDepth));
         
         for (int i = 0; i < textures.size(); i++)
@@ -373,6 +442,18 @@ public class SplatEnv {
         
         StringBuffer sb = new StringBuffer();
         
+        if (perPixelLighting){
+            if (firstSpec){
+                sb.append("#define FIRST_SPEC\n");
+            }
+            
+            sb.append("varying vec3 vLightVector[gl_MaxLights];\n" +
+                      "#ifdef FIRST_SPEC\n" +
+                      "    varying vec3 vHalfAngle;\n" +
+                      "#else\n" +
+                      "    varying vec3 vHalfAngle[gl_MaxLights];\n" +
+                      "#endif\n");
+        }
         //sb.append("void main(){\n    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n}\n");
         
         //sb.append("varying vec2 tcc, tca;\n");

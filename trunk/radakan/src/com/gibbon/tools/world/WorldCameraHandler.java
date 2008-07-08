@@ -3,12 +3,9 @@ package com.gibbon.tools.world;
 import com.gibbon.jme.context.JmeContext;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
-import com.jme.math.Ray;
-import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.renderer.Renderer;
-import com.jme.scene.TriMesh;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -73,7 +70,7 @@ public class WorldCameraHandler implements MouseListener,  MouseMotionListener,
 //                    zoomCamera(difY * mult);
 //                }
                 if ((mods & InputEvent.BUTTON3_MASK) != 0) {
-                    panCamera(-difX * 0.25f, -difY * 0.25f);
+                    panCamera(-difX * 0.25f, -difY * 0.10f);
                 }
                 return null;
             }
@@ -98,7 +95,7 @@ public class WorldCameraHandler implements MouseListener,  MouseMotionListener,
         Callable<?> exe = new Callable() {
             public Object call() {
                 zoomCamera(arg0.getWheelRotation()
-                        * (arg0.isShiftDown() ? -1 : -10));
+                        * (arg0.isShiftDown() ? -1 : -5));
                 return null;
             }
         };

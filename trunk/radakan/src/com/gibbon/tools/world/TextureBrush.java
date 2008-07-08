@@ -147,7 +147,7 @@ public class TextureBrush {
         image.getData(0).rewind();
     }
     
-    public static void doMouseAction(int x, int y, boolean drag) {
+    public static void doMouseAction(int x, int y, boolean drag, boolean finish) {
         EditorState state = EditorState.getState();
         
         Vector3f worldCoords = new Vector3f();
@@ -176,7 +176,7 @@ public class TextureBrush {
             group.setTextureSet(World.getWorld().getTextureSet(), true);
         }
         
-        final float startIntensity = 0.03f * state.brushStrength;
+        final float startIntensity = 0.05f * state.brushStrength;
         
         if (activeTex == 0){
             int count = group.getAlphamapCount();

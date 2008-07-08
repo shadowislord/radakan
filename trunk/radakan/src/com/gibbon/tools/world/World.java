@@ -120,7 +120,7 @@ public class World extends Node {
     public void updateWorldData(float tpf){
         super.updateWorldData(tpf);
         
-        SceneMonitor.getMonitor().updateViewer(tpf);
+        //SceneMonitor.getMonitor().updateViewer(tpf);
         Camera cam = JmeContext.get().getRenderer().getCamera();
 
         Vector3f temp = camLight.getLocation();
