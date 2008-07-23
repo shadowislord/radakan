@@ -112,7 +112,7 @@ public class PreviewTool extends javax.swing.JFrame {
                     TextureManager.COMPRESS_BY_DEFAULT = false;
                     TextureState ts = cx.getRenderer().createTextureState();
                     ts.setEnabled(true);
-                    URL url = new File("data\\images\\Monkey.jpg").toURI().toURL();
+                    URL url = new File("data/images/Monkey.jpg").toURI().toURL();
                     ts.setTexture(TextureManager.loadTexture(url, MinificationFilter.Trilinear, 
                                                                   MagnificationFilter.Bilinear, 1.0f, true));
                     model.setRenderState(ts);

@@ -25,8 +25,9 @@ import com.jme.renderer.lwjgl.LWJGLPbufferTextureRenderer;
 import com.jme.renderer.lwjgl.LWJGLRenderer;
 import com.jme.renderer.lwjgl.LWJGLTextureRenderer;
 import com.jme.system.DisplaySystem;
-import com.jmex.awt.JMECanvas;
-import java.awt.Canvas;
+import com.jme.system.canvas.JMECanvas;
+import com.jme.system.lwjgl.LWJGLDisplaySystem;
+import java.util.HashMap;
 import org.lwjgl.opengl.RenderTexture;
 
 /**
@@ -110,14 +111,10 @@ public class ContextDisplaySystem extends DisplaySystem {
     public void createHeadlessWindow(int w, int h, int bpp) {
     }
 
-    /**
-     * @param w
-     * @param h
-     * @return null
-     */
-    public Canvas createCanvas(int w, int h){
-        return null;
-    }
+	@Override
+	public JMECanvas createCanvas(int w, int h, String type, HashMap<String, Object> props) {
+		return null;
+	}
 
     /**
      * Does absolutely nothing..
@@ -185,8 +182,8 @@ public class ContextDisplaySystem extends DisplaySystem {
         
         assert cx != null && cx instanceof LWJGLContext && cx.getRenderer() != null;
         
-        TextureRenderer textureRenderer = new LWJGLTextureRenderer( width, height, (LWJGLRenderer) getRenderer());
-
+//        TextureRenderer textureRenderer = new LWJGLTextureRenderer( width, height, (LWJGLRenderer) getRenderer());
+        TextureRenderer textureRenderer = new LWJGLTextureRenderer(width, height, (LWJGLDisplaySystem)system.getDisplaySystem(), (LWJGLRenderer) getRenderer());
         if (!textureRenderer.isSupported()) {
             textureRenderer = null;
 
@@ -204,8 +201,8 @@ public class ContextDisplaySystem extends DisplaySystem {
             //boolean useRGB, boolean useRGBA, boolean useDepth, boolean isRectangle, int target, int mipmaps
             RenderTexture renderTexture = new RenderTexture(false, true, true, false, lwjglTarget, 0);
             
-            textureRenderer = new LWJGLPbufferTextureRenderer( width, height, 
-                    (LWJGLRenderer) getRenderer(), renderTexture);
+//            textureRenderer = new LWJGLPbufferTextureRenderer( width, height, (LWJGLRenderer) getRenderer(), renderTexture);
+            textureRenderer = new LWJGLPbufferTextureRenderer(width, height, (LWJGLDisplaySystem)system.getDisplaySystem(), (LWJGLRenderer) getRenderer(), renderTexture);
         }
         
         return textureRenderer;
