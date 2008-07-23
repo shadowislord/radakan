@@ -25,6 +25,9 @@ public class EntityBrush {
         factory = new EntityFactory();
         
         File entitiesFile = new File(System.getProperty("user.dir")+"/entities/");
+		if(!entitiesFile.exists()){
+			entitiesFile.mkdir();
+		}
         for (File f : entitiesFile.listFiles()){
             if (f.getName().endsWith(".xml")){
                 InputStream in = new FileInputStream(f);

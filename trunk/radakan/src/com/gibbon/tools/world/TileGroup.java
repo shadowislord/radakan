@@ -31,6 +31,10 @@ import com.jmex.terrain.util.ProceduralSplatTextureGenerator;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+/**
+ * Changes recently made by Tomygun:
+ *  added a few checks for null alphamaps and texSet when reading and writing
+ */
 public class TileGroup extends Node implements Savable {
 
     private int x, y;
@@ -70,10 +74,13 @@ public class TileGroup extends Node implements Savable {
         y = cap.readInt("GroupY", 0);
         texSet = EditorState.texsetMap.get(cap.readString("TextureSet", null));
         Object[] maps = cap.readSavableArray("Alphamaps", null);
-        alphamaps = new Texture2D[maps.length];
-        for (int i = 0; i < maps.length; i++){
-            alphamaps[i] = (Texture2D) maps[i];
-        }
+		
+		if(maps != null){
+			alphamaps = new Texture2D[maps.length];
+			for (int i = 0; i < maps.length; i++){
+				alphamaps[i] = (Texture2D) maps[i];
+			}
+		}
         setTextureSet(texSet, false);
         
         setName("GROUP_"+x+"_"+y);
@@ -83,17 +90,23 @@ public class TileGroup extends Node implements Savable {
     public void write(JMEExporter ex) throws IOException {
         // set STORE TEXTURE before writing the NODE
         // otherwise image will NOT be stored
-        for (Texture2D alphamap : alphamaps){
-            alphamap.setStoreTexture(true);
-        }
+		if(alphamaps != null){
+			for (Texture2D alphamap : alphamaps){
+				alphamap.setStoreTexture(true);
+			}
+		}
         
         super.write(ex);
         
         OutputCapsule cap = ex.getCapsule(this);
         cap.write(x, "GroupX", 0);
         cap.write(y, "GroupY", 0);
-        cap.write(texSet.toString(), "TextureSet", null);
-        cap.write(alphamaps, "Alphamaps", null);
+		if(texSet != null){
+			cap.write(texSet.toString(), "TextureSet", null);
+		}
+		if(alphamaps != null){
+			cap.write(alphamaps, "Alphamaps", null);
+		}
     }
     
     public boolean isTextureSet(){

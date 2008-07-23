@@ -8,6 +8,10 @@ import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.radakan.entity.EntityFactory.EntityType;
 import com.gibbon.radakan.entity.unit.ModelUnit;
 import com.gibbon.radakan.error.ErrorReporter;
+import com.gibbon.radakan.res.DefaultFileSystem;
+import com.gibbon.radakan.res.FileSystem;
+import com.gibbon.radakan.res.ImageResourceLoader;
+import com.gibbon.radakan.res.ResourceManager;
 import com.gibbon.tools.FileNameExtensionFilter;
 import com.gibbon.tools.world.TextureSet.Detailmap;
 import com.jme.math.Vector3f;
@@ -25,15 +29,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -44,269 +45,271 @@ import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+/**
+ * Changes recently made by Tomygun:
+ * -changed menuItems's variable name, some had genereic ones like save, save as, open.
+ * includes usage of the ResourceManager and DefaultFileSystem to load icon Images.
+ * can't use it on GUI because images wouldn't be shown on the Desing view.
+ * -added Look & Feel menu.
+ * -when new file is opened lastSavedFile is set to null; if "save" would have been presed
+ * another file might be overridden
+ * -added ".world" when a file is saved without extension
+ * -some minor changes to some classes to work with newest jME.
+ */
 public class WorldTool extends javax.swing.JFrame {
-    
-    private static WorldTool instance;
-    private EditorState state;
-    private LWJGLCanvas glCanvas;
-    private JmeContext context;
-    private DefaultListModel textures;
-    private DefaultComboBoxModel texturesets;
-    
-    private RenderPass render;
-    private SelectionEffectPass selectionPass;
-    
-    private boolean doingMouseAction = false;
-    private boolean mouseActionOnce = false;
-    private boolean mouseActionEnd = false;
-    private int mouseX = 0, mouseY = 0;
-    
-    private JFileChooser chooser = new JFileChooser();
-    private File lastSavedFile = null;
-    
-    public static int getMouseX(){
-        return instance.mouseX;
-    }
-    
-    public static int getMouseY(){
-        return instance.mouseY;
-    }
-    
-    public static void setMouseXY(int x, int y){
-        instance.mouseX = x;
-        instance.mouseY = y;
-    }
-    
-    public static void setDoingMouseAction(int x, int y){
-        instance.mouseX = x;
-        instance.mouseY = y;
-        instance.doingMouseAction = true;
-        instance.mouseActionOnce = true;
-    }
-    
-    public static void setNotDoingMouseAction(){
-        instance.doingMouseAction = false;
-        instance.mouseActionEnd = true;
-    }
-    
-    public void importTextureSets(File f){
-        if (f.isDirectory()){
-            for (File ff : f.listFiles()){
-                importTextureSets(ff);
-            }
-            return;
-        }else if (!f.getName().endsWith(".xml")){
-            return;
-        }
-        
-        URI texDir = new File(f.getParent(), "/images/").toURI();
-        SimpleResourceLocator tex = new SimpleResourceLocator(texDir);
-        ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
-        try{
-            InputStream in = new FileInputStream(f);
-            TextureSet set = TextureSetLoader.load(in);
-            texturesets.addElement(set);
-            EditorState.texsetMap.put(set.toString(), set);
-            in.close();
-        } catch (IOException ex){
-            ex.printStackTrace();
-        }
 
-        // save locators in-case we have to load textures from the path again
-        //ResourceLocatorTool.removeResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
-    }
-    
-    public void importTextureSets(){
-        File f = new File(System.getProperty("user.dir") + "/texturesets/");
-        System.out.println("Importing texturesets from: "+f);
-        importTextureSets(f);
-        
-        if (texturesets.getSize() > 0){
-            cmbTSets.setSelectedIndex(0);
-        }
-        updateTextureSetCombo();
-    }
-    
-    public void importEntityTypes(){
-        try{
-            Collection<EntityType> types = EntityBrush.loadEntityTypes();
-            // organize entites by categories
+	private static WorldTool instance;
+	private EditorState state;
+	private LWJGLCanvas glCanvas;
+	private JmeContext context;
+	private DefaultListModel textures;
+	private DefaultComboBoxModel texturesets;
+	private RenderPass render;
+	private SelectionEffectPass selectionPass;
+	private boolean doingMouseAction = false;
+	private boolean mouseActionOnce = false;
+	private boolean mouseActionEnd = false;
+	private int mouseX = 0,  mouseY = 0;
+	private JFileChooser chooser = new JFileChooser();
+	private File lastSavedFile = null;
 
-            Map<String, DefaultMutableTreeNode> treeMapping 
-                    = new HashMap<String, DefaultMutableTreeNode>();
+	public static int getMouseX() {
+		return instance.mouseX;
+	}
 
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode("ROOT");
-            
-            for (EntityType type: types){
-                String[] cat = type.category.split("/");
-                DefaultMutableTreeNode treeNode = null;
-                for (int i = 0; i < cat.length; i++){
-                    // creation of nodes
-                    String path = "";
-                    for (int j = 0; j <= i; j++)
-                        path += "/" + cat[j];
-                    
-                    if (treeMapping.get(path) == null){
-                        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(cat[i]);
-                        if (treeNode == null)
-                            treeNode = newNode;
-                        else{
-                            treeNode.add(newNode);
-                            treeNode = newNode;
-                        }
-                        if (i == 0)
-                            root.add(treeNode);
-                            
-                        treeMapping.put(path, treeNode);
-                    }else{
-                        treeNode = treeMapping.get(path);
-                    }
-                }
-                
-                // added all tree nodes in path
-                // find this categorie's node
-                treeNode = treeMapping.get("/"+type.category);
-                
-                DefaultMutableTreeNode entityNode = new DefaultMutableTreeNode(type, false);
-                treeNode.add(entityNode);
-            }
-            
-            DefaultTreeModel model = (DefaultTreeModel)treeEntities.getModel();
-            model.setRoot(root);
-            
-            invalidate();
-        } catch (Throwable t){
-            ErrorReporter.reportError("Error occured while loading entities", t);
-        }
-    }
-    
-    public WorldTool() {
-        instance = this;
-        
-        Logger.getLogger("").setLevel(Level.WARNING);
-        
-        // load all icons
-        try{
-            Image full_logo = ImageIO.read(getClass().getResource("/icons/WT_logo.png"));
-            Image icon64    = ImageIO.read(getClass().getResource("/icons/WT_icon_64.png"));
-            Image icon32    = ImageIO.read(getClass().getResource("/icons/WT_icon_32.png"));
-            Image icon16    = ImageIO.read(getClass().getResource("/icons/WT_icon_16.png"));
+	public static int getMouseY() {
+		return instance.mouseY;
+	}
 
-            List<Image> icons = new ArrayList<Image>();
-            icons.add(full_logo);
-            icons.add(icon64);
-            icons.add(icon32);
-            icons.add(icon16);
-            //setIconImage(icon64);
-            setIconImages(icons); // Java6 only
-        } catch (Throwable t){
-            ErrorReporter.reportError("Error while loading window icons", t);
-        }
-        
-        state = EditorState.getState();
-        initComponents();
-        textures = (DefaultListModel) lstTex.getModel();
-        texturesets = (DefaultComboBoxModel) cmbTSets.getModel();
-        
-        setLocationRelativeTo(null);
-        
-        new Thread(){
-            @Override
-            public void run(){
-                try {
-                    context.waitFor();
+	public static void setMouseXY(int x, int y) {
+		instance.mouseX = x;
+		instance.mouseY = y;
+	}
 
-                    importTextureSets();
-                    importEntityTypes();
-                    
-                    // create the model camera handler for the mouse
-                    EditorState.handler = new WorldCameraHandler(context.getRenderer());
-                    glCanvas.addMouseWheelListener(EditorState.handler);
-                    glCanvas.addMouseListener(EditorState.handler);
-                    glCanvas.addMouseMotionListener(EditorState.handler);
+	public static void setDoingMouseAction(int x, int y) {
+		instance.mouseX = x;
+		instance.mouseY = y;
+		instance.doingMouseAction = true;
+		instance.mouseActionOnce = true;
+	}
 
-                    // create the render pass
-                    render = new RenderPass(){
-                        @Override
-                        public void initPass(JmeContext cx){
-                            Thread.setDefaultUncaughtExceptionHandler(new EditorExceptionHandler());
-                        }
-                        
-                        @Override
-                        public void doUpdate(JmeContext cx){
-                            super.doUpdate(cx);
-                            if ((doingMouseAction || mouseActionEnd) && World.getWorld() != null){
-                                if (mouseActionOnce){
-                                    mouseActionOnce = false;
-                                    Brush.doMouseAction(mouseX, mouseY, false, false);
-                                }else{
-                                    if (mouseActionEnd){
-                                        mouseActionEnd = false;
-                                        Brush.doMouseAction(mouseX, mouseY, false, true);
-                                    }else{
-                                        Brush.doMouseAction(mouseX, mouseY, true, false);
-                                    }
-                                }
-                            }
-                        }
-                        
-                        @Override
-                        public void doRender(JmeContext cx){
-                            super.doRender(cx);
-                            
+	public static void setNotDoingMouseAction() {
+		instance.doingMouseAction = false;
+		instance.mouseActionEnd = true;
+	}
+
+	public void importTextureSets(File f) {
+		if (f.isDirectory()) {
+			for (File ff : f.listFiles()) {
+				importTextureSets(ff);
+			}
+			return;
+		} else if (!f.getName().endsWith(".xml")) {
+			return;
+		}
+
+		URI texDir = new File(f.getParent(), "/images/").toURI();
+		SimpleResourceLocator tex = new SimpleResourceLocator(texDir);
+		ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
+		try {
+			InputStream in = new FileInputStream(f);
+			TextureSet set = TextureSetLoader.load(in);
+			texturesets.addElement(set);
+			EditorState.texsetMap.put(set.toString(), set);
+			in.close();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+	// save locators in-case we have to load textures from the path again
+	//ResourceLocatorTool.removeResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
+	}
+
+	public void importTextureSets() {
+		File f = new File(System.getProperty("user.dir") + "/texturesets/");
+		if (!f.exists()) {
+			f.mkdir();
+		}
+		System.out.println("Importing texturesets from: " + f);
+		importTextureSets(f);
+
+		if (texturesets.getSize() > 0) {
+			cmbTSets.setSelectedIndex(0);
+		}
+		updateTextureSetCombo();
+	}
+
+	public void importEntityTypes() {
+		try {
+			Collection<EntityType> types = EntityBrush.loadEntityTypes();
+			// organize entites by categories
+
+			Map<String, DefaultMutableTreeNode> treeMapping = new HashMap<String, DefaultMutableTreeNode>();
+
+			DefaultMutableTreeNode root = new DefaultMutableTreeNode("ROOT");
+
+			for (EntityType type : types) {
+				String[] cat = type.category.split("/");
+				DefaultMutableTreeNode treeNode = null;
+				for (int i = 0; i < cat.length; i++) {
+					// creation of nodes
+					String path = "";
+					for (int j = 0; j <= i; j++) {
+						path += "/" + cat[j];
+					}
+					if (treeMapping.get(path) == null) {
+						DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(cat[i]);
+						if (treeNode == null) {
+							treeNode = newNode;
+						} else {
+							treeNode.add(newNode);
+							treeNode = newNode;
+						}
+						if (i == 0) {
+							root.add(treeNode);
+						}
+						treeMapping.put(path, treeNode);
+					} else {
+						treeNode = treeMapping.get(path);
+					}
+				}
+
+				// added all tree nodes in path
+				// find this categorie's node
+				treeNode = treeMapping.get("/" + type.category);
+
+				DefaultMutableTreeNode entityNode = new DefaultMutableTreeNode(type, false);
+				treeNode.add(entityNode);
+			}
+
+			DefaultTreeModel model = (DefaultTreeModel) treeEntities.getModel();
+			model.setRoot(root);
+
+			invalidate();
+		} catch (Throwable t) {
+			ErrorReporter.reportError("Error occured while loading entities", t);
+		}
+	}
+
+	public WorldTool() {
+		instance = this;
+
+		Logger.getLogger("").setLevel(Level.WARNING);
+
+		FileSystem fileSystem = new DefaultFileSystem("icons");
+		ResourceManager.setFileSystem(fileSystem);
+
+		ResourceManager.registerLoader(Image.class, new ImageResourceLoader());
+		setIconImages(ResourceManager.loadResources(Image.class, "WT_logo.png", "WT_icon_64.png", "WT_icon_32.png", "WT_icon_16.png")); // Java6 only
+		
+		state = EditorState.getState();
+		initComponents();
+		menu.add(LafMenu.setupLafMenu(this, "WorldTool"));
+		textures = (DefaultListModel) lstTex.getModel();
+		texturesets = (DefaultComboBoxModel) cmbTSets.getModel();
+
+		setLocationRelativeTo(null);
+
+		new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					context.waitFor();
+
+					importTextureSets();
+					importEntityTypes();
+
+					// create the model camera handler for the mouse
+					EditorState.handler = new WorldCameraHandler(context.getRenderer());
+					glCanvas.addMouseWheelListener(EditorState.handler);
+					glCanvas.addMouseListener(EditorState.handler);
+					glCanvas.addMouseMotionListener(EditorState.handler);
+
+					// create the render pass
+					render = new RenderPass() {
+
+						@Override
+						public void initPass(JmeContext cx) {
+//                            Thread.setDefaultUncaughtExceptionHandler(new EditorExceptionHandler());
+						}
+
+						@Override
+						public void doUpdate(JmeContext cx) {
+							super.doUpdate(cx);
+							if ((doingMouseAction || mouseActionEnd) && World.getWorld() != null) {
+								if (mouseActionOnce) {
+									mouseActionOnce = false;
+									Brush.doMouseAction(mouseX, mouseY, false, false);
+								} else {
+									if (mouseActionEnd) {
+										mouseActionEnd = false;
+										Brush.doMouseAction(mouseX, mouseY, false, true);
+									} else {
+										Brush.doMouseAction(mouseX, mouseY, true, false);
+									}
+								}
+							}
+						}
+
+						@Override
+						public void doRender(JmeContext cx) {
+							super.doRender(cx);
+
 //                            if (World.getWorld() != null){
 //                                for (Spatial c : World.getWorld().getChildren()){
 //                                    if (c.getName().startsWith("GROUP"))
 //                                        Debugger.drawBounds(c, cx.getRenderer(), false);
 //                                }
 //                            }
-                        }
-                    };
-                    context.getPassManager().add(render);
-                    
-                    selectionPass = new SelectionEffectPass();
-                    context.getPassManager().add(selectionPass);
-                    
-                    // put the camera above the terrain and face the center
-                    final AbstractCamera cam = (AbstractCamera) JmeContext.get().getRenderer().getCamera();
-                    cam.setLocation(new Vector3f(0, 50, -50));
-                    cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
-                    
-                    context.executeLater(new Callable<Object>(){
-                        public Object call(){
-                            cam.getProjectionMatrix();
-                            cam.getModelViewMatrix();
-                            cam.update();
-                            TextureManager.preloadCache(context.getRenderer());
-                            return null;
-                        }
-                    });
-                    
-                } catch (Throwable ex) {
-                    ErrorReporter.reportError("Error while initializing model view", ex);
-                }
-            }
-        }.start();
-    }
-    
-    private LWJGLCanvas createCanvas() {
-        try {
-            context = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_CANVAS);
-            context.start();
-            glCanvas = (LWJGLCanvas) context.getCanvas();
-            return glCanvas;
-        } catch (Throwable ex) {
-            ErrorReporter.reportError("Error occured while initializing 3D canvas", ex);
-        }
-        
-        return null;
-    }
-    
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
+						}
+					};
+					context.getPassManager().add(render);
+
+					selectionPass = new SelectionEffectPass();
+					context.getPassManager().add(selectionPass);
+
+					// put the camera above the terrain and face the center
+					final AbstractCamera cam = (AbstractCamera) JmeContext.get().getRenderer().getCamera();
+					cam.setLocation(new Vector3f(0, 50, -50));
+					cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+
+					context.executeLater(new Callable<Object>() {
+
+						public Object call() {
+							cam.getProjectionMatrix();
+							cam.getModelViewMatrix();
+							cam.update();
+							TextureManager.preloadCache(context.getRenderer());
+							return null;
+						}
+					});
+
+				} catch (Throwable ex) {
+					ErrorReporter.reportError("Error while initializing model view", ex);
+				}
+			}
+		}.start();
+	}
+
+	private LWJGLCanvas createCanvas() {
+		try {
+			context = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_CANVAS);
+			context.start();
+			glCanvas = (LWJGLCanvas) context.getCanvas();
+			return glCanvas;
+		} catch (Throwable ex) {
+			ErrorReporter.reportError("Error occured while initializing 3D canvas", ex);
+		}
+
+		return null;
+	}
+
+	/** This method is called from within the constructor to
+	 * initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is
+	 * always regenerated by the Form Editor.
+	 */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -349,8 +352,8 @@ public class WorldTool extends javax.swing.JFrame {
         menuFile = new javax.swing.JMenu();
         menuFileNew = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        menuFileSave = new javax.swing.JMenuItem();
+        menuFileSaveAs = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         jMenuItem4 = new javax.swing.JMenuItem();
         menuFileSep1 = new javax.swing.JSeparator();
@@ -376,6 +379,7 @@ public class WorldTool extends javax.swing.JFrame {
         setTitle("WorldTool");
 
         split.setDividerLocation(400);
+        split.setResizeWeight(0.5);
         split.setContinuousLayout(true);
 
         canvas.setBackground(new java.awt.Color(0, 0, 0));
@@ -402,14 +406,14 @@ public class WorldTool extends javax.swing.JFrame {
             .add(pnlWorldLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jButton1)
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         pnlWorldLayout.setVerticalGroup(
             pnlWorldLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(pnlWorldLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jButton1)
-                .addContainerGap(370, Short.MAX_VALUE))
+                .addContainerGap(329, Short.MAX_VALUE))
         );
 
         tab.addTab("World", pnlWorld);
@@ -475,14 +479,14 @@ public class WorldTool extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(pnlTerrainBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, radPlatau, 0, 0, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, radRaise, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 45, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, radRaise, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(pnlTerrainBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, radNoise, 0, 0, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, radLower, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 45, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, radLower, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(radSmooth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         pnlTerrainBrushLayout.setVerticalGroup(
             pnlTerrainBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -554,7 +558,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .add(pnlTerrainLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(lblStrength)
                     .add(sldBrushStr, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(200, Short.MAX_VALUE))
+                .addContainerGap(127, Short.MAX_VALUE))
         );
 
         tab.addTab("Terrain", pnlTerrain);
@@ -604,8 +608,8 @@ public class WorldTool extends javax.swing.JFrame {
             .add(pnlTexBrushLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(pnlTexBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(cmbTSets, 0, 160, Short.MAX_VALUE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                    .add(cmbTSets, 0, 189, Short.MAX_VALUE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
                     .add(pnlTexBrushLayout.createSequentialGroup()
                         .add(btnNewTSet)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -616,7 +620,7 @@ public class WorldTool extends javax.swing.JFrame {
         pnlTexBrushLayout.setVerticalGroup(
             pnlTexBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlTexBrushLayout.createSequentialGroup()
-                .add(cmbTSets, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
+                .add(cmbTSets)
                 .add(4, 4, 4)
                 .add(pnlTexBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnTSetImport)
@@ -657,7 +661,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .add(pnlTextureLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(pnlTexBrush, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlTextureLayout.createSequentialGroup()
-                        .add(lblTexBSize, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
+                        .add(lblTexBSize, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(sldBrushSize1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlTextureLayout.createSequentialGroup()
@@ -679,7 +683,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .add(pnlTextureLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(lblTStr)
                     .add(sldTStr, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(87, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tab.addTab("Texture", pnlTexture);
@@ -707,7 +711,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(pnlEntityLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(btnSelection)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnlEntityLayout.setVerticalGroup(
@@ -717,7 +721,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 194, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(btnSelection)
-                .addContainerGap(165, Short.MAX_VALUE))
+                .addContainerGap(125, Short.MAX_VALUE))
         );
 
         tab.addTab("Entity", pnlEntity);
@@ -742,21 +746,21 @@ public class WorldTool extends javax.swing.JFrame {
         });
         menuFile.add(jMenuItem1);
 
-        jMenuItem2.setText("Save");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        menuFileSave.setText("Save");
+        menuFileSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                menuFileSaveActionPerformed(evt);
             }
         });
-        menuFile.add(jMenuItem2);
+        menuFile.add(menuFileSave);
 
-        jMenuItem3.setText("Save as...");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        menuFileSaveAs.setText("Save as...");
+        menuFileSaveAs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                menuFileSaveAsActionPerformed(evt);
             }
         });
-        menuFile.add(jMenuItem3);
+        menuFile.add(menuFileSaveAs);
         menuFile.add(jSeparator1);
 
         jMenuItem4.setText("Export");
@@ -776,6 +780,7 @@ public class WorldTool extends javax.swing.JFrame {
 
         menuEdit.setText("Edit");
 
+        menuEditUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
         menuEditUndo.setText("Undo");
         menuEditUndo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -784,6 +789,7 @@ public class WorldTool extends javax.swing.JFrame {
         });
         menuEdit.add(menuEditUndo);
 
+        menuEditRedo1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
         menuEditRedo1.setText("Redo");
         menuEditRedo1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -879,408 +885,420 @@ public class WorldTool extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void updateFromEditorState(){
-        switch (state.editType){
-            case TILE:
-                tab.setSelectedIndex(0);
-                editTypeGroup.setSelected(menuEditWorld.getModel(), true);
-                break;
-            case TERRAIN:
-                tab.setSelectedIndex(1);
-                editTypeGroup.setSelected(menuEditTerrain.getModel(), true);
-                break;
-            case TEXTURE:
-                tab.setSelectedIndex(2);
-                editTypeGroup.setSelected(menuEditTexture.getModel(), true);
-                break;
-            case ENTITY:
-                tab.setSelectedIndex(3);
-                editTypeGroup.setSelected(menuEditEntity.getModel(), true);
-                break;
-        }
-        
-        if (state.editType == EditType.TERRAIN){
-            sldBrushSize.setValue(state.brushSize);
-            switch (state.brushType){
-                case RAISE:
-                    radRaise.setSelected(true);
-                    break;
-                case LOWER:
-                    radLower.setSelected(true);
-                    break;
-                case SMOOTH:
-                    radSmooth.setSelected(true);
-                    break;
-                case PLATAU:
-                    radPlatau.setSelected(true);
-                    break;
-                case NOISE:
-                    radNoise.setSelected(true);
-                    break;
-            }
-            sldBrushStr.setValue( (int)(state.brushStrength * 10f) );
-        }
-        
-        if (state.editType == EditType.TEXTURE){
-            sldBrushSize1.setValue(state.brushSize);
-            if (state.texSet != texturesets.getSelectedItem()){
-                texturesets.setSelectedItem(state.texSet);
-                World.getWorld().setTextureSet(state.texSet);
-            }
-            
-            lstTex.setSelectedIndex(state.textureIndex);
-            sldTStr.setValue( (int)(state.brushStrength * 10f) );
-        }
-    }
-    
-    private void updateEditorState(){
-        switch (tab.getSelectedIndex()){
-            case 0:
-                state.editType = EditType.TILE;
-                editTypeGroup.setSelected(menuEditWorld.getModel(), true);
-                break;
-            case 1: 
-                state.editType = EditType.TERRAIN;
-                editTypeGroup.setSelected(menuEditTerrain.getModel(), true);
-                break;
-            case 2:
-                state.editType = EditType.TEXTURE;
-                editTypeGroup.setSelected(menuEditTexture.getModel(), true);
-                break;
-            case 3:
-                state.editType = EditType.ENTITY;
-                editTypeGroup.setSelected(menuEditEntity.getModel(), true);
-                break;
-            default:
-                throw new RuntimeException("Unsupported operation");
-        }
+	private void updateFromEditorState() {
+		switch (state.editType) {
+			case TILE:
+				tab.setSelectedIndex(0);
+				editTypeGroup.setSelected(menuEditWorld.getModel(), true);
+				break;
+			case TERRAIN:
+				tab.setSelectedIndex(1);
+				editTypeGroup.setSelected(menuEditTerrain.getModel(), true);
+				break;
+			case TEXTURE:
+				tab.setSelectedIndex(2);
+				editTypeGroup.setSelected(menuEditTexture.getModel(), true);
+				break;
+			case ENTITY:
+				tab.setSelectedIndex(3);
+				editTypeGroup.setSelected(menuEditEntity.getModel(), true);
+				break;
+		}
 
-        if (state.editType == EditType.TERRAIN){
-            state.brushSize = sldBrushSize.getValue();
-            if (radRaise.isSelected()){
-                state.brushType = BrushType.RAISE;
-            }else if (radLower.isSelected()){
-                state.brushType = BrushType.LOWER;
-            }else if (radSmooth.isSelected()){
-                state.brushType = BrushType.SMOOTH;
-            }else if (radPlatau.isSelected()){
-                state.brushType = BrushType.PLATAU;
-            }else if (radNoise.isSelected()){
-                state.brushType = BrushType.NOISE;
-            }
-            state.brushStrength = sldBrushStr.getValue() / 10f;
-        }
-        
-        if (state.editType == EditType.TEXTURE){
-            state.brushSize = sldBrushSize1.getValue();
-            if (state.texSet != texturesets.getSelectedItem()){
-                state.texSet = (TextureSet) texturesets.getSelectedItem();
-                if (World.getWorld() != null)
-                    World.getWorld().setTextureSet(state.texSet);
-            }
-            
-            state.textureIndex = lstTex.getSelectedIndex();
-            state.brushStrength = sldTStr.getValue() / 10f;
-        }
-        
-        if (World.getWorld() != null)
-            World.getWorld().updateFromState();
-    }
-    
-    private void updateTextureSetCombo(){
-        TextureSet set = (TextureSet) texturesets.getSelectedItem();
-        textures.clear();
-        if (set != null){
-            for (Detailmap map : set.getDetailmaps()){
-                textures.addElement(map);
-            }
-            if (World.getWorld() != null){
-                World.getWorld().setTextureSet(set);
-            }
-        }
-    }
-    
+		if (state.editType == EditType.TERRAIN) {
+			sldBrushSize.setValue(state.brushSize);
+			switch (state.brushType) {
+				case RAISE:
+					radRaise.setSelected(true);
+					break;
+				case LOWER:
+					radLower.setSelected(true);
+					break;
+				case SMOOTH:
+					radSmooth.setSelected(true);
+					break;
+				case PLATAU:
+					radPlatau.setSelected(true);
+					break;
+				case NOISE:
+					radNoise.setSelected(true);
+					break;
+			}
+			sldBrushStr.setValue((int) (state.brushStrength * 10f));
+		}
+
+		if (state.editType == EditType.TEXTURE) {
+			sldBrushSize1.setValue(state.brushSize);
+			if (state.texSet != texturesets.getSelectedItem()) {
+				texturesets.setSelectedItem(state.texSet);
+				World.getWorld().setTextureSet(state.texSet);
+			}
+
+			lstTex.setSelectedIndex(state.textureIndex);
+			sldTStr.setValue((int) (state.brushStrength * 10f));
+		}
+	}
+
+	private void updateEditorState() {
+		switch (tab.getSelectedIndex()) {
+			case 0:
+				state.editType = EditType.TILE;
+				editTypeGroup.setSelected(menuEditWorld.getModel(), true);
+				break;
+			case 1:
+				state.editType = EditType.TERRAIN;
+				editTypeGroup.setSelected(menuEditTerrain.getModel(), true);
+				break;
+			case 2:
+				state.editType = EditType.TEXTURE;
+				editTypeGroup.setSelected(menuEditTexture.getModel(), true);
+				break;
+			case 3:
+				state.editType = EditType.ENTITY;
+				editTypeGroup.setSelected(menuEditEntity.getModel(), true);
+				break;
+			default:
+				throw new RuntimeException("Unsupported operation");
+		}
+
+		if (state.editType == EditType.TERRAIN) {
+			state.brushSize = sldBrushSize.getValue();
+			if (radRaise.isSelected()) {
+				state.brushType = BrushType.RAISE;
+			} else if (radLower.isSelected()) {
+				state.brushType = BrushType.LOWER;
+			} else if (radSmooth.isSelected()) {
+				state.brushType = BrushType.SMOOTH;
+			} else if (radPlatau.isSelected()) {
+				state.brushType = BrushType.PLATAU;
+			} else if (radNoise.isSelected()) {
+				state.brushType = BrushType.NOISE;
+			}
+			state.brushStrength = sldBrushStr.getValue() / 10f;
+		}
+
+		if (state.editType == EditType.TEXTURE) {
+			state.brushSize = sldBrushSize1.getValue();
+			if (state.texSet != texturesets.getSelectedItem()) {
+				state.texSet = (TextureSet) texturesets.getSelectedItem();
+				if (World.getWorld() != null) {
+					World.getWorld().setTextureSet(state.texSet);
+				}
+			}
+
+			state.textureIndex = lstTex.getSelectedIndex();
+			state.brushStrength = sldTStr.getValue() / 10f;
+		}
+
+		if (World.getWorld() != null) {
+			World.getWorld().updateFromState();
+		}
+	}
+
+	private void updateTextureSetCombo() {
+		TextureSet set = (TextureSet) texturesets.getSelectedItem();
+		textures.clear();
+		if (set != null) {
+			for (Detailmap map : set.getDetailmaps()) {
+				textures.addElement(map);
+			}
+			if (World.getWorld() != null) {
+				World.getWorld().setTextureSet(set);
+			}
+		}
+	}
+
     private void tabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabStateChanged
-        updateEditorState();
+		updateEditorState();
 }//GEN-LAST:event_tabStateChanged
 
     private void sldBrushSizeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldBrushSizeStateChanged
-        updateEditorState();
+		updateEditorState();
     }//GEN-LAST:event_sldBrushSizeStateChanged
 
     private void menuFileExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFileExitActionPerformed
-        dispose();
-        context.dispose();
+		dispose();
+		context.dispose();
     }//GEN-LAST:event_menuFileExitActionPerformed
 
     private void menuFileNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFileNewActionPerformed
-        if (World.getWorld() != null)
-            render.remove(World.getWorld());
-        
-        final NewWorldDialog worldDialog = new NewWorldDialog(this, true);
-        
-        Callable<Object> callback = new Callable<Object>(){
-            public Object call(){
-                World world = new World(worldDialog.getAlphamapRes(), 
-                                        worldDialog.getGroupSize(), 
-                                        worldDialog.getGridRes());
-                render.add(world);
+		if (World.getWorld() != null) {
+			render.remove(World.getWorld());
+		}
+		final NewWorldDialog worldDialog = new NewWorldDialog(this, true);
 
-                world.createTile(0, 0);
-                World.getWorld().update();
-                
-                return null;
-            }
-        };
-        worldDialog.setCallback(callback);
-        worldDialog.setLocationRelativeTo(null);
-        worldDialog.setVisible(true);
+		Callable<Object> callback = new Callable<Object>() {
+
+			public Object call() {
+				World world = new World(worldDialog.getAlphamapRes(),
+						worldDialog.getGroupSize(),
+						worldDialog.getGridRes());
+				render.add(world);
+
+				world.createTile(0, 0);
+				World.getWorld().update();
+
+				return null;
+			}
+		};
+		worldDialog.setCallback(callback);
+		worldDialog.setLocationRelativeTo(null);
+		worldDialog.setVisible(true);
+		
+		lastSavedFile = null;
 }//GEN-LAST:event_menuFileNewActionPerformed
-    
+
     private void sldBrushSize1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldBrushSize1StateChanged
-        updateEditorState();
+		updateEditorState();
     }//GEN-LAST:event_sldBrushSize1StateChanged
 
     private void btnTSetImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTSetImportActionPerformed
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("TextureSet (*.xml)", "xml" );
-        
-        chooser.resetChoosableFileFilters();
-        chooser.addChoosableFileFilter(filter);
-        
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
-            File f = chooser.getSelectedFile();
-            
-            URI texDir = new File(f.getParent(), "/images/").toURI();
-            SimpleResourceLocator tex = new SimpleResourceLocator(texDir);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
-            try{
-                InputStream in = new FileInputStream(f);
-                TextureSet set = TextureSetLoader.load(in);
-                texturesets.addElement(set);
-                in.close();
-            } catch (IOException ex){
-                ex.printStackTrace();
-            }
-            
-            ResourceLocatorTool.removeResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
-            
-            updateTextureSetCombo();
-        }
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("TextureSet (*.xml)", "xml");
+
+		chooser.resetChoosableFileFilters();
+		chooser.addChoosableFileFilter(filter);
+
+		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File f = chooser.getSelectedFile();
+
+			URI texDir = new File(f.getParent(), "/images/").toURI();
+			SimpleResourceLocator tex = new SimpleResourceLocator(texDir);
+			ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
+			try {
+				InputStream in = new FileInputStream(f);
+				TextureSet set = TextureSetLoader.load(in);
+				texturesets.addElement(set);
+				in.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+
+			ResourceLocatorTool.removeResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
+
+			updateTextureSetCombo();
+		}
     }//GEN-LAST:event_btnTSetImportActionPerformed
 
     private void cmbTSetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTSetsActionPerformed
-        updateTextureSetCombo();
+		updateTextureSetCombo();
     }//GEN-LAST:event_cmbTSetsActionPerformed
 
     private void lstTexValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstTexValueChanged
-        updateEditorState();
+		updateEditorState();
     }//GEN-LAST:event_lstTexValueChanged
 
     private void sldBrushStrStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldBrushStrStateChanged
-        updateEditorState();
+		updateEditorState();
 }//GEN-LAST:event_sldBrushStrStateChanged
 
     private void menuEditWorldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditWorldActionPerformed
-        if (menuEditWorld.isSelected()){
-            tab.setSelectedIndex(0);
-        }
+		if (menuEditWorld.isSelected()) {
+			tab.setSelectedIndex(0);
+		}
 }//GEN-LAST:event_menuEditWorldActionPerformed
 
     private void menuEditTerrainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditTerrainActionPerformed
-        if (menuEditTerrain.isSelected()){
-            tab.setSelectedIndex(1);
-        }
+		if (menuEditTerrain.isSelected()) {
+			tab.setSelectedIndex(1);
+		}
     }//GEN-LAST:event_menuEditTerrainActionPerformed
 
     private void menuEditTextureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditTextureActionPerformed
-        if (menuEditTexture.isSelected()){
-            tab.setSelectedIndex(2);
-        }
+		if (menuEditTexture.isSelected()) {
+			tab.setSelectedIndex(2);
+		}
     }//GEN-LAST:event_menuEditTextureActionPerformed
 
     private void menuEditEntityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditEntityActionPerformed
-        if (menuEditEntity.isSelected()){
-            tab.setSelectedIndex(3);
-        }
+		if (menuEditEntity.isSelected()) {
+			tab.setSelectedIndex(3);
+		}
     }//GEN-LAST:event_menuEditEntityActionPerformed
 
     private void menuHelpForumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHelpForumActionPerformed
-        Sys.openURL("http://www.radakan.org/forums/index.php/topic,609.0.html");
+		Sys.openURL("http://www.radakan.org/forums/index.php/topic,609.0.html");
     }//GEN-LAST:event_menuHelpForumActionPerformed
 
     private void menuHelpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHelpAboutActionPerformed
-        Icon icon = new ImageIcon(getIconImages().get(1));
-        JOptionPane.showMessageDialog(this, 
-                                      "Copyright(C)\n"+
-                                      "Gibbon Entertainment\n"+
-                                      "Created by MomokoFan for the open source Radakan game",
-                                      "About..", 
-                                      JOptionPane.INFORMATION_MESSAGE, 
-                                      icon);
+		Icon icon = new ImageIcon(getIconImages().get(1));
+		JOptionPane.showMessageDialog(this,
+				"Copyright(C)\n" +
+				"Gibbon Entertainment\n" +
+				"Created by MomokoFan for the open source Radakan game",
+				"About..",
+				JOptionPane.INFORMATION_MESSAGE,
+				icon);
     }//GEN-LAST:event_menuHelpAboutActionPerformed
 
     private void radRaiseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radRaiseActionPerformed
-        updateEditorState();
+		updateEditorState();
     }//GEN-LAST:event_radRaiseActionPerformed
 
     private void radLowerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radLowerActionPerformed
-         updateEditorState();
+		updateEditorState();
     }//GEN-LAST:event_radLowerActionPerformed
 
     private void radSmoothActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radSmoothActionPerformed
-        updateEditorState();
+		updateEditorState();
     }//GEN-LAST:event_radSmoothActionPerformed
 
     private void radPlatauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radPlatauActionPerformed
-        updateEditorState();
+		updateEditorState();
     }//GEN-LAST:event_radPlatauActionPerformed
 
     private void radNoiseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radNoiseActionPerformed
-        updateEditorState();
+		updateEditorState();
     }//GEN-LAST:event_radNoiseActionPerformed
 
     private void sldTStrStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldTStrStateChanged
-        updateEditorState();
+		updateEditorState();
 }//GEN-LAST:event_sldTStrStateChanged
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Radakan World (*.world)", "world" );
-        
-        chooser.resetChoosableFileFilters();
-        chooser.addChoosableFileFilter(filter);
-        
-        if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION){
-            File f = chooser.getSelectedFile();
-            
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            
-            try{
-                BinaryExporter.getInstance().save(state, f);
-                lastSavedFile = f;
-            } catch (Throwable t){
-                ErrorReporter.reportError("Error while opening world", t);
-            } finally {
-                setCursor(Cursor.getDefaultCursor());
-            }
-        }
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    private void menuFileSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFileSaveAsActionPerformed
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Radakan World (*.world)", "world");
+
+		chooser.resetChoosableFileFilters();
+		chooser.addChoosableFileFilter(filter);
+		
+		if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File f = chooser.getSelectedFile();
+			
+			//If user writes no extension ".world" is added
+			if(f.getName().indexOf('.') == -1){
+				f = new File(f.getParent(), f.getName() + ".world");
+			}
+
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+			try {
+				BinaryExporter.getInstance().save(state, f);
+				lastSavedFile = f;
+			} catch (Throwable t) {
+				ErrorReporter.reportError("Error while opening world", t);
+			} finally {
+				setCursor(Cursor.getDefaultCursor());
+			}
+		}
+}//GEN-LAST:event_menuFileSaveAsActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Radakan World (*.world)", "world" );
-        
-        chooser.resetChoosableFileFilters();
-        chooser.addChoosableFileFilter(filter);
-        
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
-            File f = chooser.getSelectedFile();
-            
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            
-            if (World.getWorld() != null){
-                render.remove(World.getWorld());
-            }
-            
-            try{
-                state = (EditorState) BinaryImporter.getInstance().load(f);
-                EditorState.setState(state);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Radakan World (*.world)", "world");
 
-                render.add(World.getWorld());
-                World.getWorld().update();
-                updateFromEditorState();
-                
-                lastSavedFile = f;
-            } catch (Throwable t){
-                ErrorReporter.reportError("Error while opening world", t);
-            } finally {
-                setCursor(Cursor.getDefaultCursor());
-            }
-        }
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+		chooser.resetChoosableFileFilters();
+		chooser.addChoosableFileFilter(filter);
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        if (lastSavedFile == null){
-            jMenuItem3ActionPerformed(evt);
-            return;
-        }
-        
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        
-        try{
-            BinaryExporter.getInstance().save(state, lastSavedFile);
-        } catch (Throwable t){
-            ErrorReporter.reportError("Error while opening world", t); 
-        } finally {
-            setCursor(Cursor.getDefaultCursor());
-        }
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File f = chooser.getSelectedFile();
 
-    private void resetEntityView(){
-        if (state.entityTypePrototype != null){
-            Spatial model = state.entityTypePrototype.getUnit(ModelUnit.class).getModel();
-            model.removeFromParent();
-            state.entityTypePrototype = null;
-        }
-    }
-    
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+			if (World.getWorld() != null) {
+				render.remove(World.getWorld());
+			}
+
+			try {
+				state = (EditorState) BinaryImporter.getInstance().load(f);
+				EditorState.setState(state);
+
+				render.add(World.getWorld());
+				World.getWorld().update();
+				updateFromEditorState();
+
+				lastSavedFile = f;
+			} catch (Throwable t) {
+				ErrorReporter.reportError("Error while opening world", t);
+			} finally {
+				setCursor(Cursor.getDefaultCursor());
+			}
+		}
+}//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void menuFileSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFileSaveActionPerformed
+		if (lastSavedFile == null) {
+			menuFileSaveAsActionPerformed(evt);
+			return;
+		}
+
+		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+		try {
+			BinaryExporter.getInstance().save(state, lastSavedFile);
+		} catch (Throwable t) {
+			ErrorReporter.reportError("Error while opening world", t);
+		} finally {
+			setCursor(Cursor.getDefaultCursor());
+		}
+}//GEN-LAST:event_menuFileSaveActionPerformed
+
+	private void resetEntityView() {
+		if (state.entityTypePrototype != null) {
+			Spatial model = state.entityTypePrototype.getUnit(ModelUnit.class).getModel();
+			model.removeFromParent();
+			state.entityTypePrototype = null;
+		}
+	}
+
     private void treeEntitiesValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_treeEntitiesValueChanged
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) evt.getPath().getLastPathComponent();
-        
-        resetEntityView();
-        
-        if (node.getUserObject() instanceof EntityType){
-            EditorState state = EditorState.getState();
-            state.entityType = (EntityType) node.getUserObject();
-            
-            state.entityTypePrototype = EntityBrush.factory.produce(state.entityType.name, "PROTOTYPE");
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) evt.getPath().getLastPathComponent();
+
+		resetEntityView();
+
+		if (node.getUserObject() instanceof EntityType) {
+			EditorState edState = EditorState.getState();
+			edState.entityType = (EntityType) node.getUserObject();
+
+			edState.entityTypePrototype = EntityBrush.factory.produce(edState.entityType.name, "PROTOTYPE");
 //            Spatial model = state.entityTypePrototype.getUnit(ModelUnit.class).getModel();
 //            World.getWorld().update();
-        }else{
-            EditorState.getState().entityType = null;
-        }
+		} else {
+			EditorState.getState().entityType = null;
+		}
     }//GEN-LAST:event_treeEntitiesValueChanged
 
     private void btnSelectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectionActionPerformed
-        state.selectionMode = btnSelection.isSelected();
-        if (!state.selectionMode){
-            state.selection.clear();
-        }
+		state.selectionMode = btnSelection.isSelected();
+		if (!state.selectionMode) {
+			state.selection.clear();
+		}
 }//GEN-LAST:event_btnSelectionActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        TileBrush.previewLightmaps();
+		TileBrush.previewLightmaps();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnEditTSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditTSetActionPerformed
-        if (cmbTSets.getSelectedItem() != null){
-            final TextureSetEditor editor = new TextureSetEditor(this, (TextureSet) cmbTSets.getSelectedItem());
-            editor.setCallback(new Callable<Object>(){
-                public Object call(){
-                    updateTextureSetCombo();
-                    return null;
-                }
-            });
-            editor.setLocationRelativeTo(this);
-            editor.setVisible(true);
-        }
+		if (cmbTSets.getSelectedItem() != null) {
+			final TextureSetEditor editor = new TextureSetEditor(this, (TextureSet) cmbTSets.getSelectedItem());
+			editor.setCallback(new Callable<Object>() {
+
+				public Object call() {
+					updateTextureSetCombo();
+					return null;
+				}
+			});
+			editor.setLocationRelativeTo(this);
+			editor.setVisible(true);
+		}
     }//GEN-LAST:event_btnEditTSetActionPerformed
 
     private void btnNewTSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewTSetActionPerformed
-        TextureSetEditor editor = new TextureSetEditor(this, null);
-        editor.setVisible(true);
-        editor.setCallback(new Callable<Object>(){
-            public Object call(){
-                updateTextureSetCombo();
-                return null;
-            }
-        });
+		TextureSetEditor editor = new TextureSetEditor(this, null);
+		editor.setVisible(true);
+		editor.setCallback(new Callable<Object>() {
+
+			public Object call() {
+				updateTextureSetCombo();
+				return null;
+			}
+		});
     }//GEN-LAST:event_btnNewTSetActionPerformed
 
     private void menuEditUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditUndoActionPerformed
-        UndoManager.doUndo();
+		UndoManager.doUndo();
     }//GEN-LAST:event_menuEditUndoActionPerformed
 
     private void menuEditRedo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditRedo1ActionPerformed
-        UndoManager.doRedo();
+		UndoManager.doRedo();
     }//GEN-LAST:event_menuEditRedo1ActionPerformed
     
     /**
@@ -1307,8 +1325,6 @@ public class WorldTool extends javax.swing.JFrame {
     private javax.swing.ButtonGroup editTypeGroup;
     private javax.swing.JButton jButton1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -1332,6 +1348,8 @@ public class WorldTool extends javax.swing.JFrame {
     private javax.swing.JMenu menuFile;
     private javax.swing.JMenuItem menuFileExit;
     private javax.swing.JMenuItem menuFileNew;
+    private javax.swing.JMenuItem menuFileSave;
+    private javax.swing.JMenuItem menuFileSaveAs;
     private javax.swing.JSeparator menuFileSep1;
     private javax.swing.JMenu menuHelp;
     private javax.swing.JMenuItem menuHelpAbout;

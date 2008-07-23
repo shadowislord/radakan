@@ -1,12 +1,9 @@
 package com.gibbon.tools.world;
 
-import com.acarter.scenemonitor.SceneMonitor;
 import com.gibbon.jme.context.JmeContext;
 import com.jme.bounding.BoundingBox;
-import com.jme.image.Texture;
 import com.jme.light.DirectionalLight;
 import com.jme.light.PointLight;
-import com.jme.light.SpotLight;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
