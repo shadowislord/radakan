@@ -37,8 +37,7 @@ public class Main
 	public static void main(String args[])
 	{
 		//load the logger system	
-		PropertyConfigurator.configure(Main.class.getResource("/com/radakan/game/config/log4jConfig.txt"));
-			
+		PropertyConfigurator.configure(Main.class.getResource("/com/radakan/game/config/log4jConfig.txt"));			
 	
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 		logger.info("Starting up Radakan...");		
