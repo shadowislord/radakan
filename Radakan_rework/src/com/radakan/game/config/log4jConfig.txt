@@ -1,0 +1,16 @@
+# Set root logger level to DEBUG and its only appender to A1.
+log4j.rootLogger=DEBUG, A1
+
+# A1 is set to be a ConsoleAppender.
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+
+# A1 uses PatternLayout.
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-4p %c [Line: %L] %x - %m%n
+
+# SIMPLE FILE OUTPUT DRIVER SETTINGS WITH DEBUG_INFO TO A TEXT FILE
+log4j.appender.FIL=org.apache.log4j.FileAppender
+log4j.appender.FIL.File= Debug_Log.txt
+log4j.appender.FIL.Append=true
+log4j.appender.FIL.layout=org.apache.log4j.PatternLayout
+log4j.appender.FIL.layout.ConversionPattern=%-4r [%t] %-4p %c [Line: %L] %x - %m%n
