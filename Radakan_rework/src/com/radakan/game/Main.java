@@ -30,6 +30,9 @@ public class Main
 	/**Initializes the Radakan game.*/
 	private void init()
 	{
+		RadakanGame game = new RadakanGame();
+		
+		game.start();
 		//TODO: Initialize game
 		shutDown();
 	}
