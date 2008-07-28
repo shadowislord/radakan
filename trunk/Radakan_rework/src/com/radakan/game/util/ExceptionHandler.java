@@ -12,14 +12,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.radakan.game;
+package com.radakan.game.util;
 
 /**
  * @author Joshua Montgomery
  * @version 1.0.0
- * @created Jul 26, 2008
+ * @created Jul 27, 2008
  */
-public class GameManager
+public abstract class ExceptionHandler
 {
-
+	
+	public abstract void handleException(Exception e);
 }

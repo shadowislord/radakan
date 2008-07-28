@@ -17,6 +17,7 @@ package com.radakan.jme.app;
 import org.apache.log4j.Logger;
 
 import com.jme.app.AbstractGame;
+import com.radakan.game.util.ExceptionHandler;
 
 /**Provides functionality for a basic 3D game.
  * 
@@ -28,25 +29,52 @@ public abstract class Basic3DGame extends AbstractGame
 {
 	private Logger logger = Logger.getLogger(Basic3DGame.class);
 	
+	/**Handles exceptions that occur within the game.*/
+	protected ExceptionHandler exceptionHandler;
+	
 	public void start()
 	{
 		logger.debug("Starting main game loop...");
 		
-		getAttributes();
-		
-		if(!finished)
-		{
-			//initialize necessary game components
-			initSystem();
-			assertDisplayCreated();
-			initGame();
+		try
+		{			
+			getAttributes();
 			
-			//Main Loop
-			while(!finished)
+			if(!finished)
 			{
-			
-				Thread.yield();
-			}
+				//initialize necessary game components
+				initSystem();
+				assertDisplayCreated();
+				initGame();
+				
+				//Main Loop
+				while(!finished && !display.isClosing())
+				{
+					update(-1.0f);
+					render(-1.0f);
+					
+					display.getRenderer().displayBackBuffer();
+					
+					Thread.yield();
+				}
+				
+				cleanup();
+				quit();
 		}
+		}catch(Exception e)
+		{
+			logger.error("An exception occured in the main game loop." + e.getMessage());
+			if(exceptionHandler != null)
+				exceptionHandler.handleException(e);
+		}
+	}
+	
+	/**Sets the <code>ExceptionHandler</code> for the <code>Basic3DGame</code>.
+	 * 
+	 * @param handler The <code>ExceptionHandler</code>.
+	 */
+	public void setExceptionHandler(ExceptionHandler handler)
+	{
+		exceptionHandler = handler;
 	}
 }
