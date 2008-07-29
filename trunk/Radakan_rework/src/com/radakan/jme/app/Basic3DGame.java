@@ -1,5 +1,4 @@
-/*
- * Radakan is free software: you can redistribute it and/or modify
+/* Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -17,6 +16,7 @@ package com.radakan.jme.app;
 import org.apache.log4j.Logger;
 
 import com.jme.app.AbstractGame;
+import com.jme.system.GameSettings;
 import com.radakan.game.util.ExceptionHandler;
 
 /**Provides functionality for a basic 3D game.
@@ -31,6 +31,15 @@ public abstract class Basic3DGame extends AbstractGame
 	
 	/**Handles exceptions that occur within the game.*/
 	protected ExceptionHandler exceptionHandler;
+	
+	/**Constructor - Constructs a basic 3D game.
+	 * 
+	 * @param settings The settings for the game.
+	 */
+	public Basic3DGame(GameSettings settings)
+	{
+		this.settings = settings;
+	}
 	
 	public void start()
 	{
@@ -63,7 +72,7 @@ public abstract class Basic3DGame extends AbstractGame
 		}
 		}catch(Exception e)
 		{
-			logger.error("An exception occured in the main game loop." + e.getMessage());
+			logger.fatal("An exception occured in the main game loop.",e);			
 			if(exceptionHandler != null)
 				exceptionHandler.handleException(e);
 		}
