@@ -26,13 +26,13 @@ import com.radakan.jme.app.Basic3DGame;
  */
 public class RadakanGame extends Basic3DGame
 {
+	private Logger logger = Logger.getLogger(RadakanGame.class);
+	
 	public RadakanGame(GameSettings settings)
 	{
 		super(settings);		
 	}
 
-	private Logger logger = Logger.getLogger(RadakanGame.class);
-	
 	@Override
 	protected GameSettings getNewSettings()
 	{
