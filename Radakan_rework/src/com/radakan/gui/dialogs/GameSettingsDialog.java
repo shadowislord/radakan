@@ -11,15 +11,40 @@
  * You should have received a copy of the GNU General Public License
  * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.radakan.game.util;
+package com.radakan.gui.dialogs;
+
+import javax.swing.JFrame;
+
+import com.jme.system.GameSettings;
+import com.radakan.gui.AbstractConfigSettings;
 
 /**
  * @author Joshua Montgomery
  * @version 1.0.0
- * @created Jul 27, 2008
+ * @created Jul 28, 2008
  */
-public abstract class ExceptionHandler
+public class GameSettingsDialog extends AbstractConfigSettings
 {
+
+	private JFrame frame = new JFrame("Config Game");
 	
-	public abstract void handleException(Exception e);
+	public GameSettingsDialog(GameSettings settings)
+	{
+		super(settings);
+	}
+
+	@Override
+	public void configure()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initDefaultSettings()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -1,5 +1,4 @@
-/*
- * Radakan is free software: you can redistribute it and/or modify
+/* Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -16,6 +15,7 @@ package com.radakan.game;
 
 import org.apache.log4j.Logger;
 
+import com.jme.system.DisplaySystem;
 import com.jme.system.GameSettings;
 import com.radakan.jme.app.Basic3DGame;
 
@@ -26,6 +26,11 @@ import com.radakan.jme.app.Basic3DGame;
  */
 public class RadakanGame extends Basic3DGame
 {
+	public RadakanGame(GameSettings settings)
+	{
+		super(settings);		
+	}
+
 	private Logger logger = Logger.getLogger(RadakanGame.class);
 	
 	@Override
@@ -43,7 +48,7 @@ public class RadakanGame extends Basic3DGame
 		logger.debug("Game initialization finished");		
 	}
 
-	@Override
+	
 	protected void initSystem()
 	{
 		logger.debug("Initializing the system...");

@@ -1,5 +1,4 @@
-/*
- * Radakan is free software: you can redistribute it and/or modify
+/* Radakan is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -14,9 +13,16 @@
  */
 package com.radakan.game;
 
+import java.util.prefs.Preferences;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import com.jme.system.GameSettings;
+import com.jme.system.PreferencesGameSettings;
+import com.radakan.gui.AbstractConfigSettings;
+import com.radakan.gui.dialogs.GameSettingsDialog;
 
 /**
  * @author Joshua Montgomery
@@ -30,10 +36,14 @@ public class Main
 	/**Initializes the Radakan game.*/
 	private void init()
 	{
-		RadakanGame game = new RadakanGame();
 		
+		GameSettings settings = new PreferencesGameSettings(Preferences.systemRoot());
+		RadakanGame game = new RadakanGame(settings);
+		AbstractConfigSettings settingsDia = new GameSettingsDialog(settings);
+						
+		settingsDia.configure();		
 		game.start();
-		//TODO: Initialize game
+		
 		shutDown();
 	}
 	
