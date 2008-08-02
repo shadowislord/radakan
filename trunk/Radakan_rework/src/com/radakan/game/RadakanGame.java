@@ -13,6 +13,8 @@
  */
 package com.radakan.game;
 
+import java.util.prefs.Preferences;
+
 import org.apache.log4j.Logger;
 
 import com.jme.system.DisplaySystem;
@@ -27,18 +29,13 @@ import com.radakan.jme.app.Basic3DGame;
 public class RadakanGame extends Basic3DGame
 {
 	private Logger logger = Logger.getLogger(RadakanGame.class);
-	
+		
 	public RadakanGame(GameSettings settings)
 	{
 		super(settings);		
 	}
-
-	@Override
-	protected GameSettings getNewSettings()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+	
 
 	@Override
 	protected void initGame()
@@ -53,7 +50,24 @@ public class RadakanGame extends Basic3DGame
 	{
 		logger.debug("Initializing the system...");
 		
+		display.createWindow(settings.getWidth(),
+							 settings.getHeight(),
+							 settings.getDepthBits(), 
+							 settings.getFrequency(),
+							 settings.isFullscreen());
 		logger.debug("System initialization finished!");
+	}
+	
+	protected void getAttributes()
+	{
+		if(settings == null)
+			throw new NullPointerException("The game settings are not set!");
+		
+		display = DisplaySystem.getDisplaySystem();
+		display.setTitle("Radakan");
+		display.setWidth(settings.getWidth());
+		display.setHeight(settings.getHeight());
+		display.setVSyncEnabled(settings.isVerticalSync());
 	}
 
 	@Override
@@ -81,7 +95,6 @@ public class RadakanGame extends Basic3DGame
 	protected void render(float arg0)
 	{
 		// TODO Auto-generated method stub
-		finish();
 	}
 
 	@Override

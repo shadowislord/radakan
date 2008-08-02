@@ -13,10 +13,13 @@
  */
 package com.radakan.jme.app;
 
+import java.util.prefs.Preferences;
+
 import org.apache.log4j.Logger;
 
 import com.jme.app.AbstractGame;
 import com.jme.system.GameSettings;
+import com.jme.system.PreferencesGameSettings;
 import com.radakan.game.util.ExceptionHandler;
 
 /**Provides functionality for a basic 3D game.
@@ -64,7 +67,7 @@ public abstract class Basic3DGame extends AbstractGame
 					
 					display.getRenderer().displayBackBuffer();
 					
-					Thread.yield();
+					Thread.sleep(20);
 				}
 				
 				cleanup();
@@ -76,6 +79,13 @@ public abstract class Basic3DGame extends AbstractGame
 			if(exceptionHandler != null)
 				exceptionHandler.handleException(e);
 		}
+	}
+	
+	protected GameSettings getNewSettings()
+	{
+		if(settings == null)
+			return new PreferencesGameSettings(Preferences.systemRoot());
+		return settings;
 	}
 	
 	/**Sets the <code>ExceptionHandler</code> for the <code>Basic3DGame</code>.

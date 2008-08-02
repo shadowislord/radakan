@@ -38,6 +38,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import org.apache.log4j.Logger;
+
 import com.jme.system.GameSettings;
 
 /**A dialog box for configuring the game settings.
@@ -48,6 +50,8 @@ import com.jme.system.GameSettings;
  */
 public class GameSettingsDialog 
 {
+	private Logger logger = Logger.getLogger(GameSettingsDialog.class);
+	
 	/**The game settings to set.*/
 	private GameSettings settings;
 
@@ -85,6 +89,7 @@ public class GameSettingsDialog
 	/**Sets up the main frame.*/
 	private void setupFrame()
 	{
+		logger.debug("Loading the configuration dialog...");
 		//SETUP JFRAME		
 		frame.addWindowListener(new WindowAdapter(){			
 			public void windowClosing(WindowEvent e)
@@ -252,6 +257,7 @@ public class GameSettingsDialog
 		frame.setVisible(false);
 		frame.dispose();
 		active = false;
+		logger.debug("Configuration Finished!");
 	}
 	
 	/**Determines if the game is allowed to initialize.
