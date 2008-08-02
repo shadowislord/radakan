@@ -12,5 +12,7 @@
 			<attribute name="javadoc_location" value="http://www.jmonkeyengine.com/doc/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/lwjgl/lwjgl.jar"/>
+	<classpathentry kind="lib" path="lib/lwjgl/lwjgl_util.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
