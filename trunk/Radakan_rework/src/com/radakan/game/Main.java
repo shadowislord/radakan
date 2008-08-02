@@ -21,7 +21,6 @@ import org.apache.log4j.PropertyConfigurator;
 
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
-import com.radakan.gui.AbstractConfigSettings;
 import com.radakan.gui.dialogs.GameSettingsDialog;
 
 /**
@@ -39,10 +38,23 @@ public class Main
 		
 		GameSettings settings = new PreferencesGameSettings(Preferences.systemRoot());
 		RadakanGame game = new RadakanGame(settings);
-		AbstractConfigSettings settingsDia = new GameSettingsDialog(settings);
+		GameSettingsDialog settingsDia = new GameSettingsDialog(settings);
 						
 		settingsDia.configure();		
-		game.start();
+		while(settingsDia.isOpen())
+		{
+			try
+			{
+				Thread.sleep(100);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if(settingsDia.isInitGameAllowed())
+			game.start();
 		
 		shutDown();
 	}
@@ -64,5 +76,7 @@ public class Main
 	{
 		logger.info("Shutting down Radakan...");
 		//TODO: Shutdown game
+		logger.info("Goodbye!");
+		System.exit(0);
 	}
 }
