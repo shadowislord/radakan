@@ -25,9 +25,9 @@ public class ModelCloneUtil {
         
         target.setIsCollidable(target.isCollidable());
         
-        target.setLocalTranslation(source.getLocalTranslation());
-        target.setLocalRotation(source.getLocalRotation());
-        target.setLocalScale(source.getLocalScale());
+        target.setLocalTranslation(source.getLocalTranslation().clone());
+        target.setLocalRotation(source.getLocalRotation().clone());
+        target.setLocalScale(source.getLocalScale().clone());
         
         target.setLocks(source.getLocks());
         target.setZOrder(source.getZOrder());

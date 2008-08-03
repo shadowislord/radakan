@@ -165,7 +165,7 @@ public class TerrainUtil {
         
         for (Spatial model : tile.getChildren()){
             if (model.getName().startsWith("ENTITY")){
-                float h = PickUtils.getTerrainHeight(tile, model.getWorldTranslation(), null);
+                float h = PickUtils.getTerrainHeight(model.getWorldTranslation(), null, 0);
                 model.getLocalTranslation().y = h;
             }
         }

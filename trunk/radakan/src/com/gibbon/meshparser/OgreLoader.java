@@ -647,6 +647,7 @@ public class OgreLoader {
         // vertex colors
         String hasColors = getAttribute(vertexbuffer, "colours_diffuse");
         if (hasColors != null && hasColors.equalsIgnoreCase("true")){
+            System.out.println("HAS VERTEX COLOR");
             if (cb == null)
                 cb = BufferUtils.createFloatBuffer(target.getVertexCount()*4);
         }

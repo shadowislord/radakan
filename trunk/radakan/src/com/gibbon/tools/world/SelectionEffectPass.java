@@ -27,6 +27,7 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.state.ZBufferState.TestFunction;
+import com.jme.util.geom.BufferUtils;
 import java.awt.event.MouseEvent;
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -41,6 +42,8 @@ public class SelectionEffectPass extends RenderPass {
     private Vector3f point = new Vector3f();
     private Line brushLines = new Line("Brush");
     private int brushRadius = -1;
+    
+    private Line rotationLine = new Line("RotationLine");
     
     public SelectionEffectPass(){
         super(PassType.POST_RENDER, "SelectionEffect");
@@ -109,6 +112,24 @@ public class SelectionEffectPass extends RenderPass {
         zs3.setFunction(TestFunction.LessThan);
         zs3.setWritable(true);
         linesMaterial[zs3.getType()] = zs3;
+        
+        // -- Init rotation lines
+        rotationLine.setLineWidth(5.0f);
+        rotationLine.setAntialiased(true);
+        rotationLine.setMode(Mode.Segments);
+        rotationLine.setDefaultColor(ColorRGBA.blue);
+        rotationLine.setStipplePattern((short)0xFF00);
+        rotationLine.setStippleFactor(2);
+        
+        rotationLine.setVertexBuffer(BufferUtils.createFloatBuffer(3*2));
+        rotationLine.generateIndices();
+        
+        // -- Rotation lines states
+//        ZBufferState zs4 = r.createZBufferState();
+//        zs4.setFunction(TestFunction.Always);
+//        zs4.setWritable(false);
+//        zs4.
+//        placementMaterial[zs2.getType()] = zs2;
     }
     
     private final RenderState[] savedStates2 = new RenderState[RenderState.RS_MAX_STATE];
@@ -159,7 +180,7 @@ public class SelectionEffectPass extends RenderPass {
         saveState(cx);
         
         List<Entity> entities = state.selection;
-        if (entities.size() > 0){
+        if (entities.size() > 0 && state.editType == EditType.ENTITY){
              // Prepeare for selection rendering
             setDefaultMaterial(cx);
             applyMaterial(cx, selectionMaterial);
@@ -185,23 +206,47 @@ public class SelectionEffectPass extends RenderPass {
         
         
         if (state.editType == EditType.ENTITY && state.entityTypePrototype != null && !state.selectionMode){
-            // Prepeare for placement rendering
-            setDefaultMaterial(cx);
-            applyMaterial(cx, placementMaterial);
-            resetMaterialForState(cx, RenderState.RS_TEXTURE);
+            if (EditorState.lookAtTarget != null){
+                Spatial s = EditorState.lastPlacedEntity.getUnit(ModelUnit.class).getModel();
+                Vector3f modelPos = s.getLocalTranslation();
+//                PickUtils.findClickedObject(EditorState.lastMouseEvent.getX(),
+//                                            EditorState.lastMouseEvent.getY(), 
+//                                            true, 
+//                                            point);
+                point.set(EditorState.lookAtTarget);
+                FloatBuffer vertBuf = rotationLine.getVertexBuffer();
+                vertBuf.rewind();
+                vertBuf.put(modelPos.x).put(modelPos.y).put(modelPos.z);
+                vertBuf.put(point.x).put(point.y).put(point.z);
+                
+                setDefaultMaterial(cx);
+                rotationLine.updateGeometricState(0, true);
+                cx.getRenderer().draw(rotationLine);
+            }else{
+                // Prepeare for placement rendering
+                setDefaultMaterial(cx);
+                applyMaterial(cx, placementMaterial);
+                resetMaterialForState(cx, RenderState.RS_TEXTURE);
 
-            Spatial s = state.entityTypePrototype.getUnit(ModelUnit.class).getModel();
-            if (EditorState.lastMouseEvent.getID() != MouseEvent.MOUSE_EXITED){
-                // mouse is on screen
-                PickUtils.findClickedObject(EditorState.lastMouseEvent.getX(),
-                                            EditorState.lastMouseEvent.getY(), 
-                                            true, 
-                                            point);
-                s.setLocalTranslation(point);
-                s.updateGeometricState(0, true);
-                s.updateRenderState();
-                s.draw(cx.getRenderer());
+                ModelUnit model = state.entityTypePrototype.getUnit(ModelUnit.class);
+                Spatial s = model.getModel();
+                if (EditorState.lastMouseEvent.getID() != MouseEvent.MOUSE_EXITED){
+                    Vector3f normal = new Vector3f();
+                    // mouse is on screen
+                    PickUtils.findClickedObject(EditorState.lastMouseEvent.getX(),
+                                                EditorState.lastMouseEvent.getY(), 
+                                                true, 
+                                                point,
+                                                normal);
+                    model.setNormal(normal);
+                    s.setLocalTranslation(point);
+                    s.updateGeometricState(0, true);
+                    s.updateRenderState();
+                    s.draw(cx.getRenderer());
+                }
             }
+            
+            
         }else if (state.editType == EditType.TERRAIN || state.editType == EditType.TEXTURE){
             if (state.brushSize != brushRadius){
                 brushLines.appendCircle(state.brushSize, 0.0f, 0.0f, 20, false);
@@ -210,7 +255,8 @@ public class SelectionEffectPass extends RenderPass {
             PickUtils.findClickedObject(EditorState.lastMouseEvent.getX(),
                                             EditorState.lastMouseEvent.getY(), 
                                             true, 
-                                            point);
+                                            point,
+                                            null);
             brushLines.setLocalTranslation(point.clone());
             brushLines.getLocalTranslation().y = 0.0f;
             brushLines.updateWorldVectors();
@@ -230,7 +276,7 @@ public class SelectionEffectPass extends RenderPass {
                 point.addLocal(brushLines.getLocalTranslation());
                 
                 // compute height
-                float h = PickUtils.getTerrainHeight(World.getWorld(), point, null);
+                float h = PickUtils.getTerrainHeight(point, null, 0);
                 point.y = h + 1.0f;
                 
                 // convert to local space

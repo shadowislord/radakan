@@ -29,6 +29,7 @@ import com.jme.scene.state.BlendState;
 import com.jme.scene.state.BlendState.BlendEquation;
 import com.jme.scene.state.BlendState.DestinationFunction;
 import com.jme.scene.state.BlendState.SourceFunction;
+import com.jme.scene.state.BlendState.TestFunction;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.GLSLShaderDataLogic;
 import com.jme.scene.state.GLSLShaderObjectsState;
@@ -250,10 +251,12 @@ public class MaterialLoader {
                 as.setBlendEnabled(true);
                 as.setSourceFunction(SourceFunction.SourceAlpha);
                 as.setDestinationFunction(DestinationFunction.OneMinusSourceAlpha);
-                as.setBlendEquation(BlendEquation.Add);
-                
+//                as.setTestEnabled(true);
+//                as.setTestFunction(TestFunction.GreaterThan);
+//                as.setReference(0.01f);
                 CullState cs = (CullState) material.getState(RenderState.RS_CULL);
                 cs.setCullFace(CullState.Face.None);
+                cs.setEnabled(false);
             }else{
                 throw new IOException("Unknown scene_blend mode: "+mode);
             }

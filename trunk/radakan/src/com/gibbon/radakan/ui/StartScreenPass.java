@@ -132,6 +132,8 @@ public class StartScreenPass extends RenderPass {
         
         time += cx.getPassManager().getTPF();
         
+        
+        
         float localTime = time / 30f;
         setTime(localTime, cx.getRenderer().getCamera());
         

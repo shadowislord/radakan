@@ -96,6 +96,7 @@ public final class EntityFactory {
                     }else{
                         node = (com.jme.scene.Node)model;
                     }
+                    //node.setLocalScale(5.0f);
                     
                     Callable<Object> exe = new Callable<Object>(){
                         public Object call(){
@@ -140,7 +141,7 @@ public final class EntityFactory {
         if (type == null)
             return null;
         
-        Entity ent = new Entity(name);
+        Entity ent = new Entity(name, type);
         
         EditorUnit editor = new EditorUnit(type);
         ent.attachUnit(editor);

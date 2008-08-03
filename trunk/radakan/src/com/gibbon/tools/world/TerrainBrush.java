@@ -82,39 +82,39 @@ public class TerrainBrush {
                 int count = 0;
                 
                 sampler.set(vertex).addLocal(0.0f, 0.0f, 0.0f);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
 
                 sampler.set(vertex).addLocal(planeSize, 0.0f, 0.0f);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(-planeSize, 0.0f, 0.0f);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(0.0f, 0.0f, planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(0.0f, 0.0f, -planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(planeSize, 0.0f, planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(planeSize, 0.0f, -planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(-planeSize, 0.0f, planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(-planeSize, 0.0f, -planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 t.setModified();
@@ -131,11 +131,28 @@ public class TerrainBrush {
         }
     }
     
+    public static void updateTileTerrain(Tile tile){
+        TriMesh mesh = tile.getTerrain();
+        
+        CollisionTreeManager.getInstance().updateCollisionTree(mesh);
+        mesh.updateModelBound();
+        mesh.updateGeometricState(0, true);
+
+        for (Spatial model : tile.getChildren()){
+            if (model.getName().startsWith("ENTITY")){
+                float h = PickUtils.getTerrainHeight(model.getWorldTranslation(), null, 0);
+                model.getLocalTranslation().y = h;
+            }
+        }
+
+        tile.clearModified();
+    }
+    
     public static void doMouseAction(int x, int y, boolean drag, boolean finish){
         EditorState state = EditorState.getState();
         
         Vector3f point = new Vector3f();
-        TriMesh collided = PickUtils.findClickedObject(x, y, true, point);
+        TriMesh collided = PickUtils.findClickedObject(x, y, true, point, null);
         if (collided == null)
             return;
         
@@ -157,6 +174,8 @@ public class TerrainBrush {
                 doRaiseAction(mesh, point, (float) state.brushSize, -state.brushStrength);
             }else if (state.brushType == BrushType.SMOOTH){
                 doSmoothAction(mesh, point, (float) state.brushSize, state.brushStrength);
+            }else{
+                PickUtils.getTerrainHeight(point, null, 0);
             }
         }
         
