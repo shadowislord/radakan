@@ -18,6 +18,9 @@ import java.util.prefs.Preferences;
 import org.apache.log4j.Logger;
 
 import com.jme.app.AbstractGame;
+import com.jme.renderer.Camera;
+import com.jme.renderer.Renderer;
+import com.jme.scene.Node;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
 import com.radakan.game.util.ExceptionHandler;
@@ -30,10 +33,19 @@ import com.radakan.game.util.ExceptionHandler;
  */
 public abstract class Basic3DGame extends AbstractGame
 {
-	private Logger logger = Logger.getLogger(Basic3DGame.class);
+	private static Logger logger = Logger.getLogger(Basic3DGame.class);
 	
 	/**Handles exceptions that occur within the game.*/
 	protected ExceptionHandler exceptionHandler;
+	
+	/**The main renderer for the game.*/
+	protected Renderer renderer;
+	
+	/**Root node of graphics for game.*/
+	protected Node rootNode;
+	
+	/**The camera for the game.*/
+	protected Camera camera;
 	
 	/**Constructor - Constructs a basic 3D game.
 	 * 
@@ -79,6 +91,15 @@ public abstract class Basic3DGame extends AbstractGame
 			if(exceptionHandler != null)
 				exceptionHandler.handleException(e);
 		}
+	}
+	
+	/**Returns the root node which is used for rendering.
+	 * 
+	 * @return The root node.
+	 */
+	public Node getRootNode()
+	{
+		return rootNode;
 	}
 	
 	protected GameSettings getNewSettings()

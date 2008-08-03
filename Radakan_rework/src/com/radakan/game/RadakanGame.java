@@ -13,12 +13,15 @@
  */
 package com.radakan.game;
 
+import java.util.ArrayList;
 import java.util.prefs.Preferences;
 
 import org.apache.log4j.Logger;
 
+import com.jme.scene.Node;
 import com.jme.system.DisplaySystem;
 import com.jme.system.GameSettings;
+import com.radakan.game.util.LoadScreen;
 import com.radakan.jme.app.Basic3DGame;
 
 /**
@@ -28,19 +31,19 @@ import com.radakan.jme.app.Basic3DGame;
  */
 public class RadakanGame extends Basic3DGame
 {
-	private Logger logger = Logger.getLogger(RadakanGame.class);
-		
+	private static Logger logger = Logger.getLogger(RadakanGame.class);
+			
 	public RadakanGame(GameSettings settings)
 	{
 		super(settings);		
-	}
+	}	
 	
-	
-
-	@Override
 	protected void initGame()
 	{
 		logger.debug("Initializing the game");
+		
+		LoadScreen loadScreen = new LoadScreen(rootNode,renderer.createTextureState());
+		
 		
 		logger.debug("Game initialization finished");		
 	}
@@ -55,6 +58,12 @@ public class RadakanGame extends Basic3DGame
 							 settings.getDepthBits(), 
 							 settings.getFrequency(),
 							 settings.isFullscreen());
+		
+		renderer = display.getRenderer();		
+		camera = display.getRenderer().createCamera(display.getWidth(),display.getHeight());
+		renderer.setCamera(camera);
+		rootNode = new Node("Root Node");
+		
 		logger.debug("System initialization finished!");
 	}
 	
@@ -69,7 +78,7 @@ public class RadakanGame extends Basic3DGame
 		display.setHeight(settings.getHeight());
 		display.setVSyncEnabled(settings.isVerticalSync());
 	}
-
+	
 	@Override
 	protected void quit()
 	{
@@ -91,16 +100,15 @@ public class RadakanGame extends Basic3DGame
 		
 	}
 
-	@Override
 	protected void render(float arg0)
-	{
-		// TODO Auto-generated method stub
+	{	
+		renderer.draw(rootNode);
 	}
 
 	@Override
 	protected void update(float arg0)
 	{
-		// TODO Auto-generated method stub
+		
 		
 	}
 

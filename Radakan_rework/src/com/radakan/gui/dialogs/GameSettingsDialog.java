@@ -17,11 +17,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +42,7 @@ import javax.swing.JTabbedPane;
 import org.apache.log4j.Logger;
 
 import com.jme.system.GameSettings;
+import com.radakan.util.ImageCache;
 
 /**A dialog box for configuring the game settings.
  * 
@@ -50,7 +52,9 @@ import com.jme.system.GameSettings;
  */
 public class GameSettingsDialog 
 {
-	private Logger logger = Logger.getLogger(GameSettingsDialog.class);
+	private static Logger logger = Logger.getLogger(GameSettingsDialog.class);
+	
+	private static final int FRAME_WIDTH = 573;
 	
 	/**The game settings to set.*/
 	private GameSettings settings;
@@ -98,24 +102,24 @@ public class GameSettingsDialog
 			}			
 		});
 		
-		frame.setSize(600,400);
-		frame.setPreferredSize(new Dimension(600,400));
+		frame.setPreferredSize(new Dimension(FRAME_WIDTH,350));
+		frame.setResizable(false);
 		frame.setLocationByPlatform(true);
 		
 		//SETUP COMPONENTS OF FRAME		
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		
-		JPanel imagePl = new JPanel();
-		/*{	
-			private Image bgImg = ImageCache.retrieveCachedImage("/data/images/background.png");
+		JPanel imagePl = new JPanel()
+		{
+			private static final long serialVersionUID = 6279143708867242615L;
+			private Image bgImg = ImageCache.retrieveCachedImage("/com/radakan/data/images/splash.png");
 			
-			public void paintComponent(Graphics g)
+			public void paint(Graphics g)
 			{
-				g.drawImage(bgImg,getWidth(),getHeight(),this);
+				g.drawImage(bgImg,0,0,bgImg.getWidth(this),bgImg.getHeight(this),this);
 			}
-		}*/
-		//imagePl.setSize(500,300);
-				
+		};
+		
 		JPanel graphicsPl = new JPanel();
 		JPanel audioPl = new JPanel();
 		JPanel commandPl = new JPanel();
@@ -126,6 +130,7 @@ public class GameSettingsDialog
 		tabs.addTab("Audio", audioPl);
 		
 		graphicsPl.setLayout(new GridBagLayout());
+		graphicsPl.setPreferredSize(new Dimension(FRAME_WIDTH,75));
 		GridBagConstraints c = new GridBagConstraints();
 		
 		JLabel selectLb = new JLabel("Display Mode: ");
@@ -135,7 +140,7 @@ public class GameSettingsDialog
 		c.gridy = 0;	
 		graphicsPl.add(selectLb,c);
 		
-		
+		//SETUP GRAPHICS PANEL
 		//setup up display modes
 		JComboBox listCb = new JComboBox();	
 		listCb.setSize(60,20);
@@ -159,9 +164,7 @@ public class GameSettingsDialog
 					settings.setWidth(mode.getWidth());
 					settings.setFrequency(mode.getRefreshRate());
 				}				
-				
-			}
-			
+			}			
 		});
 		listCb.setSelectedItem(new DisplayWrapper(gd.getDisplayMode()));
 	
@@ -208,9 +211,12 @@ public class GameSettingsDialog
 		c.gridx = 5;
 		graphicsPl.add(cb,c);
 		
+		//SETUP THE AUDIO PANEL
+		
+		
 		//SETUP THE COMMAND PANEL
 		commandPl.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		commandPl.setMaximumSize(new Dimension(600,100));
+		commandPl.setPreferredSize(new Dimension(FRAME_WIDTH,35));
 		
 		JButton startBt = new JButton("Start");
 		startBt.addActionListener(new ActionListener()
@@ -236,9 +242,9 @@ public class GameSettingsDialog
 		//finalize the frame by adding panenls to it
 		frame.getContentPane().setLayout(new BorderLayout());
 		
-		JPanel subPanel = new JPanel(new GridLayout(2,0));
+		JPanel subPanel = new JPanel(new BorderLayout());
 		subPanel.add(tabs);
-		subPanel.add(commandPl);
+		subPanel.add(commandPl,BorderLayout.SOUTH);
 		
 		frame.add(imagePl);		
 		frame.add(subPanel,BorderLayout.SOUTH);		

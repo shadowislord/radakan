@@ -15,7 +15,6 @@ package com.radakan.util;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -127,7 +126,8 @@ public class ImageCache
 	 * 
 	 * @param location The class whose resource directory contains the file.
 	 * @param fileName File name of the image to retrieve from cache (fileName = Key).
-	 * @return The image or NULL if it could not be loaded.
+	 * @return The image
+	 * @throw NullPointerException if the image could not be found. 
 	 */
 	public static Image retrieveCachedImage(String filePath)
 	{
@@ -139,12 +139,12 @@ public class ImageCache
 			Image img  = cache.get(c);
 			return img;
 		}
-		
+				
 		//Try to load the image from the bundle		
 		Image img = Toolkit.getDefaultToolkit().getImage(ImageCache.class.getResource(filePath));
 		
 		if(img == null)
-			return null;
+			throw new NullPointerException("Could not find file [" + filePath +"].");
 		
 		cache.put(new KeyContainer(filePath), img);//store image in cache
 		return img;
