@@ -3,6 +3,7 @@ package com.gibbon.tools.world;
 import com.gibbon.radakan.entity.Entity;
 import com.gibbon.radakan.entity.EntityFactory.EntityType;
 import com.jme.bounding.BoundingSphere;
+import com.jme.math.Vector3f;
 import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
@@ -16,12 +17,18 @@ import java.util.List;
 import java.util.Map;
 
 public class EditorState implements Savable {
-
+    
 
     private static EditorState state = new EditorState();
+    
     public static transient Map<String, TextureSet> texsetMap = new HashMap<String, TextureSet>();
     public static transient WorldCameraHandler handler;
     public static transient MouseEvent lastMouseEvent;
+    
+    // entity statics
+    public static transient Entity lastPlacedEntity;
+    public static transient boolean isValidPlacement = true;
+    public static transient Vector3f lookAtTarget = null;
     
     EditType editType = EditType.TILE;
 
@@ -40,6 +47,12 @@ public class EditorState implements Savable {
     EntityType entityType;
     Entity entityTypePrototype;
     List<Entity> selection = new ArrayList<Entity>();
+    boolean randomRotation;
+    boolean randomScale;
+    boolean allowObjectPlacement;
+    
+    float nextScale = 0.0f;
+    float nextAngle = 0.0f;
     
     public static EditorState getState(){
         return state;

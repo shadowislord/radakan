@@ -20,6 +20,8 @@ import com.jme.util.resource.SimpleResourceLocator;
 import java.io.File;
 import java.net.URI;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 
@@ -48,22 +50,48 @@ public class Setup {
         fg.waitFor();
     }
     
-    public static JmeContext loadDisplay(){
+    public static GameSettings loadSettings(){
+        return new PreferencesGameSettings(Preferences.userRoot().node("Radakan"));
+    }
+    
+    public static void createThreadContext(){
         try {
-            GameSettings gs = new PreferencesGameSettings(Preferences.userRoot().node("Radakan"));
-            ConfigFrame config = new ConfigFrame(gs);
+            GameSettings gs = loadSettings();
+            gs.setWidth(2);
+            gs.setHeight(2);
+            
+            // disable alpha + depth + stencil + multisample buffer
+            gs.setAlphaBits(0);
+            gs.setDepthBits(0);
+            gs.setStencilBits(4);
+            gs.setSamples(0);
+            
+            gs.setFramerate(-1);
+            gs.setVerticalSync(false);
+            
+            JmeContext cx = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_PBUFFER);
+            cx.setSettings(gs);
+            cx.start();
+        } catch (InstantiationException ex) {
+            Logger.getLogger(Setup.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static JmeContext loadDisplay(GameSettings settings){
+        try {
+            ConfigFrame config = new ConfigFrame(settings);
             config.setVisible(true);
             config.requestFocus();
             config.waitFor();
 
             // set custom settings here
-            gs.set("title", SysInfo.getGameName() + " " + SysInfo.getVersionPrefix() + " " + SysInfo.getGameVersion());
-            gs.setSamples(0);
-            gs.setFramerate(60);
-            gs.setVerticalSync(true);
+            settings.set("title", SysInfo.getGameName() + " " + SysInfo.getVersionPrefix() + " " + SysInfo.getGameVersion());
+            settings.setSamples(0);
+            settings.setFramerate(60);
+            settings.setVerticalSync(true);
             
             final JmeContext cx = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
-            cx.setSettings(gs);
+            cx.setSettings(settings);
             cx.start();
             cx.waitFor();
             

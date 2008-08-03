@@ -17,10 +17,12 @@ package com.gibbon.radakan.error;
 
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.radakan.SysInfo;
+import com.jme.util.geom.BufferUtils;
 import com.jmex.audio.AudioSystem;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.nio.IntBuffer;
 import java.util.Locale;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -29,6 +31,7 @@ import javax.swing.ImageIcon;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.opengl.ARBMultisample;
 import org.lwjgl.opengl.ContextCapabilities;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -68,25 +71,7 @@ public class ErrorReporter {
         splashImage = icon;
     }
     
-    public static void reportError(String description, Throwable ex){
-        ex.printStackTrace();
-        
-        if (errorReported)
-            return;
-        else
-            errorReported = true;
-        
-        ErrorFrame frame = new ErrorFrame(description, ex, splashImage);
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
-        frame.toFront();
-        
-        PrintStream stream = null;
-        try{
-            stream = new PrintStream("error.log");
-        } catch (FileNotFoundException x){
-        }
-        
+    public static void writeSystemInfo(PrintStream stream){
         stream.println("==Virtual Machine==");
         stream.println("Runtime: "+System.getProperty("java.runtime.name"));
         stream.println("Vendor: "+System.getProperty("java.vendor"));
@@ -121,6 +106,9 @@ public class ErrorReporter {
             stream.println("Renderer: "+SysInfo.renderer);
             stream.println("API Version: "+SysInfo.apiVer);
             stream.println("GLSL Version: "+SysInfo.glslVer);
+            
+            IntBuffer ib = BufferUtils.createIntBuffer(16);
+            
             if (caps != null){
                 stream.println("Fragment Shaders: "+caps.GL_ARB_fragment_program);
                 stream.println("Vertex Shaders: "+caps.GL_ARB_vertex_program);
@@ -128,6 +116,10 @@ public class ErrorReporter {
                 stream.println("Float textures: "+caps.GL_ARB_texture_float);
                 stream.println("DOT3: "+caps.GL_ARB_texture_env_dot3);
                 stream.println("Compression: "+caps.GL_EXT_texture_compression_s3tc);
+                if (caps.GL_ARB_multisample){
+                    GL11.glGetInteger(ARBMultisample.GL_SAMPLE_BUFFERS_ARB, ib);
+                    stream.println("Antialiasing/Multisampling: "+ib.get(0));
+                }
             }
             stream.println();
 
@@ -141,6 +133,28 @@ public class ErrorReporter {
             
             JmeContext.get().dispose();
         }
+    }
+    
+    public static void reportError(String description, Throwable ex){
+        ex.printStackTrace();
+        
+        if (errorReported)
+            return;
+        else
+            errorReported = true;
+        
+        ErrorFrame frame = new ErrorFrame(description, ex, splashImage);
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+        frame.toFront();
+        
+        PrintStream stream = null;
+        try{
+            stream = new PrintStream("error.log");
+        } catch (FileNotFoundException x){
+        }
+        
+        writeSystemInfo(stream);
 
         stream.println("==Log==");
         stream.println(log.toString());

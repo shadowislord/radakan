@@ -2,6 +2,7 @@ package com.gibbon.radakan.entity.unit;
 
 import com.gibbon.radakan.entity.Entity;
 import com.jme.util.export.Savable;
+import java.io.PrintStream;
 
 public interface Unit extends Savable {
 
@@ -41,4 +42,9 @@ public interface Unit extends Savable {
      * Use Entity.detachUnit instead
      */
     public void detach();
+    
+    /**
+     * Export this Unit's non-generic data into XML
+     */
+    public void exportXML(PrintStream stream);
 }

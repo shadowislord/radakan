@@ -90,6 +90,8 @@ public class PreviewTool extends javax.swing.JFrame {
                 try {
                     cx.waitFor();
 
+                    cx.getRenderer().getQueue().setTwoPassTransparency(true);
+                    
                     handler = new ModelCameraHandler(cx.getRenderer().getCamera());
                     glCanvas.addMouseWheelListener(handler);
                     glCanvas.addMouseListener(handler);

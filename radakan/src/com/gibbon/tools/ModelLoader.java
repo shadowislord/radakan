@@ -70,18 +70,23 @@ public final class ModelLoader {
         return s;
     }
     
-    public static Spatial loadMeshModel(File file) throws IOException{
+    public static Spatial loadMeshModel(File file, boolean loadMats) throws IOException{
         Map<String, Material> materials = new HashMap<String, Material>();
         
-        // scan for material files
-        File parent = file.getParentFile();
-        for (File f : parent.listFiles()){
-            if (f.getName().endsWith(".material")){
-                MaterialLoader matloader = new MaterialLoader();
-                InputStream in = new FileInputStream(f);
-                matloader.load(in);
-                in.close();
-                materials.putAll(matloader.getMaterials());
+        if (loadMats){
+            // scan for material files
+            File parent = file.getParentFile();
+            
+            //System.out.println("PARENT FILE: "+file);
+            
+            for (File f : parent.listFiles()){
+                if (f.getName().endsWith(".material")){
+                    MaterialLoader matloader = new MaterialLoader();
+                    InputStream in = new FileInputStream(f);
+                    matloader.load(in);
+                    in.close();
+                    materials.putAll(matloader.getMaterials());
+                }
             }
         }
         
@@ -173,7 +178,7 @@ public final class ModelLoader {
         }else if (ext.equalsIgnoreCase("dae")){
             model = loadDAEModel(file);
         }else if (ext.equalsIgnoreCase("xml")){
-            model = loadMeshModel(file);
+            model = loadMeshModel(file, true);
         }else if (ext.equalsIgnoreCase("scene")){
             model = loadDotScene(file);
         }else{

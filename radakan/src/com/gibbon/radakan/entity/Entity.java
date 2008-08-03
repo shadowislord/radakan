@@ -15,6 +15,7 @@
 
 package com.gibbon.radakan.entity;
 
+import com.gibbon.radakan.entity.EntityFactory.EntityType;
 import com.gibbon.radakan.entity.unit.AbstractUnit;
 import com.gibbon.radakan.entity.unit.Unit;
 import com.gibbon.radakan.entity.unit.UnitEvent;
@@ -23,7 +24,9 @@ import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * An entity class which implements the component-entity architecture.
@@ -34,10 +37,20 @@ import java.util.ArrayList;
 public final class Entity extends AbstractUnit {
 
     private String name;
+    private EntityType source;
     private ArrayList<Unit> units = new ArrayList<Unit>();
     
-    public Entity(String name){
+    public Entity(String name, EntityType source){
         this.name = name;
+        this.source = source;
+    }
+    
+    public String getName(){
+        return name;
+    }
+    
+    public EntityType getType(){
+        return source;
     }
     
     @SuppressWarnings("unchecked")
@@ -47,6 +60,10 @@ public final class Entity extends AbstractUnit {
                 return (T) u;
         
         return null;
+    }
+    
+    public Collection<Unit> getUnits(){
+        return units;
     }
     
     public void attachUnit(Unit unit){
@@ -108,6 +125,14 @@ public final class Entity extends AbstractUnit {
         InputCapsule in = im.getCapsule(this);
         name = in.readString(name, "");
         units = in.readSavableArrayList("units", null);
+    }
+
+    public void exportXML(PrintStream stream) {
+        stream.print("     <entity name=\""+getName()+"\" type=\""+getType().name);
+        for (Unit u : getUnits()){
+            u.exportXML(stream);
+        }
+        stream.println("     </entity>");
     }
     
 }

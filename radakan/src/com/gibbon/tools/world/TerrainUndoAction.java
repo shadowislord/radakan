@@ -3,6 +3,7 @@ package com.gibbon.tools.world;
 import com.jme.scene.TriMesh;
 import com.jme.util.geom.BufferUtils;
 import java.nio.FloatBuffer;
+import java.util.Collection;
 
 public class TerrainUndoAction implements UndoAction {
 
@@ -10,6 +11,14 @@ public class TerrainUndoAction implements UndoAction {
     private FloatBuffer[] stateVertex;
     private FloatBuffer[] stateNormal;
     private TriMesh[] influenced;
+    
+    private Collection<TerrainModification> modifications;
+    
+    private static class TerrainModification {
+        FloatBuffer stateVertex;
+        FloatBuffer stateNormal;
+        TriMesh target;
+    }
     
     public FloatBuffer clone(FloatBuffer data){
         FloatBuffer copy = BufferUtils.createFloatBuffer(data.capacity());
@@ -42,7 +51,11 @@ public class TerrainUndoAction implements UndoAction {
         for (int i = 0; i < influenced.length; i++){
             influenced[i].setVertexBuffer(stateVertex[i]);
             influenced[i].setNormalBuffer(stateNormal[i]);
+            
+            
         }
+        
+        
         
         return redo;
     }

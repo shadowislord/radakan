@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, MFKARPG
+ * Copyright (c) 2008, MFKARPG
  *
  * All rights reserved.
  *
@@ -94,11 +94,13 @@ public class LWJGLPixelBuffer implements JmePixelBuffer {
     public void enterContext(){
         previous = (LWJGLContext) LWJGLContext.getThreadContext();
         LWJGLContext.setThreadContext(context);
+        active = true;
     }
     
     public void exitContext(){
         LWJGLContext.setThreadContext(previous);
         previous = null;
+        active = false;
     }
 
     Pbuffer getPbuffer(){

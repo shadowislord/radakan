@@ -17,8 +17,11 @@ package com.gibbon.meshparser;
 
 import com.gibbon.jme.context.JmeContext;
 import com.jme.renderer.Renderer;
+import com.jme.scene.Geometry;
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.Spatial.LightCombineMode;
+import com.jme.scene.state.CullState;
 import com.jme.scene.state.RenderState;
 import com.jme.system.DisplaySystem;
 
@@ -29,13 +32,21 @@ public final class Material {
     
     private final String name;
     private final RenderState[] states = new RenderState[RenderState.RS_MAX_STATE];
+    private static CullState defaultCull = null;
     
     boolean recieveShadows = false;
     boolean transparent = false;
     boolean lightingOff = false;
     
+    
+    
     public Material(String name) {
         this.name = name;
+        
+        if (defaultCull == null){
+            defaultCull = JmeContext.get().getRenderer().createCullState();
+            defaultCull.setEnabled(false);
+        }
     }
     
     public RenderState getState(int stateType){
@@ -49,11 +60,27 @@ public final class Material {
         return states[stateType];
     }
     
+    private static void applyTwoPassTransparency(Spatial obj){
+        if (obj instanceof Node){
+            Node node = (Node) obj;
+            if (node.getChildren() != null){
+                for (Spatial spat : node.getChildren())
+                    applyTwoPassTransparency(spat);
+            }
+        }else if (obj instanceof Geometry){
+            obj.setRenderState(defaultCull);
+            System.out.println("SET TRANSPACECER: "+obj);
+        }
+    }
+            
+    
     public void apply(Spatial obj){
-        if (transparent)
+        if (transparent){
             obj.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
-        else 
+            applyTwoPassTransparency(obj);
+        }else{ 
             obj.setRenderQueueMode(Renderer.QUEUE_OPAQUE);
+        }
         
         if (lightingOff)
             obj.setLightCombineMode(LightCombineMode.Off);
