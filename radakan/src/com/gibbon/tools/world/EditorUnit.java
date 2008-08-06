@@ -5,6 +5,7 @@ import com.gibbon.radakan.entity.unit.AbstractUnit;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import java.io.IOException;
+import java.io.PrintStream;
 
 public class EditorUnit extends AbstractUnit {
 
@@ -28,6 +29,10 @@ public class EditorUnit extends AbstractUnit {
 
     @Override
     public void read(JMEImporter im) throws IOException {
+    }
+
+    public void exportXML(PrintStream stream) {
+        stream.append("<editor type=\""+type.name+"\" />");
     }
 
 }

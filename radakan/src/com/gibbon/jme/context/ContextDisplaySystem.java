@@ -41,7 +41,7 @@ public class ContextDisplaySystem extends DisplaySystem {
      * Do not call this method. Done automatically by JmeContext.
      */
     public ContextDisplaySystem(){
-        system = new ContextSystemProvider(this);
+        setSystemProvider(new ContextSystemProvider(this));
         created = true;
     }
     
@@ -183,7 +183,8 @@ public class ContextDisplaySystem extends DisplaySystem {
         assert cx != null && cx instanceof LWJGLContext && cx.getRenderer() != null;
         
 //        TextureRenderer textureRenderer = new LWJGLTextureRenderer( width, height, (LWJGLRenderer) getRenderer());
-        TextureRenderer textureRenderer = new LWJGLTextureRenderer(width, height, (LWJGLDisplaySystem)system.getDisplaySystem(), (LWJGLRenderer) getRenderer());
+        LWJGLDisplaySystem system = (LWJGLDisplaySystem) getDisplaySystem();
+        TextureRenderer textureRenderer = new LWJGLTextureRenderer(width, height, system, (LWJGLRenderer) getRenderer());
         if (!textureRenderer.isSupported()) {
             textureRenderer = null;
 
@@ -199,10 +200,11 @@ public class ContextDisplaySystem extends DisplaySystem {
             }
 
             //boolean useRGB, boolean useRGBA, boolean useDepth, boolean isRectangle, int target, int mipmaps
-            RenderTexture renderTexture = new RenderTexture(false, true, true, false, lwjglTarget, 0);
+            //RenderTexture renderTexture = new RenderTexture(false, true, true, false, lwjglTarget, 0);
             
 //            textureRenderer = new LWJGLPbufferTextureRenderer( width, height, (LWJGLRenderer) getRenderer(), renderTexture);
-            textureRenderer = new LWJGLPbufferTextureRenderer(width, height, (LWJGLDisplaySystem)system.getDisplaySystem(), (LWJGLRenderer) getRenderer(), renderTexture);
+            //textureRenderer = new LWJGLPbufferTextureRenderer(width, height, system, (LWJGLRenderer) getRenderer(), renderTexture);
+            textureRenderer = new LWJGLPbufferTextureRenderer(width, height, system, (LWJGLRenderer) getRenderer(), target);
         }
         
         return textureRenderer;

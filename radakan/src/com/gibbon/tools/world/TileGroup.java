@@ -168,7 +168,9 @@ public class TileGroup extends Node implements Savable {
                 Vector3f normal = new Vector3f();
                 
                 // find height and normal at that point
-                float h = PickUtils.getTerrainHeight(this, point, normal);
+                float h = PickUtils.getTerrainHeight(point, normal, PickUtils.NORMAL_FETCH 
+                                                                  | PickUtils.TERRAIN_NORMAL 
+                                                                  | PickUtils.CRASH_IF_NAN);
                 point.y = h + 1.0f;
                 if (Float.isNaN(h))
                     continue;
