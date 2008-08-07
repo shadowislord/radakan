@@ -31,7 +31,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import sun.org.mozilla.javascript.internal.ErrorReporter;
 
 import com.gibbon.jme.context.JmeContext;
 import com.jme.bounding.BoundingBox;
