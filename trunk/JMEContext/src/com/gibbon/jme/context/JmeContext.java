@@ -174,6 +174,7 @@ public abstract class JmeContext {
 
             return cx;
         } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
             throw new InstantiationException("Cannot initialize JmeContext: "+ex.getLocalizedMessage());
         } catch (IllegalAccessException ex) {
             throw new InstantiationException("Cannot initialize JmeContext: "+ex.getLocalizedMessage());
