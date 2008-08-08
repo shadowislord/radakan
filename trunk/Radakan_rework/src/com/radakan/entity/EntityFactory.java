@@ -42,6 +42,7 @@ import com.radakan.graphics.util.ModelLoader;
 import com.radakan.util.ErrorHandler;
 import com.radakan.util.XMLUtil;
 
+
 public final class EntityFactory {
 
     private Map<String, EntityType> entityTypeMap = new HashMap<String, EntityType>();
