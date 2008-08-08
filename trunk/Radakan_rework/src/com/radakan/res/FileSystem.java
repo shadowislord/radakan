@@ -30,8 +30,8 @@ public interface FileSystem {
     
     /**
      * Opens a ByteBuffer for the specified resource identifier.
-     * This is mostly used for the AccessMode RANDOM since 
-     * ByteBuffers allow random seeking and access.
+     * WARNING: Using bytebuffers for IO within java is slow.
+     * Only use when interaction with native libraries is involved (e.g OpenGL).
      * 
      * @param mode
      * @param name

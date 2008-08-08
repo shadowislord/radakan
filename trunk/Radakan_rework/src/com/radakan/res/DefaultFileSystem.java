@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -29,18 +31,18 @@ public class DefaultFileSystem implements FileSystem {
 	private Map<String, String> resources = new TreeMap<String, String>();
 
 	public static void main(String args[]) {
-		DefaultFileSystem sys = new DefaultFileSystem("icons");
-		System.err.println("Found: " + sys.findResource("WT_logo.png"));
+		DefaultFileSystem sys = new DefaultFileSystem("/META-INF/MANIFEST.MF");
+		System.err.println("Found: " + sys.findResource("Monkey.jpg"));
 	}
 
-	public DefaultFileSystem(String root) {
-		try {
-			this.root = new File(DefaultFileSystem.class.getClassLoader().getResource(root).toURI());
-			buildResourceMap(this.root);
-		} catch (URISyntaxException ex) {
-			Logger.getLogger(DefaultFileSystem.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	}
+   public DefaultFileSystem(String root) {
+        try {
+            this.root = new File(DefaultFileSystem.class.getClassLoader().getResource(root).toURI());
+            buildResourceMap(this.root);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(DefaultFileSystem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
 	public InputStream openStream(AccessMode mode, String name) throws IOException {
 		return new FileInputStream(getFile(mode, name));
