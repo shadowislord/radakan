@@ -1,0 +1,17 @@
+
+material material abc/Def
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture player.jpg -1
+			}
+		}
+
+	}
+
+}

@@ -1,0 +1,16 @@
+
+material material house/01_-_Default
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+			}
+		}
+
+	}
+
+}

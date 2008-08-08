@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: OgreOde_Prefab
+Description: Prefab for OgreOde_Core
+Version: @VERSION@
+Libs: -L${libdir} -lOgreOde_Prefab
+Cflags: -I${includedir}/OgreOde_Prefab

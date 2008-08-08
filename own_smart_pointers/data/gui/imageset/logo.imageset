@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<Imageset Name="Logo" Imagefile="tsl-lamp.jpg" NativeHorzRes="104" NativeVertRes="124" AutoScaled="true" ResourceGroup="General">
+	<Image Name="Logo" XPos="0.0" YPos="0.0" Width="104" Height="124" />
+</Imageset>

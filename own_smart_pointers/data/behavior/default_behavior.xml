@@ -1,0 +1,121 @@
+<!-- This is a comment. -->
+
+<!-- NPC parameters: like, fear - each ranging from 0 to 1.
+Here, 0 means 'not at all' and 1 means 'absolutely'. -->
+
+<!-- main skills: charisma, strength, ... - each ranging from 0 to 2.
+Here, 1 means 'average'. A nuber like 1.6 would mean 160% of the average (like and IQ of 160). -->
+
+<!-- Intimidation usualy, but not always, results in fear. -->
+
+<!-- Variables can be looked up using '${variable name}'. -->
+
+<!-- '&lt;' means 'less than' and '&gt;' means 'greater than'. -->
+
+<behavior>
+	<if_npc action="none">
+		<dialog>
+			<options>
+				<option say="Hello." />
+				<if_player charisma="&gt;1.2">
+					<converse say="Greetings, my name is ${name}." effect="like" />
+				</if_player>
+				<option say="You there!" shout="true" effect="intimidation" />
+			</options>
+			<reactions>
+				<if_npc likes_player="&gt;0.5">
+					<converse say="What can I do for you?" />
+				</if_npc>
+				<else_if_npc likes_player="&lt;0.2">
+					<converse say="To the death!" tone="shout" />
+					<fight stance="aggressive" />
+				</else_if_npc>
+				<else_if_npc fears_player="&gt;0.8">
+					<converse say="I'll do everything you say." />
+				</else_if_npc>
+				<else>
+					<converse say="Hello." />
+				</else>
+			</reactions>
+		</dialog>
+	</if_npc>
+	<if_npc action="Converse">
+		<dialog>
+			<options>
+				<option say="Where can I find the blacksmith, please?" />
+				<option say="Tell me where the blacksmth is. Now!" effect="intimidation" />
+			</options>
+			<reactions>
+				<if_npc fears_player="&gt;0.6">
+					<converse say="At the market place, next to the temple." />
+				</if_npc>
+				<else>
+					<converse say="You can find him at the market place, next to the temple." />
+				</else>
+			</reactions>
+		</dialog>
+		<dialog>
+			<options>
+				<option say="Give me that shiny dagger." effect="intimidation" />
+			</options>
+			<reactions>
+				<if_npc fears_player="&gt;0.8">
+					<converse say="Of course..." />
+				</if_npc>
+				<else>
+					<converse say="Help, a thief!" shout="true" />
+				</else>
+			</reactions>
+		</dialog>
+		<dialog>
+			<options>
+				<option say="Something wrong?" />
+			</options>
+			<reactions>
+				<if_npc likes_player="&gt;0.7">
+					<converse say="Yes, I just have been robbed..." know="robbers" />
+				</if_npc>
+				<else>
+					<converse say="No, not at all." />
+				</else>
+			</reactions>
+		</dialog>
+		<if_player knows="robbers">
+			<dialog>
+				<options>
+					<option say="Don't worry. I'll handle those robbers." />
+				</options>
+				<reactions>
+					<converse say="Thank you!" />
+				</reactions>
+			</dialog>
+			<if_player has="dagger">
+				<dialog>
+					<options>
+						<option say="Here, your dagger" effect="like" />
+					</options>
+					<reactions>
+						<converse say="Thank you so much..." />
+					</reactions>
+				</dialog>
+			</if_player>
+		</if_player>
+		<dialog>
+			<options>
+				<option say="Bye." />
+				<option do="Walk away without saying a word." effect="weird" />
+			</options>
+			<reactions>
+				<converse say="Bye." action="none" target="deselect" />
+			</reactions>
+		</dialog>
+	</if_npc>
+	<dialog>
+		<options>
+			<option do="Hit." effect="angry" />
+		</options>
+		<reactions>
+				<fight stance="defensive" />
+		</reactions>
+	</dialog>
+</behavior>
