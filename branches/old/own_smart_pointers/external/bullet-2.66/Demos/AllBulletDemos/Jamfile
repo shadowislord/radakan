@@ -1,0 +1,22 @@
+SubDir TOP Demos AllBulletDemos ;
+
+FrameWorkDemo AllBulletDemos : 
+[ Wildcard *.h *.cpp  ] 
+	../CcdPhysicsDemo/CcdPhysicsDemo.cpp
+        ../BasicDemo/BasicDemo.cpp
+        ../BspDemo/BspDemo.cpp
+        ../BspDemo/BspConverter.cpp
+        ../BspDemo/BspLoader.cpp
+	../DynamicControlDemo/MotorDemo.cpp
+	../ConcaveDemo/ConcavePhysicsDemo.cpp
+	../ConcaveRaycastDemo/ConcaveRaycastDemo.cpp
+	../ConcaveConvexcastDemo/ConcaveConvexcastDemo.cpp
+	../ConvexDecompositionDemo/ConvexDecompositionDemo.cpp
+	../RagdollDemo/RagdollDemo.cpp
+	../GimpactTestDemo/GimpactTestDemo.cpp
+	../MultiThreadedDemo/MultiThreadedDemo.cpp
+	../Raytracer/Raytracer.cpp
+	../GjkConvexCastDemo/LinearConvexCastDemo.cpp
+	../VehicleDemo/VehicleDemo.cpp
+	../ConstraintDemo/ConstraintDemo.cpp
+;

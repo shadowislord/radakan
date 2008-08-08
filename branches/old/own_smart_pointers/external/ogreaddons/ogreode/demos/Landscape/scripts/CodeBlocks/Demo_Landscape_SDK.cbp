@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="5" />
+	<Project>
+		<Option title="Demo_Landscape" />
+		<Option pch_mode="2" />
+		<Option default_target="" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\..\bin\Debug\OgreOdeDemo_Landscape.exe" />
+				<Option object_output="..\..\obj\Debug" />
+				<Option external_deps="..\..\lib\Debug|Win32\libOgreOde_Prefab_d.a;..\..\lib\Debug|Win32\libOgreOde_Core_d.a;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add directory="..\..\..\..\ode\include" />
+					<Add directory="..\..\include" />
+					<Add directory="..\..\..\..\include" />
+					<Add directory="..\..\..\..\prefab\include" />
+					<Add directory="$(OGRE_HOME)\include" />
+					<Add directory="$(OGRE_HOME)\Samples\include" />
+					<Add directory="$(OGRE_HOME)\stlport\stlport" />
+				</Compiler>
+				<Linker>
+					<Add library="OgreMain_d" />
+					<Add library="OgreOde_Core_d" />
+					<Add library="OgreOde_Prefab_d" />
+					<Add library="libOgreOde_Prefab_d.a" />
+					<Add library="libOgreOde_Core_d.a" />
+					<Add library="stlportstlg.5.0" />
+					<Add directory="$(OGRE_HOME)\bin\debug" />
+					<Add directory="..\..\..\..\lib\Debug" />
+					<Add directory="..\..\..\..\prefab\lib\Debug" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="$(OGREODE_HOME)\scripts\codeblocks\copy.bat $(OGREODE_HOME)\demos\Landscape\bin\Debug\$(APPNAME) $(OGRE_HOME)\bin\debug\$(APPNAME)" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="..\..\bin\Release\OgreOdeDemo_Landscape.exe" />
+				<Option object_output="..\..\obj\Release" />
+				<Option external_deps="..\..\lib\Release|Win32\libOgreOde_Prefab.a;..\..\lib\Release|Win32\libOgreOde_Core.a;" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add directory="..\..\..\..\ode\include" />
+					<Add directory="..\..\include" />
+					<Add directory="..\..\..\..\include" />
+					<Add directory="..\..\..\..\prefab\include" />
+					<Add directory="$(OGRE_HOME)\include" />
+					<Add directory="$(OGRE_HOME)\Samples\include" />
+					<Add directory="$(OGRE_HOME)\stlport\stlport" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="OgreMain" />
+					<Add library="OgreOde_Core" />
+					<Add library="OgreOde_Prefab" />
+					<Add library="libOgreOde_Prefab.a" />
+					<Add library="libOgreOde_Core.a" />
+					<Add library="stlport.5.0" />
+					<Add directory="$(OGRE_HOME)\bin\release" />
+					<Add directory="..\..\..\..\lib\Release" />
+					<Add directory="..\..\..\..\prefab\lib\Release" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="$(OGREODE_HOME)\scripts\codeblocks\copy.bat $(OGREODE_HOME)\demos\Landscape\bin\Release\$(APPNAME) $(OGRE_HOME)\bin\release\$(APPNAME)" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="OGREODE_HOME" value="$(OGRE_HOME)" />
+				<Variable name="APPNAME" value="OgreOdeDemo_Landscape.exe" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-fident" />
+		</Compiler>
+		<Unit filename="..\..\include\Landscape.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\src\Landscape.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

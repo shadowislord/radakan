@@ -1,0 +1,27 @@
+How to compile ogreode on linux
+---------------------------------------
+
+1. download ogre3d (www.ogre3d.org)
+Unpack it (A directory called ogrenew will be created)
+Compile (./configure, make, make install)
+
+2. Download ode (opende.sf.net), preferably from svn/cvs
+Unpack, compile (./configure, make, make install)
+
+3. Download ois (http://sourceforge.net/projects/wgois)
+Unpack, compile (./configure, make, make install)
+
+3. download ogreode (http://tuan.kuranes.free.fr/Ogre.html#OgreOde or get from cvs)
+(you have already done so)
+Unpack the file in a directory called ogreode, inside ogrenew. For example:
+wget http://tuan.kuranes.free.fr/OgreOde.zip
+cd ogrenew
+mkdir ogreode
+cd ogreode
+unzip ../../OgreOde.zip
+sh autogen.sh
+./configure
+make
+make install
+
+All examples will be installed inside ogre examples' dir (ogrenew/Samples/Common/bin/)

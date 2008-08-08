@@ -1,0 +1,17 @@
+
+material material metal_sheet/Metal_Plate
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture mtl_plat2.jpg -1
+			}
+		}
+
+	}
+
+}

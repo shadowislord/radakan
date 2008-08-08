@@ -1,0 +1,31 @@
+<item_prototype type="static_item" size="5, 3, 5">
+	<mesh file_name="building.mesh" scale="0.08" orientation="0.707107, -0.707107, 0, 0" />
+</item_prototype>
+
+<!--
+<model x="10" y="0" z="10" scale="0.04">
+	<static_item name="Tavern" mesh="tavern.mesh" mass="10" solid="false" visible="true">
+		<size x="10" y="3" z="10"/>
+	</static_item>
+</model>
+<model x="10" y="0" z="10" scale="0.04">
+	<static_item name="Bar" mesh="bar.mesh" mass="10" solid="true" visible="true">
+		<size x="3.5" y="1" z="3.5"/>
+	</static_item>
+</model>
+<model x="14.64" y="0" z="10.68" scale="0.04">
+	<static_item name="Table 1" mesh="table.mesh" mass="10" solid="true" visible="true">
+		<size x="2" y="1" z="1"/>
+	</static_item>
+</model>
+<model x="14.64" y="0" z="12.28" scale="0.04">
+	<static_item name="Table 2" mesh="table.mesh" mass="10" solid="true" visible="true">
+		<size x="2" y="1" z="1"/>
+	</static_item>
+</model>
+<model x="11.004" y="0" z="13.88" scale="0.04">
+	<static_item name="Table 3" mesh="table.mesh" mass="10" solid="true" visible="true">
+		<size x="2" y="1" z="1"/>
+	</static_item>
+</model>
+-->

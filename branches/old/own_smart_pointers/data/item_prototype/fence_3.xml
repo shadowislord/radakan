@@ -1,0 +1,3 @@
+<item_prototype type="static_item" size="2, 1, 0.3">
+	<mesh file_name="fences3.mesh" scale="0.010" material="Wood_Walnut" />
+</item_prototype>

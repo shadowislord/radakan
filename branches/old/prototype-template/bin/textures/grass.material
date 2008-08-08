@@ -1,0 +1,17 @@
+material Grass
+{
+	technique
+	{
+		pass
+		{
+			lighting on
+			depth_write on
+
+			texture_unit
+			{
+				texture grass.jpg
+				scale 0.1 0.1
+			}
+		}
+	}
+}
