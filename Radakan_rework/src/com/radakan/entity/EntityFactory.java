@@ -37,6 +37,8 @@ import com.jme.bounding.BoundingBox;
 import com.jme.scene.Spatial;
 import com.radakan.entity.unit.EntityUnit;
 import com.radakan.entity.unit.ModelUnit;
+import com.radakan.graphics.util.ModelCloneUtil;
+import com.radakan.graphics.util.ModelLoader;
 import com.radakan.util.ErrorHandler;
 import com.radakan.util.XMLUtil;
 

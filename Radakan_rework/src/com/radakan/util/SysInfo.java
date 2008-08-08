@@ -22,6 +22,12 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
+/**
+ * SysInfo gathers system information when invoked (usually at startup)
+ * then this information is available for error reporting and misc queries.
+ * 
+ * @author Kirill
+ */
 public class SysInfo {
 
     public static ContextCapabilities caps;
@@ -50,10 +56,16 @@ public class SysInfo {
         vendor = GL11.glGetString(GL11.GL_VENDOR);
     }
     
+    /**
+     * Game version in number format
+     */
     public static String getGameVersion(){
         return "0.25";
     }
     
+    /**
+     * Version prefix (prototype, alpha, beta, final..)
+     */
     public static String getVersionPrefix(){
         return "Prototype";
     }

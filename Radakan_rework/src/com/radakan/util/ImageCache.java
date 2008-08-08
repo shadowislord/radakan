@@ -26,10 +26,13 @@ import java.util.Set;
  *  need to alert the cache when they are no longer using them by using the method 
  *  <code>imageFreed()</code>. 
  * 
+ * 8/7/2008 Kirill: Deprecated, use jME's TextureManager class for image caching.
+ * 
  * @created Jun 24, 2008
  * @version 1.0.0
  * @author Joshua Montgomery
  */
+@Deprecated
 public class ImageCache
 {
 	/**Cache of images.*/
