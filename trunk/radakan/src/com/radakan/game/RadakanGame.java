@@ -42,8 +42,7 @@ public class RadakanGame extends Basic3DGame
 	{
 		logger.debug("Initializing the game");
 		
-		LoadScreen loadScreen = new LoadScreen(rootNode,renderer.createTextureState());
-		
+		LoadScreen loadScreen = new LoadScreen();
 		
 		logger.debug("Game initialization finished");		
 	}
@@ -67,17 +66,18 @@ public class RadakanGame extends Basic3DGame
 		logger.debug("System initialization finished!");
 	}
 	
-	protected void getAttributes()
-	{
-		if(settings == null)
-			throw new NullPointerException("The game settings are not set!");
-		
-		display = DisplaySystem.getDisplaySystem();
-		display.setTitle("Radakan");
-		display.setWidth(settings.getWidth());
-		display.setHeight(settings.getHeight());
-		display.setVSyncEnabled(settings.isVerticalSync());
-	}
+    @Override
+    protected void getAttributes() {
+        if (settings == null) {
+            throw new NullPointerException("The game settings are not set!");
+        }
+
+        display = DisplaySystem.getDisplaySystem();
+        display.setTitle("Radakan");
+        display.setWidth(settings.getWidth());
+        display.setHeight(settings.getHeight());
+        display.setVSyncEnabled(settings.isVerticalSync());
+    }
 	
 	@Override
 	protected void quit()

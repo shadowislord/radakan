@@ -39,10 +39,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import org.apache.log4j.Logger;
-
 import com.jme.system.GameSettings;
 import com.radakan.util.ImageCache;
+import com.radakan.util.SysInfo;
+import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 
 /**A dialog box for configuring the game settings.
  * 
@@ -50,262 +51,275 @@ import com.radakan.util.ImageCache;
  * @version 1.0.0
  * @created Jul 28, 2008
  */
-public class GameSettingsDialog 
-{
-	private static Logger logger = Logger.getLogger(GameSettingsDialog.class);
-	
-	private static final int FRAME_WIDTH = 573;
-	
-	/**The game settings to set.*/
-	private GameSettings settings;
+public class GameSettingsDialog extends JFrame {
 
-	/**Determines if the dialog is active.*/
-	private boolean active = true;
+    private static Logger logger = Logger.getLogger(GameSettingsDialog.class.getName());
+    private static final int FRAME_WIDTH = 573;
+    
+    /**The game settings to set.*/
+    private GameSettings settings;
+    
+    /**Determines if the dialog is active.*/
+    private boolean active = true;
+    
+    /**Frame that shows config dialog.*/
+    //private JFrame frame = new JFrame("Configure Radakan - Developers Edition");
+    
+    /**
+     * Lock for waiting till the window closes
+     */
+    private Object openLock = new Object();
+    
+    /**Determines if the game should start.*/
+    private boolean startGame = false;
 
-	/**Frame that shows config dialog.*/
-	private JFrame frame = new JFrame("Configure Radakan - Developers Edition");
-	
-	/**Determines if the game should start.*/
-	private boolean startGame = false;
-	
-	/**Constructor - Creates a dialog for setting up the game.
-	 * 
-	 * @param settings The game settings to set.
-	 */
-	public GameSettingsDialog(GameSettings settings)
-	{
-		if(settings == null)
-			throw new NullPointerException("Settings can not be null.");
-		
-		this.settings = settings;	
-		setupFrame();
-	}
-	
-	/**Determines if the dialog box is open.
-	 * 
-	 * @return True if it is open.
-	 */
-	public boolean isOpen()
-	{
-		return active;
-	}
-		
-	/**Sets up the main frame.*/
-	private void setupFrame()
-	{
-		logger.debug("Loading the configuration dialog...");
-		//SETUP JFRAME		
-		frame.addWindowListener(new WindowAdapter(){			
-			public void windowClosing(WindowEvent e)
-			{
-				closeDialog();
-			}			
-		});
-		
-		frame.setPreferredSize(new Dimension(FRAME_WIDTH,350));
-		frame.setResizable(false);
-		frame.setLocationByPlatform(true);
-		
-		//SETUP COMPONENTS OF FRAME		
-		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		
-		JPanel imagePl = new JPanel()
-		{
-			private static final long serialVersionUID = 6279143708867242615L;
-			private Image bgImg = ImageCache.retrieveCachedImage("/com/radakan/data/images/splash.png");
-			
-			public void paint(Graphics g)
-			{
-				g.drawImage(bgImg,0,0,bgImg.getWidth(this),bgImg.getHeight(this),this);
-			}
-		};
-		
-		JPanel graphicsPl = new JPanel();
-		JPanel audioPl = new JPanel();
-		JPanel commandPl = new JPanel();
-		JTabbedPane tabs = new JTabbedPane();
-				
-		//Add panels to tabs
-		tabs.addTab("Graphics",graphicsPl);
-		tabs.addTab("Audio", audioPl);
-		
-		graphicsPl.setLayout(new GridBagLayout());
-		graphicsPl.setPreferredSize(new Dimension(FRAME_WIDTH,75));
-		GridBagConstraints c = new GridBagConstraints();
-		
-		JLabel selectLb = new JLabel("Display Mode: ");
-				
-		c.fill = GridBagConstraints.HORIZONTAL;		
-		c.gridx = 0;
-		c.gridy = 0;	
-		graphicsPl.add(selectLb,c);
-		
-		//SETUP GRAPHICS PANEL
-		//setup up display modes
-		JComboBox listCb = new JComboBox();	
-		listCb.setSize(60,20);
-		listCb.setPreferredSize(new Dimension(150,20));
-		
-		DisplayMode displays[] = gd.getDisplayModes();		
-		for(int i=0;i < displays.length;i++)
-		{
-			listCb.addItem(new DisplayWrapper(displays[i]));
-			
-		}
-		listCb.addItemListener(new ItemListener()
-		{
-			public void itemStateChanged(ItemEvent e)
-			{
-				if(e.getItem() instanceof DisplayWrapper)
-				{
-					DisplayMode mode = ((DisplayWrapper)e.getItem()).mode;
-					settings.setDepthBits(mode.getBitDepth());
-					settings.setHeight(mode.getHeight());
-					settings.setWidth(mode.getWidth());
-					settings.setFrequency(mode.getRefreshRate());
-				}				
-			}			
-		});
-		listCb.setSelectedItem(new DisplayWrapper(gd.getDisplayMode()));
-	
-		c.insets = new Insets(0,0,0,20);
-		c.gridx = 1;
-		graphicsPl.add(listCb, c);
-		
-		//setup full screen check box		
-		JLabel fullLb = new JLabel("Full Screen: ");
-		
-		c.insets = new Insets(0,0,0,0);
-		c.gridx = 2;
-		graphicsPl.add(fullLb,c);
-		
-		JCheckBox cb = new JCheckBox();
-		cb.addItemListener(new ItemListener()
-		{
-			public void itemStateChanged(ItemEvent e)
-			{				
-				settings.setFullscreen(e.getStateChange() == ItemEvent.SELECTED);
-			}			
-		});
-		
-		c.gridx = 3;
-		graphicsPl.add(cb,c);
-		
-		//setup vertical sync check box
-		JLabel syncLb = new JLabel("Vertical Sync: ");
-		
-		c.insets = new Insets(0,10,0,0);
-		c.gridx = 4;
-		graphicsPl.add(syncLb,c);
-		
-		cb = new JCheckBox();
-		cb.addItemListener(new ItemListener()
-		{
-			public void itemStateChanged(ItemEvent e)
-			{				
-				settings.setFullscreen(e.getStateChange() == ItemEvent.SELECTED);
-			}			
-		});
-		
-		c.insets = new Insets(0,0,0,0);
-		c.gridx = 5;
-		graphicsPl.add(cb,c);
-		
-		//SETUP THE AUDIO PANEL
-		
-		
-		//SETUP THE COMMAND PANEL
-		commandPl.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		commandPl.setPreferredSize(new Dimension(FRAME_WIDTH,35));
-		
-		JButton startBt = new JButton("Start");
-		startBt.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				startGame = true;
-				closeDialog();				
-			}			
-		});
-		commandPl.add(startBt);
-		
-		JButton quitBt = new JButton("Quit");
-		quitBt.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				closeDialog();				
-			}			
-		});
-		commandPl.add(quitBt);
-		
-		//finalize the frame by adding panenls to it
-		frame.getContentPane().setLayout(new BorderLayout());
-		
-		JPanel subPanel = new JPanel(new BorderLayout());
-		subPanel.add(tabs);
-		subPanel.add(commandPl,BorderLayout.SOUTH);
-		
-		frame.add(imagePl);		
-		frame.add(subPanel,BorderLayout.SOUTH);		
-	}
-	
-	/**Configures the game settings.*/
-	public void configure()
-	{
-		frame.pack();
-		frame.setVisible(true);
-	}	
-	
-	/**Closes the dialog box.*/
-	public void closeDialog()
-	{
-		frame.setVisible(false);
-		frame.dispose();
-		active = false;
-		logger.debug("Configuration Finished!");
-	}
-	
-	/**Determines if the game is allowed to initialize.
-	 * 
-	 * @return True if the game is allowed to initialize.
-	 */
-	public boolean isInitGameAllowed()
-	{
-		return startGame;
-	}
+    /**Constructor - Creates a dialog for setting up the game.
+     * 
+     * @param settings The game settings to set.
+     */
+    public GameSettingsDialog(GameSettings settings) {
+        super("Configuration - "+SysInfo.getGameName());
+        
+        if (settings == null) {
+            throw new NullPointerException("Settings can not be null.");
+        }
 
-	/**A simple wrapper for a <code>DisplayMode</code>. 
-	 * 
-	 * @author Joshua Montgomery
-	 * @version 1.0.0
-	 * @created Jul 28, 2008
-	 */
-	private class DisplayWrapper
-	{
-		/**The wrapped <code>DisplayMode</code>.*/
-		DisplayMode mode;
-		
-		/**Constructor - Constructs a wrapper for a <code>DisplayMode</code>.
-		 * 
-		 * @param mode The <code>DisplayMode</code> to wrap.
-		 */
-		public DisplayWrapper(DisplayMode mode)
-		{
-			this.mode = mode;
-		}
-		
-		public boolean equals(Object o)
-		{
-			if(o instanceof DisplayWrapper)
-				return mode.equals(((DisplayWrapper)o).mode);
-			return mode.equals(o);
-		}
-		
-		public String toString()
-		{
-			return (mode.getWidth() + "x" + mode.getHeight() + 
-					"x" + mode.getBitDepth()+ " @" + mode.getRefreshRate());
-		}
-	}
+        this.settings = settings;
+        setupFrame();
+    }
+
+    /**
+     * Waits until the dialog box is closed.
+     */
+    public void waitFor() throws InterruptedException {
+        if (SwingUtilities.isEventDispatchThread()) {
+            throw new UnsupportedOperationException("Cannot be called from gui thread");
+        }
+
+        while (isOpen()) {
+            synchronized (openLock){
+                openLock.wait();
+            }
+        }
+    }
+
+    /**
+     * Determines if the dialog box is open.
+     * 
+     * @return True if it is open.
+     */
+    public boolean isOpen() {
+        return active;
+    }
+
+    /**Sets up the main frame.*/
+    private void setupFrame() {
+        logger.fine("Loading the configuration dialog...");
+
+        //SETUP JFRAME		
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeDialog();
+            }
+        });
+
+        setPreferredSize(new Dimension(FRAME_WIDTH, 350));
+        setResizable(false);
+        setLocationByPlatform(true);
+
+        //SETUP COMPONENTS OF FRAME		
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+
+        JPanel imagePl = new JPanel() {
+            private static final long serialVersionUID = 6279143708867242615L;
+            private Image bgImg = ImageCache.retrieveCachedImage("/com/radakan/data/images/splash.png");
+
+            @Override
+            public void paint(Graphics g) {
+                g.drawImage(bgImg, 0, 0, bgImg.getWidth(this), bgImg.getHeight(this), this);
+            }
+        };
+
+        JPanel graphicsPl = new JPanel();
+        JPanel audioPl = new JPanel();
+        JPanel commandPl = new JPanel();
+        JTabbedPane tabs = new JTabbedPane();
+
+        //Add panels to tabs
+        tabs.addTab("Graphics", graphicsPl);
+        tabs.addTab("Audio", audioPl);
+
+        graphicsPl.setLayout(new GridBagLayout());
+        graphicsPl.setPreferredSize(new Dimension(FRAME_WIDTH, 75));
+        GridBagConstraints c = new GridBagConstraints();
+
+        JLabel selectLb = new JLabel("Display Mode: ");
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        graphicsPl.add(selectLb, c);
+
+        //SETUP GRAPHICS PANEL
+        //setup up display modes
+        JComboBox listCb = new JComboBox();
+        listCb.setSize(60, 20);
+        listCb.setPreferredSize(new Dimension(150, 20));
+
+        DisplayMode displays[] = gd.getDisplayModes();
+        for (int i = 0; i < displays.length; i++) {
+            listCb.addItem(new DisplayWrapper(displays[i]));
+        }
+        
+        listCb.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getItem() instanceof DisplayWrapper) {
+                    DisplayMode mode = ((DisplayWrapper) e.getItem()).mode;
+                    settings.setDepthBits(mode.getBitDepth());
+                    settings.setHeight(mode.getHeight());
+                    settings.setWidth(mode.getWidth());
+                    settings.setFrequency(mode.getRefreshRate());
+                }
+            }
+        });
+        listCb.setSelectedItem(new DisplayWrapper(gd.getDisplayMode()));
+
+        c.insets = new Insets(0, 0, 0, 20);
+        c.gridx = 1;
+        graphicsPl.add(listCb, c);
+
+        //setup full screen check box		
+        JLabel fullLb = new JLabel("Full Screen: ");
+
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 2;
+        graphicsPl.add(fullLb, c);
+
+        JCheckBox cb = new JCheckBox();
+        cb.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                settings.setFullscreen(e.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+
+        c.gridx = 3;
+        graphicsPl.add(cb, c);
+
+        //setup vertical sync check box
+        JLabel syncLb = new JLabel("Vertical Sync: ");
+
+        c.insets = new Insets(0, 10, 0, 0);
+        c.gridx = 4;
+        graphicsPl.add(syncLb, c);
+
+        cb = new JCheckBox();
+        cb.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                settings.setFullscreen(e.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+
+        c.insets = new Insets(0, 0, 0, 0);
+        c.gridx = 5;
+        graphicsPl.add(cb, c);
+
+        //SETUP THE AUDIO PANEL
+
+
+        //SETUP THE COMMAND PANEL
+        commandPl.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        commandPl.setPreferredSize(new Dimension(FRAME_WIDTH, 35));
+
+        JButton startBt = new JButton("Start");
+        startBt.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                startGame = true;
+                closeDialog();
+            }
+        });
+        commandPl.add(startBt);
+
+        JButton quitBt = new JButton("Quit");
+        quitBt.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                closeDialog();
+            }
+        });
+        commandPl.add(quitBt);
+
+        //finalize the frame by adding panenls to it
+        getContentPane().setLayout(new BorderLayout());
+
+        JPanel subPanel = new JPanel(new BorderLayout());
+        subPanel.add(tabs);
+        subPanel.add(commandPl, BorderLayout.SOUTH);
+
+        add(imagePl);
+        add(subPanel, BorderLayout.SOUTH);
+    }
+
+    /**
+     * Configures the game settings.
+     */
+    public void configure() {
+        pack();
+        setVisible(true);
+    }
+
+    /**
+     * Closes the dialog box.
+     */
+    public void closeDialog() {
+        setVisible(false);
+        dispose();
+        active = false;
+        synchronized (openLock){
+            openLock.notifyAll();
+        }
+        logger.fine("Configuration Finished!");
+    }
+
+    /**Determines if the game is allowed to initialize.
+     * 
+     * @return True if the game is allowed to initialize.
+     */
+    public boolean isInitGameAllowed() {
+        return startGame;
+    }
+
+    /**A simple wrapper for a <code>DisplayMode</code>. 
+     * 
+     * @author Joshua Montgomery
+     * @version 1.0.0
+     * @created Jul 28, 2008
+     */
+    private class DisplayWrapper {
+
+        /**The wrapped <code>DisplayMode</code>.*/
+        DisplayMode mode;
+
+        /**Constructor - Constructs a wrapper for a <code>DisplayMode</code>.
+         * 
+         * @param mode The <code>DisplayMode</code> to wrap.
+         */
+        public DisplayWrapper(DisplayMode mode) {
+            this.mode = mode;
+        }
+
+        public boolean equals(Object o) {
+            if (o instanceof DisplayWrapper) {
+                return mode.equals(((DisplayWrapper) o).mode);
+            }
+            return mode.equals(o);
+        }
+
+        public String toString() {
+            return (mode.getWidth() + "x" + mode.getHeight() +
+                    "x" + mode.getBitDepth() + " @" + mode.getRefreshRate());
+        }
+    }
 }

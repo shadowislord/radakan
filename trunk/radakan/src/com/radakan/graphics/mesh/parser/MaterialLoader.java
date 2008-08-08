@@ -448,7 +448,7 @@ public class MaterialLoader {
                     return;
             }
         } catch (IOException ex){
-            ErrorHandler.handleError("Failed to read material file", ex);
+            ErrorHandler.reportError("Failed to read material file", ex);
         }
     }
     

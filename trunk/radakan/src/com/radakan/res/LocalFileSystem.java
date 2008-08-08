@@ -1,5 +1,6 @@
 package com.radakan.res;
 
+import com.jme.util.geom.BufferUtils;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,7 +8,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
 import java.nio.channels.ReadableByteChannel;
 
 /**
@@ -48,6 +51,9 @@ public class LocalFileSystem implements FileSystem {
                 throw new IOException("Unable to access file "+path);
         }
         
+        if (file.length() >= Integer.MAX_VALUE)
+            throw new IOException("Cannot handle files larger than 4 GB");
+        
         return file;
     }
     
@@ -67,20 +73,27 @@ public class LocalFileSystem implements FileSystem {
         File file = getFileHandle(name);
         
         FileInputStream fin = new FileInputStream(file);
-        FileChannel fc = fin.getChannel();
-        
-        if (ALLOW_FILE_MAPPING){
-            
-        }
-        
+        return fin.getChannel();
     }
 
     public ByteBuffer openBuffer(AccessMode mode, String name) throws IOException {
-
+        File file = getFileHandle(name);
+        
+        FileInputStream fin = new FileInputStream(file);
+        FileChannel fc = fin.getChannel();
+        if (mode != AccessMode.PARSE && ALLOW_FILE_MAPPING){
+            MappedByteBuffer buf = fc.map(MapMode.READ_ONLY, 0, file.length());
+            return buf;
+        }else{
+            // getFileHandle call makes sure file length is below 4 GB
+            ByteBuffer buf = BufferUtils.createByteBuffer((int)file.length());
+            return buf;
+        }
     }
 
     public boolean exists(String name) {
-
+        File file = new File(rootFile, name);
+        return file.exists() && file.canRead();
     }
 
 }
