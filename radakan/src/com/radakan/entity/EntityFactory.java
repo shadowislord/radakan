@@ -42,7 +42,6 @@ import com.radakan.graphics.util.ModelLoader;
 import com.radakan.util.ErrorHandler;
 import com.radakan.util.XMLUtil;
 
-
 public final class EntityFactory {
 
     private Map<String, EntityType> entityTypeMap = new HashMap<String, EntityType>();
@@ -172,11 +171,11 @@ public final class EntityFactory {
             Node entitiesNode = doc.getElementsByTagName("entities").item(0);
             parseEntities(entitiesNode);
         } catch (SAXException ex) {
-            ErrorHandler.handleError("Error while parsing XML file", ex);
+            ErrorHandler.reportError("Error while parsing XML file", ex);
         } catch (IOException ex) {
-        	ErrorHandler.handleError("IO Error while reading input stream", ex);
+            ErrorHandler.reportError("IO Error while reading input stream", ex);
         } catch (ParserConfigurationException ex) {
-        	ErrorHandler.handleError("Parser error", ex);
+            ErrorHandler.reportError("Parser error", ex);
         }
     }
     
