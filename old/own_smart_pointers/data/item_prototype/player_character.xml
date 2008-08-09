@@ -1,3 +1,0 @@
-<item_prototype type="player character" mass="65" size="6, 2, 0.3">
-	<mesh file_name="ninja.mesh" scale="0.004" />
-</item_prototype>

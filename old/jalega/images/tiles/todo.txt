@@ -1,2 +1,0 @@
-re-look at sand textures, there is a small, but evident lack of tilability
-grass textures show some similar problems

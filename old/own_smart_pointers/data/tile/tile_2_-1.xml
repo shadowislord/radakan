@@ -1,5 +1,0 @@
-<tile>
-	<model item="flat_ground" position="10, 0, 10" />
-	
-	<model item="ninja" position="12.5, 1.1, 11.2" name="Tenth Ninja" />
-</tile>

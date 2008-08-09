@@ -1,1 +1,0 @@
-SUBDIRS(  LinearMath BulletCollision BulletDynamics )
