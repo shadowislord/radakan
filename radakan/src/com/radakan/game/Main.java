@@ -17,10 +17,16 @@ package com.radakan.game;
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.jme.system.GameSettings;
+import com.jme.util.resource.ResourceLocator;
+import com.jme.util.resource.ResourceLocatorTool;
+import com.jme.util.resource.SimpleResourceLocator;
+import com.radakan.gui.console.JmeConsole;
+import com.radakan.gui.console.ScriptConsoleListener;
 import com.radakan.gui.dialogs.GameSettingsDialog;
 import com.radakan.util.ErrorHandler;
 import com.radakan.util.SysInfo;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,8 +47,11 @@ public class Main {
         settings.set("title", SysInfo.getGameName() + " "
                             + SysInfo.getVersionPrefix() + " "
                             + SysInfo.getGameVersion());
-        settings.setStencilBits(0);
+        
+        settings.setSamples(0);
+        settings.setDepthBits(8);
         settings.setAlphaBits(0);
+        settings.setStencilBits(0);
         settings.setFramerate(-1);
         
         GameSettingsDialog dialog = new GameSettingsDialog(settings);
@@ -53,15 +62,27 @@ public class Main {
             
             if (!dialog.isInitGameAllowed()){
                 logger.fine("Game initialization canceled by user");
-                return;
+                System.exit(0);
             }
-                
+            
             settings.save();
             logger.fine("Settings saved to registry");
         } catch (InterruptedException ex) {
             logger.log(Level.SEVERE, "Interrupt ");
         } catch (IOException ex){
             logger.log(Level.WARNING, "Failed to save settings to system", ex);
+        }
+        
+        logger.fine("Setting up locators");
+        try {
+            ResourceLocator textureLocator = new SimpleResourceLocator(Main.class.getResource("/com/radakan/data/textures/"));
+            ResourceLocator imageLocator = new SimpleResourceLocator(Main.class.getResource("/com/radakan/data/images/"));
+            ResourceLocator scriptLocator = new SimpleResourceLocator(Main.class.getResource("/com/radakan/data/scripts/"));
+            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, textureLocator);
+            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, imageLocator);
+            ResourceLocatorTool.addResourceLocator("Script", scriptLocator);
+        } catch (URISyntaxException ex){
+            ErrorHandler.reportError("Texture directory missing", ex);
         }
     }
     
@@ -73,6 +94,12 @@ public class Main {
             logger.fine("Display started");
             context.waitFor();
             logger.info("Display created successfuly");
+            
+            context.getPassManager().loadDefaultPasses();
+            
+            JmeConsole jmeConsole = new JmeConsole();
+            jmeConsole.addConsoleListener(new ScriptConsoleListener(jmeConsole));
+            context.getPassManager().add(jmeConsole);
         } catch (InterruptedException ex) {
             ErrorHandler.reportError("Interrupt while creating display", ex);
         } catch (InstantiationException ex){

@@ -176,7 +176,7 @@ public class GameSettingsDialog extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 if (e.getItem() instanceof DisplayWrapper) {
                     DisplayMode mode = ((DisplayWrapper) e.getItem()).mode;
-                    settings.setDepthBits(mode.getBitDepth());
+                    settings.setDepth(mode.getBitDepth());
                     settings.setHeight(mode.getHeight());
                     settings.setWidth(mode.getWidth());
                     settings.setFrequency(mode.getRefreshRate());
@@ -216,9 +216,8 @@ public class GameSettingsDialog extends JFrame {
 
         cb = new JCheckBox();
         cb.addItemListener(new ItemListener() {
-
             public void itemStateChanged(ItemEvent e) {
-                settings.setFullscreen(e.getStateChange() == ItemEvent.SELECTED);
+                settings.setVerticalSync(e.getStateChange() == ItemEvent.SELECTED);
             }
         });
 
@@ -244,7 +243,6 @@ public class GameSettingsDialog extends JFrame {
 
         JButton quitBt = new JButton("Quit");
         quitBt.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 closeDialog();
             }

@@ -56,13 +56,7 @@ public class ErrorHandler {
         
         ConsoleHandler ch = new ConsoleHandler();
         ch.setLevel(Level.ALL);
-        ch.setFilter(new Filter(){
-            public boolean isLoggable(LogRecord record) {
-                return !record.getSourceClassName().startsWith("java")
-                    && !record.getSourceClassName().startsWith("sun");
-            }
-        });
-        Logger.getLogger("").addHandler(ch);
+        Logger.getLogger("com.radakan").addHandler(ch);
     }
     
     public static void writeSystemInfo(PrintStream stream){

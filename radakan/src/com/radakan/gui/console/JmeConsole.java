@@ -4,9 +4,12 @@ import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.pass.PassType;
 import com.gibbon.jme.pass.RenderPass;
 import com.jme.image.Texture;
+import com.jme.image.Texture.MagnificationFilter;
+import com.jme.image.Texture.MinificationFilter;
+import com.jme.input.KeyInput;
+import com.jme.input.KeyInputListener;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
-import com.jme.scene.Spatial;
 import com.jme.scene.Spatial.CullHint;
 import com.jme.scene.Spatial.TextureCombineMode;
 import com.jme.scene.Text;
@@ -17,8 +20,6 @@ import com.jme.scene.state.BlendState.TestFunction;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import java.util.List;
  * 
  * @author Kirill
  */
-public class JmeConsole extends RenderPass {
+public class JmeConsole extends RenderPass implements KeyInputListener {
     
     private class PrintedLine {
         
@@ -71,6 +72,8 @@ public class JmeConsole extends RenderPass {
      */
     private int cursorLoc = 0;
     
+    private boolean consoleVisible = false;
+    
     private boolean cursorVisible = false;
     
     private boolean fadeEnabled = false;
@@ -84,6 +87,8 @@ public class JmeConsole extends RenderPass {
     
     final List <PrintedLine> synco = new ArrayList <PrintedLine> ();
     
+    private final List<ConsoleListener> listeners = new ArrayList<ConsoleListener>();
+    
     public JmeConsole() {
         super(PassType.POST_RENDER, "Console");
         
@@ -96,14 +101,10 @@ public class JmeConsole extends RenderPass {
         consoleNode.setRenderState(as);
         
         TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
-        Texture t = null;
-        try {
-            t = TextureManager.loadTexture(new File("data/defaultfont.tga").toURI().toURL());
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-        }
+        Texture t = TextureManager.loadTexture("defaultfont.tga", 
+                                 MinificationFilter.BilinearNoMipMaps, 
+                                 MagnificationFilter.Bilinear);
         ts.setTexture(t);
-        ts.setEnabled(true);
         consoleNode.setRenderState(ts);
 
         consoleNode.setTextureCombineMode(TextureCombineMode.Replace);
@@ -118,10 +119,14 @@ public class JmeConsole extends RenderPass {
         
         consoleNode.updateRenderState();
         consoleNode.updateGeometricState(0,true);
-        
-        // !!! add a script binding
-        // FIXME: Change tool helper API
-        //ToolHelper.addEntry("console",this);
+    }
+    
+    @Override
+    public void initPass(JmeContext cx){
+        // register with keyboard input if available
+        if (KeyInput.isInited()){
+            KeyInput.get().addListener(this);
+        }
     }
     
     public void updateOutputString(){
@@ -140,8 +145,48 @@ public class JmeConsole extends RenderPass {
         }
     }
     
+    public void onKey(char key, int keyId, boolean pressed) {
+        if (!pressed)
+            return;
+        
+        if (keyId == KeyInput.KEY_TAB){
+            consoleVisible = !consoleVisible;
+        }
+        
+        if (!consoleVisible)
+            return;
+        
+        switch (keyId){
+            case KeyInput.KEY_BACK:
+                writeBackspace();
+                return;
+            case KeyInput.KEY_RETURN:
+                writeEnter();
+                return;
+            case KeyInput.KEY_DELETE:
+                writeDelete();
+                return;
+            case KeyInput.KEY_LEFT:
+                moveCaret(-1);
+                return;
+            case KeyInput.KEY_RIGHT:
+                moveCaret(1);
+                return;
+            case KeyInput.KEY_SPACE:
+                writeChar(' ');
+                return;
+        }
+        
+        if (Character.isLetterOrDigit(key)
+         || (key >= '!' && key <= '~')){
+            writeChar(key);
+        }
+    }
+    
+    @Override
     public void doRender(JmeContext cx){
-        cx.getRenderer().draw(consoleNode);
+        if (consoleVisible)
+            cx.getRenderer().draw(consoleNode);
     }
     
     @Override
@@ -176,6 +221,14 @@ public class JmeConsole extends RenderPass {
                 texts.get(x).update(tpf);
             }
         }
+    }
+    
+    public void addConsoleListener(ConsoleListener listener){
+        listeners.add(listener);
+    }
+    
+    public void removeConsoleListener(ConsoleListener listener){
+        listeners.remove(listener);
     }
     
     protected void clean(){
@@ -241,6 +294,11 @@ public class JmeConsole extends RenderPass {
             println(toPrint);
         */
         println("> "+toPrint);
+        
+        System.out.println(toPrint);
+        
+        for (ConsoleListener listener : listeners)
+            listener.commandTyped(this, toPrint);
         
         //ToolHelper.eval_thread(toPrint);
         
@@ -320,5 +378,5 @@ public class JmeConsole extends RenderPass {
             synco.add(new PrintedLine(color,ln,time,newLine));
         }
     }
-    
+
 }
