@@ -1,11 +1,11 @@
 package com.gibbon.tools.world;
 
-import com.gibbon.meshparser.XMLUtil;
 import com.gibbon.tools.world.TextureSet.Detailmap;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture2D;
 import com.jme.util.TextureManager;
+import com.radakan.util.XMLUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;

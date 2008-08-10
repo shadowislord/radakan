@@ -1,7 +1,7 @@
 package com.gibbon.tools;
 
 import com.gibbon.jme.context.JmeContext;
-import com.gibbon.jme.context.RenderPass;
+import com.gibbon.jme.pass.RenderPass;
 import com.jme.light.DirectionalLight;
 import com.jme.light.PointLight;
 import com.jme.math.Vector3f;

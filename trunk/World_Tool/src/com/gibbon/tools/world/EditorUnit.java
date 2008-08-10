@@ -1,9 +1,9 @@
 package com.gibbon.tools.world;
 
-import com.gibbon.radakan.entity.EntityFactory.EntityType;
-import com.gibbon.radakan.entity.unit.AbstractUnit;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
+import com.radakan.entity.EntityFactory.EntityType;
+import com.radakan.entity.unit.AbstractUnit;
 import java.io.IOException;
 
 public class EditorUnit extends AbstractUnit {
