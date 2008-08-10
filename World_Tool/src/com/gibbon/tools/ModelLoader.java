@@ -1,28 +1,24 @@
 package com.gibbon.tools;
 
-import com.gibbon.meshparser.Material;
-import com.gibbon.meshparser.MaterialLoader;
-import com.gibbon.meshparser.OgreLoader;
-import com.gibbon.meshparser.SceneLoader;
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingVolume;
 import com.jme.math.Vector3f;
-import com.jme.scene.Controller;
-import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.util.export.binary.BinaryImporter;
 import com.jme.util.resource.MultiFormatResourceLocator;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
-import com.jmex.model.collada.ColladaImporter;
 import com.jmex.model.converters.*;
 //import com.model.md5.importer.MD5Importer;
+import com.radakan.graphics.mesh.parser.Material;
+import com.radakan.graphics.mesh.parser.MaterialLoader;
+import com.radakan.graphics.mesh.parser.OgreLoader;
+import com.radakan.graphics.mesh.parser.SceneLoader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -61,14 +57,14 @@ public final class ModelLoader {
         return (Spatial) im.getModelNode();
     }*/
     
-    public static Spatial loadDAEModel(File file) throws IOException{
-        InputStream in = new FileInputStream(file);
-        ColladaImporter.load( in , "Model" );
-        Spatial s = ColladaImporter.getModel();
-        in.close();
-        ColladaImporter.cleanUp();
-        return s;
-    }
+//    public static Spatial loadDAEModel(File file) throws IOException{
+//        InputStream in = new FileInputStream(file);
+//        ColladaImporter.load( in , "Model" );
+//        Spatial s = ColladaImporter.getModel();
+//        in.close();
+//        ColladaImporter.cleanUp();
+//        return s;
+//    }
     
     public static Spatial loadMeshModel(File file) throws IOException{
         Map<String, Material> materials = new HashMap<String, Material>();
@@ -171,7 +167,7 @@ public final class ModelLoader {
         }else if (ext.equalsIgnoreCase("md5mesh")){
             //model = loadMD5Model(file);
         }else if (ext.equalsIgnoreCase("dae")){
-            model = loadDAEModel(file);
+//            model = loadDAEModel(file);
         }else if (ext.equalsIgnoreCase("xml")){
             model = loadMeshModel(file);
         }else if (ext.equalsIgnoreCase("scene")){

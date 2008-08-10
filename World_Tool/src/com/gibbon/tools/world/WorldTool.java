@@ -2,16 +2,9 @@ package com.gibbon.tools.world;
 
 import org.lwjgl.Sys;
 import com.gibbon.jme.context.JmeContext;
-import com.gibbon.jme.context.RenderPass;
 import com.gibbon.jme.context.lwjgl.LWJGLCanvas;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
-import com.gibbon.radakan.entity.EntityFactory.EntityType;
-import com.gibbon.radakan.entity.unit.ModelUnit;
-import com.gibbon.radakan.error.ErrorReporter;
-import com.gibbon.radakan.res.DefaultFileSystem;
-import com.gibbon.radakan.res.FileSystem;
-import com.gibbon.radakan.res.ImageResourceLoader;
-import com.gibbon.radakan.res.ResourceManager;
+import com.gibbon.jme.pass.RenderPass;
 import com.gibbon.tools.FileNameExtensionFilter;
 import com.gibbon.tools.world.TextureSet.Detailmap;
 import com.jme.math.Vector3f;
@@ -22,6 +15,14 @@ import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
+import com.radakan.entity.EntityFactory.EntityType;
+import com.radakan.entity.unit.ModelUnit;
+import com.radakan.res.DefaultFileSystem;
+import com.radakan.res.FileSystem;
+import com.radakan.res.ImageResourceLoader;
+import com.radakan.res.LocalFileSystem;
+import com.radakan.res.ResourceManager;
+import com.radakan.util.ErrorHandler;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.io.File;
@@ -29,12 +30,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -187,7 +192,7 @@ public class WorldTool extends javax.swing.JFrame {
 
 			invalidate();
 		} catch (Throwable t) {
-			ErrorReporter.reportError("Error occured while loading entities", t);
+			ErrorHandler.reportError("Error occured while loading entities", t);
 		}
 	}
 
@@ -196,12 +201,23 @@ public class WorldTool extends javax.swing.JFrame {
 
 		Logger.getLogger("").setLevel(Level.WARNING);
 
-		FileSystem fileSystem = new DefaultFileSystem("icons");
-		ResourceManager.setFileSystem(fileSystem);
+                try{
+                    System.out.println(WorldTool.class.getResource("/icons/"));
+                    SimpleResourceLocator tex = new SimpleResourceLocator(WorldTool.class.getResource("/icons/"));
+                    ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
 
-		ResourceManager.registerLoader(Image.class, new ImageResourceLoader());
-		setIconImages(ResourceManager.loadResources(Image.class, "WT_logo.png", "WT_icon_64.png", "WT_icon_32.png", "WT_icon_16.png")); // Java6 only
-		
+                    List<Image> images = new ArrayList<Image>();
+                    
+                    images.add(ImageIO.read(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "WT_icon_16.png")));
+                    images.add(ImageIO.read(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "WT_icon_32.png")));
+                    images.add(ImageIO.read(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "WT_icon_64.png")));
+                    setIconImages(images); // Java6 only
+                } catch (IOException ex){
+                    ErrorHandler.reportError("IO Error while loading icons", ex);
+                } catch (URISyntaxException ex){
+                    ErrorHandler.reportError("URI Syntax error while loading icons", ex);
+                }
+                
 		state = EditorState.getState();
 		initComponents();
 		menu.add(LafMenu.setupLafMenu(this, "WorldTool"));
@@ -286,7 +302,7 @@ public class WorldTool extends javax.swing.JFrame {
 					});
 
 				} catch (Throwable ex) {
-					ErrorReporter.reportError("Error while initializing model view", ex);
+					ErrorHandler.reportError("Error while initializing model view", ex);
 				}
 			}
 		}.start();
@@ -299,7 +315,7 @@ public class WorldTool extends javax.swing.JFrame {
 			glCanvas = (LWJGLCanvas) context.getCanvas();
 			return glCanvas;
 		} catch (Throwable ex) {
-			ErrorReporter.reportError("Error occured while initializing 3D canvas", ex);
+			ErrorHandler.reportError("Error occured while initializing 3D canvas", ex);
 		}
 
 		return null;
@@ -406,14 +422,14 @@ public class WorldTool extends javax.swing.JFrame {
             .add(pnlWorldLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jButton1)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(81, Short.MAX_VALUE))
         );
         pnlWorldLayout.setVerticalGroup(
             pnlWorldLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(pnlWorldLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jButton1)
-                .addContainerGap(329, Short.MAX_VALUE))
+                .addContainerGap(370, Short.MAX_VALUE))
         );
 
         tab.addTab("World", pnlWorld);
@@ -479,14 +495,14 @@ public class WorldTool extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(pnlTerrainBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, radPlatau, 0, 0, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, radRaise, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, radRaise, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 45, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(pnlTerrainBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, radNoise, 0, 0, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, radLower, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, radLower, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 45, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(radSmooth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 40, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         pnlTerrainBrushLayout.setVerticalGroup(
             pnlTerrainBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -558,7 +574,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .add(pnlTerrainLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(lblStrength)
                     .add(sldBrushStr, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(127, Short.MAX_VALUE))
+                .addContainerGap(200, Short.MAX_VALUE))
         );
 
         tab.addTab("Terrain", pnlTerrain);
@@ -608,8 +624,8 @@ public class WorldTool extends javax.swing.JFrame {
             .add(pnlTexBrushLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(pnlTexBrushLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(cmbTSets, 0, 189, Short.MAX_VALUE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                    .add(cmbTSets, 0, 160, Short.MAX_VALUE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                     .add(pnlTexBrushLayout.createSequentialGroup()
                         .add(btnNewTSet)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -661,7 +677,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .add(pnlTextureLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(pnlTexBrush, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlTextureLayout.createSequentialGroup()
-                        .add(lblTexBSize, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                        .add(lblTexBSize, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(sldBrushSize1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlTextureLayout.createSequentialGroup()
@@ -683,7 +699,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .add(pnlTextureLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(lblTStr)
                     .add(sldTStr, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         tab.addTab("Texture", pnlTexture);
@@ -711,7 +727,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(pnlEntityLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(btnSelection)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnlEntityLayout.setVerticalGroup(
@@ -721,7 +737,7 @@ public class WorldTool extends javax.swing.JFrame {
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 194, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(btnSelection)
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addContainerGap(165, Short.MAX_VALUE))
         );
 
         tab.addTab("Entity", pnlEntity);
@@ -764,7 +780,11 @@ public class WorldTool extends javax.swing.JFrame {
         menuFile.add(jSeparator1);
 
         jMenuItem4.setText("Export");
-        jMenuItem4.setEnabled(false);
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         menuFile.add(jMenuItem4);
         menuFile.add(menuFileSep1);
 
@@ -1174,7 +1194,7 @@ public class WorldTool extends javax.swing.JFrame {
 				BinaryExporter.getInstance().save(state, f);
 				lastSavedFile = f;
 			} catch (Throwable t) {
-				ErrorReporter.reportError("Error while opening world", t);
+				ErrorHandler.reportError("Error while opening world", t);
 			} finally {
 				setCursor(Cursor.getDefaultCursor());
 			}
@@ -1206,7 +1226,7 @@ public class WorldTool extends javax.swing.JFrame {
 
 				lastSavedFile = f;
 			} catch (Throwable t) {
-				ErrorReporter.reportError("Error while opening world", t);
+				ErrorHandler.reportError("Error while opening world", t);
 			} finally {
 				setCursor(Cursor.getDefaultCursor());
 			}
@@ -1224,7 +1244,7 @@ public class WorldTool extends javax.swing.JFrame {
 		try {
 			BinaryExporter.getInstance().save(state, lastSavedFile);
 		} catch (Throwable t) {
-			ErrorReporter.reportError("Error while opening world", t);
+			ErrorHandler.reportError("Error while opening world", t);
 		} finally {
 			setCursor(Cursor.getDefaultCursor());
 		}
@@ -1300,6 +1320,31 @@ public class WorldTool extends javax.swing.JFrame {
     private void menuEditRedo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditRedo1ActionPerformed
 		UndoManager.doRedo();
     }//GEN-LAST:event_menuEditRedo1ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        if (World.getWorld() == null)
+            return;
+        
+        chooser.resetChoosableFileFilters();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File f = chooser.getSelectedFile();
+
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+            try {
+                WorldTileExporter exporter = new WorldTileExporter();
+                exporter.export(World.getWorld(), f);
+            } catch (Throwable t) {
+                ErrorHandler.reportError("Error while opening world", t);
+            } finally {
+                setCursor(Cursor.getDefaultCursor());
+            }
+        }
+        
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
     
     /**
      * @param args the command line arguments

@@ -3,13 +3,7 @@ package com.gibbon.tools.world;
 import com.gibbon.jme.context.JmeContext;
 import com.jme.image.Image;
 import com.jme.image.Image.Format;
-import com.jme.image.Texture.MagnificationFilter;
-import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture2D;
-import com.jme.light.DirectionalLight;
-import com.jme.light.Light;
-import com.jme.light.PointLight;
-import com.jme.math.Ray;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -20,14 +14,12 @@ import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
-import com.jme.scene.state.lwjgl.LWJGLShaderObjectsState;
 import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
 import com.jme.util.export.Savable;
 import com.jme.util.geom.BufferUtils;
-import com.jmex.terrain.util.ProceduralSplatTextureGenerator;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -111,6 +103,10 @@ public class TileGroup extends Node implements Savable {
     
     public boolean isTextureSet(){
         return alphamaps != null;
+    }
+    
+    public TextureSet getTextureSet(){
+        return texSet;
     }
     
     public TextureState getTerrainTextureState(){

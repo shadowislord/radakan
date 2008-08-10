@@ -1,18 +1,15 @@
 package com.gibbon.tools.world;
 
-import com.gibbon.radakan.error.ErrorReporter;
 import com.gibbon.tools.FileNameExtensionFilter;
 import com.gibbon.tools.world.TextureSet.Detailmap;
 import com.jme.image.Texture2D;
 import com.jme.util.TextureManager;
-import com.jmex.model.animation.JointController;
+import com.radakan.util.ErrorHandler;
 import java.awt.Frame;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -57,6 +54,7 @@ public class TextureSetEditor extends javax.swing.JDialog {
         }
         initComponents();
         
+        assert original != null;
         txtTSetName.setText(original.toString());
         lstImportSets.setSelectedIndex(0);
     }
@@ -276,7 +274,7 @@ public class TextureSetEditor extends javax.swing.JDialog {
             try{
                 map.colormap = (Texture2D) TextureManager.loadTexture(f.toURI().toURL(), true);
             } catch (MalformedURLException ex){
-                ErrorReporter.reportError("Incorrect file name specified", ex);
+                ErrorHandler.reportError("Incorrect file name specified", ex);
             }
             textureModel.addElement(map);
         }
@@ -335,7 +333,7 @@ public class TextureSetEditor extends javax.swing.JDialog {
             
             dispose();
         } catch (Exception ex) {
-            ErrorReporter.reportError("Error while saving textureset", ex);
+            ErrorHandler.reportError("Error while saving textureset", ex);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
     

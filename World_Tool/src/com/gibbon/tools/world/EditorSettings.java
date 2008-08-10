@@ -1,6 +1,6 @@
 package com.gibbon.tools.world;
 
-import com.gibbon.radakan.error.ErrorReporter;
+import com.radakan.util.ErrorHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -18,7 +18,7 @@ public class EditorSettings {
         try {
             pref.flush();
         } catch (BackingStoreException ex) {
-            ErrorReporter.reportError("Failed to write editor registry settings", ex);
+            ErrorHandler.reportError("Failed to write editor registry settings", ex);
         }
     }
     

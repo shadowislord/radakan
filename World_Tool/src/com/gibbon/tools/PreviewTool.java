@@ -2,7 +2,6 @@ package com.gibbon.tools;
 
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.lwjgl.LWJGLCanvas;
-import com.gibbon.radakan.error.ErrorReporter;
 import com.gibbon.tools.SpecialStateRenderPass.SpecialState;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
@@ -24,6 +23,7 @@ import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.util.TextureManager;
+import com.radakan.util.ErrorHandler;
 import java.awt.Canvas;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -138,7 +138,7 @@ public class PreviewTool extends javax.swing.JFrame {
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(PreviewTool.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (InterruptedException ex) {
-                    ErrorReporter.reportError("", ex);
+                    ErrorHandler.reportError("", ex);
                 }
             }
         }.start();
@@ -153,7 +153,7 @@ public class PreviewTool extends javax.swing.JFrame {
 
             return glCanvas;
         } catch (Throwable ex) {
-            ErrorReporter.reportError("Error while initializing canvas", ex);
+            ErrorHandler.reportError("Error while initializing canvas", ex);
         }
         
         return null;

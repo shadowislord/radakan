@@ -55,8 +55,10 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Export"/>
-                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem4ActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="menuFileSep1">
             </MenuItem>
@@ -277,7 +279,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="62" max="32767" attributes="0"/>
+                          <EmptySpace pref="81" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -286,7 +288,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="329" max="32767" attributes="0"/>
+                          <EmptySpace pref="370" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -355,7 +357,7 @@
                               <Component id="lblStrength" min="-2" max="-2" attributes="0"/>
                               <Component id="sldBrushStr" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="127" max="32767" attributes="0"/>
+                          <EmptySpace pref="200" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -386,7 +388,7 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="radSmooth" min="-2" pref="40" max="-2" attributes="1"/>
-                              <EmptySpace pref="59" max="32767" attributes="0"/>
+                              <EmptySpace pref="28" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -548,7 +550,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="pnlTexBrush" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="lblTexBSize" pref="103" max="32767" attributes="0"/>
+                                  <Component id="lblTexBSize" pref="78" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="sldBrushSize1" min="-2" pref="110" max="-2" attributes="1"/>
                               </Group>
@@ -577,7 +579,7 @@
                               <Component id="lblTStr" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="sldTStr" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="88" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -598,8 +600,8 @@
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="cmbTSets" alignment="0" pref="189" max="32767" attributes="0"/>
-                                  <Component id="jScrollPane1" alignment="0" pref="189" max="32767" attributes="0"/>
+                                  <Component id="cmbTSets" alignment="0" pref="160" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane1" alignment="0" pref="160" max="32767" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="btnNewTSet" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -731,7 +733,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="btnSelection" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jScrollPane2" alignment="0" pref="181" max="32767" attributes="0"/>
+                              <Component id="jScrollPane2" alignment="0" pref="192" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -744,7 +746,7 @@
                           <Component id="jScrollPane2" min="-2" pref="194" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="btnSelection" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="125" max="32767" attributes="0"/>
+                          <EmptySpace pref="165" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
