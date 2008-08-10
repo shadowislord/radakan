@@ -22,6 +22,10 @@ import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 /**
  * JmeConsole is an in-game console that displays logging messages
@@ -91,6 +95,8 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
     
     public JmeConsole() {
         super(PassType.POST_RENDER, "Console");
+        
+        Logger.getLogger("com.radakan").addHandler(new JmeConsoleHandler());
         
         BlendState as = DisplaySystem.getDisplaySystem().getRenderer().createBlendState();
         as.setBlendEnabled( true );
@@ -326,6 +332,45 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         updateOutputString();
     }
     
+     
+
+    
+     
+
+    private class JmeConsoleHandler extends Handler {
+        @Override
+        public void publish(LogRecord record) {
+            String message = record.getSourceClassName() + ": " + record.getMessage();
+
+            Level level = record.getLevel();
+            if (level == Level.SEVERE) {
+                println(ColorRGBA.red, message);
+            } else if (level == Level.WARNING) {
+                println(ColorRGBA.orange, message);
+            } else if (level == Level.INFO) {
+                println(ColorRGBA.magenta, message);
+            } else if (level == Level.CONFIG) {
+                println(ColorRGBA.cyan, message);
+            } else if (level == Level.FINE) {
+                println(ColorRGBA.white, message);
+            } else if (level == Level.FINER) {
+                println(ColorRGBA.gray, message);
+            } else if (level == Level.FINEST) {
+                println(ColorRGBA.darkGray, message);
+            }
+        }
+
+        @Override
+        public void flush() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void close() throws SecurityException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
+
     public void println(ColorRGBA color, String ln, int time){
         print0(color,ln,time,true);
     }

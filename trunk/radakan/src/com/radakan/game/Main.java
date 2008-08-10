@@ -21,7 +21,7 @@ import com.jme.util.resource.ResourceLocator;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
 import com.radakan.gui.console.JmeConsole;
-import com.radakan.gui.console.ScriptConsoleListener;
+import com.radakan.gui.console.ScriptSystem;
 import com.radakan.gui.dialogs.GameSettingsDialog;
 import com.radakan.util.ErrorHandler;
 import com.radakan.util.SysInfo;
@@ -98,7 +98,7 @@ public class Main {
             context.getPassManager().loadDefaultPasses();
             
             JmeConsole jmeConsole = new JmeConsole();
-            jmeConsole.addConsoleListener(new ScriptConsoleListener(jmeConsole));
+            jmeConsole.addConsoleListener(new ScriptSystem(jmeConsole));
             context.getPassManager().add(jmeConsole);
         } catch (InterruptedException ex) {
             ErrorHandler.reportError("Interrupt while creating display", ex);
