@@ -28,6 +28,7 @@ import com.jme.renderer.lwjgl.LWJGLTextureRenderer;
 import com.jme.system.DisplaySystem;
 import com.jme.system.canvas.JMECanvas;
 import com.jme.system.lwjgl.LWJGLDisplaySystem;
+import java.util.logging.Logger;
 
 /**
  * Dummy display system which allows original jME code to function properly with JmeContext.
@@ -36,12 +37,15 @@ import com.jme.system.lwjgl.LWJGLDisplaySystem;
  */
 public class ContextDisplaySystem extends DisplaySystem {
     
+    private static final Logger logger = Logger.getLogger(ContextDisplaySystem.class.getName());
+    
     /**
      * Do not call this method. Done automatically by JmeContext.
      */
     public ContextDisplaySystem(){
         system = new ContextSystemProvider(this);
         created = true;
+        logger.finer("jME displays bound to context system");
     }
     
     /**
