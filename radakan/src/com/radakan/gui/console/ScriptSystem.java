@@ -10,24 +10,24 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-public class ScriptConsoleListener implements ConsoleListener {
+public class ScriptSystem implements ConsoleListener {
 
-    private static final Logger logger = Logger.getLogger(ScriptConsoleListener.class.getName());
+    private static final Logger logger = Logger.getLogger(ScriptSystem.class.getName());
     
     private ScriptEngineManager engineManager;
     private ScriptEngine engine;
     private Bindings bindings;
     private JmeConsole console;
     
-    public ScriptConsoleListener(JmeConsole console){
+    public ScriptSystem(JmeConsole console){
         this.console = console;
+        
         
         engineManager = new ScriptEngineManager();
         engine = engineManager.getEngineByName("js");
@@ -103,6 +103,8 @@ public class ScriptConsoleListener implements ConsoleListener {
     public void commandTyped(JmeConsole console, String command) {
         exec(command);
     }
+
+    
 
     
     

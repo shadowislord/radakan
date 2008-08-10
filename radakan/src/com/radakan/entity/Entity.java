@@ -24,6 +24,7 @@ import com.radakan.entity.unit.Unit;
 import com.radakan.entity.unit.UnitEvent;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 /**
@@ -39,6 +40,14 @@ public final class Entity extends AbstractUnit {
     
     public Entity(String name){
         this.name = name;
+    }
+
+    public void exportXML(PrintStream stream) {
+        stream.println("    <entity name=\""+name+"\">");
+        for (Unit u : units){
+            u.exportXML(stream);
+        }
+        stream.println("    </entity>");
     }
     
     @SuppressWarnings("unchecked")

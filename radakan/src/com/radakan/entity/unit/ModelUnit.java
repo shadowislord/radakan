@@ -8,6 +8,7 @@ import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.radakan.entity.Entity;
 import com.radakan.res.ResourceManager;
+import java.io.PrintStream;
 
 /**
  * ModelUnit is a Unit implementation that allows
@@ -22,6 +23,10 @@ public class ModelUnit extends AbstractUnit implements UnitEventListener {
     
     public ModelUnit(Node model){
         this.model = model;
+    }
+    
+    public void exportXML(PrintStream stream) {
+        
     }
     
     @Override
@@ -65,5 +70,5 @@ public class ModelUnit extends AbstractUnit implements UnitEventListener {
             }
         }
     }
-    
+
 }

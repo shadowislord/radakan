@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.radakan.entity.EntityFactory.EntityType;
+import java.io.PrintStream;
 
 public class EntityUnit extends AbstractUnit {
 
@@ -28,6 +29,10 @@ public class EntityUnit extends AbstractUnit {
 
     @Override
     public void read(JMEImporter im) throws IOException {
+    }
+
+    public void exportXML(PrintStream stream) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

@@ -2,6 +2,7 @@ package com.radakan.entity.unit;
 
 import com.jme.util.export.Savable;
 import com.radakan.entity.Entity;
+import java.io.PrintStream;
 
 public interface Unit extends Savable {
 
@@ -11,6 +12,8 @@ public interface Unit extends Savable {
      * @param listener The listener to add
      */
     public void addEventListener(UnitEventListener listener);
+
+    public void exportXML(PrintStream stream);
     
     /**
      * Remove a UnitEventListener to stop being notified of events of this unit
