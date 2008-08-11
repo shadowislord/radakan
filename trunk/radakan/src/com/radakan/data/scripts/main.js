@@ -1,3 +1,3 @@
 function main(){
-    console.println("main()");
+    console.println("JS script MAIN loaded!");
 }

@@ -115,7 +115,6 @@ public class MainMenu extends UIContext {
 
     @Override
     public void update(float tpf) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

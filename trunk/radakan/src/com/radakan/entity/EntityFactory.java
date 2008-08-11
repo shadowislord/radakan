@@ -143,7 +143,7 @@ public final class EntityFactory {
         if (type == null)
             return null;
         
-        Entity ent = new Entity(name);
+        Entity ent = new Entity(name, type.name);
         
         EntityUnit editor = new EntityUnit(type);
         ent.attachUnit(editor);
