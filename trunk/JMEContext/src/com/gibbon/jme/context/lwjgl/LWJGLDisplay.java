@@ -59,6 +59,8 @@ public class LWJGLDisplay extends Thread implements IJmeDisplay {
     
     private UncaughtExceptionHandler exHandler;
     
+    private Object startupLock = new Object();
+    
     protected DisplayMode getDisplayMode(GameSettings gs) throws LWJGLException{
         if (!gs.isFullscreen())
             return new DisplayMode(gs.getWidth(), gs.getHeight());
@@ -81,16 +83,15 @@ public class LWJGLDisplay extends Thread implements IJmeDisplay {
     
     protected LWJGLDisplay(LWJGLContext context, String title) {
         super(context.getName()+"-"+context.getIndex());
-        this.context=context;
-        this.title= title;
+        this.context = context;
+        this.title = title;
         
         GameSettings gs = context.getSettings();
-        
         fullscreen = gs.isFullscreen();
         vsync = gs.isVerticalSync();
 
         try {
-            mode = getDisplayMode(context.getSettings());
+            mode = getDisplayMode(gs);
         } catch (LWJGLException ex) {
             logger.throwing("LWJGLDisplay", "<init>", ex);
         }
@@ -103,8 +104,6 @@ public class LWJGLDisplay extends Thread implements IJmeDisplay {
     public static LWJGLDisplay create(LWJGLContext context, String title){
         return new LWJGLDisplay(context,title);
     }
-    
-    private Object startupLock = new Object();
     
     public void waitFor() throws InterruptedException{
         synchronized (startupLock){
@@ -129,14 +128,14 @@ public class LWJGLDisplay extends Thread implements IJmeDisplay {
             //                                 gs.getSamples());
             
             pf = new PixelFormat(gs.getDepth(),
-                            gs.getAlphaBits(),
-                            gs.getDepthBits(),
-                            gs.getStencilBits(),
-                            gs.getSamples(), 0 /* no aux buffers */,
-                            gs.getInt("GameAccumBPP", 0),
-                            gs.getInt("GameAccumAlphaBits", 0),
-                            gs.getBoolean("GameStereo", false),
-                            gs.getBoolean("GameFloatingPointBuffer", false));
+                                 gs.getAlphaBits(),
+                                 gs.getDepthBits(),
+                                 gs.getStencilBits(),
+                                 gs.getSamples(), 0 /* no aux buffers */,
+                                 gs.getInt("GameAccumBPP", 0),
+                                 gs.getInt("GameAccumAlphaBits", 0),
+                                 gs.getBoolean("GameStereo", false),
+                                 gs.getBoolean("GameFloatingPointBuffer", false));
             
             Display.setTitle(title);
             Display.setFullscreen(fullscreen);

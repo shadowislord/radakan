@@ -31,7 +31,6 @@ import com.gibbon.jme.util.IJmeDisplay;
 import com.jme.renderer.RenderContext;
 import com.jme.renderer.Renderer;
 import com.jme.system.GameSettings;
-import com.jme.system.JmeException;
 import com.jme.system.PreferencesGameSettings;
 import com.jme.util.Timer;
 

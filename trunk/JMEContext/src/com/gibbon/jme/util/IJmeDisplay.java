@@ -64,4 +64,5 @@ public interface IJmeDisplay {
      * Sets the display position on the screen if its a windowed display
      */
     public void setPosition(final int x, final int y);
+    
 }
