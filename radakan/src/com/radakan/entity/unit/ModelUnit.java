@@ -1,5 +1,7 @@
 package com.radakan.entity.unit;
 
+import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
 import java.io.IOException;
 
 import com.jme.scene.Node;
@@ -26,7 +28,13 @@ public class ModelUnit extends AbstractUnit implements UnitEventListener {
     }
     
     public void exportXML(PrintStream stream) {
+        Vector3f pos = model.getLocalTranslation();
+        Quaternion rot = model.getLocalRotation();
         
+        stream.println("    <model filename=\"" + modelName + "\"");
+        stream.println("           translation=\"" + pos.x + ", " + pos.y + ", " + pos.z + "\"");
+        stream.println("           rotation=\"" + rot.x + ", " + rot.y + ", " + rot.z + ", " + rot.w + "\"");
+        stream.println("    </model>");
     }
     
     @Override

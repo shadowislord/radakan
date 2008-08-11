@@ -36,14 +36,16 @@ import java.util.ArrayList;
 public final class Entity extends AbstractUnit {
 
     private String name;
+    private String type;
     private ArrayList<Unit> units = new ArrayList<Unit>();
     
-    public Entity(String name){
+    public Entity(String name, String type){
         this.name = name;
+        this.type = type;
     }
 
     public void exportXML(PrintStream stream) {
-        stream.println("    <entity name=\""+name+"\">");
+        stream.println("    <entity name=\""+name+"\" type=\"" + type + "\">");
         for (Unit u : units){
             u.exportXML(stream);
         }

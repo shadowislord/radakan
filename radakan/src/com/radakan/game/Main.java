@@ -16,6 +16,8 @@ package com.radakan.game;
 
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
+import com.gibbon.jme.pass.ExitListenerPass;
+import com.gibbon.jme.pass.InputPass;
 import com.jme.system.GameSettings;
 import com.jme.util.resource.ResourceLocator;
 import com.jme.util.resource.ResourceLocatorTool;
@@ -95,10 +97,14 @@ public class Main {
             context.waitFor();
             logger.info("Display created successfuly");
             
-            context.getPassManager().loadDefaultPasses();
+            InputPass input = new InputPass(null, true);
+            context.getPassManager().add(input);
+            
+            ExitListenerPass exitListener = new ExitListenerPass();
+            context.getPassManager().add(exitListener);
             
             JmeConsole jmeConsole = new JmeConsole();
-            jmeConsole.addConsoleListener(new ScriptSystem(jmeConsole));
+            jmeConsole.addConsoleListener(new ScriptSystem(jmeConsole, true));
             context.getPassManager().add(jmeConsole);
         } catch (InterruptedException ex) {
             ErrorHandler.reportError("Interrupt while creating display", ex);

@@ -21,6 +21,7 @@ import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -35,24 +36,24 @@ import java.util.logging.Logger;
  */
 public class JmeConsole extends RenderPass implements KeyInputListener {
     
-    private class PrintedLine {
-        
-        ColorRGBA color;
-        String ln;
-        int time;
-        boolean newLine;
-        
-        public PrintedLine(ColorRGBA color, String ln, int time, boolean newLine){
-            this.color=color;
-            this.ln=ln;
-            this.time=time;
-            this.newLine=newLine;
-        }
-        public void exec(){
-            print0(color,ln,time,newLine);
-        }
-                
-    }
+//    private class PrintedLine {
+//        
+//        ColorRGBA color;
+//        String ln;
+//        int time;
+//        boolean newLine;
+//        
+//        public PrintedLine(ColorRGBA color, String ln, int time, boolean newLine){
+//            this.color=color;
+//            this.ln=ln;
+//            this.time=time;
+//            this.newLine=newLine;
+//        }
+//        public void exec(){
+//            print0(color,ln,time,newLine);
+//        }
+//                
+//    }
     
     /**
      * Number of text nodes to hold
@@ -89,7 +90,7 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         
     private float pingTime = 0f;
     
-    final List <PrintedLine> synco = new ArrayList <PrintedLine> ();
+//    final List <PrintedLine> synco = new ArrayList <PrintedLine> ();
     
     private final List<ConsoleListener> listeners = new ArrayList<ConsoleListener>();
     
@@ -197,12 +198,12 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
     
     @Override
     public void doUpdate(JmeContext cx) {
-        synchronized (synco) {
-            for (PrintedLine pl : synco) {
-                pl.exec();
-            }
-            synco.clear();
-        }
+//        synchronized (synco) {
+//            for (PrintedLine pl : synco) {
+//                pl.exec();
+//            }
+//            synco.clear();
+//        }
 
         float tpf = cx.getPassManager().getTPF();
         pingTime += tpf;
@@ -301,13 +302,9 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         */
         println("> "+toPrint);
         
-        System.out.println(toPrint);
-        
         for (ConsoleListener listener : listeners)
             listener.commandTyped(this, toPrint);
-        
-        //ToolHelper.eval_thread(toPrint);
-        
+       
         baseString.setLength(0);
         cursorLoc = 0;
         updateOutputString();
@@ -340,7 +337,11 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
     private class JmeConsoleHandler extends Handler {
         @Override
         public void publish(LogRecord record) {
-            String message = record.getSourceClassName() + ": " + record.getMessage();
+            String clazz = record.getSourceClassName();
+            if (clazz.indexOf(".") > 0)
+                clazz = clazz.substring(clazz.lastIndexOf(".")+1);
+            
+            String message = clazz + ": " + record.getMessage();
 
             Level level = record.getLevel();
             if (level == Level.SEVERE) {
@@ -372,22 +373,43 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
     }
 
     public void println(ColorRGBA color, String ln, int time){
-        print0(color,ln,time,true);
+        print1(color,ln,time);
     }
     public void println(ColorRGBA color, String ln){
-        print0(color,ln,ln.length()*1000+1000,true);
+        print1(color,ln,ln.length()*1000+1000);
     }
     public void println(String ln, int time){
-        print0(null,ln,time,true);
+        print1(null,ln,time);
     }
     public void println(String ln){
-        print0(null,ln,ln.length()*1000+1000,true);
+        print1(null,ln,ln.length()*1000+1000);
     }
-    public void print(String ln, int time){
-        print0(null,ln,time,false);
-    }
-    public void print(String ln){
-        print0(null,ln,ln.length()*1000+1000,false);
+    
+    protected void print1  (ColorRGBA color, String ln, int time){
+        List<String> split = Arrays.asList(ln.split("\n"));
+        List<String> printList = new ArrayList<String>();
+        
+        for (String str : split){
+            if (str.length() > 70){
+                StringBuffer sb = new StringBuffer(str);
+                int index = 0;
+                int end = 0;
+                do
+                {
+                    end = index + 70;
+                    if (end > str.length()){
+                        end = str.length();
+                    }
+                    printList.add(sb.substring(index,end));
+                    index += 70;
+                }
+                while (index < str.length());
+            }else
+                printList.add(str);
+        }
+        
+        for (String str : printList)
+            print0(color, str, time, true);
     }
     
     protected void print0  (ColorRGBA color, String ln, int time, boolean newLine){
@@ -418,10 +440,10 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         
         consoleNode.updateGeometricState(0,true);
     }
-    protected void print1  (ColorRGBA color, String ln, int time, boolean newLine){
-        synchronized (synco){
-            synco.add(new PrintedLine(color,ln,time,newLine));
-        }
-    }
+//    protected void print1  (ColorRGBA color, String ln, int time, boolean newLine){
+//        synchronized (synco){
+//            synco.add(new PrintedLine(color,ln,time,newLine));
+//        }
+//    }
 
 }
