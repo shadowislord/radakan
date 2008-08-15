@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Radakan_rework</name>
+	<name>radakan</name>
 	<comment></comment>
 	<projects>
+		<project>JMEContext</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
