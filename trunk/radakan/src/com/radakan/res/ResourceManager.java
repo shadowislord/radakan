@@ -12,7 +12,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Changes recently made by Tomygun:
@@ -22,11 +25,12 @@ import java.util.concurrent.ThreadFactory;
  */
 public class ResourceManager {
 
-	protected static final Map<String, WeakReference<?>> cacheMap = new HashMap<String, WeakReference<?>>();
+        protected static volatile Set<String> loadingResourcesSet = new HashSet<String>();
+	protected static volatile Map<String, WeakReference<?>> cacheMap = new HashMap<String, WeakReference<?>>();
 	protected static final Map<Class<?>, ResourceLoader> loaderMap = new HashMap<Class<?>, ResourceLoader>();
 	protected static final ExecutorService executor = Executors.newSingleThreadExecutor(new LoadingThreadFactory());
 	protected static FileSystem fileSystem;
-	protected static final Set<String> loadingResourcesSet = new HashSet<String>();
+	
 
 	protected static class LoadingThreadFactory implements ThreadFactory {
 
@@ -93,6 +97,10 @@ public class ResourceManager {
 		return loadingResourcesSet.contains(resourceName);
 	}
 
+        public static boolean isIdle(){
+            return loadingResourcesSet.size() == 0;
+        }
+        
 	public static boolean isLoadingThread() {
 		return Thread.currentThread().getName().startsWith("pool");
 	}
@@ -115,7 +123,7 @@ public class ResourceManager {
 			loadingResourcesSet.add(resourceName);
 			T val = loader.load(resourceName);
 			loadingResourcesSet.remove(resourceName);
-			addToCache(resourceName, val);
+                        if (loader.useCache()) addToCache(resourceName, val);
 
 			return val;
 		} catch (IOException ex) {
@@ -144,15 +152,21 @@ public class ResourceManager {
 				cacheMap.remove(ref);
 			}
 		}
+                
+                // prepeare to load resource in loading thread
+                loadingResourcesSet.add(resourceName);
+                
 		@SuppressWarnings("unchecked")
 		final ResourceLoader<T> loader = loaderMap.get(resourceType);
+                
 		executor.submit(new Callable<Object>() {
-
 			public Object call() throws ExecutionException {
 				try {
-					loadingResourcesSet.add(resourceName);
-					addToCache(resourceName, loader.load(resourceName));
-					loadingResourcesSet.remove(resourceName);
+                                    T val = loader.load(resourceName);
+                                    if (loader.useCache()){
+					addToCache(resourceName, val);
+                                    }
+                                    loadingResourcesSet.remove(resourceName);
 				} catch (IOException ex) {
 					onException(ex);
 				}
@@ -161,9 +175,30 @@ public class ResourceManager {
 			}
 		});
 	}
+        
+        public static <T> Future<T> runTaskLater(final String taskName, final Callable<T> callable){
+            loadingResourcesSet.add(taskName);
+            return executor.submit(new Callable<T>(){
+                public T call() throws Exception{
+                    T obj = callable.call();
+                    loadingResourcesSet.remove(taskName);
+                    return obj;
+                }
+            });
+        }
 
 	@SuppressWarnings("unchecked")
-	public static <T> T aquireResource(Class<T> resourceType, String resourceName) {
-		return (T) getFromCache(resourceType, resourceName);
-	}
+   public static <T> T aquireResource(Class<T> resourceType, String resourceName) {
+        try {
+            ResourceLoader<T> loader = loaderMap.get(resourceType);
+            if (loader.useCache()) {
+                return (T) getFromCache(resourceType, resourceName);
+            } else {
+                return loader.load(resourceName);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ResourceManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }

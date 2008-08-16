@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 import com.jme.scene.Node;
 import com.jme.system.DisplaySystem;
 import com.jme.system.GameSettings;
-import com.radakan.game.util.LoadScreen;
 import com.radakan.jme.app.Basic3DGame;
 
 /**
@@ -42,7 +41,7 @@ public class RadakanGame extends Basic3DGame
 	{
 		logger.debug("Initializing the game");
 		
-		LoadScreen loadScreen = new LoadScreen();
+		//LoadScreen loadScreen = new LoadScreen();
 		
 		logger.debug("Game initialization finished");		
 	}

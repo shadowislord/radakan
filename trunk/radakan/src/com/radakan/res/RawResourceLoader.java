@@ -9,4 +9,8 @@ public class RawResourceLoader implements ResourceLoader<InputStream> {
         return ResourceManager.getFileSystem().openStream(AccessMode.RAW, resourceName);
     }
 
+    public boolean useCache() {
+        return true;
+    }
+
 }

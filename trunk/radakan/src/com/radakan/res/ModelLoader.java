@@ -17,4 +17,8 @@ public class ModelLoader implements ResourceLoader<Spatial> {
         return (Spatial) savable;
     }
 
+    public boolean useCache() {
+        return true;
+    }
+
 }

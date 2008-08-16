@@ -2,18 +2,17 @@ package com.radakan.gui;
 
 import com.radakan.util.ErrorHandler;
 import com.radakan.util.SysInfo;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.fenggui.Button;
 import org.fenggui.Container;
+import org.fenggui.FengGUI;
 import org.fenggui.Label;
-import org.fenggui.background.PixmapBackground;
+import org.fenggui.binding.render.Binding;
+import org.fenggui.binding.render.ITexture;
+import org.fenggui.binding.render.Pixmap;
+import org.fenggui.decorator.background.PixmapBackground;
 import org.fenggui.layout.RowLayout;
 import org.fenggui.layout.StaticLayout;
-import org.fenggui.render.Binding;
-import org.fenggui.render.Font;
-import org.fenggui.render.ITexture;
-import org.fenggui.render.Pixmap;
 import org.fenggui.util.Color;
 import org.fenggui.util.Spacing;
 import org.lwjgl.opengl.GL11;
@@ -29,23 +28,23 @@ public class MainMenu extends UIContext {
     public Container buildButtons(){
         Container c = new Container(new RowLayout(false));
         
-        Button newGame = new Button("New Game");
-        newGame.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
+        Button newGame = FengGUI.createButton("New Game");
+        //newGame.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
         newGame.getAppearance().setMargin(new Spacing(5, 5));
         c.addWidget(newGame);
         
-        Button contGame = new Button("Continue Game");
-        contGame.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
+        Button contGame = FengGUI.createButton("Continue Game");
+        //contGame.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
         contGame.getAppearance().setMargin(new Spacing(5, 5));
         c.addWidget(contGame);
         
-        Button credits = new Button("Credits");
-        credits.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
+        Button credits = FengGUI.createButton("Credits");
+        //credits.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
         credits.getAppearance().setMargin(new Spacing(5, 5));
         c.addWidget(credits);
         
-        Button exit = new Button("Exit");
-        exit.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
+        Button exit = FengGUI.createButton("Exit");
+        //exit.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
         exit.getAppearance().setMargin(new Spacing(5, 5));
         c.addWidget(exit);
         
@@ -59,8 +58,8 @@ public class MainMenu extends UIContext {
         try{
             setLayoutManager(new StaticLayout());
             
-            Label logo = new Label();
-            Label version = new Label();
+            Label logo = FengGUI.createLabel();
+            Label version = FengGUI.createLabel();
             version.setText(SysInfo.getVersionPrefix() + " " +
                             SysInfo.getGameVersion());
             
@@ -84,8 +83,8 @@ public class MainMenu extends UIContext {
             int width = UIManager.width;
             int height = UIManager.height;
             
-            if (width != 800 || height != 600)
-                throw new IOException("ur an idiot: "+width+"x"+height);
+            //if (width != 800 || height != 600)
+            //    throw new IOException("ur an idiot: "+width+"x"+height);
             
             int logoWidth = (int)((width / 4.5f) * 3f);
             int logoHeight = (int)(height / 4.5f);
@@ -94,8 +93,8 @@ public class MainMenu extends UIContext {
             logo.setXY(width - logoWidth + 15, height - logoHeight - 10);
             addWidget(logo);
             
-            version.getAppearance().setFont(Fonts.STONEHEDGE_SMALL);
-            version.getAppearance().setTextColor(Color.WHITE);
+            //version.getAppearance().setFont(Fonts.STONEHEDGE_SMALL);
+            //version.getAppearance().setTextColor(Color.WHITE);
             version.setSizeToMinSize();
             version.setXY(width - version.getWidth() - 20, 20);
             addWidget(version);

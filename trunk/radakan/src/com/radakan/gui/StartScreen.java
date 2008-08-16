@@ -5,10 +5,10 @@ import com.radakan.util.SysInfo;
 import java.io.IOException;
 import org.fenggui.Container;
 import org.fenggui.Label;
-import org.fenggui.background.PixmapBackground;
-import org.fenggui.render.Binding;
-import org.fenggui.render.ITexture;
-import org.fenggui.render.Pixmap;
+import org.fenggui.binding.render.Binding;
+import org.fenggui.binding.render.ITexture;
+import org.fenggui.binding.render.Pixmap;
+import org.fenggui.decorator.background.PixmapBackground;
 import org.fenggui.util.Color;
 import org.lwjgl.opengl.GL11;
 
@@ -53,8 +53,8 @@ public class StartScreen extends UIContext {
                 // create the press start label
                 startLabel = new Label();
                 startLabel.setText("Press Start");
-                startLabel.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
-                startLabel.getAppearance().setTextColor(Color.OPAQUE);
+                //startLabel.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
+                //startLabel.getAppearance().setTextColor(Color.OPAQUE);
                 startLabel.setSizeToMinSize();
                 startLabel.setXY(UIManager.width / 2 - startLabel.getWidth() / 2,
                                  UIManager.height / 5);
@@ -65,7 +65,7 @@ public class StartScreen extends UIContext {
             Label copyright = new Label();
             //copyright.getAppearance().setFont(Fonts.STONEHEDGE_SMALL);
             copyright.setText("(C) Gibbon Entertainment Inc. 2008");
-            copyright.getAppearance().setTextColor(Color.WHITE_HALF_OPAQUE);
+            //copyright.getAppearance().setTextColor(Color.WHITE_HALF_OPAQUE);
             copyright.setSizeToMinSize();
             copyright.setXY(20,
                             copyright.getHeight() / 2);
@@ -75,7 +75,7 @@ public class StartScreen extends UIContext {
             Label version = new Label();
             //version.getAppearance().setFont(Fonts.STONEHEDGE_SMALL);
             version.setText(SysInfo.getVersionPrefix() + " " + SysInfo.getGameVersion());
-            version.getAppearance().setTextColor(Color.WHITE_HALF_OPAQUE);
+            //version.getAppearance().setTextColor(Color.WHITE_HALF_OPAQUE);
             version.setSizeToMinSize();
             version.setXY(UIManager.width - version.getWidth() - 20,
                           version.getHeight() / 2);
@@ -111,10 +111,10 @@ public class StartScreen extends UIContext {
             localTime = (time - TITLE_FADE_TIME);
             if (((int)localTime) % 2 == 1){
                 localTime = ((time - TITLE_FADE_TIME) % TITLE_SHINE_TIME) / TITLE_SHINE_TIME;
-                startLabel.getAppearance().setTextColor(new Color(1f, 1f, 1f, 1f - localTime));
+                //startLabel.getAppearance().setTextColor(new Color(1f, 1f, 1f, 1f - localTime));
             }else{
                 localTime = ((time - TITLE_FADE_TIME) % TITLE_SHINE_TIME) / TITLE_SHINE_TIME;
-                startLabel.getAppearance().setTextColor(new Color(1f, 1f, 1f, localTime));
+                //startLabel.getAppearance().setTextColor(new Color(1f, 1f, 1f, localTime));
             }
         }
     }
