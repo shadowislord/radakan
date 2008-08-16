@@ -23,5 +23,10 @@ public interface ResourceLoader<T> {
      * @throws java.io.IOException If an error occured while parsing or reading the file.
      */
     public T load(String resourceName) throws IOException ;
+    
+    /**
+     * Return true if resources of type T require to be cached by the resource manager.
+     */
+    public boolean useCache();
 
 }

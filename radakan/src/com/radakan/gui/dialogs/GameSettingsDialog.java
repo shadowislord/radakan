@@ -72,6 +72,9 @@ public class GameSettingsDialog extends JFrame {
     
     /**Determines if the game should start.*/
     private boolean startGame = false;
+    
+    private JComboBox listCb;
+    private JCheckBox cb, cb2;
 
     /**Constructor - Creates a dialog for setting up the game.
      * 
@@ -163,7 +166,7 @@ public class GameSettingsDialog extends JFrame {
 
         //SETUP GRAPHICS PANEL
         //setup up display modes
-        JComboBox listCb = new JComboBox();
+        listCb = new JComboBox();
         listCb.setSize(60, 20);
         listCb.setPreferredSize(new Dimension(150, 20));
 
@@ -172,17 +175,6 @@ public class GameSettingsDialog extends JFrame {
             listCb.addItem(new DisplayWrapper(displays[i]));
         }
         
-        listCb.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getItem() instanceof DisplayWrapper) {
-                    DisplayMode mode = ((DisplayWrapper) e.getItem()).mode;
-                    settings.setDepth(mode.getBitDepth());
-                    settings.setHeight(mode.getHeight());
-                    settings.setWidth(mode.getWidth());
-                    settings.setFrequency(mode.getRefreshRate());
-                }
-            }
-        });
         listCb.setSelectedItem(new DisplayWrapper(gd.getDisplayMode()));
 
         c.insets = new Insets(0, 0, 0, 20);
@@ -196,13 +188,7 @@ public class GameSettingsDialog extends JFrame {
         c.gridx = 2;
         graphicsPl.add(fullLb, c);
 
-        JCheckBox cb = new JCheckBox();
-        cb.addItemListener(new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                settings.setFullscreen(e.getStateChange() == ItemEvent.SELECTED);
-            }
-        });
+        cb = new JCheckBox();
 
         c.gridx = 3;
         graphicsPl.add(cb, c);
@@ -214,16 +200,11 @@ public class GameSettingsDialog extends JFrame {
         c.gridx = 4;
         graphicsPl.add(syncLb, c);
 
-        cb = new JCheckBox();
-        cb.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                settings.setVerticalSync(e.getStateChange() == ItemEvent.SELECTED);
-            }
-        });
+        cb2 = new JCheckBox();
 
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 5;
-        graphicsPl.add(cb, c);
+        graphicsPl.add(cb2, c);
 
         //SETUP THE AUDIO PANEL
 
@@ -236,6 +217,7 @@ public class GameSettingsDialog extends JFrame {
         startBt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 startGame = true;
+                saveSettings();
                 closeDialog();
             }
         });
@@ -279,6 +261,19 @@ public class GameSettingsDialog extends JFrame {
             openLock.notifyAll();
         }
         logger.fine("Configuration Finished!");
+    }
+    
+    public void saveSettings(){
+        if (listCb.getSelectedItem() instanceof DisplayWrapper) {
+            DisplayMode mode = ((DisplayWrapper) listCb.getSelectedItem()).mode;
+            settings.setDepth(mode.getBitDepth());
+            settings.setHeight(mode.getHeight());
+            settings.setWidth(mode.getWidth());
+            settings.setFrequency(mode.getRefreshRate());
+        }
+        
+        settings.setFullscreen(cb.isSelected());
+        settings.setVerticalSync(cb2.isSelected());
     }
 
     /**Determines if the game is allowed to initialize.
