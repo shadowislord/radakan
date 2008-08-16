@@ -27,6 +27,7 @@ import com.jme.renderer.lwjgl.LWJGLRenderer;
 import com.jme.renderer.lwjgl.LWJGLTextureRenderer;
 import com.jme.system.DisplaySystem;
 import com.jme.system.canvas.JMECanvas;
+import com.jme.system.dummy.DummyDisplaySystem;
 import com.jme.system.lwjgl.LWJGLDisplaySystem;
 import java.util.logging.Logger;
 
@@ -43,7 +44,7 @@ public class ContextDisplaySystem extends DisplaySystem {
      * Do not call this method. Done automatically by JmeContext.
      */
     public ContextDisplaySystem(){
-        system = new ContextSystemProvider(this);
+        //system = new ContextSystemProvider(this);
         created = true;
         logger.finer("jME displays bound to context system");
     }
@@ -114,10 +115,10 @@ public class ContextDisplaySystem extends DisplaySystem {
     public void createHeadlessWindow(int w, int h, int bpp) {
     }
 
-	@Override
-	public JMECanvas createCanvas(int w, int h, String type, HashMap<String, Object> props) {
-		return null;
-	}
+    @Override
+    public JMECanvas createCanvas(int w, int h, String type, HashMap<String, Object> props) {
+            return null;
+    }
 
     /**
      * Does absolutely nothing..
@@ -186,7 +187,7 @@ public class ContextDisplaySystem extends DisplaySystem {
         assert cx != null && cx instanceof LWJGLContext && cx.getRenderer() != null;
         
 //        TextureRenderer textureRenderer = new LWJGLTextureRenderer( width, height, (LWJGLRenderer) getRenderer());
-        TextureRenderer textureRenderer = new LWJGLTextureRenderer(width, height, (LWJGLDisplaySystem)system.getDisplaySystem(), (LWJGLRenderer) getRenderer());
+        TextureRenderer textureRenderer = new LWJGLTextureRenderer(width, height, null, (LWJGLRenderer) getRenderer());
         if (!textureRenderer.isSupported()) {
             textureRenderer = null;
             
