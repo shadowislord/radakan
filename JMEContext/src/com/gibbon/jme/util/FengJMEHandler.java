@@ -16,12 +16,13 @@
 package com.gibbon.jme.util;
 
 import org.fenggui.Display;
-import org.fenggui.event.Key;
 import org.fenggui.event.mouse.MouseButton;
 import org.lwjgl.input.Keyboard;
 
 import com.jme.input.KeyInputListener;
 import com.jme.input.MouseInputListener;
+import org.fenggui.binding.render.lwjgl.EventHelper;
+import org.fenggui.event.key.Key;
 
 /**
  * Listener version of the FengGUIInputHandler.
@@ -65,19 +66,21 @@ public class FengJMEHandler implements MouseInputListener, KeyInputListener {
         mouseHandled = false;
         // If the button is down, the mouse is being dragged
         if (down) {
-            mouseHandled = disp.fireMouseDraggedEvent(newX, newY, getMouseButton(lastButton));
+            mouseHandled = disp.fireMouseDraggedEvent(newX, newY, getMouseButton(lastButton), 1);
         } else {
-            mouseHandled = disp.fireMouseMovedEvent(newX, newY);
+            mouseHandled = disp.fireMouseMovedEvent(newX, newY, getMouseButton(lastButton), 1);
         }
+        
+        System.out.println(newX+", "+newY);
     }
 
     public void onWheel(int wheelDelta, int x, int y) {
         mouseHandled = false;
         // wheelDelta is positive if the mouse wheel rolls up
         if (wheelDelta > 0) {
-            mouseHandled = disp.fireMouseWheel(x, y, true, wheelDelta);
+            mouseHandled = disp.fireMouseWheel(x, y, true, wheelDelta, 3);
         } else {
-            mouseHandled = disp.fireMouseWheel(x, y, false, wheelDelta);
+            mouseHandled = disp.fireMouseWheel(x, y, false, wheelDelta, 3);
         }
 
 
@@ -91,16 +94,17 @@ public class FengJMEHandler implements MouseInputListener, KeyInputListener {
      * button.
      */
     private MouseButton getMouseButton(int button) {
-        switch (button) {
-            case 0:
-                return MouseButton.LEFT;
-            case 1:
-                return MouseButton.RIGHT;
-            case 2:
-                return MouseButton.MIDDLE;
-            default:
-                return MouseButton.LEFT;
-        }
+        return EventHelper.getMouseButton(button);
+//        switch (button) {
+//            case 0:
+//                return MouseButton.LEFT;
+//            case 1:
+//                return MouseButton.RIGHT;
+//            case 2:
+//                return MouseButton.MIDDLE;
+//            default:
+//                return MouseButton.LEFT;
+//        }
     }
 
 

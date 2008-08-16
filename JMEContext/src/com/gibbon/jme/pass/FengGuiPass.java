@@ -17,8 +17,6 @@ package com.gibbon.jme.pass;
 
 import org.fenggui.Display;
 import org.fenggui.FengGUI;
-import org.fenggui.render.Binding;
-import org.fenggui.render.lwjgl.LWJGLBinding;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
@@ -27,6 +25,13 @@ import com.gibbon.jme.util.FengJMEHandler;
 import com.gibbon.jme.util.IGuiManager;
 import com.jme.input.KeyInput;
 import com.jme.input.MouseInput;
+import java.io.IOException;
+import org.fenggui.FengGUIOptional;
+import org.fenggui.binding.render.Binding;
+import org.fenggui.binding.render.lwjgl.LWJGLBinding;
+import org.fenggui.theme.DefaultTheme;
+import org.fenggui.theme.XMLTheme;
+import org.fenggui.theme.xml.IXMLStreamableException;
 
 /**
  * FengGuiPass allows the use of the FengGUI library with jME seamlessly.<br/>
@@ -40,10 +45,12 @@ public class FengGuiPass extends Pass {
     private boolean shaders;
     private IGuiManager manager;
     private FengJMEHandler listener;
+    private String theme;
     
-    public FengGuiPass(IGuiManager manager){
+    public FengGuiPass(String theme, IGuiManager manager){
         super(PassType.POST_RENDER, "FengGUI-UserInterface");
         this.manager = manager;
+        this.theme = theme;
     }
     
     @Override
@@ -64,6 +71,21 @@ public class FengGuiPass extends Pass {
         
         Binding binding = new LWJGLBinding();
         display = FengGUI.createDisplay(binding);
+        
+        if (theme == null){
+            FengGUI.setTheme(new DefaultTheme());
+        }else{
+            try{
+                FengGUI.setTheme(new XMLTheme(theme));
+            } catch (IOException ex){
+                ex.printStackTrace();
+            } catch (IXMLStreamableException ex){
+                ex.printStackTrace();
+            }
+        }
+        FengGUI.initPrototypes();
+        FengGUIOptional.initOptional();
+        
         this.listener = new FengJMEHandler(display);
         
         KeyInput.get().addListener(listener);

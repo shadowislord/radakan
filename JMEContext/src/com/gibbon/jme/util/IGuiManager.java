@@ -15,6 +15,7 @@
 
 package com.gibbon.jme.util;
 
+import com.gibbon.jme.pass.FengGuiPass;
 import org.fenggui.Display;
 
 /**

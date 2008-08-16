@@ -38,6 +38,8 @@ import com.jme.renderer.RenderContext;
 import com.jme.renderer.Renderer;
 import com.jme.renderer.lwjgl.LWJGLRenderer;
 import com.jme.scene.state.RenderState;
+import com.jme.scene.state.lwjgl.records.RendererRecord;
+import com.jme.system.DisplaySystem;
 import com.jme.system.JmeException;
 import com.jme.util.TextureManager;
 import com.jme.util.Timer;
@@ -188,7 +190,8 @@ public class LWJGLContext extends JmeContext {
     }
     
     void init() {
-        new ContextDisplaySystem();
+        DisplaySystem.setSystemProvider(new ContextSystemProvider(new ContextDisplaySystem()));
+        
         timer = new LWJGLTimer();
         Timer.setTimer(timer);
         inited = true;
@@ -232,6 +235,13 @@ public class LWJGLContext extends JmeContext {
         }
         rc = new RenderContext(null);
         rc.setupRecords(renderer);
+        
+        DisplaySystem display = DisplaySystem.getDisplaySystem();
+        System.out.println(display.getClass());
+        RendererRecord matRecord = (RendererRecord) rc.getRendererRecord();
+        
+        if (display == null)
+            throw new RuntimeException("!!");
         
         Camera cam = null;
         if (type==CONTEXT_CANVAS){
