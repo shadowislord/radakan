@@ -16,11 +16,10 @@
 package com.gibbon.jme.util;
 
 import org.fenggui.Display;
-import org.fenggui.binding.render.jogl.EventHelper;
 import org.fenggui.event.key.Key;
 import org.fenggui.event.mouse.MouseButton;
 import org.lwjgl.input.Keyboard;
- 
+
 import com.jme.input.KeyInputListener;
 import com.jme.input.MouseInputListener;
  

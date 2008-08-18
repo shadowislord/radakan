@@ -16,6 +16,7 @@
 package com.gibbon.jme.context;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.jme.image.Image;
@@ -27,9 +28,6 @@ import com.jme.renderer.lwjgl.LWJGLRenderer;
 import com.jme.renderer.lwjgl.LWJGLTextureRenderer;
 import com.jme.system.DisplaySystem;
 import com.jme.system.canvas.JMECanvas;
-import com.jme.system.dummy.DummyDisplaySystem;
-import com.jme.system.lwjgl.LWJGLDisplaySystem;
-import java.util.logging.Logger;
 
 /**
  * Dummy display system which allows original jME code to function properly with JmeContext.
