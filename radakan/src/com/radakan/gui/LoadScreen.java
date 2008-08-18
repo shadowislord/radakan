@@ -129,10 +129,6 @@ public class LoadScreen extends UIContext {
             bar.setValue(0);
             addWidget(bar);
             
-            Texture t = null;
-            LWJGLTextureState.doTextureBind(t.getTextureId(), 0, Type.TwoDimensional);
-            
-            
             setMinSize((int)width, (int)height);
             setSizeToMinSize();
         } catch (IOException ex){
