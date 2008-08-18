@@ -10,12 +10,12 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/lwgjl/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="radakan/lib/lwjgl/native/win32"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="JMeContext/lib/lwgjl/native/win32"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/lwgjl/lwjgl_util.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="ava.lang.UnsatisfiedLinkError: no lwjgl in java.library.path"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Radakan/lib/lwjgl/native/win32"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/fenggui.jar"/>

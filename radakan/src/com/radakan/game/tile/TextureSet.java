@@ -1,5 +1,6 @@
 package com.radakan.game.tile;
 
+import com.gibbon.jme.context.JmeContext;
 import com.jme.image.Image;
 import com.jme.image.Image.Format;
 import com.jme.image.Texture;
@@ -7,8 +8,10 @@ import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import com.jme.image.Texture2D;
+import com.jme.renderer.Renderer;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.TextureState;
+import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
 
 import com.radakan.graphics.terrain.AlphaDetailLayer;
