@@ -4,6 +4,7 @@ import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture2D;
 import com.jme.util.TextureManager;
+import com.radakan.game.tile.TextureSet.Detailmap;
 import com.radakan.util.XMLUtil;
 import java.io.IOException;
 import java.io.InputStream;

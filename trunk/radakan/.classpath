@@ -14,17 +14,22 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/lwjgl/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="radakan/lib/lwjgl/native/win32"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Radakan/lib/lwjgl/native/win32"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/lwjgl/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="lib/lwjgl/lwjgl_util.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Radakan/lib/lwjgl/native/win32"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/jme/jme-terrain.jar"/>
 	<classpathentry kind="lib" path="lib/MD5Importer_jME2.0_v1.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/jme/jme-audio.jar"/>
-	<classpathentry kind="lib" path="lib/fenggui.jar"/>
 	<classpathentry kind="lib" path="lib/jython-complete.jar"/>
 	<classpathentry kind="lib" path="lib/jme/jme-model.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMeContext"/>
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/FengGUI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jme"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
