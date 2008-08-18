@@ -29,12 +29,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="pnlSplit" alignment="0" pref="589" max="32767" attributes="0"/>
+          <Component id="pnlSplit" alignment="0" pref="718" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="pnlSplit" alignment="1" pref="604" max="32767" attributes="0"/>
+          <Component id="pnlSplit" alignment="1" pref="696" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -74,7 +74,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnWire" min="-2" pref="56" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -85,62 +85,132 @@
                       <Component id="btnMaterial" min="-2" pref="56" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="chkBones" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnLoad" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="chkBounds" min="-2" max="-2" attributes="0"/>
-                                  <Component id="chkNormals" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Component id="chkBackfaces" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="chkConvert" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="btnExport" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnLoad" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnAnimation" min="-2" pref="55" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="pnlOptions" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="168" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnAnimation" alignment="0" pref="76" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="chkBounds" max="32767" attributes="0"/>
-                                  <Component id="btnLoad" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="chkNormals" max="32767" attributes="0"/>
-                                  <Component id="chkBones" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="chkBackfaces" alignment="3" max="32767" attributes="0"/>
-                                  <Component id="chkConvert" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="btnMaterial" alignment="0" max="32767" attributes="1"/>
+                              <Component id="btnTextured" alignment="0" max="32767" attributes="1"/>
+                              <Component id="btnSolid" alignment="0" max="32767" attributes="1"/>
+                              <Component id="btnWire" alignment="0" max="32767" attributes="1"/>
                           </Group>
-                          <Component id="btnMaterial" alignment="1" pref="76" max="32767" attributes="0"/>
-                          <Component id="btnTextured" alignment="1" pref="76" max="32767" attributes="0"/>
-                          <Component id="btnSolid" alignment="0" pref="76" max="32767" attributes="0"/>
-                          <Component id="btnWire" alignment="0" pref="76" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnLoad" min="-2" max="-2" attributes="1"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnExport" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
+                      <EmptySpace pref="111" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace pref="17" max="32767" attributes="0"/>
+                      <Component id="pnlOptions" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
+            <Container class="javax.swing.JPanel" name="pnlOptions">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                    <TitledBorder title="View Options"/>
+                  </Border>
+                </Property>
+              </Properties>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="chkNormals" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkBounds" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkConvert" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkBones" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkBackfaces" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="chkNormals" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="chkBounds" min="-2" max="-2" attributes="1"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="chkConvert" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="chkBones" min="-2" max="-2" attributes="1"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="chkBackfaces" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JCheckBox" name="chkNormals">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Display normals"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Show normals"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkNormalsActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkBounds">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Display bounds"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Show bounding volumes"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkBoundsActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkConvert">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="CoordSystem CAD to OGL"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Convert between Z-up to Y-up"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkConvertActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkBones">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Display bones"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Show bones for animated models"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkBonesActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkBackfaces">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Display backfaces"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkBackfacesActionPerformed"/>
+                  </Events>
+                </Component>
+              </SubComponents>
+            </Container>
             <Component class="javax.swing.JToggleButton" name="btnWire">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
@@ -198,14 +268,6 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMaterialActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="btnAnimation">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/animation.gif"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Show animation window"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JButton" name="btnLoad">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Load Model.."/>
@@ -215,48 +277,13 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLoadActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="chkBounds">
+            <Component class="javax.swing.JButton" name="btnExport">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Display bounds"/>
-                <Property name="toolTipText" type="java.lang.String" value="Show bounding volumes"/>
+                <Property name="text" type="java.lang.String" value="Export .."/>
+                <Property name="toolTipText" type="java.lang.String" value="Load a model from a file"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkBoundsActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="chkNormals">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Display normals"/>
-                <Property name="toolTipText" type="java.lang.String" value="Show normals"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkNormalsActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="chkBones">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Display bones"/>
-                <Property name="toolTipText" type="java.lang.String" value="Show bones for animated models"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkBonesActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="chkBackfaces">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Display backfaces"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkBackfacesActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="chkConvert">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="CoordSystem CAD to OGL"/>
-                <Property name="toolTipText" type="java.lang.String" value="Convert between Z-up to Y-up"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkConvertActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExportActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
