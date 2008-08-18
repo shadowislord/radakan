@@ -1,14 +1,9 @@
 package com.gibbon.jme.util;
 
 import org.fenggui.Display;
-import org.fenggui.event.key.Key;
-import org.fenggui.event.mouse.MouseButton;
-import org.lwjgl.input.Keyboard;
 
 import com.jme.input.InputHandler;
 import com.jme.input.MouseInput;
-import com.jme.input.MouseInputListener;
-import com.jme.input.action.InputActionEvent;
 import com.jme.input.action.KeyInputAction;
 
 /**
