@@ -46,6 +46,7 @@ public class PreviewTool extends javax.swing.JFrame {
     
     private JFileChooser chooser;
     private FileNameExtensionFilter jme = new FileNameExtensionFilter("jMonkey Engine binary model (*.jme)","jme");
+    private FileNameExtensionFilter jmexml = new FileNameExtensionFilter("jMonkey Engine XML model (*.xml)","xml");
     private FileNameExtensionFilter md2 = new FileNameExtensionFilter("Quake II Model (*.md2)","md2");
     private FileNameExtensionFilter md3 = new FileNameExtensionFilter("Quake III Model (*.md3)","md3");
     private FileNameExtensionFilter md5 = new FileNameExtensionFilter("Doom III Model (*.md5mesh)","md5mesh");
@@ -69,20 +70,6 @@ public class PreviewTool extends javax.swing.JFrame {
         setVisible(true);
         
         chooser = new JFileChooser();
-        chooser.addChoosableFileFilter(jme);
-        chooser.addChoosableFileFilter(md2);
-        chooser.addChoosableFileFilter(md3);
-        chooser.addChoosableFileFilter(md5);
-        chooser.addChoosableFileFilter(x3d);
-        chooser.addChoosableFileFilter(obj);
-        chooser.addChoosableFileFilter(ms3d);
-        chooser.addChoosableFileFilter(dae);
-        chooser.addChoosableFileFilter(three_ds);
-        chooser.addChoosableFileFilter(ase);
-        chooser.addChoosableFileFilter(meshxml);
-        chooser.addChoosableFileFilter(scene);
-        chooser.addChoosableFileFilter(import_combo);
-        chooser.setFileFilter(import_combo);
         
         new Thread(){
             @Override
@@ -112,10 +99,13 @@ public class PreviewTool extends javax.swing.JFrame {
                     TextureManager.COMPRESS_BY_DEFAULT = false;
                     TextureState ts = cx.getRenderer().createTextureState();
                     ts.setEnabled(true);
-                    URL url = new File("data/images/Monkey.jpg").toURI().toURL();
-                    ts.setTexture(TextureManager.loadTexture(url, MinificationFilter.Trilinear, 
-                                                                  MagnificationFilter.Bilinear, 1.0f, true));
-                    model.setRenderState(ts);
+                    
+                    URL url = PreviewTool.class.getResource("icons/Monkey.jpg");
+                    if (url != null){
+                        ts.setTexture(TextureManager.loadTexture(url, MinificationFilter.Trilinear, 
+                                                                      MagnificationFilter.Bilinear, 1.0f, true));
+                        model.setRenderState(ts);
+                    }
                     
                     rootNode.attachChild(model);
                     
@@ -135,8 +125,6 @@ public class PreviewTool extends javax.swing.JFrame {
                     JmeContext.get().getRenderer().getCamera().setLocation(new Vector3f(0, 0, -50));
                     
                     cx.getPassManager().add(render);
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(PreviewTool.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (InterruptedException ex) {
                     ErrorHandler.reportError("", ex);
                 }
@@ -171,17 +159,18 @@ public class PreviewTool extends javax.swing.JFrame {
         pnlSplit = new javax.swing.JSplitPane();
         canvas = createCanvas();
         pnlButtons = new javax.swing.JPanel();
+        pnlOptions = new javax.swing.JPanel();
+        chkNormals = new javax.swing.JCheckBox();
+        chkBounds = new javax.swing.JCheckBox();
+        chkConvert = new javax.swing.JCheckBox();
+        chkBones = new javax.swing.JCheckBox();
+        chkBackfaces = new javax.swing.JCheckBox();
         btnWire = new javax.swing.JToggleButton();
         btnSolid = new javax.swing.JToggleButton();
         btnTextured = new javax.swing.JToggleButton();
         btnMaterial = new javax.swing.JToggleButton();
-        btnAnimation = new javax.swing.JButton();
         btnLoad = new javax.swing.JButton();
-        chkBounds = new javax.swing.JCheckBox();
-        chkNormals = new javax.swing.JCheckBox();
-        chkBones = new javax.swing.JCheckBox();
-        chkBackfaces = new javax.swing.JCheckBox();
-        chkConvert = new javax.swing.JCheckBox();
+        btnExport = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PreviewTool");
@@ -198,6 +187,75 @@ public class PreviewTool extends javax.swing.JFrame {
         pnlSplit.setLeftComponent(canvas);
 
         pnlButtons.setMinimumSize(pnlButtons.getSize());
+
+        pnlOptions.setBorder(javax.swing.BorderFactory.createTitledBorder("View Options"));
+
+        chkNormals.setText("Display normals");
+        chkNormals.setToolTipText("Show normals");
+        chkNormals.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkNormalsActionPerformed(evt);
+            }
+        });
+
+        chkBounds.setText("Display bounds");
+        chkBounds.setToolTipText("Show bounding volumes");
+        chkBounds.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkBoundsActionPerformed(evt);
+            }
+        });
+
+        chkConvert.setText("CoordSystem CAD to OGL");
+        chkConvert.setToolTipText("Convert between Z-up to Y-up");
+        chkConvert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkConvertActionPerformed(evt);
+            }
+        });
+
+        chkBones.setText("Display bones");
+        chkBones.setToolTipText("Show bones for animated models");
+        chkBones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkBonesActionPerformed(evt);
+            }
+        });
+
+        chkBackfaces.setText("Display backfaces");
+        chkBackfaces.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkBackfacesActionPerformed(evt);
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout pnlOptionsLayout = new org.jdesktop.layout.GroupLayout(pnlOptions);
+        pnlOptions.setLayout(pnlOptionsLayout);
+        pnlOptionsLayout.setHorizontalGroup(
+            pnlOptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlOptionsLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(pnlOptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(chkNormals)
+                    .add(chkBounds)
+                    .add(chkConvert)
+                    .add(chkBones)
+                    .add(chkBackfaces))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlOptionsLayout.setVerticalGroup(
+            pnlOptionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlOptionsLayout.createSequentialGroup()
+                .add(chkNormals)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(chkBounds)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(chkConvert)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(chkBones)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(chkBackfaces))
+        );
 
         shadingMode.add(btnWire);
         btnWire.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/wire.gif"))); // NOI18N
@@ -236,9 +294,6 @@ public class PreviewTool extends javax.swing.JFrame {
             }
         });
 
-        btnAnimation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/animation.gif"))); // NOI18N
-        btnAnimation.setToolTipText("Show animation window");
-
         btnLoad.setText("Load Model..");
         btnLoad.setToolTipText("Load a model from a file");
         btnLoad.addActionListener(new java.awt.event.ActionListener() {
@@ -247,42 +302,11 @@ public class PreviewTool extends javax.swing.JFrame {
             }
         });
 
-        chkBounds.setText("Display bounds");
-        chkBounds.setToolTipText("Show bounding volumes");
-        chkBounds.addActionListener(new java.awt.event.ActionListener() {
+        btnExport.setText("Export ..");
+        btnExport.setToolTipText("Load a model from a file");
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkBoundsActionPerformed(evt);
-            }
-        });
-
-        chkNormals.setText("Display normals");
-        chkNormals.setToolTipText("Show normals");
-        chkNormals.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkNormalsActionPerformed(evt);
-            }
-        });
-
-        chkBones.setText("Display bones");
-        chkBones.setToolTipText("Show bones for animated models");
-        chkBones.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkBonesActionPerformed(evt);
-            }
-        });
-
-        chkBackfaces.setText("Display backfaces");
-        chkBackfaces.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkBackfacesActionPerformed(evt);
-            }
-        });
-
-        chkConvert.setText("CoordSystem CAD to OGL");
-        chkConvert.setToolTipText("Convert between Z-up to Y-up");
-        chkConvert.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkConvertActionPerformed(evt);
+                btnExportActionPerformed(evt);
             }
         });
 
@@ -301,44 +325,31 @@ public class PreviewTool extends javax.swing.JFrame {
                 .add(btnMaterial, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 56, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(pnlButtonsLayout.createSequentialGroup()
-                        .add(pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(chkBones)
-                            .add(btnLoad))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(chkBounds)
-                            .add(chkNormals)))
-                    .add(pnlButtonsLayout.createSequentialGroup()
-                        .add(chkBackfaces)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(chkConvert)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnAnimation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 55, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(btnExport)
+                    .add(btnLoad))
+                .add(18, 18, 18)
+                .add(pnlOptions, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(168, Short.MAX_VALUE))
         );
         pnlButtonsLayout.setVerticalGroup(
             pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(pnlButtonsLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(btnAnimation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                    .add(pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, btnMaterial, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, btnTextured, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, btnSolid, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, btnWire, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .add(pnlButtonsLayout.createSequentialGroup()
-                        .add(pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(chkBounds, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(btnLoad, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .add(2, 2, 2)
-                        .add(pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(chkNormals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(chkBones, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .add(5, 5, 5)
-                        .add(pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(chkBackfaces, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(chkConvert)))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, btnMaterial, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, btnTextured, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                    .add(btnSolid, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                    .add(btnWire, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnLoad)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnExport)))
+                .addContainerGap(111, Short.MAX_VALUE))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlButtonsLayout.createSequentialGroup()
+                .addContainerGap(17, Short.MAX_VALUE)
+                .add(pnlOptions, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -348,11 +359,11 @@ public class PreviewTool extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(pnlSplit, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+            .add(pnlSplit, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 718, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlSplit, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlSplit, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE)
         );
 
         pack();
@@ -391,12 +402,35 @@ public class PreviewTool extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
+        chooser.resetChoosableFileFilters();
+        chooser.addChoosableFileFilter(jme);
+        chooser.addChoosableFileFilter(jmexml);
+        chooser.addChoosableFileFilter(md2);
+        chooser.addChoosableFileFilter(md3);
+        chooser.addChoosableFileFilter(md5);
+        chooser.addChoosableFileFilter(x3d);
+        chooser.addChoosableFileFilter(obj);
+        chooser.addChoosableFileFilter(ms3d);
+        chooser.addChoosableFileFilter(dae);
+        chooser.addChoosableFileFilter(three_ds);
+        chooser.addChoosableFileFilter(ase);
+        chooser.addChoosableFileFilter(meshxml);
+        chooser.addChoosableFileFilter(scene);
+        chooser.addChoosableFileFilter(import_combo);
+        chooser.setFileFilter(import_combo);
+        
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
             File selected = chooser.getSelectedFile();
             if (selected.exists()){
-                int i = selected.getName().lastIndexOf('.');
+                String lowerCaseName = selected.getName().toLowerCase();
+                int i = lowerCaseName.lastIndexOf('.');
                 if (i > 0){
-                    String ext = selected.getName().substring(i+1);
+                    String ext = lowerCaseName.substring(i+1);
+                    if (ext.equals("xml")){
+                        if (lowerCaseName.endsWith("mesh.xml"))
+                            ext = "mesh.xml";
+                    }
+                        
                     try{
                         rootNode.detachAllChildren();
                         model = ModelLoader.loadModel(selected, ext);
@@ -450,6 +484,41 @@ public class PreviewTool extends javax.swing.JFrame {
         
         rootNode.updateGeometricState(0, true);
     }//GEN-LAST:event_chkConvertActionPerformed
+
+    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
+        chooser.resetChoosableFileFilters();
+        chooser.addChoosableFileFilter(jme);
+        chooser.addChoosableFileFilter(jmexml);
+        chooser.addChoosableFileFilter(obj);
+        chooser.setFileFilter(jme);
+        
+        if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File selected = chooser.getSelectedFile();
+            String ext = "jme";
+            if (chooser.getFileFilter() == jmexml) {
+                ext = "xml";
+            } else if (chooser.getFileFilter() == obj) {
+                ext = "obj";
+            }
+
+            if (!selected.getName().toLowerCase().endsWith(ext))
+                selected = new File(selected.getName() + "." + ext);
+            
+            try {
+                if (model == null) {
+                    return;
+                }
+
+                ModelLoader.saveModel(model, selected, ext);
+            } catch (Throwable ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Failed to load model.\nReason: " + ex.toString(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        }
+}//GEN-LAST:event_btnExportActionPerformed
     
     /**
      * @param args the command line arguments
@@ -463,7 +532,7 @@ public class PreviewTool extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAnimation;
+    private javax.swing.JButton btnExport;
     private javax.swing.JButton btnLoad;
     private javax.swing.JToggleButton btnMaterial;
     private javax.swing.JToggleButton btnSolid;
@@ -476,6 +545,7 @@ public class PreviewTool extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkConvert;
     private javax.swing.JCheckBox chkNormals;
     private javax.swing.JPanel pnlButtons;
+    private javax.swing.JPanel pnlOptions;
     private javax.swing.JSplitPane pnlSplit;
     private javax.swing.ButtonGroup shadingMode;
     // End of variables declaration//GEN-END:variables

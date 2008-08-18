@@ -5,6 +5,7 @@ import com.jme.image.Image.Format;
 import com.jme.image.Texture2D;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
+import com.jme.util.export.xml.XMLExporter;
 import com.radakan.entity.Entity;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -118,10 +119,9 @@ public class WorldTileExporter {
         this.folder = folder;
         
         File worldMetaFile = new File(folder, "world.xml");
+       
         PrintStream stream = new PrintStream(worldMetaFile);
         stream.println("<world>");
-        
-        
         
         for (Spatial spat : world.getChildren()){
             if (spat instanceof TileGroup){

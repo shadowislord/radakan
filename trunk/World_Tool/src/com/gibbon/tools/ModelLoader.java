@@ -4,7 +4,10 @@ import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingVolume;
 import com.jme.math.Vector3f;
 import com.jme.scene.Spatial;
+import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
+import com.jme.util.export.xml.XMLExporter;
+import com.jme.util.export.xml.XMLImporter;
 import com.jme.util.resource.MultiFormatResourceLocator;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
@@ -17,8 +20,10 @@ import com.radakan.graphics.mesh.parser.SceneLoader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -127,6 +132,25 @@ public final class ModelLoader {
         return model;
     }
     
+    public static void saveModel(Spatial model, File file, String ext) throws IOException{
+        if (ext.equalsIgnoreCase("jme")){
+            BinaryExporter.getInstance().save(model, file);
+        }else if (ext.equalsIgnoreCase("xml")){
+            OutputStream out = new FileOutputStream(file);
+            XMLExporter.getInstance().save(model, out);
+            out.close();
+        }else if (ext.equalsIgnoreCase("obj")){
+            JmeToObj convert = new JmeToObj();
+            convert.convert(model, file.getParentFile());
+        }else{
+            JOptionPane.showMessageDialog(
+                                     null,
+                                     "Error: Format not supported: "+ext,
+                                     "Error",
+                                     JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     public static Spatial loadModel(File file, String ext) throws IOException{
         MultiFormatResourceLocator locator 
                 = new MultiFormatResourceLocator(file.getParentFile().toURI(), "png", "dds", "tga", "bmp", "jpg", "wbmp", "gif");
@@ -168,10 +192,13 @@ public final class ModelLoader {
             //model = loadMD5Model(file);
         }else if (ext.equalsIgnoreCase("dae")){
 //            model = loadDAEModel(file);
-        }else if (ext.equalsIgnoreCase("xml")){
+        }else if (ext.equalsIgnoreCase("mesh.xml")){
             model = loadMeshModel(file);
         }else if (ext.equalsIgnoreCase("scene")){
             model = loadDotScene(file);
+        }else if (ext.equalsIgnoreCase("xml")){
+            // jme XML
+            model = (Spatial) XMLImporter.getInstance().load(file);
         }else{
             JOptionPane.showMessageDialog(
                              null,
