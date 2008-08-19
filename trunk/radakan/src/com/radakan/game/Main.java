@@ -40,7 +40,7 @@ public class Main {
     private static Logger logger = Logger.getLogger(Main.class.getName());
     
     private void init(){
-        ErrorHandler.bindUncoughtExceptionHandler();
+        ErrorHandler.bindUncaughtExceptionHandler();
         Game.setDebug(true);
         
         GameSettings settings = Game.getSettings();
