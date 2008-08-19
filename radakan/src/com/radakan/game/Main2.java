@@ -13,15 +13,9 @@
  */
 package com.radakan.game;
 
-import java.util.prefs.Preferences;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
-import com.jme.system.GameSettings;
-import com.jme.system.PreferencesGameSettings;
-import com.radakan.gui.dialogs.GameSettingsDialog;
+import com.radakan.util.ErrorHandler;
 
 /**
  * @author Joshua Montgomery
@@ -30,47 +24,23 @@ import com.radakan.gui.dialogs.GameSettingsDialog;
  */
 public class Main2
 {
-	private static Logger logger = Logger.getLogger(Main2.class);
+	private static Logger logger = Logger.getLogger(Main2.class.getName());
+	
+	/**The Main game*/
+	RadakanGame game = new RadakanGame();
 	
 	/**Initializes the Radakan game.*/
 	private void init()
-	{
-		
-		GameSettings settings = new PreferencesGameSettings(Preferences.systemRoot());
-		RadakanGame game = new RadakanGame(settings);
-		GameSettingsDialog settingsDia = new GameSettingsDialog(settings);
-						
-		settingsDia.open();
-                try{
-                    settingsDia.waitFor();
-                } catch (InterruptedException ex){
-                    ex.printStackTrace();
-                }
-//		while(settingsDia.isOpen())
-//		{
-//			try
-//			{
-//				Thread.sleep(100);
-//			} catch (InterruptedException e)
-//			{
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-		
-		if(settingsDia.isInitGameAllowed())
-			game.start();
-		
-		shutDown();
+	{		
+		game.initSystem();
+		game.initGame();
+		shutDown();		
 	}
 	
 	public static void main(String args[])
-	{
-		//load the logger system	
-		PropertyConfigurator.configure(Main2.class.getResource("/com/radakan/game/config/log4jConfig.txt"));			
-	
-		Logger.getRootLogger().setLevel(Level.DEBUG);
-		logger.info("Starting up Radakan...");		
+	{			
+		ErrorHandler.bindUncaughtExceptionHandler();
+        Game.setDebug(true);	
 		
 		Main2 main = new Main2();
 		main.init();
@@ -80,7 +50,9 @@ public class Main2
 	private void shutDown()
 	{
 		logger.info("Shutting down Radakan...");
-		//TODO: Shutdown game
+		
+		game.cleanUp();
+		
 		logger.info("Goodbye!");
 		System.exit(0);
 	}

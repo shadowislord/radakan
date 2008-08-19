@@ -2,11 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://logging.apache.org/log4j/1.2/apidocs/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/jme/jme.jar" sourcepath="/JME/src">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.jmonkeyengine.com/doc/"/>
@@ -27,9 +22,9 @@
 	<classpathentry kind="lib" path="lib/jme/jme-audio.jar"/>
 	<classpathentry kind="lib" path="lib/jython-complete.jar"/>
 	<classpathentry kind="lib" path="lib/jme/jme-model.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JMeContext"/>
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/FengGUI"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jme"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JME"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMEContext"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -51,7 +51,7 @@ public class ErrorHandler {
         
     }
     
-    public static void bindUncoughtExceptionHandler(){
+    public static void bindUncaughtExceptionHandler(){
         Thread.setDefaultUncaughtExceptionHandler(new GameUncaughtExceptionHandler());
         
         ConsoleHandler ch = new ConsoleHandler();

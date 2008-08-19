@@ -13,102 +13,161 @@
  */
 package com.radakan.game;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
-import org.apache.log4j.Logger;
+import com.gibbon.jme.context.JmeContext;
+import com.gibbon.jme.context.lwjgl.LWJGLContext;
+import com.gibbon.jme.pass.ExitListenerPass;
+import com.gibbon.jme.pass.InputPass;
 
-import com.jme.scene.Node;
-import com.jme.system.DisplaySystem;
 import com.jme.system.GameSettings;
-import com.radakan.jme.app.Basic3DGame;
+import com.jme.system.PreferencesGameSettings;
+import com.jme.util.resource.ResourceLocator;
+import com.jme.util.resource.ResourceLocatorTool;
+import com.jme.util.resource.SimpleResourceLocator;
+
+import com.radakan.gui.console.JmeConsole;
+import com.radakan.gui.console.ScriptSystem;
+import com.radakan.gui.dialogs.GameSettingsDialog;
+import com.radakan.util.ErrorHandler;
+import com.radakan.util.SysInfo;
 
 /**
  * @author Joshua Montgomery
  * @version 1.0.0
- * @created Jul 26, 2008
+ * @created Aug 18, 2008
  */
-public class RadakanGame extends Basic3DGame
+public class RadakanGame
 {
-	private static Logger logger = Logger.getLogger(RadakanGame.class);
-			
-	public RadakanGame(GameSettings settings)
-	{
-		super(settings);		
-	}	
+	private static Logger logger = Logger.getLogger(Main.class.getName());
 	
-	protected void initGame()
-	{
-		logger.debug("Initializing the game");
-		
-		//LoadScreen loadScreen = new LoadScreen();
-		
-		logger.debug("Game initialization finished");		
-	}
-
-	
-	protected void initSystem()
-	{
-		logger.debug("Initializing the system...");
-		
-		display.createWindow(settings.getWidth(),
-							 settings.getHeight(),
-							 settings.getDepthBits(), 
-							 settings.getFrequency(),
-							 settings.isFullscreen());
-		
-		renderer = display.getRenderer();		
-		camera = display.getRenderer().createCamera(display.getWidth(),display.getHeight());
-		renderer.setCamera(camera);
-		rootNode = new Node("Root Node");
-		
-		logger.debug("System initialization finished!");
-	}
-	
-    @Override
-    protected void getAttributes() {
-        if (settings == null) {
-            throw new NullPointerException("The game settings are not set!");
-        }
-
-        display = DisplaySystem.getDisplaySystem();
-        display.setTitle("Radakan");
-        display.setWidth(settings.getWidth());
-        display.setHeight(settings.getHeight());
-        display.setVSyncEnabled(settings.isVerticalSync());
+	/**The GameSettings*/
+	private static GameSettings settings;
+	  
+	/**Determines if the game is in debug mode.*/
+    private static boolean debugMode;
+	    
+    /**Constructor - Constructs the game.*/
+    public RadakanGame()
+    {    
+    	if(settings == null)
+    		 settings = new PreferencesGameSettings(Preferences.userRoot().node("Radakan"));
     }
 	
-	@Override
-	protected void quit()
+    /**Initializes the game.*/
+	protected void initGame()
 	{
-		// TODO Auto-generated method stub
+		logger.fine("Initializing the game");
 		
+		try
+		{
+            JmeContext context = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
+            context.setSettings(Game.getSettings());
+            context.start();
+            logger.fine("Display started");
+            context.waitFor();
+            logger.info("Display created successfuly");
+            
+            InputPass input = new InputPass(null, true);
+            context.getPassManager().add(input);
+            
+            ExitListenerPass exitListener = new ExitListenerPass();
+            context.getPassManager().add(exitListener);
+            
+            JmeConsole jmeConsole = new JmeConsole();
+            jmeConsole.addConsoleListener(new ScriptSystem(jmeConsole, true));
+            context.getPassManager().add(jmeConsole);
+        } catch (InterruptedException ex) {
+            ErrorHandler.reportError("Interrupt while creating display", ex);
+        } catch (InstantiationException ex){
+            ErrorHandler.reportError("Display implementation cannot be loaded", ex);
+        }
+		
+		logger.fine("Game initialization finished");		
+	}
+
+	/**Initializes the system values needed by the game before it can start.*/
+	protected void initSystem()
+	{
+		logger.fine("Initializing the system...");
+		
+		GameSettings settings = Game.getSettings();
+        logger.fine("Settings loaded from registry");
+        
+        settings.set("title", SysInfo.getGameName() + " "
+                            + SysInfo.getVersionPrefix() + " "
+                            + SysInfo.getGameVersion());
+        
+        settings.setSamples(0);
+        settings.setDepthBits(8);
+        settings.setAlphaBits(0);
+        settings.setStencilBits(0);
+        settings.setFramerate(-1);
+        
+        GameSettingsDialog dialog = new GameSettingsDialog(settings);
+        dialog.open();
+        
+        try{
+            dialog.waitFor();
+            
+            if (!dialog.isInitGameAllowed()){
+                logger.fine("Game initialization canceled by user");
+                System.exit(0);
+            }
+            
+            settings.save();
+            logger.fine("Settings saved to registry");
+        } catch (InterruptedException ex) {
+            logger.log(Level.SEVERE, "Interrupt ");
+        } catch (IOException ex){
+            logger.log(Level.WARNING, "Failed to save settings to system", ex);
+        }
+        
+        logger.fine("Setting up locators");
+        try {
+            ResourceLocator textureLocator = new SimpleResourceLocator(Main.class.getResource("/com/radakan/data/textures/"));
+            ResourceLocator imageLocator = new SimpleResourceLocator(Main.class.getResource("/com/radakan/data/images/"));
+            ResourceLocator scriptLocator = new SimpleResourceLocator(Main.class.getResource("/com/radakan/data/scripts/"));
+            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, textureLocator);
+            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, imageLocator);
+            ResourceLocatorTool.addResourceLocator("Script", scriptLocator);
+        } catch (URISyntaxException ex){
+            ErrorHandler.reportError("Texture directory missing", ex);
+        }
+		
+		logger.fine("System initialization finished!");
 	}
 	
-	@Override
-	protected void cleanup()
+	/**Performs any final cleanup needed after the game is finished.*/
+	public void cleanUp()
 	{
-		// TODO Auto-generated method stub
-		
+		//TODO: Any final cleanup for the game
 	}
-
-	@Override
-	protected void reinit()
-	{
-		// TODO Auto-generated method stub
 		
-	}
-
-	protected void render(float arg0)
-	{	
-		renderer.draw(rootNode);
-	}
-
-	@Override
-	protected void update(float arg0)
-	{
-		
-		
-	}
-
+    /**
+     * Enable or disable debug mode.
+     * 
+     * During debug mode, more logging messages are displayed
+     * and an in-game console is available.
+     */
+    public static void setDebug(boolean debug){
+        debugMode = debug;
+        
+        if (debug){
+            Logger.getLogger("").setLevel(Level.FINEST);
+        }else{
+            Logger.getLogger("").setLevel(Level.WARNING);
+        }
+    }
+    
+    /**
+     * Returns true if debug mode is set.
+     */
+    public static boolean isDebug(){
+        return debugMode;
+    }
 }
