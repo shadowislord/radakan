@@ -40,7 +40,7 @@ public class Main2
 		RadakanGame game = new RadakanGame(settings);
 		GameSettingsDialog settingsDia = new GameSettingsDialog(settings);
 						
-		settingsDia.configure();
+		settingsDia.open();
                 try{
                     settingsDia.waitFor();
                 } catch (InterruptedException ex){

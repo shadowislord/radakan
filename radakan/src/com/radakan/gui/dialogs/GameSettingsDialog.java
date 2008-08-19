@@ -26,10 +26,9 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -38,12 +37,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import com.jme.system.GameSettings;
 import com.radakan.util.ImageCache;
 import com.radakan.util.SysInfo;
-import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
 
 /**A dialog box for configuring the game settings.
  * 
@@ -51,20 +49,18 @@ import javax.swing.SwingUtilities;
  * @version 1.0.0
  * @created Jul 28, 2008
  */
-public class GameSettingsDialog extends JFrame {
-
-    private static Logger logger = Logger.getLogger(GameSettingsDialog.class.getName());
+public class GameSettingsDialog extends JFrame 
+{
+	private static final long serialVersionUID = -5863149042365826108L;
+	private static Logger logger = Logger.getLogger(GameSettingsDialog.class.getName());
     private static final int FRAME_WIDTH = 573;
     
     /**The game settings to set.*/
     private GameSettings settings;
     
-    /**Determines if the dialog is active.*/
-    private boolean active = true;
-    
-    /**Frame that shows config dialog.*/
-    //private JFrame frame = new JFrame("Configure Radakan - Developers Edition");
-    
+    /**Determines if the dialog is open.*/
+    private boolean isOpen = true;
+        
     /**
      * Lock for waiting till the window closes
      */
@@ -112,7 +108,7 @@ public class GameSettingsDialog extends JFrame {
      * @return True if it is open.
      */
     public boolean isOpen() {
-        return active;
+        return isOpen;
     }
 
     /**Sets up the main frame.*/
@@ -245,7 +241,7 @@ public class GameSettingsDialog extends JFrame {
     /**
      * Configures the game settings.
      */
-    public void configure() {
+    public void open() {
         pack();
         setVisible(true);
     }
@@ -256,13 +252,14 @@ public class GameSettingsDialog extends JFrame {
     public void closeDialog() {
         setVisible(false);
         dispose();
-        active = false;
+        isOpen = false;
         synchronized (openLock){
             openLock.notifyAll();
         }
         logger.fine("Configuration Finished!");
     }
     
+    /**Saves the game settings set with the dialog.*/
     public void saveSettings(){
         if (listCb.getSelectedItem() instanceof DisplayWrapper) {
             DisplayMode mode = ((DisplayWrapper) listCb.getSelectedItem()).mode;

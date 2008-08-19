@@ -57,7 +57,7 @@ public class Main {
         settings.setFramerate(-1);
         
         GameSettingsDialog dialog = new GameSettingsDialog(settings);
-        dialog.configure();
+        dialog.open();
         
         try{
             dialog.waitFor();
