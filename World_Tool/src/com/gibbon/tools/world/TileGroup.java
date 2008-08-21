@@ -20,6 +20,8 @@ import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
 import com.jme.util.export.Savable;
 import com.jme.util.geom.BufferUtils;
+import com.radakan.game.tile.TextureSet;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
