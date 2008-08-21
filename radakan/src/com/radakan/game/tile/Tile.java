@@ -24,4 +24,16 @@ public class Tile extends Node
 {
 	private static final long serialVersionUID = 5468917005537121768L;
 
+        /**
+         * flag: used in TileManager to mark which tiles to keep
+         */
+        boolean flag = false;
+        
+        public final int x, y;
+        
+        public Tile(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
 }

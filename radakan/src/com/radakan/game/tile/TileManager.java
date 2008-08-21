@@ -15,54 +15,53 @@
 package com.radakan.game.tile;
 
 import com.jme.image.Image;
+import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 
 /**In Middle of creation
+ * 
+ * Changes by Kirill (MomokoFan)
+ * - Now extends Node
+ * - Some docs
  * 
  * @author Joshua Montgomery
  * @created Aug 18, 2008
  */
-public class TileManager
+public class TileManager extends Node
 {
-	private Tile tiles[][];
-	
-	public TileManager(int x,int y)
-	{
-		tiles = new Tile[x][y];
+
+        /** Create a new tile manager */
+	public TileManager() {
 	}
 	
-	public boolean addTile(Tile tile,int x,int y)
-	{
-		if(!inTileBounds(x,y))
-			return false;
-		tiles[x][y] = tile;
-		return true;
-	}
-	
-	public Tile[] getTileGrid(int centerX,int centerY,int gridW,int gridH)
-	{
-		Tile grid[] = new Tile[gridW * gridH];
-		//TODO: Build tile grid		                            
-		return grid;
-	}
-	
+        /**
+         * Returns the tile at position X, Y or null if no tile is available at the position
+         */
 	public Tile getTileAt(int x,int y)
 	{
-		if(!inTileBounds(x,y))
-			return null;//tile doesn't exist
-		return tiles[x][y];
+		return (Tile) getChild("TILE_"+x+"_"+y);
 	}
 	
-	public boolean inTileBounds(int x, int y)
+        public void markFarTiles(){
+            for (Spatial child : getChildren()){
+                Tile tile = (Tile) child;
+                Vector2f pos = new Vector2f(tile.x, tile.y);
+                
+                
+            }
+        }
+        
+        @Override
+        public void updateWorldData(float tpf){
+            
+        }
+        
+	public void loadTile(int x, int y)
 	{
-		if((x > tiles.length && x > -1) || (y > tiles[0].length && y > -1))
-			return false;
-		return true;
+		
 	}
-	
-	public void loadTileMap(Image tileMap)
-	{
-		//TODO: Split the image into individual tiles and store them.
-	}
+        
+        
 	
 
 }
