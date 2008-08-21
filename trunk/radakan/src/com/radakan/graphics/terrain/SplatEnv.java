@@ -72,11 +72,19 @@ public class SplatEnv {
     
     public void addLayer(Layer t){
         layers.add(t);
-//        if (t instanceof AlphaDetailLayer){
-//            ((AlphaDetailLayer)t).setScale(state.tile_scale);
-//        }else if (t instanceof BaseLayer){
-//            ((BaseLayer)t).setScale(state.tile_scale);
-//        }
+        if (t instanceof AlphaDetailLayer){
+            AlphaDetailLayer adl = (AlphaDetailLayer) t;
+            if (adl.getScale() == -1)
+                adl.setScale(state.tile_scale);
+        }else if (t instanceof BaseLayer){
+            BaseLayer bl = (BaseLayer) t;
+            if (bl.getScale() == -1){
+                bl.setScale(state.tile_scale);
+                System.out.println("Set "+bl+" scale to "+state.tile_scale);
+            }else{
+                System.out.println("Set "+bl+" scale to "+bl.getScale());
+            }
+        }
         refresh();
     }
     

@@ -85,6 +85,10 @@ public class AlphaDetailLayer implements Layer {
                     
         tileScale = scale;
     }
+    
+    public float getScale(){
+        return tileScale;
+    }
 
     /**
      * vec4 r = the accum variable
