@@ -7,6 +7,8 @@ import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
 import com.jme.util.export.xml.XMLExporter;
 import com.radakan.entity.Entity;
+import com.radakan.game.tile.TextureSet;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;

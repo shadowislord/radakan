@@ -1,9 +1,10 @@
 package com.gibbon.tools.world;
 
 import com.gibbon.tools.FileNameExtensionFilter;
-import com.gibbon.tools.world.TextureSet.Detailmap;
 import com.jme.image.Texture2D;
 import com.jme.util.TextureManager;
+import com.radakan.game.tile.TextureSet;
+import com.radakan.game.tile.TextureSet.Detailmap;
 import com.radakan.util.ErrorHandler;
 import java.awt.Frame;
 import java.io.File;
@@ -15,8 +16,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 
 public class TextureSetEditor extends javax.swing.JDialog {
-    
-    private DefaultComboBoxModel importModel;
+
+	private static final long serialVersionUID = 6216255895314778816L;
+	private DefaultComboBoxModel importModel;
     private DefaultListModel importListModel;
     private DefaultListModel textureModel;
     
