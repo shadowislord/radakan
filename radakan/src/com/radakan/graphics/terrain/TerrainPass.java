@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, MFKARPG
+ * Copyright (c) 2008, Radakan
  *
  * All rights reserved.
  *
@@ -53,12 +53,11 @@ import com.jme.util.TextureManager;
 
 public class TerrainPass extends Pass {
 
-	private static final long serialVersionUID = 369293730641251689L;
-
-	public static final int MODE_BEST = -1,
-                            MODE_DEFAULT = -1,
-                            MODE_FIXED_FUNC = 0,
-                            MODE_FRAG_PROGRAM = 1,
+    private static final long serialVersionUID = 369293730641251689L;
+    public static final int MODE_BEST = -1,  
+                            MODE_DEFAULT = -1,  
+                            MODE_FIXED_FUNC = 0,  
+                            MODE_FRAG_PROGRAM = 1, 
                             MODE_GLSL = 2;
     
     protected SplatEnv env = new SplatEnv();
@@ -156,18 +155,22 @@ public class TerrainPass extends Pass {
         setPassState(fs);
     }
     
-    protected void copySpatialCoords(Spatial spat, int srcUnit, int targetUnit, int scale){
+    public void refresh(){
+        passList.clear();
+    }
+    
+    protected void copySpatialCoords(Spatial spat, int srcUnit, int targetUnit){
         if (spat instanceof Geometry)
-            ((Geometry)spat).copyTextureCoordinates(srcUnit, targetUnit, scale);
+            ((Geometry)spat).copyTextureCoordinates(srcUnit,targetUnit,1f);
         else if (spat instanceof Node){
             for (Spatial s: ((Node)spat).getChildren()){
-                copySpatialCoords(s,srcUnit,targetUnit,scale);
+                copySpatialCoords(s,srcUnit,targetUnit);
             }
         }
     }
-    protected void copyPassCoords(int srcUnit, int targetUnit, int scale){
+    protected void copyPassCoords(int srcUnit, int targetUnit){
         for (Spatial spat: spatials){
-            copySpatialCoords(spat,srcUnit,targetUnit,scale);
+            copySpatialCoords(spat,srcUnit,targetUnit);
         }
     }
     
@@ -200,15 +203,11 @@ public class TerrainPass extends Pass {
             glsl = env.createGLSLShader(r);
             TextureState[] ts = env.createShaderPasses(r);
 
-            copyPassCoords(0,1,env.getTileScale());
-            
             RenderState[] pass = new RenderState[RenderState.RS_MAX_STATE];
             pass[RenderState.RS_TEXTURE] = ts[0];
             pass[RenderState.RS_GLSL_SHADER_OBJECTS] = glsl;
             passList.add(pass);
         }else if (renderMethod == MODE_FRAG_PROGRAM){
-            copyPassCoords(0,1,env.getTileScale());
-
             TextureState[] ts = env.createShaderPasses(r);
             fp = env.createARBShader(r);
 
@@ -218,7 +217,7 @@ public class TerrainPass extends Pass {
             passList.add(pass);
         }else{
             for (int i = 0; i < TextureState.getNumberOfFixedUnits(); i++){
-                copyPassCoords(0,i,1);
+                copyPassCoords(0,i);
             }
 
             TextureState[] ts = env.createFixedFuncPasses(r);

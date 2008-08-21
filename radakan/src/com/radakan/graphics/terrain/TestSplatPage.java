@@ -35,10 +35,14 @@ import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.input.FirstPersonHandler;
 import com.jme.math.Vector3f;
+import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.pass.RenderPass;
 import com.jme.scene.state.CullState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.state.CullState.Face;
+import com.jme.scene.state.FogState;
+import com.jme.scene.state.FogState.DensityFunction;
+import com.jme.scene.state.FogState.Quality;
 import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.util.TextureManager;
 
@@ -169,6 +173,15 @@ public class TestSplatPage extends SimplePassGame {
         tPass.addDetail(detailtex2,alphatex2);
         tPass.addDetail(detailtex3,alphatex3);
         tPass.setLightmap(lightmap, CombinerScale.Two);
+        
+        FogState fog = display.getRenderer().createFogState();
+        fog.setColor(new ColorRGBA());
+        fog.getColor().fromIntRGBA(0x55A3EEFF);
+        fog.setQuality(Quality.PerVertex);
+        fog.setDensityFunction(DensityFunction.Linear);
+        fog.setStart(350f);
+        fog.setEnd(1000f);
+        tPass.setFog(fog);
         
         page.updateRenderState();
         

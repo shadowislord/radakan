@@ -56,6 +56,10 @@ public class BaseLayer implements Layer {
         this.tileScale = scale;
     }
     
+    public float getScale(){
+        return tileScale;
+    }
+    
     public void genGLSLShaderCode(StringBuffer buf, int[] texIndices, boolean rDefined, boolean setFrag) {
         if (tileScale == -1)
             throw new UnsupportedOperationException();
