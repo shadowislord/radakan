@@ -5,12 +5,14 @@ import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.jme.pass.ExitListenerPass;
 import com.gibbon.jme.pass.FengGuiPass;
 import com.gibbon.jme.pass.InputPass;
+import com.jme.input.Mouse;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
 import com.radakan.gui.dialogs.GameSettingsDialog;
 import com.radakan.util.ErrorHandler;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
+import org.lwjgl.input.Cursor;
 
 public class TestUI {
 
@@ -43,12 +45,6 @@ public class TestUI {
             }
         };
         
-        try{
-             Thread.sleep(5000);
-        }catch (InterruptedException ex){
-            
-        }
-        
         UIContext ui = new LoadScreen(test);
         //UIContext ui = new MainMenu();
         UIManager.setContext(ui, true);
@@ -66,16 +62,16 @@ public class TestUI {
             //g.setVisible(true);
             //g.waitFor();
 
-//            GameSettingsDialog dialog = new GameSettingsDialog(settings);
-//            dialog.configure();
-//            dialog.waitFor();
-//            
-//            if (!dialog.isInitGameAllowed()){
-//                return;
-//            }
+            GameSettingsDialog dialog = new GameSettingsDialog(settings);
+            dialog.open();
+            dialog.waitFor();
             
-            settings.setWidth(320);
-            settings.setHeight(240);
+            if (!dialog.isInitGameAllowed()){
+                return;
+            }
+            
+//            settings.setWidth(320);
+//            settings.setHeight(240);
             
             context = JmeContext.create(LWJGLContext.class, JmeContext.CONTEXT_WINDOW);
             context.setSettings(settings);
