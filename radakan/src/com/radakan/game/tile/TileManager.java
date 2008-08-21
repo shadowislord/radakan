@@ -14,7 +14,7 @@
  */
 package com.radakan.game.tile;
 
-import com.jme.image.Image;
+import com.jme.math.Vector2f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 
