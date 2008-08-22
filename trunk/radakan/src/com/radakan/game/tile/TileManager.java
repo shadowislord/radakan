@@ -14,9 +14,14 @@
  */
 package com.radakan.game.tile;
 
-import com.jme.math.Vector2f;
+import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
+import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
+
+import java.util.logging.Logger;
+import static java.lang.Math.*;
 
 /**In Middle of creation
  * 
@@ -27,41 +32,110 @@ import com.jme.scene.Spatial;
  * @author Joshua Montgomery
  * @created Aug 18, 2008
  */
-public class TileManager extends Node
-{
+public class TileManager extends Node {
 
-        /** Create a new tile manager */
-	public TileManager() {
-	}
-	
-        /**
-         * Returns the tile at position X, Y or null if no tile is available at the position
-         */
-	public Tile getTileAt(int x,int y)
-	{
-		return (Tile) getChild("TILE_"+x+"_"+y);
-	}
-	
-        public void markFarTiles(){
-            for (Spatial child : getChildren()){
+    private static final Logger logger = Logger.getLogger(TileManager.class.getName());
+    
+    private static TileManager instance;
+    
+    private Renderer renderer;
+    private int loadDistance = 1;
+    
+    private int lastCamPosX = 0, lastCamPosY = 0;
+    
+    /** 
+     * Create a new tile manager 
+     */
+    public TileManager(Renderer renderer) {
+        if (instance != null)
+            throw new IllegalStateException("Cannot create more than one TileManager");
+        
+        this.renderer = renderer;
+        instance = this;
+        logger.finest("TileManager created");
+    }
+    
+    /**
+     * Returns the tile at position X, Y or null if no tile is available at the position
+     */
+    public Tile getTileAt(int x, int y) {
+        return (Tile) getChild("TILE_" + x + "_" + y);
+    }
+    
+    /**
+     * Converts a location in tile space to world space.
+     */
+    public Vector3f tileToWorld(int x, int y){
+        return new Vector3f(x * -Tile.TILE_SIZE, 0f, y * -Tile.TILE_SIZE);
+    }
+    
+    /**
+     * Deletes a tile from the tile manager
+     */
+    protected boolean unloadAndDetach(Tile tile){
+        detachChild(tile);
+        return tile.unload();
+    }
+    
+    /**
+     * Loads and attaches the tile at the specified position
+     */
+    protected boolean loadAndAttach(int x, int y) {
+        if (getTileAt(x,y) != null)
+            return false;
+        
+        Tile newTile = new Tile(x,y);
+        if (!newTile.load())
+            return false;
+        
+        // find tile world position
+        newTile.setLocalTranslation(tileToWorld(x,y));
+        
+        // attach new tile
+        attachChild(newTile);
+
+        newTile.updateRenderState();
+        newTile.updateGeometricState(0, true);
+        
+        newTile.lockBounds();
+        newTile.lockTransforms();
+        newTile.lockBranch();
+        
+        return true;
+    }
+
+    @Override
+    public void updateWorldData(float tpf) {
+        Camera cam = renderer.getCamera();
+        int camx = Math.round( (cam.getLocation().x - Tile.TILE_SIZE * 0.5f) / -Tile.TILE_SIZE);
+        int camy = Math.round( (cam.getLocation().z - Tile.TILE_SIZE * 0.5f) / -Tile.TILE_SIZE);
+        if (lastCamPosX != camx || lastCamPosY != camy){
+            lastCamPosX = camx;
+            lastCamPosY = camy;
+            System.out.println("CAMERA_"+camx+"_"+camy + " ("+cam.getLocation()+")");
+            //logger.finest("Camera position changed to "+camx+", "+camy);
+        }
+        
+        
+        if (children != null) {
+            // must keep a copy of the child list since
+            // it is going to be modified while being iterated
+            Spatial[] localArray = new Spatial[children.size()];
+            children.toArray(localArray);
+            
+            for (Spatial child : localArray) {
                 Tile tile = (Tile) child;
-                Vector2f pos = new Vector2f(tile.x, tile.y);
-                
-                
+                if ((abs(tile.x - camx) > loadDistance) || (abs(tile.y - camy) > loadDistance)) {
+                    unloadAndDetach(tile);
+                }
             }
         }
         
-        @Override
-        public void updateWorldData(float tpf){
-            
+        for (int y = camy - loadDistance; y < camy + loadDistance; y++){
+            for (int x = camx - loadDistance; x < camx + loadDistance; x++){
+                 loadAndAttach(x,y);
+            }
         }
-        
-	public void loadTile(int x, int y)
-	{
-		
-	}
-        
-        
-	
-
+    }
+    
 }

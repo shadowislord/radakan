@@ -22,9 +22,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.nio.IntBuffer;
 import java.util.Locale;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Filter;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
@@ -57,6 +55,8 @@ public class ErrorHandler {
         ConsoleHandler ch = new ConsoleHandler();
         ch.setLevel(Level.ALL);
         Logger.getLogger("com.radakan").addHandler(ch);
+        
+        
     }
     
     public static void writeSystemInfo(PrintStream stream){

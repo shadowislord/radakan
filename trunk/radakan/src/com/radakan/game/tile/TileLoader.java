@@ -15,24 +15,34 @@
 
 package com.radakan.game.tile;
 
+import com.jme.image.Image;
+import com.jme.image.Texture2D;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
+import com.jme.renderer.lwjgl.LWJGLRenderer;
 import com.jme.scene.Spatial;
 import com.jme.scene.TexCoords;
 import com.jme.scene.TriMesh;
+import com.jme.scene.VBOInfo;
+import com.jme.scene.state.TextureState;
+import com.jme.system.DisplaySystem;
+import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jmex.terrain.TerrainBlock;
 import com.radakan.graphics.mesh.parser.Material;
 import com.radakan.graphics.mesh.parser.OgreLoader;
 import com.radakan.util.ErrorHandler;
 import com.radakan.util.XMLUtil;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.FloatBuffer;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,62 +52,39 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class TileLoader {
+    
+    private static final Logger logger = Logger.getLogger(TileLoader.class.getName());
 
     private Map<String, ItemType> itemMap;
     private Map<String, Material> materialMap;
-    private boolean Z_up_to_Y_up = false;
     
-    private int groupSize;
-    private int tileSize;
-    private int tileRes;
-    
-    private static final Quaternion conversion = new Quaternion();
-    
-    static {
-        conversion.fromAngles(-FastMath.HALF_PI, FastMath.PI, 0);
-    }
-    
-    public TileLoader(boolean Z_up){
-        Z_up_to_Y_up = Z_up;
-    }
-    
-    private Node getChildNode(Node node, String name) {
-        Node child = node.getFirstChild();
-        while (child != null && !child.getNodeName().equals(name) ){
-            child = child.getNextSibling();
-        }
-        return child;
-    }
-    
-    private String getAttribute(Node node, String name){
-        Node att = node.getAttributes().getNamedItem(name);
-        return att == null ? null : att.getNodeValue();
+    public TileLoader(){
     }
     
     private TriMesh buildTerrain(int x, int y, float[] heights){
-        int groupX = (int) Math.floor((float)x / groupSize);
-        int groupY = (int) Math.floor((float)y / groupSize);
+        int groupX = (int) Math.floor((float)x / Tile.GROUP_SIZE);
+        int groupY = (int) Math.floor((float)y / Tile.GROUP_SIZE);
         
-        int deltaX = x - groupX * groupSize;
-        int deltaY = y - groupY * groupSize;
+        int deltaX = x - groupX * Tile.GROUP_SIZE;
+        int deltaY = y - groupY * Tile.GROUP_SIZE;
         
-        Vector2f offset = new Vector2f((float)deltaX / groupSize,
-                                       (float)deltaY / groupSize);
-        Vector2f tcScale  = new Vector2f(1f / groupSize, 
-                                         1f / groupSize);
+        Vector2f offset = new Vector2f((float)deltaX / Tile.GROUP_SIZE,
+                                       (float)deltaY / Tile.GROUP_SIZE);
+        Vector2f tcScale  = new Vector2f(1f / Tile.GROUP_SIZE, 
+                                         1f / Tile.GROUP_SIZE);
         
-        float tileScale = (float)tileSize / (tileRes-1.0f);
+        float tileScale = (float)Tile.TILE_SIZE / (Tile.TILE_RESOLUTION-1.0f);
         
         TerrainBlock block = new TerrainBlock("terrain_"+x+"_"+y, 
-                                              tileRes, 
+                                              Tile.TILE_RESOLUTION, 
                                               new Vector3f(-tileScale, 1f, -tileScale), 
                                               heights, 
                                               Vector3f.ZERO);
         
-        FloatBuffer tc = GridUtil.writeTexCoordArray(tileRes, 
-                                                     tileRes, 
-                                                     tileRes-1,
-                                                     tileRes-1,
+        FloatBuffer tc = GridUtil.writeTexCoordArray(Tile.TILE_RESOLUTION, 
+                                                     Tile.TILE_RESOLUTION, 
+                                                     Tile.TILE_RESOLUTION-1,
+                                                     Tile.TILE_RESOLUTION-1,
                                                      offset, 
                                                      tcScale);
         
@@ -108,16 +95,41 @@ public class TileLoader {
     }
     
     private Spatial readTerrain(Node terrain, int x, int y){
+        // load texture set and related data
        String[] usedMapsStr = XMLUtil.getAttribute(terrain, "usedmaps").split(",");
        String textureSet = XMLUtil.getAttribute(terrain, "textureset");
        int[] usedMaps = new int[usedMapsStr.length];
-       
        for (int i = 0; i < usedMaps.length; i++) 
            usedMaps[i] = Integer.parseInt(usedMapsStr[i]);
        
+        TextureSet set = Tile.TEXTURE_SETS.get(textureSet);
+        TextureState state = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
+        if (set == null){
+            logger.warning("Failed to locate textureset "+textureSet);
+        }else{
+            int groupX = (int) Math.floor((float)x / Tile.GROUP_SIZE);
+            int groupY = (int) Math.floor((float)y / Tile.GROUP_SIZE);
+            
+            Texture2D[] alphamaps = set.createStateCopy(state);
+
+            // only load the alphamaps for the used textures
+            for (int i = 0; i < usedMaps.length; i++){
+                // example name: GROUP_1_1_3.png
+                String mapName = "alpha_" + groupX + "_" + groupY + "_" + usedMaps[i] + ".png";
+
+                // load the alphamap, and assign it to the correct slot in the textureset
+                Image alphaimage = TextureManager.loadImage(mapName, false);
+                alphamaps[usedMaps[i]].setImage(alphaimage);
+            }
+        }
+        
+        // XXX: might want to add a state.load() call here to upload
+        // all alphamaps to the GPU
+        
+       // load heightmap
        String heightsStr = terrain.getTextContent();
        
-       float[] heights = new float[tileRes * tileRes];
+       float[] heights = new float[Tile.TILE_RESOLUTION * Tile.TILE_RESOLUTION];
        int start = 0;
        for (int i = 0; i < heights.length; i++){
            String buf = "";
@@ -132,12 +144,25 @@ public class TileLoader {
            heights[i] = Float.parseFloat(buf);
        }
        
-       return buildTerrain(x, y, heights);
+       TriMesh terrainMesh = buildTerrain(x, y, heights);
+       
+       if (set != null){
+           // apply the texture set
+           terrainMesh.setRenderState(state);
+           terrainMesh.setRenderState(set.getShader());
+       }
+       
+       // make sure to clear that..
+       VBOInfo info = new VBOInfo(true);
+       info.setVBOIndexEnabled(true);
+       terrainMesh.setVBOInfo(info);
+       
+       return terrainMesh;
     }
     
     private Spatial readModel(Node model) {
-        String item = getAttribute(model, "item");
-        String modelName = getAttribute(model, "name");
+        String item = XMLUtil.getAttribute(model, "item");
+        String modelName = XMLUtil.getAttribute(model, "name");
 
         ItemType type = itemMap.get(item);
 
@@ -152,9 +177,9 @@ public class TileLoader {
         spatial.setName(modelName);
         spatial.setIsCollidable(type.solid);
 
-        String[] pos = getAttribute(model, "position").split(",");
-        String[] rot = getAttribute(model, "rotation").split(",");
-        String[] scale = getAttribute(model, "scale").split(",");
+        String[] pos = XMLUtil.getAttribute(model, "position").split(",");
+        String[] rot = XMLUtil.getAttribute(model, "rotation").split(",");
+        String[] scale = XMLUtil.getAttribute(model, "scale").split(",");
 
         spatial.setLocalTranslation(Float.parseFloat(pos[0]),
                 Float.parseFloat(pos[1]),
@@ -173,24 +198,19 @@ public class TileLoader {
         return spatial;
     }
 
-    private Spatial readTile(Node tile, int x, int y){
+    private void readTile(Node tile, int x, int y, Tile target){
         Node model = tile.getFirstChild();
-        com.jme.scene.Node rootNode = new com.jme.scene.Node("tile_"+x+"_"+y);
-        rootNode.setLocalTranslation(x * -tileSize, 0.0f, y * -tileSize);
-        
         while (model != null){
             if (model.getNodeName().equals("model")){
                 Spatial spat = readModel(model);
-                rootNode.attachChild(spat);
+                target.addObject(spat);
             }else if (model.getNodeName().equals("terrain")){
                 Spatial spat = readTerrain(model, x, y);
-                rootNode.attachChild(spat);
+                target.setTerrain(spat);
             }
             
             model = model.getNextSibling();
         }
-        
-        return rootNode;
     }
     
     public void setTypes(Map<String, ItemType> typesMap){
@@ -201,13 +221,22 @@ public class TileLoader {
         materialMap = materials;
     }
     
-    private void readWorldMeta(Node world){
-        groupSize = XMLUtil.getIntAttribute(world, "groupsize");
-        tileSize = XMLUtil.getIntAttribute(world, "tilesize");
-        tileRes = XMLUtil.getIntAttribute(world, "tileres");
+    public static void readTextureSets(File rootFolder){
+        try{
+            for (File f : rootFolder.listFiles()){
+                if (f.getName().toLowerCase().endsWith(".xml")){
+                    InputStream in = new FileInputStream(f);
+                    TextureSet set = TextureSetLoader.load(in);
+                    Tile.TEXTURE_SETS.put(set.toString(), set);
+                    in.close();
+                }
+            }
+        } catch (IOException ex){
+            ErrorHandler.reportError("Error while reading TextureSets", ex);
+        }
     }
     
-    public void readWorldMeta(URL url){
+    public static void readWorldMeta(URL url){
         InputStream in = null;
         try {
             in = url.openStream();
@@ -220,8 +249,10 @@ public class TileLoader {
                 throw new IOException("File does not contain metadata: " + url);
             }
 
-            Node tile = list.item(0);
-            readWorldMeta(tile);
+            Node worldNode = list.item(0);
+            Tile.GROUP_SIZE = XMLUtil.getIntAttribute(worldNode, "groupsize");
+            Tile.TILE_SIZE = XMLUtil.getIntAttribute(worldNode, "tilesize");
+            Tile.TILE_RESOLUTION = XMLUtil.getIntAttribute(worldNode, "tileres");
         } catch (SAXException ex) {
             ErrorHandler.reportError("Error while parsing XML file", ex);
         } catch (IOException ex) {
@@ -237,25 +268,20 @@ public class TileLoader {
         }
     }
     
-    public Spatial loadTile(int x, int y){
-        String name = "tile_"+x+"_"+y;
-        // find the tile URL
-        URL url = ResourceLocatorTool.locateResource("tile", name+".xml");
-        
-        if (url == null)
-            throw new NullPointerException();
-        
+    public boolean loadTile(int x, int y, InputStream in, Tile target){
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = builder.parse(url.openStream());
+            Document doc = builder.parse(in);
             
             NodeList list = doc.getElementsByTagName("tile");
             if (list.getLength() == 0){
-                return null;
+                return false;
             }
             
-            Node tile = list.item(0);
-            return readTile(tile, x, y);
+            Node tileNode = list.item(0);
+            readTile(tileNode, x, y, target);
+            
+            return true;
         } catch (ParserConfigurationException ex) {
             ErrorHandler.reportError("XML reading error", ex);
         } catch (SAXException ex) {
@@ -264,7 +290,7 @@ public class TileLoader {
             ErrorHandler.reportError("IO Error while reading tile", ex);
         }
         
-        return null;
+        return false;
     }
     
 }
