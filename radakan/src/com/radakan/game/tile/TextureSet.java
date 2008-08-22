@@ -22,7 +22,6 @@ import com.radakan.graphics.terrain.SplatEnv;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class TextureSet {
 
@@ -37,13 +36,15 @@ public class TextureSet {
     private static Image nilImage;
     private static Texture2D nilTexture;
     
-    
-    
     static {
-        ByteBuffer buf = BufferUtils.createByteBuffer(2 * 2 * Image.getEstimatedByteSize(ALPHAMAP_FORMAT));
-        buf.put((byte)0xFF).put((byte)0xFF).put((byte)0x00).put((byte)0xFF);
+        ByteBuffer buf = BufferUtils.createByteBuffer(4 * 4 * Image.getEstimatedByteSize(ALPHAMAP_FORMAT));
+        buf.put((byte)0x00).put((byte)0x00).put((byte)0x00).put((byte)0x00);
+        buf.put((byte)0x00).put((byte)0x00).put((byte)0x00).put((byte)0x00);
+        buf.put((byte)0x00).put((byte)0x00).put((byte)0x00).put((byte)0x00);
+        buf.put((byte)0x00).put((byte)0x00).put((byte)0x00).put((byte)0x00);
+        
         buf.rewind();
-        nilImage = new Image(ALPHAMAP_FORMAT, 2, 2, buf);
+        nilImage = new Image(ALPHAMAP_FORMAT, 4, 4, buf);
         nilTexture = new Texture2D();
         nilTexture.setImage(nilImage);
         nilTexture.setStoreTexture(true);
@@ -56,11 +57,12 @@ public class TextureSet {
     }
     
     public static class Detailmap {
-        String name;
-        Texture2D colormap;
-        Texture2D normalmap;
-        Texture2D specmap;
-        float scale = 1f;
+        
+        public String name;
+        public Texture2D colormap;
+        public Texture2D normalmap;
+        public Texture2D specmap;
+        public float scale = 1f;
         
         public Detailmap(String name){
             this.name = name;
@@ -98,12 +100,7 @@ public class TextureSet {
         return image == nilImage;
     }
     
-    public void setDetailmaps(List<Detailmap> detailmaps){
-        if (detailmaps.size() == 0)
-            return;
-        
-        this.detailmaps = detailmaps;
-        
+    public void updateStates(){
         env = new SplatEnv();
         
         BaseLayer bl = new BaseLayer(detailmaps.get(0).colormap);
@@ -122,18 +119,19 @@ public class TextureSet {
         LightLayer ll = new LightLayer();
         env.addLayer(ll);
         
-        JmeContext.get().executeLater(new Callable<Object>(){
-            public Object call(){
-                Renderer r = DisplaySystem.getDisplaySystem().getRenderer();
-                glsl = env.createGLSLShader(r);
-                TextureState[] states = env.createShaderPasses(r);
-                
-                texState = states[0];
-                
-                return null;
-            }
-        });
+        final Renderer r = DisplaySystem.getDisplaySystem().getRenderer();
         
+        glsl = env.createGLSLShader(r);
+        TextureState[] states = env.createShaderPasses(r);
+        texState = states[0];
+    }
+    
+    public void setDetailmaps(List<Detailmap> detailmaps){
+        if (detailmaps.size() == 0)
+            return;
+        
+        this.detailmaps = detailmaps;
+        updateStates();
     }
     
     public Texture2D[] createStateCopy(TextureState state){
