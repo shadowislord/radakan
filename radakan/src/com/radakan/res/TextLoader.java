@@ -9,7 +9,7 @@ import java.nio.CharBuffer;
  * 
  * @author Kirill Vainer
  */
-public class TextLoader implements ResourceLoader<String> {
+public class TextLoader implements IResourceLoader<String> {
 
     public String load(String resourceName) throws IOException {
         ByteBuffer buf = ResourceManager.getFileSystem().openBuffer(AccessMode.PARSE, resourceName);
