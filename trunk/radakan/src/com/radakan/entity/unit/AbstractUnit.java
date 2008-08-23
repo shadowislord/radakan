@@ -28,21 +28,21 @@ import com.radakan.entity.Entity;
  * 
  * @author Momoko_Fan
  */
-public abstract class AbstractUnit implements Unit {
+public abstract class AbstractUnit implements IUnit {
 
-    private transient Set<UnitEventListener> listeners = 
-                         new HashSet<UnitEventListener>();
+    private transient Set<IUnitEventListener> listeners = 
+                         new HashSet<IUnitEventListener>();
     
     /**
      * Keep a reference to the currently attached entity
      */
     protected transient Entity entity;
     
-    public void addEventListener(UnitEventListener listener) {
+    public void addEventListener(IUnitEventListener listener) {
         listeners.add(listener);
     }
 
-    public void removeEventListener(UnitEventListener listener) {
+    public void removeEventListener(IUnitEventListener listener) {
         listeners.remove(listener);
     }
 
@@ -52,7 +52,7 @@ public abstract class AbstractUnit implements Unit {
      * @param event The event that happened
      */
     protected void notifyListeners(UnitEvent event){
-        for (UnitEventListener listener : listeners)
+        for (IUnitEventListener listener : listeners)
             listener.onUnitEvent(event);
     }
 
