@@ -39,10 +39,8 @@ public class TileManager extends Node {
     private static TileManager instance;
     
     private Renderer renderer;
-    private int loadDistance = 1;
-    
-    private int lastCamPosX = 0, lastCamPosY = 0;
-    
+    private float loadDistance = 64f * 1f;
+
     /** 
      * Create a new tile manager 
      */
@@ -107,32 +105,42 @@ public class TileManager extends Node {
     @Override
     public void updateWorldData(float tpf) {
         Camera cam = renderer.getCamera();
-        int camx = Math.round( (cam.getLocation().x - Tile.TILE_SIZE * 0.5f) / -Tile.TILE_SIZE);
-        int camy = Math.round( (cam.getLocation().z - Tile.TILE_SIZE * 0.5f) / -Tile.TILE_SIZE);
-        if (lastCamPosX != camx || lastCamPosY != camy){
-            lastCamPosX = camx;
-            lastCamPosY = camy;
-            System.out.println("CAMERA_"+camx+"_"+camy + " ("+cam.getLocation()+")");
-            //logger.finest("Camera position changed to "+camx+", "+camy);
-        }
         
+        Vector3f temp = new Vector3f(),
+                 temp2 = new Vector3f();
         
-        if (children != null) {
-            // must keep a copy of the child list since
-            // it is going to be modified while being iterated
-            Spatial[] localArray = new Spatial[children.size()];
-            children.toArray(localArray);
-            
-            for (Spatial child : localArray) {
-                Tile tile = (Tile) child;
-                if ((abs(tile.x - camx) > loadDistance) || (abs(tile.y - camy) > loadDistance)) {
-                    unloadAndDetach(tile);
-                }
-            }
-        }
+//        if (children != null) {
+//            // must keep a copy of the child list since
+//            // it is going to be modified while being iterated
+//            Spatial[] localArray = new Spatial[children.size()];
+//            children.toArray(localArray);
+//            
+//            for (Spatial child : localArray) {
+//                Tile tile = (Tile) child;
+//                temp.set(tile.getLocalTranslation());
+//                // find center of tile
+//                temp.subtractLocal(Tile.TILE_SIZE * .5f, 0f, Tile.TILE_SIZE * .5f);
+//                
+//                // set y to zero, only want to check distance on XY plane
+//                temp2.set(cam.getLocation()).y = 0f;
+//                if (temp2.distance(temp) > loadDistance){
+//                    unloadAndDetach(tile);
+//                }
+//            }
+//        }
         
-        for (int y = camy - loadDistance; y < camy + loadDistance; y++){
-            for (int x = camx - loadDistance; x < camx + loadDistance; x++){
+        Vector3f loadStart = new Vector3f(cam.getLocation()).subtractLocal(loadDistance, 0f, loadDistance);
+        Vector3f loadEnd = new Vector3f(cam.getLocation()).addLocal(loadDistance, 0f, loadDistance);
+        
+        int loadStartTileX = Math.round(loadStart.x / -Tile.TILE_SIZE);
+        int loadStartTileY = Math.round(loadStart.z / -Tile.TILE_SIZE);
+        int loadEndTileX = Math.round(loadEnd.x / -Tile.TILE_SIZE);
+        int loadEndTileY = Math.round(loadEnd.z / -Tile.TILE_SIZE);
+        
+        //System.out.println(loadStartTileX + ", " + loadStartTileY + "     " + loadEndTileX + ", "+loadEndTileY);
+        
+        for (int y = loadEndTileY; y <= loadStartTileY; y++){
+            for (int x = loadEndTileX; x <= loadStartTileX; x++){
                  loadAndAttach(x,y);
             }
         }

@@ -38,6 +38,7 @@ public class TestTileLoading extends SimpleGame {
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl);
 
             URL worldMetaURL = ResourceLocatorTool.locateResource("tile", "world.xml");
+            
             TileLoader.readWorldMeta(worldMetaURL);
             TileLoader.readTextureSets(new File("E:\\Radakan\\src\\com\\radakan\\data\\texturesets\\"));
 

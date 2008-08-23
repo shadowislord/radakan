@@ -100,7 +100,7 @@ public class TextureSet {
         return image == nilImage;
     }
     
-    public void updateStates(){
+    public void generateShader(boolean useLightmap){
         env = new SplatEnv();
         
         BaseLayer bl = new BaseLayer(detailmaps.get(0).colormap);
@@ -116,8 +116,13 @@ public class TextureSet {
             adl.setScale(map.scale);
         }
         
-        LightLayer ll = new LightLayer();
-        env.addLayer(ll);
+        if (useLightmap){
+            LightLayer ll = new LightLayer(nilTexture);
+            env.addLayer(ll);
+        }else{
+            LightLayer ll = new LightLayer();
+            env.addLayer(ll);
+        }
         
         final Renderer r = DisplaySystem.getDisplaySystem().getRenderer();
         
@@ -131,7 +136,6 @@ public class TextureSet {
             return;
         
         this.detailmaps = detailmaps;
-        updateStates();
     }
     
     public Texture2D[] createStateCopy(TextureState state){

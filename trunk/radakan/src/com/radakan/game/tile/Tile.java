@@ -48,6 +48,7 @@ public class Tile extends Node
         public static int GROUP_SIZE = -1;
         public static int TILE_RESOLUTION = -1;
         public static int TILE_SIZE = -1;
+        public static boolean USE_LIGHTMAP = false;
         
         public static final Map<String, TextureSet> TEXTURE_SETS = new HashMap<String, TextureSet>();
         
