@@ -9,7 +9,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ZipFileSystem implements FileSystem {
+public class ZipFileSystem implements IFileSystem {
 
     protected ZipFile zipFile;
     

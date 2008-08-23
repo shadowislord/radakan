@@ -6,7 +6,7 @@ import com.jme.util.export.binary.BinaryImporter;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ModelLoader implements ResourceLoader<Spatial> {
+public class ModelLoader implements IResourceLoader<Spatial> {
 
     public Spatial load(String resourceName) throws IOException {
         InputStream in = ResourceManager.getFileSystem().openStream(AccessMode.PARSE, resourceName);

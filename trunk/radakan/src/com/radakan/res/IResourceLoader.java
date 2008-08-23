@@ -13,7 +13,7 @@ import java.io.IOException;
  * @author Momoko_Fan
  * @param T The resource data type.
  */
-public interface ResourceLoader<T> {
+public interface IResourceLoader<T> {
 
     /**
      * Called when a resource of type T needs to be loaded.

@@ -27,11 +27,11 @@ import java.util.logging.Logger;
  */
 public class ResourceManager {
 
-        protected static volatile Set<String> loadingResourcesSet = new HashSet<String>();
+    protected static volatile Set<String> loadingResourcesSet = new HashSet<String>();
 	protected static volatile Map<String, Reference<?>> cacheMap = new HashMap<String, Reference<?>>();
-	protected static final Map<Class<?>, ResourceLoader> loaderMap = new HashMap<Class<?>, ResourceLoader>();
+	protected static final Map<Class<?>, IResourceLoader> loaderMap = new HashMap<Class<?>, IResourceLoader>();
 	protected static final ExecutorService executor = Executors.newSingleThreadExecutor(new LoadingThreadFactory());
-	protected static FileSystem fileSystem;
+	protected static IFileSystem fileSystem;
 	
 
 	protected static class LoadingThreadFactory implements ThreadFactory {
@@ -83,15 +83,15 @@ public class ResourceManager {
 		ex.printStackTrace();
 	}
 
-	public static void setFileSystem(FileSystem fileSystem) {
+	public static void setFileSystem(IFileSystem fileSystem) {
 		ResourceManager.fileSystem = fileSystem;
 	}
 
-	public static <T> void registerLoader(Class<T> type, ResourceLoader<T> loader) {
+	public static <T> void registerLoader(Class<T> type, IResourceLoader<T> loader) {
 		loaderMap.put(type, loader);
 	}
 
-	public static FileSystem getFileSystem() {
+	public static IFileSystem getFileSystem() {
 		return fileSystem;
 	}
 
@@ -120,7 +120,7 @@ public class ResourceManager {
 				}
 			}
 			@SuppressWarnings("unchecked")
-			ResourceLoader<T> loader = loaderMap.get(resourceType);
+			IResourceLoader<T> loader = loaderMap.get(resourceType);
 
 			loadingResourcesSet.add(resourceName);
 			T val = loader.load(resourceName);
@@ -159,7 +159,7 @@ public class ResourceManager {
                 loadingResourcesSet.add(resourceName);
                 
 		@SuppressWarnings("unchecked")
-		final ResourceLoader<T> loader = loaderMap.get(resourceType);
+		final IResourceLoader<T> loader = loaderMap.get(resourceType);
                 
 		executor.submit(new Callable<Object>() {
 			public Object call() throws ExecutionException {
@@ -192,7 +192,7 @@ public class ResourceManager {
 	@SuppressWarnings("unchecked")
    public static <T> T aquireResource(Class<T> resourceType, String resourceName) {
         try {
-            ResourceLoader<T> loader = loaderMap.get(resourceType);
+            IResourceLoader<T> loader = loaderMap.get(resourceType);
             if (loader.useCache()) {
                 return (T) getFromCache(resourceType, resourceName);
             } else {
