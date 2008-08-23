@@ -5,10 +5,11 @@ import com.jme.image.Image.Format;
 import com.jme.image.Texture2D;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
+import com.jme.scene.state.LightState;
+import com.jme.scene.state.RenderState;
 import com.jme.util.export.xml.XMLExporter;
 import com.radakan.entity.Entity;
 import com.radakan.game.tile.TextureSet;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -106,6 +107,26 @@ public class WorldTileExporter {
             }
         }
         
+        // export lightmap ??
+        Image lightmap = g.generateLightmap((LightState)World.getWorld().getRenderState(RenderState.RS_LIGHT));
+        ByteBuffer data = lightmap.getData(0);
+        BufferedImage bImage = new BufferedImage(lightmap.getWidth(), lightmap.getHeight(), BufferedImage.TYPE_INT_RGB);
+        for (int y = 0; y < lightmap.getHeight(); y++){
+            for (int x = 0; x < lightmap.getWidth(); x++){
+                int red = data.get() & 0xFF;
+                int green = data.get() & 0xFF;
+                int blue = data.get() & 0xFF;
+                
+                //int argb = b << 8 | g << 16 | r << 24;
+                int argb = (0xFF << 24) | (red << 16) | (green << 8) | blue;
+                //int argb = 0xFF | (blue << 8) | (blue << 16) | (blue << 24);
+                
+                bImage.setRGB(x, y, argb);
+            }
+        }
+        File lightmapFile = new File(folder, "light_"+g.getX()+"_"+g.getY()+".png");
+        ImageIO.write(bImage, "png", lightmapFile);
+        
         
         for (Spatial child : g.getChildren()){
             if (child instanceof Tile){
@@ -123,7 +144,9 @@ public class WorldTileExporter {
         File worldMetaFile = new File(folder, "world.xml");
        
         PrintStream stream = new PrintStream(worldMetaFile);
-        stream.println("<world>");
+        stream.println("<world tilesize=\"" + world.getTileSize() + "\" " +
+                              "groupsize=\"" + world.getGroupSize() + "\" " +
+                              "tileres=\"" + world.getGridResolution() + "\" >");
         
         for (Spatial spat : world.getChildren()){
             if (spat instanceof TileGroup){

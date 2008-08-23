@@ -82,39 +82,39 @@ public class TerrainBrush {
                 int count = 0;
                 
                 sampler.set(vertex).addLocal(0.0f, 0.0f, 0.0f);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
 
                 sampler.set(vertex).addLocal(planeSize, 0.0f, 0.0f);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(-planeSize, 0.0f, 0.0f);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(0.0f, 0.0f, planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(0.0f, 0.0f, -planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(planeSize, 0.0f, planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(planeSize, 0.0f, -planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(-planeSize, 0.0f, planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 sampler.set(vertex).addLocal(-planeSize, 0.0f, -planeSize);
-                sample = PickUtils.getTerrainHeight(World.getWorld(), sampler, null);
+                sample = PickUtils.getTerrainHeight(sampler, null, 0);
                 if (!Float.isNaN(sample)){ blurred += sample; count++; }
                 
                 t.setModified();
@@ -135,7 +135,7 @@ public class TerrainBrush {
         EditorState state = EditorState.getState();
         
         Vector3f point = new Vector3f();
-        TriMesh collided = PickUtils.findClickedObject(x, y, true, point);
+        TriMesh collided = PickUtils.findClickedObject(x, y, true, point, null);
         if (collided == null)
             return;
         

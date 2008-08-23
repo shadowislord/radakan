@@ -151,7 +151,7 @@ public class TextureBrush {
         EditorState state = EditorState.getState();
         
         Vector3f worldCoords = new Vector3f();
-        TriMesh collided = PickUtils.findClickedObject(x, y, true, worldCoords);
+        TriMesh collided = PickUtils.findClickedObject(x, y, true, worldCoords, null);
         
         if (collided == null || !collided.getName().startsWith("TERRAIN"))
             return;

@@ -196,13 +196,15 @@ public class SelectionEffectPass extends RenderPass {
                 PickUtils.findClickedObject(EditorState.lastMouseEvent.getX(),
                                             EditorState.lastMouseEvent.getY(), 
                                             true, 
-                                            point);
+                                            point,
+                                            null);
                 s.setLocalTranslation(point);
                 s.updateGeometricState(0, true);
                 s.updateRenderState();
                 s.draw(cx.getRenderer());
             }
-        }else if (state.editType == EditType.TERRAIN || state.editType == EditType.TEXTURE){
+        }else if ((state.editType == EditType.TERRAIN || state.editType == EditType.TEXTURE)
+               && EditorState.lastMouseEvent != null){
             if (state.brushSize != brushRadius){
                 brushLines.appendCircle(state.brushSize, 0.0f, 0.0f, 20, false);
             }
@@ -210,7 +212,9 @@ public class SelectionEffectPass extends RenderPass {
             PickUtils.findClickedObject(EditorState.lastMouseEvent.getX(),
                                             EditorState.lastMouseEvent.getY(), 
                                             true, 
-                                            point);
+                                            point,
+                                            null);
+            
             brushLines.setLocalTranslation(point.clone());
             brushLines.getLocalTranslation().y = 0.0f;
             brushLines.updateWorldVectors();
@@ -230,7 +234,7 @@ public class SelectionEffectPass extends RenderPass {
                 point.addLocal(brushLines.getLocalTranslation());
                 
                 // compute height
-                float h = PickUtils.getTerrainHeight(World.getWorld(), point, null);
+                float h = PickUtils.getTerrainHeight(point, null, 0);
                 point.y = h + 1.0f;
                 
                 // convert to local space

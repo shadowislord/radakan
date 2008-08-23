@@ -11,7 +11,7 @@ public class TileBrush {
             return;
         
         Vector3f point = new Vector3f();
-        TriMesh collided = PickUtils.findClickedObject(x, y, false, point);
+        TriMesh collided = PickUtils.findClickedObject(x, y, false, point, null);
         
         if (collided != null && collided.getName().startsWith("MARKER")){
             String[] split = collided.getName().split("_");
