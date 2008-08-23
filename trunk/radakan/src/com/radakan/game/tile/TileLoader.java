@@ -100,7 +100,7 @@ public class TileLoader {
        String textureSet = XMLUtil.getAttribute(terrain, "textureset");
        int[] usedMaps = new int[usedMapsStr.length];
        for (int i = 0; i < usedMaps.length; i++) 
-           usedMaps[i] = Integer.parseInt(usedMapsStr[i]);
+           usedMaps[i] = Integer.parseInt(usedMapsStr[i].trim());
        
         TextureSet set = Tile.TEXTURE_SETS.get(textureSet);
         TextureState state = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();

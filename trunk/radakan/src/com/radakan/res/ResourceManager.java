@@ -1,6 +1,8 @@
 package com.radakan.res;
 
 import java.io.IOException;
+import java.lang.ref.PhantomReference;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +28,7 @@ import java.util.logging.Logger;
 public class ResourceManager {
 
         protected static volatile Set<String> loadingResourcesSet = new HashSet<String>();
-	protected static volatile Map<String, WeakReference<?>> cacheMap = new HashMap<String, WeakReference<?>>();
+	protected static volatile Map<String, Reference<?>> cacheMap = new HashMap<String, Reference<?>>();
 	protected static final Map<Class<?>, ResourceLoader> loaderMap = new HashMap<Class<?>, ResourceLoader>();
 	protected static final ExecutorService executor = Executors.newSingleThreadExecutor(new LoadingThreadFactory());
 	protected static FileSystem fileSystem;
@@ -49,7 +51,7 @@ public class ResourceManager {
 			return;
 		}
 		loadingResourcesSet.remove(resourceName);
-		WeakReference<T> ref = new WeakReference<T>(value);
+		Reference<T> ref = new WeakReference<T>(value);
 		cacheMap.put(resourceName, ref);
 	}
 
@@ -62,7 +64,7 @@ public class ResourceManager {
 
 	protected static <T> Object getFromCache(Class<?> resourceType, String resourceName) {
 		@SuppressWarnings("unchecked")
-		WeakReference<T> ref = (WeakReference<T>) cacheMap.get(resourceName);
+		Reference<T> ref = (Reference<T>) cacheMap.get(resourceName);
 		if (ref == null) {
 			return null;
 		}
@@ -70,7 +72,7 @@ public class ResourceManager {
 	}
 
 	protected static void removeExpiredFromCache() {
-		for (Map.Entry<String, WeakReference<?>> entry : cacheMap.entrySet()) {
+		for (Map.Entry<String, Reference<?>> entry : cacheMap.entrySet()) {
 			if (entry.getValue().get() == null) {
 				cacheMap.remove(entry.getKey());
 			}
@@ -108,7 +110,7 @@ public class ResourceManager {
 	public static <T> T loadResource(Class<T> resourceType, String resourceName) {
 		try {
 			@SuppressWarnings("unchecked")
-			WeakReference<T> ref = (WeakReference<T>) cacheMap.get(resourceType);
+			WeakReference<T> ref = (WeakReference<T>) cacheMap.get(resourceName);
 
 			if (ref != null) {
 				if (ref.get() != null) {
