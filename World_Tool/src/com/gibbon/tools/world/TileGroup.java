@@ -3,10 +3,18 @@ package com.gibbon.tools.world;
 import com.gibbon.jme.context.JmeContext;
 import com.jme.image.Image;
 import com.jme.image.Image.Format;
+import com.jme.image.Texture.MagnificationFilter;
+import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture2D;
+import com.jme.light.DirectionalLight;
+import com.jme.light.Light;
+import com.jme.light.PointLight;
+import com.jme.math.Ray;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.lwjgl.LWJGLCamera;
+import com.jme.renderer.lwjgl.LWJGLRenderer;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
@@ -21,7 +29,6 @@ import com.jme.util.export.OutputCapsule;
 import com.jme.util.export.Savable;
 import com.jme.util.geom.BufferUtils;
 import com.radakan.game.tile.TextureSet;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -122,8 +129,8 @@ public class TileGroup extends Node implements Savable {
     public void applyLightmap(){
         Image lightmap = generateLightmap((LightState)World.getWorld().getRenderState(RenderState.RS_LIGHT));
         Texture2D lighttex = new Texture2D();
-//        lighttex.setMinificationFilter(MinificationFilter.BilinearNoMipMaps);
-//        lighttex.setMagnificationFilter(MagnificationFilter.Bilinear);
+        lighttex.setMinificationFilter(MinificationFilter.BilinearNoMipMaps);
+        lighttex.setMagnificationFilter(MagnificationFilter.Bilinear);
         lighttex.setImage(lightmap);
         
         TextureState state = JmeContext.get().getRenderer().createTextureState();
@@ -149,11 +156,12 @@ public class TileGroup extends Node implements Savable {
 
         // temporary vectors for lighting equations
         ColorRGBA tempC = new ColorRGBA();
-        Vector3f tempV = new Vector3f();
+        Vector3f tempV = new Vector3f(),
+                 tempV2 = new Vector3f();
         
         // result color that is written to the pixel
         ColorRGBA result = new ColorRGBA();
-        
+               
         for (int py = 0; py < res; py++){
             for (int px = 0; px < res; px++){
                 // find pixel in world space
@@ -166,10 +174,14 @@ public class TileGroup extends Node implements Savable {
                 Vector3f normal = new Vector3f();
                 
                 // find height and normal at that point
-                float h = PickUtils.getTerrainHeight(this, point, normal);
+                float h = PickUtils.getTerrainHeight(point, normal, PickUtils.NORMAL_FETCH
+                                                                  | PickUtils.TERRAIN_NORMAL);
+                // add one meter above terrain height at point
                 point.y = h + 1.0f;
-                if (Float.isNaN(h))
+                if (Float.isNaN(h)){
+                    buf.position(buf.position()+3);
                     continue;
+                }
                 
                 // vector "point" is the position of the pixel in world space now
                 // -- calculate lighting equation for point --
@@ -180,31 +192,32 @@ public class TileGroup extends Node implements Savable {
 //                            (normal.y + 1.0f) / 2.0f, 
 //                            (normal.z + 1.0f) / 2.0f, 
 //                             1.0f);
-                result.set(h / 20f, h / 20f, h / 20f, 1.0f);
-                result.clamp();
+//                result.set(h / 20f, h / 20f, h / 20f, 1.0f);
+//                result.clamp();
                 
-                /*for (Light light : lighting.getLightList()){
+                for (Light light : lighting.getLightList()){
                     // C = (L . N) * Nd + Na
                     
                     if (light instanceof DirectionalLight){
                         DirectionalLight dl = (DirectionalLight) light;
                         
-                        Ray r = new Ray(point, dl.getDirection().negate());
-                        TriMesh collided = (TriMesh) PickUtils.calculatePick(World.getWorld(), r, tempV, false);
-                        tempC.set(ColorRGBA.black);
-                        if (collided == null){
-                            tempC.addLocal(ColorRGBA.gray);
-                        }
-//                        float NdotL = dl.getDirection().dot(normal);
-//                        if (NdotL <= 0.0f)
-//                            continue;
+                        tempV.set(dl.getDirection()).negateLocal().normalizeLocal();
+                        Ray r = new Ray(point, tempV);
+                        TriMesh collided = (TriMesh) PickUtils.calculatePick(World.getWorld(), r, tempV2, false);
                         
-//                        tempC.set( (normal.x + 1.0f) / 2.0f, 
-//                                   (normal.y + 1.0f) / 2.0f, 
-//                                   (normal.z + 1.0f) / 2.0f, 
-//                                    1.0f);
+                        tempC.set(ColorRGBA.black);
+                        float NdotL = tempV.dot(normal);
+                        if (NdotL < 0f){
+                            tempC.set(dl.getAmbient());
+                        }else{
+                            //if (collided == null)
+                                tempC.set(dl.getDiffuse()).multLocal(NdotL).addLocal(dl.getAmbient());
+                           // else
+                            //    tempC.set(dl.getAmbient());
+                        }
+                        
                         // temp = Nd * NdotL + Na
-//                        tempC.set(dl.getDiffuse()).multLocal(NdotL).addLocal(dl.getAmbient());
+                        
                         tempC.clamp();
                         result.addLocal(tempC);
                     }/*else if (light instanceof PointLight){
@@ -212,19 +225,23 @@ public class TileGroup extends Node implements Savable {
                         // tempV = normalize(light_pos - point)
                         tempV.set(pl.getLocation()).subtractLocal(point).normalizeLocal();
                         Ray r = new Ray(point, tempV.clone());
-                        TriMesh collided = (TriMesh) PickUtils.calculatePick(World.getWorld(), r, tempV, false);
-                        tempC.set(pl.getAmbient());
-                        if (collided == null){
-                            tempC.addLocal(pl.getDiffuse());
+                        TriMesh collided = (TriMesh) PickUtils.calculatePick(World.getWorld(), r, tempV2, false);
+                        float NdotL = tempV.dot(normal);
+                        if (NdotL < 0f){
+                            tempC.set(pl.getAmbient());
+                        }else{
+                            if (collided == null)
+                                tempC.set(pl.getDiffuse()).multLocal(NdotL).addLocal(pl.getAmbient());
+                            else
+                                tempC.set(pl.getAmbient());
                         }
-                        
-                        //float NdotL = tempV.dot(normal);
+                            
                         // tempC = Nd * NdotL + Na
-                        //tempC.set(pl.getDiffuse()).multLocal(NdotL).addLocal(pl.getAmbient());
+                        tempC.clamp();
                         result.addLocal(tempC);
-                    }
-                }*/
-                
+                    }*/
+                }
+
                 // convert result to bytes..
                 buf.put( (byte)(((int)(result.r * 255)) & 0xFF) );
                 buf.put( (byte)(((int)(result.g * 255)) & 0xFF) );

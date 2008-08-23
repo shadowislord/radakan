@@ -17,8 +17,8 @@ import com.jme.util.resource.SimpleResourceLocator;
 import com.radakan.entity.EntityFactory.EntityType;
 import com.radakan.entity.unit.ModelUnit;
 import com.radakan.game.tile.TextureSet;
-import com.radakan.game.tile.TextureSetLoader;
 import com.radakan.game.tile.TextureSet.Detailmap;
+import com.radakan.game.tile.TextureSetLoader;
 import com.radakan.util.ErrorHandler;
 import java.awt.Cursor;
 import java.awt.Image;
@@ -115,7 +115,7 @@ public class WorldTool extends javax.swing.JFrame {
 		ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
 		try {
 			InputStream in = new FileInputStream(f);
-			TextureSet set = TextureSetLoader.load(in);
+			TextureSet set = TextureSetLoader.load(in, false);
 			texturesets.addElement(set);
 			EditorState.texsetMap.put(set.toString(), set);
 			in.close();
@@ -405,7 +405,6 @@ public class WorldTool extends javax.swing.JFrame {
         });
 
         jButton1.setText("Preview Lightmaps");
-        jButton1.setEnabled(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -1083,7 +1082,7 @@ public class WorldTool extends javax.swing.JFrame {
 			ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
 			try {
 				InputStream in = new FileInputStream(f);
-				TextureSet set = TextureSetLoader.load(in);
+				TextureSet set = TextureSetLoader.load(in, false);
 				texturesets.addElement(set);
 				in.close();
 			} catch (IOException ex) {

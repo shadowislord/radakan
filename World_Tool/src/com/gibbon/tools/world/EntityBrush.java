@@ -51,7 +51,7 @@ public class EntityBrush {
         Vector3f point = new Vector3f();
         if (state.selectionMode){
             if (drag && !evt.isControlDown()){
-                TriMesh collided = PickUtils.findClickedObject(x, y, true, point);
+                TriMesh collided = PickUtils.findClickedObject(x, y, true, point, null);
                 
                 if (collided == null)
                     return;
@@ -64,13 +64,16 @@ public class EntityBrush {
                     Spatial model = ent.getUnit(ModelUnit.class).getModel();
                     model.getLocalTranslation().addLocal(offset);
                     model.updateWorldVectors();
-                    float h = PickUtils.getTerrainHeight(World.getWorld(), model.getWorldTranslation(), null);
+                    float h = PickUtils.getTerrainHeight(model.getWorldTranslation(), null, 
+                            PickUtils.NORMAL_FETCH |
+                            PickUtils.CRASH_IF_NAN |
+                            PickUtils.TERRAIN_NORMAL);
                     model.getLocalTranslation().y = h;
                     
                     model.updateGeometricState(0, true);
                 }
             }else if (!drag){
-                TriMesh collided = PickUtils.findClickedObject(x, y, false, point);
+                TriMesh collided = PickUtils.findClickedObject(x, y, false, point, null);
                 
                 if (collided == null || collided.getName().startsWith("TERRAIN"))
                     return;
@@ -93,7 +96,7 @@ public class EntityBrush {
                         selection.add(ent);
                     }
                 }else{
-                    PickUtils.findClickedObject(x, y, true, point);
+                    PickUtils.findClickedObject(x, y, true, point, null);
                     
                     // set selection
                     for (Entity e : selection){
@@ -106,7 +109,7 @@ public class EntityBrush {
                 }
             }
         }else if (!drag){
-            TriMesh collided = PickUtils.findClickedObject(x, y, true, point);
+            TriMesh collided = PickUtils.findClickedObject(x, y, true, point, null);
             
             if (collided == null) return;
 

@@ -1,6 +1,7 @@
 package com.gibbon.tools.world;
 
 import com.gibbon.jme.context.JmeContext;
+import com.jme.app.SimpleGame;
 import com.jme.bounding.BoundingBox;
 import com.jme.light.DirectionalLight;
 import com.jme.light.PointLight;
@@ -21,7 +22,6 @@ import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
 import com.radakan.game.tile.TextureSet;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -70,23 +70,26 @@ public class World extends Node {
 
         LightState ls = context.getRenderer().createLightState();
         ls.setSeparateSpecular(true);
-
+        
         DirectionalLight dl = new DirectionalLight();
         dl.setEnabled(true);
-        dl.setDirection(new Vector3f(0,0,-1).normalizeLocal());
-        dl.setDiffuse(new ColorRGBA(0.6f, 0.6f, 0.3f, 1.0f));
+        dl.setDirection(new Vector3f(-1,-1,-1).normalizeLocal());
+        dl.setDiffuse(new ColorRGBA( 0.75f, 0.75f, 0.75f, 0.75f ));
+        dl.setAmbient( new ColorRGBA( 0.5f, 0.5f, 0.5f, 1.0f ) );
         ls.attach(dl);
 
-        DirectionalLight dl2 = new DirectionalLight();
-        dl2.setEnabled(true);
-        dl.setDirection(new Vector3f(1,0.1f,0).normalizeLocal());
-        dl.setDiffuse(new ColorRGBA(0.4f, 0.4f, 0.8f, 1.0f));
-        ls.attach(dl2);
+//        DirectionalLight dl2 = new DirectionalLight();
+//        dl2.setEnabled(true);
+//        dl.setDirection(new Vector3f(1,0.1f,0).normalizeLocal());
+//        dl.setDiffuse(new ColorRGBA(0.4f, 0.4f, 0.8f, 1.0f));
+//        ls.attach(dl2);
 
         camLight = new PointLight();
         camLight.setEnabled(true);
-        camLight.setDiffuse(ColorRGBA.lightGray);
-        camLight.setSpecular(ColorRGBA.white);
+//        camLight.setDiffuse(ColorRGBA.lightGray);
+//        camLight.setSpecular(ColorRGBA.white);
+           camLight.setDiffuse(ColorRGBA.black);
+        camLight.setSpecular(ColorRGBA.black);
         
         ls.attach(camLight);
         setRenderState(ls);
