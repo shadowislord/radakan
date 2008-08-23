@@ -29,7 +29,7 @@ import static java.lang.Math.*;
  * - Now extends Node
  * - Some docs
  * 
- * @author Joshua Montgomery
+ * @author Kirill (MomokoFan)
  * @created Aug 18, 2008
  */
 public class TileManager extends Node {
