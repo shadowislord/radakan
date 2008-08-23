@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * 
  * @author Kirill Vainer
  */
-public class PakFileSystem implements FileSystem {
+public class PakFileSystem implements IFileSystem {
 
     private HashMap<Integer, TableEntry> hashToPointer;
     private FileChannel pakFileData;

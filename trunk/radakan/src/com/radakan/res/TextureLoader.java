@@ -11,7 +11,7 @@ import com.jme.util.TextureManager;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class TextureLoader implements ResourceLoader<Texture> {
+public class TextureLoader implements IResourceLoader<Texture> {
 
     private static final MinificationFilter defaultMinFilter = MinificationFilter.Trilinear;
     private static final MagnificationFilter defaultMagFilter = MagnificationFilter.Bilinear;
