@@ -20,7 +20,7 @@ import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
 import com.radakan.entity.unit.AbstractUnit;
-import com.radakan.entity.unit.Unit;
+import com.radakan.entity.unit.IUnit;
 import com.radakan.entity.unit.UnitEvent;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public final class Entity extends AbstractUnit {
 
     private String name;
     private String type;
-    private ArrayList<Unit> units = new ArrayList<Unit>();
+    private ArrayList<IUnit> units = new ArrayList<IUnit>();
     
     public Entity(String name, String type){
         this.name = name;
@@ -46,22 +46,22 @@ public final class Entity extends AbstractUnit {
 
     public void exportXML(PrintStream stream) {
         stream.println("    <entity name=\""+name+"\" type=\"" + type + "\">");
-        for (Unit u : units){
+        for (IUnit u : units){
             u.exportXML(stream);
         }
         stream.println("    </entity>");
     }
     
     @SuppressWarnings("unchecked")
-    public <T extends Unit> T getUnit(Class<T> clazz){
-        for (Unit u : units)
+    public <T extends IUnit> T getUnit(Class<T> clazz){
+        for (IUnit u : units)
             if (clazz.isInstance(u))
                 return (T) u;
         
         return null;
     }
     
-    public void attachUnit(Unit unit){
+    public void attachUnit(IUnit unit){
         units.add(unit);
         unit.attach(this);
         
@@ -72,7 +72,7 @@ public final class Entity extends AbstractUnit {
         notifyListeners(event);
     }
     
-    public void detachUnit(Unit unit){
+    public void detachUnit(IUnit unit){
         units.remove(unit);
         unit.detach();
         
@@ -92,7 +92,7 @@ public final class Entity extends AbstractUnit {
     }
     
     public void dispose(){
-        for (Unit u : units)
+        for (IUnit u : units)
             detachUnit(u);
         
         UnitEvent event = new UnitEvent();
@@ -103,7 +103,7 @@ public final class Entity extends AbstractUnit {
     }
     
     public void update(float tpf){
-        for (Unit u : units)
+        for (IUnit u : units)
             u.update(tpf);
     }
 

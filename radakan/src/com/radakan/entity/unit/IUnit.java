@@ -4,14 +4,14 @@ import com.jme.util.export.Savable;
 import com.radakan.entity.Entity;
 import java.io.PrintStream;
 
-public interface Unit extends Savable {
+public interface IUnit extends Savable {
 
     /**
      * Add a new UnitEventListener to be notified of events happening to this unit
      * 
      * @param listener The listener to add
      */
-    public void addEventListener(UnitEventListener listener);
+    public void addEventListener(IUnitEventListener listener);
 
     public void exportXML(PrintStream stream);
     
@@ -20,7 +20,7 @@ public interface Unit extends Savable {
      * 
      * @param listener The listener to remove
      */
-    public void removeEventListener(UnitEventListener listener);
+    public void removeEventListener(IUnitEventListener listener);
     
     /**
      * Update this unit's state
