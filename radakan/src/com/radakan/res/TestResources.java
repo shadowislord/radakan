@@ -12,7 +12,7 @@ public class TestResources {
         try {
             //FileSystem fileSystem = new ZipFileSystem(new File(System.getProperty("user.dir"), "data.zip"));
             // ------------ SETTING UP RESOURCEMANAGER -------------
-            FileSystem fileSystem = new PakFileSystem(new File(System.getProperty("user.dir"), "data.pak"));
+            IFileSystem fileSystem = new PakFileSystem(new File(System.getProperty("user.dir"), "data.pak"));
             ResourceManager.setFileSystem(fileSystem);
 
             ResourceManager.registerLoader(Texture.class, new TextureLoader());

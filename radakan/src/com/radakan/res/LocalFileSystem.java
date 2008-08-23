@@ -16,7 +16,7 @@ import java.nio.channels.ReadableByteChannel;
 /**
  * A FileSystem that accesses resources in the root directory on the local machine.
  */
-public class LocalFileSystem implements FileSystem {
+public class LocalFileSystem implements IFileSystem {
 
     /**
      * Flag to allow usage of file mapping.

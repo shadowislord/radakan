@@ -9,7 +9,7 @@ package com.radakan.res;
  * @author Daniel
  * @param T The type of the resource data.
  */
-public interface ResourceHandler<T> {
+public interface IResourceHandler<T> {
 
     /**
      * A callback method which is called when

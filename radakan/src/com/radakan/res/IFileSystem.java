@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 
 
-public interface FileSystem {
+public interface IFileSystem {
 
     /**
      * Opens an InputStream for the specified resource identifier.

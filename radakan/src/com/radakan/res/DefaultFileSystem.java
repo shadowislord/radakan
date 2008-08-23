@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  *
  * @author Tomás Lázaro
  */
-public class DefaultFileSystem implements FileSystem {
+public class DefaultFileSystem implements IFileSystem {
 
 	private File root;
 	private Map<String, String> resources = new TreeMap<String, String>();
@@ -35,7 +35,7 @@ public class DefaultFileSystem implements FileSystem {
 
    public DefaultFileSystem(String root) {
         try {
-            this.root = new File(DefaultFileSystem.class.getClassLoader().getResource(root).toURI());
+            this.root = new File(DefaultFileSystem.class.getResource(root).toURI());
             buildResourceMap(this.root);
         } catch (URISyntaxException ex) {
             Logger.getLogger(DefaultFileSystem.class.getName()).log(Level.SEVERE, null, ex);
