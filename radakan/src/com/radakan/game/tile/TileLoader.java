@@ -121,7 +121,20 @@ public class TileLoader {
                 Image alphaimage = TextureManager.loadImage(mapName, false);
                 alphamaps[usedMaps[i]].setImage(alphaimage);
             }
+            
+            // replace lightmap too
+            if (Tile.USE_LIGHTMAP){
+                String mapName = "light_"+ groupX + "_" + groupY + ".png";
+
+                Image lightimage = TextureManager.loadImage(mapName, false);
+
+                if (lightimage != null){
+                    // last alphamap is actually a lightmap
+                    alphamaps[alphamaps.length-1].setImage(lightimage);
+                }
+            }
         }
+        
         
         // XXX: might want to add a state.load() call here to upload
         // all alphamaps to the GPU
@@ -226,7 +239,7 @@ public class TileLoader {
             for (File f : rootFolder.listFiles()){
                 if (f.getName().toLowerCase().endsWith(".xml")){
                     InputStream in = new FileInputStream(f);
-                    TextureSet set = TextureSetLoader.load(in);
+                    TextureSet set = TextureSetLoader.load(in, Tile.USE_LIGHTMAP);
                     Tile.TEXTURE_SETS.put(set.toString(), set);
                     in.close();
                 }
@@ -253,6 +266,9 @@ public class TileLoader {
             Tile.GROUP_SIZE = XMLUtil.getIntAttribute(worldNode, "groupsize");
             Tile.TILE_SIZE = XMLUtil.getIntAttribute(worldNode, "tilesize");
             Tile.TILE_RESOLUTION = XMLUtil.getIntAttribute(worldNode, "tileres");
+            if (!XMLUtil.getAttribute(worldNode, "haslightmaps").equals("false")){
+                Tile.USE_LIGHTMAP = true;
+            }
         } catch (SAXException ex) {
             ErrorHandler.reportError("Error while parsing XML file", ex);
         } catch (IOException ex) {

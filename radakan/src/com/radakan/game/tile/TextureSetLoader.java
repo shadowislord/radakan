@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 
 public class TextureSetLoader {
 
-    public static TextureSet load(InputStream in) throws IOException{
+    public static TextureSet load(InputStream in, boolean useLightmap) throws IOException{
         Node n = XMLUtil.loadDocument(in, "textureset");
         if (n == null)
             return null;
@@ -43,6 +43,7 @@ public class TextureSetLoader {
         }
         
         set.setDetailmaps(detailmaps);
+        set.generateShader(useLightmap);
         return set;
     }
     
