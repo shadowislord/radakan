@@ -237,7 +237,6 @@ public class LWJGLContext extends JmeContext {
         rc.setupRecords(renderer);
         
         DisplaySystem display = DisplaySystem.getDisplaySystem();
-        System.out.println(display.getClass());
         RendererRecord matRecord = (RendererRecord) rc.getRendererRecord();
         
         if (display == null)

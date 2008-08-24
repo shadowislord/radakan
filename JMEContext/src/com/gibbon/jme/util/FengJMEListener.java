@@ -157,7 +157,6 @@ public class FengJMEListener implements MouseInputListener, KeyInputListener {
 		}
 	}
  
-	@Override
 	public void onKey(char character, int keyCode, boolean pressed) {
 			keyHandled = false;		
 			Key key = mapKeyEvent();
