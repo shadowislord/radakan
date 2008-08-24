@@ -21,5 +21,8 @@
 	<classpathentry kind="lib" path="lib/fenggui.jar"/>
 	<classpathentry kind="lib" path="lib/jme/jme-audio.jar"/>
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.3.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/FengGUI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jME2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/LWJGL2"/>
+	<classpathentry kind="output" path="dist"/>
 </classpath>

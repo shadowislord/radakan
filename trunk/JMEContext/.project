@@ -3,6 +3,7 @@
 	<name>JMEContext</name>
 	<comment></comment>
 	<projects>
+		<project>jME2</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

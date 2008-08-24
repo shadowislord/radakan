@@ -16,6 +16,7 @@
 package com.gibbon.jme.context;
 
 import java.awt.Canvas;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.jme.renderer.RenderContext;
 import com.jme.renderer.Renderer;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
+import com.jme.system.PropertiesGameSettings;
 import com.jme.util.Timer;
 
 /**
@@ -58,24 +60,255 @@ public abstract class JmeContext {
     protected static final GameSettings defaults;
     
     static {
-        defaults = new PreferencesGameSettings(Preferences.userNodeForPackage(JmeContext.class),
-                                                            true, null);
-        
-        defaults.setWidth(640);
-        defaults.setHeight(480);
-        defaults.setFrequency(60);
-        defaults.setDepth(16);
-        
-        defaults.setVerticalSync(false);
-        defaults.setFullscreen(false);
-        
-        defaults.setDepthBits(8);
-        defaults.setStencilBits(0);
-        defaults.setAlphaBits(0);
-        defaults.setSamples(0);
-        
-        defaults.setFramerate(60);
-        defaults.setRenderer("LWJGL");
+    	//defaults = new PropertiesGameSettings("properties.cfg");
+        //defaults = new PreferencesGameSettings(Preferences.userNodeForPackage(JmeContext.class), true, null);
+        defaults = new GameSettings(){
+			public void clear() throws IOException {
+			}
+
+			public String get(String name, String defaultValue) {
+				return null;
+			}
+
+			public int getAlphaBits() {
+				return 0;
+			}
+
+			public boolean getBoolean(String name, boolean defaultValue) {
+				return false;
+			}
+
+			public byte[] getByteArray(String name, byte[] bytes) {
+				return null;
+			}
+
+			public String getDefaultSettingsWidgetImage() {
+				return null;
+			}
+
+			public int getDepth() {
+				return 32;
+			}
+
+			public int getDepthBits() {
+				return 8;
+			}
+
+			public double getDouble(String name, double defaultValue) {
+				return 0;
+			}
+
+			public float getFloat(String name, float defaultValue) {
+				return 0;
+			}
+
+			public int getFramerate() {
+				// TODO Auto-generated method stub
+				return 60;
+			}
+
+			public int getFrequency() {
+				// TODO Auto-generated method stub
+				return 60;
+			}
+
+			public int getHeight() {
+				// TODO Auto-generated method stub
+				return 480;
+			}
+
+			public int getInt(String name, int defaultValue) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public long getLong(String name, long defaultValue) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public Object getObject(String name, Object obj) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public String getRenderer() {
+				// TODO Auto-generated method stub
+				return "LWJGL";
+			}
+
+			public int getSamples() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public int getStencilBits() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public int getWidth() {
+				// TODO Auto-generated method stub
+				return 640;
+			}
+
+			public boolean isFullscreen() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			public boolean isMusic() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			public boolean isNew() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			public boolean isSFX() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			public boolean isVerticalSync() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			public void save() throws IOException {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void set(String name, String value) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setAlphaBits(int alphaBits) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setBoolean(String name, boolean value) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setByteArray(String name, byte[] bytes) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setDepth(int depth) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setDepthBits(int depthBits) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setDouble(String name, double value) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setFloat(String name, float value) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setFramerate(int framerate) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setFrequency(int frequency) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setFullscreen(boolean fullscreen) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setHeight(int height) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setInt(String name, int value) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setLong(String name, long value) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setMusic(boolean musicEnabled) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setObject(String name, Object obj) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setRenderer(String renderer) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setSFX(boolean sfxEnabled) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setSamples(int samples) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setStencilBits(int stencilBits) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setVerticalSync(boolean vsync) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void setWidth(int width) {
+				// TODO Auto-generated method stub
+				
+			}
+        	
+        };
+    	
+//        defaults.setWidth(640);
+//        defaults.setHeight(480);
+//        defaults.setFrequency(60);
+//        defaults.setDepth(16);
+//        
+//        defaults.setVerticalSync(false);
+//        defaults.setFullscreen(false);
+//        
+//        defaults.setDepthBits(8);
+//        defaults.setStencilBits(0);
+//        defaults.setAlphaBits(0);
+//        defaults.setSamples(0);
+//        
+//        defaults.setFramerate(60);
+//        defaults.setRenderer("LWJGL");
     }
     
     protected static JmeContext current = null;
