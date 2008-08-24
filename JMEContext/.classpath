@@ -2,12 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/jme/jme.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://www.jmonkeyengine.com/doc/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="lib/jme"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/lwgjl/lwjgl.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="JMeContext/lib/lwgjl/native/win32"/>
@@ -18,11 +12,8 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Radakan/lib/lwjgl/native/win32"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/fenggui.jar"/>
-	<classpathentry kind="lib" path="lib/jme/jme-audio.jar"/>
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/FengGUI"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jME2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/LWJGL2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jme"/>
 	<classpathentry kind="output" path="dist"/>
 </classpath>
