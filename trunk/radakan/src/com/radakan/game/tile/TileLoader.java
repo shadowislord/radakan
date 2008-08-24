@@ -31,6 +31,7 @@ import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jmex.terrain.TerrainBlock;
+import com.radakan.entity.EntityFactory;
 import com.radakan.graphics.mesh.parser.Material;
 import com.radakan.graphics.mesh.parser.OgreLoader;
 import com.radakan.util.ErrorHandler;
@@ -173,6 +174,7 @@ public class TileLoader {
        return terrainMesh;
     }
     
+    @Deprecated
     private Spatial readModel(Node model) {
         String item = XMLUtil.getAttribute(model, "item");
         String modelName = XMLUtil.getAttribute(model, "name");
@@ -214,12 +216,15 @@ public class TileLoader {
     private void readTile(Node tile, int x, int y, Tile target){
         Node model = tile.getFirstChild();
         while (model != null){
-            if (model.getNodeName().equals("model")){
-                Spatial spat = readModel(model);
-                target.addObject(spat);
-            }else if (model.getNodeName().equals("terrain")){
+            //if (model.getNodeName().equals("model")){
+            //    Spatial spat = readModel(model);
+            //    target.addObject(spat);
+            //}else 
+            if (model.getNodeName().equals("terrain")){
                 Spatial spat = readTerrain(model, x, y);
                 target.setTerrain(spat);
+            }else if (model.getNodeName().equals("entity")){
+                
             }
             
             model = model.getNextSibling();
@@ -232,6 +237,20 @@ public class TileLoader {
     
     public void setMaterials(Map<String, Material> materials){
         materialMap = materials;
+    }
+    
+    public static void readEntityTypes(File rootFolder){
+        try{
+            for (File f : rootFolder.listFiles()){
+                if (f.getName().toLowerCase().endsWith(".xml")){
+                    InputStream in = new FileInputStream(f);
+                    EntityFactory.getInstance().load(in);
+                    in.close();
+                }
+            }
+        } catch (IOException ex){
+            ErrorHandler.reportError("Error while reading TextureSets", ex);
+        }
     }
     
     public static void readTextureSets(File rootFolder){

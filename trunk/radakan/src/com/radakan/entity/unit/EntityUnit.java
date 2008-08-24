@@ -6,6 +6,7 @@ import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.radakan.entity.EntityFactory.EntityType;
 import java.io.PrintStream;
+import org.w3c.dom.Node;
 
 public class EntityUnit extends AbstractUnit {
 
@@ -32,7 +33,10 @@ public class EntityUnit extends AbstractUnit {
     }
 
     public void exportXML(PrintStream stream) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //stream.println("<type name=\""+ type.name + "\" />");
+    }
+
+    public void importXML(Node rootEntityNode) {
     }
 
 }

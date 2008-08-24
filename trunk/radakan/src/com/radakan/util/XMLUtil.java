@@ -15,6 +15,8 @@
 
 package com.radakan.util;
 
+import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -89,6 +91,31 @@ public class XMLUtil {
     
     public static int getIntAttribute(Node node, String name){
         return Integer.parseInt(getAttribute(node,name));
+    }
+    
+    public static float str2float(String str){
+        return Float.parseFloat(str.trim());
+    }
+    
+    public static Vector3f getVec3Attribute(Node node, String name){
+        String[] split = getAttribute(node, name).split(",");
+        if (split == null || split.length != 3)
+            return null;
+        
+        return new Vector3f(str2float(split[0]),
+                            str2float(split[1]),
+                            str2float(split[2]));
+    }
+    
+    public static Quaternion getQuatAttribute(Node node, String name){
+        String[] split = getAttribute(node, name).split(",");
+        if (split == null || split.length != 4)
+            return null;
+        
+        return new Quaternion(str2float(split[0]),
+                              str2float(split[1]),
+                              str2float(split[2]),
+                              str2float(split[3]));
     }
     
 }

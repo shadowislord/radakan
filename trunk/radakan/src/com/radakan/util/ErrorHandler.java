@@ -55,8 +55,6 @@ public class ErrorHandler {
         ConsoleHandler ch = new ConsoleHandler();
         ch.setLevel(Level.ALL);
         Logger.getLogger("com.radakan").addHandler(ch);
-        
-        
     }
     
     public static void writeSystemInfo(PrintStream stream){

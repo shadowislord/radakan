@@ -46,6 +46,8 @@ public final class EntityFactory {
 
     private Map<String, EntityType> entityTypeMap = new HashMap<String, EntityType>();
     
+    private static final EntityFactory instance = new EntityFactory();
+    
     public static class EntityType {
         // entity params
         public String name;
@@ -54,6 +56,7 @@ public final class EntityFactory {
         
         // model params
         public com.jme.scene.Node model = null;
+        public String modelName;
         public float scaleStart = 1.0f, 
                      scaleEnd   = 1.0f;
         public float height = 0.0f;
@@ -63,6 +66,10 @@ public final class EntityFactory {
         public String toString(){
             return name;
         }
+    }
+    
+    public static EntityFactory getInstance(){
+        return instance;
     }
     
     private static Spatial readModel(String path) throws IOException{
@@ -91,7 +98,8 @@ public final class EntityFactory {
                     float scale  = XMLUtil.getFloatAttribute(modelNode, "scale", 1.0f);
                     float height = XMLUtil.getFloatAttribute(modelNode, "height", 0.0f);
                     
-                    final Spatial model = readModel(XMLUtil.getAttribute(modelNode, "src"));
+                    ent.modelName = XMLUtil.getAttribute(modelNode, "src");
+                    final Spatial model = readModel(ent.modelName);
                     com.jme.scene.Node node = null;
                     if (!(model instanceof Node)){
                         node = new com.jme.scene.Node(model.getName()+"_node");
@@ -138,6 +146,24 @@ public final class EntityFactory {
         return entityTypeMap.values();
     }
     
+    public com.jme.scene.Node cloneModelForEntity(String typename, String name){
+        EntityType type = entityTypeMap.get(typename);
+        if (type == null)
+            return null;
+     
+        com.jme.scene.Node node = (com.jme.scene.Node) ModelCloneUtil.cloneSmart(type.model);
+        node.setName(name);
+        node.updateModelBound();
+        node.updateWorldBound();
+        node.updateGeometricState(0, true);
+        
+        return node;
+    }
+    
+    public Entity realize(Node rootEntityNode){
+        return new Entity(rootEntityNode);
+    }
+    
     public Entity produce(String typename, String name){
         EntityType type = entityTypeMap.get(typename);
         if (type == null)
@@ -156,7 +182,9 @@ public final class EntityFactory {
             node.updateModelBound();
             node.updateWorldBound();
             node.updateGeometricState(0, true);
-            ModelUnit model = new ModelUnit(node);
+            
+            String shortModelName = new File(type.modelName).getName();
+            ModelUnit model = new ModelUnit(node, shortModelName);
             ent.attachUnit(model);
         }
         
@@ -179,7 +207,7 @@ public final class EntityFactory {
         }
     }
     
-    public EntityFactory(){
+    private EntityFactory(){
     }
     
 }
