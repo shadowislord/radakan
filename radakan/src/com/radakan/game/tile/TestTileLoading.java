@@ -30,7 +30,7 @@ public class TestTileLoading extends SimpleGame {
     @Override
     protected void simpleInitGame() {
         try{
-            SimpleResourceLocator srl = new SimpleResourceLocator(new File("C:\\Users\\Kirill\\Desktop\\TILE_EXPORT\\").toURI());
+            SimpleResourceLocator srl = new SimpleResourceLocator(new File("E:\\Radakan\\src\\com\\radakan\\data\\tiles\\").toURI());
             ResourceLocatorTool.addResourceLocator("tile", srl);
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl);
             
@@ -38,6 +38,7 @@ public class TestTileLoading extends SimpleGame {
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl);
 
             URL worldMetaURL = ResourceLocatorTool.locateResource("tile", "world.xml");
+            System.out.println(worldMetaURL);
             
             TileLoader.readWorldMeta(worldMetaURL);
             TileLoader.readTextureSets(new File("E:\\Radakan\\src\\com\\radakan\\data\\texturesets\\"));

@@ -3,6 +3,7 @@ package com.radakan.entity.unit;
 import com.jme.util.export.Savable;
 import com.radakan.entity.Entity;
 import java.io.PrintStream;
+import org.w3c.dom.Node;
 
 public interface IUnit extends Savable {
 
@@ -14,6 +15,8 @@ public interface IUnit extends Savable {
     public void addEventListener(IUnitEventListener listener);
 
     public void exportXML(PrintStream stream);
+    
+    public void importXML(Node rootEntityNode);
     
     /**
      * Remove a UnitEventListener to stop being notified of events of this unit

@@ -21,6 +21,7 @@ import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
 import com.radakan.entity.unit.AbstractUnit;
 import com.radakan.entity.unit.IUnit;
+import com.radakan.entity.unit.ModelUnit;
 import com.radakan.entity.unit.UnitEvent;
 
 import com.radakan.util.XMLUtil;
@@ -86,14 +87,14 @@ public final class Entity extends AbstractUnit {
         while (childNode != null){
             String childName = childNode.getNodeName();
             try {
-                Class<? extends Unit> clazz = null;
+                Class<? extends IUnit> clazz = null;
                 if (childName.contains(".")){
-                    clazz = (Class<? extends Unit>) Class.forName(childName);
+                    clazz = (Class<? extends IUnit>) Class.forName(childName);
                 }else{
-                    clazz = (Class<? extends Unit>) Class.forName("com.radakan.entity.unit."+childName);
+                    clazz = (Class<? extends IUnit>) Class.forName("com.radakan.entity.unit."+childName);
                 }
                 
-                Unit u = clazz.newInstance();
+                IUnit u = clazz.newInstance();
                 attachUnit(u);
                 u.importXML(childNode);
             } catch (ClassNotFoundException ex) {
@@ -113,8 +114,8 @@ public final class Entity extends AbstractUnit {
     }
     
     @SuppressWarnings("unchecked")
-    public <T extends Unit> T getUnit(Class<T> clazz){
-        for (Unit u : units)
+    public <T extends IUnit> T getUnit(Class<T> clazz){
+        for (IUnit u : units)
             if (clazz.isInstance(u))
                 return (T) u;
         

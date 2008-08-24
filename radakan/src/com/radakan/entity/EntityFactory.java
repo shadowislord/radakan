@@ -108,13 +108,13 @@ public final class EntityFactory {
                         node = (com.jme.scene.Node)model;
                     }
                     
-                    Callable<Object> exe = new Callable<Object>(){
-                        public Object call(){
-                            model.lockMeshes();
-                            return null;
-                        }
-                    };
-                    JmeContext.get().executeLater(exe);
+//                    Callable<Object> exe = new Callable<Object>(){
+//                        public Object call(){
+//                            model.lockMeshes();
+//                            return null;
+//                        }
+//                    };
+//                    JmeContext.get().executeLater(exe);
                     node.setModelBound(new BoundingBox());
                     node.updateModelBound();
                     node.updateWorldBound();
