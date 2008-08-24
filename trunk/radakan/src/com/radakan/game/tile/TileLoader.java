@@ -285,7 +285,7 @@ public class TileLoader {
             Tile.GROUP_SIZE = XMLUtil.getIntAttribute(worldNode, "groupsize");
             Tile.TILE_SIZE = XMLUtil.getIntAttribute(worldNode, "tilesize");
             Tile.TILE_RESOLUTION = XMLUtil.getIntAttribute(worldNode, "tileres");
-            if (!XMLUtil.getAttribute(worldNode, "haslightmaps").equals("false")){
+            if (!XMLUtil.getAttribute(worldNode, "useslightmaps").equals("false")){
                 Tile.USE_LIGHTMAP = true;
             }
         } catch (SAXException ex) {
@@ -296,7 +296,8 @@ public class TileLoader {
             ErrorHandler.reportError("Error while parsing XML file", ex);
         } finally {
             try {
-                in.close();
+                if (in != null)
+                    in.close();
             } catch (IOException ex) {
                 ErrorHandler.reportError("Error while parsing XML file", ex);
             }
