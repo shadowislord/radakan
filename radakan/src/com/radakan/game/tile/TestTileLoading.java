@@ -41,7 +41,8 @@ public class TestTileLoading extends SimpleGame {
             
             TileLoader.readWorldMeta(worldMetaURL);
             TileLoader.readTextureSets(new File("E:\\Radakan\\src\\com\\radakan\\data\\texturesets\\"));
-
+            TileLoader.readEntityTypes(new File("E:\\Radakan\\src\\com\\radakan\\data\\entities\\"));
+            
             TileManager manager = new TileManager(display.getRenderer());
             rootNode.attachChild(manager);
 

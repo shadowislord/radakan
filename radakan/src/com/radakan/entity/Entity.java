@@ -23,25 +23,50 @@ import com.radakan.entity.unit.AbstractUnit;
 import com.radakan.entity.unit.IUnit;
 import com.radakan.entity.unit.UnitEvent;
 
+import com.radakan.util.XMLUtil;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.w3c.dom.Node;
 
 /**
  * An entity class which implements the component-entity architecture.
  * The entity is actually a unit container..
  * 
- * @author Momoko_Fan
+ * See: http://cowboyprogramming.com/2007/01/05/evolve-your-heirachy/
+ * 
+ * @author Kirill Vainer
  */
 public final class Entity extends AbstractUnit {
 
+    /**
+     * Name of the entity. This is a dynamic variable.
+     */
     private String name;
+    
+    /**
+     * Type of entity, given to EntityFactory to load a certain entity from XML definitions.
+     */
     private String type;
     private ArrayList<IUnit> units = new ArrayList<IUnit>();
     
     public Entity(String name, String type){
         this.name = name;
         this.type = type;
+    }
+
+    public Entity(Node rootEntityNode) {
+        importXML(rootEntityNode);
+    }
+    
+    public String getName(){
+        return name;
+    }
+    
+    public String getType(){
+        return type;
     }
 
     public void exportXML(PrintStream stream) {
@@ -53,8 +78,43 @@ public final class Entity extends AbstractUnit {
     }
     
     @SuppressWarnings("unchecked")
-    public <T extends IUnit> T getUnit(Class<T> clazz){
-        for (IUnit u : units)
+    public void importXML(Node rootEntityNode){
+        name = XMLUtil.getAttribute(rootEntityNode, "name");
+        type = XMLUtil.getAttribute(rootEntityNode, "type");
+        
+        Node childNode = rootEntityNode.getFirstChild();
+        while (childNode != null){
+            String childName = childNode.getNodeName();
+            try {
+                Class<? extends Unit> clazz = null;
+                if (childName.contains(".")){
+                    clazz = (Class<? extends Unit>) Class.forName(childName);
+                }else{
+                    clazz = (Class<? extends Unit>) Class.forName("com.radakan.entity.unit."+childName);
+                }
+                
+                Unit u = clazz.newInstance();
+                attachUnit(u);
+                u.importXML(childNode);
+            } catch (ClassNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (InstantiationException ex){
+                ex.printStackTrace();
+            } catch (IllegalAccessException ex){
+                ex.printStackTrace();
+            }
+            
+            childNode = childNode.getNextSibling();
+        }
+    }
+    
+    public ModelUnit getModel(){
+        return getUnit(ModelUnit.class);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T extends Unit> T getUnit(Class<T> clazz){
+        for (Unit u : units)
             if (clazz.isInstance(u))
                 return (T) u;
         
