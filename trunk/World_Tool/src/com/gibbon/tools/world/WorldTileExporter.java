@@ -144,9 +144,10 @@ public class WorldTileExporter {
         File worldMetaFile = new File(folder, "world.xml");
        
         PrintStream stream = new PrintStream(worldMetaFile);
-        stream.println("<world tilesize=\"" + world.getTileSize() + "\" " +
-                              "groupsize=\"" + world.getGroupSize() + "\" " +
-                              "tileres=\"" + world.getGridResolution() + "\" >");
+        stream.println("<world tilesize=\"" + world.getTileSize() + "\" \n" +
+                              "groupsize=\"" + world.getGroupSize() + "\" \n" +
+                              "tileres=\"" + world.getGridResolution() + "\" \n" +
+                              "useslightmaps=\"true\" />");
         
         for (Spatial spat : world.getChildren()){
             if (spat instanceof TileGroup){
@@ -155,7 +156,7 @@ public class WorldTileExporter {
             }
         }
         
-        stream.println("</world>");
+        //stream.println("</world>");
         stream.close();
     }
     

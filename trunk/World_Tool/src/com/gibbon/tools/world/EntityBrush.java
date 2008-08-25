@@ -18,12 +18,10 @@ import java.util.List;
 
 public class EntityBrush {
 
-    public static EntityFactory factory;
     private static Vector3f startDrag = new Vector3f();
+    private static int id = 0;
     
     public static Collection<EntityType> loadEntityTypes() throws IOException{
-        factory = new EntityFactory();
-        
         File entitiesFile = new File(System.getProperty("user.dir")+"/entities/");
 		if(!entitiesFile.exists()){
 			entitiesFile.mkdir();
@@ -31,14 +29,14 @@ public class EntityBrush {
         for (File f : entitiesFile.listFiles()){
             if (f.getName().endsWith(".xml")){
                 InputStream in = new FileInputStream(f);
-                factory.load(in);
+                EntityFactory.getInstance().load(in);
                 in.close();
             }
         }
         
         
         
-        return factory.getLoadedTypes();
+        return EntityFactory.getInstance().getLoadedTypes();
     }
     
     public static void doMouseAction(int x, int y, boolean drag, boolean finish){
@@ -113,7 +111,7 @@ public class EntityBrush {
             
             if (collided == null) return;
 
-            Entity entity = factory.produce(state.entityType.name, "ENTITY");
+            Entity entity = EntityFactory.getInstance().produce(state.entityType.name, state.entityType.name + (id++) );
             ModelUnit model = entity.getUnit(ModelUnit.class);
 
             Tile t = (Tile) collided.getParent();
