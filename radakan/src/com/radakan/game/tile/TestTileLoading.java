@@ -8,29 +8,38 @@ import java.net.URL;
 import com.gibbon.jme.context.*;
 import com.jme.scene.Node;
 import com.jme.util.GameTaskQueueManager;
+import com.radakan.game.world.World;
 import com.radakan.util.ErrorHandler;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 public class TestTileLoading extends SimpleGame {
 
     public static void main(String[] args){
-        ErrorHandler.bindUncaughtExceptionHandler();
-        
-        Logger.getLogger("com.radakan").setLevel(Level.ALL);
-        Logger.getLogger(ResourceLocatorTool.class.getName()).setLevel(Level.SEVERE);
-        Logger.getLogger(Node.class.getName()).setLevel(Level.WARNING);
-        
-        TestTileLoading app = new TestTileLoading();
-        app.setConfigShowMode(ConfigShowMode.AlwaysShow);
-        app.start();
+//        ErrorHandler.bindUncaughtExceptionHandler();
+//        
+//        Logger.getLogger("com.radakan").setLevel(Level.ALL);
+//        Logger.getLogger(ResourceLocatorTool.class.getName()).setLevel(Level.SEVERE);
+//        Logger.getLogger(Node.class.getName()).setLevel(Level.WARNING);
+//        
+//        TestTileLoading app = new TestTileLoading();
+//        app.setConfigShowMode(ConfigShowMode.AlwaysShow);
+//        app.start();
     }
-
+    
+    protected void setupResourceLocators(){
+        // need to setup resource locators for paths in 
+        // WORKING DIRECTORY, DATA PAK FILE, and LEVEL PAK FILE
+        
+        
+    }
+    
     @Override
     protected void simpleInitGame() {
         try{
-            SimpleResourceLocator srl = new SimpleResourceLocator(new File("E:\\Radakan\\src\\com\\radakan\\data\\tiles\\").toURI());
+            SimpleResourceLocator srl = new SimpleResourceLocator(new File("com/radakan/data/tiles/").toURI());
             ResourceLocatorTool.addResourceLocator("tile", srl);
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl);
             
@@ -38,11 +47,9 @@ public class TestTileLoading extends SimpleGame {
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl);
 
             URL worldMetaURL = ResourceLocatorTool.locateResource("tile", "world.xml");
-            System.out.println(worldMetaURL);
-            
-            TileLoader.readWorldMeta(worldMetaURL);
-            TileLoader.readTextureSets(new File("E:\\Radakan\\src\\com\\radakan\\data\\texturesets\\"));
-            TileLoader.readEntityTypes(new File("E:\\Radakan\\src\\com\\radakan\\data\\entities\\"));
+
+//            TileLoader.readTextureSets(new File("E:\\Radakan\\src\\com\\radakan\\data\\texturesets\\"));
+//            TileLoader.readEntityTypes(new File("E:\\Radakan\\src\\com\\radakan\\data\\entities\\"));
             
             TileManager manager = new TileManager(display.getRenderer());
             rootNode.attachChild(manager);

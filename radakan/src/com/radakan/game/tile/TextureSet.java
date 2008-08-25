@@ -9,6 +9,7 @@ import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import com.jme.image.Texture2D;
 import com.jme.renderer.Renderer;
+import com.jme.scene.state.FogState;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
@@ -16,6 +17,7 @@ import com.jme.util.geom.BufferUtils;
 
 import com.radakan.graphics.terrain.AlphaDetailLayer;
 import com.radakan.graphics.terrain.BaseLayer;
+import com.radakan.graphics.terrain.FogLayer;
 import com.radakan.graphics.terrain.LightLayer;
 import com.radakan.graphics.terrain.SplatEnv;
 
@@ -100,7 +102,7 @@ public class TextureSet {
         return image == nilImage;
     }
     
-    public void generateShader(boolean useLightmap){
+    public void generateShader(boolean useLightmap, boolean useFog){
         env = new SplatEnv();
         
         BaseLayer bl = new BaseLayer(detailmaps.get(0).colormap);
@@ -122,6 +124,11 @@ public class TextureSet {
         }else{
             LightLayer ll = new LightLayer();
             env.addLayer(ll);
+        }
+        
+        if (useFog){
+            FogLayer fl = new FogLayer();
+            env.addLayer(fl);
         }
         
         final Renderer r = DisplaySystem.getDisplaySystem().getRenderer();
