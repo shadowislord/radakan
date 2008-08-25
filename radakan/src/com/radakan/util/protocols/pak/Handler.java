@@ -23,7 +23,8 @@ public class Handler extends URLStreamHandler {
         
         private InputStream in;
         
-        public PAKConnection(){
+        public PAKConnection(URL url){
+        	super(url);
         }
         
         public void connect() throws IOException {
