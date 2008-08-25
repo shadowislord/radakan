@@ -14,6 +14,7 @@ import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
+import com.radakan.entity.EntityFactory;
 import com.radakan.entity.EntityFactory.EntityType;
 import com.radakan.entity.unit.ModelUnit;
 import com.radakan.game.tile.TextureSet;
@@ -1263,7 +1264,7 @@ public class WorldTool extends javax.swing.JFrame {
 			EditorState edState = EditorState.getState();
 			edState.entityType = (EntityType) node.getUserObject();
 
-			edState.entityTypePrototype = EntityBrush.factory.produce(edState.entityType.name, "PROTOTYPE");
+			edState.entityTypePrototype = EntityFactory.getInstance().produce(edState.entityType.name, "PROTOTYPE");
 //            Spatial model = state.entityTypePrototype.getUnit(ModelUnit.class).getModel();
 //            World.getWorld().update();
 		} else {
