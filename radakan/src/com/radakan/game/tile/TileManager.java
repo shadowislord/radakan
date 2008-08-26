@@ -96,6 +96,14 @@ public class TileManager extends Node {
         this.groupSize = groupSize;
     }
     
+    public float getLoadDistance(){
+        return loadDistance;
+    }
+    
+    public float getUnloadDistance(){
+        return unloadDistance;
+    }
+    
     public void setLoadDistance(float loadDistance){
         this.loadDistance = loadDistance;
     }
@@ -190,8 +198,9 @@ public class TileManager extends Node {
                 temp.subtractLocal(tileSize * .5f, 0f, tileSize * .5f);
                 
                 // set y to zero, only want to check distance on XY plane
+                temp.y = 0f;
                 temp2.set(cam.getLocation()).y = 0f;
-                if (temp2.distance(temp) > loadDistance){
+                if (temp2.distance(temp) > unloadDistance){
                     unloadAndDetach(tile);
                 }
             }
@@ -207,7 +216,15 @@ public class TileManager extends Node {
 
         for (int y = loadEndTileY; y <= loadStartTileY; y++){
             for (int x = loadEndTileX; x <= loadStartTileX; x++){
-                 loadAndAttach(x,y);
+                temp.set(tileToWorld(x, y));
+                temp.subtractLocal(tileSize * .5f, 0f, tileSize * .5f);
+                
+                temp.y = 0f;
+                temp2.set(cam.getLocation()).y = 0f;
+                
+                if (temp2.distance(temp) <= loadDistance){
+                    loadAndAttach(x,y);
+                }
             }
         }
     }

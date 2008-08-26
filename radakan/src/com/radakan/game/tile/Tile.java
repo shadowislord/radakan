@@ -14,6 +14,7 @@
  */
 package com.radakan.game.tile;
 
+import com.jme.bounding.BoundingBox;
 import com.jme.image.Image;
 import com.jme.image.Texture2D;
 import com.jme.math.Vector2f;
@@ -205,9 +206,9 @@ public class Tile extends com.jme.scene.Node{
         setTerrain(loadTerrainBlock(terrainXMLNode));
         loadTexturing(terrainXMLNode);
         
-        VBOInfo info = new VBOInfo(true);
-        info.setVBOIndexEnabled(true);
-        terrain.setVBOInfo(info);
+        VBOInfo vbo = new VBOInfo(true);
+        vbo.setVBOIndexEnabled(true);
+        terrain.setVBOInfo(vbo);
     }
 
     protected void loadTile(Node tileXMLNode) {
@@ -243,6 +244,9 @@ public class Tile extends com.jme.scene.Node{
             InputStream in = url.openStream();
             loadTile(loadDocument(in, "tile"));
             in.close();
+            
+            setModelBound(new BoundingBox());
+            updateModelBound();
 
             logger.finest(getName()+" loaded successfuly.");
 

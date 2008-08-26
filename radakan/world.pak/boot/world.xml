@@ -1,0 +1,10 @@
+<world>
+    <sky cubemap="snow_cube.dds"/>
+    <fog color="#AABBFF" />
+    <tilemanager tilesize="64" 
+                 
+groupsize="3" 
+
+
+                 uselightmaps="true" />
+</world>
