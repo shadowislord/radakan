@@ -158,11 +158,24 @@ public class XMLUtil {
         if (att == null)
             return defVal;
         
-        String split[] = att.split(",");
-        return new ColorRGBA(str2float(split[0]),
-                             str2float(split[1]),
-                             str2float(split[2]),
-                             str2float(split[3]));
+        if (att.startsWith("#")){
+            // parse HEX color
+            att = att.substring(1);
+            
+            int rgb = Integer.parseInt(att, 16);
+            if (att.length() == 6)
+                rgb = (rgb << 8) | 0xFF;
+
+            ColorRGBA color = new ColorRGBA();
+            color.fromIntRGBA(rgb);
+            return color;
+        }else{
+            String split[] = att.split(",");
+            return new ColorRGBA(str2float(split[0]),
+                                 str2float(split[1]),
+                                 str2float(split[2]),
+                                 str2float(split[3]));
+        }
     }
     
 }

@@ -29,6 +29,8 @@ import com.jme.scene.state.FogState;
 import com.jme.scene.state.FogState.CoordinateSource;
 import com.jme.scene.state.FogState.DensityFunction;
 import com.jme.scene.state.LightState;
+import com.jme.scene.state.ZBufferState;
+import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.system.GameSettings;
 import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
@@ -74,7 +76,15 @@ public class World extends com.jme.scene.Node {
         this.renderer = renderer;
         this.gameSettings = gameSettings;
         
+        // make sure to attach sky first
         worldSky = new com.jme.scene.Node("World Sky Node");
+        worldSky.setRenderQueueMode(Renderer.QUEUE_SKIP);
+        
+        ZBufferState noWrite = renderer.createZBufferState();
+        noWrite.setWritable(false);
+        noWrite.setFunction(TestFunction.Always);
+        worldSky.setRenderState(noWrite);
+        
         attachChild(worldSky);
         
         worldLighting = renderer.createLightState();
@@ -90,6 +100,14 @@ public class World extends com.jme.scene.Node {
         tileManager = new TileManager(renderer);
         tileManager.setEnabled(false);
         attachChild(tileManager);
+    }
+    
+    @Override
+    public void updateWorldData(float tpf){
+        super.updateWorldData(tpf);
+        
+        Camera cam = renderer.getCamera();
+        worldSky.setLocalTranslation(cam.getLocation());
     }
     
     /**
@@ -139,7 +157,7 @@ public class World extends com.jme.scene.Node {
      * @param imageN
      * @return
      */
-    private static final Texture extractTextureFromCubemap(TextureCubeMap cubemap, int imageN){
+    private static final Texture extractTextureFromCubemap(Texture cubemap, int imageN){
         Texture tex = new Texture2D();
         
         tex.setMinificationFilter(cubemap.getMinificationFilter());
@@ -172,20 +190,15 @@ public class World extends com.jme.scene.Node {
         }
         
         URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, cubemapPath);
-        Texture tex = TextureManager.loadTexture(url, true);
-        if (!(tex instanceof TextureCubeMap)){
-            logger.warning("Specified sky image is not a cubemap");
-            return;
-        }
-        TextureCubeMap cubemap = (TextureCubeMap) tex;
+        Texture cubemap = TextureManager.loadTexture(url, true);
         
-        Skybox box = new Skybox("World Skybox", 1f, 1f, 1f);
-        box.setTexture(Face.West,  extractTextureFromCubemap(cubemap, 0));
-        box.setTexture(Face.East,  extractTextureFromCubemap(cubemap, 1));
+        Skybox box = new Skybox("World Skybox", 2f, 2f, 2f);
+        box.setTexture(Face.North, extractTextureFromCubemap(cubemap, 0));
+        box.setTexture(Face.South, extractTextureFromCubemap(cubemap, 1));
         box.setTexture(Face.Up,    extractTextureFromCubemap(cubemap, 2));
         box.setTexture(Face.Down,  extractTextureFromCubemap(cubemap, 3));
-        box.setTexture(Face.North, extractTextureFromCubemap(cubemap, 4));
-        box.setTexture(Face.South, extractTextureFromCubemap(cubemap, 5));
+        box.setTexture(Face.West,  extractTextureFromCubemap(cubemap, 4));
+        box.setTexture(Face.East,  extractTextureFromCubemap(cubemap, 5));
         
         worldSky.attachChild(box);
     }
