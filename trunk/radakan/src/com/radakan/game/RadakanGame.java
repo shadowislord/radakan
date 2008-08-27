@@ -34,7 +34,6 @@ import com.radakan.gui.console.JmeConsole;
 import com.radakan.gui.console.ScriptSystem;
 import com.radakan.gui.dialogs.GameSettingsDialog;
 import com.radakan.util.ErrorHandler;
-import com.radakan.util.SysInfo;
 
 /**
  * @author Joshua Montgomery

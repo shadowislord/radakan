@@ -37,6 +37,7 @@ public class TestTileLoading extends SimpleGame {
         Game.setupDefaultLocators();
         
         settings.setBoolean("GameLightmaps", true);
+        settings.setFloat("GameViewDistance", 64*3);
         
         URL worldURL = ResourceLocatorTool.locateResource("boot", "world.xml");
         World world = new World(display.getRenderer(), settings);
