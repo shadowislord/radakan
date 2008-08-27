@@ -86,23 +86,31 @@ public final class Entity extends AbstractUnit {
         Node childNode = rootEntityNode.getFirstChild();
         while (childNode != null){
             String childName = childNode.getNodeName();
-            try {
-                Class<? extends IUnit> clazz = null;
-                if (childName.contains(".")){
-                    clazz = (Class<? extends IUnit>) Class.forName(childName);
-                }else{
-                    clazz = (Class<? extends IUnit>) Class.forName("com.radakan.entity.unit."+childName);
+            if (!childName.equals("#text")){
+                try {
+                    Class<? extends IUnit> clazz = null;
+                    if (childName.contains(".")){
+                        clazz = (Class<? extends IUnit>) Class.forName(childName);
+                    }else{
+                        clazz = (Class<? extends IUnit>) Class.forName("com.radakan.entity.unit."+childName);
+                    }
+
+                    if (clazz == null){
+                        childNode = childNode.getNextSibling();
+                        continue;
+                    }
+                         
+                    IUnit u = clazz.newInstance();
+                    attachUnit(u);
+                    u.importXML(childNode);
+                } catch (ClassNotFoundException ex) {
+                    childNode = childNode.getNextSibling();
+                    continue;
+                } catch (InstantiationException ex){
+                    ex.printStackTrace();
+                } catch (IllegalAccessException ex){
+                    ex.printStackTrace();
                 }
-                
-                IUnit u = clazz.newInstance();
-                attachUnit(u);
-                u.importXML(childNode);
-            } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (InstantiationException ex){
-                ex.printStackTrace();
-            } catch (IllegalAccessException ex){
-                ex.printStackTrace();
             }
             
             childNode = childNode.getNextSibling();

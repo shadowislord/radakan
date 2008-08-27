@@ -79,6 +79,8 @@ public class Game {
         // WORKING DIRECTORY, DATA PAK FILE, and LEVEL PAK FILE
         
         String urlString = root.toString();
+        if (urlString.endsWith("/"))
+            urlString = urlString.substring(0, urlString.length() -1);
         
         try{
             URL dataImages     = new URL(urlString + "/data/images/");
@@ -86,6 +88,7 @@ public class Game {
             URL dataTiles      = new URL(urlString + "/data/tiles/");
             URL dataTilesMaps  = new URL(urlString + "/data/tiles/maps/");
 
+            URL metaEntity     = new URL(urlString + "/meta/entity/");
             URL metaTextureset = new URL(urlString + "/meta/textureset/");
             URL codeScript     = new URL(urlString + "/code/script/");
             URL boot           = new URL(urlString + "/boot/");
@@ -94,7 +97,7 @@ public class Game {
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, imagesLocator);
             
             SimpleResourceLocator modelsLocator = new SimpleResourceLocator(dataModels);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, imagesLocator);
+            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, modelsLocator);
             
             SimpleResourceLocator tileLocator = new SimpleResourceLocator(dataTiles);
             ResourceLocatorTool.addResourceLocator("tile", tileLocator);
@@ -104,6 +107,9 @@ public class Game {
             
             SimpleResourceLocator metaTSetLocator = new SimpleResourceLocator(metaTextureset);
             ResourceLocatorTool.addResourceLocator("textureset", metaTSetLocator);
+            
+            SimpleResourceLocator metaEntityLocator = new SimpleResourceLocator(metaEntity);
+            ResourceLocatorTool.addResourceLocator("entity", metaEntityLocator);
             
             SimpleResourceLocator bootLocator = new SimpleResourceLocator(boot);
             ResourceLocatorTool.addResourceLocator("boot", bootLocator);

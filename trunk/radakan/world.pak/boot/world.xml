@@ -1,5 +1,5 @@
 <world>
-    <sky cubemap="snow_cube.dds"/>
+    <sky cubemap="space_cube.dds"/>
     <fog color="#AABBFF" />
     <tilemanager tilesize="64" 
                  

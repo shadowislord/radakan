@@ -48,7 +48,7 @@ public class ModelCloneUtil {
         
         // buffers
         target.setVertexBuffer(source.getVertexBuffer());
-        target.setColorBuffer(source.getVertexBuffer());
+        target.setColorBuffer(source.getColorBuffer());
         target.setBinormalBuffer(source.getBinormalBuffer());
         target.setTangentBuffer(source.getTangentBuffer());
         target.setNormalBuffer(source.getNormalBuffer());

@@ -38,7 +38,7 @@
 
     </terrain>
     <entity name="Tree0" type="Tree">
-    <ModelUnit filename="Tree.mesh.xml"
+         <ModelUnit filename="Tree.mesh.xml"
                translation="-5.8451147, -3.8146973E-6, -4.3815384"
                rotation="0.0, 0.0, 0.0, 1.0"
                scale="1.0, 1.0, 1.0" />
@@ -79,4 +79,5 @@
                rotation="0.0, 0.0, 0.0, 1.0"
                scale="1.0, 1.0, 1.0" />
     </entity>
+
 </tile>

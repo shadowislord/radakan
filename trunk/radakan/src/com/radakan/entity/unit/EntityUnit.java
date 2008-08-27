@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
-import com.radakan.entity.EntityFactory.EntityType;
+import com.radakan.entity.EntityManager.EntityType;
 import java.io.PrintStream;
 import org.w3c.dom.Node;
 

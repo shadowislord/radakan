@@ -27,7 +27,10 @@ import com.jme.renderer.Camera;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
+import com.jme.scene.state.CullState;
+import com.jme.system.DisplaySystem;
 import com.jme.util.resource.ResourceLocatorTool;
+import com.radakan.game.util.IShadowManager;
 import com.radakan.util.ErrorHandler;
 
 /**In Middle of creation
@@ -56,12 +59,20 @@ public class TileManager extends Node {
     private int tileSize;
     private int groupSize;
 
+    private IShadowManager shadowManager;
+    
     /** 
      * Create a new tile manager 
      */
     public TileManager(Renderer renderer) {
+        super("Tile Manager");
         if (instance != null)
             throw new IllegalStateException("Cannot create more than one TileManager");
+        
+        setRenderQueueMode(Renderer.QUEUE_OPAQUE);
+        CullState cs = DisplaySystem.getDisplaySystem().getRenderer().createCullState();
+        cs.setCullFace(CullState.Face.Back);
+        setRenderState(cs);
         
         this.renderer = renderer;
         instance = this;
@@ -70,6 +81,14 @@ public class TileManager extends Node {
     
     public static TileManager getInstance(){
         return instance;
+    }
+    
+    public IShadowManager getShadowManager(){
+        return shadowManager;
+    }
+    
+    public void setShadowManager(IShadowManager manager){
+        shadowManager = manager;
     }
     
     public TextureSet getTextureSet(String name){
@@ -251,6 +270,9 @@ public class TileManager extends Node {
                 }
             }
         }
+        
+        if (shadowManager != null)
+            shadowManager.update(tpf);
     }
     
 }

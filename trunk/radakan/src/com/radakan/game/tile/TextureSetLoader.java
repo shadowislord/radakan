@@ -31,8 +31,6 @@ public class TextureSetLoader {
             if (tsetXMLNode.getNodeName().equals("textureset")){
                 TextureSet set = load(tsetXMLNode, useLightmap, useFog);
                 textureSets.put(set.toString(), set);
-            }else{
-                logger.warning("Invalid tag in textureset list: "+tsetXMLNode.getNodeName()+". ignored");
             }
             
             tsetXMLNode = tsetXMLNode.getNextSibling();

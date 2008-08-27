@@ -9,7 +9,7 @@ import com.jme.scene.Spatial;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.radakan.entity.Entity;
-import com.radakan.entity.EntityFactory;
+import com.radakan.entity.EntityManager;
 import com.radakan.res.ResourceManager;
 import com.radakan.util.XMLUtil;
 import java.io.PrintStream;
@@ -30,6 +30,13 @@ public class ModelUnit extends AbstractUnit implements IUnitEventListener {
         this.modelName = modelName;
     }
     
+    /**
+     * Empty constructor for serialization.
+     * importXML will be used to initialize fields.
+     */
+    public ModelUnit(){
+    }
+    
     public void exportXML(PrintStream stream) {
         Vector3f pos = model.getLocalTranslation();
         Quaternion rot = model.getLocalRotation();
@@ -42,22 +49,29 @@ public class ModelUnit extends AbstractUnit implements IUnitEventListener {
         //stream.println("    </model>");
     }
     
-    public void importXML(org.w3c.dom.Node rootEntityNode) {
-        org.w3c.dom.Node modelNode = XMLUtil.getChildNode(rootEntityNode, "ModelUnit");
+    public void importXML(org.w3c.dom.Node rootModelNode) {
+        if (rootModelNode == null)
+            throw new IllegalStateException("Cannot find ModelUnit attribute in "+entity.getName());
         
-        modelName = XMLUtil.getAttribute(modelNode, "filename");
-        model = EntityFactory.getInstance().cloneModelForEntity(entity.getType(), entity.getName());
+        modelName = XMLUtil.getAttribute(rootModelNode, "filename");
+        model = EntityManager.cloneModelForEntity(entity.getType(), entity.getName());
+        
+        if (model == null)
+            return;
         
         // parse transforms
-        model.setLocalTranslation(XMLUtil.getVec3Attribute(modelNode, "translation"));
-        model.setLocalScale(XMLUtil.getVec3Attribute(modelNode, "scale"));
-        model.setLocalRotation(XMLUtil.getQuatAttribute(modelNode, "rotation"));
+        model.setLocalTranslation(XMLUtil.getVec3Attribute(rootModelNode, "translation"));
+        model.setLocalScale(XMLUtil.getVec3Attribute(rootModelNode, "scale"));
+        model.setLocalRotation(XMLUtil.getQuatAttribute(rootModelNode, "rotation"));
+        
+        model.setUserData("Entity", entity);
     }
     
     @Override
     public void attach(Entity entity){
         super.attach(entity);
-        model.setUserData("Entity", entity);
+        if (model != null)
+            model.setUserData("Entity", entity);
         entity.addEventListener(this);
     }
     
