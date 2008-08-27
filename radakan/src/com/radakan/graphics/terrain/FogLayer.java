@@ -45,7 +45,7 @@ public class FogLayer implements Layer {
             throw new IllegalStateException("FogLayer must be last in a SplatEnv");
         
         buf.append("   if (vDepth > gl_Fog.start)\n"+
-                   "       gl_FragColor = mix(r,gl_Fog.color,1.0-(gl_Fog.end-vDepth)*gl_Fog.scale);\n"+
+                   "       gl_FragColor = mix(r,gl_Fog.color,min(1.0, 1.0-(gl_Fog.end-vDepth)*gl_Fog.scale));\n"+
                    "   else\n"+
                    "       gl_FragColor = r;\n");
     }

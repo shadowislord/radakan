@@ -128,7 +128,11 @@ public class ErrorHandler {
                 stream.println();
             }
             
-            JmeContext.get().dispose();
+            if (JmeContext.get() != null){
+                JmeContext.get().dispose();
+            }else{
+                DisplaySystem.getDisplaySystem().close();
+            }
         }
     }
     

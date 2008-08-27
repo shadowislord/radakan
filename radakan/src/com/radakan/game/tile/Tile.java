@@ -24,11 +24,18 @@ import com.jme.scene.Spatial;
 import com.jme.scene.TexCoords;
 import com.jme.scene.TriMesh;
 import com.jme.scene.VBOInfo;
+import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
+import com.jme.scene.state.lwjgl.LWJGLTextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jmex.terrain.TerrainBlock;
+import com.radakan.entity.Entity;
+import com.radakan.entity.EntityManager;
+import com.radakan.entity.unit.ModelUnit;
+import com.radakan.game.util.IShadowManager;
+import com.radakan.graphics.util.ModelCloneUtil;
 import com.radakan.util.ErrorHandler;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +51,7 @@ import static com.radakan.util.XMLUtil.*;
  * @created Aug 18, 2008
  */
 public class Tile extends com.jme.scene.Node{
+    
 	private static final long serialVersionUID = 5468917005537121768L;
 
         private static final Logger logger = Logger.getLogger(Tile.class.getName());
@@ -75,6 +83,11 @@ public class Tile extends com.jme.scene.Node{
          */
         public void addObject(Spatial object){
             attachChild(object);
+            IShadowManager manager = TileManager.getInstance().getShadowManager();
+            if (manager != null){
+                manager.addOccluder(object);
+                manager.addShadowReciever(object);
+            }
         }
         
         /**
@@ -84,6 +97,14 @@ public class Tile extends com.jme.scene.Node{
         public void setTerrain(TriMesh terrain){
             this.terrain = terrain;
             attachChildAt(terrain, 0);
+            IShadowManager manager = TileManager.getInstance().getShadowManager();
+            if (manager != null){
+                TriMesh clonedTerrain = (TriMesh) ModelCloneUtil.cloneSmart(terrain);
+                clonedTerrain.clearRenderState(RenderState.RS_TEXTURE);
+                clonedTerrain.clearRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
+                clonedTerrain.updateGeometricState(0, true);
+                manager.addShadowReciever(clonedTerrain);
+            }
         }
         
     private TriMesh loadTerrainBlock(float[] heights, int tileRes) {
@@ -210,18 +231,21 @@ public class Tile extends com.jme.scene.Node{
         vbo.setVBOIndexEnabled(true);
         terrain.setVBOInfo(vbo);
     }
+    
+    private void loadEntity(Node entityXMLNode){
+        Entity ent = EntityManager.realize(entityXMLNode);
+        ModelUnit model = ent.getModel();
+        ent.birth();
+        addObject(model.getModel());
+    }
 
     protected void loadTile(Node tileXMLNode) {
         Node modelOrTerrainXMLNode = tileXMLNode.getFirstChild();
         while (modelOrTerrainXMLNode != null) {
-            //if (model.getNodeName().equals("model")){
-            //    Spatial spat = readModel(model);
-            //    target.addObject(spat);
-            //}else 
-            if (modelOrTerrainXMLNode.getNodeName().equals("terrain")) {
+            if (modelOrTerrainXMLNode.getNodeName().equals("entity")){
+                loadEntity(modelOrTerrainXMLNode);
+            }else if (modelOrTerrainXMLNode.getNodeName().equals("terrain")) {
                 loadTerrainWithTexturing(modelOrTerrainXMLNode);
-            } else if (modelOrTerrainXMLNode.getNodeName().equals("entity")) {
-
             }
 
             modelOrTerrainXMLNode = modelOrTerrainXMLNode.getNextSibling();

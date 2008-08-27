@@ -7,10 +7,17 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import com.gibbon.jme.context.*;
+import com.jme.app.SimplePassGame;
+import com.jme.input.FirstPersonHandler;
+import com.jme.input.MouseInput;
+import com.jme.math.Vector3f;
+import com.jme.renderer.pass.RenderPass;
 import com.jme.scene.Node;
 import com.jme.util.GameTaskQueueManager;
 import com.radakan.game.Game;
+import com.radakan.game.util.ShadowMapPassManager;
 import com.radakan.game.world.World;
+import com.radakan.jme.hdrreader.DirectionalShadowMapPass;
 import com.radakan.util.ErrorHandler;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -19,8 +26,10 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TestTileLoading extends SimpleGame {
+public class TestTileLoading extends SimplePassGame {
 
+    private static DirectionalShadowMapPass sPass;
+    
     public static void main(String[] args){
         ErrorHandler.bindUncaughtExceptionHandler();
         
@@ -35,6 +44,10 @@ public class TestTileLoading extends SimpleGame {
     
     protected void loadGame() throws IOException{
         Game.setupDefaultLocators();
+        Game.querySystemInfo();
+        
+        ((FirstPersonHandler)input).getKeyboardLookHandler().setMoveSpeed(10f);
+        ((FirstPersonHandler)input).getMouseLookHandler().getMouseLook().setSpeed(0.3f);
         
         settings.setBoolean("GameLightmaps", true);
         settings.setFloat("GameViewDistance", 64*3);
@@ -45,6 +58,17 @@ public class TestTileLoading extends SimpleGame {
         
         rootNode.attachChild(world);
         
+        RenderPass rPass = new RenderPass();
+        rPass.add(statNode);
+        rPass.add(rootNode);
+        pManager.add(rPass);
+
+//        sPass = new DirectionalShadowMapPass(new Vector3f(0.1f,-1,0.1f));
+//        pManager.add(sPass);
+//
+//        TileManager manager = (TileManager) ((Node)rootNode.getChild("World Node")).getChild("Tile Manager");
+//        manager.setShadowManager(new ShadowMapPassManager(sPass));
+        
         rootNode.updateGeometricState(0, true);
         rootNode.updateRenderState();
     }
@@ -53,14 +77,6 @@ public class TestTileLoading extends SimpleGame {
     protected void simpleInitGame() {
         try{
             loadGame();
-
-//            GameTaskQueueManager.getManager().render(new Callable<Object>(){
-//                public Object call(){
-//                    rootNode.updateRenderState();
-//                    rootNode.updateGeometricState(0, true);
-//                    return null;
-//                }
-//            });
         } catch (Throwable t){
             t.printStackTrace();
         }

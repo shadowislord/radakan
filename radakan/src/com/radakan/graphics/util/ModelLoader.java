@@ -3,6 +3,7 @@ package com.radakan.graphics.util;
 import com.jme.bounding.BoundingBox;
 import com.jme.bounding.BoundingVolume;
 import com.jme.math.Vector3f;
+import com.jme.scene.Controller;
 import com.jme.scene.Spatial;
 import com.jme.util.export.binary.BinaryImporter;
 import com.jme.util.resource.MultiFormatResourceLocator;
@@ -17,15 +18,19 @@ import com.jmex.model.converters.Md3ToJme;
 import com.jmex.model.converters.MilkToJme;
 import com.jmex.model.converters.ObjToJme;
 import com.jmex.model.converters.X3dToJme;
+import com.model.md5.importer.MD5Importer;
 import com.radakan.graphics.mesh.parser.Material;
 import com.radakan.graphics.mesh.parser.MaterialLoader;
 import com.radakan.graphics.mesh.parser.OgreLoader;
 import com.radakan.graphics.mesh.parser.SceneLoader;
+import com.radakan.util.ErrorHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -36,33 +41,32 @@ public final class ModelLoader {
     private ModelLoader() {
     }
     
-    public static Spatial loadModel(File file, FormatConverter converter) throws IOException{
-        InputStream in = new FileInputStream(file);
+    public static Spatial loadModel(URL url, FormatConverter converter) throws IOException{
+        InputStream in = url.openStream();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         converter.convert(in, out);
+        in.close();
         return (Spatial) BinaryImporter.getInstance().load(out.toByteArray());
     }
     
-    /*public static Spatial loadMD5Model(File file) throws IOException{
+    public static Spatial loadMD5Model(URL url) throws IOException{
         MD5Importer im = MD5Importer.getInstance();
 
-        String name = file.getName();
+        String name = url.toString();
         int i = name.lastIndexOf(".");
-        if (i > 0) name = name.substring(0, i);
+        if (i > 0)
+            name = name.substring(0, i);
 
-        URL mesh = file.toURI().toURL();
-        URL anim = null;
-
-        file = new File(file.getParentFile(), name + ".md5anim");
-        if (file.exists()){
-            anim = file.toURI().toURL();
-            im.load(mesh, name, anim, name + "_anim", Controller.RT_WRAP);
-        }else{
-            im.loadMesh(mesh, name);
-        }
+        //file = new File(file.getParentFile(), name + ".md5anim");
+        //if (file.exists()){
+        //    anim = file.toURI().toURL();
+        //    im.load(mesh, name, anim, name + "_anim", Controller.RT_WRAP);
+        //}else{
+            im.loadMesh(url, name);
+        //}
 
         return (Spatial) im.getModelNode();
-    }*/
+    }
     
 //    public static Spatial loadDAEModel(File file) throws IOException{
 //        InputStream in = new FileInputStream(file);
@@ -73,34 +77,33 @@ public final class ModelLoader {
 //        return s;
 //    }
     
-    public static Spatial loadMeshModel(File file, boolean loadMats) throws IOException{
+    public static Spatial loadMeshModel(URL url, boolean loadMats) throws IOException{
         Map<String, Material> materials = new HashMap<String, Material>();
         
         if (loadMats){
-            // scan for material files
-            File parent = file.getParentFile();
-            
-            //System.out.println("PARENT FILE: "+file);
-            
-            for (File f : parent.listFiles()){
-                if (f.getName().endsWith(".material")){
-                    MaterialLoader matloader = new MaterialLoader();
-                    InputStream in = new FileInputStream(f);
-                    matloader.load(in);
-                    in.close();
-                    materials.putAll(matloader.getMaterials());
-                }
+            String name = url.toString();
+            if (name.toLowerCase().endsWith(".mesh.xml")){
+                name = name.substring(0, name.length() - 9);
             }
+            
+            
+            URL matURL = new URL(name + ".material");
+            
+            MaterialLoader matloader = new MaterialLoader();
+            InputStream in = matURL.openStream();
+            matloader.load(in);
+            in.close();
+            materials.putAll(matloader.getMaterials());
         }
         
         OgreLoader loader = new OgreLoader();
         loader.setMaterials(materials);
-        return loader.loadModel(file.toURI().toURL(), false);
+        return loader.loadModel(url, false);
     }
     
-    public static Spatial loadDotScene(File file) throws IOException{
+    public static Spatial loadDotScene(URL url) throws IOException{
         SceneLoader loader = new SceneLoader();
-        FileInputStream in = new FileInputStream(file);
+        InputStream in = url.openStream();
         loader.load(in);
         in.close();
         return loader.getScene();
@@ -139,22 +142,32 @@ public final class ModelLoader {
         return model;
     }
     
-    public static Spatial loadModel(File file, String ext) throws IOException{
-        MultiFormatResourceLocator locator 
-                = new MultiFormatResourceLocator(file.getParentFile().toURI(), "png", "dds", "tga", "bmp", "jpg", "wbmp", "gif");
-        locator.setTrySpecifiedFormatFirst(true);
-        ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, locator);
+    public static Spatial loadModel(URL url, String ext) throws IOException{
+        String name = url.toString();
+        int index = name.lastIndexOf('/');
+        name = name.substring(0, index+1);
+        URL parent = new URL(name);
         
-        SimpleResourceLocator locator2 = new SimpleResourceLocator(file.getParentFile().toURI());
-        ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, locator2);
+        MultiFormatResourceLocator locator = null;
+        SimpleResourceLocator locator2 = null;
+        try{
+            locator = new MultiFormatResourceLocator(parent, "png", "dds", "tga", "bmp", "jpg", "wbmp", "gif");
+            locator.setTrySpecifiedFormatFirst(true);
+            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, locator);
+
+            //locator2 = new SimpleResourceLocator(parent);
+            //ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, locator2);
+        } catch (URISyntaxException ex){
+            ErrorHandler.reportError("Error while creating locators for model "+url, ex);
+        }
         
         FormatConverter converter = null;
         if (ext.equalsIgnoreCase("md3")){
             converter = new Md3ToJme();
         }else if (ext.equalsIgnoreCase("obj")){
             converter = new ObjToJme();
-            converter.setProperty("texdir", file.getParent().toString());
-            converter.setProperty("mtllib", file.getParent().toString());
+            converter.setProperty("texdir", parent.toString());
+            converter.setProperty("mtllib", parent.toString());
         }else if (ext.equalsIgnoreCase("ase")){
             converter = new AseToJme();
         }else if (ext.equalsIgnoreCase("3ds")){
@@ -166,7 +179,7 @@ public final class ModelLoader {
         }else if (ext.equalsIgnoreCase("x3d")){
             try {
                 converter = new X3dToJme();
-                converter.setProperty("textures", file.getParent().toString());
+                converter.setProperty("textures", parent.toString());
             } catch (InstantiationException ex) {
                 ex.printStackTrace();
             }
@@ -175,15 +188,15 @@ public final class ModelLoader {
         Spatial model = null;
         
         if (converter != null){
-            model = loadModel(file, converter);
+            model = loadModel(url, converter);
         }else if (ext.equalsIgnoreCase("md5mesh")){
             //model = loadMD5Model(file);
         }else if (ext.equalsIgnoreCase("dae")){
             //model = loadDAEModel(file);
         }else if (ext.equalsIgnoreCase("xml")){
-            model = loadMeshModel(file, true);
+            model = loadMeshModel(url, true);
         }else if (ext.equalsIgnoreCase("scene")){
-            model = loadDotScene(file);
+            model = loadDotScene(url);
         }else{
             JOptionPane.showMessageDialog(
                              null,
@@ -194,7 +207,7 @@ public final class ModelLoader {
         }
         
         ResourceLocatorTool.removeResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, locator);
-        ResourceLocatorTool.removeResourceLocator(ResourceLocatorTool.TYPE_MODEL, locator2);
+        //ResourceLocatorTool.removeResourceLocator(ResourceLocatorTool.TYPE_MODEL, locator2);
         
         return model;
     }

@@ -42,7 +42,9 @@ import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.system.GameSettings;
 import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
+import com.radakan.entity.EntityManager;
 import com.radakan.game.tile.TileManager;
+import com.radakan.game.util.IShadowManager;
 import com.radakan.util.ErrorHandler;
 
 /**
@@ -63,7 +65,7 @@ public class World extends com.jme.scene.Node {
     private LightState worldLighting = null;
     private FogState worldFog = null;
     private TileManager tileManager = null;
-    
+
     /**
      * Create a new World instance. 
      * All world features (sky, fog, lighting, terrain)
@@ -280,10 +282,16 @@ public class World extends com.jme.scene.Node {
         tileManager.setUnloadDistance(viewDistance * 1.5f);
         tileManager.setEnabled(true);
         
-        try{
+        try {
         	tileManager.loadDefaultTextureSets();
         } catch (IOException ex){
         	ErrorHandler.reportError("Error while loading texturesets", ex);
+        }
+        
+        try {
+        	EntityManager.loadDefaultEntityTypes();
+        } catch (IOException ex){
+        	ErrorHandler.reportError("Error while loading entity types", ex);
         }
     }
     

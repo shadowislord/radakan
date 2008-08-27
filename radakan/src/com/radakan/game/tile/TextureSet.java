@@ -105,8 +105,6 @@ public class TextureSet {
     public void generateShader(boolean useLightmap, boolean useFog){
         env = new SplatEnv();
         
-        System.out.println("USE FOG: "+useLightmap);
-        
         BaseLayer bl = new BaseLayer(detailmaps.get(0).colormap);
         bl.setScale(detailmaps.get(0).scale);
         env.addLayer(bl);
