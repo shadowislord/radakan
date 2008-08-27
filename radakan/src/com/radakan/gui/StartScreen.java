@@ -2,7 +2,6 @@ package com.radakan.gui;
 
 import com.radakan.game.Game;
 import com.radakan.util.ErrorHandler;
-import com.radakan.util.SysInfo;
 import java.io.IOException;
 import org.fenggui.Container;
 import org.fenggui.Label;

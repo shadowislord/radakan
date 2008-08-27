@@ -26,9 +26,9 @@ import com.radakan.gui.console.JmeConsole;
 import com.radakan.gui.console.ScriptSystem;
 import com.radakan.gui.dialogs.GameSettingsDialog;
 import com.radakan.util.ErrorHandler;
-import com.radakan.util.SysInfo;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,7 +92,13 @@ public class Main {
             context.waitFor();
             logger.info("Display created successfuly");
             
-            Game.querySystemInfo();
+            context.executeLater(new Callable<Object>(){
+                public Object call(){
+                    Game.querySystemInfo();
+                    return null;
+                }
+            });
+            
             
             InputPass input = new InputPass(null, true);
             context.getPassManager().add(input);

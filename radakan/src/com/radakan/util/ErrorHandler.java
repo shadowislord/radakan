@@ -14,6 +14,8 @@
 package com.radakan.util;
 
 import com.gibbon.jme.context.JmeContext;
+import com.jme.system.DisplaySystem;
+import com.jme.system.lwjgl.LWJGLDisplaySystem;
 import com.jme.util.geom.BufferUtils;
 import com.jmex.audio.AudioSystem;
 import com.radakan.game.Game;
@@ -78,10 +80,13 @@ public class ErrorHandler {
         stream.println("Max memory: "+(Runtime.getRuntime().maxMemory()/1048576)+" MB");
         stream.println();
 
-        if (JmeContext.get() != null && JmeContext.get().isActive()){
+        if (DisplaySystem.getDisplaySystem() != null){
             stream.println("==Native bindings==");
-            stream.println("Vendor: "+JmeContext.get().getName());
-            if (JmeContext.get().getName().equals("LWJGL")){
+            stream.println("Vendor: "+DisplaySystem.getSystemProvider().getProviderIdentifier());
+            boolean isLWJGL = DisplaySystem.getDisplaySystem() instanceof LWJGLDisplaySystem
+                         || (JmeContext.get() != null && JmeContext.get().getName().equals("LWJGL"));
+            
+            if (isLWJGL){
                 stream.println("Version: "+Sys.getVersion());
                 stream.println("Debug mode: "+LWJGLUtil.DEBUG);
                 stream.println("Platform: "+LWJGLUtil.getPlatformName());
@@ -89,7 +94,7 @@ public class ErrorHandler {
             stream.println();
 
             stream.println("==Display settings==");
-            if (JmeContext.get().getName().equals("LWJGL")){
+            if (isLWJGL){
                 stream.println("Adapter: "+Display.getAdapter());
                 stream.println("Driver Version: "+Display.getVersion());
             }
@@ -128,7 +133,8 @@ public class ErrorHandler {
     }
     
     public static void reportError(String description, Throwable ex){
-        ex.printStackTrace();
+        if (ex != null)
+            ex.printStackTrace();
         
         // XXX: Okay to drop error?
         if (errorReported)

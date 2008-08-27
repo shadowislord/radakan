@@ -27,7 +27,8 @@ public class ErrorFrame extends javax.swing.JFrame {
         CharArrayWriter w = new CharArrayWriter();
         PrintWriter sw = new PrintWriter(w);
         sw.println(description);
-        ex.printStackTrace(sw);
+        if (ex != null)
+            ex.printStackTrace(sw);
         sw.close();
         splashImage = icon;
         

@@ -133,7 +133,7 @@ public class Game {
     
     public static void querySystemInfo(){
         caps = GLContext.getCapabilities();
-        
+
         if (AudioSystem.isCreated()){
             alVersion = AL10.alGetString(AL10.AL_VERSION);
             alRenderer = AL10.alGetString(AL10.AL_RENDERER);
