@@ -40,6 +40,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import com.jme.system.GameSettings;
+import com.radakan.game.Game;
 import com.radakan.util.ImageCache;
 import com.radakan.util.SysInfo;
 
@@ -77,7 +78,7 @@ public class GameSettingsDialog extends JFrame
      * @param settings The game settings to set.
      */
     public GameSettingsDialog(GameSettings settings) {
-        super("Configuration - "+SysInfo.getGameName());
+        super("Configuration - "+Game.getGameName());
         
         if (settings == null) {
             throw new NullPointerException("Settings can not be null.");

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.Bindings;
@@ -40,11 +41,17 @@ public class ScriptSystem implements ConsoleListener {
         this.console = console;
         
         if (python){
+            Properties props = new Properties();
+            props.setProperty("python.home", "D:\\Programs\\Jython2.5a1");
+            props.setProperty("python.path", "D:\\Programs\\Jython2.5a1\\Lib");
+
+            PythonInterpreter.initialize(System.getProperties(), props, new String[]{ "" });
+            
             extension = "py";
             
             pythonEngine = new PythonInterpreter();
             pythonEngine.setErr(System.err);
-            pythonEngine.setOut(System.out);
+            pythonEngine.setOut(console.getOutputStream());
             
             pythonEngine.set("script", this);
             pythonEngine.set("logger", logger);
@@ -92,18 +99,17 @@ public class ScriptSystem implements ConsoleListener {
                 console.println(ColorRGBA.red, msg);
             }
         }else{
+            PyObject obj = null;
             try{
-                PyObject obj = pythonEngine.eval(code);
+                obj = pythonEngine.eval(code);
                 if (obj != null && !obj.toString().equals("None"))
                     console.println(ColorRGBA.yellow, obj.toString());
             } catch (Throwable e){
-                //if (e instanceof PyException){
-                //    PyException py = (PyException) e;
-                //    System.out.println(py.type);
-                //    System.out.println(py.value);
-                //}
-                //System.out.println(e.getClass());
-                console.println(ColorRGBA.red, e.toString());
+                try{
+                    pythonEngine.exec(code);
+                } catch (Throwable ex){
+                    console.println(ColorRGBA.red, ex.toString());
+                }
             }
             
             return true;

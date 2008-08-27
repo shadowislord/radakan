@@ -46,9 +46,9 @@ public class Main {
         GameSettings settings = Game.getSettings();
         logger.fine("Settings loaded from registry");
         
-        settings.set("title", SysInfo.getGameName() + " "
-                            + SysInfo.getVersionPrefix() + " "
-                            + SysInfo.getGameVersion());
+        settings.set("title", Game.getGameName() + " "
+                            + Game.getVersionPrefix() + " "
+                            + Game.getGameVersion());
         
         settings.setSamples(0);
         settings.setDepthBits(8);
@@ -76,15 +76,10 @@ public class Main {
         }
         
         logger.fine("Setting up locators");
-        try {
-            ResourceLocator textureLocator = new SimpleResourceLocator(Main.class.getResource("/com/radakan/data/textures/"));
-            ResourceLocator imageLocator = new SimpleResourceLocator(Main.class.getResource("/com/radakan/data/images/"));
-            ResourceLocator scriptLocator = new SimpleResourceLocator(Main.class.getResource("/com/radakan/data/scripts/"));
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, textureLocator);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, imageLocator);
-            ResourceLocatorTool.addResourceLocator("Script", scriptLocator);
-        } catch (URISyntaxException ex){
-            ErrorHandler.reportError("Texture directory missing", ex);
+        try{
+            Game.setupDefaultLocators();
+        } catch (IOException ex){
+            ErrorHandler.reportError("Error while setting locators", ex);
         }
     }
     
