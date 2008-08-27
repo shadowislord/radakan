@@ -1,5 +1,6 @@
 package com.radakan.gui;
 
+import com.radakan.game.Game;
 import com.radakan.util.ErrorHandler;
 import com.radakan.util.SysInfo;
 import java.io.IOException;
@@ -60,8 +61,8 @@ public class MainMenu extends UIContext {
             
             Label logo = FengGUI.createLabel();
             Label version = FengGUI.createLabel();
-            version.setText(SysInfo.getVersionPrefix() + " " +
-                            SysInfo.getGameVersion());
+            version.setText(Game.getVersionPrefix() + " " +
+            		        Game.getGameVersion());
             
             // Configure Background
             Pixmap bgImage = new Pixmap(Binding.getInstance().getTexture("data/images/background.png"));

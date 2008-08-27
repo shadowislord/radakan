@@ -70,9 +70,9 @@ public class Main {
             settings.save();
             logger.fine("Settings saved to registry");
         } catch (InterruptedException ex) {
-            logger.log(Level.SEVERE, "Interrupt ");
+        	ErrorHandler.reportError("Interrupted", ex);
         } catch (IOException ex){
-            logger.log(Level.WARNING, "Failed to save settings to system", ex);
+        	ErrorHandler.reportError("Failed to save settings to system", ex);
         }
         
         logger.fine("Setting up locators");
@@ -91,6 +91,8 @@ public class Main {
             logger.fine("Display started");
             context.waitFor();
             logger.info("Display created successfuly");
+            
+            Game.querySystemInfo();
             
             InputPass input = new InputPass(null, true);
             context.getPassManager().add(input);

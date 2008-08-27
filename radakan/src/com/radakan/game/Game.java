@@ -147,14 +147,13 @@ public class Game {
     }
     
     public static void exit(){
-        
     }
     
     /**
      * Game version in number format
      */
     public static String getGameVersion(){
-        return "0.25";
+        return "0.40";
     }
     
     /**

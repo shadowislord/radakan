@@ -1,5 +1,6 @@
 package com.radakan.gui;
 
+import com.radakan.game.Game;
 import com.radakan.util.ErrorHandler;
 import com.radakan.util.SysInfo;
 import java.io.IOException;
@@ -74,7 +75,8 @@ public class StartScreen extends UIContext {
             // create the version label
             Label version = new Label();
             //version.getAppearance().setFont(Fonts.STONEHEDGE_SMALL);
-            version.setText(SysInfo.getVersionPrefix() + " " + SysInfo.getGameVersion());
+            version.setText(Game.getVersionPrefix() + " " + 
+            			    Game.getGameVersion());
             //version.getAppearance().setTextColor(Color.WHITE_HALF_OPAQUE);
             version.setSizeToMinSize();
             version.setXY(UIManager.width - version.getWidth() - 20,

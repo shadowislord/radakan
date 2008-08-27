@@ -1,0 +1,20 @@
+<texturesets>
+	<textureset name="bb0x material set">
+
+	    <texture name="Dirt" scale="6"
+			 diffuse="cracked_earth_512_diffuse.tga"
+			 normal="cracked_earth_512_normal.tga"
+			 specular="cracked_earth_512_specular.tga"/>
+
+	    <texture name="Grass" scale="6"
+			 diffuse="grass_512_diffuse.tga"
+			 normal="grass_512_normal.tga"
+			 specular="grass_512_specular.tga"/>
+
+ 	   <texture name="Smooth Stone" scale="12"
+			 diffuse="smooth_stone_512_diffuse.tga"
+			 normal="smooth_stone_512_normal.tga"
+			 specular="smooth_stone_512_specular.tga"/>
+
+	</textureset>
+</texturesets>

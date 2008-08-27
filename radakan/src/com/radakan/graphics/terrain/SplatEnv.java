@@ -80,9 +80,6 @@ public class SplatEnv {
             BaseLayer bl = (BaseLayer) t;
             if (bl.getScale() == -1){
                 bl.setScale(state.tile_scale);
-                System.out.println("Set "+bl+" scale to "+state.tile_scale);
-            }else{
-                System.out.println("Set "+bl+" scale to "+bl.getScale());
             }
         }
         refresh();
@@ -439,7 +436,7 @@ public class SplatEnv {
         
         sb.append("END\n");
         
-        System.out.println(sb.toString());
+        //System.out.println(sb.toString());
         
         return sb.toString();
     }

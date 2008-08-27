@@ -14,22 +14,21 @@
  */
 package com.radakan.game.tile;
 
-import com.jme.math.Vector3f;
-import com.jme.renderer.Camera;
-import com.jme.renderer.Renderer;
-import com.jme.renderer.lwjgl.LWJGLTextureRenderer;
-import com.jme.scene.Node;
-import com.jme.scene.Spatial;
-
-import com.jme.util.resource.ResourceLocatorTool;
-import com.radakan.util.ErrorHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import static java.lang.Math.*;
+
+import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
+import com.jme.renderer.Renderer;
+import com.jme.scene.Node;
+import com.jme.scene.Spatial;
+import com.jme.util.resource.ResourceLocatorTool;
+import com.radakan.util.ErrorHandler;
 
 /**In Middle of creation
  * 
@@ -73,24 +72,22 @@ public class TileManager extends Node {
         return instance;
     }
     
-    public TextureSet loadTextureSet(String name){
-        TextureSet set = textureSets.get(name);
-        if (set == null){
-            try{
-                URL tsetURL = ResourceLocatorTool.locateResource("textureset", name);
-                InputStream in = tsetURL.openStream();
-                if (in == null)
-                    return null;
-
-                Map<String, TextureSet> tsets = TextureSetLoader.load(in, useLightmaps, useFog);
-
-                in.close();
-            } catch (IOException ex){
-                ErrorHandler.reportError("IO Error while reading textureset", ex);
-            }
-        }
-        
-        return set;
+    public TextureSet getTextureSet(String name){
+        return textureSets.get(name);
+    }
+    
+    public void loadDefaultTextureSets() throws IOException{
+    	URL tsets = ResourceLocatorTool.locateResource("textureset", "texturesets.xml");
+    	if (tsets == null)
+    		throw new IOException("Cannot load texutresets; texturesets.xml is missing");
+    	
+    	InputStream in = tsets.openStream();
+    	if (in == null)
+    		throw new IOException("Cannot load texutresets; texturesets.xml is missing");
+    	
+        textureSets.putAll(TextureSetLoader.load(in, useLightmaps, useFog));
+    	
+    	in.close();
     }
     
     public void setEnabled(boolean enable){

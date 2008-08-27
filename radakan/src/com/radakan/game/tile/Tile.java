@@ -157,7 +157,7 @@ public class Tile extends com.jme.scene.Node{
         }
 
         String textureSetName = getAttribute(terrainXMLNode, "textureset");
-        textureSet = TileManager.getInstance().loadTextureSet(textureSetName);
+        textureSet = TileManager.getInstance().getTextureSet(textureSetName);
         
         if (textureSet == null) {
             logger.warning("Failed to locate textureset " + textureSetName);

@@ -98,9 +98,9 @@ public class RadakanGame
 		GameSettings settings = Game.getSettings();
         logger.fine("Settings loaded from registry");
         
-        settings.set("title", SysInfo.getGameName() + " "
-                            + SysInfo.getVersionPrefix() + " "
-                            + SysInfo.getGameVersion());
+        settings.set("title", Game.getGameName() + " "
+                            + Game.getVersionPrefix() + " "
+                            + Game.getGameVersion());
         
         settings.setSamples(0);
         settings.setDepthBits(8);
