@@ -17,9 +17,15 @@ package com.radakan.game.tile;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.renderer.Renderer;
+import com.jme.renderer.lwjgl.LWJGLTextureRenderer;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 
+import com.jme.util.resource.ResourceLocatorTool;
+import com.radakan.util.ErrorHandler;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -47,6 +53,7 @@ public class TileManager extends Node {
     private boolean enabled = false;
     
     private boolean useLightmaps;
+    private boolean useFog;
     private int tileSize;
     private int groupSize;
 
@@ -67,7 +74,23 @@ public class TileManager extends Node {
     }
     
     public TextureSet loadTextureSet(String name){
-        return textureSets.get(name);
+        TextureSet set = textureSets.get(name);
+        if (set == null){
+            try{
+                URL tsetURL = ResourceLocatorTool.locateResource("textureset", name);
+                InputStream in = tsetURL.openStream();
+                if (in == null)
+                    return null;
+
+                Map<String, TextureSet> tsets = TextureSetLoader.load(in, useLightmaps, useFog);
+
+                in.close();
+            } catch (IOException ex){
+                ErrorHandler.reportError("IO Error while reading textureset", ex);
+            }
+        }
+        
+        return set;
     }
     
     public void setEnabled(boolean enable){
@@ -80,6 +103,10 @@ public class TileManager extends Node {
     
     public void setUseLightmaps(boolean use){
         useLightmaps = use;
+    }
+    
+    public void setUseFog(boolean use){
+        useFog = use;
     }
     
     public void setTileSize(int tileSize){

@@ -20,6 +20,9 @@ import com.jme.scene.state.BlendState.TestFunction;
 import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,24 +39,26 @@ import java.util.logging.Logger;
  */
 public class JmeConsole extends RenderPass implements KeyInputListener {
     
-//    private class PrintedLine {
-//        
-//        ColorRGBA color;
-//        String ln;
-//        int time;
-//        boolean newLine;
-//        
-//        public PrintedLine(ColorRGBA color, String ln, int time, boolean newLine){
-//            this.color=color;
-//            this.ln=ln;
-//            this.time=time;
-//            this.newLine=newLine;
-//        }
-//        public void exec(){
-//            print0(color,ln,time,newLine);
-//        }
-//                
-//    }
+
+    private class JmeConsoleStandardOutput extends OutputStream {
+        @Override
+        public void write(int b) throws IOException {
+            //print1(ColorRGBA.white, "" + ((char)b), 1000, false);
+        }
+        
+        @Override
+        public void write(byte[] data){
+            write(data, 0, data.length);
+        }
+        
+        @Override
+        public void write(byte[] data, int offset, int length){
+            String s = new String(data, offset, length);
+            print1(ColorRGBA.white, s, 1000 * s.length() * 1000, true);
+        }
+    }
+    
+    private final JmeConsoleStandardOutput output = new JmeConsoleStandardOutput();
     
     /**
      * Number of text nodes to hold
@@ -126,6 +131,10 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         
         consoleNode.updateRenderState();
         consoleNode.updateGeometricState(0,true);
+    }
+    
+    public OutputStream getOutputStream(){
+        return output;
     }
     
     @Override
@@ -373,19 +382,19 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
     }
 
     public void println(ColorRGBA color, String ln, int time){
-        print1(color,ln,time);
+        print1(color,ln,time,true);
     }
     public void println(ColorRGBA color, String ln){
-        print1(color,ln,ln.length()*1000+1000);
+        print1(color,ln,ln.length()*1000+1000,true);
     }
     public void println(String ln, int time){
-        print1(null,ln,time);
+        print1(null,ln,time,true);
     }
     public void println(String ln){
-        print1(null,ln,ln.length()*1000+1000);
+        print1(null,ln,ln.length()*1000+1000,true);
     }
     
-    protected void print1  (ColorRGBA color, String ln, int time){
+    protected void print1  (ColorRGBA color, String ln, int time, boolean newLine){
         List<String> split = Arrays.asList(ln.split("\n"));
         List<String> printList = new ArrayList<String>();
         
@@ -409,7 +418,7 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         }
         
         for (String str : printList)
-            print0(color, str, time, true);
+            print0(color, str, time, newLine);
     }
     
     protected void print0  (ColorRGBA color, String ln, int time, boolean newLine){

@@ -30,48 +30,6 @@ import org.lwjgl.opengl.GLContext;
  */
 public class SysInfo {
 
-    public static ContextCapabilities caps;
     
-    public static String vendor;
-    public static String renderer;
-    public static String apiVer;
-    public static String glslVer;
-    
-    public static String alVendor;
-    public static String alRenderer;
-    public static String alVersion;
-    
-    public static void querySystemInfo(){
-        caps = GLContext.getCapabilities();
-        
-        if (AudioSystem.isCreated()){
-            alVersion = AL10.alGetString(AL10.AL_VERSION);
-            alRenderer = AL10.alGetString(AL10.AL_RENDERER);
-            alVendor = AL10.alGetString(AL10.AL_VENDOR);
-        }
-        
-        glslVer = GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION);
-        apiVer = GL11.glGetString(GL11.GL_VERSION);
-        renderer = GL11.glGetString(GL11.GL_RENDERER);
-        vendor = GL11.glGetString(GL11.GL_VENDOR);
-    }
-    
-    /**
-     * Game version in number format
-     */
-    public static String getGameVersion(){
-        return "0.25";
-    }
-    
-    /**
-     * Version prefix (prototype, alpha, beta, final..)
-     */
-    public static String getVersionPrefix(){
-        return "Prototype";
-    }
-    
-    public static String getGameName(){
-        return "Radakan";
-    }
     
 }

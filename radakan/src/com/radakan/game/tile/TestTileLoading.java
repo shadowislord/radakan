@@ -9,6 +9,7 @@ import java.net.URL;
 import com.gibbon.jme.context.*;
 import com.jme.scene.Node;
 import com.jme.util.GameTaskQueueManager;
+import com.radakan.game.Game;
 import com.radakan.game.world.World;
 import com.radakan.util.ErrorHandler;
 import java.io.FileNotFoundException;
@@ -32,65 +33,8 @@ public class TestTileLoading extends SimpleGame {
         app.start();
     }
     
-    protected void setupLocators(URL root){
-        // need to setup resource locators for paths in 
-        // WORKING DIRECTORY, DATA PAK FILE, and LEVEL PAK FILE
-        
-        String urlString = root.toString();
-        
-        try{
-            URL dataImages     = new URL(urlString + "/data/images/");
-            URL dataModels     = new URL(urlString + "/data/models/");
-            URL dataTiles      = new URL(urlString + "/data/tiles/");
-            URL dataTilesMaps  = new URL(urlString + "/data/tiles/maps/");
-
-            URL metaTextureset = new URL(urlString + "/meta/textureset/");
-            URL codeScript     = new URL(urlString + "/code/script/");
-            URL boot           = new URL(urlString + "/boot/");
-
-            SimpleResourceLocator imagesLocator = new SimpleResourceLocator(dataImages);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, imagesLocator);
-            
-            SimpleResourceLocator modelsLocator = new SimpleResourceLocator(dataModels);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, imagesLocator);
-            
-            SimpleResourceLocator tileLocator = new SimpleResourceLocator(dataTiles);
-            ResourceLocatorTool.addResourceLocator("tile", tileLocator);
-            
-            SimpleResourceLocator tileMapLocator = new SimpleResourceLocator(dataTilesMaps);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tileMapLocator);
-            
-            SimpleResourceLocator metaTSetLocator = new SimpleResourceLocator(metaTextureset);
-            ResourceLocatorTool.addResourceLocator("textureset", metaTSetLocator);
-            
-            SimpleResourceLocator bootLocator = new SimpleResourceLocator(boot);
-            ResourceLocatorTool.addResourceLocator("boot", bootLocator);
-        } catch (MalformedURLException ex){
-            
-        } catch (URISyntaxException ex){
-            
-        }
-    }
-    
-    protected void setupDefaultLocators() throws IOException{
-        File gamePak = new File("game.pak");
-        if (!gamePak.exists() || !gamePak.isDirectory())
-            throw new FileNotFoundException(gamePak.toString());
-        
-        File worldPak = new File("world.pak");
-        if (!worldPak.exists() || !worldPak.isDirectory())
-            throw new FileNotFoundException(worldPak.toString());
-        
-        try {
-            setupLocators(gamePak.toURI().toURL());
-            setupLocators(worldPak.toURI().toURL());
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-        }
-    }
-    
     protected void loadGame() throws IOException{
-        setupDefaultLocators();
+        Game.setupDefaultLocators();
         
         URL worldURL = ResourceLocatorTool.locateResource("boot", "world.xml");
         World world = new World(display.getRenderer(), settings);

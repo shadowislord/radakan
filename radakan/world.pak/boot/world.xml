@@ -7,4 +7,7 @@ groupsize="3"
 
 
                  uselightmaps="true" />
+    <script language="Python">
+        from java.lang import System
+    </script>
 </world>
