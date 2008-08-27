@@ -13,10 +13,18 @@
  */
 package com.radakan.game.world;
 
+import static com.radakan.util.XMLUtil.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.logging.Logger;
+
+import org.w3c.dom.Node;
+
 import com.jme.image.Image;
 import com.jme.image.Texture;
 import com.jme.image.Texture2D;
-import com.jme.image.TextureCubeMap;
 import com.jme.light.DirectionalLight;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
@@ -26,22 +34,16 @@ import com.jme.renderer.Renderer;
 import com.jme.scene.Skybox;
 import com.jme.scene.Skybox.Face;
 import com.jme.scene.state.FogState;
-import com.jme.scene.state.FogState.CoordinateSource;
-import com.jme.scene.state.FogState.DensityFunction;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.ZBufferState;
+import com.jme.scene.state.FogState.CoordinateSource;
+import com.jme.scene.state.FogState.DensityFunction;
 import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.system.GameSettings;
 import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.radakan.game.tile.TileManager;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.logging.Logger;
-import org.w3c.dom.Node;
-
-import static com.radakan.util.XMLUtil.*;
+import com.radakan.util.ErrorHandler;
 
 /**
  * @author Joshua Montgomery
@@ -258,7 +260,7 @@ public class World extends com.jme.scene.Node {
     }
     
     /**
-     * Loads tile parameters from XML.
+     * Loads tile parameters from XML and sets up the tile manager.
      * 
      * @param tilemanXMLNode
      */
@@ -271,11 +273,18 @@ public class World extends com.jme.scene.Node {
         
         // use lightmaps if they are included with the world and the game setting allows their use
         tileManager.setUseLightmaps(useLightmapsSetting && useLightmapsWorld);
+        tileManager.setUseFog(useFog);
         tileManager.setTileSize(getIntAttribute(tilemanXMLNode, "tilesize", 64));
         tileManager.setGroupSize(getIntAttribute(tilemanXMLNode, "groupsize", 3));
         tileManager.setLoadDistance(viewDistance);
         tileManager.setUnloadDistance(viewDistance * 1.5f);
         tileManager.setEnabled(true);
+        
+        try{
+        	tileManager.loadDefaultTextureSets();
+        } catch (IOException ex){
+        	ErrorHandler.reportError("Error while loading texturesets", ex);
+        }
     }
     
     /**

@@ -16,6 +16,8 @@ package com.radakan.util;
 import com.gibbon.jme.context.JmeContext;
 import com.jme.util.geom.BufferUtils;
 import com.jmex.audio.AudioSystem;
+import com.radakan.game.Game;
+
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -91,14 +93,14 @@ public class ErrorHandler {
                 stream.println("Adapter: "+Display.getAdapter());
                 stream.println("Driver Version: "+Display.getVersion());
             }
-            stream.println("Vendor: "+SysInfo.vendor);
-            stream.println("Renderer: "+SysInfo.renderer);
-            stream.println("API Version: "+SysInfo.apiVer);
-            stream.println("GLSL Version: "+SysInfo.glslVer);
+            stream.println("Vendor: "+Game.vendor);
+            stream.println("Renderer: "+Game.renderer);
+            stream.println("API Version: "+Game.apiVer);
+            stream.println("GLSL Version: "+Game.glslVer);
             
             IntBuffer ib = BufferUtils.createIntBuffer(16);
             
-            ContextCapabilities caps = SysInfo.caps;
+            ContextCapabilities caps = Game.caps;
             if (caps != null){
                 stream.println("Fragment Shaders: "+caps.GL_ARB_fragment_program);
                 stream.println("Vertex Shaders: "+caps.GL_ARB_vertex_program);
@@ -115,9 +117,9 @@ public class ErrorHandler {
 
             if (AudioSystem.isCreated()){
                 stream.println("==Audio settings==");
-                stream.println("Vendor: "+SysInfo.alVendor);
-                stream.println("Renderer: "+SysInfo.alRenderer);
-                stream.println("Version: "+SysInfo.alVersion);
+                stream.println("Vendor: "+Game.alVendor);
+                stream.println("Renderer: "+Game.alRenderer);
+                stream.println("Version: "+Game.alVersion);
                 stream.println();
             }
             

@@ -36,6 +36,8 @@ public class TestTileLoading extends SimpleGame {
     protected void loadGame() throws IOException{
         Game.setupDefaultLocators();
         
+        settings.setBoolean("GameLightmaps", true);
+        
         URL worldURL = ResourceLocatorTool.locateResource("boot", "world.xml");
         World world = new World(display.getRenderer(), settings);
         world.loadWorld(worldURL.openStream());
