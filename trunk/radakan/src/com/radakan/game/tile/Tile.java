@@ -251,6 +251,15 @@ public class Tile extends com.jme.scene.Node{
             modelOrTerrainXMLNode = modelOrTerrainXMLNode.getNextSibling();
         }
     }
+    
+    public void genBounds(){
+        setModelBound(new BoundingBox());
+        updateModelBound();
+    }
+    
+    public URL locateTile() throws IOException{
+        return ResourceLocatorTool.locateResource("tile", getName() + ".xml");
+    }
 
     /**
      * Loads the tile, making it contain valid renderable information.
@@ -261,17 +270,17 @@ public class Tile extends com.jme.scene.Node{
      */
     public boolean load() {
         try {
-            URL url = ResourceLocatorTool.locateResource("tile", getName() + ".xml");
+            URL url = locateTile();
             if (url == null)
                 return false;
             
             InputStream in = url.openStream();
+            if (in == null)
+                return false;
+            
             loadTile(loadDocument(in, "tile"));
             in.close();
             
-            setModelBound(new BoundingBox());
-            updateModelBound();
-
             logger.finest(getName()+" loaded successfuly.");
 
             return true;
