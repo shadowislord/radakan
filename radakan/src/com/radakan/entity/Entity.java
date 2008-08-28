@@ -19,7 +19,7 @@ import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
-import com.radakan.entity.unit.AbstractUnit;
+import com.radakan.entity.unit.UnitAdapter;
 import com.radakan.entity.unit.IUnit;
 import com.radakan.entity.unit.ModelUnit;
 import com.radakan.entity.unit.UnitEvent;
@@ -40,12 +40,15 @@ import org.w3c.dom.Node;
  * 
  * @author Kirill Vainer
  */
-public final class Entity extends AbstractUnit {
+public final class Entity extends UnitAdapter {
 
     /**
      * Name of the entity. This is a dynamic variable.
      */
     private String name;
+    
+    /**Determines which units the entity currently has.*/
+    private int unitFlags;
     
     /**
      * Type of entity, given to EntityFactory to load a certain entity from XML definitions.

@@ -7,7 +7,7 @@ import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import org.w3c.dom.Node;
 
-public class PlayerBehaviorUnit extends AbstractUnit {
+public class PlayerBehaviorUnit extends UnitAdapter {
 
     @Override
     public void read(JMEImporter im) throws IOException {

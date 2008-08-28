@@ -8,7 +8,7 @@ import com.radakan.entity.EntityManager.EntityType;
 import java.io.PrintStream;
 import org.w3c.dom.Node;
 
-public class EntityUnit extends AbstractUnit {
+public class EntityUnit extends UnitAdapter {
 
     private final EntityType type;
     
