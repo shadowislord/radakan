@@ -64,7 +64,7 @@ public class PlayerController extends Controller {
         lastLoc.set(player.getLocalTranslation());
         
         animControl = (JointController) player.getController(0);
-        
+       
         JmeContext.get().execute(new Callable<Void>(){
             public Void call(){
                 Vector3f targetOffset = new Vector3f(0, playerHeight * 0.7f, 0);

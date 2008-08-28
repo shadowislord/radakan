@@ -20,7 +20,7 @@ import java.io.PrintStream;
  * 
  * @author Momoko_Fan
  */
-public class ModelUnit extends AbstractUnit implements IUnitEventListener {
+public class ModelUnit extends UnitAdapter implements IUnitEventListener {
 
     private transient Node model;
     private String modelName;

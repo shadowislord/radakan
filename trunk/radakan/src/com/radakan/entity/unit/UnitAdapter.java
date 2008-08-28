@@ -28,7 +28,7 @@ import com.radakan.entity.Entity;
  * 
  * @author Momoko_Fan
  */
-public abstract class AbstractUnit implements IUnit {
+public abstract class UnitAdapter implements IUnit {
 
     private transient Set<IUnitEventListener> listeners = 
                          new HashSet<IUnitEventListener>();
