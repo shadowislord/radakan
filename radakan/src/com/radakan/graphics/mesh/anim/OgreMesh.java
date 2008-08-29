@@ -16,7 +16,9 @@
 package com.radakan.graphics.mesh.anim;
 
 import com.jme.scene.TriMesh;
+import com.jme.util.export.JMEExporter;
 import com.jme.util.geom.BufferUtils;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 
 /**
@@ -24,8 +26,8 @@ import java.nio.FloatBuffer;
  */
 public class OgreMesh extends TriMesh {
 
-	private static final long serialVersionUID = 8831653270716808462L;
-	private transient FloatBuffer vertexBufferOriginal;
+    private static final long serialVersionUID = 8831653270716808462L;
+    private transient FloatBuffer vertexBufferOriginal;
     private WeightBuffer weightBuffer;
     
     public OgreMesh(String name){
@@ -33,7 +35,7 @@ public class OgreMesh extends TriMesh {
     }
     
     public void setWeightBuffer(WeightBuffer weightBuf){
-        if (weightBuf.indexes.limit() != this.getVertexCount())
+        if (weightBuf.indexes.limit() / 4 != this.getVertexCount())
             throw new IllegalArgumentException();
         
         weightBuffer = weightBuf;
@@ -55,7 +57,7 @@ public class OgreMesh extends TriMesh {
         if (vertexBufferOriginal == null){
             vertexBufferOriginal = BufferUtils.createFloatBuffer(vertBuf.capacity());
         }
-        
+              
         vertBuf.rewind();
         vertexBufferOriginal.rewind();
         
@@ -72,5 +74,17 @@ public class OgreMesh extends TriMesh {
     public boolean hasBindPose(){
         return vertexBufferOriginal != null;
     }
+    
+    @Override
+    public void write(JMEExporter e) throws IOException{
+        // dont want to write a vertex buffer in an animation here.. make sure to restore bind pose
+        if (hasBindPose())
+            restoreBindPose();
+        
+        super.write(e);
+        
+        // FIXME: write WeightBuffer here
+    }
+    
     
 }

@@ -175,7 +175,7 @@ public class SceneLoader {
         return c;
     }
     
-    public void loadNodes(Node nodes){
+    public void loadNodes(Node nodes) throws IOException{
         Node node = nodes.getFirstChild();
         while (node != null){
             if (node.getNodeName().equals("node")){
@@ -198,7 +198,7 @@ public class SceneLoader {
                     
                     OgreLoader loader = new OgreLoader();
                     loader.setMaterials(materials);
-                    Spatial spatial = loader.loadModel(url, false);
+                    Spatial spatial = loader.loadModel(url);
 
                     n.attachChild(spatial);
                     

@@ -43,6 +43,13 @@ public class Animation {
         }
     }
     
+    public void setBoneAnimation(BoneAnimation boneAnim){
+        this.boneAnim = boneAnim;
+        
+        this.length = Math.max(boneAnim.getLength(),
+                               meshAnim.getLength());
+    }
+    
     public boolean hasMeshAnimation(){
         return meshAnim != null;
     }

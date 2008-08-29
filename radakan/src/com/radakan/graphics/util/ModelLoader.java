@@ -98,7 +98,7 @@ public final class ModelLoader {
         
         OgreLoader loader = new OgreLoader();
         loader.setMaterials(materials);
-        return loader.loadModel(url, false);
+        return loader.loadModel(url);
     }
     
     public static Spatial loadDotScene(URL url) throws IOException{

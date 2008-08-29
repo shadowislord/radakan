@@ -27,7 +27,15 @@ import java.nio.FloatBuffer;
  */
 public class WeightBuffer {
 
+    /**
+     * Each 4 bytes in the boneIndex buffer are assigned to a vertex.
+     * 
+     */
     ByteBuffer indexes;
+    
+    /**
+     * The weight of each bone specified in the index buffer
+     */
     FloatBuffer weights;
     
     public WeightBuffer(int vertexCount){
