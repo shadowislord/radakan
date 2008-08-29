@@ -19,6 +19,7 @@ import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.state.GLSLShaderObjectsState;
+import com.jme.util.resource.SimpleResourceLocator;
 import java.util.List;
 
 /**
@@ -30,6 +31,11 @@ public class Skeleton {
 
     private Bone rootBone;
     private Bone[] boneList;
+    
+    /**
+     * Same as bone.skinningMatrix except as a Matrix4f object and not TransformMatrix
+     * (easier to send to hardware)
+     */
     private Matrix4f[] skinningMatrixes;
     
     private final Quaternion tempQ = new Quaternion();
@@ -41,6 +47,7 @@ public class Skeleton {
                 rootBone = b;
         
         boneList = bones.toArray(new Bone[0]);
+        
         skinningMatrixes = new Matrix4f[bones.size()];
         for (int i = 0; i < skinningMatrixes.length; i++)
             skinningMatrixes[i] = new Matrix4f();
@@ -62,35 +69,32 @@ public class Skeleton {
         return null;
     }
     
-    private void updateWorldTransforms(Bone b){
-        if (b.parent != null){
-            b.skinningTransform.set(b.animTransform);
-            b.skinningTransform.combineWithParent(b.parent.skinningTransform);
-        }
+    private void resetAnimationTransforms(Bone b){
+        b.animMat.loadIdentity();
         
         for (Bone c : b.children)
-            updateWorldTransforms(c);
+            resetAnimationTransforms(c);
     }
     
-    public void updateWorldTransforms(){
-        updateWorldTransforms(rootBone);
+    public void resetAnimationTransforms(){
+        resetAnimationTransforms(rootBone);
     }
     
     public void sendToShader(GLSLShaderObjectsState shader){
-        for (int i = 0; i < boneList.length; i++){
-            Matrix4f matrix = skinningMatrixes[i];
-            
-            boneList[i].skinningTransform.getRotation(tempQ);
-            boneList[i].skinningTransform.getTranslation(tempV);
-            
-            matrix.setTranslation(tempV);
-            matrix.setRotationQuaternion(tempQ);
-            
-            boneList[i].skinningTransform.getScale(tempV);
-            matrix.m00 *= tempV.x;
-            matrix.m11 *= tempV.y;
-            matrix.m22 *= tempV.z;
-        }
+//        for (int i = 0; i < boneList.length; i++){
+//            Matrix4f matrix = skinningMatrixes[i];
+//            
+//            boneList[i].skinningTransform.getRotation(tempQ);
+//            boneList[i].skinningTransform.getTranslation(tempV);
+//            
+//            matrix.setTranslation(tempV);
+//            matrix.setRotationQuaternion(tempQ);
+//            
+//            boneList[i].skinningTransform.getScale(tempV);
+//            matrix.m00 *= tempV.x;
+//            matrix.m11 *= tempV.y;
+//            matrix.m22 *= tempV.z;
+//        }
         
         // FIXME: Apply jME uniform patch
         //shader.setUniform("skinningMats", skinningMatrixes, false);

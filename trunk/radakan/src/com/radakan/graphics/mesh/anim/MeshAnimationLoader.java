@@ -20,55 +20,17 @@ import java.util.List;
 
 import org.w3c.dom.Node;
 
-import com.gibbon.jme.context.JmeContext;
 import com.radakan.util.XMLUtil;
 import com.jme.math.Vector3f;
 import com.jme.scene.TriMesh;
-import com.jme.scene.state.GLSLShaderObjectsState;
 import com.radakan.graphics.mesh.anim.PoseTrack.PoseFrame;
+
+import static com.radakan.util.XMLUtil.*;
 
 /**
  * Utility class used by OgreLoader to load poses and mesh animations.
  */
 public class MeshAnimationLoader {
-    
-    public static String applySkinningShader(String shader){
-        shader = shader.replace("hw_skin_vars", "attribute vec4 weights;\n" +
-                                       "attribute vec4 matrixIndices;\n" +
-                                       "uniform mat4 BoneMatrices[256];\n");
-        shader = shader.replace("hw_skin_compute", "    vec4 index = matrixIndices;\n" +
-                                          "    vec4 weight = weights;\n" +
-                                          "\n" +
-                                          "    vec4 vPos = vec4(0.0);\n" +
-                                          "    vec4 vNormal = vec4(0.0);\n" +
-                                          "    vec4 normal = vec4(gl_Normal.xyz,0.0);\n" +
-                                          "\n" +
-                                          "    for (float i = 0.0; i < 4; i += 1.0){\n" +
-                                          "        mat4 skinMat = boneMatrices[int(index.x)];\n" +
-                                          "        vPos    += weight.x * skinMat * gl_Vertex;\n" +
-                                          "        vNormal += weight.x * skinMat * normal;\n" +
-                                          "        index = index.yzwx;\n" +
-                                          "        weight = weight.yzwx;\n" +
-                                          "    }\n" +
-                                          "\n");
-        shader = shader.replace("hw_skin_vpos", "(gl_ModelViewProjectionMatrix * vPos)");
-        shader = shader.replace("hw_skin_vnorm", "(normalize(inverseModelView * tempNormal).xyz)");
-        
-        return shader;
-    }
-    
-    public static GLSLShaderObjectsState createSkinningShader(){
-        GLSLShaderObjectsState shader = JmeContext.get().getRenderer().createGLSLShaderObjectsState();
-        String str = "hw_skin_vars\n" +
-                        "\n" +
-                        "void main(){" +
-                        "   hw_skin_compute" +
-                        "   gl_Position = hw_skin_vpos;" +
-                        "}";
-        str = applySkinningShader(str);
-        shader.load(str, null);
-        return shader;
-    }
     
     public static MeshAnimation loadMeshAnimation(Node animationNode, List<Pose> poseList, TriMesh sharedgeom, List<TriMesh> submeshes){
         String name =  XMLUtil.getAttribute(animationNode, "name");

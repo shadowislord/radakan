@@ -15,32 +15,120 @@
 
 package com.radakan.graphics.mesh.anim;
 
+import com.jme.math.Matrix3f;
+import com.jme.math.Quaternion;
 import com.jme.math.TransformMatrix;
+import com.jme.math.Vector3f;
+import java.util.ArrayList;
 
 public class Bone {
     
-    String name;
-    Bone parent;
-    Bone[] children;
+    public String name;
+    public Bone parent;
+    public ArrayList<Bone> children = new ArrayList<Bone>();
+    
+    private Vector3f tempV = new Vector3f();
+    
+    public Bone(String name){
+        this.name = name;
+    }
+    
+    public Bone(String name, Bone parent){
+        this(name);
+        this.parent = parent;
+    }
+
+    public void addChild(Bone bone) {
+        children.add(bone);
+        bone.parent = this;
+    }
+    
+    public void update(){
+        //
+        worldMat.set(bindMat);
+        //worldMat.set(animMat);
+        //worldMat.multLocal(bindMat, tempV);
+        
+        if (parent != null){
+            //worldMat.combineWithParent(parent.worldMat);
+        }
+        
+        worldMat.loadIdentity();
+        
+        for (Bone b : children)
+            b.update();
+    }
+    
+    public void computeInverseWorldBind(){
+        worldMat.set(bindMat);
+        if (parent != null){
+            //worldMat.combineWithParent(parent.worldMat);
+        }
+        
+        worldMat.loadIdentity();
+        
+        // make sure worldMat is in bind space
+        worldBindInverseMat.set(worldMat);
+        worldBindInverseMat.inverse();
+        
+        for (Bone b : children)
+            b.computeInverseWorldBind();
+    }
+    
+    public void getSkinningMatrix(TransformMatrix store){
+        // SCALE
+        Vector3f temp = new Vector3f(),
+                 temp2 = new Vector3f();
+        worldMat.getScale(temp);
+        worldBindInverseMat.getScale(temp2);
+        
+        Vector3f scale = temp.mult(temp2);
+        
+        
+        // ROT
+        Quaternion tempQ = new Quaternion(),
+                   tempQ2 = new Quaternion();
+        worldMat.getRotation(tempQ);
+        worldBindInverseMat.getRotation(tempQ2);
+        
+        Quaternion rotate = tempQ.mult(tempQ2);
+                
+        // TRANSLATE
+        worldBindInverseMat.getTranslation(temp);
+        worldMat.getTranslation(temp2);
+        
+        Vector3f translate = new Vector3f(scale);
+        translate.multLocal(temp);
+        rotate.multLocal(translate);
+        translate.addLocal(temp2);
+
+        store.setTranslation(translate);
+        store.setRotationQuaternion(rotate);
+        store.setScale(scale);
+    }
     
     /**
-     * The local animated transform matrix
+     * (BONE SPACE)
+     * The local animated transform matrix. 
      */
-    TransformMatrix animTransform = new TransformMatrix();
+    public TransformMatrix animMat = new TransformMatrix();
     
     /**
-     * The final matrix used for skinning verticles applied to this bone.
-     * 
-     * This will probably be removed when
-     * Skeleton.updateWorldTransforms()
-     * and 
-     * Skeleton.sendToShader()
-     * are condenced to one method.
+     * (MODEL SPACE)
      */
-    TransformMatrix skinningTransform = new TransformMatrix();
+    public TransformMatrix worldMat = new TransformMatrix();
     
     /**
-     * The inverse bind matrix. Also known as the offset matrix.
+     * (MODEL SPACE)
+     * The inverse bind matrix. 
+     * Convert MODEL space to BONE space
      */
-    TransformMatrix inverseBind = new TransformMatrix();
+    public TransformMatrix worldBindInverseMat = new TransformMatrix();
+    
+    /**
+     * (PARENT SPACE)
+     * The bind matrix. 
+     * Convert PARENT space to BONE space
+     */
+    public TransformMatrix bindMat = new TransformMatrix();
 }
