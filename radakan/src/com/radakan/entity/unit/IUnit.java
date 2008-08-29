@@ -5,26 +5,13 @@ import com.radakan.entity.Entity;
 import java.io.PrintStream;
 import org.w3c.dom.Node;
 
-public interface IUnit extends Savable {
-
-    /**
-     * Add a new UnitEventListener to be notified of events happening to this unit
-     * 
-     * @param listener The listener to add
-     */
-    public void addEventListener(IUnitEventListener listener);
+public interface IUnit extends Savable
+{
 
     public void exportXML(PrintStream stream);
     
     public void importXML(Node rootEntityNode);
-    
-    /**
-     * Remove a UnitEventListener to stop being notified of events of this unit
-     * 
-     * @param listener The listener to remove
-     */
-    public void removeEventListener(IUnitEventListener listener);
-    
+       
     /**
      * Update this unit's state
      * Called every frame
@@ -47,4 +34,10 @@ public interface IUnit extends Savable {
      * Use Entity.detachUnit instead
      */
     public void detach();
+    
+    /**Returns the type of unit.
+     * 
+     * @return Type of unit
+     */
+    public int getType();
 }

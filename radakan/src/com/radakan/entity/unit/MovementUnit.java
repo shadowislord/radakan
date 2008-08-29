@@ -15,7 +15,7 @@ import com.jme.util.export.JMEImporter;
  * @author Joshua Montgomery
  *
  */
-public class MovementUnit extends UnitAdapter 
+public class MovementUnit extends Unit 
 {
 
 	@Override
@@ -44,6 +44,18 @@ public class MovementUnit extends UnitAdapter
 
 	@Override
 	public void importXML(Node rootEntityNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void onUnitEvent(UnitEvent event) {
 		// TODO Auto-generated method stub
 		
 	}

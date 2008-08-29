@@ -4,7 +4,7 @@ import com.radakan.entity.Entity;
 
 public class UnitEvent {
 
-    protected IUnit source;
+    protected Object source;
     protected Entity entity;
     protected String type;
     
@@ -13,7 +13,7 @@ public class UnitEvent {
                                ENTITY_BIRTH   = "EntityBirth",
                                ENTITY_DISPOSE = "EntityDispose";
     
-    public void setSource(IUnit source){
+    public void setSource(Object source){
         this.source = source;
     }
     
@@ -21,7 +21,7 @@ public class UnitEvent {
         this.entity = entity;
     }
     
-    public IUnit getSource(){
+    public Object getSource(){
         return source;
     }
     

@@ -36,7 +36,6 @@ import com.gibbon.jme.context.JmeContext;
 import com.jme.bounding.BoundingBox;
 import com.jme.scene.Spatial;
 import com.jme.util.resource.ResourceLocatorTool;
-import com.radakan.entity.unit.EntityUnit;
 import com.radakan.entity.unit.ModelUnit;
 import com.radakan.graphics.util.ModelCloneUtil;
 import com.radakan.graphics.util.ModelLoader;
@@ -172,10 +171,7 @@ public final class EntityManager {
             return null;
         
         Entity ent = new Entity(name, type.name);
-        
-        EntityUnit editor = new EntityUnit(type);
-        ent.attachUnit(editor);
-        
+           
         if (type.model != null){
 //            SharedNode node = new SharedNode(name, type.model);
 //            node.setModelBound(new BoundingBox());
