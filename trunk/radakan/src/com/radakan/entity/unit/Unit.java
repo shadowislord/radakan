@@ -16,8 +16,6 @@
 package com.radakan.entity.unit;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
@@ -28,34 +26,13 @@ import com.radakan.entity.Entity;
  * 
  * @author Momoko_Fan
  */
-public abstract class UnitAdapter implements IUnit {
-
-    private transient Set<IUnitEventListener> listeners = 
-                         new HashSet<IUnitEventListener>();
-    
+public abstract class Unit implements IUnit, IUnitEventListener
+{  
     /**
      * Keep a reference to the currently attached entity
      */
     protected transient Entity entity;
-    
-    public void addEventListener(IUnitEventListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeEventListener(IUnitEventListener listener) {
-        listeners.remove(listener);
-    }
-
-    /**
-     * Used by subclasses to notify event listeners of a UnitEvent
-     * 
-     * @param event The event that happened
-     */
-    protected void notifyListeners(UnitEvent event){
-        for (IUnitEventListener listener : listeners)
-            listener.onUnitEvent(event);
-    }
-
+   
     public void attach(Entity entity){
         this.entity = entity;
     }

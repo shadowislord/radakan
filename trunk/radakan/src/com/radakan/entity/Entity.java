@@ -19,7 +19,9 @@ import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
-import com.radakan.entity.unit.UnitAdapter;
+import com.jme.util.export.Savable;
+import com.radakan.entity.unit.IUnitEventListener;
+import com.radakan.entity.unit.Unit;
 import com.radakan.entity.unit.IUnit;
 import com.radakan.entity.unit.ModelUnit;
 import com.radakan.entity.unit.UnitEvent;
@@ -28,6 +30,8 @@ import com.radakan.util.XMLUtil;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Node;
@@ -40,7 +44,11 @@ import org.w3c.dom.Node;
  * 
  * @author Kirill Vainer
  */
-public final class Entity extends UnitAdapter {
+public final class Entity implements Savable
+{
+	private transient Set<IUnitEventListener> listeners = 
+        new HashSet<IUnitEventListener>();
+
 
     /**
      * Name of the entity. This is a dynamic variable.
@@ -54,7 +62,7 @@ public final class Entity extends UnitAdapter {
      * Type of entity, given to EntityFactory to load a certain entity from XML definitions.
      */
     private String type;
-    private ArrayList<IUnit> units = new ArrayList<IUnit>();
+    private ArrayList<Unit> units = new ArrayList<Unit>();
     
     public Entity(String name, String type){
         this.name = name;
@@ -91,11 +99,11 @@ public final class Entity extends UnitAdapter {
             String childName = childNode.getNodeName();
             if (!childName.equals("#text")){
                 try {
-                    Class<? extends IUnit> clazz = null;
+                    Class<? extends Unit> clazz = null;
                     if (childName.contains(".")){
-                        clazz = (Class<? extends IUnit>) Class.forName(childName);
+                        clazz = (Class<? extends Unit>) Class.forName(childName);
                     }else{
-                        clazz = (Class<? extends IUnit>) Class.forName("com.radakan.entity.unit."+childName);
+                        clazz = (Class<? extends Unit>) Class.forName("com.radakan.entity.unit."+childName);
                     }
 
                     if (clazz == null){
@@ -103,7 +111,7 @@ public final class Entity extends UnitAdapter {
                         continue;
                     }
                          
-                    IUnit u = clazz.newInstance();
+                    Unit u = clazz.newInstance();
                     attachUnit(u);
                     u.importXML(childNode);
                 } catch (ClassNotFoundException ex) {
@@ -133,10 +141,11 @@ public final class Entity extends UnitAdapter {
         return null;
     }
     
-    public void attachUnit(IUnit unit){
+    public void attachUnit(Unit unit){
         units.add(unit);
+        addUnitEventListener(unit);
         unit.attach(this);
-        
+               
         UnitEvent event = new UnitEvent();
         event.setSource(unit);
         event.setEntity(this);
@@ -144,9 +153,11 @@ public final class Entity extends UnitAdapter {
         notifyListeners(event);
     }
     
-    public void detachUnit(IUnit unit){
+    public void detachUnit(Unit unit){
         units.remove(unit);
+        removeUnitEventListener(unit);
         unit.detach();
+        
         
         UnitEvent event = new UnitEvent();
         event.setSource(unit);
@@ -164,7 +175,7 @@ public final class Entity extends UnitAdapter {
     }
     
     public void dispose(){
-        for (IUnit u : units)
+        for (Unit u : units)
             detachUnit(u);
         
         UnitEvent event = new UnitEvent();
@@ -179,19 +190,53 @@ public final class Entity extends UnitAdapter {
             u.update(tpf);
     }
 
-    @Override
     public void write(JMEExporter ex) throws IOException {
         OutputCapsule out = ex.getCapsule(this);
         out.write(name, "name", "");
         out.writeSavableArrayList(units, "units", null);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public void read(JMEImporter im) throws IOException {
         InputCapsule in = im.getCapsule(this);
         name = in.readString(name, "");
         units = in.readSavableArrayList("units", null);
+    }
+
+	@Override
+	public Class getClassTag() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+   /**
+   * Remove a UnitEventListener to stop being notified of events of this unit
+   * 
+   * @param listener The listener to remove
+   */
+   public void addUnitEventListener(IUnitEventListener listener) 
+   {
+	     listeners.add(listener);
+   }
+   
+   /**
+    * Add a new UnitEventListener to be notified of events happening to this unit
+    * 
+    * @param listener The listener to add
+    */
+   public void removeUnitEventListener(IUnitEventListener listener) 
+   {
+        listeners.remove(listener);
+   }
+
+    /**
+     * Used by subclasses to notify event listeners of a UnitEvent
+     * 
+     * @param event The event that happened
+     */
+    protected void notifyListeners(UnitEvent event){
+        for (IUnitEventListener listener : listeners)
+            listener.onUnitEvent(event);
     }
     
 }

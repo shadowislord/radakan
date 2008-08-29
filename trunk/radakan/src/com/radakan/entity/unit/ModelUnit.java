@@ -20,7 +20,7 @@ import java.io.PrintStream;
  * 
  * @author Momoko_Fan
  */
-public class ModelUnit extends UnitAdapter implements IUnitEventListener {
+public class ModelUnit extends Unit{
 
     private transient Node model;
     private String modelName;
@@ -72,7 +72,6 @@ public class ModelUnit extends UnitAdapter implements IUnitEventListener {
         super.attach(entity);
         if (model != null)
             model.setUserData("Entity", entity);
-        entity.addEventListener(this);
     }
     
     @Override
@@ -95,7 +94,7 @@ public class ModelUnit extends UnitAdapter implements IUnitEventListener {
     }
     
     public void onUnitEvent(UnitEvent event) {
-        EntityUnit editor = entity.getUnit(EntityUnit.class);
+       /* EntityUnit editor = entity.getUnit(EntityUnit.class);
         
         if (event.getType().equals(UnitEvent.ENTITY_BIRTH)){
             // add entity to world rootNode
@@ -107,7 +106,13 @@ public class ModelUnit extends UnitAdapter implements IUnitEventListener {
             if (editor != null){
                 model.removeFromParent();
             }
-        }
+        }*/
     }
+
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }

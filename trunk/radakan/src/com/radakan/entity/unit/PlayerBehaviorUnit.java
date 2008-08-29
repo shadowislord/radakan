@@ -7,7 +7,7 @@ import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
 import org.w3c.dom.Node;
 
-public class PlayerBehaviorUnit extends UnitAdapter {
+public class PlayerBehaviorUnit extends Unit {
 
     @Override
     public void read(JMEImporter im) throws IOException {
@@ -36,4 +36,16 @@ public class PlayerBehaviorUnit extends UnitAdapter {
     public void importXML(Node rootEntityNode) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+	@Override
+	public int getType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void onUnitEvent(UnitEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }
