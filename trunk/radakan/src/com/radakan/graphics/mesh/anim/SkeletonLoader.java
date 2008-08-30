@@ -9,6 +9,7 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -95,9 +96,7 @@ public class SkeletonLoader {
             }
             
             // compile individual transformations into bind matrix
-            bone.bindMat.setTranslation(vpos);
-            bone.bindMat.setRotationQuaternion(vrot);
-            bone.bindMat.setScale(vscale);
+            bone.setBindTransforms(vpos, vrot);
             
             boneNode = boneNode.getNextSibling();
         }
@@ -119,40 +118,14 @@ public class SkeletonLoader {
             boneparent = boneparent.getNextSibling();
         }
         
-        ArrayList<Bone> bones = new ArrayList<Bone>(indexedBoneMap.size());
+        Bone[] bones = new Bone[indexedBoneMap.size()];
         
         // find bones without a parent and attach them to the skeleton
         // also assign the bones to the bonelist
         for (Map.Entry<Integer, Bone> entry: indexedBoneMap.entrySet()){
             Bone bone = entry.getValue();
-            bones.add(entry.getKey(), bone);
+            bones[entry.getKey()] = bone;
         }
-
-        // FIXME: animationlinks not supported currently
-        
-        // assign the animations
-//        AnimationController ac = new AnimationController();
-//        ac.setRepeatType(Controller.RT_WRAP);
-//        
-//        Node animations = getChildNode(skeleton, "animations");
-//        if (animations != null){
-//            Node animation = animations.getFirstChild();
-//            while (animation != null){
-//                if (!animation.getNodeName().equals("animation")){
-//                    animation = animation.getNextSibling();
-//                    continue;
-//                }
-//
-//                BoneAnimation anim = loadAnimation(animation, boneMap);
-//                ac.addAnimation(anim);
-//                if (ac.getActiveAnimation() == null)
-//                    ac.setActiveAnimation(anim);
-//
-//                animation = animation.getNextSibling();
-//            }
-//        }
-//        
-//        rootBone.addController(ac);
 
         return new Skeleton(bones);
     }

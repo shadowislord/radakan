@@ -32,7 +32,7 @@ public class BoneAnimationLoader {
     public static String applySkinningShader(String shader){
         shader = shader.replace("hw_skin_vars", "attribute vec4 weights;\n" +
                                        "attribute vec4 matrixIndices;\n" +
-                                       "uniform mat4 BoneMatrices[256];\n");
+                                       "uniform mat4 BoneMatrices[10];\n");
         shader = shader.replace("hw_skin_compute", "    vec4 index = matrixIndices;\n" +
                                           "    vec4 weight = weights;\n" +
                                           "\n" +
@@ -40,7 +40,7 @@ public class BoneAnimationLoader {
                                           "    vec4 vNormal = vec4(0.0);\n" +
                                           "    vec4 normal = vec4(gl_Normal.xyz,0.0);\n" +
                                           "\n" +
-                                          "    for (float i = 0.0; i < 4; i += 1.0){\n" +
+                                          "    for (float i = 0.0; i < 4.0; i += 1.0){\n" +
                                           "        mat4 skinMat = boneMatrices[int(index.x)];\n" +
                                           "        vPos    += weight.x * skinMat * gl_Vertex;\n" +
                                           "        vNormal += weight.x * skinMat * normal;\n" +
@@ -63,6 +63,7 @@ public class BoneAnimationLoader {
                         "   gl_Position = hw_skin_vpos;" +
                         "}";
         str = applySkinningShader(str);
+        System.out.println(str);
         shader.load(str, null);
         return shader;
     }
@@ -111,7 +112,8 @@ public class BoneAnimationLoader {
             }
             
             ArrayList<Float> times = new ArrayList<Float>();
-            ArrayList<TransformMatrix> animMatrices = new ArrayList<TransformMatrix>();
+            ArrayList<Vector3f> translations = new ArrayList<Vector3f>();
+            ArrayList<Quaternion> rotations = new ArrayList<Quaternion>();
             
             Bone bone = skeleton.getBone(getAttribute(trackNode, "bone"));
             BoneTrack bTrack = new BoneTrack(bone);
@@ -169,17 +171,17 @@ public class BoneAnimationLoader {
                     scal = new Vector3f(1,1,1);
                 }
                 
-                TransformMatrix animMat = new TransformMatrix(rot, pos);
-                animMat.setScale(scal);
                 times.add(time);
-                animMatrices.add(animMat);
+                translations.add(pos);
+                rotations.add(rot);
                 
                 keyframe = keyframe.getNextSibling();
             }
             
             float[] timesArray = new float[times.size()];
             for (int i = 0; i < timesArray.length; i++) timesArray[i] = times.get(i);
-            bTrack.setData(timesArray, animMatrices.toArray(new TransformMatrix[0]));
+            bTrack.setData(timesArray, translations.toArray(new Vector3f[0]),
+                                       rotations.toArray(new Quaternion[0]));
             tracks.add(bTrack);
             
             trackNode = trackNode.getNextSibling();

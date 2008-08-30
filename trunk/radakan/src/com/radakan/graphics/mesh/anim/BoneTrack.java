@@ -16,25 +16,40 @@
 package com.radakan.graphics.mesh.anim;
 
 import com.jme.math.Quaternion;
-import com.jme.math.TransformMatrix;
+import com.jme.math.Vector3f;
 
 public class BoneTrack {
 
-    private TransformMatrix[] frames;
+    private Vector3f[] translations;
+    private Quaternion[] rotations;
     private float[] times;
     
     private Bone target;
     
-    private Quaternion temp1 = new Quaternion();
-    private Quaternion temp2 = new Quaternion();
+    private Vector3f tempV = new Vector3f();
+    private Quaternion tempQ = new Quaternion();
     
     public BoneTrack(Bone target){
         this.target = target;
     }
     
-    public void setData(float[] times, TransformMatrix[] transforms){
+    public void checkValid(){
+        if (  (times.length != translations.length)
+           || (rotations.length != times.length)){
+            assert false;
+        }
+        
+        for (int i = 0; i < times.length-1; i++)
+            assert times[i] < times[i+1];
+    }
+    
+    public void setData(float[] times, Vector3f[] translations, Quaternion[] rotations){
+        if (times.length == 0)
+            throw new RuntimeException("BoneTrack with no keyframes!");
+        
         this.times = times;
-        this.frames = transforms;
+        this.translations = translations;
+        this.rotations = rotations;
     }
     
     public void setTime(float time) {
@@ -43,9 +58,10 @@ public class BoneTrack {
         try{
             // by default the mode is to clamp for times beyond the current timeline
             if (time < times[0]){
-                target.animMat.set(frames[0]);
+                target.setAnimTransforms(translations[0], rotations[0]);
             }else if (time > times[times.length-1]){
-                target.animMat.set(frames[times.length-1]);
+                target.setAnimTransforms(translations[translations.length-1], 
+                                         rotations[rotations.length-1]);
             } else{
                 for (int i = 0; i < times.length; i++){
                     if (times[i] < time){
@@ -60,11 +76,24 @@ public class BoneTrack {
 
                 float blend = (time - times[startFrame]) / (times[endFrame] - times[startFrame]);
 
-                target.animMat.interpolateTransforms(frames[startFrame], 
-                                                     frames[endFrame], 
-                                                     blend, temp1, temp2);
+                tempQ.slerp(rotations[startFrame], rotations[endFrame], blend);
+                tempV.interpolate(translations[startFrame], translations[endFrame], blend);
+//                
+//                if (blend < 0.5f){
+//                    target.setAnimTransforms(translations[startFrame],
+//                                             rotations[startFrame]);
+//                }else{
+//                    target.setAnimTransforms(translations[endFrame],
+//                                             rotations[endFrame]);
+//                }
+//                
+                target.setAnimTransforms(tempV, tempQ);
+                                             
+                
+//                target.animMat.interpolateTransforms(frames[startFrame], 
+//                                                     frames[endFrame], 
+//                                                     blend, temp1, temp2);
             }
-
         } catch (Throwable t){
             t.printStackTrace();
         }

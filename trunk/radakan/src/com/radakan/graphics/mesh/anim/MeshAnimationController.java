@@ -15,7 +15,11 @@
 
 package com.radakan.graphics.mesh.anim;
 
+import com.jme.math.Matrix3f;
+import com.jme.math.Matrix4f;
+import com.jme.math.Quaternion;
 import com.jme.math.TransformMatrix;
+import com.jme.math.TransformQuaternion;
 import com.jme.math.Vector3f;
 import java.util.Map;
 
@@ -105,10 +109,6 @@ public class MeshAnimationController extends Controller {
         if (isHardwareSkinning()){
             assignShaderLogic();
         }
-        
-        
-        skeleton.getRoot().update();
-        skeleton.getRoot().computeInverseWorldBind();
     }
 
     private void assignShaderLogic(){
@@ -180,7 +180,8 @@ public class MeshAnimationController extends Controller {
         Vector3f temp = new Vector3f();
         Vector3f resultVert = new Vector3f();
         Vector3f resultNorm = new Vector3f();
-        TransformMatrix offsetMatrix = new TransformMatrix();
+        
+        Matrix4f offsetMatrix = new Matrix4f();
         
         // NOTE: This code assumes the vertex buffer is in bind pose
         // resetToBind() has been called this frame
@@ -204,36 +205,29 @@ public class MeshAnimationController extends Controller {
             resultNorm.zero();
             
             // small check to make sure weight sum = 1
-            float weightSum = 0.0f;
+            //float weightSum = 0.0f;
             for (int w = 0; w < 4; w++){
                 float weight = wb.get();
+                //weightSum += weight;
 
-                if (weight != 0){
-                    weightSum += weight;
-                    //TransformMatrix mat = skeleton.getBone(ib.get()).skinningTransform;
-                    Bone b = skeleton.getBone(ib.get());
-                    b.getSkinningMatrix(offsetMatrix);
-                    
-                    //if (vert == 0)
-                      //  System.out.println(time+": "+offsetMatrix.getTranslation(null));
-                    
+                Bone b = skeleton.getBone(ib.get());
+                b.getOffsetTransform(offsetMatrix);
+
+                if (weight > 0.01f){
                     temp.set(vertex);
-                    offsetMatrix.multPoint(temp);
+                    offsetMatrix.mult(temp, temp);
                     temp.multLocal(weight);
                     resultVert.addLocal(temp);
-                    
+
                     temp.set(normal);
-                    offsetMatrix.multNormal(temp);
+                    offsetMatrix.rotateVect(temp);
                     temp.multLocal(weight);
                     resultNorm.addLocal(temp);
-                }else{
-                    // skip the index we didn't read
-                    ib.position(ib.position()+1);
                 }
             }
 
-            if (weightSum != 1.0f)
-                throw new RuntimeException("Weight sum for vert "+vert+" is "+ weightSum +" not 1!");
+//            if (weightSum != 1.0f)
+//                throw new RuntimeException("Weight sum for vert "+vert+" is "+ weightSum +" not 1!");
 
             resultNorm.normalizeLocal();
             
@@ -249,37 +243,13 @@ public class MeshAnimationController extends Controller {
         nb.flip();
         
         mesh.setHasDirtyVertices(true);
-    }
-    
-    public void pretendUpdate(){
-        for (int i = 0; i < targets.length; i++){
-            if (targets[i].hasBindPose()){
-                targets[i].restoreBindPose();
-            }else{
-                targets[i].saveCurrentToBindPose();
-            }
-        }
-        
-        // reset all bones ANIMATION MATRIX field to identity (zero transform)
-        skeleton.resetAnimationTransforms();
-        
-        // this sets the SKINNING MATRIX field of ALL bones
-        skeleton.getRoot().update();
-
-        // here update the targets verticles if no hardware skinning supported
-        for (int i = 0; i < targets.length; i++){
-            softwareSkinUpdate(targets[i]);
-        }
+        mesh.updateModelBound();
     }
     
     @Override
     public void update(float tpf) {
-        //pretendUpdate();
-        
         if (!isActive() || animation == null)
             return;
-        
-        float oldTime = time;
         
         // do clamping/wrapping of time
         if (time < 0f){
