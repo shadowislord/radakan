@@ -561,10 +561,12 @@ public class OgreLoader {
             targets = new OgreMesh[]{ sharedgeom };
         }
         
-        MeshAnimationController controller = new MeshAnimationController(targets,
-                                                                         skeleton,
-                                                                         animations);
-        rootnode.addController(controller);
+        if (animations.size() > 0 && skeleton != null){
+            MeshAnimationController controller = new MeshAnimationController(targets,
+                                                                             skeleton,
+                                                                             animations);
+            rootnode.addController(controller);
+        }
         // NOTE: Mesh animation commented out until all issues with bone
         // animation are sorted out
         

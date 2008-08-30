@@ -41,16 +41,23 @@ public class Skeleton {
     private final Quaternion tempQ = new Quaternion();
     private final Vector3f tempV = new Vector3f();
     
-    public Skeleton(List<Bone> bones){
-        for (Bone b : bones)
-            if (b.parent == null)
+    public Skeleton(Bone[] boneList){
+        this.boneList = boneList;
+        
+        for (Bone b : boneList){
+            if (b.parent == null){
+                if (rootBone != null)
+                    throw new IllegalStateException("Cannot have more than one root bone in skeleton!");
+                
                 rootBone = b;
+            }
+        }
         
-        boneList = bones.toArray(new Bone[0]);
-        
-        skinningMatrixes = new Matrix4f[bones.size()];
+        skinningMatrixes = new Matrix4f[boneList.length];
         for (int i = 0; i < skinningMatrixes.length; i++)
             skinningMatrixes[i] = new Matrix4f();
+        
+        rootBone.setBindingPose();
     }
     
     public Bone getRoot(){
@@ -69,15 +76,8 @@ public class Skeleton {
         return null;
     }
     
-    private void resetAnimationTransforms(Bone b){
-        b.animMat.loadIdentity();
-        
-        for (Bone c : b.children)
-            resetAnimationTransforms(c);
-    }
-    
     public void resetAnimationTransforms(){
-        resetAnimationTransforms(rootBone);
+        rootBone.reset();
     }
     
     public void sendToShader(GLSLShaderObjectsState shader){
