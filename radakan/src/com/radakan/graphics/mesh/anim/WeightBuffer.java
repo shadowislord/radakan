@@ -47,7 +47,26 @@ public class WeightBuffer {
         //shader.setAttributePointer("indexCount", 1, false, true, 0, indexCounts);
         shader.setAttributePointer("indexes", 4, false, true, 0, indexes);
         shader.setAttributePointer("weights", 4, true, 0, weights);
-        
+    }
+    
+    public void normalizeWeights(){
+        int nVerts = weights.capacity() / 4;
+        weights.rewind();
+        for (int v = 0; v < nVerts; v++){
+            float w0 = weights.get(),
+                  w1 = weights.get(),
+                  w2 = weights.get(),
+                  w3 = weights.get();
+            float sum = w0 + w1 + w2 + w3;
+            if (sum != 1f){
+                weights.position(weights.position()-4);
+                weights.put(w0 / sum);
+                weights.put(w1 / sum);
+                weights.put(w2 / sum);
+                weights.put(w3 / sum);
+            }
+        }
+        weights.rewind();
     }
     
 }

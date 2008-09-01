@@ -39,6 +39,7 @@ public class OgreMesh extends TriMesh {
         if (weightBuf.indexes.limit() / 4 != this.getVertexCount())
             throw new IllegalArgumentException();
         
+        weightBuf.normalizeWeights();
         weightBuffer = weightBuf;
     }
     

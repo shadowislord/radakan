@@ -58,7 +58,7 @@ public class MaterialLoader {
     
     private StreamTokenizer reader;
     private Map<String, Material> materialMap;
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     
     public MaterialLoader() {
     }
@@ -154,6 +154,7 @@ public class MaterialLoader {
                 Texture t = TextureManager.loadTexture(texURL, 
                                                        MinificationFilter.Trilinear, 
                                                        MagnificationFilter.Bilinear, 0.0f, false);
+                t.setWrap(WrapMode.Repeat);
                 tex.setTexture(t, unit);
             }
             
@@ -167,6 +168,8 @@ public class MaterialLoader {
             
             if (mode.equals("wrap")){
                 t.setWrap(WrapMode.Repeat);
+            }else if (mode.equals("mirror")){
+                t.setWrap(WrapMode.MirroredRepeat);
             }else{
                 t.setWrap(WrapMode.Clamp);
             }
@@ -217,7 +220,12 @@ public class MaterialLoader {
     public void readPassStatement(Material material) throws IOException{
         String stat_name = nextStatement();
         
-        if (stat_name.equals("ambient")){
+        if (stat_name == null){
+            //while (reader.ttype != StreamTokenizer.TT_EOL)
+            //    reader.nextToken();
+            
+            return;
+        }else if (stat_name.equals("ambient")){
             MaterialState ms = (MaterialState) material.getState(RenderState.RS_MATERIAL);
             ms.setAmbient(readColor());
             println("AMBIENT: "+ms.getAmbient());
@@ -252,6 +260,11 @@ public class MaterialLoader {
                 
                 CullState cs = (CullState) material.getState(RenderState.RS_CULL);
                 cs.setCullFace(CullState.Face.None);
+            }else if (mode.equals("modulate")){
+                BlendState as = (BlendState) material.getState(RenderState.RS_BLEND);
+                as.setBlendEnabled(true);
+                as.setSourceFunction(SourceFunction.DestinationColor);
+                as.setDestinationFunction(DestinationFunction.SourceColor);
             }else{
                 throw new IOException("Unknown scene_blend mode: "+mode);
             }
@@ -364,14 +377,21 @@ public class MaterialLoader {
         println("TECHNIQUE END");
     }
     
+    private boolean skip = false;
+    
     public Material readMaterial() throws IOException{
         String stat_name = nextStatement();
-        if (stat_name == null)
-            // finished parsing
+        if (stat_name == null){
+            skip = false;
             return null;
-        
-        if (!stat_name.equals("material"))
-            throw new IOException();
+        }
+        if (stat_name.equals("fragment_program")){
+            skip = true;
+            return null;
+        }
+        if (!stat_name.equals("material")){
+            throw new IOException("Expected 'material', got: "+stat_name);
+        }
         
         reader.resetSyntax();
         reader.ordinaryChar('{');
@@ -383,6 +403,7 @@ public class MaterialLoader {
         reader.wordChars('0', '9');
         reader.wordChars('A', 'Z');
         reader.wordChars('a', 'z');
+        reader.wordChars('/', '/');
         reader.eolIsSignificant(true);
         
         reader.nextToken();
@@ -448,7 +469,7 @@ public class MaterialLoader {
         try{
             while (true){
                 Material mat = readMaterial();
-                if (mat == null)
+                if (mat == null && !skip)
                     return;
             }
         } catch (IOException ex){

@@ -57,6 +57,7 @@ public class Skeleton {
         for (int i = 0; i < skinningMatrixes.length; i++)
             skinningMatrixes[i] = new Matrix4f();
         
+        rootBone.update();
         rootBone.setBindingPose();
     }
     
@@ -74,10 +75,6 @@ public class Skeleton {
                 return boneList[i];
         
         return null;
-    }
-    
-    public void resetAnimationTransforms(){
-        rootBone.reset();
     }
     
     public void sendToShader(GLSLShaderObjectsState shader){
