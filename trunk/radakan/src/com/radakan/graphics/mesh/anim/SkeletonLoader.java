@@ -41,7 +41,7 @@ public class SkeletonLoader {
         // some work variables
         Vector3f vpos   = new Vector3f(0, 0, 0);
         Quaternion vrot = new Quaternion();
-        Vector3f vscale = new Vector3f(1, 1, 1);
+        //Vector3f vscale = new Vector3f(1, 1, 1);
         Vector3f vaxis  = new Vector3f(1, 0, 0);
         
         // skeleton -> bones -> bone
@@ -86,14 +86,14 @@ public class SkeletonLoader {
                 vpos.zero();
             }
                 
-            Node scale = getChildNode(boneNode, "scale");
-            if (scale != null){
-                vscale.set(getFloatAttribute(scale, "x"),
-                           getFloatAttribute(scale, "y"),
-                           getFloatAttribute(scale, "z"));
-            }else{
-                vscale.set(Vector3f.UNIT_XYZ);
-            }
+//            Node scale = getChildNode(boneNode, "scale");
+//            if (scale != null){
+//                vscale.set(getFloatAttribute(scale, "x"),
+//                           getFloatAttribute(scale, "y"),
+//                           getFloatAttribute(scale, "z"));
+//            }else{
+//                vscale.set(Vector3f.UNIT_XYZ);
+//            }
             
             // compile individual transformations into bind matrix
             bone.setBindTransforms(vpos, vrot);

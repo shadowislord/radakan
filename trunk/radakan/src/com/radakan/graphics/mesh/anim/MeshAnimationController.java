@@ -30,6 +30,7 @@ import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class MeshAnimationController extends Controller {
@@ -146,6 +147,14 @@ public class MeshAnimationController extends Controller {
             throw new NullPointerException();
         
         return anim.getLength();
+    }
+    
+    public String getActiveAnimation(){
+        return animation.getName();
+    }
+    
+    public Collection<String> getList(){
+        return animationMap.keySet();
     }
     
     public void reset(){
@@ -285,7 +294,7 @@ public class MeshAnimationController extends Controller {
         // apply the tracks for the current time
         if (animation.hasBoneAnimation()){
             // reset all bones ANIMATION MATRIX field to identity (zero transform)
-            skeleton.resetAnimationTransforms();
+            skeleton.getRoot().reset();
         }
         
         // BoneAnimation: this sets the ANIMATION MATRIX field of bones ANIMATED in the tracks

@@ -39,8 +39,10 @@ import com.jme.util.resource.ResourceLocatorTool;
 
 import com.radakan.graphics.mesh.anim.Animation;
 import com.radakan.graphics.mesh.anim.BoneAnimationLoader;
+import com.radakan.graphics.mesh.anim.MeshAnimation;
 import com.radakan.graphics.mesh.anim.MeshAnimationController;
 import com.radakan.graphics.mesh.anim.OgreMesh;
+import com.radakan.graphics.mesh.anim.Pose;
 import com.radakan.graphics.mesh.anim.Skeleton;
 import com.radakan.graphics.mesh.anim.SkeletonLoader;
 import com.radakan.graphics.mesh.anim.WeightBuffer;
@@ -130,7 +132,7 @@ public class OgreLoader {
         if (mat != null){
             mat.apply(target);
         }else{
-            //throw new IllegalStateException("Cannot find material: "+name);
+//            throw new IllegalStateException("Cannot find material: "+name);
         }
     }
     
@@ -561,83 +563,23 @@ public class OgreLoader {
             targets = new OgreMesh[]{ sharedgeom };
         }
         
-        if (animations.size() > 0 && skeleton != null){
+        // ==poses==
+        Node posesNode = getChildNode(meshNode, "poses");
+        Node animationsNode = getChildNode(meshNode, "animations");
+        
+        if (posesNode != null){
+            List<Pose> poseList = MeshAnimationLoader.loadPoses(posesNode, sharedgeom, submeshes);
+            if (animationsNode != null){
+                MeshAnimationLoader.loadMeshAnimations(animationsNode, poseList, sharedgeom, submeshes, animations);
+            }
+        }
+        
+        if (animations.size() > 0){
             MeshAnimationController controller = new MeshAnimationController(targets,
                                                                              skeleton,
                                                                              animations);
             rootnode.addController(controller);
         }
-        // NOTE: Mesh animation commented out until all issues with bone
-        // animation are sorted out
-        
-//        // ==poses==
-//        Node posesNode = getChildNode(meshNode, "poses");
-//        List<Pose> poses = new ArrayList<Pose>();
-//        if (posesNode != null){
-//            Node poseNode = posesNode.getFirstChild();
-//            while (poseNode != null){
-//                if (poseNode.getNodeName().equals("pose")){
-//                    TriMesh target = null;
-//                    if (getAttribute(poseNode, "target").equals("mesh")){
-//                        target = sharedgeom;
-//                    }else{
-//                        if (getAttribute(poseNode, "index") == null)
-//                            target = submeshes.get(0);
-//                        else
-//                            target = submeshes.get(getIntAttribute(poseNode, "index"));
-//                    }
-//                    
-//                    Pose p = MeshAnimationLoader.loadPose(poseNode, target);
-//                    poses.add(p);
-//                }
-//
-//                poseNode = poseNode.getNextSibling();
-//            }
-//        }
-//        
-//        Node animationsNode = getChildNode(meshNode, "animations");
-//        if (animationsNode != null){
-//            Map<String, MeshAnimation> animations = new HashMap<String, MeshAnimation>();
-//            Node animationNode = animationsNode.getFirstChild();
-//            while (animationNode != null){
-//                if (animationNode.getNodeName().equals("animation")){
-//                    MeshAnimation anim = MeshAnimationLoader.loadMeshAnimation(
-//                                                    animationNode, 
-//                                                    poses, 
-//                                                    sharedgeom, 
-//                                                    submeshes);
-//                    animations.put(anim.getName(), anim);
-//                }
-//                animationNode = animationNode.getNextSibling();
-//            }
-//            
-//            // FIXME: PLZ
-//            //MeshAnimationController animController = new MeshAnimationController(animations);
-//            //animController.setRepeatType(Controller.RT_WRAP);
-//            //rootnode.addController(animController);
-//        }else if (posesNode != null){
-////            Map<TriMesh, List<Pose>> trimeshPoses = new HashMap<TriMesh, List<Pose>>();
-////            
-////            // find the poses for each mesh
-////            for (Pose p : poses){
-////                List<Pose> poseList = trimeshPoses.get(p.getTarget());
-////                if (poseList == null){
-////                    poseList = new ArrayList<Pose>();
-////                    trimeshPoses.put(p.getTarget(), poseList);
-////                }
-////                
-////                poseList.add(p);
-////            }
-////            
-////            for (Map.Entry<TriMesh, List<Pose>> poseEntry: trimeshPoses){
-////                PoseController
-////            }
-//        }
-//        
-////        if (skin != null){
-////            skin.normalizeWeights();
-////            skin.regenInfluenceOffsets();
-////        }
         
         rootnode.setModelBound(new BoundingBox());
         rootnode.updateModelBound();

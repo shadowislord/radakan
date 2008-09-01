@@ -19,7 +19,7 @@ public class TestMeshLoading extends SimpleGame {
 
     public static void main(String[] args){
         TestMeshLoading app = new TestMeshLoading();
-        app.setConfigShowMode(ConfigShowMode.AlwaysShow);
+        app.setConfigShowMode(ConfigShowMode.NeverShow);
         app.start();
     }
     
@@ -29,35 +29,31 @@ public class TestMeshLoading extends SimpleGame {
         MaterialLoader matLoader = new MaterialLoader();
         
         try {
-            SimpleResourceLocator srl = new SimpleResourceLocator(new URL("file:/D:/TestAnim/"));
+            SimpleResourceLocator srl = new SimpleResourceLocator(new URL("file:/D:/TestAnim2/"));
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, srl);
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl);
             
-            URL url2 = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "xemna.material");
-            URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "fingerman_50.mesh.xml");
+            URL url2 = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "Example.material");
+            URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "ninja.mesh.xml");
             
             
-//            matLoader.load(url2.openStream());
-//            if (matLoader.getMaterials().size() > 0)
-//                loader.setMaterials(matLoader.getMaterials());
+            if (url2 != null){
+                matLoader.load(url2.openStream());
+                if (matLoader.getMaterials().size() > 0)
+                    loader.setMaterials(matLoader.getMaterials());
+            }
             
             Spatial model = loader.loadModel(url);
             rootNode.attachChild(model);
             
-            ((FirstPersonHandler)input).getKeyboardLookHandler().setMoveSpeed(250);
-            
-//            Quaternion q = new Quaternion();
-//            q.fromAngles(/*-FastMath.HALF_PI*/0, FastMath.PI, 0);
-//            rootNode.setLocalRotation(q);
+            ((FirstPersonHandler)input).getKeyboardLookHandler().setMoveSpeed(100);
             
             rootNode.updateGeometricState(0, true);
             rootNode.updateRenderState();
             
             MeshAnimationController animControl = (MeshAnimationController) model.getController(0);
-            animControl.setAnimation("anim");
-            //animControl.setSpeed(1f / 100f);
-            
-            
+            animControl.setAnimation("Backflip");
+//            animControl.setSpeed(0.2f);
         } catch (IOException ex) {
             Logger.getLogger(TestMeshLoading.class.getName()).log(Level.SEVERE, null, ex);
         } catch (URISyntaxException ex) {

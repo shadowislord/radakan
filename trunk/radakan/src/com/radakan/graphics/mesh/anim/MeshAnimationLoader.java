@@ -25,6 +25,7 @@ import com.jme.math.Vector3f;
 import com.jme.scene.TriMesh;
 import com.radakan.graphics.mesh.anim.PoseTrack.PoseFrame;
 
+import java.util.Map;
 import static com.radakan.util.XMLUtil.*;
 
 /**
@@ -32,7 +33,45 @@ import static com.radakan.util.XMLUtil.*;
  */
 public class MeshAnimationLoader {
     
-    public static MeshAnimation loadMeshAnimation(Node animationNode, List<Pose> poseList, TriMesh sharedgeom, List<TriMesh> submeshes){
+    public static void loadMeshAnimations(Node animationsNode, List<Pose> poseList, OgreMesh sharedgeom, List<OgreMesh> submeshes, Map<String, Animation> animations){
+        Node animationNode = animationsNode.getFirstChild();
+        while (animationNode != null){
+            if (animationNode.getNodeName().equals("animation")){
+                MeshAnimation mAnim = 
+                        loadMeshAnimation(animationNode, poseList, sharedgeom, submeshes);
+                
+                Animation anim = animations.get(mAnim.getName());
+                if (anim != null){
+                    anim.setMeshAnimation(mAnim);
+                }else{
+                    anim = new Animation(null, mAnim);
+                    animations.put(anim.getName(), anim);
+                }
+            }
+            animationNode = animationNode.getNextSibling();
+        }
+            
+            // FIXME: PLZ
+        
+//            Map<TriMesh, List<Pose>> trimeshPoses = new HashMap<TriMesh, List<Pose>>();
+//            
+//            // find the poses for each mesh
+//            for (Pose p : poses){
+//                List<Pose> poseList = trimeshPoses.get(p.getTarget());
+//                if (poseList == null){
+//                    poseList = new ArrayList<Pose>();
+//                    trimeshPoses.put(p.getTarget(), poseList);
+//                }
+//                
+//                poseList.add(p);
+//            }
+//            
+//            for (Map.Entry<TriMesh, List<Pose>> poseEntry: trimeshPoses){
+//                PoseController
+//            }
+    }
+    
+    public static MeshAnimation loadMeshAnimation(Node animationNode, List<Pose> poseList, OgreMesh sharedgeom, List<OgreMesh> submeshes){
         String name =  XMLUtil.getAttribute(animationNode, "name");
         float length = XMLUtil.getFloatAttribute(animationNode, "length");
         
@@ -71,7 +110,32 @@ public class MeshAnimationLoader {
         return anim;
     }
     
-    public static Pose loadPose(Node poseNode, TriMesh target){
+    public static List<Pose> loadPoses(Node posesNode, OgreMesh sharedgeom, List<OgreMesh> submeshes){
+        List<Pose> poses = new ArrayList<Pose>();
+        Node poseNode = posesNode.getFirstChild();
+        while (poseNode != null){
+            if (poseNode.getNodeName().equals("pose")){
+                OgreMesh target = null;
+                if (getAttribute(poseNode, "target").equals("mesh")){
+                    target = sharedgeom;
+                }else{
+                    if (getAttribute(poseNode, "index") == null)
+                        target = submeshes.get(0);
+                    else
+                        target = submeshes.get(getIntAttribute(poseNode, "index"));
+                }
+
+                Pose p = MeshAnimationLoader.loadPose(poseNode, target);
+                poses.add(p);
+            }
+
+            poseNode = poseNode.getNextSibling();
+        }
+        
+        return poses;
+    }
+    
+    public static Pose loadPose(Node poseNode, OgreMesh target){
         String name = XMLUtil.getAttribute(poseNode, "name");
         Pose pose = new Pose(name, target);
         

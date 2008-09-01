@@ -47,21 +47,30 @@ public class Bone {
         bone.parent = this;
     }
     
-    public void setInitialState(){
-        initialPos.set(localPos);
-        initialRot.set(localRot);
+    public void updateWorldVectors(){
+        if (parent != null){
+            // worldRot = localRot * parentWorldRot
+            worldRot = parent.worldRot.mult(localRot);
+            
+            // worldPos = parentWorldPos + (parentWorldRot * localPos)
+            worldPos = parent.worldRot.mult(localPos).add(parent.worldPos);
+        }else{
+            worldRot.set(localRot);
+            worldPos.set(localPos);
+        }
     }
     
-    public void resetToInitialState(){
-        localPos.set(initialPos);
-        localRot.set(initialRot);
+    public void update(){
+        updateWorldVectors();
+        
+        for (Bone b : children)
+            b.update();
     }
     
     public void setBindingPose(){
-        setInitialState();
+        initialPos.set(localPos);
+        initialRot.set(localRot);
         
-        updateFromParent();
-
         // Save inverse derived position/scale/orientation, used for calculate offset transform later
         worldBindInversePos.set(worldPos);
         worldBindInversePos.negateLocal();
@@ -74,7 +83,8 @@ public class Bone {
     }
     
     public void reset(){
-        resetToInitialState();
+        localPos.set(initialPos);
+        localRot.set(initialRot);
         
         for (Bone b : children)
             b.reset();
@@ -90,36 +100,8 @@ public class Bone {
     }
     
     public void setAnimTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
-        // TRANSLATE
-        if (mode == 1){
-            tempV.set(translation);
-            localRot.multLocal(tempV);
-            localPos.addLocal(tempV);
-        }else if (mode == 2){
-            if (parent != null){
-                tempQ.set(parent.worldRot).inverseLocal();
-                tempQ.mult(translation, tempV);
-                localPos.addLocal(tempV);
-            }else{
-                localPos.addLocal(translation);
-            }
-        }else if (mode == 3){
-            localPos.addLocal(translation);
-        }
-        
-        // ROTATE
-        if (mode == 1){
-            rotation.mult(localRot, localRot);
-        }else if (mode == 2){
-            tempQ.set(localRot).multLocal(worldRot.inverse()).multLocal(rotation).multLocal(worldRot);
-            localRot.set(tempQ);
-        }else if (mode == 3){
-            localRot.multLocal(rotation);
-        }
-        
-//        animMat.setTranslation(translation);
-//        animMat.setRotationQuaternion(rotation);
-//        animMat.setScale(scale);
+        localPos.addLocal(translation);
+        localRot = localRot.mult(rotation);
     }
     
     public void setBindTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
@@ -138,26 +120,7 @@ public class Bone {
         setBindTransforms(translation, rotation, Vector3f.UNIT_XYZ);
     }
     
-    public void updateFromParent(){
-        if (parent != null){
-            worldRot.set(localRot).multLocal(parent.worldRot);
-            
-            parent.worldRot.mult(localPos, worldPos);
-            worldPos.addLocal(parent.worldPos);
-        }else{
-            worldRot.set(localRot);
-            worldPos.set(localPos);
-        }
-    }
     
-    public void update(){
-        updateFromParent();
-        
-        for (Bone b : children)
-            b.update();
-    }
-    
-
     private Vector3f initialPos = new Vector3f();
     private Quaternion initialRot = new Quaternion();
     
