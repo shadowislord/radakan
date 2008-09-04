@@ -150,6 +150,10 @@ public class MeshAnimationController extends Controller {
         return skeleton;
     }
     
+    OgreMesh[] getMeshList(){
+        return targets;
+    }
+    
     void reset(){
         resetToBind();
         skeleton.getRoot().reset();
@@ -285,17 +289,17 @@ public class MeshAnimationController extends Controller {
             }
         }
         
-//        if (framesToSkip > 0){
-//            // check frame skipping
-//            curFrame++;
-//            
-//            if (curFrame != framesToSkip){
-//                time += tpf * getSpeed();
-//                return;
-//            }else{
-//                curFrame = 0;
-//            }
-//        }
+        if (framesToSkip > 0){
+            // check frame skipping
+            curFrame++;
+            
+            if (curFrame != framesToSkip){
+                time += tpf * getSpeed();
+                return;
+            }else{
+                curFrame = 0;
+            }
+        }
         
         
         // reset the meshes verticles to bind position

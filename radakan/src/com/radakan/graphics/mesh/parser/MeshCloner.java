@@ -18,9 +18,16 @@ public final class MeshCloner {
             // will be updated every frame by the animation controller
             info.setVBOVertexEnabled(false);
             info.setVBONormalEnabled(false);
-            info.setVBOIndexEnabled(true);
+            info.setVBOIndexEnabled(false);
             
             sourceSubmesh.setVBOInfo(info);
+        }
+    }
+    
+    public static final void setLODLevel(Node sourceMesh, int level){
+        for (Spatial child : sourceMesh.getChildren()){
+            OgreMesh sourceSubmesh = (OgreMesh) child;
+            sourceSubmesh.setLodLevel(level);
         }
     }
     

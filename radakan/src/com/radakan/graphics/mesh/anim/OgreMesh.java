@@ -35,7 +35,11 @@ public class OgreMesh extends TriMesh {
     
     private transient FloatBuffer vertexBufferOriginal;
     private transient FloatBuffer normalBufferOriginal;
+    
     private WeightBuffer weightBuffer;
+    
+    private IntBuffer levelZero;
+    private IntBuffer[] lodLevels;
     
     public OgreMesh(String name){
         super(name);
@@ -48,6 +52,7 @@ public class OgreMesh extends TriMesh {
         setVertexBuffer(BufferUtils.createFloatBuffer(source.getVertexBuffer().capacity()));
         setNormalBuffer(BufferUtils.createFloatBuffer(source.getNormalBuffer().capacity()));
         setWeightBuffer(source.weightBuffer);
+        setLodLevels(source.lodLevels);
         
         if (hasBindPose()){
             // restore original vertex data from bind pose
@@ -70,7 +75,7 @@ public class OgreMesh extends TriMesh {
         
         weightBuffer = weightBuf;
     }
-    
+        
     public WeightBuffer getWeightBuffer(){
         return weightBuffer;
     }
@@ -81,6 +86,32 @@ public class OgreMesh extends TriMesh {
     
     public FloatBuffer getNormalBufferOriginal(){
         return normalBufferOriginal;
+    }
+    
+    public void setLodLevels(IntBuffer[] lodLevels){
+        this.levelZero = getIndexBuffer();
+        this.lodLevels = lodLevels;
+    }
+    
+    /**
+     * Set the current LOD level.
+     * LOD level zero is the model in max quality, 
+     * levels 1 and below reduce the quality of the model
+     * by a certain amount but increase its render speed.
+     * @param level
+     */
+    public void setLodLevel(int level){
+        if (level == 0)
+            setIndexBuffer(levelZero);
+        else
+            setIndexBuffer(lodLevels[level-1]);
+    }
+    
+    /**
+     * @return Total number of indexed LOD buffers
+     */
+    public int getLodLevelCount(){
+        return lodLevels.length + 1;
     }
     
     public void clearBindPose(){

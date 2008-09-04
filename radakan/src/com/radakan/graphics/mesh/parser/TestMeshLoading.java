@@ -10,6 +10,7 @@ import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
 import com.radakan.game.Game;
 import com.radakan.graphics.mesh.anim.MeshAnimationController;
+import com.radakan.graphics.mesh.anim.MeshLodController;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -22,7 +23,7 @@ public class TestMeshLoading extends SimpleGame {
     
     public static void main(String[] args){
         TestMeshLoading app = new TestMeshLoading();
-        app.setConfigShowMode(ConfigShowMode.NeverShow);
+        app.setConfigShowMode(ConfigShowMode.AlwaysShow);
         app.start();
     }
     
@@ -34,7 +35,7 @@ public class TestMeshLoading extends SimpleGame {
             Game.setupDefaultLocators();
             
             URL url2 = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "Example.material");
-            URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "ninja.mesh.xml");
+            URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "robot.mesh.xml");
             
             if (url2 != null){
                 matLoader.load(url2.openStream());
@@ -63,17 +64,17 @@ public class TestMeshLoading extends SimpleGame {
         for (int x = -4; x < 5; x++){
             for (int y = -4; y < 5; y++){
                 Node clone = MeshCloner.cloneMesh(model);
-                
                 clone.setLocalTranslation(150 * x,  0,  150 * y);
+                
+                //MeshCloner.setLODLevel(clone, 4);
                 rootNode.attachChild(clone);
                 
                 MeshAnimationController animControl = (MeshAnimationController) clone.getController(0);
                 animControl.setAnimation("Walk");
-                
-                // rewind the animation a bit
                 animControl.setTime(animControl.getAnimationLength("Walk") * FastMath.nextRandomFloat());
+                //animControl.setFrameSkip(5);
                 
-                //animControl.setFrameSkip(10);
+                clone.addController(new MeshLodController((animControl)));
                 
                 ninjaN++;
             }
