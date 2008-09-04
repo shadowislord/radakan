@@ -20,13 +20,13 @@ package com.radakan.graphics.mesh.anim;
  */
 public class Animation {
 
-    private String name;
+    private final String name;
     private float length;
     
     private BoneAnimation boneAnim;
     private MeshAnimation meshAnim;
     
-    public Animation(BoneAnimation boneAnim, MeshAnimation meshAnim){
+    Animation(BoneAnimation boneAnim, MeshAnimation meshAnim){
         this.boneAnim = boneAnim;
         this.meshAnim = meshAnim;
         
@@ -43,52 +43,52 @@ public class Animation {
         }
     }
     
-    public void setBoneAnimation(BoneAnimation boneAnim){
+    void setBoneAnimation(BoneAnimation boneAnim){
         this.boneAnim = boneAnim;
         
         this.length = Math.max(boneAnim.getLength(),
                                meshAnim.getLength());
     }
     
-    public void setMeshAnimation(MeshAnimation meshAnim){
+    void setMeshAnimation(MeshAnimation meshAnim){
         this.meshAnim = meshAnim;
         
         this.length = Math.max(boneAnim.getLength(),
                                meshAnim.getLength());
     }
     
-    public boolean hasMeshAnimation(){
+    boolean hasMeshAnimation(){
         return meshAnim != null;
     }
     
-    public boolean hasBoneAnimation(){
+    boolean hasBoneAnimation(){
         return boneAnim != null;
     }
     
-    public String getName(){
+    String getName(){
         return name;
     }
     
-    public float getLength(){
+    float getLength(){
         return length;
     }
     
-    public void setTime(float time){
+    void setTime(float time, OgreMesh[] targets, Skeleton skeleton){
         // we must apply the mesh animation first, 
         // as the vertex offsets are in the bind pose.
         if (meshAnim != null)
-            meshAnim.setTime(time);
+            meshAnim.setTime(time, targets);
         
         if (boneAnim != null){
-            boneAnim.setTime(time);
+            boneAnim.setTime(time, skeleton);
         }
     }
 
-    public MeshAnimation getMeshAnimation() {
+    MeshAnimation getMeshAnimation() {
         return meshAnim;
     }
     
-    public BoneAnimation getBoneAnimation(){
+    BoneAnimation getBoneAnimation(){
         return boneAnim;
     }
     

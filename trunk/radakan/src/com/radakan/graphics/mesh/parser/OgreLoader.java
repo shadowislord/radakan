@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-
 import org.w3c.dom.Node;
 
 import com.radakan.graphics.mesh.anim.MeshAnimationLoader;
@@ -39,7 +38,6 @@ import com.jme.util.resource.ResourceLocatorTool;
 
 import com.radakan.graphics.mesh.anim.Animation;
 import com.radakan.graphics.mesh.anim.BoneAnimationLoader;
-import com.radakan.graphics.mesh.anim.MeshAnimation;
 import com.radakan.graphics.mesh.anim.MeshAnimationController;
 import com.radakan.graphics.mesh.anim.OgreMesh;
 import com.radakan.graphics.mesh.anim.Pose;
@@ -65,7 +63,7 @@ public class OgreLoader {
     /**
      * sharedgeom contains all the sharedgeometry vertexbuffers defined in the mesh
      * file combined together. The vertexes are referenced by the submeshes through the index buffers.
-     * Since jME does not really support shared vertex buffers yet, those are reference
+     * Since jME does not really support shared vertex buffers yet, those references
      * copied into the submeshes' trimeshes.
      */
     private OgreMesh sharedgeom;
@@ -76,7 +74,8 @@ public class OgreLoader {
     private List<OgreMesh> submeshes = new ArrayList<OgreMesh>();
     
     /**
-     * The node representing this mesh file. 
+     * Node containing all renderable meshes in the file. 
+     * Returned by the call loadMesh()
      */
     private com.jme.scene.Node rootnode;
     
@@ -100,7 +99,7 @@ public class OgreLoader {
     /**
      * Show debugging messages of OgreLoaders or not.
      */
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     
     /**
      * Print a debugging message to standard output.
@@ -132,7 +131,7 @@ public class OgreLoader {
         if (mat != null){
             mat.apply(target);
         }else{
-//            throw new IllegalStateException("Cannot find material: "+name);
+            logger.warning("Cannot find material "+name);
         }
     }
     
@@ -148,7 +147,6 @@ public class OgreLoader {
      * Load a MESH.XML model from the specified URL.
      * 
      * @param url The URL that specifies the mesh.xml file
-     * @param Z_up Whether to flip the model from Z-up to Y-up
      * @return The model loaded
      */
     public Spatial loadModel(URL url) throws IOException{
@@ -161,7 +159,7 @@ public class OgreLoader {
      * @param target
      * @param vertexbuffer
      */
-    private void loadVertexBuffer(OgreMesh mesh, Node vertexbuffer){
+    private void loadVertexBuffer(OgreMesh mesh, Node vertexbuffer) throws IOException{
         // read all buffers
         FloatBuffer vb = mesh.getVertexBuffer();
         FloatBuffer nb = mesh.getNormalBuffer();
@@ -169,81 +167,62 @@ public class OgreLoader {
         FloatBuffer tanb = mesh.getTangentBuffer();
         FloatBuffer binb = mesh.getBinormalBuffer();
         ArrayList<TexCoords> tb = mesh.getTextureCoords();
+        
+        // next texture coordinate buffer
         int startCoordIndex = tb.size();
         
         if (mesh.getVertexCount() == 0)
-            throw new IllegalStateException("Must vertex count must be greater than 0");
+            throw new IOException("Invalid vertex count value");
         
         // vertex positions
-        String hasPositions = getAttribute(vertexbuffer, "positions");
-        if (hasPositions != null && hasPositions.equalsIgnoreCase("true")){
+        if (getBoolAttribute(vertexbuffer, "positions", false)){
             if (vb == null)
                 vb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * 3);
-            
-            
-            vb.rewind();
-            //vb = BufferUtils.createFloatBuffer(vertexCount*3);
         }
         
         // vertex normals
-        String hasNormals = getAttribute(vertexbuffer, "normals");
-        if (hasNormals != null && hasNormals.equalsIgnoreCase("true")){
+        if (getBoolAttribute(vertexbuffer, "normals", false)){
             if (nb == null)
                 nb = BufferUtils.createFloatBuffer(mesh.getVertexCount() * 3);
-            //nb = BufferUtils.createFloatBuffer(vertexCount*3);
         }
         
         // texture coordinates
-        int texbuffersN = 0;
-        String texbuffers = getAttribute(vertexbuffer, "texture_coords");
-        if (texbuffers != null){
-            texbuffersN = Integer.parseInt(texbuffers);
+        int texbuffersN = getIntAttribute(vertexbuffer, "texture_coords", 0);
+        if (texbuffersN != 0){
             if (tb == null)
                 tb = new ArrayList<TexCoords>();
             
             for (int i = 0; i < texbuffersN; i++){
                 // read dimensions
-                String dim = getAttribute(vertexbuffer, "texture_coord_dimensions_"+i);
-                int dimensions = 2; //default
-                if (dim != null){
-                    dimensions = Integer.parseInt(dim);
-                }
+                // default is 2 dimensions for texcoord (UV)
+                int dimensions = getIntAttribute(vertexbuffer, "texture_coord_dimensions_"+i, 2);
                 
                 FloatBuffer texCoords = BufferUtils.createFloatBuffer(mesh.getVertexCount()*dimensions);
-                TexCoords coords = new TexCoords(texCoords, dimensions);
-                tb.add(coords);
+                tb.add(new TexCoords(texCoords, dimensions));
             }
         }
 
         // vertex colors
-        String hasColors = getAttribute(vertexbuffer, "colours_diffuse");
-        if (hasColors != null && hasColors.equalsIgnoreCase("true")){
+        if (getBoolAttribute(vertexbuffer, "colours_diffuse", false)){
             if (cb == null)
                 cb = BufferUtils.createFloatBuffer(mesh.getVertexCount()*4);
         }
         
         // specular/secondary colors
-        // not supported as of jME 1.0, ignore
-        String hasSpecular = getAttribute(vertexbuffer, "colours_specular");
-        if (hasSpecular != null && hasSpecular.equalsIgnoreCase("true")){
+        // not supported as of jME 2.0, ignore
+        if (getBoolAttribute(vertexbuffer, "colours_specular", false)){
             logger.warning("Specular colors are not supported!");
         }
         
         // tangents
-        String hasTangents = getAttribute(vertexbuffer, "tangents");
-        int tangentDimensions = 3;
-        if (hasTangents != null && hasTangents.equalsIgnoreCase("true")){
-            String dimensionsStr = getAttribute(vertexbuffer, "tangent_dimensions");
-            if (dimensionsStr != null)
-                tangentDimensions = Integer.parseInt(dimensionsStr);
-            
+        int tangentDimensions = getIntAttribute(vertexbuffer, "tangent_dimensions", 3);
+        if (getBoolAttribute(vertexbuffer, "tangents", false)){
             if (tanb == null)
                 tanb = BufferUtils.createFloatBuffer(mesh.getVertexCount()*tangentDimensions);
         }
         
         // binormals
-        String hasBinormals = getAttribute(vertexbuffer, "binormals");
-        if (hasBinormals != null && hasBinormals.equalsIgnoreCase("true")){
+        if (getBoolAttribute(vertexbuffer, "binormals", false)){
             if (binb == null)
                 binb = BufferUtils.createFloatBuffer(mesh.getVertexCount()*3);
         }
@@ -346,13 +325,13 @@ public class OgreLoader {
      * @param submesh XML node
      * @return
      */
-    private OgreMesh loadSubmesh(Node submesh){
+    private OgreMesh loadSubmesh(Node submesh) throws IOException{
         OgreMesh mesh = new OgreMesh("nil");
         mesh.getTextureCoords().clear();
 
         // ==material==
         // try to load a material if it is defined
-        mesh.setName(getAttribute(submesh, "material"));
+        mesh.setName(getAttribute(submesh, "material", "OgreSubmesh"));
         
         String material = getAttribute(submesh, "material");
         if (material != null)
@@ -360,23 +339,19 @@ public class OgreLoader {
         
         // ==usesharedvertices==
         // using shared verticles?
-        boolean sharedVerts = true;
-        String usesharedvertices = getAttribute(submesh, "usesharedvertices");
-        if (usesharedvertices != null){
-            if (!usesharedvertices.equalsIgnoreCase("true")){
-                sharedVerts = false;
-            }
-        }
+        boolean sharedVerts = getBoolAttribute(submesh, "usesharedvertices", true);
         
         // ==operationtype==
         // determine triangle mode
-        String operationtype = getAttribute(submesh, "operationtype");
-        if (operationtype == null || operationtype.equals("triangle_list"))
+        String operationtype = getAttribute(submesh, "operationtype", "triangle_list");
+        if (operationtype.equals("triangle_list"))
             mesh.setMode(Mode.Triangles);
         else if (operationtype.equals("triangle_strip"))
             mesh.setMode(Mode.Strip);
         else if (operationtype.equals("triangle_fan"))
             mesh.setMode(Mode.Fan);
+        else
+            logger.warning("Invalid triangle mode specified, assuming indexed triangles");
         
         int vertexCount = -1;
         if (!sharedVerts){
@@ -413,8 +388,7 @@ public class OgreLoader {
         // check if faces definition exists (required for submesh)
         Node faces = getChildNode(submesh, "faces");
         if (faces == null){
-            logger.severe("Cannot load submesh: faces definition required");
-            return null;
+            throw new IOException("Cannot load submesh: faces definition required");
         }
         
         // Read face/triangle data
@@ -444,13 +418,12 @@ public class OgreLoader {
         // Assign index buffer
         mesh.setIndexBuffer(ib);
 
-        // ==boneassignments==
-        Node boneassignments = getChildNode(submesh, "boneassignments");
-        
         // ignore weights if no skeleton defined
         // also ignore if geometry data is shared, 
         // as weights are specified in the root mesh object and not in a submesh
         if (skeleton != null && !sharedVerts){
+            // ==boneassignments==
+            Node boneassignments = getChildNode(submesh, "boneassignments");
             if (boneassignments != null){
                 // ==vertexboneassignment==
                 // assign weights to skin
@@ -466,7 +439,7 @@ public class OgreLoader {
     }
     
     private Spatial loadMesh(Node meshNode) throws IOException{
-        rootnode = new com.jme.scene.Node("OgreStaticModel");
+        rootnode = new com.jme.scene.Node("OgreMesh");
         
         // ==skeletonlink==
         Node skeletonlinkNode = getChildNode(meshNode, "skeletonlink");
@@ -557,7 +530,7 @@ public class OgreLoader {
             targets = new OgreMesh[submeshes.size()];
             submeshes.toArray(targets);
         }else{
-            // you only need to update the verticles and normals
+            // only need to update the verticles and normals
             // of sharedgeom-based meshes, so no need to associate
             // the submeshes into this (submeshes only have unique index buffers)
             targets = new OgreMesh[]{ sharedgeom };

@@ -16,10 +16,15 @@
 package com.radakan.graphics.mesh.anim;
 
 import com.jme.scene.TriMesh;
+import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
+import com.jme.util.export.JMEImporter;
+import com.jme.util.export.OutputCapsule;
 import com.jme.util.geom.BufferUtils;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 /**
  * Holds the bind pose and a weightbuffer that defines vertex->bone/weight associations.
@@ -27,6 +32,7 @@ import java.nio.FloatBuffer;
 public class OgreMesh extends TriMesh {
 
     private static final long serialVersionUID = 8831653270716808462L;
+    
     private transient FloatBuffer vertexBufferOriginal;
     private transient FloatBuffer normalBufferOriginal;
     private WeightBuffer weightBuffer;
@@ -35,11 +41,33 @@ public class OgreMesh extends TriMesh {
         super(name);
     }
     
+    public void cloneFromMesh(OgreMesh source){
+        vertexBufferOriginal = source.vertexBufferOriginal;
+        normalBufferOriginal = source.normalBufferOriginal;
+        
+        setVertexBuffer(BufferUtils.createFloatBuffer(source.getVertexBuffer().capacity()));
+        setNormalBuffer(BufferUtils.createFloatBuffer(source.getNormalBuffer().capacity()));
+        setWeightBuffer(source.weightBuffer);
+        
+        if (hasBindPose()){
+            // restore original vertex data from bind pose
+            restoreBindPose();
+        }else{
+            // restore original vertex data from source
+            source.getVertexBuffer().rewind();
+            vertBuf.rewind();
+            vertBuf.put(source.getVertexBuffer());
+            
+            source.getNormalBuffer().rewind();
+            normBuf.rewind();
+            normBuf.put(source.getNormalBuffer());
+        }
+    }
+    
     public void setWeightBuffer(WeightBuffer weightBuf){
         if (weightBuf.indexes.limit() / 4 != this.getVertexCount())
             throw new IllegalArgumentException();
         
-        weightBuf.normalizeWeights();
         weightBuffer = weightBuf;
     }
     
@@ -94,14 +122,35 @@ public class OgreMesh extends TriMesh {
     
     @Override
     public void write(JMEExporter e) throws IOException{
-        // dont want to write a vertex buffer in an animation here.. make sure to restore bind pose
+        // dont want to write a vertex buffer in an animation here.. 
+        // make sure to restore bind pose
         if (hasBindPose())
             restoreBindPose();
         
         super.write(e);
         
-        // FIXME: write WeightBuffer here
+        OutputCapsule out = e.getCapsule(this);
+        out.write(hasBindPose(), "HadBindPose", false);
+        if (weightBuffer != null){
+            out.write(weightBuffer.indexes, "BoneIndexes", null);
+            out.write(weightBuffer.weights, "BoneWeights", null);
+        }
     }
     
+    @Override
+    public void read(JMEImporter i) throws IOException{
+        super.read(i);
+        
+        InputCapsule in = i.getCapsule(this);
+        if (in.readBoolean("HadBindPose", false)){
+            saveCurrentToBindPose();
+        }
+        
+        ByteBuffer indexes = in.readByteBuffer("BoneIndexes", null);
+        if (indexes != null){
+            FloatBuffer weights = in.readFloatBuffer("BoneWeights", null);
+            weightBuffer = new WeightBuffer(indexes, weights);
+        }
+    }
     
 }

@@ -15,37 +15,34 @@
 
 package com.radakan.graphics.mesh.anim;
 
-public class BoneAnimation {
+public final class BoneAnimation {
 
-    private String name;
-    private float length;
+    private final String name;
+    private final float length;
     
-    private BoneTrack[] tracks;
+    private final BoneTrack[] tracks;
     
-    public BoneAnimation(String name, float length){
+    BoneAnimation(String name, float length, BoneTrack[] tracks){
         this.name = name;
         this.length = length;
-    }
-    
-    public String getName(){
-        return name;
-    }
-    
-    public float getLength(){
-        return length;
-    }
-    
-    public void setData(BoneTrack[] tracks){
         this.tracks = tracks;
     }
     
-    public BoneTrack[] getTracks(){
+    String getName(){
+        return name;
+    }
+    
+    float getLength(){
+        return length;
+    }
+    
+    BoneTrack[] getTracks(){
         return tracks;
     }
     
-    public void setTime(float time){
+    void setTime(float time, Skeleton skeleton){
         for (int i = 0; i < tracks.length; i++){
-            tracks[i].setTime(time);
+            tracks[i].setTime(time, skeleton);
         }
     }
     

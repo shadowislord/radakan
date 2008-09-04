@@ -29,41 +29,51 @@ import static com.radakan.util.XMLUtil.*;
  */
 public class BoneAnimationLoader {
 
-    public static String applySkinningShader(String shader){
+    public static String applySkinningShader(String shader, int numBones, int maxWeightsPerVert){
         shader = shader.replace("hw_skin_vars", "attribute vec4 weights;\n" +
-                                       "attribute vec4 matrixIndices;\n" +
-                                       "uniform mat4 BoneMatrices[10];\n");
-        shader = shader.replace("hw_skin_compute", "    vec4 index = matrixIndices;\n" +
+                                       "attribute vec4 indexes;\n" +
+                                       "uniform mat4 boneMatrices["+numBones+"];\n");
+        shader = shader.replace("hw_skin_compute", 
+                                          "    vec4 index = indexes;\n" +
                                           "    vec4 weight = weights;\n" +
                                           "\n" +
                                           "    vec4 vPos = vec4(0.0);\n" +
                                           "    vec4 vNormal = vec4(0.0);\n" +
                                           "    vec4 normal = vec4(gl_Normal.xyz,0.0);\n" +
                                           "\n" +
-                                          "    for (float i = 0.0; i < 4.0; i += 1.0){\n" +
+                                          "    for (float i = 0.0; i < "+((float)maxWeightsPerVert)+"; i += 1.0){\n" +
                                           "        mat4 skinMat = boneMatrices[int(index.x)];\n" +
-                                          "        vPos    += weight.x * skinMat * gl_Vertex;\n" +
-                                          "        vNormal += weight.x * skinMat * normal;\n" +
+                                          "        vPos    += weight.x * (skinMat * gl_Vertex);\n" +
+                                          "        vNormal += weight.x * (skinMat * normal);\n" +
                                           "        index = index.yzwx;\n" +
                                           "        weight = weight.yzwx;\n" +
                                           "    }\n" +
                                           "\n");
+//        shader = shader.replace("hw_skin_compute", 
+//                                          "    vec4 vPos = boneMatrices[int(indexes.x)] * gl_Vertex;\n" +
+//                                          "\n");
         shader = shader.replace("hw_skin_vpos", "(gl_ModelViewProjectionMatrix * vPos)");
         shader = shader.replace("hw_skin_vnorm", "(normalize(inverseModelView * tempNormal).xyz)");
         
         return shader;
     }
     
-    public static GLSLShaderObjectsState createSkinningShader(){
+    public static GLSLShaderObjectsState createSkinningShader(int numBones, int maxWeightsPerVert){
         GLSLShaderObjectsState shader = DisplaySystem.getDisplaySystem().getRenderer().createGLSLShaderObjectsState();
-        String str = "hw_skin_vars\n" +
+        String str =    "hw_skin_vars\n" +
                         "\n" +
-                        "void main(){" +
-                        "   hw_skin_compute" +
-                        "   gl_Position = hw_skin_vpos;" +
-                        "}";
-        str = applySkinningShader(str);
-        System.out.println(str);
+                        "void main(){\n" +
+                        "   hw_skin_compute;\n" +
+                        "\n" +
+                        "   gl_TexCoord[0] = gl_MultiTexCoord0;\n" +
+                        "   gl_FrontColor = gl_LightSource[0].ambient;\n" +
+                        "   //vPos = gl_Vertex;\n" +
+                        "   gl_Position = hw_skin_vpos;\n" +
+                        "}\n";
+        //hw_skin_compute
+        //hw_skin_vars
+        str = applySkinningShader(str, numBones, maxWeightsPerVert);
+        //System.out.println(str);
         shader.load(str, null);
         return shader;
     }
@@ -91,9 +101,6 @@ public class BoneAnimationLoader {
         String name = getAttribute(animationNode, "name");
         float length = getFloatAttribute(animationNode, "length");
 
-        BoneAnimation anim = new BoneAnimation(name, length);
-        System.out.println("ANIM("+name+", len="+length+")");
-        
         // list to store keyframes from ALL tracks
         // they will be sorted and later added onto the BoneAnimation
         List<BoneTrack> tracks = new ArrayList<BoneTrack>();
@@ -116,7 +123,6 @@ public class BoneAnimationLoader {
             ArrayList<Quaternion> rotations = new ArrayList<Quaternion>();
             
             Bone bone = skeleton.getBone(getAttribute(trackNode, "bone"));
-            BoneTrack bTrack = new BoneTrack(bone);
             bonesWithTracks.add(bone);
             
             // tracks -> keyframes -> keyframe
@@ -179,15 +185,22 @@ public class BoneAnimationLoader {
             }
             
             float[] timesArray = new float[times.size()];
-            for (int i = 0; i < timesArray.length; i++) timesArray[i] = times.get(i);
-            bTrack.setData(timesArray, translations.toArray(new Vector3f[0]),
-                                       rotations.toArray(new Quaternion[0]));
+            for (int i = 0; i < timesArray.length; i++)
+                timesArray[i] = times.get(i);
+            
+            int targetBoneIndex = skeleton.getBoneIndex(bone);
+            BoneTrack bTrack = new BoneTrack(targetBoneIndex,
+                                             timesArray,
+                                             translations.toArray(new Vector3f[0]),
+                                             rotations.toArray(new Quaternion[0]));
+            
             tracks.add(bTrack);
             
             trackNode = trackNode.getNextSibling();
         }
 
-        anim.setData(tracks.toArray(new BoneTrack[0]));
+        BoneAnimation anim = new BoneAnimation(name, length, tracks.toArray(new BoneTrack[0]));
+        System.out.println("ANIM("+name+", len="+length+")");
         
         return anim;
     }

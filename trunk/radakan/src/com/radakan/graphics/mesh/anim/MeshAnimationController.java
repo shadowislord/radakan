@@ -15,120 +15,101 @@
 
 package com.radakan.graphics.mesh.anim;
 
-import com.jme.math.Matrix3f;
 import com.jme.math.Matrix4f;
-import com.jme.math.Quaternion;
-import com.jme.math.TransformMatrix;
-import com.jme.math.TransformQuaternion;
 import com.jme.math.Vector3f;
 import java.util.Map;
 
 import com.jme.scene.Controller;
-import com.jme.scene.Geometry;
-import com.jme.scene.state.GLSLShaderDataLogic;
 import com.jme.scene.state.GLSLShaderObjectsState;
 import com.jme.scene.state.RenderState;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Collection;
-import java.util.HashMap;
 
 public class MeshAnimationController extends Controller {
 
     private static final long serialVersionUID = -2412532346418342259L;
 
-    private static final boolean forceSWskinning = true;
+    private static final boolean forceSWskinning = false;
     
-    private OgreMesh[] targets;
-    private Skeleton skeleton;
+    private final OgreMesh[] targets;
+    private final Skeleton skeleton;
+    private final Map<String, Animation> animationMap;
     
-    private Map<String, Animation> animationMap;
     private Animation animation;
     private float time = 0f;
-    
     private boolean resetToBindEveryFrame = false;
-    private boolean hardwareSkinning;
-
-    private class SkinningShaderLogic implements GLSLShaderDataLogic {
-        public void applyData(GLSLShaderObjectsState shader, Geometry geom) {
-            // send bone data
-            skeleton.sendToShader(shader);
-            
-            // send weight buffer (indexes + weights)
-            ((OgreMesh)geom).getWeightBuffer().sendToShader(shader);  
-        }
-    }
     
+    private int framesToSkip = 0;
+    private int curFrame = 0;
+
     public MeshAnimationController(OgreMesh[] meshes,
                                    Skeleton skeleton,
                                    Map<String, Animation> anims){
-        if (anims == null)
-            anims = new HashMap<String, Animation>();
-        
+
         this.setRepeatType(RT_WRAP);
-        
-        hardwareSkinning = !forceSWskinning && GLSLShaderObjectsState.isSupported();
-        
         this.skeleton = skeleton;
-        animationMap = anims;
-        targets = meshes;
- 
-        // what a messy loop..
-        // finds which meshes need their pose (vertex buffer)
-        // saved as a copy.
-        // if the mesh data is going to be modified by the CPU
-        // then a copy must be made.
-        // a target's mesh will be modified in two cases:
-        // 1) if it has mesh animations
-        // 2) if it has bone animations and hardware skinning is not supported
+        this.animationMap = anims;
+        this.targets = meshes;
+
         for (int i = 0; i < targets.length; i++){
             // does this mesh has any pose/morph animation tracks?
-            animsearch: {
-                for (Animation anim : animationMap.values()){
-                    MeshAnimation manim = anim.getMeshAnimation();
-                    BoneAnimation banim = anim.getBoneAnimation();
-                    
-                    if (manim != null){
-                        for (Track t : manim.getTracks()){
-                            if (t.getTarget() == targets[i]){
-                                targets[i].clearBindPose();
-                                targets[i].saveCurrentToBindPose();
-                                break animsearch;
-                            }
+            for (Animation anim : animationMap.values()){
+                MeshAnimation manim = anim.getMeshAnimation();
+                BoneAnimation banim = anim.getBoneAnimation();
+
+                if (manim != null){
+                    for (Track t : manim.getTracks()){
+                        if (t.getTargetMeshIndex() == i){
+                            targets[i].clearBindPose();
+                            targets[i].saveCurrentToBindPose();
+                            break;
                         }
                     }
-                    
-                    if (banim != null && !isHardwareSkinning()){
-                        targets[i].clearBindPose();
-                        targets[i].saveCurrentToBindPose();
-                        break animsearch;
-                    }  
+                }
+
+                
+                if (banim != null && !isHardwareSkinning()){
+                    targets[i].clearBindPose();
+                    targets[i].saveCurrentToBindPose();
+                    break;
                 }
             }
+            
+            if (targets[i].getWeightBuffer() != null)
+                targets[i].getWeightBuffer().initializeWeights();
         }
         
         if (isHardwareSkinning()){
             assignShaderLogic();
         }
+        
+        reset();
     }
 
-    private void assignShaderLogic(){
-        SkinningShaderLogic logic = new SkinningShaderLogic();
-        for (OgreMesh target : targets){
-            GLSLShaderObjectsState glsl = (GLSLShaderObjectsState) target.getRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
-            if (glsl == null){
-                glsl = BoneAnimationLoader.createSkinningShader();
-                target.setRenderState(glsl);
-            }
-            glsl.setShaderDataLogic(logic);
+    public MeshAnimationController(OgreMesh[] meshes, MeshAnimationController sourceControl){
+        this.setRepeatType(RT_WRAP);
+        this.skeleton = new Skeleton(sourceControl.skeleton);
+        this.animationMap = sourceControl.animationMap;
+        this.targets = meshes;
+        
+        if (isHardwareSkinning()){
+            assignShaderLogic();
         }
+        
+        reset();
     }
     
-    public boolean isHardwareSkinning(){
-        return hardwareSkinning;
+    public Bone getBone(String name){
+        return skeleton.getBone(name);
     }
     
     public void setAnimation(String name){
+        if (name.equals("<bind>")){
+            reset();
+            return;
+        }
+        
         animation = animationMap.get(name);
         
         if (animation == null)
@@ -144,7 +125,7 @@ public class MeshAnimationController extends Controller {
         Animation anim = animationMap.get(name);
 
         if (anim == null)
-            throw new NullPointerException();
+            return -1;
         
         return anim.getLength();
     }
@@ -157,12 +138,28 @@ public class MeshAnimationController extends Controller {
         return animationMap.keySet();
     }
     
-    public void reset(){
-        resetToBind();
-        animation = null;
+    public void setFrameSkip(int framesToSkip){
+        this.framesToSkip = framesToSkip;
     }
     
-    private void resetToBind(){
+    public void setTime(float time){
+        this.time = time;
+    }
+    
+    Skeleton getSkeleton(){
+        return skeleton;
+    }
+    
+    void reset(){
+        resetToBind();
+        skeleton.getRoot().reset();
+        skeleton.getRoot().update();
+        resetToBindEveryFrame = false;
+        animation = null;
+        time = 0;
+    }
+    
+    void resetToBind(){
         for (int i = 0; i < targets.length; i++){
             if (targets[i].hasBindPose()){
                 targets[i].restoreBindPose();
@@ -170,17 +167,21 @@ public class MeshAnimationController extends Controller {
         }
     }
     
-    private void hardwareSkinUpdate(OgreMesh mesh){
-        GLSLShaderObjectsState glsl = 
-                            (GLSLShaderObjectsState) 
-                                    mesh.getRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
-                    
-        if (glsl != null){
-            // update attribute and uniform variables
-            // for each mesh
-            skeleton.sendToShader(glsl);
-            mesh.getWeightBuffer().sendToShader(glsl);
+    private void assignShaderLogic(){
+        SkinningShaderLogic logic = new SkinningShaderLogic();
+        for (OgreMesh target : targets){
+            GLSLShaderObjectsState glsl = (GLSLShaderObjectsState) target.getRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
+            if (glsl == null){
+                glsl = BoneAnimationLoader.createSkinningShader(skeleton.getBoneCount(),
+                                                                target.getWeightBuffer().maxWeightsPerVert);
+                target.setRenderState(glsl);
+            }
+            glsl.setShaderDataLogic(logic);
         }
+    }
+    
+    public boolean isHardwareSkinning(){
+        return !forceSWskinning && GLSLShaderObjectsState.isSupported();
     }
     
     private void softwareSkinUpdate(OgreMesh mesh){
@@ -190,7 +191,7 @@ public class MeshAnimationController extends Controller {
         Vector3f resultVert = new Vector3f();
         Vector3f resultNorm = new Vector3f();
         
-        Matrix4f offsetMatrix = new Matrix4f();
+        Matrix4f offsetMatrices[] = skeleton.computeSkinningMatrices();
         
         // NOTE: This code assumes the vertex buffer is in bind pose
         // resetToBind() has been called this frame
@@ -203,8 +204,11 @@ public class MeshAnimationController extends Controller {
         // get boneIndexes and weights for mesh
         ByteBuffer ib = mesh.getWeightBuffer().indexes;
         FloatBuffer wb = mesh.getWeightBuffer().weights;
+        int maxWeightsPerVert = mesh.getWeightBuffer().maxWeightsPerVert;
+        int fourMinusMaxWeights = 4 - maxWeightsPerVert;
         ib.rewind();
         wb.rewind();
+        
 
         // iterate vertices and apply skinning transform for each effecting bone
         for (int vert = 0; vert < mesh.getVertexCount(); vert++){
@@ -213,33 +217,27 @@ public class MeshAnimationController extends Controller {
             resultVert.zero();
             resultNorm.zero();
             
-            // small check to make sure weight sum = 1
-            //float weightSum = 0.0f;
-            for (int w = 0; w < 4; w++){
+            for (int w = 0; w < maxWeightsPerVert; w++){
                 float weight = wb.get();
-                //weightSum += weight;
 
-                Bone b = skeleton.getBone(ib.get());
-                b.getOffsetTransform(offsetMatrix);
+                Matrix4f offsetMatrix = offsetMatrices[ib.get()];
 
-                if (weight > 0.01f){
-                    temp.set(vertex);
-                    offsetMatrix.mult(temp, temp);
-                    temp.multLocal(weight);
-                    resultVert.addLocal(temp);
+                temp.set(vertex);
+                offsetMatrix.mult(temp, temp);
+                resultVert.x += temp.x * weight;
+                resultVert.y += temp.y * weight;
+                resultVert.z += temp.z * weight;
 
-                    temp.set(normal);
-                    offsetMatrix.rotateVect(temp);
-                    temp.multLocal(weight);
-                    resultNorm.addLocal(temp);
-                }
+                temp.set(normal);
+                offsetMatrix.rotateVect(temp);
+                resultNorm.x += temp.x * weight;
+                resultNorm.y += temp.y * weight;
+                resultNorm.z += temp.z * weight;
+                
+                ib.position(ib.position()+fourMinusMaxWeights);
+                wb.position(wb.position()+fourMinusMaxWeights);
             }
 
-//            if (weightSum != 1.0f)
-//                throw new RuntimeException("Weight sum for vert "+vert+" is "+ weightSum +" not 1!");
-
-            resultNorm.normalizeLocal();
-            
             // overwrite vertex with transformed pos
             vb.position(vb.position()-3);
             vb.put(resultVert.x).put(resultVert.y).put(resultVert.z);
@@ -287,6 +285,19 @@ public class MeshAnimationController extends Controller {
             }
         }
         
+        if (framesToSkip > 0){
+            // check frame skipping
+            curFrame++;
+            
+            if (curFrame != framesToSkip){
+                time += tpf * getSpeed();
+                return;
+            }else{
+                curFrame = 0;
+            }
+        }
+        
+        
         // reset the meshes verticles to bind position
         if (resetToBindEveryFrame)
             resetToBind();
@@ -296,27 +307,24 @@ public class MeshAnimationController extends Controller {
             // reset all bones ANIMATION MATRIX field to identity (zero transform)
             skeleton.getRoot().reset();
         }
-        
+
         // BoneAnimation: this sets the ANIMATION MATRIX field of bones ANIMATED in the tracks
-        animation.setTime(time);
+        animation.setTime(time, targets, skeleton);
         
         if (animation.hasBoneAnimation()){
             // this sets the SKINNING MATRIX field of ALL bones
             skeleton.getRoot().update();
             
-            if (isHardwareSkinning()){
-                for (int i = 0; i < targets.length; i++){
-                    hardwareSkinUpdate(targets[i]);
-                }
-            }else{
+            if (!isHardwareSkinning()){
                 // here update the targets verticles if no hardware skinning supported
+                
+                // if hardware skinning is supported, the matrices and weight buffer
+                // will be sent by the SkinningShaderLogic object assigned to the shader
                 for (int i = 0; i < targets.length; i++){
                     softwareSkinUpdate(targets[i]);
                 }
             }
         }
-        
-        //assert time == oldTime;
         
         // increment the time
         time += tpf * getSpeed();

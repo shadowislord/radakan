@@ -42,9 +42,9 @@ public class MeshAnimation {
         return tracks;
     }
     
-    public void setTime(float time){
+    public void setTime(float time, OgreMesh[] targets){
         for (int i = 0; i < tracks.length; i++){
-            tracks[i].setTime(time);
+            tracks[i].setTime(time, targets);
         }
     }
     

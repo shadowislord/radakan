@@ -77,7 +77,7 @@ public class XMLUtil {
      */
     public static String getAttribute(Node node, String name, String defVal){
         Node att = node.getAttributes().getNamedItem(name);
-        return att == null ? null : att.getNodeValue();
+        return att == null ? defVal : att.getNodeValue();
     }
     
     public static String getAttribute(Node node, String name){
