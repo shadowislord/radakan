@@ -1,28 +1,17 @@
 package com.radakan.game.tile;
 
-import com.jme.app.SimpleGame;
 import com.jme.util.resource.ResourceLocatorTool;
-import com.jme.util.resource.SimpleResourceLocator;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import com.gibbon.jme.context.*;
 import com.jme.app.SimplePassGame;
 import com.jme.input.FirstPersonHandler;
-import com.jme.input.MouseInput;
-import com.jme.math.Vector3f;
 import com.jme.renderer.pass.RenderPass;
 import com.jme.scene.Node;
-import com.jme.util.GameTaskQueueManager;
 import com.radakan.game.Game;
-import com.radakan.game.util.ShadowMapPassManager;
 import com.radakan.game.world.World;
-import com.radakan.jme.hdrreader.DirectionalShadowMapPass;
+import com.radakan.graphics.util.DirectionalShadowMapPass;
 import com.radakan.util.ErrorHandler;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
