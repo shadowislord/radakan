@@ -30,7 +30,7 @@ public class MeshAnimationController extends Controller {
 
     private static final long serialVersionUID = -2412532346418342259L;
 
-    private static final boolean forceSWskinning = false;
+    private static final boolean forceSWskinning = true;
     
     private final OgreMesh[] targets;
     private final Skeleton skeleton;
@@ -285,17 +285,17 @@ public class MeshAnimationController extends Controller {
             }
         }
         
-        if (framesToSkip > 0){
-            // check frame skipping
-            curFrame++;
-            
-            if (curFrame != framesToSkip){
-                time += tpf * getSpeed();
-                return;
-            }else{
-                curFrame = 0;
-            }
-        }
+//        if (framesToSkip > 0){
+//            // check frame skipping
+//            curFrame++;
+//            
+//            if (curFrame != framesToSkip){
+//                time += tpf * getSpeed();
+//                return;
+//            }else{
+//                curFrame = 0;
+//            }
+//        }
         
         
         // reset the meshes verticles to bind position
