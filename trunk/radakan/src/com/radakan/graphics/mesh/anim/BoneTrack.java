@@ -15,6 +15,7 @@
 
 package com.radakan.graphics.mesh.anim;
 
+import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 
@@ -51,20 +52,26 @@ public  final class BoneTrack {
                                      rotations[rotations.length-1]);
         } else{
             int startFrame = 0;
+            int endFrame = 0;
             
             for (int i = 0; i < times.length; i++){
-                if (times[i] < time){
+                if (times[i] <= time){
                     startFrame = i;
+                    endFrame   = i + 1;
+                    if (times[startFrame] >= times[endFrame]){
+                        throw new IllegalStateException("Cannot happen");
+                    }
                 }
             }
 
-            int endFrame = startFrame + 1;
-            if (times.length == endFrame){
-                endFrame = startFrame;
-            }
-
+            
+//            if (times.length == endFrame){
+//                endFrame = startFrame;
+//            }
+            
             float blend = (time - times[startFrame]) / (times[endFrame] - times[startFrame]);
-
+            blend = FastMath.clamp(blend, 0f, 1f);
+            
             tempQ.slerp(rotations[startFrame], rotations[endFrame], blend);
             tempV.interpolate(translations[startFrame], translations[endFrame], blend);
 

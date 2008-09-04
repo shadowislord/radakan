@@ -8,6 +8,7 @@ import com.jme.scene.Node;
 import com.jme.system.DisplaySystem;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
+import com.radakan.game.Game;
 import com.radakan.graphics.mesh.anim.MeshAnimationController;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,9 +31,7 @@ public class TestMeshLoading extends SimpleGame {
         MaterialLoader matLoader = new MaterialLoader();
         
         try {
-            SimpleResourceLocator srl = new SimpleResourceLocator(new URL("file:/D:/TestAnim2/"));
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, srl);
-            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, srl);
+            Game.setupDefaultLocators();
             
             URL url2 = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "Example.material");
             URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, "ninja.mesh.xml");
@@ -45,8 +44,6 @@ public class TestMeshLoading extends SimpleGame {
             
             model = (Node) loader.loadModel(url);
         } catch (IOException ex) {
-            Logger.getLogger(TestMeshLoading.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (URISyntaxException ex) {
             Logger.getLogger(TestMeshLoading.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -63,8 +60,8 @@ public class TestMeshLoading extends SimpleGame {
         //MeshCloner.setVBO(model);
         
         int ninjaN = 0;
-        for (int x = -15; x < 16; x++){
-            for (int y = -15; y < 16; y++){
+        for (int x = -4; x < 5; x++){
+            for (int y = -4; y < 5; y++){
                 Node clone = MeshCloner.cloneMesh(model);
                 
                 clone.setLocalTranslation(150 * x,  0,  150 * y);
@@ -76,7 +73,7 @@ public class TestMeshLoading extends SimpleGame {
                 // rewind the animation a bit
                 animControl.setTime(animControl.getAnimationLength("Walk") * FastMath.nextRandomFloat());
                 
-                animControl.setFrameSkip(10);
+                //animControl.setFrameSkip(10);
                 
                 ninjaN++;
             }

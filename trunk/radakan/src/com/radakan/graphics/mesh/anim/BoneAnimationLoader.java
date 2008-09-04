@@ -33,7 +33,12 @@ public class BoneAnimationLoader {
         shader = shader.replace("hw_skin_vars", "attribute vec4 weights;\n" +
                                        "attribute vec4 indexes;\n" +
                                        "uniform mat4 boneMatrices["+numBones+"];\n");
-        shader = shader.replace("hw_skin_compute", 
+        if (maxWeightsPerVert == 1){
+            shader = shader.replace("hw_skin_compute", 
+                                      "    vec4 vPos = boneMatrices[int(indexes.x)] * gl_Vertex;\n" +
+                                      "\n");
+        }else{
+            shader = shader.replace("hw_skin_compute", 
                                           "    vec4 index = indexes;\n" +
                                           "    vec4 weight = weights;\n" +
                                           "\n" +
@@ -49,9 +54,7 @@ public class BoneAnimationLoader {
                                           "        weight = weight.yzwx;\n" +
                                           "    }\n" +
                                           "\n");
-//        shader = shader.replace("hw_skin_compute", 
-//                                          "    vec4 vPos = boneMatrices[int(indexes.x)] * gl_Vertex;\n" +
-//                                          "\n");
+        }
         shader = shader.replace("hw_skin_vpos", "(gl_ModelViewProjectionMatrix * vPos)");
         shader = shader.replace("hw_skin_vnorm", "(normalize(inverseModelView * tempNormal).xyz)");
         

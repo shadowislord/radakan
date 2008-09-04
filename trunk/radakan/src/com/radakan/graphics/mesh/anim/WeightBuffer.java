@@ -52,9 +52,12 @@ public final class WeightBuffer {
       
     public void sendToShader(GLSLShaderObjectsState shader){
         indexes.rewind();
-        weights.rewind();
         shader.setAttributePointer("indexes", 4, false, true, 0, indexes);
-        shader.setAttributePointer("weights", 4, true, 0, weights);
+        
+        if (maxWeightsPerVert > 1){
+            weights.rewind();
+            shader.setAttributePointer("weights", 4, true, 0, weights);
+        }
     }
     
     public void initializeWeights(){
