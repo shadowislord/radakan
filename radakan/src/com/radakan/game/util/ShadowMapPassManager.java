@@ -3,7 +3,7 @@ package com.radakan.game.util;
 import com.jme.renderer.Camera;
 import com.jme.scene.Spatial;
 import com.jme.system.DisplaySystem;
-import com.radakan.jme.hdrreader.DirectionalShadowMapPass;
+import com.radakan.graphics.util.DirectionalShadowMapPass;
 
 
 public class ShadowMapPassManager implements IShadowManager {

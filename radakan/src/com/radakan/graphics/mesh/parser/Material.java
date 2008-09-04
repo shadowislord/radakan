@@ -60,6 +60,7 @@ public final class Material {
         
         for (int i = 0; i < states.length; i++)
             obj.setRenderState(states[i]);
+        
     }
     
     @Override
