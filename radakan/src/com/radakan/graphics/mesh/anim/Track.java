@@ -15,28 +15,22 @@
 
 package com.radakan.graphics.mesh.anim;
 
-import com.jme.scene.TriMesh;
-
 /**
  * A single track of mesh animation (either morph or pose based).
  * Currently morph animations are not supported (only pose).
  */
 public abstract class Track {
 
-    protected TriMesh target;
+    protected final int targetMeshIndex;
     
-    public Track(TriMesh target){
-        this.target = target;
+    public Track(int targetMeshIndex){
+        this.targetMeshIndex = targetMeshIndex;
     }
     
-    public TriMesh getTarget(){
-        return target;
+    public int getTargetMeshIndex(){
+        return targetMeshIndex;
     }
     
-    public void setTarget(TriMesh target){
-        this.target = target;
-    }
-    
-    public abstract void setTime(float time);
+    public abstract void setTime(float time, OgreMesh[] targets);
     
 }

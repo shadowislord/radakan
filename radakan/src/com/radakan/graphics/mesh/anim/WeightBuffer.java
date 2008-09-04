@@ -25,31 +25,39 @@ import java.nio.FloatBuffer;
  * The WeightBuffer can be sent to a shader or processed on the CPU 
  * to do skinning.
  */
-public class WeightBuffer {
+public final class WeightBuffer {
 
     /**
      * Each 4 bytes in the boneIndex buffer are assigned to a vertex.
      * 
      */
-    ByteBuffer indexes;
+    final ByteBuffer indexes;
     
     /**
      * The weight of each bone specified in the index buffer
      */
-    FloatBuffer weights;
+    final FloatBuffer weights;
+    
+    int maxWeightsPerVert = 0;
     
     public WeightBuffer(int vertexCount){
         indexes = BufferUtils.createByteBuffer(vertexCount * 4);
         weights = BufferUtils.createFloatBuffer(vertexCount * 4);
     }
     
+    public WeightBuffer(ByteBuffer indexes, FloatBuffer weights){
+        this.indexes = indexes;
+        this.weights = weights;
+    }
+      
     public void sendToShader(GLSLShaderObjectsState shader){
-        //shader.setAttributePointer("indexCount", 1, false, true, 0, indexCounts);
+        indexes.rewind();
+        weights.rewind();
         shader.setAttributePointer("indexes", 4, false, true, 0, indexes);
         shader.setAttributePointer("weights", 4, true, 0, weights);
     }
     
-    public void normalizeWeights(){
+    public void initializeWeights(){
         int nVerts = weights.capacity() / 4;
         weights.rewind();
         for (int v = 0; v < nVerts; v++){
@@ -57,6 +65,17 @@ public class WeightBuffer {
                   w1 = weights.get(),
                   w2 = weights.get(),
                   w3 = weights.get();
+            
+            if (w3 > 0.01f){
+                maxWeightsPerVert = Math.max(maxWeightsPerVert, 4);
+            }else if (w2 > 0.01f){
+                maxWeightsPerVert = Math.max(maxWeightsPerVert, 3);
+            }else if (w1 > 0.01f){
+                maxWeightsPerVert = Math.max(maxWeightsPerVert, 2);
+            }else if (w0 > 0.01f){
+                maxWeightsPerVert = Math.max(maxWeightsPerVert, 1);
+            }
+            
             float sum = w0 + w1 + w2 + w3;
             if (sum != 1f){
                 weights.position(weights.position()-4);

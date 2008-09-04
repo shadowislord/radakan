@@ -16,18 +16,14 @@
 package com.radakan.graphics.mesh.anim;
 
 import com.jme.math.Matrix4f;
-import com.jme.math.Quaternion;
-import com.jme.math.Vector3f;
 import com.jme.scene.state.GLSLShaderObjectsState;
-import com.jme.util.resource.SimpleResourceLocator;
-import java.util.List;
 
 /**
  * A skeleton is a hierarchy of bones.
  * Skeleton updates the world transforms to reflect the current local
  * animated matrixes.
  */
-public class Skeleton {
+public final class Skeleton {
 
     private Bone rootBone;
     private Bone[] boneList;
@@ -36,14 +32,10 @@ public class Skeleton {
      * Same as bone.skinningMatrix except as a Matrix4f object and not TransformMatrix
      * (easier to send to hardware)
      */
-    private Matrix4f[] skinningMatrixes;
-    
-    private final Quaternion tempQ = new Quaternion();
-    private final Vector3f tempV = new Vector3f();
+    private transient Matrix4f[] skinningMatrixes;
     
     public Skeleton(Bone[] boneList){
         this.boneList = boneList;
-        
         for (Bone b : boneList){
             if (b.parent == null){
                 if (rootBone != null)
@@ -53,12 +45,42 @@ public class Skeleton {
             }
         }
         
-        skinningMatrixes = new Matrix4f[boneList.length];
-        for (int i = 0; i < skinningMatrixes.length; i++)
-            skinningMatrixes[i] = new Matrix4f();
+        createSkinningMatrices();
         
         rootBone.update();
         rootBone.setBindingPose();
+    }
+    
+    public Skeleton(Skeleton source){
+        Bone[] sourceList = source.boneList;
+        boneList = new Bone[sourceList.length];
+        for (int i = 0; i < sourceList.length; i++)
+            boneList[i] = new Bone(sourceList[i]);
+        
+        rootBone = recreateBoneStructure(source.rootBone);
+        
+        createSkinningMatrices();
+        
+        rootBone.update();
+    }
+    
+    private void createSkinningMatrices(){
+        skinningMatrixes = new Matrix4f[boneList.length];
+        for (int i = 0; i < skinningMatrixes.length; i++)
+            skinningMatrixes[i] = new Matrix4f();
+    }
+    
+    private Bone recreateBoneStructure(Bone sourceRoot){
+        Bone targetRoot = getBone(sourceRoot.name);
+        
+        for (Bone sourceChild : sourceRoot.children){
+            // find my version of the child
+            Bone targetChild = getBone(sourceChild.name);
+            targetRoot.addChild(targetChild);
+            recreateBoneStructure(sourceChild);
+        }
+        
+        return targetRoot;
     }
     
     public Bone getRoot(){
@@ -77,24 +99,28 @@ public class Skeleton {
         return null;
     }
     
-    public void sendToShader(GLSLShaderObjectsState shader){
-//        for (int i = 0; i < boneList.length; i++){
-//            Matrix4f matrix = skinningMatrixes[i];
-//            
-//            boneList[i].skinningTransform.getRotation(tempQ);
-//            boneList[i].skinningTransform.getTranslation(tempV);
-//            
-//            matrix.setTranslation(tempV);
-//            matrix.setRotationQuaternion(tempQ);
-//            
-//            boneList[i].skinningTransform.getScale(tempV);
-//            matrix.m00 *= tempV.x;
-//            matrix.m11 *= tempV.y;
-//            matrix.m22 *= tempV.z;
-//        }
+    public int getBoneIndex(Bone bone){
+        for (int i = 0; i < boneList.length; i++)
+            if (boneList[i] == bone)
+                return i;
         
-        // FIXME: Apply jME uniform patch
-        //shader.setUniform("skinningMats", skinningMatrixes, false);
+        return -1;
     }
     
+    public Matrix4f[] computeSkinningMatrices(){
+        for (int i = 0; i < boneList.length; i++){
+            boneList[i].getOffsetTransform(skinningMatrixes[i]);
+        }
+        return skinningMatrixes;
+    }
+    
+    public int getBoneCount() {
+        return boneList.length;
+    }
+    
+    public void sendToShader(GLSLShaderObjectsState shader){
+        Matrix4f[] skinningMats = computeSkinningMatrices();
+        shader.setUniform("boneMatrices", skinningMats, true);
+    }
+ 
 }

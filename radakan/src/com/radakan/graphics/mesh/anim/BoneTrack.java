@@ -18,32 +18,20 @@ package com.radakan.graphics.mesh.anim;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 
-public class BoneTrack {
+public  final class BoneTrack {
 
-    private Vector3f[] translations;
-    private Quaternion[] rotations;
-    private float[] times;
+    private final int targetBoneIndex;
+    private final Vector3f[] translations;
+    private final Quaternion[] rotations;
+    private final float[] times;
+
+    // temp vectors for interpolation
+    private final Vector3f tempV = new Vector3f();
+    private final Quaternion tempQ = new Quaternion();
     
-    private Bone target;
-    
-    private Vector3f tempV = new Vector3f();
-    private Quaternion tempQ = new Quaternion();
-    
-    public BoneTrack(Bone target){
-        this.target = target;
-    }
-    
-    public void checkValid(){
-        if (  (times.length != translations.length)
-           || (rotations.length != times.length)){
-            assert false;
-        }
+    public BoneTrack(int targetBoneIndex, float[] times, Vector3f[] translations, Quaternion[] rotations){
+        this.targetBoneIndex = targetBoneIndex;
         
-        for (int i = 0; i < times.length-1; i++)
-            assert times[i] < times[i+1];
-    }
-    
-    public void setData(float[] times, Vector3f[] translations, Quaternion[] rotations){
         if (times.length == 0)
             throw new RuntimeException("BoneTrack with no keyframes!");
         
@@ -52,50 +40,35 @@ public class BoneTrack {
         this.rotations = rotations;
     }
     
-    public void setTime(float time) {
-        int startFrame = 0;
+    public void setTime(float time, Skeleton skeleton) {
+        Bone target = skeleton.getBone(targetBoneIndex);
         
-        try{
-            // by default the mode is to clamp for times beyond the current timeline
-            if (time < times[0]){
-                target.setAnimTransforms(translations[0], rotations[0]);
-            }else if (time > times[times.length-1]){
-                target.setAnimTransforms(translations[translations.length-1], 
-                                         rotations[rotations.length-1]);
-            } else{
-                for (int i = 0; i < times.length; i++){
-                    if (times[i] < time){
-                        startFrame = i;
-                    }
+        // by default the mode is to clamp for times beyond the current timeline
+        if (time < times[0]){
+            target.setAnimTransforms(translations[0], rotations[0]);
+        }else if (time > times[times.length-1]){
+            target.setAnimTransforms(translations[translations.length-1], 
+                                     rotations[rotations.length-1]);
+        } else{
+            int startFrame = 0;
+            
+            for (int i = 0; i < times.length; i++){
+                if (times[i] < time){
+                    startFrame = i;
                 }
-
-                int endFrame = startFrame + 1;
-                if (times.length == endFrame){
-                    endFrame = startFrame;
-                }
-
-                float blend = (time - times[startFrame]) / (times[endFrame] - times[startFrame]);
-
-                tempQ.slerp(rotations[startFrame], rotations[endFrame], blend);
-                tempV.interpolate(translations[startFrame], translations[endFrame], blend);
-//                
-//                if (blend < 0.5f){
-//                    target.setAnimTransforms(translations[startFrame],
-//                                             rotations[startFrame]);
-//                }else{
-//                    target.setAnimTransforms(translations[endFrame],
-//                                             rotations[endFrame]);
-//                }
-//                
-                target.setAnimTransforms(tempV, tempQ);
-                                             
-                
-//                target.animMat.interpolateTransforms(frames[startFrame], 
-//                                                     frames[endFrame], 
-//                                                     blend, temp1, temp2);
             }
-        } catch (Throwable t){
-            t.printStackTrace();
+
+            int endFrame = startFrame + 1;
+            if (times.length == endFrame){
+                endFrame = startFrame;
+            }
+
+            float blend = (time - times[startFrame]) / (times[endFrame] - times[startFrame]);
+
+            tempQ.slerp(rotations[startFrame], rotations[endFrame], blend);
+            tempV.interpolate(translations[startFrame], translations[endFrame], blend);
+
+            target.setAnimTransforms(tempV, tempQ);
         }
     }
     

@@ -17,9 +17,9 @@ public class ModelCloneUtil {
     
     public static void cloneSpatial(Spatial source, Spatial target){
         target.setName(source.getName());
-        for (Controller c : source.getControllers()){
-            target.addController(clone(c));
-        }
+//        for (Controller c : source.getControllers()){
+//            target.addController(clone(c));
+//        }
         
         for (int i = 0; i < RenderState.RS_MAX_STATE; i++){
             target.setRenderState(source.getRenderState(i));

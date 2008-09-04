@@ -20,27 +20,30 @@ import com.jme.scene.TriMesh;
 /**
  * A single track of pose animation associated with a certain mesh.
  */
-public class PoseTrack extends Track {
+public final class PoseTrack extends Track {
 
     private PoseFrame[] frames;
     private float[]     times;
     
-    public static class PoseFrame { 
-        Pose[]  poses;
-        float[] weights;
+    public static class PoseFrame {
+        
+        public PoseFrame(Pose[] poses, float[] weights){
+            this.poses = poses;
+            this.weights = weights;
+        }
+        
+        final Pose[]  poses;
+        final float[] weights;
+        
     }
     
-    public void setData(float[] times, PoseFrame[] frames){
+    public PoseTrack(int targetMeshIndex, float[] times, PoseFrame[] frames){
+        super(targetMeshIndex);
         this.times = times;
         this.frames = frames;
     }
-            
-            
-    public PoseTrack(TriMesh target){
-        super(target);
-    }
     
-    private void applyFrame(int frameIndex, float weight){
+    private void applyFrame(OgreMesh target, int frameIndex, float weight){
         PoseFrame frame = frames[frameIndex];
         
         for (int i = 0; i < frame.poses.length; i++){
@@ -54,14 +57,14 @@ public class PoseTrack extends Track {
     }
     
     @Override
-    public void setTime(float time) {
-        int startFrame = 0;
-        
+    public void setTime(float time, OgreMesh[] targets) {
+        OgreMesh target = targets[targetMeshIndex];
         if (time < times[0]){
-            applyFrame(0, 1f);
+            applyFrame(target, 0, 1f);
         }else if (time > times[times.length-1]){
-            applyFrame(times.length-1, 1f);
+            applyFrame(target, times.length-1, 1f);
         } else{
+            int startFrame = 0;
             for (int i = 0; i < times.length; i++){
                 if (times[i] < time)
                     startFrame = i;
@@ -69,8 +72,8 @@ public class PoseTrack extends Track {
             
             int endFrame = startFrame + 1;
             float blend = (time - times[startFrame]) / (times[endFrame] - times[startFrame]);
-            applyFrame(startFrame, blend);
-            applyFrame(endFrame,   1-blend);
+            applyFrame(target, startFrame, blend);
+            applyFrame(target, endFrame,   1-blend);
         }
     }
 

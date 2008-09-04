@@ -23,30 +23,28 @@ import java.nio.FloatBuffer;
 /**
  * A pose is just a list of offsets that say where a mesh verticles should be at the pose.
  */
-public class Pose {
+public final class Pose {
 
-    private String name;
-    private TriMesh target;
+    private final String name;
+    private final int targetMeshIndex;
 
-    private Vector3f[] offsets;
-    private int[] indices;
+    private final Vector3f[] offsets;
+    private final int[] indices;
     
-    private Vector3f tempVec  = new Vector3f();
-    private Vector3f tempVec2 = new Vector3f();
+    private final Vector3f tempVec  = new Vector3f();
+    private final Vector3f tempVec2 = new Vector3f();
     
-    public Pose(String name, TriMesh target){
+    public Pose(String name, int targetMeshIndex, Vector3f[] offsets, int[] indices){
         this.name = name;
-        this.target = target;
-    }
-    
-    public TriMesh getTarget(){
-        return target;
-    }
-    
-    public void setData(Vector3f[] offsets, int[] indices){
+        this.targetMeshIndex = targetMeshIndex;
         this.offsets = offsets;
         this.indices = indices;
     }
+    
+    public int getTargetMeshIndex(){
+        return targetMeshIndex;
+    }
+    
     
     /**
      * Applies the offsets of this pose to the vertex buffer given by the blend factor.

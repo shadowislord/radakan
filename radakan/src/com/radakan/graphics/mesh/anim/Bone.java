@@ -15,39 +15,78 @@
 
 package com.radakan.graphics.mesh.anim;
 
-import com.jme.math.Matrix3f;
 import com.jme.math.Matrix4f;
 import com.jme.math.Quaternion;
-import com.jme.math.TransformMatrix;
 import com.jme.math.Vector3f;
 import java.util.ArrayList;
 
-public class Bone {
+public final class Bone {
     
-    private static final int mode = 2;
+    final String name;
     
-    public String name;
-    public Bone parent;
-    public ArrayList<Bone> children = new ArrayList<Bone>();
+    Bone parent;
+    final ArrayList<Bone> children = new ArrayList<Bone>();
     
-    public Vector3f tempV = new Vector3f();
-    public Quaternion tempQ = new Quaternion();
+    boolean userControl = false;
     
-    public Bone(String name){
+    private Vector3f initialPos;
+    private Quaternion initialRot;
+    
+    /**
+     * (MODEL SPACE)
+     * The inverse bind matrix. 
+     * Convert MODEL space to BONE space
+     */
+    private Vector3f worldBindInversePos;
+    private Quaternion worldBindInverseRot;
+    
+    /**
+     * (BONE SPACE)
+     * The local animated transform matrix combined with the bind matrix
+     */
+    private Vector3f localPos = new Vector3f();
+    private Quaternion localRot = new Quaternion();
+    
+    /**
+     * (MODEL SPACE)
+     */
+    private Vector3f worldPos = new Vector3f();
+    private Quaternion worldRot = new Quaternion();
+    
+    Bone(String name){
         this.name = name;
+        
+        initialPos = new Vector3f();
+        initialRot = new Quaternion();
+        
+        worldBindInversePos = new Vector3f();
+        worldBindInverseRot = new Quaternion();
     }
     
-    public Bone(String name, Bone parent){
-        this(name);
-        this.parent = parent;
+    Bone(Bone source){
+        this(source.name);
+        
+        userControl = source.userControl;
+        
+        initialPos = source.initialPos.clone();
+        initialRot = source.initialRot.clone();
+        
+        worldBindInversePos = source.worldBindInversePos.clone();
+        worldBindInverseRot = source.worldBindInverseRot.clone();
+        
+        // parent and children will be assigned manually..
     }
-
-    public void addChild(Bone bone) {
+    
+    public void setUserControl(boolean enable){
+        userControl = enable;
+    }
+    
+    void addChild(Bone bone) {
         children.add(bone);
         bone.parent = this;
     }
     
-    public void updateWorldVectors(){
+    void updateWorldVectors(){
         if (parent != null){
             // worldRot = localRot * parentWorldRot
             worldRot = parent.worldRot.mult(localRot);
@@ -60,14 +99,14 @@ public class Bone {
         }
     }
     
-    public void update(){
+    void update(){
         updateWorldVectors();
         
         for (Bone b : children)
             b.update();
     }
     
-    public void setBindingPose(){
+    void setBindingPose(){
         initialPos.set(localPos);
         initialRot.set(localRot);
         
@@ -82,15 +121,17 @@ public class Bone {
             b.setBindingPose();
     }
     
-    public void reset(){
-        localPos.set(initialPos);
-        localRot.set(initialRot);
+    void reset(){
+        if (!userControl){
+            localPos.set(initialPos);
+            localRot.set(initialRot);
+        }
         
         for (Bone b : children)
             b.reset();
     }
     
-    public void getOffsetTransform(Matrix4f m){
+    void getOffsetTransform(Matrix4f m){
         Quaternion rotate = worldRot.mult(worldBindInverseRot);
         Vector3f translate = worldPos.add(rotate.mult(worldBindInversePos));
         
@@ -99,12 +140,22 @@ public class Bone {
         m.setRotationQuaternion(rotate);
     }
     
-    public void setAnimTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
+    public void setUserTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
+        localPos.set(initialPos);
+        localRot.set(initialRot);
         localPos.addLocal(translation);
         localRot = localRot.mult(rotation);
     }
     
-    public void setBindTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
+    void setAnimTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
+        if (userControl)
+            return;
+        
+        localPos.addLocal(translation);
+        localRot = localRot.mult(rotation);
+    }
+    
+    void setBindTransforms(Vector3f translation, Quaternion rotation, Vector3f scale){
         initialPos.set(translation);
         initialRot.set(rotation);
         
@@ -112,37 +163,13 @@ public class Bone {
         localRot.set(rotation);
     }
     
-    public void setAnimTransforms(Vector3f translation, Quaternion rotation){
+    void setAnimTransforms(Vector3f translation, Quaternion rotation){
         setAnimTransforms(translation, rotation, Vector3f.UNIT_XYZ);
     }
     
-    public void setBindTransforms(Vector3f translation, Quaternion rotation){
+    void setBindTransforms(Vector3f translation, Quaternion rotation){
         setBindTransforms(translation, rotation, Vector3f.UNIT_XYZ);
     }
     
-    
-    private Vector3f initialPos = new Vector3f();
-    private Quaternion initialRot = new Quaternion();
-    
-    /**
-     * (BONE SPACE)
-     * The local animated transform matrix. 
-     */
-    private Vector3f localPos = new Vector3f();
-    private Quaternion localRot = new Quaternion();
-    
-    /**
-     * (MODEL SPACE)
-     */
-    private Vector3f worldPos = new Vector3f();
-    private Quaternion worldRot = new Quaternion();
-    
-    /**
-     * (MODEL SPACE)
-     * The inverse bind matrix. 
-     * Convert MODEL space to BONE space
-     */
-    private Vector3f worldBindInversePos = new Vector3f();
-    private Quaternion worldBindInverseRot = new Quaternion();
-    
+     
 }
