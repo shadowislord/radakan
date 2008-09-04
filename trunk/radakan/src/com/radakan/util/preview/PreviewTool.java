@@ -610,7 +610,7 @@ public class PreviewTool extends javax.swing.JFrame {
             String selected = (String) lstAnims.getSelectedValue();
             if (selected.equals("<bind>")){
                 // reset to bind pose
-                animHandler.reset();
+                animHandler.play("<bind>");
             }else if (animHandler.getLength(selected) > 0){
                 // play anim if its defined
                 animHandler.play(selected);
