@@ -154,6 +154,62 @@ public class OgreLoader {
         return loadMesh(loadDocument(url.openStream(), "mesh"));
     }
     
+    private IntBuffer loadLODFaceList(Node lodfacelistNode){
+        int faces = getIntAttribute(lodfacelistNode, "numfaces");
+        Node face = lodfacelistNode.getFirstChild();
+        IntBuffer ib = BufferUtils.createIntBuffer(faces*3);
+        while (face != null){
+            if (!face.getNodeName().equals("face")){
+                face = face.getNextSibling();
+                continue;
+            }
+            
+            String nv1 = getAttribute(face, "v1");
+            String nv2 = getAttribute(face, "v2");
+            String nv3 = getAttribute(face, "v3");
+            
+            ib.put(Integer.parseInt(nv1));
+            ib.put(Integer.parseInt(nv2));
+            ib.put(Integer.parseInt(nv3));
+                
+            face = face.getNextSibling();
+        }
+        ib.flip();
+        return ib;
+    }
+    
+    private void loadLOD(Node lodNode){
+        Node lodgeneratedNode = lodNode.getFirstChild();
+        int numLevels = getIntAttribute(lodNode, "numlevels")-1;
+        int curLevel = 0;
+        
+        if (getBoolAttribute(lodNode, "manual", false) == true){
+            logger.warning("Manual LOD not supported, ignored.");
+        }
+        
+        IntBuffer[][] lodLevelsArray = new IntBuffer[submeshes.size()][numLevels];
+        while (lodgeneratedNode != null){
+            if (lodgeneratedNode.getNodeName().equals("lodgenerated")){
+                Node lodfacelistNode = lodgeneratedNode.getFirstChild();
+                while (lodfacelistNode != null){
+                    if (lodfacelistNode.getNodeName().equals("lodfacelist")){
+                        int index = getIntAttribute(lodfacelistNode, "submeshindex");
+                        lodLevelsArray[index][curLevel] = loadLODFaceList(lodfacelistNode);
+                    }
+                    
+                    lodfacelistNode = lodfacelistNode.getNextSibling();
+                }
+                curLevel++;
+            }
+            
+            lodgeneratedNode = lodgeneratedNode.getNextSibling();
+        }
+        
+        for (int i = 0; i < submeshes.size(); i++){
+            submeshes.get(i).setLodLevels(lodLevelsArray[i]);
+        }
+    }
+    
     /**
      * Append a vertexbuffer element onto a TriMesh
      * @param target
@@ -545,6 +601,12 @@ public class OgreLoader {
             if (animationsNode != null){
                 MeshAnimationLoader.loadMeshAnimations(animationsNode, poseList, sharedgeom, submeshes, animations);
             }
+        }
+        
+        // ===levelofdetail==
+        Node lodNode = getChildNode(meshNode, "levelofdetail");
+        if (lodNode != null){
+            loadLOD(lodNode);
         }
         
         if (animations.size() > 0){
