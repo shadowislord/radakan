@@ -171,10 +171,17 @@ public class XMLUtil {
             return color;
         }else{
             String split[] = att.split(",");
-            return new ColorRGBA(str2float(split[0]),
-                                 str2float(split[1]),
-                                 str2float(split[2]),
-                                 str2float(split[3]));
+            if (split.length == 3){
+                return new ColorRGBA(str2float(split[0]),
+                                     str2float(split[1]),
+                                     str2float(split[2]),
+                                     1.0f);
+            }else{
+                return new ColorRGBA(str2float(split[0]),
+                                     str2float(split[1]),
+                                     str2float(split[2]),
+                                     str2float(split[3]));
+            }
         }
     }
     

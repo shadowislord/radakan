@@ -42,6 +42,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import static com.radakan.util.XMLUtil.*;
+
 public class SceneLoader {
 
     private Map<String, Material> materials = new HashMap<String, Material>();
@@ -61,23 +63,6 @@ public class SceneLoader {
         return lastLoadedCamera;
     }
     
-    private Node getChildNode(Node node, String name) {
-        Node child = node.getFirstChild();
-        while (child != null && !child.getNodeName().equals(name) ){
-            child = child.getNextSibling();
-        }
-        return child;
-    }
-    
-    private String getAttribute(Node node, String name){
-        Node att = node.getAttributes().getNamedItem(name);
-        return att == null ? null : att.getNodeValue();
-    }
-    
-    private float getFloatAttribute(Node node, String name){
-        return Float.parseFloat(getAttribute(node, name));
-    }
-    
     private Camera loadCamera(Node camera, Vector3f pos, Quaternion rot){
         /*
       <camera name="Camera.001" fov="32.642063" projectionType="perspective">
@@ -92,19 +77,19 @@ public class SceneLoader {
             }
         };
         Camera cam = JmeContext.get().execute(exe);
-        cam.setFrame(pos, rot);
+//        cam.setFrame(pos, rot);
         
         String name = getAttribute(camera, "name");
         if (getAttribute(camera, "projectionType").equalsIgnoreCase("perspective")){
-            float fov = getFloatAttribute(camera, "fov");
+            float fov = getFloatAttribute(camera, "fov", 45f);
             Node clipping = getChildNode(camera, "clipping");
-            float nearPlane = getFloatAttribute(clipping, "nearPlaneDist");
-            float farPlane = getFloatAttribute(clipping, "farPlaneDist");
+            float nearPlane = getFloatAttribute(clipping, "nearPlaneDist", 1f);
+            float farPlane = getFloatAttribute(clipping, "farPlaneDist", 1000f);
             
-            cam.setFrustumPerspective(fov, 
-                                     (float) display.getWidth() / display.getHeight(), 
-                                     nearPlane, 
-                                     farPlane);
+//            cam.setFrustumPerspective(fov, 
+//                                     (float) display.getWidth() / display.getHeight(), 
+//                                     nearPlane, 
+//                                     farPlane);
         }
         
         return cam;
@@ -209,10 +194,10 @@ public class SceneLoader {
                     ls.attach(loadLight(light, pos, rot));
                 }
                 
-                Node camera = getChildNode(node, "camera");
-                if (camera != null){
-                    lastLoadedCamera = loadCamera(camera, pos, rot);
-                }
+//                Node camera = getChildNode(node, "camera");
+//                if (camera != null){
+//                    lastLoadedCamera = loadCamera(camera, pos, rot);
+//                }
                 
                 scene.attachChild(n);
             }

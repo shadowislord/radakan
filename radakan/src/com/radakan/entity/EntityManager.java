@@ -76,7 +76,7 @@ public final class EntityManager {
             throw new IOException("Cannot locate model "+path);
         
         // path is local to the file system
-        int index = path.lastIndexOf(".");
+        int index = path.indexOf(".");
         if (index == -1)
             throw new IOException("No extension available for model file");
         

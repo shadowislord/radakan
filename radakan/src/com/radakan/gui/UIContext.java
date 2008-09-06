@@ -17,12 +17,14 @@ public abstract class UIContext extends Container {
             isBuilt = true;
         }
     }
-    
 
     public void contextAttach(){
     }
     
     public void contextDetach(){
+    }
+    
+    public void contextRemoved(){
     }
     
     /**
