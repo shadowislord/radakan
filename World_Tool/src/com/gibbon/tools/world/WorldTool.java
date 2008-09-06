@@ -5,7 +5,7 @@ import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.lwjgl.LWJGLCanvas;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.jme.pass.RenderPass;
-import com.gibbon.tools.FileNameExtensionFilter;
+import com.radakan.util.preview.FileNameExtensionFilter;
 import com.jme.math.Vector3f;
 import com.jme.renderer.AbstractCamera;
 import com.jme.scene.Spatial;
