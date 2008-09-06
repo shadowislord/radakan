@@ -24,6 +24,8 @@ public class MouseListener implements MouseInputListener {
                 lastX = x;
                 lastY = y;
                 mouseHandled = disp.fireMousePressedEvent(x, y, getMouseButton(button), 1);
+                
+                System.out.println(lastX+" "+lastY+": "+mouseHandled);
             } else {
                 mouseHandled = disp.fireMouseReleasedEvent(x, y, getMouseButton(button), 1);
 
