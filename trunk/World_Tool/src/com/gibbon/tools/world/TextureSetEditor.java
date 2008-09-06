@@ -1,6 +1,6 @@
 package com.gibbon.tools.world;
 
-import com.gibbon.tools.FileNameExtensionFilter;
+import com.radakan.util.preview.FileNameExtensionFilter;
 import com.jme.image.Texture2D;
 import com.jme.util.TextureManager;
 import com.radakan.game.tile.TextureSet;

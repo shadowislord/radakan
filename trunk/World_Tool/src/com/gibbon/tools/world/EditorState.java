@@ -7,7 +7,6 @@ import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
 import com.jme.util.export.Savable;
 import com.radakan.entity.Entity;
-import com.radakan.entity.EntityFactory.EntityType;
 import com.radakan.game.tile.TextureSet;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 public class EditorState implements Savable {
-
 
     private static EditorState state = new EditorState();
     public static transient Map<String, TextureSet> texsetMap = new HashMap<String, TextureSet>();
