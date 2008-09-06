@@ -250,6 +250,7 @@ public class Tile extends com.jme.scene.Node{
 
             modelOrTerrainXMLNode = modelOrTerrainXMLNode.getNextSibling();
         }
+        genBounds();
     }
     
     public void genBounds(){

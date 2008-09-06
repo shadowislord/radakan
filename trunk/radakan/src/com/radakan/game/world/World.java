@@ -13,6 +13,7 @@
  */
 package com.radakan.game.world;
 
+import com.gibbon.jme.context.JmeContext;
 import static com.radakan.util.XMLUtil.*;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ import com.radakan.entity.EntityManager;
 import com.radakan.game.tile.TileManager;
 import com.radakan.game.util.IShadowManager;
 import com.radakan.util.ErrorHandler;
+import java.util.concurrent.Callable;
 
 /**
  * @author Joshua Montgomery
@@ -74,11 +76,18 @@ public class World extends com.jme.scene.Node {
      * @param renderer Renderer to which the world is rendered
      * @param gameSettings Presistent game settings to for quality controls
      */
-    public World(Renderer renderer, GameSettings gameSettings){
+    public World(final Renderer renderer, GameSettings gameSettings){
         super("World Node");
         
         this.renderer = renderer;
         this.gameSettings = gameSettings;
+        
+        JmeContext.get().execute(new Callable<Object>(){
+            public Object call(){
+                renderer.createFogState();
+                return null;
+            }
+        });
         
         // make sure to attach sky first
         worldSky = new com.jme.scene.Node("World Sky Node");
@@ -124,7 +133,7 @@ public class World extends com.jme.scene.Node {
     protected void loadSun(Node sunXMLNode){
         DirectionalLight dl = new DirectionalLight();
         dl.setEnabled(true);
-        dl.setDirection(getVec3Attribute(sunXMLNode, "direction", null));
+        dl.setDirection(getVec3Attribute(sunXMLNode, "direction", null).normalizeLocal());
         dl.setAmbient(getRGBAAttribute(sunXMLNode, "ambient", ColorRGBA.darkGray));
         dl.setDiffuse(getRGBAAttribute(sunXMLNode, "diffuse", ColorRGBA.gray));
         dl.setSpecular(getRGBAAttribute(sunXMLNode, "specular", ColorRGBA.lightGray));
@@ -174,6 +183,7 @@ public class World extends com.jme.scene.Node {
                               source.getHeight(),
                               source.getData(imageN));
         tex.setImage(img);
+        System.out.println("Extracted "+imageN+": "+img);
         
         return tex;
     }
@@ -194,6 +204,9 @@ public class World extends com.jme.scene.Node {
         }
         
         URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, cubemapPath);
+        if (url == null)
+            logger.warning("Cannot find cubemap "+cubemapPath);
+        
         Texture cubemap = TextureManager.loadTexture(url, true);
         
         Skybox box = new Skybox("World Skybox", 2f, 2f, 2f);
@@ -322,8 +335,8 @@ public class World extends com.jme.scene.Node {
         if (fogXMLNode != null)
             loadFog(fogXMLNode);
         
-        if (cameraXMLNode != null)
-            loadCamera(cameraXMLNode);
+//        if (cameraXMLNode != null)
+//            loadCamera(cameraXMLNode);
         
         if (tilemanXMLNode != null)
             loadTileManager(tilemanXMLNode);

@@ -4,6 +4,7 @@ import com.gibbon.jme.context.JmeContext;
 import com.radakan.game.Game;
 import com.radakan.util.ErrorHandler;
 import java.io.IOException;
+import java.net.URL;
 import org.fenggui.Button;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
@@ -16,11 +17,13 @@ import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.layout.RowLayout;
 import org.fenggui.layout.StaticLayout;
-import org.fenggui.util.Color;
+import org.fenggui.util.Dimension;
 import org.fenggui.util.Spacing;
 import org.lwjgl.opengl.GL11;
 
 public class MainMenu extends UIContext {
+    
+    private boolean startGameInvoked = false;
 
     public void setBilinearFilter(ITexture tex){
         tex.bind();
@@ -30,35 +33,58 @@ public class MainMenu extends UIContext {
     
     public Container buildButtons(){
         Container c = new Container(new RowLayout(false));
+        float width = UIManager.width;
+        float height = UIManager.height;
+        
+        Dimension btnSize = new Dimension((int)(width / 5.2f), (int)(height / 15f));
         
         Button newGame = FengGUI.createButton("New Game");
         //newGame.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
-        newGame.getAppearance().setMargin(new Spacing(5, 5));
+        newGame.setSize(btnSize);
+        newGame.setExpandable(false);
+        newGame.setShrinkable(false);
+        newGame.getAppearance().setMargin(new Spacing(5, 10));
         c.addWidget(newGame);
+        newGame.addButtonPressedListener(new IButtonPressedListener() {
+            public void buttonPressed(ButtonPressedEvent e) {
+                if (startGameInvoked)
+                    return;
+                
+                startGameInvoked = true;
+                LoadScreen loading = new LoadScreen(new GameLoadTask(), true);
+                UIManager.setContext(loading, true);
+            }
+        });
         
         Button contGame = FengGUI.createButton("Continue Game");
         //contGame.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
-        contGame.getAppearance().setMargin(new Spacing(5, 5));
+        contGame.setSize(btnSize);
+        contGame.setExpandable(false);
+        contGame.setShrinkable(false);
+        contGame.getAppearance().setMargin(new Spacing(5, 10));
         c.addWidget(contGame);
         
         Button credits = FengGUI.createButton("Credits");
         //credits.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
-        credits.getAppearance().setMargin(new Spacing(5, 5));
+        credits.setSize(btnSize);
+        credits.setExpandable(false);
+        credits.setShrinkable(false);
+        credits.getAppearance().setMargin(new Spacing(5, 10));
         c.addWidget(credits);
         
         Button exit = FengGUI.createButton("Exit");
         //exit.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
-        exit.getAppearance().setMargin(new Spacing(5, 5));
+        exit.setSize(btnSize);
+        exit.setExpandable(false);
+        exit.setShrinkable(false);
+        exit.getAppearance().setMargin(new Spacing(5, 10));
         c.addWidget(exit);
-        
-        
         exit.addButtonPressedListener(new IButtonPressedListener() {
                 public void buttonPressed(ButtonPressedEvent arg0) {
-                    JmeContext.get().dispose();
+                    DoExitScreen exit = new DoExitScreen();
+                    UIManager.setContext(exit, true);
                 }
         });
-        
-        
         
         //c.layout();
         c.pack();
@@ -69,55 +95,55 @@ public class MainMenu extends UIContext {
     public void buildGUI(){
         try{
             setLayoutManager(new StaticLayout());
+            float width = UIManager.width;
+            float height = UIManager.height;
             
-            Label logo = FengGUI.createLabel();
+            //Label logo = FengGUI.createLabel();
             Label version = FengGUI.createLabel();
             version.setText(Game.getVersionPrefix() + " " +
             		        Game.getGameVersion());
             
+            URL backgroundURL = Game.getResource("menu_bg.png");
+            
             // Configure Background
-            Pixmap bgImage = new Pixmap(Binding.getInstance().getTexture("data/images/background.png"));
+            Pixmap bgImage = new Pixmap(Binding.getInstance().getTexture(backgroundURL));
             setBilinearFilter(bgImage.getTexture());
             PixmapBackground bg = new PixmapBackground(bgImage);
             bg.setScaled(true);
             getAppearance().add(bg);
             
-            // Configure Logo
-            Pixmap logoImage = new Pixmap(Binding.getInstance().getTexture("data/images/logo.png"));
-            setBilinearFilter(logoImage.getTexture());
-            PixmapBackground bgLogo = new PixmapBackground(logoImage);
-            bgLogo.setScaled(true);
-            logo.getAppearance().add(bgLogo);
-            
-            logo.setExpandable(false);
-            logo.setShrinkable(false);
-            
-            int width = UIManager.width;
-            int height = UIManager.height;
-            
-            //if (width != 800 || height != 600)
-            //    throw new IOException("ur an idiot: "+width+"x"+height);
-            
-            int logoWidth = (int)((width / 4.5f) * 3f);
-            int logoHeight = (int)(height / 4.5f);
-            
-            logo.setSize(logoWidth, logoHeight);
-            logo.setXY(width - logoWidth + 15, height - logoHeight - 10);
-            addWidget(logo);
+//            // Configure Logo
+//            Pixmap logoImage = new Pixmap(Binding.getInstance().getTexture("data/images/logo.png"));
+//            setBilinearFilter(logoImage.getTexture());
+//            PixmapBackground bgLogo = new PixmapBackground(logoImage);
+//            bgLogo.setScaled(true);
+//            logo.getAppearance().add(bgLogo);
+//            
+//            logo.setExpandable(false);
+//            logo.setShrinkable(false);
+//            
+//            
+//            int logoWidth = (int)((width / 4.5f) * 3f);
+//            int logoHeight = (int)(height / 4.5f);
+//            
+//            logo.setSize(logoWidth, logoHeight);
+//            logo.setXY(width - logoWidth + 15, height - logoHeight - 10);
+//            addWidget(logo);
             
             //version.getAppearance().setFont(Fonts.STONEHEDGE_SMALL);
             //version.getAppearance().setTextColor(Color.WHITE);
             version.setSizeToMinSize();
-            version.setXY(width - version.getWidth() - 20, 20);
+            version.setXY( (int)(width - version.getWidth() - 20), 20);
             addWidget(version);
             
             Container buttons = buildButtons();
             // put in the center-left
             // add some margin from the left
-            buttons.setXY(40, height / 2 - buttons.getHeight() / 2);
+            buttons.setXY( (int)(width / 2f - buttons.getWidth() / 2f), 
+                           (int)(height / 2f - buttons.getHeight() / 2f - height / 16f) );
             addWidget(buttons);
             
-            setMinSize(width, height);
+            setMinSize((int)width, (int)height);
             setSizeToMinSize();
         } catch (IOException ex){
             ErrorHandler.reportError("Failed to locate background image", ex);

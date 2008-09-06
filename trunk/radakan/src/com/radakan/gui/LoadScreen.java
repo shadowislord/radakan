@@ -28,6 +28,7 @@ public class LoadScreen extends UIContext {
     private Future<Object> taskMonitor;
     
     private ProgressBar bar;
+    private boolean doInGL;
     
     private LoadScreenState state = LoadScreenState.PREINIT;
     
@@ -39,8 +40,9 @@ public class LoadScreen extends UIContext {
         FADE_OUT,
     }
     
-    public LoadScreen(LoadingTask task){
+    public LoadScreen(LoadingTask task, boolean doInGL){
         this.task = task;
+        this.doInGL = doInGL;
     }
     
     
@@ -52,14 +54,15 @@ public class LoadScreen extends UIContext {
 
     @Override
     public void contextAttach(){
-        taskMonitor = ResourceManager.runTaskLater("LoadScreenTask", new Callable<Object>(){
-            public Object call(){
-                task.doInBackground();
-                return null;
-            }
-        });
-        
-        state = LoadScreenState.LOADING;
+        if (!doInGL){
+            taskMonitor = ResourceManager.runTaskLater("LoadScreenTask", new Callable<Object>(){
+                public Object call(){
+                    task.doInBackground();
+                    return null;
+                }
+            });
+            state = LoadScreenState.LOADING;
+        }
     }
     
     @Override
@@ -67,15 +70,8 @@ public class LoadScreen extends UIContext {
         assert state == LoadScreenState.PREINIT;
         
         try{
-            setLayoutManager(new StaticLayout());
-            
             float width = UIManager.width;
             float height = UIManager.height;
-            
-            //
-            //Label version = new Label();
-            //version.setText(SysInfo.getVersionPrefix() + " " +
-            //                SysInfo.getGameVersion());
             
             URL backgroundURL = Game.getResource("logo.png");
             URL nowLoadingURL = Game.getResource("loadingtext.png");
@@ -109,19 +105,7 @@ public class LoadScreen extends UIContext {
             logo.setSize((int)logoWidth, (int)logoHeight);
             logo.setXY((int)posX, (int)posY);
             addWidget(logo);
-//            
-//            version.getAppearance().setFont(Fonts.STONEHEDGE_SMALL);
-//            version.getAppearance().setTextColor(Color.WHITE);
-//            version.setSizeToMinSize();
-//            version.setXY(width - version.getWidth() - 20, 20);
-//            addWidget(version);
-//            
-//            Container buttons = buildButtons();
-//            // put in the center-left
-//            // add some margin from the left
-//            buttons.setXY(40, height / 2 - buttons.getHeight() / 2);
-//            addWidget(buttons);
-            
+
             bar = FengGUI.createProgressBar(this);
             bar.setSize((int)(width / 2f), (int)(height / 18));
             bar.setXY((int)(width / 2) - bar.getWidth() / 2, 
@@ -139,6 +123,14 @@ public class LoadScreen extends UIContext {
 
     @Override
     public void update(float tpf) {
+        if (doInGL && state == LoadScreenState.PREINIT){
+            task.doInBackground();
+            bar.setValue(1.0);
+            bar.setText("DONE!");
+            task.done();
+            state = LoadScreenState.FADE_OUT;
+        }
+        
         if (state == LoadScreenState.LOADING){
             if (taskMonitor.isDone()) {
                 if (taskMonitor.isCancelled()) {
@@ -146,21 +138,9 @@ public class LoadScreen extends UIContext {
                     state = LoadScreenState.ERROR;
                 } else {
                     bar.setValue(1.0);
-                    //bar.setText("Press any key to continue.");
                     bar.setText("DONE!");
-                    
                     task.done();
                     state = LoadScreenState.FADE_OUT;
-//                    KeyInput.get().addListener(new KeyInputListener(){
-//                        public void onKey(char key, int keyId, boolean pressed) {
-//                            if (pressed){
-//                                //bar.setText("");
-//                                state = LoadScreenState.FADE_OUT;
-//                                UIManager.setContext(new DoExitScreen(), true);
-//                                KeyInput.get().removeListener(this);
-//                            }
-//                        }
-//                    });
                 }
             } else {
                 bar.setValue(task.getProgress() / 100.0);

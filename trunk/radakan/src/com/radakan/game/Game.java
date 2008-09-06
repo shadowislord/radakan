@@ -1,5 +1,6 @@
 package com.radakan.game;
 
+import com.jme.scene.Node;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
 import com.jme.util.resource.ResourceLocatorTool;
@@ -59,6 +60,10 @@ public class Game {
         extToType.put("md2",      ResourceLocatorTool.TYPE_MODEL);
         extToType.put("md3",      ResourceLocatorTool.TYPE_MODEL);
         extToType.put("mesh.xml", ResourceLocatorTool.TYPE_MODEL);
+        
+        extToType.put("scene", "scene");
+        
+        setDebug(false);
     }
     
     /**
@@ -71,9 +76,17 @@ public class Game {
         debugMode = debug;
         
         if (debug){
-            Logger.getLogger("").setLevel(Level.FINEST);
+            
+            
+            Logger.getLogger("").setLevel(Level.WARNING);
+            Logger.getLogger("com.radakan").setLevel(Level.ALL);
+            Logger.getLogger(ResourceLocatorTool.class.getName()).setLevel(Level.SEVERE);
+            Logger.getLogger(Node.class.getName()).setLevel(Level.WARNING);
         }else{
             Logger.getLogger("").setLevel(Level.WARNING);
+            Logger.getLogger("com.radakan").setLevel(Level.WARNING);
+            Logger.getLogger(ResourceLocatorTool.class.getName()).setLevel(Level.SEVERE);
+            Logger.getLogger(Node.class.getName()).setLevel(Level.WARNING);
         }
     }
     
@@ -93,6 +106,9 @@ public class Game {
     
     public static URL getResource(String resourceName){
         resourceName = resourceName.trim().toLowerCase();
+        
+        if (resourceName.endsWith("world.xml"))
+            return ResourceLocatorTool.locateResource("boot", resourceName);
         
         if (resourceName.startsWith("tile") && resourceName.endsWith(".xml"))
             return ResourceLocatorTool.locateResource("tile", resourceName);
@@ -134,6 +150,7 @@ public class Game {
             URL dataImages     = new URL(urlString + "/data/images/");
             URL dataModels     = new URL(urlString + "/data/models/");
             URL dataTiles      = new URL(urlString + "/data/tiles/");
+            URL dataScenes     = new URL(urlString + "/data/scenes/");
             URL dataTilesMaps  = new URL(urlString + "/data/tiles/maps/");
 
             URL metaEntity     = new URL(urlString + "/meta/entity/");
@@ -149,6 +166,11 @@ public class Game {
             
             SimpleResourceLocator tileLocator = new SimpleResourceLocator(dataTiles);
             ResourceLocatorTool.addResourceLocator("tile", tileLocator);
+            
+            SimpleResourceLocator sceneLocator = new SimpleResourceLocator(dataScenes);
+            ResourceLocatorTool.addResourceLocator("scene", sceneLocator);
+            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, sceneLocator);
+            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, sceneLocator);
             
             SimpleResourceLocator tileMapLocator = new SimpleResourceLocator(dataTilesMaps);
             ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tileMapLocator);

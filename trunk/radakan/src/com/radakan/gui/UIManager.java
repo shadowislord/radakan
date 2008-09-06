@@ -12,7 +12,7 @@ import org.fenggui.util.Color;
 public class UIManager extends Container implements IGuiManager {
 
     private static UIManager singleton;
-    private static UIContext current = null;
+    public  static UIContext current = null;
     private static UIContext switchTo = null;
 
     // some stuff for fading in/out contexts
@@ -33,6 +33,9 @@ public class UIManager extends Container implements IGuiManager {
     }
 
     protected static void setContextInstantGL(UIContext context){
+        if (current != null)
+            current.contextRemoved();
+        
         getInstance().removeAllWidgets();
 
         if (context != null) {
@@ -73,7 +76,9 @@ public class UIManager extends Container implements IGuiManager {
                 }else{
                     fadeSpeed = 0f;
                     switchTo = null;
-                    current.contextDetach();
+                    if (current != null)
+                        current.contextDetach();
+                    
                     setContextInstantGL(context);
                     current.contextAttach();
                 }
@@ -129,19 +134,21 @@ public class UIManager extends Container implements IGuiManager {
                 }else{
                     fadeSpeed = 0f;
                 }
-                fadeContainer.setVisible(false);
             }else if (fadeTime < 0f){
                 fadeTime = 0f;
                 fadeSpeed = 0f;
                 if (current != null)
                     current.contextAttach();
                 
-                fadeContainer.setVisible(false);
-            }else{
-                fadeContainer.setVisible(true);
             }
             
             fadeBackground.setColor(new Color(0f, 0f, 0f, fadeTime / fadeTimeEnd));
+            if (fadeTime < 0.01f)
+                fadeContainer.setVisible(false);
+            else
+                fadeContainer.setVisible(true);
+        }else{
+            fadeContainer.setVisible(false);
         }
     }
     
