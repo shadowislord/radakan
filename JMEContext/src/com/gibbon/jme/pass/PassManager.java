@@ -74,6 +74,17 @@ public class PassManager {
         buckets[pass.getType().priority].remove(pass);
     }
     
+    public Pass getPass(String passName){
+        for (List<Pass> passList : buckets){
+            for (Pass p : passList){
+                if (p.getName().equals(passName))
+                    return p;
+            }
+        }
+        
+        return null;
+    }
+    
     public void remove(PassType type, String passName){
         for (Pass p: buckets[type.priority]){
             if (p.getName().equals(passName)){
