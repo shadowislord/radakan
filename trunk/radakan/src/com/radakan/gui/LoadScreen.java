@@ -5,6 +5,7 @@ import com.jme.image.Texture.Type;
 import com.jme.input.KeyInput;
 import com.jme.input.KeyInputListener;
 import com.jme.scene.state.lwjgl.LWJGLTextureState;
+import com.radakan.game.Game;
 import com.radakan.res.ResourceManager;
 import com.radakan.util.ErrorHandler;
 import java.io.IOException;
@@ -76,8 +77,8 @@ public class LoadScreen extends UIContext {
             //version.setText(SysInfo.getVersionPrefix() + " " +
             //                SysInfo.getGameVersion());
             
-            URL backgroundURL = LoadScreen.class.getResource("/com/radakan/data/textures/logo.png");
-            URL nowLoadingURL = LoadScreen.class.getResource("/com/radakan/data/images/loadingtext.png");
+            URL backgroundURL = Game.getResource("logo.png");
+            URL nowLoadingURL = Game.getResource("loadingtext.png");
             
             // Configure Background
             Pixmap bgImage = new Pixmap(Binding.getInstance().getTexture(backgroundURL));

@@ -1,5 +1,6 @@
 package com.radakan.gui;
 
+import com.gibbon.jme.context.JmeContext;
 import com.radakan.game.Game;
 import com.radakan.util.ErrorHandler;
 import java.io.IOException;
@@ -11,6 +12,8 @@ import org.fenggui.binding.render.Binding;
 import org.fenggui.binding.render.ITexture;
 import org.fenggui.binding.render.Pixmap;
 import org.fenggui.decorator.background.PixmapBackground;
+import org.fenggui.event.ButtonPressedEvent;
+import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.layout.RowLayout;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.util.Color;
@@ -47,6 +50,15 @@ public class MainMenu extends UIContext {
         //exit.getAppearance().setFont(Fonts.ARKHAM_BUTTONS);
         exit.getAppearance().setMargin(new Spacing(5, 5));
         c.addWidget(exit);
+        
+        
+        exit.addButtonPressedListener(new IButtonPressedListener() {
+                public void buttonPressed(ButtonPressedEvent arg0) {
+                    JmeContext.get().dispose();
+                }
+        });
+        
+        
         
         //c.layout();
         c.pack();

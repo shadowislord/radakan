@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -23,6 +24,9 @@ import org.lwjgl.opengl.GLContext;
 
 public class Game {
 
+    private static final Logger logger = Logger.getLogger(Game.class.getName());
+    
+    private static HashMap<String, String> extToType = new HashMap<String, String>();
     private static GameSettings settings;
     private static boolean debugMode;
     
@@ -42,6 +46,19 @@ public class Game {
      */
     static {
         settings = new PreferencesGameSettings(Preferences.userRoot().node("Radakan"));
+        
+        extToType.put("dds", ResourceLocatorTool.TYPE_TEXTURE);
+        extToType.put("png", ResourceLocatorTool.TYPE_TEXTURE);
+        extToType.put("bmp", ResourceLocatorTool.TYPE_TEXTURE);
+        extToType.put("gif", ResourceLocatorTool.TYPE_TEXTURE);
+        extToType.put("jpg", ResourceLocatorTool.TYPE_TEXTURE);
+        extToType.put("tga", ResourceLocatorTool.TYPE_TEXTURE);
+        
+        extToType.put("jme",      ResourceLocatorTool.TYPE_MODEL);
+        extToType.put("3ds",      ResourceLocatorTool.TYPE_MODEL);
+        extToType.put("md2",      ResourceLocatorTool.TYPE_MODEL);
+        extToType.put("md3",      ResourceLocatorTool.TYPE_MODEL);
+        extToType.put("mesh.xml", ResourceLocatorTool.TYPE_MODEL);
     }
     
     /**
@@ -74,6 +91,37 @@ public class Game {
         return settings;
     }
     
+    public static URL getResource(String resourceName){
+        resourceName = resourceName.trim().toLowerCase();
+        
+        if (resourceName.startsWith("tile") && resourceName.endsWith(".xml"))
+            return ResourceLocatorTool.locateResource("tile", resourceName);
+        
+        if (resourceName.endsWith("entities.xml"))
+            return ResourceLocatorTool.locateResource("tile", resourceName);
+        
+        int index = resourceName.indexOf(".");
+        if (index < 1){
+            logger.warning("Cannot determine extension of resource "+resourceName);
+            return null;
+        }
+        
+        String ext = resourceName.substring(index+1);
+        String type = extToType.get(ext);
+        
+        if (type == null)
+            return null;
+        
+        return ResourceLocatorTool.locateResource(type, resourceName);
+    }
+    
+    /**
+     * Sets up resource locators for the given root.
+     * The resources are organized into subdirectories.
+     * 
+     * See this forum thread for info on the directory layout:
+     * http://radakan.org/forums/index.php/topic,759.msg5781.html#msg5781
+     */
     public static void setupLocators(URL root){
         // need to setup resource locators for paths in 
         // WORKING DIRECTORY, DATA PAK FILE, and LEVEL PAK FILE
@@ -120,6 +168,11 @@ public class Game {
         }
     }
     
+    /**
+     * Calls setupLocators for the default game root paths.
+     * The default paths are game.pak and world.pak directories
+     * inside the current working directory.
+     */
     public static void setupDefaultLocators() throws IOException{
         File gamePak = new File("game.pak");
         if (!gamePak.exists() || !gamePak.isDirectory())
@@ -137,6 +190,9 @@ public class Game {
         }
     }
     
+    /**
+     * Queries the system for certain information about the audio and video card.
+     */
     public static void querySystemInfo(){
         caps = GLContext.getCapabilities();
 
@@ -159,7 +215,7 @@ public class Game {
      * Game version in number format
      */
     public static String getGameVersion(){
-        return "0.40";
+        return "0.50";
     }
     
     /**
