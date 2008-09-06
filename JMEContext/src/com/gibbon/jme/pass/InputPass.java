@@ -51,6 +51,9 @@ public class InputPass extends Pass {
     }
     
     public void initPass(JmeContext context) {
+        //KeyInput.setProvider("LWJGL");
+        //MouseInput.setProvider("LWJGL");
+        
         if (cursor)
             MouseInput.get().setCursorVisible(true);
     }

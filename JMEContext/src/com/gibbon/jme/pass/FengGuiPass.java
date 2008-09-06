@@ -21,8 +21,10 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GLContext;
 
 import com.gibbon.jme.context.JmeContext;
+import com.gibbon.jme.util.FengJMEInputHandler;
 import com.gibbon.jme.util.FengJMEListener;
 import com.gibbon.jme.util.IGuiManager;
+import com.jme.input.InputHandler;
 import com.jme.input.KeyInput;
 import com.jme.input.MouseInput;
 import java.io.IOException;
@@ -45,12 +47,17 @@ public class FengGuiPass extends Pass {
     private boolean shaders;
     private IGuiManager manager;
     private FengJMEListener listener;
+    private FengJMEInputHandler handler;
     private String theme;
     
     public FengGuiPass(String theme, IGuiManager manager){
         super(PassType.POST_RENDER, "FengGUI-UserInterface");
         this.manager = manager;
         this.theme = theme;
+    }
+    
+    public InputHandler getHandler(){
+        return handler;
     }
     
     @Override
@@ -86,11 +93,8 @@ public class FengGuiPass extends Pass {
         FengGUI.initPrototypes();
         FengGUIOptional.initOptional();
         
-        this.listener = new FengJMEListener(display);
-        
-        KeyInput.get().addListener(listener);
-        MouseInput.get().addListener(listener);
-        
+        this.handler = new FengJMEInputHandler(display);
+
         manager.create(display);
     }
 
