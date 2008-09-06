@@ -50,6 +50,10 @@ public class InputPass extends Pass {
         input = handler;
     }
     
+    public InputHandler getInputHandler(){
+        return input;
+    }
+    
     public void initPass(JmeContext context) {
         //KeyInput.setProvider("LWJGL");
         //MouseInput.setProvider("LWJGL");
