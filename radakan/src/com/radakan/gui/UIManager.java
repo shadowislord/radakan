@@ -106,6 +106,7 @@ public class UIManager extends Container implements IGuiManager {
         
         display.addWidget(getInstance());
         display.addWidget(fadeContainer);
+        fadeContainer.setVisible(false);        
     }
 
     public void destroy(Display display) {
@@ -128,11 +129,16 @@ public class UIManager extends Container implements IGuiManager {
                 }else{
                     fadeSpeed = 0f;
                 }
+                fadeContainer.setVisible(false);
             }else if (fadeTime < 0f){
                 fadeTime = 0f;
                 fadeSpeed = 0f;
                 if (current != null)
                     current.contextAttach();
+                
+                fadeContainer.setVisible(false);
+            }else{
+                fadeContainer.setVisible(true);
             }
             
             fadeBackground.setColor(new Color(0f, 0f, 0f, fadeTime / fadeTimeEnd));

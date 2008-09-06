@@ -8,8 +8,10 @@ import com.gibbon.jme.pass.InputPass;
 import com.jme.input.Mouse;
 import com.jme.system.GameSettings;
 import com.jme.system.PreferencesGameSettings;
+import com.radakan.game.Game;
 import com.radakan.gui.dialogs.GameSettingsDialog;
 import com.radakan.util.ErrorHandler;
+import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.prefs.Preferences;
 import org.lwjgl.input.Cursor;
@@ -17,11 +19,6 @@ import org.lwjgl.input.Cursor;
 public class TestUI {
 
     public static void initGame(JmeContext cx){
-        // create gui
-        FengGuiPass fg = new FengGuiPass("data/themes/QtCurve/QtCurve.xml", UIManager.getInstance());
-        cx.getPassManager().add(fg);
-        fg.waitFor();
-        
         //com/radakan/data/themes/QtCurve.xml
         //Binding.getInstance().setUseClassLoader(true);
        
@@ -50,11 +47,13 @@ public class TestUI {
         UIManager.setContext(ui, true);
     }
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
         GameSettings settings
                 = new PreferencesGameSettings(Preferences.userRoot().node("test"));
         
         settings.set("title", "Test Main Menu");
+        
+        Game.setupDefaultLocators();
         
         JmeContext context = null;
         try{
@@ -83,8 +82,13 @@ public class TestUI {
         
         final JmeContext cx = context;
         
+        // create gui
+        FengGuiPass fg = new FengGuiPass("data/themes/QtCurve/QtCurve.xml", UIManager.getInstance());
+        cx.getPassManager().add(fg);
+        fg.waitFor();
+        
         // add input pass
-        InputPass input = new InputPass(null, true);
+        InputPass input = new InputPass(fg.getHandler(), true);
         cx.getPassManager().add(input);
         
         // add exit listener
