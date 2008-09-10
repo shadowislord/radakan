@@ -56,11 +56,10 @@ public class XMLUtil {
             Document doc = builder.parse(in);
 
             NodeList list = doc.getElementsByTagName(rootElementName);
-            if (list.getLength() == 0) {
-                return null;
-            }
-
-            return list.item(0);
+            
+            //modified by Th0r
+            //If index is greater than or equal to the number of nodes in the list, this returns null. 
+            return list.item(0);            
         } catch (ParserConfigurationException ex) {
             throw new IOException("Error occured while reading XML document: "+ex.getLocalizedMessage());
         } catch (SAXException ex) {

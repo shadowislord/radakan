@@ -120,7 +120,7 @@ public final class Skeleton {
     
     public void sendToShader(GLSLShaderObjectsState shader){
         Matrix4f[] skinningMats = computeSkinningMatrices();
-        shader.setUniform("boneMatrices", skinningMats, true);
+        //shader.setUniform("boneMatrices", skinningMats, true);
     }
  
 }

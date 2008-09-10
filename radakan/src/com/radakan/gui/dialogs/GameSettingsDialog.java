@@ -24,10 +24,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
@@ -40,6 +42,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import com.jme.system.GameSettings;
+import com.jme.util.resource.ResourceLocatorTool;
 import com.radakan.game.Game;
 import com.radakan.util.ImageCache;
 
@@ -130,9 +133,10 @@ public class GameSettingsDialog extends JFrame
         //SETUP COMPONENTS OF FRAME		
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
-        JPanel imagePl = new JPanel() {
+        java.awt.Toolkit.getDefaultToolkit();
+		JPanel imagePl = new JPanel() {
             private static final long serialVersionUID = 6279143708867242615L;
-            private Image bgImg = ImageCache.retrieveCachedImage("/com/radakan/data/images/splash.png");
+            private Image bgImg = Toolkit.getDefaultToolkit().createImage(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "splash.png"));
 
             @Override
             public void paint(Graphics g) {
