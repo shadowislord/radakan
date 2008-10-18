@@ -183,6 +183,9 @@ public class Game {
             
             SimpleResourceLocator bootLocator = new SimpleResourceLocator(boot);
             ResourceLocatorTool.addResourceLocator("boot", bootLocator);
+            
+            SimpleResourceLocator codeLocator = new SimpleResourceLocator(codeScript);
+            ResourceLocatorTool.addResourceLocator("Script", codeLocator);
         } catch (MalformedURLException ex){
             ErrorHandler.reportError("Syntax error in URL", ex);
         } catch (URISyntaxException ex){

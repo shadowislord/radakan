@@ -17,11 +17,15 @@ package com.radakan.game;
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.jme.pass.ExitListenerPass;
+import com.gibbon.jme.pass.FengGuiPass;
 import com.gibbon.jme.pass.InputPass;
 import com.jme.system.GameSettings;
 import com.jme.util.resource.ResourceLocator;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
+import com.radakan.gui.StartScreen;
+import com.radakan.gui.UIContext;
+import com.radakan.gui.UIManager;
 import com.radakan.gui.console.JmeConsole;
 import com.radakan.gui.console.ScriptSystem;
 import com.radakan.gui.dialogs.GameSettingsDialog;
@@ -42,6 +46,13 @@ public class Main {
     private void init(){
         ErrorHandler.bindUncaughtExceptionHandler();
         Game.setDebug(true);
+        
+        logger.fine("Setting up locators");
+        try{
+            Game.setupDefaultLocators();
+        } catch (IOException ex){
+            ErrorHandler.reportError("Error while setting locators", ex);
+        }
         
         GameSettings settings = Game.getSettings();
         logger.fine("Settings loaded from registry");
@@ -75,12 +86,6 @@ public class Main {
         	ErrorHandler.reportError("Failed to save settings to system", ex);
         }
         
-        logger.fine("Setting up locators");
-        try{
-            Game.setupDefaultLocators();
-        } catch (IOException ex){
-            ErrorHandler.reportError("Error while setting locators", ex);
-        }
     }
     
     public void start(){
@@ -99,8 +104,12 @@ public class Main {
                 }
             });
             
+         // create gui
+            FengGuiPass fg = new FengGuiPass("data/themes/QtCurve/QtCurve.xml", UIManager.getInstance());
+            context.getPassManager().add(fg);
+            fg.waitFor();            
             
-            InputPass input = new InputPass(null, true);
+            InputPass input = new InputPass(fg.getHandler(), true);
             context.getPassManager().add(input);
             
             ExitListenerPass exitListener = new ExitListenerPass();
@@ -109,6 +118,10 @@ public class Main {
             JmeConsole jmeConsole = new JmeConsole();
             jmeConsole.addConsoleListener(new ScriptSystem(jmeConsole, true));
             context.getPassManager().add(jmeConsole);
+            
+            UIContext start = new StartScreen();
+            UIManager.setContext(start, false);
+            
         } catch (InterruptedException ex) {
             ErrorHandler.reportError("Interrupt while creating display", ex);
         } catch (InstantiationException ex){
