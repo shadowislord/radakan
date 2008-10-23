@@ -16,7 +16,7 @@ public class Tile extends Node {
     private transient boolean modified = false;
     
     public Tile(int x, int y){
-        super("TILE_"+x+"_"+y);
+        super("tile_"+x+"_"+y);
         this.x = x;
         this.y = y;
         setModelBound(new BoundingBox());
@@ -74,7 +74,7 @@ public class Tile extends Node {
         x = cap.readInt("TileX", 0);
         y = cap.readInt("TileY", 0);
         
-        setName("TILE_"+x+"_"+y);
+        setName("tile_"+x+"_"+y);
         
         terrain = (TriMesh) getChild(0);
         updateModelBound();

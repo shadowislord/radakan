@@ -5,6 +5,9 @@ import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.context.lwjgl.LWJGLCanvas;
 import com.gibbon.jme.context.lwjgl.LWJGLContext;
 import com.gibbon.jme.pass.RenderPass;
+import com.radakan.res.DefaultFileSystem;
+import com.radakan.res.ModelLoader;
+import com.radakan.res.ResourceManager;
 import com.radakan.util.preview.FileNameExtensionFilter;
 import com.jme.math.Vector3f;
 import com.jme.renderer.AbstractCamera;
@@ -14,8 +17,8 @@ import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
-import com.radakan.entity.EntityFactory;
-import com.radakan.entity.EntityFactory.EntityType;
+import com.radakan.entity.EntityManager;
+import com.radakan.entity.EntityManager.EntityType;
 import com.radakan.entity.unit.ModelUnit;
 import com.radakan.game.tile.TextureSet;
 import com.radakan.game.tile.TextureSet.Detailmap;
@@ -32,6 +35,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -61,6 +65,11 @@ import javax.swing.tree.DefaultTreeModel;
  */
 public class WorldTool extends javax.swing.JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2234845278505867352L;
+	
 	private static WorldTool instance;
 	private EditorState state;
 	private LWJGLCanvas glCanvas;
@@ -116,9 +125,13 @@ public class WorldTool extends javax.swing.JFrame {
 		ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
 		try {
 			InputStream in = new FileInputStream(f);
-			TextureSet set = TextureSetLoader.load(in, false);
-			texturesets.addElement(set);
-			EditorState.texsetMap.put(set.toString(), set);
+			Map<String, TextureSet> sets = TextureSetLoader.load(in, false, false);
+			Iterator<TextureSet> iter = sets.values().iterator();
+			while(iter.hasNext()) {
+				TextureSet set = iter.next();
+				texturesets.addElement(set);
+				EditorState.texsetMap.put(set.toString(), set);
+			}
 			in.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -215,6 +228,13 @@ public class WorldTool extends javax.swing.JFrame {
                 } catch (URISyntaxException ex){
                     ErrorHandler.reportError("URI Syntax error while loading icons", ex);
                 }
+                
+        URI modelDir = new File(System.getProperty("user.dir") + "/models/").toURI();
+		SimpleResourceLocator modelLoc = new SimpleResourceLocator(modelDir);
+		ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL, modelLoc);
+		
+		//ResourceManager.setFileSystem(new DefaultFileSystem(System.getProperty("user.dir")));
+		ResourceManager.registerLoader(Spatial.class, new ModelLoader());
                 
 		state = EditorState.getState();
 		initComponents();
@@ -334,7 +354,7 @@ public class WorldTool extends javax.swing.JFrame {
         canvas = createCanvas();
         tab = new javax.swing.JTabbedPane();
         pnlWorld = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnPreviewLightmaps = new javax.swing.JButton();
         pnlTerrain = new javax.swing.JPanel();
         pnlTerrainBrush = new javax.swing.JPanel();
         radRaise = new javax.swing.JToggleButton();
@@ -365,11 +385,11 @@ public class WorldTool extends javax.swing.JFrame {
         menu = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuFileNew = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        menuFileOpen = new javax.swing.JMenuItem();
         menuFileSave = new javax.swing.JMenuItem();
         menuFileSaveAs = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        menuFileExport = new javax.swing.JMenuItem();
         menuFileSep1 = new javax.swing.JSeparator();
         menuFileExit = new javax.swing.JMenuItem();
         menuEdit = new javax.swing.JMenu();
@@ -405,10 +425,10 @@ public class WorldTool extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Preview Lightmaps");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnPreviewLightmaps.setText("Preview Lightmaps");
+        btnPreviewLightmaps.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnPreviewLightmapsActionPerformed(evt);
             }
         });
 
@@ -418,14 +438,14 @@ public class WorldTool extends javax.swing.JFrame {
             pnlWorldLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(pnlWorldLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jButton1)
+                .add(btnPreviewLightmaps)
                 .addContainerGap(81, Short.MAX_VALUE))
         );
         pnlWorldLayout.setVerticalGroup(
             pnlWorldLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(pnlWorldLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jButton1)
+                .add(btnPreviewLightmaps)
                 .addContainerGap(370, Short.MAX_VALUE))
         );
 
@@ -751,13 +771,13 @@ public class WorldTool extends javax.swing.JFrame {
         });
         menuFile.add(menuFileNew);
 
-        jMenuItem1.setText("Open");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        menuFileOpen.setText("Open");
+        menuFileOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                menuFileOpenActionPerformed(evt);
             }
         });
-        menuFile.add(jMenuItem1);
+        menuFile.add(menuFileOpen);
 
         menuFileSave.setText("Save");
         menuFileSave.addActionListener(new java.awt.event.ActionListener() {
@@ -776,13 +796,13 @@ public class WorldTool extends javax.swing.JFrame {
         menuFile.add(menuFileSaveAs);
         menuFile.add(jSeparator1);
 
-        jMenuItem4.setText("Export");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        menuFileExport.setText("Export");
+        menuFileExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                menuFileExportActionPerformed(evt);
             }
         });
-        menuFile.add(jMenuItem4);
+        menuFile.add(menuFileExport);
         menuFile.add(menuFileSep1);
 
         menuFileExit.setText("Exit");
@@ -1083,8 +1103,11 @@ public class WorldTool extends javax.swing.JFrame {
 			ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
 			try {
 				InputStream in = new FileInputStream(f);
-				TextureSet set = TextureSetLoader.load(in, false);
-				texturesets.addElement(set);
+				Map<String, TextureSet> sets = TextureSetLoader.load(in, false, false);
+				Iterator<TextureSet> iter = sets.values().iterator();
+				while (iter.hasNext()) {
+					texturesets.addElement(iter.next());
+				}
 				in.close();
 			} catch (IOException ex) {
 				ex.printStackTrace();
@@ -1198,11 +1221,12 @@ public class WorldTool extends javax.swing.JFrame {
 		}
 }//GEN-LAST:event_menuFileSaveAsActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void menuFileOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Radakan World (*.world)", "world");
 
 		chooser.resetChoosableFileFilters();
 		chooser.addChoosableFileFilter(filter);
+		chooser.setFileFilter(filter);
 
 		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			File f = chooser.getSelectedFile();
@@ -1260,11 +1284,11 @@ public class WorldTool extends javax.swing.JFrame {
 
 		resetEntityView();
 
-		if (node.getUserObject() instanceof EntityType) {
+		if (node.getUserObject() instanceof EntityManager.EntityType) {
 			EditorState edState = EditorState.getState();
-			edState.entityType = (EntityType) node.getUserObject();
+			edState.entityType = (EntityManager.EntityType) node.getUserObject();
 
-			edState.entityTypePrototype = EntityFactory.getInstance().produce(edState.entityType.name, "PROTOTYPE");
+			edState.entityTypePrototype = EntityManager.produce(edState.entityType.name, "PROTOTYPE");
 //            Spatial model = state.entityTypePrototype.getUnit(ModelUnit.class).getModel();
 //            World.getWorld().update();
 		} else {
@@ -1279,7 +1303,7 @@ public class WorldTool extends javax.swing.JFrame {
 		}
 }//GEN-LAST:event_btnSelectionActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnPreviewLightmapsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 		TileBrush.previewLightmaps();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1318,7 +1342,7 @@ public class WorldTool extends javax.swing.JFrame {
 		UndoManager.doRedo();
     }//GEN-LAST:event_menuEditRedo1ActionPerformed
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+    private void menuFileExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         if (World.getWorld() == null)
             return;
         
@@ -1365,9 +1389,9 @@ public class WorldTool extends javax.swing.JFrame {
     private java.awt.Canvas canvas;
     private javax.swing.JComboBox cmbTSets;
     private javax.swing.ButtonGroup editTypeGroup;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JButton btnPreviewLightmaps;
+    private javax.swing.JMenuItem menuFileOpen;
+    private javax.swing.JMenuItem menuFileExport;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;

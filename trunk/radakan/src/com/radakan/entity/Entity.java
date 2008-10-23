@@ -73,6 +73,9 @@ public final class Entity implements Savable
         importXML(rootEntityNode);
     }
     
+    public Entity() {
+    }
+    
     public String getName(){
         return name;
     }
@@ -199,14 +202,13 @@ public final class Entity implements Savable
     @SuppressWarnings("unchecked")
     public void read(JMEImporter im) throws IOException {
         InputCapsule in = im.getCapsule(this);
-        name = in.readString(name, "");
+        name = in.readString("name", "");
         units = in.readSavableArrayList("units", null);
     }
 
 	@Override
-	public Class getClassTag() {
-		// TODO Auto-generated method stub
-		return null;
+	public Class<?> getClassTag() {
+		return this.getClass();
 	}
 
    /**

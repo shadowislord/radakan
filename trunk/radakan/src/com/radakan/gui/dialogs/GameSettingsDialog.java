@@ -170,12 +170,24 @@ public class GameSettingsDialog extends JFrame
         listCb.setSize(60, 20);
         listCb.setPreferredSize(new Dimension(150, 20));
 
-        DisplayMode displays[] = gd.getDisplayModes();
-        for (int i = 0; i < displays.length; i++) {
-            listCb.addItem(new DisplayWrapper(displays[i]));
+        String displayMode = null;
+        if(!settings.isNew()) {
+        	displayMode = settings.getWidth() + "x" + settings.getHeight() +
+            	"x" + settings.getDepth() + " @" + settings.getFrequency();
         }
         
-        listCb.setSelectedItem(new DisplayWrapper(gd.getDisplayMode()));
+        DisplayMode displays[] = gd.getDisplayModes();
+        for (int i = 0; i < displays.length; i++) {
+        	DisplayWrapper wrapper = new DisplayWrapper(displays[i]);
+            listCb.addItem(wrapper);
+            if(displayMode != null && displayMode.equals(wrapper.toString())) {
+            	listCb.setSelectedItem(wrapper);
+            }
+        }
+        
+        if(listCb.getSelectedItem() == null){
+        	listCb.setSelectedItem(new DisplayWrapper(gd.getDisplayMode()));
+        }
 
         c.insets = new Insets(0, 0, 0, 20);
         c.gridx = 1;
@@ -189,6 +201,7 @@ public class GameSettingsDialog extends JFrame
         graphicsPl.add(fullLb, c);
 
         cb = new JCheckBox();
+        cb.setSelected(settings.isFullscreen());
 
         c.gridx = 3;
         graphicsPl.add(cb, c);
@@ -201,6 +214,7 @@ public class GameSettingsDialog extends JFrame
         graphicsPl.add(syncLb, c);
 
         cb2 = new JCheckBox();
+        cb2.setSelected(settings.isVerticalSync());
 
         c.insets = new Insets(0, 0, 0, 0);
         c.gridx = 5;
@@ -253,7 +267,7 @@ public class GameSettingsDialog extends JFrame
     /**
      * Closes the dialog box.
      */
-    public void closeDialog() {
+    protected void closeDialog() {
         setVisible(false);
         dispose();
         isOpen = false;
@@ -264,7 +278,7 @@ public class GameSettingsDialog extends JFrame
     }
     
     /**Saves the game settings set with the dialog.*/
-    public void saveSettings(){
+    protected void saveSettings(){
         if (listCb.getSelectedItem() instanceof DisplayWrapper) {
             DisplayMode mode = ((DisplayWrapper) listCb.getSelectedItem()).mode;
             settings.setDepth(mode.getBitDepth());

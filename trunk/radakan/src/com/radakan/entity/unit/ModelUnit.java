@@ -8,8 +8,10 @@ import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
+import com.jme.util.resource.ResourceLocatorTool;
 import com.radakan.entity.Entity;
 import com.radakan.entity.EntityManager;
+import com.radakan.graphics.mesh.parser.OgreLoader;
 import com.radakan.res.ResourceManager;
 import com.radakan.util.XMLUtil;
 import java.io.PrintStream;
@@ -85,8 +87,9 @@ public class ModelUnit extends Unit{
 
     @Override
     public void read(JMEImporter im) throws IOException {
-        modelName = im.getCapsule(this).readString(modelName, "");
-        model = (Node) ResourceManager.loadResource(Spatial.class, modelName);
+        modelName = im.getCapsule(this).readString("modelName", "");
+        //model = (Node) ResourceManager.loadResource(Spatial.class, modelName);
+        model = (Node)new OgreLoader().loadModel(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, modelName));
     }
 
     public Spatial getModel(){

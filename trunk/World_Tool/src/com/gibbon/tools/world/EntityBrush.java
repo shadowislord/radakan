@@ -5,8 +5,8 @@ import com.jme.scene.Spatial;
 import com.jme.scene.Spatial.CullHint;
 import com.jme.scene.TriMesh;
 import com.radakan.entity.Entity;
-import com.radakan.entity.EntityFactory;
-import com.radakan.entity.EntityFactory.EntityType;
+import com.radakan.entity.EntityManager;
+import com.radakan.entity.EntityManager.EntityType;
 import com.radakan.entity.unit.ModelUnit;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class EntityBrush {
+	private static final Logger logger = Logger.getLogger(EntityBrush.class.getName());
 
     private static Vector3f startDrag = new Vector3f();
     private static int id = 0;
@@ -29,14 +31,14 @@ public class EntityBrush {
         for (File f : entitiesFile.listFiles()){
             if (f.getName().endsWith(".xml")){
                 InputStream in = new FileInputStream(f);
-                EntityFactory.getInstance().load(in);
+                EntityManager.loadEntityTypes(in);
                 in.close();
             }
         }
         
         
         
-        return EntityFactory.getInstance().getLoadedTypes();
+        return EntityManager.getLoadedTypes();
     }
     
     public static void doMouseAction(int x, int y, boolean drag, boolean finish){
@@ -77,9 +79,15 @@ public class EntityBrush {
                     return;
 
                 Spatial model = collided;
-                while (!model.getName().startsWith("ENTITY")){
+                
+                // Changed logic since the naming structure has changed - geerzo
+                while (model != null && model.getUserData("Entity") == null){
+                //while (model != null && !model.getName().startsWith("ENTITY")){
                     model = model.getParent();
                 }
+                if (model == null)
+                	return;
+                
                 Entity ent = (Entity) model.getUserData("Entity");
                 List<Entity> selection = state.selection;
 
@@ -110,8 +118,11 @@ public class EntityBrush {
             TriMesh collided = PickUtils.findClickedObject(x, y, true, point, null);
             
             if (collided == null) return;
+            
+            // If the entityType is null there is nothing to do.
+            if (state.entityType == null) return;
 
-            Entity entity = EntityFactory.getInstance().produce(state.entityType.name, state.entityType.name + (id++) );
+            Entity entity = EntityManager.produce(state.entityType.name, state.entityType.name + (id++) );
             ModelUnit model = entity.getUnit(ModelUnit.class);
 
             Tile t = (Tile) collided.getParent();
