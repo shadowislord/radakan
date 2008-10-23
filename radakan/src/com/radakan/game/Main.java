@@ -61,12 +61,6 @@ public class Main {
                             + Game.getVersionPrefix() + " "
                             + Game.getGameVersion());
         
-        settings.setSamples(0);
-        settings.setDepthBits(8);
-        settings.setAlphaBits(0);
-        settings.setStencilBits(0);
-        settings.setFramerate(-1);
-        
         GameSettingsDialog dialog = new GameSettingsDialog(settings);
         dialog.open();
         

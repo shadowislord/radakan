@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.opengl.ContextCapabilities;
@@ -46,7 +47,26 @@ public class Game {
      * Initialize settings
      */
     static {
-        settings = new PreferencesGameSettings(Preferences.userRoot().node("Radakan"));
+    	boolean isNew = true;
+        
+        // Checks to see if there are preferences stored for the game already.
+        try {
+			isNew = !Preferences.userRoot().nodeExists("Radakan");
+		} catch (BackingStoreException e) {
+			logger.warning("Error loading game settings from preferences.");
+		}
+		settings = new PreferencesGameSettings(Preferences.userRoot().node("Radakan"), isNew);
+		
+        logger.fine("Settings loaded from registry");
+        
+        // Set default settings if they don't already exist.
+        if(isNew) {
+        	settings.setSamples(0);
+            settings.setDepthBits(8);
+            settings.setAlphaBits(0);
+            settings.setStencilBits(0);
+            settings.setFramerate(-1);
+        }
         
         extToType.put("dds", ResourceLocatorTool.TYPE_TEXTURE);
         extToType.put("png", ResourceLocatorTool.TYPE_TEXTURE);

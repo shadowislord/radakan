@@ -34,11 +34,13 @@ public class WorldTileExporter {
         
         stream.println("<tile>");
         
+        int size = World.getWorld().getGridResolution();
         String maps = usedTextures.toString();
         if (maps.length() > 2){
             maps = maps.substring(1, maps.length()-1);
             stream.println("    <terrain textureset=\""+texSet.toString()+"\"\n" +
-                           "             usedmaps=\"" + maps + "\" >");
+                           "             usedmaps=\"" + maps + "\"\n" +
+                           "             size=\"" + size + "\" >");
         }else{
             stream.println("    <terrain>");
         }
@@ -47,7 +49,6 @@ public class WorldTileExporter {
         
         TriMesh mesh = t.getTerrain();
         FloatBuffer vertBuf = mesh.getVertexBuffer();
-        int size = World.getWorld().getGridResolution();
         for (int y = 0; y < size; y++){
             for (int x = 0; x < size; x++){
                 float h = vertBuf.get( (y * size + x) * 3 + 1 );

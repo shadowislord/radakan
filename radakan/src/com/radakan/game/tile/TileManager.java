@@ -171,7 +171,7 @@ public class TileManager extends Node {
      * Returns the tile at position X, Y or null if no tile is available at the position
      */
     public Tile getTileAt(int x, int y) {
-        return (Tile) getChild("TILE_" + x + "_" + y);
+        return (Tile) getChild("tile_" + x + "_" + y);
     }
     
     /**

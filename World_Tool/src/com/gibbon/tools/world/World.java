@@ -39,6 +39,8 @@ public class World extends Node {
     private transient PointLight camLight;
     
     public World(int lightmapRes, int groupSize, int gridRes){
+    	super("World Node");
+    	
         this.lightmapRes = lightmapRes;
         this.groupSize = groupSize;
         this.gridRes = gridRes;
@@ -52,6 +54,8 @@ public class World extends Node {
     }
     
     public World(){
+    	super("World Node");
+    	
         loadRenderStates();
     }
     
@@ -234,7 +238,7 @@ public class World extends Node {
         if (group == null)
             return null;
         
-        return (Tile) group.getChild("TILE_"+x+"_"+y);
+        return (Tile) group.getChild("tile_"+x+"_"+y);
     }
     
     public TileGroup findGroup(int x, int y){

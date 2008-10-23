@@ -72,7 +72,7 @@ public class Tile extends com.jme.scene.Node{
         public final int x, y;
         
         public Tile(int x, int y){
-            super("TILE_"+x+"_"+y);
+            super("tile_"+x+"_"+y);
             this.x = x;
             this.y = y;
         }
@@ -272,8 +272,10 @@ public class Tile extends com.jme.scene.Node{
     public boolean load() {
         try {
             URL url = locateTile();
-            if (url == null)
-                return false;
+            if (url == null) {
+            	logger.warning("Could not locate tile " + name);
+            	return false;
+            }
             
             InputStream in = url.openStream();
             if (in == null)

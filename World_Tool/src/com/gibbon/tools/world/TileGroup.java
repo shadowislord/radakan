@@ -309,7 +309,7 @@ public class TileGroup extends Node implements Savable {
     }
     
     public Tile findTile(int x, int y){
-        return (Tile) getChild("TILE_"+x+"_"+y);
+        return (Tile) getChild("tile_"+x+"_"+y);
     }
     
     public int getX() {

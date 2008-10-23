@@ -7,6 +7,7 @@ import com.jme.util.export.JMEImporter;
 import com.jme.util.export.OutputCapsule;
 import com.jme.util.export.Savable;
 import com.radakan.entity.Entity;
+import com.radakan.entity.EntityManager;
 import com.radakan.game.tile.TextureSet;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class EditorState implements Savable {
     
     // entity
     boolean selectionMode = false;
-    EntityType entityType;
+    EntityManager.EntityType entityType;
     Entity entityTypePrototype;
     List<Entity> selection = new ArrayList<Entity>();
     
