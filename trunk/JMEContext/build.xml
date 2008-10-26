@@ -1,0 +1,91 @@
+
+<project name="JME Context" default="compile" basedir=".">
+	<description>
+        Ant Build File for the Radakan API.
+    </description>
+
+	<property name="name" value="jmecontext"/>
+
+    <property name="major" value="0"/>
+    <property name="minor" value="svn"/>
+    <property name="vendor" value="Radakan Development Team"/>
+    <property name="coverage.needed" value="0%"/>
+
+	<property name="project.language.source" value="1.6"/>
+    <property name="project.language.target" value="1.6"/>
+
+    <property name="rootDir" value="."/>
+
+    <property name="src" location="${rootDir}/src"/>
+    <property name="test" location="${rootDir}/test"/>
+
+    <property name="libs" value="${rootDir}/lib"/>
+    <property name="build" value="${rootDir}/build"/>
+    <property name="release" value="${rootDir}/target"/>
+    <property name="data" value="${rootDir}/data"/>
+    <property name="doc" value="${build}/docs"/>
+    <property name="javadoc" value="yes"/>
+	<property name="class" location="${build}/classes" />
+	<property name="jars" location="${release}/archives" />
+    <property name="jar" value="${name}.jar"/>
+    <property name="zip" value="${name}.zip"/>
+
+	<property file="build.properties" />
+	  <!-- You may prefer to set javac.debug to false to reduce size. -->
+	<property name="javac.debug" value="true" />
+	<property name="javac.debuglevel" value="lines,source" />
+      <!-- Having line numbers in debug output is useful for the 99.9%
+           of non-public builds, esp. for custom-builders who have
+           runtime problems.   - blaine  -->
+	<!--    end of defaults -->
+
+	<path id="classpath">
+		<fileset dir="${libs}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement path="${class}" />
+	</path>
+
+	<target name="init">
+		<mkdir dir="${class}" />
+		<mkdir dir="${doc}" />
+		<mkdir dir="${release}" />
+		<mkdir dir="${jars}" />
+	</target>
+
+	<target name="compile" depends="init" description="generate jmecontext classes">
+		<javac source="${project.language.source}" target="${project.language.target}" srcdir="${src}" destdir="${class}"
+			classpathref="classpath" listfiles="no" fork="true"
+			memoryMaximumSize="256m" debug="${javac.debug}"/>
+	</target>
+
+	<!-- Jar file -->
+
+	<target name="jar" depends="compile" description="generate jar file">
+		<jar jarfile="${jars}/${jar}" basedir="${class}" update="no" compress="true" includes="**" />
+	</target>
+
+	<!-- Generats javadoc -->
+	<target name="doc" depends="compile" description="generate the javadoc documentation">
+		<javadoc destdir="${doc}" useExternalFile="yes" author="true" version="true" use="true" package="yes" windowtitle="Radakan API" maxmemory="256m">
+			<fileset dir="${src}">
+				<include name="**/*.java" />
+			</fileset>
+		</javadoc>
+	</target>
+
+	<!-- Removes all compiled files and documentation, but leaves any created jars -->
+	<target name="clean" description="clean up">
+		<delete dir="${class}" />
+		<delete dir="${doc}" />
+		<delete dir="${jars}" />
+		<delete>
+			<fileset dir="${src}" includes="**/*.class" />
+		</delete>
+	</target>
+
+	<target name="rebuild" depends="clean" description="build from clean">
+		<ant target="compile" />
+	</target>
+
+</project>
