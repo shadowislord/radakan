@@ -34,9 +34,14 @@ import org.xml.sax.SAXException;
 
 import com.gibbon.jme.context.JmeContext;
 import com.jme.bounding.BoundingBox;
+import com.jme.math.FastMath;
+import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
 import com.jme.scene.Spatial;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.radakan.entity.unit.ModelUnit;
+import com.radakan.jme.mxml.anim.MeshAnimationController;
+import com.radakan.jme.mxml.MeshCloner;
 import com.radakan.graphics.util.ModelCloneUtil;
 import com.radakan.graphics.util.ModelLoader;
 import com.radakan.util.ErrorHandler;
@@ -102,11 +107,18 @@ public final class EntityManager {
                     ent.modelName = XMLUtil.getAttribute(modelNode, "src");
                     final Spatial model = loadModel(ent.modelName);
                     com.jme.scene.Node node = null;
-                    if (!(model instanceof Node)){
+                    if (!(model instanceof com.jme.scene.Node)){
                         node = new com.jme.scene.Node(model.getName()+"_node");
                         node.attachChild(model);
                     }else{
                         node = (com.jme.scene.Node)model;
+                        for (Spatial child : node.getChildren()){
+                            child.setLocalScale(scale);
+                            
+                            Quaternion rot = new Quaternion();
+                            rot.fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_Y);
+                            child.setLocalRotation(rot);
+                        }
                     }
                     
 //                    Callable<Object> exe = new Callable<Object>(){
@@ -147,12 +159,22 @@ public final class EntityManager {
         return entityTypeMap.values();
     }
     
+    public static final EntityType getEntityType(String typename){
+        return entityTypeMap.get(typename);
+    }
+    
     public static final com.jme.scene.Node cloneModelForEntity(String typename, String name){
         EntityType type = entityTypeMap.get(typename);
         if (type == null)
             return null;
      
-        com.jme.scene.Node node = (com.jme.scene.Node) ModelCloneUtil.cloneSmart(type.model);
+        com.jme.scene.Node node;
+        if (type.model.getControllerCount() > 0 && type.model.getController(0) instanceof MeshAnimationController){
+            node = MeshCloner.cloneMesh(type.model);
+        }else{
+            node = (com.jme.scene.Node) ModelCloneUtil.cloneSmart(type.model);
+        }
+        
         node.setName(name);
         node.updateModelBound();
         node.updateWorldBound();

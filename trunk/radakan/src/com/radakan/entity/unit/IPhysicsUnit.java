@@ -12,6 +12,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.radakan.entity.unit;
 
 import com.jme.math.Vector3f;
@@ -21,10 +22,8 @@ import com.jme.math.Vector3f;
  * @author Kirill Vainer
  * @created Aug 23, 2008
  */
-public interface ICollisionUnit extends IUnit {
-
-    public Vector3f computeNewPosition(ICollisionUnit other, Vector3f velocity);
-    
-    public boolean isColliding(ICollisionUnit other);
-    
+public interface IPhysicsUnit extends IUnit {
+    public void addForce(Vector3f force);
+    public void setForce(Vector3f force);
+    public void getForce(Vector3f force);
 }

@@ -15,10 +15,10 @@ import com.jme.util.resource.SimpleResourceLocator;
 import com.jmex.model.converters.*;
 
 //import com.model.md5.importer.MD5Importer;
-import com.radakan.graphics.mesh.parser.Material;
-import com.radakan.graphics.mesh.parser.MaterialLoader;
-import com.radakan.graphics.mesh.parser.OgreLoader;
-import com.radakan.graphics.mesh.parser.SceneLoader;
+import com.radakan.jme.mxml.Material;
+import com.radakan.jme.mxml.MaterialLoader;
+import com.radakan.jme.mxml.OgreLoader;
+import com.radakan.jme.mxml.SceneLoader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;

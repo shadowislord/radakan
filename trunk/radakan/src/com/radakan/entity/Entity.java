@@ -46,7 +46,7 @@ import org.w3c.dom.Node;
  */
 public final class Entity implements Savable
 {
-	private transient Set<IUnitEventListener> listeners = 
+    private transient Set<IUnitEventListener> listeners = 
         new HashSet<IUnitEventListener>();
 
 
@@ -62,7 +62,7 @@ public final class Entity implements Savable
      * Type of entity, given to EntityFactory to load a certain entity from XML definitions.
      */
     private String type;
-    private ArrayList<Unit> units = new ArrayList<Unit>();
+    private ArrayList<IUnit> units = new ArrayList<IUnit>();
     
     public Entity(String name, String type){
         this.name = name;
@@ -71,9 +71,6 @@ public final class Entity implements Savable
 
     public Entity(Node rootEntityNode) {
         importXML(rootEntityNode);
-    }
-    
-    public Entity() {
     }
     
     public String getName(){
@@ -138,15 +135,23 @@ public final class Entity implements Savable
     @SuppressWarnings("unchecked")
     public <T extends IUnit> T getUnit(Class<T> clazz){
         for (IUnit u : units)
-            if (clazz.isInstance(u))
+            if (clazz.isInstance(u) || u.getClass().isAssignableFrom(clazz))
                 return (T) u;
         
         return null;
     }
     
-    public void attachUnit(Unit unit){
+    public boolean hasUnits(int units){
+        return (unitFlags & units) == units;
+    }
+    
+    public void attachUnit(IUnit unit){
         units.add(unit);
-        addUnitEventListener(unit);
+        unitFlags |= unit.getType();
+        
+        if (unit instanceof IUnitEventListener)
+            addUnitEventListener((IUnitEventListener)unit);
+        
         unit.attach(this);
                
         UnitEvent event = new UnitEvent();
@@ -156,9 +161,11 @@ public final class Entity implements Savable
         notifyListeners(event);
     }
     
-    public void detachUnit(Unit unit){
+    public void detachUnit(IUnit unit){
         units.remove(unit);
-        removeUnitEventListener(unit);
+        if (unit instanceof IUnitEventListener)
+            removeUnitEventListener((IUnitEventListener)unit);
+        
         unit.detach();
         
         
@@ -178,7 +185,7 @@ public final class Entity implements Savable
     }
     
     public void dispose(){
-        for (Unit u : units)
+        for (IUnit u : units)
             detachUnit(u);
         
         UnitEvent event = new UnitEvent();
@@ -202,14 +209,14 @@ public final class Entity implements Savable
     @SuppressWarnings("unchecked")
     public void read(JMEImporter im) throws IOException {
         InputCapsule in = im.getCapsule(this);
-        name = in.readString("name", "");
+        name = in.readString(name, "");
         units = in.readSavableArrayList("units", null);
     }
 
-	@Override
-	public Class<?> getClassTag() {
-		return this.getClass();
-	}
+    public Class getClassTag() {
+            // TODO Auto-generated method stub
+            return null;
+    }
 
    /**
    * Remove a UnitEventListener to stop being notified of events of this unit

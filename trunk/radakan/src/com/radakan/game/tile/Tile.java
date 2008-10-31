@@ -34,6 +34,7 @@ import com.jmex.terrain.TerrainBlock;
 import com.radakan.entity.Entity;
 import com.radakan.entity.EntityManager;
 import com.radakan.entity.unit.ModelUnit;
+import com.radakan.game.Game;
 import com.radakan.game.util.IShadowManager;
 import com.radakan.graphics.util.ModelCloneUtil;
 import com.radakan.util.ErrorHandler;
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.FloatBuffer;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Node;
@@ -52,60 +54,84 @@ import static com.radakan.util.XMLUtil.*;
  */
 public class Tile extends com.jme.scene.Node{
     
-	private static final long serialVersionUID = 5468917005537121768L;
+    private static final long serialVersionUID = 5468917005537121768L;
 
-        private static final Logger logger = Logger.getLogger(Tile.class.getName());
-        
-        /**
-         * Terrain model
-         */
-        private TriMesh terrain;
-        
-        /**
-         * The texture set which is used to splat the terrain.
-         */
-        private TextureSet textureSet;
-        
-        /**
-         * The tile location in tile space.
-         */
-        public final int x, y;
-        
-        public Tile(int x, int y){
-            super("tile_"+x+"_"+y);
-            this.x = x;
-            this.y = y;
+    private static final Logger logger = Logger.getLogger(Tile.class.getName());
+
+    /**
+     * Terrain model
+     */
+    private TriMesh terrain;
+
+    /**
+     * The texture set which is used to splat the terrain.
+     */
+    private TextureSet textureSet;
+
+    /**
+     * The tile location in tile space.
+     */
+    public final int x, y;
+
+    public Tile(int x, int y){
+        super("TILE_"+x+"_"+y);
+        this.x = x;
+        this.y = y;
+    }
+
+    public float getTerrainHeight(Vector3f point){
+        if (terrain != null){
+            return ((TerrainBlock)terrain).getHeightFromWorld(point);
         }
         
-        /**
-         * Add a new object (entity or static) onto the terrain.
-         * @param object The object to add
-         */
-        public void addObject(Spatial object){
-            attachChild(object);
-            IShadowManager manager = TileManager.getInstance().getShadowManager();
-            if (manager != null){
-                manager.addOccluder(object);
-                manager.addShadowReciever(object);
-            }
+        return Float.NaN;
+    }
+    
+    public void updateEntities(float tpf){
+        List<Spatial> objs = children;
+        for (int i = 1; i < children.size()-1; i++){
+            // makes sure we skip the terrain
+            Spatial obj = objs.get(i+1);
+            Entity ent = (Entity) obj.getUserData("Entity");
+            ent.update(tpf);
         }
+    }
+    
+    @Override
+    public void updateGeometricState(float tpf, boolean initiator){
+        updateEntities(tpf);
+        super.updateGeometricState(tpf, initiator);
+    }
+    
+    /**
+     * Add a new object (entity or static) onto the terrain.
+     * @param object The object to add
+     */
+    public void addObject(Spatial object){
+        attachChild(object);
+        IShadowManager manager = TileManager.getInstance().getShadowManager();
+        if (manager != null){
+            manager.addOccluder(object);
+            manager.addShadowReciever(object);
+        }
+    }
         
-        /**
-         * Sets the terrain model of this Tile.
-         * @param terrain The terrain model to set
-         */
-        public void setTerrain(TriMesh terrain){
-            this.terrain = terrain;
-            attachChildAt(terrain, 0);
-            IShadowManager manager = TileManager.getInstance().getShadowManager();
-            if (manager != null){
-                TriMesh clonedTerrain = (TriMesh) ModelCloneUtil.cloneSmart(terrain);
-                clonedTerrain.clearRenderState(RenderState.RS_TEXTURE);
-                clonedTerrain.clearRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
-                clonedTerrain.updateGeometricState(0, true);
-                manager.addShadowReciever(clonedTerrain);
-            }
+    /**
+     * Sets the terrain model of this Tile.
+     * @param terrain The terrain model to set
+     */
+    public void setTerrain(TriMesh terrain){
+        this.terrain = terrain;
+        attachChildAt(terrain, 0);
+        IShadowManager manager = TileManager.getInstance().getShadowManager();
+        if (manager != null){
+            TriMesh clonedTerrain = (TriMesh) ModelCloneUtil.cloneSmart(terrain);
+            clonedTerrain.clearRenderState(RenderState.RS_TEXTURE);
+            clonedTerrain.clearRenderState(RenderState.RS_GLSL_SHADER_OBJECTS);
+            clonedTerrain.updateGeometricState(0, true);
+            manager.addShadowReciever(clonedTerrain);
         }
+    }
         
     private TriMesh loadTerrainBlock(float[] heights, int tileRes) {
         int groupSize = TileManager.getInstance().getGroupSize();
@@ -259,7 +285,8 @@ public class Tile extends com.jme.scene.Node{
     }
     
     public URL locateTile() throws IOException{
-        return ResourceLocatorTool.locateResource("tile", getName() + ".xml");
+        return new URL(Game.tilePath + getName() +".xml");
+        //return ResourceLocatorTool.locateResource("tile", getName() + ".xml");
     }
 
     /**
@@ -272,14 +299,15 @@ public class Tile extends com.jme.scene.Node{
     public boolean load() {
         try {
             URL url = locateTile();
-            if (url == null) {
-            	logger.warning("Could not locate tile " + name);
-            	return false;
-            }
-            
-            InputStream in = url.openStream();
-            if (in == null)
+            if (url == null)
                 return false;
+            
+            InputStream in;
+            try{
+                in = url.openStream();
+            } catch (IOException ex){
+                return false;
+            }
             
             loadTile(loadDocument(in, "tile"));
             in.close();
@@ -294,32 +322,32 @@ public class Tile extends com.jme.scene.Node{
         return false;
     }
 
-        /**
-         * Unloads the tile, this method can implement (if desired)
-         * some sort of caching so that the tile is not unloaded immediately. 
-         * However it is still expected that the tile scene graph will not be
-         * renderable at the end of the execution of this method.
-         * 
-         * @return True if the tile has been unloaded successfuly. False if an error occured.
-         */
-        public boolean unload(){
-            logger.finest(getName() + " detached.");
-            
-            Renderer r = DisplaySystem.getDisplaySystem().getRenderer();
-            if (r.supportsVBO()){
-                // make sure to unload VBO if set
-                VBOInfo vbo = terrain.getVBOInfo();
-                if (vbo != null){
-                    r.deleteVBO(vbo.getVBOVertexID());
-                    r.deleteVBO(vbo.getVBOColorID());
-                    r.deleteVBO(vbo.getVBOFogCoordsID());
-                    r.deleteVBO(vbo.getVBOIndexID());
-                    r.deleteVBO(vbo.getVBONormalID());
-                    r.deleteVBO(vbo.getVBOTextureID(0));
-                }
+    /**
+     * Unloads the tile, this method can implement (if desired)
+     * some sort of caching so that the tile is not unloaded immediately. 
+     * However it is still expected that the tile scene graph will not be
+     * renderable at the end of the execution of this method.
+     * 
+     * @return True if the tile has been unloaded successfuly. False if an error occured.
+     */
+    public boolean unload(){
+        logger.finest(getName() + " detached.");
+
+        Renderer r = DisplaySystem.getDisplaySystem().getRenderer();
+        if (r.supportsVBO()){
+            // make sure to unload VBO if set
+            VBOInfo vbo = terrain.getVBOInfo();
+            if (vbo != null){
+                r.deleteVBO(vbo.getVBOVertexID());
+                r.deleteVBO(vbo.getVBOColorID());
+                r.deleteVBO(vbo.getVBOFogCoordsID());
+                r.deleteVBO(vbo.getVBOIndexID());
+                r.deleteVBO(vbo.getVBONormalID());
+                r.deleteVBO(vbo.getVBOTextureID(0));
             }
-            
-            return true;
         }
+
+        return true;
+    }
         
 }

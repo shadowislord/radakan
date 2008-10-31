@@ -102,8 +102,6 @@ public class ToneMapper {
      * First the logarithmic luminance is calculated for each pixel,
      * then the image is scaled to 64x64, then to 4x4, the pixels are averaged
      * to get average logarithmic luminance. 
-     * NOTE: Simply downscaling to 4x4 right away would reduce the amount of samples taken
-     * which will cause incorrect calculation of the average.
      * 
      * @param img
      * @return

@@ -1,6 +1,6 @@
 package com.radakan.util.preview;
 
-import com.radakan.graphics.mesh.anim.MeshAnimationController;
+import com.radakan.jme.mxml.anim.MeshAnimationController;
 import java.util.Collection;
 
 public class OgreAnimationHandler implements IAnimationHandler {

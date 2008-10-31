@@ -49,12 +49,7 @@ import com.jme.util.TextureManager;
 import java.io.File;
 
 import java.io.FileInputStream;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.ARBTextureFloat.*;
+import java.io.InputStream;
 
 public class TestQuad extends SimpleGame {
 
@@ -63,7 +58,7 @@ public class TestQuad extends SimpleGame {
     
 
     public static void main(String[] args) {
-        //TextureManager.registerHandler(".hdr", new HDRLoader());
+        TextureManager.registerHandler(".hdr", new HDRLoader());
         
         TestQuad app = new TestQuad();
         app.setConfigShowMode(ConfigShowMode.AlwaysShow);
@@ -80,44 +75,25 @@ public class TestQuad extends SimpleGame {
             display.setTitle("jME - HDR Loading");
             display.getRenderer().setBackgroundColor(ColorRGBA.lightGray);
             
-
-            
-            //            Image img = t.getImage();
-//            
-//            IntBuffer id = BufferUtils.createIntBuffer(1);
-//            id.clear();
-//            glGenTextures(id);
-//            t.setTextureId(id.get(0));
-//
-//            img.getData(0).rewind();
-//            
-//            ByteBuffer dumb = BufferUtils.createByteBuffer(2 * 2);
-//            dumb.putInt(0x00000000).flip();
-//            
-//            glEnable(GL_TEXTURE_2D);
-//            glBindTexture(GL_TEXTURE_2D, id.get(0));
-//            LWJGLTextureState.doTextureBind(t.getTextureId(), 0, Type.TwoDimensional);
-//            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-//            glTexImage2D(GL_TEXTURE_2D, 
-//                         0, 
-//                         GL_INTENSITY8, 
-//                         2, 
-//                         2, 
-//                         0, 
-//                         GL_INTENSITY, 
-//                         GL_UNSIGNED_BYTE, 
-//                         dumb);
-            
             quad = new Quad("quad", 40, 40);
             
-            File f = new File("D:\\Programs\\Render Monkey\\Examples\\Media\\Textures\\AmbientOcclusion_1024.dds");
+            File f = new File("C:\\test.hdr");
             
-            Image img = com.jme.image.util.DDSLoader.loadImage(new FileInputStream(f), true);
+            HDRLoader loader = new HDRLoader();
+            InputStream in = new FileInputStream(f);
+            Image img = loader.load(in);
+            in.close();
+            
+            img = ToneMapper.toneMap(img, 20f);
+            
             System.out.println("Image");
             System.out.println("Resolution: "+img.getWidth()+"x"+img.getHeight());
             System.out.println("Format: "+img.getFormat());
             System.out.println("HasMips: "+img.hasMipmaps());
-
+            
+            float aspect = (float) img.getWidth() / img.getHeight();
+            quad.setLocalScale(new Vector3f(aspect, 1f, 0));
+            
             Texture t = new Texture2D();
             t.setImage(img);
             
@@ -125,7 +101,7 @@ public class TestQuad extends SimpleGame {
             t.setMinificationFilter(MinificationFilter.Trilinear);
             t.setMagnificationFilter(MagnificationFilter.Bilinear);
             state.setTexture(t);
-            //t.setScale(new Vector3f(1f,-1f,1f));
+            t.setScale(new Vector3f(1f,-1f,1f));
             t.setWrap(WrapMode.Repeat);
             quad.setRenderState(state);
             

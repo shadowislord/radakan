@@ -82,13 +82,6 @@ public class World extends com.jme.scene.Node {
         this.renderer = renderer;
         this.gameSettings = gameSettings;
         
-        JmeContext.get().execute(new Callable<Object>(){
-            public Object call(){
-                renderer.createFogState();
-                return null;
-            }
-        });
-        
         // make sure to attach sky first
         worldSky = new com.jme.scene.Node("World Sky Node");
         worldSky.setRenderQueueMode(Renderer.QUEUE_SKIP);
@@ -97,7 +90,6 @@ public class World extends com.jme.scene.Node {
         noWrite.setWritable(false);
         noWrite.setFunction(TestFunction.Always);
         worldSky.setRenderState(noWrite);
-        
         attachChild(worldSky);
         
         worldLighting = renderer.createLightState();
@@ -116,11 +108,12 @@ public class World extends com.jme.scene.Node {
     }
     
     @Override
-    public void updateWorldData(float tpf){
-        super.updateWorldData(tpf);
-        
+    public void updateGeometricState(float tpf, boolean initiator){
+        // make sure sky centered on camera before anything else is updated
         Camera cam = renderer.getCamera();
         worldSky.setLocalTranslation(cam.getLocation());
+        
+        super.updateGeometricState(tpf, initiator);
     }
     
     /**
