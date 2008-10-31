@@ -34,6 +34,8 @@ public class Game {
     
     public static ContextCapabilities caps;
     
+    public static String tilePath;
+    
     public static String vendor;
     public static String renderer;
     public static String apiVer;

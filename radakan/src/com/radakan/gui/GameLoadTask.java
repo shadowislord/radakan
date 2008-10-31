@@ -57,10 +57,10 @@ public class GameLoadTask extends LoadingTask {
     @Override
     public void done() {
         MouseInput.get().setCursorVisible(false);
-        Camera cam = renderer.getCamera();
-        InputPass iPass = (InputPass) JmeContext.get().getPassManager().getPass("Input");
-        FirstPersonHandler handler = new FirstPersonHandler(cam, 10, 0.5f);
-        iPass.getInputHandler().addToAttachedHandlers(handler);
+        //Camera cam = renderer.getCamera();
+        //InputPass iPass = (InputPass) JmeContext.get().getPassManager().getPass("Input");
+        //FirstPersonHandler handler = new FirstPersonHandler(cam, 10, 0.5f);
+        //iPass.getInputHandler().addToAttachedHandlers(handler);
         
         RenderPass rPass = new RenderPass();
         rPass.add(rootNode);

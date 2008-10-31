@@ -24,8 +24,10 @@ import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.util.TextureManager;
+import com.jme.util.export.binary.BinaryExporter;
+import com.jme.util.export.xml.XMLExporter;
 import com.model.md5.controller.JointController;
-import com.radakan.graphics.mesh.anim.MeshAnimationController;
+import com.radakan.jme.mxml.anim.MeshAnimationController;
 import com.radakan.graphics.util.ModelLoader;
 import com.radakan.util.ErrorHandler;
 import java.awt.Canvas;
@@ -354,7 +356,7 @@ public class PreviewTool extends javax.swing.JFrame {
                         .add(sldSpeed, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 92, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)))
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -388,8 +390,8 @@ public class PreviewTool extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(pnlOptions, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(12, 12, 12)
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(51, Short.MAX_VALUE))
         );
         pnlButtonsLayout.setVerticalGroup(
             pnlButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -419,7 +421,7 @@ public class PreviewTool extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(pnlSplit, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 718, Short.MAX_VALUE)
+            .add(pnlSplit, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -594,10 +596,16 @@ public class PreviewTool extends javax.swing.JFrame {
                     return;
                 }
 
+                if (ext.equals("jme")){
+                    BinaryExporter exp = BinaryExporter.getInstance();
+                    exp.save(model, selected);
+                }else if (ext.equals("xml")){
+                    XMLExporter.getInstance().save(model, selected);
+                }
                 //ModelLoader.saveModel(model, selected, ext);
             } catch (Throwable ex) {
                 JOptionPane.showMessageDialog(this,
-                        "Failed to load model.\nReason: " + ex.toString(),
+                        "Failed to save model.\nReason: " + ex.toString(),
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();

@@ -3,6 +3,8 @@ package com.radakan.gui;
 import com.gibbon.jme.context.JmeContext;
 import com.jme.input.KeyInput;
 import com.jme.input.KeyInputListener;
+import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
 import com.radakan.game.Game;
 import com.radakan.util.ErrorHandler;
 import java.io.IOException;
@@ -41,6 +43,10 @@ public class StartScreen extends UIContext {
     @Override
     public void contextRemoved(){
         JmeContext.get().getPassManager().remove(ssPass);
+        
+        // make sure to reset camera vectors, because StartScreenPass modifies them
+        Camera cam = JmeContext.get().getRenderer().getCamera();
+        cam.setAxes(Vector3f.UNIT_X, Vector3f.UNIT_Y, Vector3f.UNIT_Z);
     }
     
     public void setupPressStartText() throws IOException{

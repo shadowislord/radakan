@@ -11,11 +11,6 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import org.python.core.PyException;
 import org.python.core.PyNone;
 import org.python.core.PyObject;
@@ -27,14 +22,9 @@ public class ScriptSystem implements ConsoleListener {
     
     private String extension;
     
-    // if using JavaScript
-    private ScriptEngineManager engineManager;
-    private ScriptEngine engine;
-    
     // if using JYTHON
     private PythonInterpreter pythonEngine;
     
-    private Bindings bindings;
     private JmeConsole console;
     
     public ScriptSystem(JmeConsole console, boolean python){
@@ -59,25 +49,6 @@ public class ScriptSystem implements ConsoleListener {
             
             pythonEngine.exec("def loadLibrary(libraryName):\n" +
                               "    script.loadLibrary(libraryName)\n");
-        }else{
-            extension = "js";
-            
-            engineManager = new ScriptEngineManager();
-            engine = engineManager.getEngineByName("js");
-            bindings = engine.createBindings();
-            engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-
-            bindings.put("script", this);
-            bindings.put("logger", logger);
-            bindings.put("console", console);
-
-            try {
-                engine.eval("function loadLibrary(libraryName){\n" +
-                            "    script.loadLibrary(libraryName);\n" + 
-                            "}\n");
-            } catch (ScriptException ex) {
-                logger.log(Level.WARNING, "Syntax error init", ex);
-            }
         }
         
         if (loadLibrary("main."+extension)){
@@ -86,36 +57,20 @@ public class ScriptSystem implements ConsoleListener {
     }
     
     public boolean exec(String code){
-        if (pythonEngine == null){
-            try {
-                Object obj = engine.eval(code);
-                if (obj != null)
-                    console.println(ColorRGBA.yellow, obj.toString());
-
-                return true;
-            } catch (ScriptException ex) {
-                String msg = ex.getMessage();
-                msg = msg.substring(msg.indexOf(':'));
-                console.println(ColorRGBA.red, msg);
-            }
-        }else{
-            PyObject obj = null;
+        PyObject obj = null;
+        try{
+            obj = pythonEngine.eval(code);
+            if (obj != null && !obj.toString().equals("None"))
+                console.println(ColorRGBA.yellow, obj.toString());
+        } catch (Throwable e){
             try{
-                obj = pythonEngine.eval(code);
-                if (obj != null && !obj.toString().equals("None"))
-                    console.println(ColorRGBA.yellow, obj.toString());
-            } catch (Throwable e){
-                try{
-                    pythonEngine.exec(code);
-                } catch (Throwable ex){
-                    console.println(ColorRGBA.red, ex.toString());
-                }
+                pythonEngine.exec(code);
+            } catch (Throwable ex){
+                console.println(ColorRGBA.red, ex.toString());
             }
-            
-            return true;
         }
-        
-        return false;
+
+        return true;
     }
     
     public boolean loadLibrary(String libraryName){
@@ -139,15 +94,10 @@ public class ScriptSystem implements ConsoleListener {
 
             if (pythonEngine != null){
                 pythonEngine.execfile(in);
-            }else{
-                InputStreamReader reader = new InputStreamReader(in);
-                engine.eval(reader);
             }
             in.close();
             
             return true;
-        } catch (ScriptException ex) {
-            logger.log(Level.WARNING, "Syntax error in script library", ex);
         } catch (IOException ex){
             logger.log(Level.WARNING, "IO Error on reading script library", ex);
         }

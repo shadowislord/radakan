@@ -1,17 +1,32 @@
+/*
+ * Radakan is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Radakan is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Radakan.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.radakan.entity.unit;
 
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.scene.Controller;
 import java.io.IOException;
 
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
-import com.jme.util.resource.ResourceLocatorTool;
 import com.radakan.entity.Entity;
 import com.radakan.entity.EntityManager;
-import com.radakan.graphics.mesh.parser.OgreLoader;
+import com.radakan.jme.mxml.anim.MeshAnimationController;
 import com.radakan.res.ResourceManager;
 import com.radakan.util.XMLUtil;
 import java.io.PrintStream;
@@ -55,8 +70,8 @@ public class ModelUnit extends Unit{
         if (rootModelNode == null)
             throw new IllegalStateException("Cannot find ModelUnit attribute in "+entity.getName());
         
-        modelName = XMLUtil.getAttribute(rootModelNode, "filename");
         model = EntityManager.cloneModelForEntity(entity.getType(), entity.getName());
+        modelName = EntityManager.getEntityType(entity.getType()).modelName;
         
         if (model == null)
             return;
@@ -72,8 +87,6 @@ public class ModelUnit extends Unit{
     @Override
     public void attach(Entity entity){
         super.attach(entity);
-        if (model != null)
-            model.setUserData("Entity", entity);
     }
     
     @Override
@@ -87,9 +100,8 @@ public class ModelUnit extends Unit{
 
     @Override
     public void read(JMEImporter im) throws IOException {
-        modelName = im.getCapsule(this).readString("modelName", "");
-        //model = (Node) ResourceManager.loadResource(Spatial.class, modelName);
-        model = (Node)new OgreLoader().loadModel(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL, modelName));
+        modelName = im.getCapsule(this).readString(modelName, "");
+        model = (Node) ResourceManager.loadResource(Spatial.class, modelName);
     }
 
     public Spatial getModel(){
@@ -97,25 +109,34 @@ public class ModelUnit extends Unit{
     }
     
     public void onUnitEvent(UnitEvent event) {
-       /* EntityUnit editor = entity.getUnit(EntityUnit.class);
+        //EntityUnit editor = entity.getUnit(EntityUnit.class);
         
         if (event.getType().equals(UnitEvent.ENTITY_BIRTH)){
             // add entity to world rootNode
             //if (editor != null){
             //    World.getWorld().attachModel(model);
             //}
+            if (model != null){
+                model.setUserData("Entity", entity);
+
+                if (model.getControllerCount() > 0){
+                    Controller c = model.getController(0);
+                    if (c instanceof MeshAnimationController){
+                        OgreAnimationUnit ogreAnim = new OgreAnimationUnit((MeshAnimationController)c);
+                        entity.attachUnit(ogreAnim);
+                    }
+                }
+            }
         }else if (event.getType().equals(UnitEvent.ENTITY_DISPOSE)){
             // remove entity from world
-            if (editor != null){
-                model.removeFromParent();
-            }
-        }*/
+            //if (editor != null){
+            //    model.removeFromParent();
+            //}
+        }
     }
 
-	@Override
-	public int getType() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public int getType() {
+        return MODEL;
+    }
 
 }

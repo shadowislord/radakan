@@ -14,6 +14,7 @@
  */
 package com.radakan.game.tile;
 
+import com.jme.math.FastMath;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -171,7 +172,7 @@ public class TileManager extends Node {
      * Returns the tile at position X, Y or null if no tile is available at the position
      */
     public Tile getTileAt(int x, int y) {
-        return (Tile) getChild("tile_" + x + "_" + y);
+        return (Tile) getChild("TILE_" + x + "_" + y);
     }
     
     /**
@@ -209,16 +210,27 @@ public class TileManager extends Node {
         newTile.updateRenderState();
         newTile.updateGeometricState(0, true);
         
-        newTile.lockBounds();
-        newTile.lockTransforms();
-        newTile.lockBranch();
+//        newTile.lockBounds();
+//        newTile.lockTransforms();
+//        newTile.lockBranch();
         
         return true;
     }
 
+    public float getTerrainHeight(Vector3f point){
+        int x = (int) FastMath.floor(point.x / -tileSize);
+        int y = (int) FastMath.floor(point.z / -tileSize);
+        Tile t = getTileAt(x, y);
+        if (t != null)
+            return t.getTerrainHeight(point);
+        else{
+            return Float.NaN;
+        }
+    }
+    
     @Override
-    public void updateWorldData(float tpf) {
-        super.updateWorldData(tpf);
+    public void updateGeometricState(float tpf, boolean initiator) {
+        super.updateGeometricState(tpf, initiator);
         
         if (!enabled)
             return;
@@ -270,6 +282,11 @@ public class TileManager extends Node {
                 }
             }
         }
+        
+//        for (Spatial child : children){
+//            Tile t = (Tile) child;
+//            t.updateWorldData(tpf);
+//        }
         
         if (shadowManager != null)
             shadowManager.update(tpf);

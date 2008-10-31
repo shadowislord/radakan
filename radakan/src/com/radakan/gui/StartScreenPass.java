@@ -15,7 +15,7 @@ import com.jme.system.DisplaySystem;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
 import com.radakan.game.Game;
-import com.radakan.graphics.mesh.parser.SceneLoader;
+import com.radakan.jme.mxml.SceneLoader;
 import com.radakan.util.ErrorHandler;
 import java.io.File;
 import java.io.FileInputStream;
