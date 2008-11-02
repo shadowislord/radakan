@@ -1,6 +1,6 @@
 package com.radakan.res;
 
-import com.radakan.util.ErrorHandler;
+import com.radakan.game.debug.GameDebugManager;
 import java.io.IOException;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;
@@ -43,7 +43,7 @@ public class ResourceManager {
 			Thread t = new Thread(r, "pool" + (id++));
 			t.setDaemon(true);
 			t.setPriority(Thread.MIN_PRIORITY);
-                        ErrorHandler.bindUncaughtExceptionHandler();
+                        GameDebugManager.bindUncaughtExceptionHandler();
 			return t;
 		}
 	}

@@ -2,8 +2,8 @@ package com.radakan.game.physics;
 
 import com.jme.renderer.Renderer;
 import com.jme.system.GameSettings;
-import com.radakan.entity.unit.IPhysicsUnit;
-import com.radakan.game.world.World;
+import com.radakan.game.entity.unit.IPhysicsUnit;
+import com.radakan.game.world.GameWorldManager;
 
 public interface IPhysicsImpl {
     /**
@@ -15,7 +15,7 @@ public interface IPhysicsImpl {
      * @return A World that will update physics handling for all entities
      * with IPhysicsUnit of it's implementation.
      */
-    public World createPhysicsWorld(Renderer renderer, GameSettings settings);
+    public GameWorldManager createPhysicsWorld(Renderer renderer, GameSettings settings);
     
     /**
      * @return a PhysicsUnit that uses this implementation for physics management.

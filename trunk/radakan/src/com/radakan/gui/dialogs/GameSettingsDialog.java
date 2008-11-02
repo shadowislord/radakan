@@ -44,7 +44,7 @@ import javax.swing.SwingUtilities;
 import com.jme.system.GameSettings;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.radakan.game.Game;
-import com.radakan.util.ImageCache;
+import com.radakan.game.debug.GameSysInfoManager;
 
 /**A dialog box for configuring the game settings.
  * 
@@ -80,7 +80,7 @@ public class GameSettingsDialog extends JFrame
      * @param settings The game settings to set.
      */
     public GameSettingsDialog(GameSettings settings) {
-        super("Configuration - "+Game.getGameName());
+        super("Configuration - "+GameSysInfoManager.GAME_NAME);
         
         if (settings == null) {
             throw new NullPointerException("Settings can not be null.");

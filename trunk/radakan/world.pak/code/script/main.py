@@ -1,2 +1,4 @@
+from com.radakan.game.gui import *
+
 def main():
-    console.println("Python script MAIN loaded!")
+    GUIManager.context = StartScreen()
