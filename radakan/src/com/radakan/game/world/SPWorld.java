@@ -4,11 +4,11 @@ import com.jme.renderer.Renderer;
 import com.jme.system.GameSettings;
 import com.jmex.simplephysics.Collider;
 import com.jmex.simplephysics.CollisionScene;
-import com.radakan.entity.Entity;
-import com.radakan.entity.unit.SPPhysicsUnit;
+import com.radakan.game.entity.Entity;
+import com.radakan.game.entity.unit.SPPhysicsUnit;
 import com.radakan.game.tile.Tile;
 
-public class SPWorld extends World {
+public class SPWorld extends GameWorldManager {
 
     protected CollisionScene physicsScene;
     

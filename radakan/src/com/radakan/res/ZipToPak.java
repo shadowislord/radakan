@@ -1,6 +1,6 @@
 package com.radakan.res;
 
-import com.radakan.util.PakFile;
+import com.radakan.game.res.PakFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

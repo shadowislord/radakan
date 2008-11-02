@@ -29,13 +29,13 @@ import com.jme.scene.state.TextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
 import com.jmex.terrain.TerrainBlock;
-import com.radakan.entity.Entity;
-import com.radakan.entity.EntityManager;
-import com.radakan.entity.unit.ModelUnit;
+import com.radakan.game.entity.Entity;
+import com.radakan.game.entity.GameEntityManager;
+import com.radakan.game.entity.unit.ModelUnit;
 import com.radakan.game.Game;
-import com.radakan.game.util.IShadowManager;
-import com.radakan.graphics.util.ModelCloneUtil;
-import com.radakan.util.ErrorHandler;
+import com.radakan.game.shadow.IShadowManager;
+import com.radakan.game.res.ModelCloneUtil;
+import com.radakan.game.debug.GameDebugManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -59,7 +59,7 @@ public class Tile extends com.jme.scene.Node{
     /**
      * Parent TileManager object
      */
-    private TileManager tileManager;
+    private GameTileManager tileManager;
     
     /**
      * Terrain model
@@ -76,7 +76,7 @@ public class Tile extends com.jme.scene.Node{
      */
     public final int x, y;
 
-    public Tile(TileManager manager, int x, int y){
+    public Tile(GameTileManager manager, int x, int y){
         super("TILE_"+x+"_"+y);
         this.tileManager = manager;
         this.x = x;
@@ -113,7 +113,7 @@ public class Tile extends com.jme.scene.Node{
      */
     public void addObject(Spatial object){
         attachChild(object);
-        IShadowManager manager = TileManager.getInstance().getShadowManager();
+        IShadowManager manager = GameTileManager.getInstance().getShadowManager();
         if (manager != null){
             manager.addOccluder(object);
             manager.addShadowReciever(object);
@@ -125,7 +125,7 @@ public class Tile extends com.jme.scene.Node{
      */
     public void removeObject(Spatial object){
         detachChild(object);
-        IShadowManager manager = TileManager.getInstance().getShadowManager();
+        IShadowManager manager = GameTileManager.getInstance().getShadowManager();
         if (manager != null){
             manager.removeOccluder(object);
             manager.removeShadowReciever(object);
@@ -139,7 +139,7 @@ public class Tile extends com.jme.scene.Node{
     public void setTerrain(TriMesh terrain){
         this.terrain = terrain;
         attachChildAt(terrain, 0);
-        IShadowManager manager = TileManager.getInstance().getShadowManager();
+        IShadowManager manager = GameTileManager.getInstance().getShadowManager();
         if (manager != null){
             TriMesh clonedTerrain = (TriMesh) ModelCloneUtil.cloneSmart(terrain);
             clonedTerrain.clearRenderState(RenderState.RS_TEXTURE);
@@ -150,8 +150,8 @@ public class Tile extends com.jme.scene.Node{
     }
         
     private TriMesh loadTerrainBlock(float[] heights, int tileRes) {
-        int groupSize = TileManager.getInstance().getGroupSize();
-        int tileSize = TileManager.getInstance().getTileSize();
+        int groupSize = GameTileManager.getInstance().getGroupSize();
+        int tileSize = GameTileManager.getInstance().getTileSize();
 
         int groupX = (int) Math.floor((float) x / groupSize);
         int groupY = (int) Math.floor((float) y / groupSize);
@@ -220,14 +220,14 @@ public class Tile extends com.jme.scene.Node{
         }
 
         String textureSetName = getAttribute(terrainXMLNode, "textureset");
-        textureSet = TileManager.getInstance().getTextureSet(textureSetName);
+        textureSet = GameTileManager.getInstance().getTextureSet(textureSetName);
         
         if (textureSet == null) {
             logger.warning("Failed to locate textureset " + textureSetName);
         } else {
             TextureState state = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
             
-            int groupSize = TileManager.getInstance().getGroupSize();
+            int groupSize = GameTileManager.getInstance().getGroupSize();
             int groupX = (int) Math.floor((float) x / groupSize);
             int groupY = (int) Math.floor((float) y / groupSize);
 
@@ -246,7 +246,7 @@ public class Tile extends com.jme.scene.Node{
             }
             
             // replace lightmap if used
-            if (TileManager.getInstance().usingLightmaps()) {
+            if (GameTileManager.getInstance().usingLightmaps()) {
                 String mapName = "light_" + groupX + "_" + groupY + ".png";
 
                 Image lightimage = TextureManager.loadImage(mapName, false);
@@ -275,7 +275,7 @@ public class Tile extends com.jme.scene.Node{
     }
     
     private void loadEntity(Node entityXMLNode){
-        Entity ent = EntityManager.realize(entityXMLNode);
+        Entity ent = GameEntityManager.realize(entityXMLNode);
         tileManager.getWorld().addEntity(ent,this);
     }
 
@@ -330,7 +330,7 @@ public class Tile extends com.jme.scene.Node{
 
             return true;
         } catch (IOException ex) {
-            ErrorHandler.reportError("Error while reading " + getName(), ex);
+            GameDebugManager.reportError("Error while reading " + getName(), ex);
         }
 
         return false;

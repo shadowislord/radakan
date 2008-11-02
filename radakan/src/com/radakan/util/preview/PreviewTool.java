@@ -27,9 +27,10 @@ import com.jme.util.TextureManager;
 import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.xml.XMLExporter;
 import com.model.md5.controller.JointController;
+import com.radakan.game.Game;
 import com.radakan.jme.mxml.anim.MeshAnimationController;
-import com.radakan.graphics.util.ModelLoader;
-import com.radakan.util.ErrorHandler;
+import com.radakan.game.res.ModelLoader;
+import com.radakan.game.debug.GameDebugManager;
 import java.awt.Canvas;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -73,6 +74,7 @@ public class PreviewTool extends javax.swing.JFrame {
     
     public PreviewTool() {
         //Logger.getLogger("").setLevel(Level.WARNING);
+        Game.initializeForEditor();
         
         initComponents();
         setLocationRelativeTo(null);
@@ -135,7 +137,7 @@ public class PreviewTool extends javax.swing.JFrame {
                     
                     cx.getPassManager().add(render);
                 } catch (InterruptedException ex) {
-                    ErrorHandler.reportError("", ex);
+                    //GameDebugManager.reportError("", ex);
                 }
             }
         }.start();
@@ -150,7 +152,7 @@ public class PreviewTool extends javax.swing.JFrame {
 
             return glCanvas;
         } catch (Throwable ex) {
-            ErrorHandler.reportError("Error while initializing canvas", ex);
+            Game.getDebugManager().reportError("Error while initializing canvas", ex);
         }
         
         return null;
