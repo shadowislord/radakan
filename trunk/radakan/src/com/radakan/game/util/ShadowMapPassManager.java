@@ -22,6 +22,14 @@ public class ShadowMapPassManager implements IShadowManager {
     public void addShadowReciever(Spatial reciever) {
         sPass.add(reciever);
     }
+    
+    public void removeOccluder(Spatial occluder){
+        //?
+    }
+    
+    public void removeShadowReciever(Spatial reciever){
+        sPass.remove(reciever);
+    }
 
     public void update(float tpf) {
         Camera cam = DisplaySystem.getDisplaySystem().getRenderer().getCamera();

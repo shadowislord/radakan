@@ -232,6 +232,7 @@ public class Game {
         try {
             setupLocators(gamePak.toURI().toURL());
             setupLocators(worldPak.toURI().toURL());
+            tilePath = worldPak.toURI().toURL() + "/data/tiles/";
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         }

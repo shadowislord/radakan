@@ -15,8 +15,17 @@
 
 package com.radakan.entity.unit;
 
+/**
+ * An UnitEventListener can recieve callbacks of various events that happen
+ * to units based on the entity to which it is attached to.
+ * 
+ * @author Kirill Vainer
+ */
 public interface IUnitEventListener {
 
+    /**
+     * An event has happened.
+     */
     public void onUnitEvent(UnitEvent event);
     
 }

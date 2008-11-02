@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,8 +30,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-
-import com.gibbon.jme.context.JmeContext;
 import com.jme.bounding.BoundingBox;
 import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
@@ -48,10 +45,18 @@ import com.radakan.util.ErrorHandler;
 import com.radakan.util.XMLUtil;
 import java.net.URL;
 
+/**
+ * The EntityManager is a utility class for allowing entity creation, export and import.
+ * 
+ * @author Kirill Vainer
+ */
 public final class EntityManager {
 
     private static final Map<String, EntityType> entityTypeMap = new HashMap<String, EntityType>();
     
+    /**
+     * An entity type defines parameters of the entities which are of it's type.
+     */
     public static class EntityType {
         // entity params
         public String name;
@@ -72,6 +77,14 @@ public final class EntityManager {
         }
     }
 
+    /**
+     * Loads a model at the given path. All jME's model formats are supported, 
+     * plus Mesh.XML and MD5 model formats. 
+     * 
+     * @param path The name of the model, e.g "mymodel.mesh.xml".
+     * @return A scene graph object representing the model.
+     * @throws java.io.IOException If the model cannot be found or the foramt cannot be determined.
+     */
     private static Spatial loadModel(String path) throws IOException {
         if (path.startsWith("/models/"))
             path = path.substring(8);
@@ -89,6 +102,12 @@ public final class EntityManager {
         return ModelLoader.loadModel(url, ext);
     }
     
+    /**
+     * Loads all EntityTypes in a types.xml file.
+     * 
+     * @param entitiesNode The root of the types.xml file.
+     * @throws java.io.IOException If any I/O error occures while reading models or textures.
+     */
     private static void loadEntityTypes(Node entitiesNode) throws IOException{
         Node entityNode = entitiesNode.getFirstChild();
         while (entityNode != null){
@@ -155,14 +174,31 @@ public final class EntityManager {
         }
     }
     
+    /**
+     * Returns all loaded EntityType objects. Usuaully after a call to loadEntityTypes().
+     * @return Collection of EntityTypes.
+     */
     public static Collection<EntityType> getLoadedTypes(){
         return entityTypeMap.values();
     }
     
+    /**
+     * Looks up an EntityType given a type "name". 
+     * @param typename The name of the EntityType. Defined as an attribute of the EntityType tag.
+     * @return An EntityType with the given typename, or null if not found.
+     */
     public static final EntityType getEntityType(String typename){
         return entityTypeMap.get(typename);
     }
     
+    /**
+     * Given an EntityType name, and a model name, creates a unique copy of the model
+     * represented by the EntityType. 
+     * 
+     * @param typename The name of the EntityType. Defined as an attribute of the EntityType tag.
+     * @param name Name of the model used for the jME scene graph.
+     * @return A node containing the cloned model. 
+     */
     public static final com.jme.scene.Node cloneModelForEntity(String typename, String name){
         EntityType type = entityTypeMap.get(typename);
         if (type == null)
@@ -183,10 +219,24 @@ public final class EntityManager {
         return node;
     }
     
+    /**
+     * Loads an Entity given an XML Node. 
+     * This method should be used for loading entities from tile.xml files.
+     * 
+     * @param rootEntityNode An XML node of the entity. It's node name must be "entity"
+     * @return The Entity object loaded as defined by the XML node.
+     */
     public static Entity realize(Node rootEntityNode){
         return new Entity(rootEntityNode);
     }
     
+    /**
+     * Creates a new Entity from a given type name, and entity name.
+     * 
+     * @param typename The name of the EntityType. Defined as an attribute of the EntityType tag.
+     * @param name Name of the unique entity used for identification and in-game usage purposes.
+     * @return The produced entity.
+     */
     public static Entity produce(String typename, String name){
         EntityType type = entityTypeMap.get(typename);
         if (type == null)
@@ -211,6 +261,10 @@ public final class EntityManager {
         return ent;
     }
     
+    /**
+     * Loads entity types from the XML file InputStream.
+     * @param xmlTypes An input stream to an types.xml file.
+     */
     public static void loadEntityTypes(InputStream xmlTypes){
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -227,6 +281,12 @@ public final class EntityManager {
         }
     }
     
+    /**
+     * Loads the "default" entity types. Typically stored in the entities.xml file,
+     * inside one of the PAK archives.
+     * 
+     * @throws java.io.IOException If an I/O error occurs.
+     */
     public static void loadDefaultEntityTypes() throws IOException{
         URL url = ResourceLocatorTool.locateResource("entity", "entities.xml");
         InputStream in = url.openStream();

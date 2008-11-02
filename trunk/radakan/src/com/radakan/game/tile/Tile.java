@@ -26,10 +26,8 @@ import com.jme.scene.TriMesh;
 import com.jme.scene.VBOInfo;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.TextureState;
-import com.jme.scene.state.lwjgl.LWJGLTextureState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.TextureManager;
-import com.jme.util.resource.ResourceLocatorTool;
 import com.jmex.terrain.TerrainBlock;
 import com.radakan.entity.Entity;
 import com.radakan.entity.EntityManager;
@@ -59,6 +57,11 @@ public class Tile extends com.jme.scene.Node{
     private static final Logger logger = Logger.getLogger(Tile.class.getName());
 
     /**
+     * Parent TileManager object
+     */
+    private TileManager tileManager;
+    
+    /**
      * Terrain model
      */
     private TriMesh terrain;
@@ -73,8 +76,9 @@ public class Tile extends com.jme.scene.Node{
      */
     public final int x, y;
 
-    public Tile(int x, int y){
+    public Tile(TileManager manager, int x, int y){
         super("TILE_"+x+"_"+y);
+        this.tileManager = manager;
         this.x = x;
         this.y = y;
     }
@@ -113,6 +117,18 @@ public class Tile extends com.jme.scene.Node{
         if (manager != null){
             manager.addOccluder(object);
             manager.addShadowReciever(object);
+        }
+    }
+    
+    /**
+     * Removes an object added with addObject from the terrain
+     */
+    public void removeObject(Spatial object){
+        detachChild(object);
+        IShadowManager manager = TileManager.getInstance().getShadowManager();
+        if (manager != null){
+            manager.removeOccluder(object);
+            manager.removeShadowReciever(object);
         }
     }
         
@@ -260,9 +276,7 @@ public class Tile extends com.jme.scene.Node{
     
     private void loadEntity(Node entityXMLNode){
         Entity ent = EntityManager.realize(entityXMLNode);
-        ModelUnit model = ent.getModel();
-        ent.birth();
-        addObject(model.getModel());
+        tileManager.getWorld().addEntity(ent,this);
     }
 
     protected void loadTile(Node tileXMLNode) {

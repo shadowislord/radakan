@@ -42,11 +42,12 @@ public class PlayerBehaviorUnit extends Unit {
     private Camera cam;
     
     private ChaseCamera chaser = null;
-    private ThirdPersonHandler input;
     
     private boolean isWalking = false;
-    private float modelHeight = -1f;
+    private float modelHeight = 0f;
+    
     private Spatial model;
+    private IPhysicsUnit physics;
     
     public PlayerBehaviorUnit(){
     }
@@ -55,14 +56,14 @@ public class PlayerBehaviorUnit extends Unit {
     public void attach(Entity ent){
         super.attach(ent);
         
-//        if (!ent.hasUnits(MODEL | ANIMATION))
-//            throw new RuntimeException("MODEL and ANIMATION units required!");
-        
-        // XXX: Assumption that bound volume is a box
         cam = DisplaySystem.getDisplaySystem().getRenderer().getCamera();
         model = entity.getModel().getModel();
-        modelHeight = ((BoundingBox)model.getWorldBound()).yExtent;
+        
+        // XXX: Assumption that bound volume is a box
+        modelHeight = ((BoundingBox)model.getWorldBound()).yExtent * 2f;
         setupCamera(model);
+        
+        physics.setForce(Vector3f.ZERO);
     }
     
     @Override
@@ -70,7 +71,7 @@ public class PlayerBehaviorUnit extends Unit {
         super.detach();
         
         chaser.setEnabled(false);
-        input.setEnabled(false);
+        //input.setEnabled(false);
     }
     
     private void setupCamera(Spatial model){
@@ -87,9 +88,9 @@ public class PlayerBehaviorUnit extends Unit {
         handlerProps.put(ThirdPersonHandler.PROP_LOCKBACKWARDS, "true");
         handlerProps.put(ThirdPersonHandler.PROP_CAMERAALIGNEDMOVE, "true");
         
-        input = new ThirdPersonHandler(model, cam, handlerProps);
-        input.setActionSpeed(10f);
-        input.setEnabled(true);
+//        input = new ThirdPersonHandler(model, cam, handlerProps);
+//        input.setActionSpeed(10f);
+//        input.setEnabled(true);
 
         // XXX: Assumption that JmeContext is used
         PassManager pManager = JmeContext.get().getPassManager();
@@ -101,7 +102,7 @@ public class PlayerBehaviorUnit extends Unit {
         if (iPass.getInputHandler() == null)
             iPass.setInputHandler(new InputHandler());
         
-        iPass.getInputHandler().addToAttachedHandlers(input);
+        //iPass.getInputHandler().addToAttachedHandlers(input);
     }
     
     @Override
@@ -109,18 +110,17 @@ public class PlayerBehaviorUnit extends Unit {
         chaser.update(tpf);
         
         IAnimationUnit anim = entity.getUnit(IAnimationUnit.class);
-        boolean moving = input.isWalkingBackwards() || input.isStrafing() || input.isWalkingForward();
+        boolean moving = physics.getForce().length() > FastMath.ZERO_TOLERANCE;
+        //boolean moving = input.isWalkingBackwards() || input.isStrafing() || input.isWalkingForward();
         if (moving && !isWalking){
             anim.play("walk");
-            anim.setSpeed(2.0f);
+            //anim.setSpeed(2.0f);
             isWalking = true;
         }else if (!moving && isWalking){
             anim.play("stand");
-            anim.setSpeed(0.5f);
+            //anim.setSpeed(0.5f);
             isWalking = false;
         }
-        
-        
         
         //boolean collided = false;
         //if (!collided){

@@ -13,7 +13,6 @@
  */
 package com.radakan.game.world;
 
-import com.gibbon.jme.context.JmeContext;
 import static com.radakan.util.XMLUtil.*;
 
 import java.io.IOException;
@@ -43,11 +42,12 @@ import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.system.GameSettings;
 import com.jme.util.TextureManager;
 import com.jme.util.resource.ResourceLocatorTool;
+import com.radakan.entity.Entity;
 import com.radakan.entity.EntityManager;
+import com.radakan.entity.unit.ModelUnit;
+import com.radakan.game.tile.Tile;
 import com.radakan.game.tile.TileManager;
-import com.radakan.game.util.IShadowManager;
 import com.radakan.util.ErrorHandler;
-import java.util.concurrent.Callable;
 
 /**
  * @author Joshua Montgomery
@@ -102,7 +102,7 @@ public class World extends com.jme.scene.Node {
         worldFog.setEnabled(false);
         setRenderState(worldFog);
         
-        tileManager = new TileManager(renderer);
+        tileManager = new TileManager(this, renderer);
         tileManager.setEnabled(false);
         attachChild(tileManager);
     }
@@ -114,6 +114,18 @@ public class World extends com.jme.scene.Node {
         worldSky.setLocalTranslation(cam.getLocation());
         
         super.updateGeometricState(tpf, initiator);
+    }
+    
+    public void addEntity(Entity ent, Tile tile){
+        ModelUnit model = ent.getModel();
+        ent.birth();
+        tile.addObject(model.getModel());
+    }
+    
+    public void removeEntity(Entity ent, Tile tile){
+        ModelUnit model = ent.getModel();
+        tile.removeObject(model.getModel());
+        ent.dispose();
     }
     
     /**
@@ -176,7 +188,6 @@ public class World extends com.jme.scene.Node {
                               source.getHeight(),
                               source.getData(imageN));
         tex.setImage(img);
-        System.out.println("Extracted "+imageN+": "+img);
         
         return tex;
     }

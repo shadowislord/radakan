@@ -153,11 +153,11 @@ public class PlayerController extends Controller {
         
         boolean moving = input.isWalkingBackwards() || input.isStrafing() || input.isWalkingForward();
         if (moving && !isWalking){
-            animControl.setActiveAnimation("walk", .05f);
+//            animControl.setActiveAnimation("walk", .05f);
             animControl.setSpeed(1.5f);
             isWalking = true;
         }else if (!moving && isWalking){
-            animControl.setActiveAnimation("stand", .5f);
+//            animControl.setActiveAnimation("stand", .5f);
             animControl.setSpeed(1f);
             isWalking = false;
         }
