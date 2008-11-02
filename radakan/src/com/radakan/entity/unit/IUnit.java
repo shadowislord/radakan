@@ -20,18 +20,38 @@ import com.radakan.entity.Entity;
 import java.io.PrintStream;
 import org.w3c.dom.Node;
 
-public interface IUnit extends Savable
-{
+/**
+ * IUnit is the interface which all entity units must implement.
+ * An entity unit provides functionality to the entity it's attached to.
+ * Units can provide a visual model to an entity, make it be the influence
+ * of physics, allow it to be controlled by the keyboard, 
+ * or think rationally using AI.
+ * 
+ * @author Kirill Vainer
+ */
+public interface IUnit extends Savable{
 
+    /**
+     * Constants which must be returned by the getType() method.
+     * No two units of the same type can be added to a single entity.
+     */
     public static final int MODEL     = 0x01,
                             ANIMATION = 0x02,
                             PHYSICS   = 0x04,
                             MOVEMENT  = 0x08,
                             BEHAVIOR  = 0x10;
     
+    /**
+     * Exports the entity data to XML.
+     * @param stream PrintStream to which to write the XML
+     */
     public void exportXML(PrintStream stream);
     
-    public void importXML(Node rootEntityNode);
+    /**
+     * Imports the unit from an XML node.
+     * @param rootUnitNode
+     */
+    public void importXML(Node rootUnitNode);
        
     /**
      * Update this unit's state

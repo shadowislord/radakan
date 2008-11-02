@@ -32,6 +32,7 @@ import com.jme.scene.state.CullState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.radakan.game.util.IShadowManager;
+import com.radakan.game.world.World;
 import com.radakan.util.ErrorHandler;
 
 /**In Middle of creation
@@ -51,6 +52,7 @@ public class TileManager extends Node {
     private static TileManager instance;
     
     private Renderer renderer;
+    private World parentWorld;
     private float loadDistance;
     private float unloadDistance;
     private boolean enabled = false;
@@ -65,7 +67,7 @@ public class TileManager extends Node {
     /** 
      * Create a new tile manager 
      */
-    public TileManager(Renderer renderer) {
+    public TileManager(World world, Renderer renderer) {
         super("Tile Manager");
         if (instance != null)
             throw new IllegalStateException("Cannot create more than one TileManager");
@@ -75,6 +77,7 @@ public class TileManager extends Node {
         cs.setCullFace(CullState.Face.Back);
         setRenderState(cs);
         
+        this.parentWorld = world;
         this.renderer = renderer;
         instance = this;
         logger.finest("TileManager created");
@@ -82,6 +85,10 @@ public class TileManager extends Node {
     
     public static TileManager getInstance(){
         return instance;
+    }
+    
+    public World getWorld(){
+        return parentWorld;
     }
     
     public IShadowManager getShadowManager(){
@@ -197,7 +204,7 @@ public class TileManager extends Node {
         if (getTileAt(x,y) != null)
             return false;
         
-        Tile newTile = new Tile(x,y);
+        Tile newTile = new Tile(this,x,y);
         if (!newTile.load())
             return false;
         

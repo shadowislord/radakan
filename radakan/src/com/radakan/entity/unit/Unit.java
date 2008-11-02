@@ -33,6 +33,7 @@ public abstract class Unit implements IUnit, IUnitEventListener
      */
     protected transient Entity entity;
    
+    @Override
     public void attach(Entity entity){
         this.entity = entity;
     }

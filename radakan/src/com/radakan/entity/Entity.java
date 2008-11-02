@@ -38,7 +38,9 @@ import org.w3c.dom.Node;
 
 /**
  * An entity class which implements the component-entity architecture.
- * The entity is actually a unit container..
+ * Entitys can be characters, static objects, props or scriptable objects.
+ * Entities are modular because Unit objects can be inserted or removed from them,
+ * the units an entity has will define it's behavior.
  * 
  * See: http://cowboyprogramming.com/2007/01/05/evolve-your-heirachy/
  * 

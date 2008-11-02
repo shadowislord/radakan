@@ -39,7 +39,7 @@ public class MD5AnimationHandler implements IAnimationHandler {
     }
 
     public void blendTo(String name, float time) {
-        control.setActiveAnimation(name, time);
+//        control.setActiveAnimation(name, time);
     }
 
     public void setSpeed(float speed) {

@@ -17,6 +17,7 @@ package com.radakan.entity.unit;
 
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
 import com.jme.scene.Controller;
 import java.io.IOException;
 
@@ -42,6 +43,13 @@ public class ModelUnit extends Unit{
     private transient Node model;
     private String modelName;
     
+    /**
+     * Given a jME scene graph node and model name, creates a ModelUnit.
+     * 
+     * @param model jME node containing the model to be rendered.
+     * @param modelName Name of the model file from which the model was loaded,
+     * required if the entity is to be exported later on.
+     */
     public ModelUnit(Node model, String modelName){
         this.model = model;
         this.modelName = modelName;
@@ -54,6 +62,11 @@ public class ModelUnit extends Unit{
     public ModelUnit(){
     }
     
+    /**
+     * Export the model name and transforms to XML.
+     * @param stream
+     */
+    @Override
     public void exportXML(PrintStream stream) {
         Vector3f pos = model.getLocalTranslation();
         Quaternion rot = model.getLocalRotation();
@@ -66,6 +79,11 @@ public class ModelUnit extends Unit{
         //stream.println("    </model>");
     }
     
+    /**
+     * Imports a model unit that was exported with exportXML().
+     * @param rootModelNode
+     */
+    @Override
     public void importXML(org.w3c.dom.Node rootModelNode) {
         if (rootModelNode == null)
             throw new IllegalStateException("Cannot find ModelUnit attribute in "+entity.getName());
@@ -108,6 +126,7 @@ public class ModelUnit extends Unit{
         return model;
     }
     
+    @Override
     public void onUnitEvent(UnitEvent event) {
         //EntityUnit editor = entity.getUnit(EntityUnit.class);
         
@@ -135,6 +154,10 @@ public class ModelUnit extends Unit{
         }
     }
 
+    /**
+     * @return IUnit.MODEL
+     */
+    @Override
     public int getType() {
         return MODEL;
     }

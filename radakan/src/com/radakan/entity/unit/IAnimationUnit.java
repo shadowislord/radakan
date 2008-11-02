@@ -17,5 +17,11 @@ package com.radakan.entity.unit;
 
 import com.radakan.util.preview.IAnimationHandler;
 
+/**
+ * AnimationUnit is simply an aggregation of Unit and AnimationHandler interfaces.
+ * An animation unit allows one to change the animation of the entity, modify it's speed, or blend between animations.
+ * 
+ * @author Kirill Vainer
+ */
 public interface IAnimationUnit extends IUnit, IAnimationHandler {
 }
