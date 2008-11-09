@@ -2,14 +2,14 @@
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.radakan</groupId>
-	<artifactId>jmecontext</artifactId>
+	<artifactId>JMEContext</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>Radakan JME Context</name>
 	<description>Radakan Game JME Context</description>
 	<parent>
 		<groupId>com.radakan</groupId>
-		<artifactId>radakan</artifactId>
+		<artifactId>project</artifactId>
 		<version>1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>

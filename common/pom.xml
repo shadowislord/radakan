@@ -9,7 +9,7 @@
 	<description>Radakan Common</description>
 	<parent>
 		<groupId>com.radakan</groupId>
-		<artifactId>radakan</artifactId>
+		<artifactId>project</artifactId>
 		<version>1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
