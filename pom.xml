@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.radakan</groupId>
+	<artifactId>radakan</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>Radakan Project</name>
+	<description>Radakan Project</description>
+	<organization>
+		<name>Radakan Team</name>
+		<url>http://radakan.org</url>
+	</organization>
+	<developers>
+		<developer>
+			<organization>Radakan Team</organization>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>GPL 3.0</name>
+			<url>http://www.gnu.org/copyleft/gpl.html</url>
+		</license>
+	</licenses>
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/radakan/issues/list</url>
+	</issueManagement>
+	<modules>
+		<module>common</module>
+		<module>JMEContext</module>
+		<module>radakan</module>
+		<module>World_Tool</module>
+	</modules>
+	<repositories> 
+		<repository> 
+			<releases> 
+				<enabled>true</enabled> 
+				<updatePolicy>always</updatePolicy> 
+				<checksumPolicy>warn</checksumPolicy> 
+			</releases> 
+			<snapshots>
+				<enabled>true</enabled> 
+				<updatePolicy>always</updatePolicy> 
+				<checksumPolicy>warn</checksumPolicy> 
+			</snapshots> 
+			<id>radakanLibraries</id> 
+			<name>Radakan Libraries</name> 
+			<url>http://users.radakan.org/repository</url> 
+			<layout>default</layout> 
+		</repository> 
+	</repositories>
+
+</project>
