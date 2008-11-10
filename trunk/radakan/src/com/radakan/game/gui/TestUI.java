@@ -23,11 +23,11 @@ public class TestUI {
         //UIContext ui = new LoadScreen(new GameLoadTask(), true);
         //UIContext ui = new MainMenu();
         UIContext ui = new StartScreen();
-        GameGUIManager.setContext(ui, true);
+        Game.getGUIManager().setContext(ui, true);
     }
     
     public static void main(String[] args) throws IOException{
-        GameSettings settings = Game.getSettings();
+        GameSettings settings = Game.getConfigManager().getSettings();
         Game.setupDefaultLocators();
         Game.setDebug(true);
         settings.set("title", "Test Main Menu");
@@ -50,7 +50,7 @@ public class TestUI {
             context.start();
             context.waitFor();
         } catch (Exception ex){
-            GameDebugManager.reportError("Error while initializing display", ex);
+            Game.getDebugManager().reportError("Error while initializing display", ex);
         }
         
         final JmeContext cx = context;

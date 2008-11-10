@@ -83,7 +83,7 @@ public class StartScreenPass extends RenderPass {
     public StartScreenPass(){
         try {      
             SceneLoader loader = new SceneLoader();
-            InputStream in = Game.getResource("start.scene").openStream();
+            InputStream in = Game.getResourceManager().getResource("start.scene").openStream();
             loader.load(in);
             in.close();
 
@@ -103,7 +103,7 @@ public class StartScreenPass extends RenderPass {
             add(scene);
             //cam = loader.getCamera();
         } catch (IOException ex) {
-            GameDebugManager.reportError("Error while loading start screen scene", ex);
+            Game.getDebugManager().reportError("Error while loading start screen scene", ex);
         }
     }
     

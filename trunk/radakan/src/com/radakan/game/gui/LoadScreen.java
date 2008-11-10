@@ -70,11 +70,11 @@ public class LoadScreen extends UIContext {
         assert state == LoadScreenState.PREINIT;
         
         try{
-            float width = GameGUIManager.width;
-            float height = GameGUIManager.height;
+            float width = Game.getGUIManager().width;
+            float height = Game.getGUIManager().height;
             
-            URL backgroundURL = Game.getResource("logo.png");
-            URL nowLoadingURL = Game.getResource("loadingtext.png");
+            URL backgroundURL = Game.getResourceManager().getResource("logo.png");
+            URL nowLoadingURL = Game.getResourceManager().getResource("loadingtext.png");
             
             // Configure Background
             Pixmap bgImage = new Pixmap(Binding.getInstance().getTexture(backgroundURL));
@@ -117,7 +117,7 @@ public class LoadScreen extends UIContext {
             setMinSize((int)width, (int)height);
             setSizeToMinSize();
         } catch (IOException ex){
-            GameDebugManager.reportError("Failed to locate background image", ex);
+            Game.getDebugManager().reportError("Failed to locate background image", ex);
         }
     }
 

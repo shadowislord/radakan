@@ -50,7 +50,7 @@ public class StartScreen extends UIContext {
     }
     
     public void setupPressStartText() throws IOException{
-        URL pressStartURL = Game.getResource("press_start.png");
+        URL pressStartURL = Game.getResourceManager().getResource("press_start.png");
         
         startLabel = FengGUI.createLabel();
         Pixmap logoImage = new Pixmap(Binding.getInstance().getTexture(pressStartURL));
@@ -63,8 +63,8 @@ public class StartScreen extends UIContext {
         //pressStart.setExpandable(false);
         //pressStart.setShrinkable(false);
 
-        float width  = GameGUIManager.width,
-              height = GameGUIManager.height;
+        float width  = Game.getGUIManager().width,
+              height = Game.getGUIManager().height;
         float aspect = width / height;
 
         float logoWidth = (width / 4.2f) * 4f / aspect;
@@ -82,7 +82,7 @@ public class StartScreen extends UIContext {
         try {
             /* logo setup */ {
                 // get the image and set bilinear filtering
-                URL titleURL = Game.getResource("radakan_title_big.png");
+                URL titleURL = Game.getResourceManager().getResource("radakan_title_big.png");
                 Pixmap bgImage = new Pixmap(Binding.getInstance().getTexture(titleURL));
                 setBilinearFilter(bgImage.getTexture());
 
@@ -91,11 +91,11 @@ public class StartScreen extends UIContext {
                 logoBg.setScaled(true);
 
                 logo = new Container();
-                int logoHeight = (int) (GameGUIManager.height / 4.5f);
+                int logoHeight = (int) (Game.getGUIManager().height / 4.5f);
                 int logoWidth = (int) (logoHeight * 4.962837f);
 
                 logo.setSize(logoWidth, logoHeight);
-                logo.setXY(GameGUIManager.width / 2 - logoWidth / 2, GameGUIManager.height / 2 + logoHeight / 2);
+                logo.setXY(Game.getGUIManager().width / 2 - logoWidth / 2, Game.getGUIManager().height / 2 + logoHeight / 2);
                 logo.getAppearance().add(logoBg);
                 addWidget(logo);
             }
@@ -103,7 +103,7 @@ public class StartScreen extends UIContext {
             try{
                 setupPressStartText();
             } catch (IOException ex){
-                GameDebugManager.reportError("IO Error while creating Press Start text", ex);
+                Game.getDebugManager().reportError("IO Error while creating Press Start text", ex);
             }
             
             
@@ -123,11 +123,11 @@ public class StartScreen extends UIContext {
             			    Game.getGameVersion());
             //version.getAppearance().setTextColor(Color.WHITE_HALF_OPAQUE);
             version.setSizeToMinSize();
-            version.setXY(GameGUIManager.width - version.getWidth() - 20,
+            version.setXY(Game.getGUIManager().width - version.getWidth() - 20,
                           version.getHeight() / 2);
             addWidget(version);
         } catch (IOException ex) {
-            GameDebugManager.reportError("Error while loading GUI", ex);
+            Game.getDebugManager().reportError("Error while loading GUI", ex);
         }
         
     }
@@ -148,7 +148,7 @@ public class StartScreen extends UIContext {
         
         if (KeyInput.get().isKeyDown(KeyInput.KEY_RETURN)){
             MainMenu menu = new MainMenu();
-            GameGUIManager.setContext(menu, true);
+            Game.getGUIManager().setContext(menu, true);
             animStage = 2;
         }
         
