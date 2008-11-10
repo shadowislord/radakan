@@ -31,6 +31,8 @@
 		<module>JMEContext</module>
 		<module>radakan</module>
 		<module>World_Tool</module>
+		<module>ogreloader</module>
+		<module>simplephysics</module>
 	</modules>
 	<repositories> 
 		<repository> 
