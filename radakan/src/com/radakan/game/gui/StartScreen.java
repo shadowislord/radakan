@@ -7,6 +7,7 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.radakan.game.Game;
 import com.radakan.game.debug.GameDebugManager;
+import com.radakan.game.debug.GameSysInfoManager;
 import java.io.IOException;
 import java.net.URL;
 import org.fenggui.Container;
@@ -119,8 +120,11 @@ public class StartScreen extends UIContext {
             // create the version label
             Label version = new Label();
             //version.getAppearance().setFont(Fonts.STONEHEDGE_SMALL);
-            version.setText(Game.getVersionPrefix() + " " + 
-            			    Game.getGameVersion());
+            
+            
+            
+            version.setText(GameSysInfoManager.GAME_SUFFIX + " " + 
+            	            GameSysInfoManager.GAME_VERSION);
             //version.getAppearance().setTextColor(Color.WHITE_HALF_OPAQUE);
             version.setSizeToMinSize();
             version.setXY(Game.getGUIManager().width - version.getWidth() - 20,

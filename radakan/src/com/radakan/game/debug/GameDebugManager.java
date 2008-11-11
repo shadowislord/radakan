@@ -50,13 +50,17 @@ public class GameDebugManager {
     private boolean debugMode;
     
     public GameDebugManager(boolean debug){
-        Thread.setDefaultUncaughtExceptionHandler(new GameUncaughtExceptionHandler());
+        loadExceptionHandler();
         
         ConsoleHandler ch = new ConsoleHandler();
         ch.setLevel(Level.ALL);
         Logger.getLogger("com.radakan").addHandler(ch);
         
         setDebug(debug);
+    }
+    
+    public void loadExceptionHandler(){
+        Thread.setDefaultUncaughtExceptionHandler(new GameUncaughtExceptionHandler());
     }
     
     public class GameUncaughtExceptionHandler implements UncaughtExceptionHandler {

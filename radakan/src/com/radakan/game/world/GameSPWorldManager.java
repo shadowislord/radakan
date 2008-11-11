@@ -8,12 +8,12 @@ import com.radakan.game.entity.Entity;
 import com.radakan.game.entity.unit.SPPhysicsUnit;
 import com.radakan.game.tile.Tile;
 
-public class SPWorld extends GameWorldManager {
+public class GameSPWorldManager extends GameWorldManager {
 
     protected CollisionScene physicsScene;
     
-    public SPWorld(Renderer renderer, GameSettings settings){
-        super(renderer, settings);
+    public GameSPWorldManager(Renderer renderer, GameSettings settings){
+        super();
         physicsScene = new CollisionScene();
     }
     

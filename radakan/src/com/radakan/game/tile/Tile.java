@@ -299,7 +299,7 @@ public class Tile extends com.jme.scene.Node{
     }
     
     public URL locateTile() throws IOException{
-        return new URL(Game.tilePath + getName() +".xml");
+        return new URL(tileManager.getTilePath() + getName() +".xml");
         //return ResourceLocatorTool.locateResource("tile", getName() + ".xml");
     }
 

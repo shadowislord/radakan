@@ -60,6 +60,10 @@ public class GameResourceManager {
         }
     }
     
+    public String getTilePath(){
+        return tilePath;
+    }
+    
     public URL getResource(String resourceName){
         resourceName = resourceName.trim().toLowerCase();
         

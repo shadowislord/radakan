@@ -16,6 +16,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+/**
+ * Do not use for now
+ * @author Kirill
+ */
 public class ControlSettingsDialog extends JFrame {
 
     private static GameControlManager manager;
@@ -77,7 +81,7 @@ public class ControlSettingsDialog extends JFrame {
         button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                         editor.apply();	// Apply bindings
-                        GameControlManager.save(this.manager, this.settings);	// Save them
+                        //GameControlManager.save(manager, settings);
                         
                         accepted = true;
                         closeDialog();
