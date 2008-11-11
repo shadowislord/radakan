@@ -31,6 +31,7 @@ import com.jme.scene.Spatial;
 import com.jme.scene.state.CullState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.resource.ResourceLocatorTool;
+import com.radakan.game.Game;
 import com.radakan.game.shadow.IShadowManager;
 import com.radakan.game.world.GameWorldManager;
 import com.radakan.game.debug.GameDebugManager;
@@ -54,6 +55,7 @@ public class GameTileManager extends Node {
     private GameWorldManager parentWorld;
     private float loadDistance;
     private float unloadDistance;
+    private String tilePath;
     private boolean enabled = false;
     
     private boolean useLightmaps;
@@ -74,6 +76,7 @@ public class GameTileManager extends Node {
         cs.setCullFace(CullState.Face.Back);
         setRenderState(cs);
         
+        tilePath = Game.getResourceManager().getTilePath();
         this.parentWorld = world;
         this.renderer = renderer;
         logger.finest("TileManager created");
@@ -137,6 +140,10 @@ public class GameTileManager extends Node {
             throw new IllegalArgumentException("Group size is too low: "+groupSize);
             
         this.groupSize = groupSize;
+    }
+    
+    public String getTilePath(){
+        return tilePath;
     }
     
     public float getLoadDistance(){

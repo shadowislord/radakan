@@ -33,7 +33,7 @@ public class GameLoadTask extends LoadingTask {
             settings.setFloat("GameViewDistance", 64 * 3);
 
             URL worldURL = Game.getResourceManager().getResource("world.xml");
-            GameWorldManager world = new GameWorldManager(renderer, settings);
+            GameWorldManager world = new GameWorldManager();
             world.loadWorld(worldURL.openStream());
 
             rootNode.attachChild(world);

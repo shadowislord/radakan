@@ -1,6 +1,7 @@
 package com.radakan.game.gui;
 
 import com.radakan.game.Game;
+import com.radakan.game.res.GameResourceManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -16,7 +17,8 @@ public class ImageScreen extends UIContext {
     private URL imageURL;
     
     public ImageScreen(String imagePath){
-        imageURL = Game.getResource(imagePath);
+        GameResourceManager res = Game.getResourceManager();
+        imageURL = res.getResource(imagePath);
     }
     
     public void setBilinearFilter(ITexture tex){
