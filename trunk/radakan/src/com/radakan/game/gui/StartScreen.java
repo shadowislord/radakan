@@ -144,6 +144,7 @@ public class StartScreen extends UIContext {
             Game.getDebugManager().reportError("Error while loading GUI", ex);
         }
         
+       
     }
 
     

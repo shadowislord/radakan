@@ -168,8 +168,6 @@ public class GameWorldManager extends com.jme.scene.Node {
         while (sunXMLNode != null){
             if (sunXMLNode.getNodeName().equals("sun")){
                 loadSun(sunXMLNode);
-            }else{
-                logger.warning("Unknown light type specified under lighting: "+sunXMLNode.getNodeName());
             }
             
             sunXMLNode = sunXMLNode.getNextSibling();
@@ -268,7 +266,9 @@ public class GameWorldManager extends com.jme.scene.Node {
         
         float viewDistance = config.getSettings().getFloat("GameViewDistance", 150f);
         
-        GameTileManager tileManager = Game.getTileManager();
+        GameDisplayManager display = Game.getDisplayManager();
+        GameTileManager tileManager = new GameTileManager(this, display.getContext().getRenderer());
+        
         // use lightmaps if they are included with the world and the game setting allows their use
         tileManager.setUseLightmaps(useLightmapsSetting && useLightmapsWorld);
         tileManager.setUseFog(useFog);
