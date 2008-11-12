@@ -37,6 +37,9 @@ public class GameDisplayManager {
             logger.fine("Display started");
             context.waitFor();
             logger.info("Display created successfuly");
+            logger.fine("Display bound to context "+context.toString());
+            
+            sysInfo.gatherDisplayInfo();
         } catch (InterruptedException ex) {
             Game.getDebugManager().reportError("Interrupt while creating display", ex);
         } catch (InstantiationException ex){

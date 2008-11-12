@@ -75,6 +75,8 @@ public class GameConfigManager {
             settings.set("title", GameSysInfoManager.GAME_NAME + " " + 
                                   GameSysInfoManager.GAME_SUFFIX + " " +
                                   GameSysInfoManager.GAME_VERSION);
+            
+            logger.fine("Created new settings");
         }
     }
     

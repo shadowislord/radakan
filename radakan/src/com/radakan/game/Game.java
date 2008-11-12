@@ -37,12 +37,12 @@ public final class Game {
     public static void initialize(){
         sysInfo = new GameSysInfoManager();
         config = new GameConfigManager();
-        debug = new GameDebugManager(config.getSettings().getBoolean("GameDebug", false));
+        debug = new GameDebugManager(config.getSettings().getBoolean("GameDebug", true));
         resource = new GameResourceManager();
         display = new GameDisplayManager();
         gui = new GameGUIManager();       
         input = new GameInputManager();
-        script = new GameScriptManager();  
+        //script = new GameScriptManager();  
     }
     
     public static void main(String[] args){
