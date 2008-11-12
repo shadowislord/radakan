@@ -6,6 +6,7 @@ import com.radakan.game.res.GameResourceManager;
 import com.radakan.game.config.GameConfigManager;
 import com.radakan.game.input.GameInputManager;
 import com.radakan.game.tile.GameTileManager;
+import com.radakan.game.world.GameWorldManager;
 import com.radakan.game.debug.GameDebugManager;
 import com.radakan.game.display.GameDisplayManager;
 import com.radakan.game.entity.GameEntityManager;
@@ -26,6 +27,23 @@ public final class Game {
     private static GameScriptManager script;
     private static GameCameraManager camera;
     private static GameEntityManager entity;
+    private static GameWorldManager world;
+    
+    public static GameCameraManager createCameraManager(){
+    	if (camera != null)
+    		throw new IllegalStateException("Camera Manager has been created already!");
+    	
+    	camera = new GameCameraManager();
+    	return camera;
+    }
+    
+    public static GameWorldManager createWorldManager(){
+    	if (world != null)
+    		throw new IllegalStateException("World Manager has been created already!");
+    		
+    	world = new GameWorldManager();
+    	return world;
+    }
     
     public static void initializeForEditor(){
         debug = new GameDebugManager(false);

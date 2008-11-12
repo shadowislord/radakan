@@ -10,6 +10,7 @@ import com.jme.scene.state.ZBufferState.TestFunction;
 import com.jme.system.DisplaySystem;
 import com.jme.system.GameSettings;
 import com.radakan.game.Game;
+import com.radakan.game.camera.GameCameraManager;
 import com.radakan.game.world.GameWorldManager;
 import java.net.URL;
 
@@ -36,6 +37,8 @@ public class GameLoadTask extends LoadingTask {
             GameSettings settings = Game.getConfigManager().getSettings();
             renderer = DisplaySystem.getDisplaySystem().getRenderer();
            
+            GameCameraManager camMan = Game.createCameraManager();
+            
             rootNode = new Node("Root Node");
             ZBufferState zbuf = renderer.createZBufferState();
             zbuf.setFunction(TestFunction.LessThan);
@@ -43,9 +46,9 @@ public class GameLoadTask extends LoadingTask {
             
             settings.setBoolean("GameLightmaps", true);
             settings.setFloat("GameViewDistance", 64 * 3);
-
+            
             URL worldURL = Game.getResourceManager().getResource("world.xml");
-            GameWorldManager world = new GameWorldManager();
+            GameWorldManager world = Game.createWorldManager();
             world.loadWorld(worldURL.openStream());
 
             rootNode.attachChild(world);
