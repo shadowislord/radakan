@@ -45,7 +45,11 @@ public class GameScriptManager implements ConsoleListener {
         pythonEngine.exec("def loadLibrary(libraryName):\n" +
                           "    script.loadLibrary(libraryName)\n");
         
-        if (loadLibrary("main.py")){
+        
+    }
+    
+    public void runMainScript(){
+    	if (loadLibrary("main.py")){
             exec("main()\n");
         }
     }

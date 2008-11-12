@@ -41,18 +41,22 @@ public class GameResourceManager {
         
         extToType.put("scene", "scene");
         
+        String userDir = "../common";
         try {
-            File gamePak = new File("game.pak");
+            File gamePak = new File(userDir, "game.pak");
             if (!gamePak.exists() || !gamePak.isDirectory())
                 throw new FileNotFoundException(gamePak.toString());
 
-            File worldPak = new File("world.pak");
+            File worldPak = new File(userDir, "world.pak");
             if (!worldPak.exists() || !worldPak.isDirectory())
                 throw new FileNotFoundException(worldPak.toString());
         
             setupLocators(gamePak.toURI().toURL());
             setupLocators(worldPak.toURI().toURL());
-            tilePath = worldPak.toURI().toURL() + "/data/tiles/";
+            tilePath = worldPak.toURI().normalize().toURL() + "data/tiles/";
+            
+            logger.finer("Tile path is "+tilePath);
+            logger.fine("Resource paths setup successfuly");
         } catch (MalformedURLException ex) {
             Game.getDebugManager().reportError("Malformed URL", ex);
         } catch (FileNotFoundException ex){
@@ -171,6 +175,8 @@ public class GameResourceManager {
             
             SimpleResourceLocator codeLocator = new SimpleResourceLocator(codeScript);
             ResourceLocatorTool.addResourceLocator("Script", codeLocator);
+        
+            logger.finer("Set resource paths for "+root.toURI().normalize());
         } catch (MalformedURLException ex){
             Game.getDebugManager().reportError("Syntax error in URL", ex);
         } catch (URISyntaxException ex){

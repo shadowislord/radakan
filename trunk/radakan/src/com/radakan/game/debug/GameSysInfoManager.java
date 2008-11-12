@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
@@ -32,6 +33,8 @@ import com.gibbon.jme.context.*;
  */
 public class GameSysInfoManager {
 
+	private static final Logger logger = Logger.getLogger(GameSysInfoManager.class.getName());
+	
     private Hashtable<String, String> sysInfoParams = new Hashtable<String, String>();
     
     public  static final String GAME_NAME = "Radakan",
@@ -62,6 +65,8 @@ public class GameSysInfoManager {
         sysInfoParams.put("vm.vendor", System.getProperty("java.vendor"));
         sysInfoParams.put("vm.version", System.getProperty("java.runtime.version"));
         sysInfoParams.put("vm.libs", System.getProperty("java.class.path")); 
+    
+        logger.fine("Basic system information gathered");
     }
     
     private void gatherDisplayInfoGL(){
@@ -80,17 +85,26 @@ public class GameSysInfoManager {
         sysInfoParams.put("graphics.floattexture", ""+caps.GL_ARB_texture_float);
         sysInfoParams.put("graphics.cubemaps", ""+caps.GL_ARB_texture_cube_map);
         
+        logger.fine("Graphics Renderer: "+sysInfoParams.get("graphics.renderer"));
+        logger.finer("Graphics Vendor: "+sysInfoParams.get("graphics.vendor"));
+        logger.finer("Graphics Version: "+sysInfoParams.get("graphics.version"));
+        
         if (caps.GL_ARB_multisample){
             IntBuffer ib = BufferUtils.createIntBuffer(16);
-            GL11.glGetInteger(ARBMultisample.GL_SAMPLE_BUFFERS_ARB, ib);
+            GL11.glGetInteger(ARBMultisample.GL_SAMPLES_ARB, ib);
             sysInfoParams.put("graphics.multisample", ""+ib.get(0));
         }
+        
+        logger.finer("Multisample "+sysInfoParams.get("graphics.multisample"));
         
         if (AudioSystem.isCreated()){
             sysInfoParams.put("audio.version", AL10.alGetString(AL10.AL_VERSION)); 
             sysInfoParams.put("audio.renderer", AL10.alGetString(AL10.AL_RENDERER)); 
             sysInfoParams.put("audio.vendor", AL10.alGetString(AL10.AL_VENDOR)); 
+            logger.fine("Audio Renderer: "+sysInfoParams.get("audio.renderer"));
         }
+        
+        logger.info("Display and audio device information gathered");
     }
     
     public void gatherDisplayInfo(){

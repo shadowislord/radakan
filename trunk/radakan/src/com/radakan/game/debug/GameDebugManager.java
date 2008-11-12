@@ -29,6 +29,7 @@ import java.nio.IntBuffer;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLUtil;
@@ -50,22 +51,30 @@ import org.lwjgl.opengl.GL11;
  */
 public class GameDebugManager {
     
+	private static final Logger logger = Logger.getLogger(GameDebugManager.class.getName());
+	
     //private static final StringBuffer log = new StringBuffer();
     private boolean errorReported = false;
     private boolean debugMode;
     
     public GameDebugManager(boolean debug){
-        loadExceptionHandler();
-        
+    	Logger global = Logger.getLogger("");
+    	Handler[] handlers = global.getHandlers();
+        for (Handler h : handlers){
+        	global.removeHandler(h);
+        }
+    	
         ConsoleHandler ch = new ConsoleHandler();
         ch.setLevel(Level.ALL);
-        Logger.getLogger("com.radakan").addHandler(ch);
+        Logger.getLogger("").addHandler(ch);
         
         setDebug(debug);
+        loadExceptionHandler();
     }
     
     public void loadExceptionHandler(){
         Thread.setDefaultUncaughtExceptionHandler(new GameUncaughtExceptionHandler());
+        logger.finer("Uncought exception handler set for thread '"+Thread.currentThread().getName()+"'");
     }
     
     public class GameUncaughtExceptionHandler implements UncaughtExceptionHandler {
@@ -87,10 +96,12 @@ public class GameDebugManager {
             Logger.getLogger("").setLevel(Level.WARNING);
             Logger.getLogger("com.radakan").setLevel(Level.ALL);
             Logger.getLogger(Node.class.getName()).setLevel(Level.WARNING);
+            logger.finer("Debug mode is ON");
         }else{
             Logger.getLogger("").setLevel(Level.WARNING);
             Logger.getLogger("com.radakan").setLevel(Level.WARNING);
             Logger.getLogger(Node.class.getName()).setLevel(Level.WARNING);
+            logger.finer("Debug mode is OFF");
         }
     }
     
@@ -114,10 +125,12 @@ public class GameDebugManager {
             ex.printStackTrace();
         
         // XXX: Okay to drop error?
-        if (errorReported)
+        if (errorReported){
+        	logger.warning("Error dropped: "+ex.getMessage());
             return;
-        else
+        }else{
             errorReported = true;
+        }
         
         ErrorFrame frame = new ErrorFrame(description, ex, null);
         frame.setVisible(true);

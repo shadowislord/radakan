@@ -4,6 +4,8 @@ import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.pass.FengGuiPass;
 import com.gibbon.jme.util.IGuiManager;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
+
 import org.fenggui.Container;
 import org.fenggui.Display;
 import org.fenggui.decorator.background.PlainBackground;
@@ -14,10 +16,12 @@ import org.fenggui.util.Color;
  * The GUI manager is a game desktop to which UIContexts can be attached.
  * The manager will automatically fade between UIContexts when a switch is needed.
  * 
- * @author Kirill
+ * @author Kirill Vainer
  */
 public class GameGUIManager extends Container implements IGuiManager {
 
+	private static final Logger logger = Logger.getLogger(GameGUIManager.class.getName());
+	
     private FengGuiPass guiPass;
     
     public  UIContext current = null;
@@ -38,9 +42,10 @@ public class GameGUIManager extends Container implements IGuiManager {
      * - GameDisplayManager
      */
     public GameGUIManager() {
-        guiPass = new FengGuiPass("data/themes/QtCurve/QtCurve.xml", this);
+        guiPass = new FengGuiPass("../common/data/themes/QtCurve/QtCurve.xml", this);
         JmeContext.get().getPassManager().add(guiPass);
         guiPass.waitFor(); 
+        logger.fine("GUI initialized");
     }
     
     public FengGuiPass getGUIPass(){
@@ -49,6 +54,7 @@ public class GameGUIManager extends Container implements IGuiManager {
 
     public void setEnabled(boolean enabled) {
         setVisible(enabled);
+        logger.finest("GUI enabled: "+enabled);
     }
     
     protected void setContextInstantGL(UIContext context){
@@ -148,6 +154,7 @@ public class GameGUIManager extends Container implements IGuiManager {
      */
     public void destroy(Display display) {
         display.removeAllWidgets();
+        logger.fine("GUI destroyed");
     }
 
     /**
