@@ -10,6 +10,7 @@ import com.radakan.game.debug.GameDebugManager;
 import com.radakan.game.display.GameDisplayManager;
 import com.radakan.game.entity.GameEntityManager;
 import com.radakan.game.gui.GameGUIManager;
+import com.radakan.game.gui.MainMenu;
 import com.radakan.game.script.GameScriptManager;
 
 public final class Game {
@@ -42,7 +43,12 @@ public final class Game {
         display = new GameDisplayManager();
         gui = new GameGUIManager();       
         input = new GameInputManager();
-        //script = new GameScriptManager();  
+        script = new GameScriptManager();
+        
+        // All systems go!
+        // Run game script
+        //script.runMainScript();
+        gui.setContext(new MainMenu(), false);
     }
     
     public static void main(String[] args){

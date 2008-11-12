@@ -72,9 +72,6 @@ public class GameSysInfoManager {
     private void gatherDisplayInfoGL(){
         ContextCapabilities caps = GLContext.getCapabilities();
         
-        sysInfoParams.put("display.adapter", Display.getAdapter());
-        sysInfoParams.put("display.version", Display.getVersion());
-        
         sysInfoParams.put("graphics.glsl", GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION));
         sysInfoParams.put("graphics.version", GL11.glGetString(GL11.GL_VERSION));
         sysInfoParams.put("graphics.renderer", GL11.glGetString(GL11.GL_RENDERER));
