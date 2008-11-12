@@ -21,6 +21,13 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+/**
+ * GameConfigManager maintains the game settings database, 
+ * which is stored in registry. Game controls, graphics options, audio options, 
+ * and game options should be stored in the Config.
+ * 
+ * @author Kirill
+ */
 public class GameConfigManager {
 
     private static Logger logger = Logger.getLogger(GameConfigManager.class.getName());
@@ -28,7 +35,8 @@ public class GameConfigManager {
     private GameSettings settings;
     
     /**
-     * Initializes configuration.
+     * Initializes the configuration by loading it from registry,
+     * initializes default settings for radakan if not available.
      */
     public GameConfigManager() {
         boolean isNew = true;
@@ -43,12 +51,27 @@ public class GameConfigManager {
         logger.fine("Settings loaded from registry");
         
         if(isNew) {
+            // Display params
+            settings.setWidth(640);
+            settings.setHeight(480);
+            settings.setFullscreen(false);
+            settings.setDepth(32);
+            settings.setFrequency(60);
+            
+            // Misc params
+            settings.setFramerate(60);
+            settings.setMusic(true);
+            settings.setSFX(true);
+            settings.setRenderer("LWJGL");
+            
+            // OGL params
+            settings.setVerticalSync(false);
             settings.setSamples(0);
             settings.setDepthBits(8);
             settings.setAlphaBits(0);
             settings.setStencilBits(0);
-            settings.setFramerate(-1);
             
+            // Radakan params
             settings.set("title", GameSysInfoManager.GAME_NAME + " " + 
                                   GameSysInfoManager.GAME_SUFFIX + " " +
                                   GameSysInfoManager.GAME_VERSION);

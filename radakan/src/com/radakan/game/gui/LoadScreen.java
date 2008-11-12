@@ -22,6 +22,15 @@ import org.fenggui.decorator.background.PixmapBackground;
 import org.fenggui.layout.StaticLayout;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * The LoadScreen is a special type of screen that displays 
+ * a loading picture and progress bar. A LoadingTask object can notify
+ * the LoadScreen when progress changes to update the progress bar.
+ * 
+ * XXX: Currently the non GL thread loading mode doesn't work. 
+ * 
+ * @author Kirill Vainer
+ */
 public class LoadScreen extends UIContext {
 
     private LoadingTask task;
@@ -32,6 +41,9 @@ public class LoadScreen extends UIContext {
     
     private LoadScreenState state = LoadScreenState.PREINIT;
     
+    /**
+     * The current state of the screen.
+     */
     private enum LoadScreenState {
         PREINIT, 
         LOADING,
@@ -40,6 +52,14 @@ public class LoadScreen extends UIContext {
         FADE_OUT,
     }
     
+    /**
+     * Create a new LoadScreen to execute the given <code>task</code> object,
+     * waiting for it to be done and displaying progress to the user.
+     * 
+     * @param task A long task to execute.
+     * @param doInGL If true, the task will be executed in the GL thread, otherwise
+     * it will be executed in a dedicated and seperate thread.
+     */
     public LoadScreen(LoadingTask task, boolean doInGL){
         this.task = task;
         this.doInGL = doInGL;
@@ -56,6 +76,7 @@ public class LoadScreen extends UIContext {
     public void contextAttach(){
         if (!doInGL){
             taskMonitor = ResourceManager.runTaskLater("LoadScreenTask", new Callable<Object>(){
+                @Override
                 public Object call(){
                     task.doInBackground();
                     return null;
@@ -65,6 +86,10 @@ public class LoadScreen extends UIContext {
         }
     }
     
+    /**
+     * Creates the GUI. It consists of a background image, a logo saying
+     * "Now Loading" and the progress bar. 
+     */
     @Override
     public void buildGUI() {
         assert state == LoadScreenState.PREINIT;
@@ -121,6 +146,12 @@ public class LoadScreen extends UIContext {
         }
     }
 
+    /**
+     * Updates the state of the screen, polling the LoadingTask for progress
+     * if needed. 
+     * 
+     * @param tpf 
+     */
     @Override
     public void update(float tpf) {
         if (doInGL && state == LoadScreenState.PREINIT){

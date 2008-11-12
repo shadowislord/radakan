@@ -33,13 +33,17 @@ import java.util.logging.Logger;
 
 /**
  * JmeConsole is an in-game console that displays logging messages
- * and allows execution of scripting commands.
+ * and allows execution of scripting commands using Radakan's scripting system.
+ * JmeConsole is implemented as a RenderPass and is therefore independent
+ * of any other systems.
  * 
- * @author Kirill
+ * @author Kirill Vainer
  */
 public class JmeConsole extends RenderPass implements KeyInputListener {
     
-
+    /**
+     * An output stream that sends all recieved data as commands to it's parent.
+     */
     private class JmeConsoleStandardOutput extends OutputStream {
         @Override
         public void write(int b) throws IOException {
@@ -99,6 +103,9 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
     
     private final List<ConsoleListener> listeners = new ArrayList<ConsoleListener>();
     
+    /**
+     * Creates the console. Initializes render states and the text spatials.
+     */
     public JmeConsole() {
         super(PassType.POST_RENDER, "Console");
         
@@ -133,13 +140,18 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         consoleNode.updateGeometricState(0,true);
     }
     
+    /**
+     * @return the command output stream
+     */
     public OutputStream getOutputStream(){
         return output;
     }
     
+    /**
+     * register with keyboard input if available
+     */
     @Override
     public void initPass(JmeContext cx){
-        // register with keyboard input if available
         if (KeyInput.isInited()){
             KeyInput.get().addListener(this);
         }
@@ -199,12 +211,18 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         }
     }
     
+    /**
+     * Renders the console to the screen if it's visible
+     */
     @Override
     public void doRender(JmeContext cx){
         if (consoleVisible)
             cx.getRenderer().draw(consoleNode);
     }
     
+    /**
+     * Does the caret blinking, and fades the expired text spatials.
+     */
     @Override
     public void doUpdate(JmeContext cx) {
 //        synchronized (synco) {
@@ -239,6 +257,10 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         }
     }
     
+    /**
+     * Adds a console listener to listen to events of this console.
+     * @param listener
+     */
     public void addConsoleListener(ConsoleListener listener){
         listeners.add(listener);
     }
@@ -247,6 +269,9 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         listeners.remove(listener);
     }
     
+    /**
+     * Removes all expired text spatials and puts them into the pool.
+     */
     protected void clean(){
         for (int i = texts.size()-1; i >= 0; i--){
             LogText lt = texts.get(i);
@@ -256,6 +281,9 @@ public class JmeConsole extends RenderPass implements KeyInputListener {
         }
     }
     
+    /**
+     * Clears the entire console from text. 
+     */
     public void clear(){
         baseString.setLength(0);
         inputString.setLength(0);

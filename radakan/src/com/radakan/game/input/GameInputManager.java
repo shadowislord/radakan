@@ -17,6 +17,8 @@ public class GameInputManager {
     private GameControlManager inputManager = new GameControlManager();
     private IGameInputHandler handler;
     
+    private InputPass inputPass;
+    
     /**
      * Depends on:
      *  - GameGUIManager
@@ -24,11 +26,15 @@ public class GameInputManager {
     public GameInputManager(){
         GameGUIManager gui = Game.getGUIManager();
         
-        InputPass input = new InputPass(gui.getGUIPass().getHandler(), true);
-        JmeContext.get().getPassManager().add(input);
+        inputPass = new InputPass(gui.getGUIPass().getHandler(), true);
+        JmeContext.get().getPassManager().add(inputPass);
 
         ExitListenerPass exitListener = new ExitListenerPass();
         JmeContext.get().getPassManager().add(exitListener);
+    }
+
+    public void setEnabled(boolean enable) {
+        inputPass.setEnabled(enable);
     }
     
     public boolean showConfigDialog(){

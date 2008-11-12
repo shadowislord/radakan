@@ -10,6 +10,12 @@ import org.fenggui.decorator.background.PlainBackground;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.util.Color;
 
+/**
+ * The GUI manager is a game desktop to which UIContexts can be attached.
+ * The manager will automatically fade between UIContexts when a switch is needed.
+ * 
+ * @author Kirill
+ */
 public class GameGUIManager extends Container implements IGuiManager {
 
     private FengGuiPass guiPass;
@@ -40,6 +46,10 @@ public class GameGUIManager extends Container implements IGuiManager {
     public FengGuiPass getGUIPass(){
         return guiPass;
     }
+
+    public void setEnabled(boolean enabled) {
+        setVisible(enabled);
+    }
     
     protected void setContextInstantGL(UIContext context){
         if (current != null)
@@ -64,6 +74,16 @@ public class GameGUIManager extends Container implements IGuiManager {
         switchTo = null;
     }
     
+    /**
+     * Sets the current UIContext to be displayed. 
+     * If <code>fade</code> is true, the screen will be faded first to black,
+     * then slowly fade into the <code>context</code> object provided.
+     * 
+     * @see UIContext
+     * 
+     * @param context The context to make active on the screen
+     * @param fade Whether to fade into the context, or activate it immediately. 
+     */
     public void setContext(final UIContext context, final boolean fade){
         JmeContext.get().execute(new Callable<Object>(){
             public Object call(){
@@ -123,10 +143,16 @@ public class GameGUIManager extends Container implements IGuiManager {
         fadeContainer.setVisible(false);        
     }
     
+    /**
+     * The GUI manager is removed from the display
+     */
     public void destroy(Display display) {
         display.removeAllWidgets();
     }
 
+    /**
+     * Updates the current context, and fading (if fading currently)
+     */
     public void update(Display display, float tpf) {
         if (current != null)
             current.update(tpf);

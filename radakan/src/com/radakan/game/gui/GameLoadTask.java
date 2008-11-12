@@ -13,11 +13,23 @@ import com.radakan.game.Game;
 import com.radakan.game.world.GameWorldManager;
 import java.net.URL;
 
+/**
+ * A task to load the actual in-game part of Radakan.
+ * 
+ * @see LoadScreen
+ * 
+ * @author Kirill Vainer
+ */
 public class GameLoadTask extends LoadingTask {
 
     private Node rootNode;
     private Renderer renderer;
     
+    /**
+     * Initializes the GameWorldManager.
+     * 
+     * @see GameWorldManager
+     */
     @Override
     public void doInBackground() {
         try {
@@ -50,6 +62,13 @@ public class GameLoadTask extends LoadingTask {
         }
     }
 
+    /**
+     * Adds a RenderPass to display the World, fades into the InGameScreen UIContext.
+     * Initializes the input to dispatch events into the player controller.
+     * 
+     * @see GameWorldManager
+     * @see InGameScreen
+     */
     @Override
     public void done() {
         MouseInput.get().setCursorVisible(false);
