@@ -22,6 +22,14 @@ import org.lwjgl.opengl.GLContext;
 
 import com.gibbon.jme.context.*;
 
+/**
+ * GameSysInfoManager gathers system information including display and 
+ * audio device information and makes it available to other systems.
+ * GameDebugManager in particular makes use of this class to 
+ * provide system information to allow remote debugging.
+ * 
+ * @author Kirill Vainer
+ */
 public class GameSysInfoManager {
 
     private Hashtable<String, String> sysInfoParams = new Hashtable<String, String>();
@@ -88,7 +96,7 @@ public class GameSysInfoManager {
     public void gatherDisplayInfo(){
         JmeContext.get().executeLater(new Callable<Object>(){
             public Object call(){
-                gatherDisplayInfo();
+                gatherDisplayInfoGL();
                 return null;
             }
         });

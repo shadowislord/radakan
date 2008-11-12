@@ -12,6 +12,13 @@ import org.fenggui.binding.render.Pixmap;
 import org.fenggui.decorator.background.PixmapBackground;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * The ImageScreen simply displays an Image on the whole screen..
+ * It must be detached from the GUI manager manually, 
+ * no key or input event will switch the screen.
+ * 
+ * @author Kirill Vainer
+ */
 public class ImageScreen extends UIContext {
 
     private URL imageURL;

@@ -8,6 +8,12 @@ import java.util.logging.Logger;
 
 import com.gibbon.jme.context.*;
 
+/**
+ * GameDisplayManager maintains the main game GL context and makes it available
+ * to other systems.
+ * 
+ * @author Kirill Vainer
+ */
 public class GameDisplayManager {
 
     private static final Logger logger = Logger.getLogger(GameDisplayManager.class.getName());

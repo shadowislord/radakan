@@ -22,6 +22,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * The StartScreenPass is used in conjuction with the StartScreen UIContext 
+ * to display the game's start screen.
+ * The Pass is used specifically for rendering the animated 3D background scene.
+ * 
+ * @see StartScreen
+ * 
+ * @author Kirill
+ */
 public class StartScreenPass extends RenderPass {
 
     private float time = 0f;

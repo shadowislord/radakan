@@ -39,8 +39,13 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 /**
+ * GameDebugManager recieves reports of errors from game systems and displays
+ * an error message to the user, it also listens for uncought exceptions and 
+ * makes sure to display them as well.
+ * 
  * @author Joshua Montgomery
- * @version 1.0.0
+ * @author Kirill Vainer
+ * @version 1.1.0
  * @created Aug 6, 2008
  */
 public class GameDebugManager {
@@ -65,7 +70,7 @@ public class GameDebugManager {
     
     public class GameUncaughtExceptionHandler implements UncaughtExceptionHandler {
         public void uncaughtException(Thread t, Throwable e) {
-            reportError("Error occured while rendering", e);
+            reportError("An unexpected error has occured", e);
         }
     }
     

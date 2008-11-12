@@ -19,10 +19,21 @@ import java.io.CharArrayWriter;
 import java.io.PrintWriter;
 import javax.swing.ImageIcon;
 
+/**
+ * An error frame displays an error that happened to the user.
+ * @author Kirill
+ */
 public class ErrorFrame extends javax.swing.JFrame {
     
     private ImageIcon splashImage;
     
+    /**
+     * Creates a new ErrorFrame. Sets up the error report and the logo displayed.
+     * 
+     * @param description User-readable description of the error that occured.
+     * @param ex The exception that was thrown, can be null if no exception was thrown.
+     * @param icon An image logo to use in the error dialog.
+     */
     public ErrorFrame(String description, Throwable ex, ImageIcon icon) {
         CharArrayWriter w = new CharArrayWriter();
         PrintWriter sw = new PrintWriter(w);

@@ -20,6 +20,16 @@ import org.fenggui.decorator.background.PixmapBackground;
 import org.fenggui.util.Color;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * The start screen is shown right before the main menu, 
+ * it has an animated 3D background, a logo, a blinking "Press Start" text,
+ * and some game version info.
+ * To display the 3D scene, a RenderPass is used.
+ * 
+ * @see StartScreenPass
+ * 
+ * @author Kirill Vainer
+ */
 public class StartScreen extends UIContext {
 
     private float time = 0f;

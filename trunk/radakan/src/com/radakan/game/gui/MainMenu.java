@@ -23,6 +23,13 @@ import org.fenggui.util.Dimension;
 import org.fenggui.util.Spacing;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * Contains the Main Menu screen of Radakan. 
+ * The main menu has a background image, a version text
+ * at the lower right, and 4 buttons; New Game, Continue Game, Credits and Exit.
+ * 
+ * @author Kirill Vainer
+ */
 public class MainMenu extends UIContext {
     
     private boolean startGameInvoked = false;
@@ -33,6 +40,11 @@ public class MainMenu extends UIContext {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
     }
     
+    /**
+     * Builds the main menu buttons. 
+     * @return A container that has all the buttons, 
+     * they are arrenged in a vertical row.
+     */
     public Container buildButtons(){
         final GameGUIManager gui = Game.getGUIManager();
         
@@ -96,6 +108,9 @@ public class MainMenu extends UIContext {
         return c;
     }
     
+    /**
+     * Creates the GUI for the main menu. 
+     */
     public void buildGUI(){
         GameGUIManager gui = Game.getGUIManager();
         GameSysInfoManager sysInfo = Game.getSysInfoManager();

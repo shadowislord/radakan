@@ -47,6 +47,8 @@ import java.net.URL;
 
 /**
  * The EntityManager is a utility class for allowing entity creation, export and import.
+ * It loads entity type information from a database, with the name "entities.xml"
+ * located in the meta/entity folder. 
  * 
  * @author Kirill Vainer
  */
