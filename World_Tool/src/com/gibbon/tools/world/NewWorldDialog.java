@@ -6,10 +6,11 @@
 
 package com.gibbon.tools.world;
 
-import com.radakan.util.ErrorHandler;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.radakan.game.Game;
 
 /**
  *
@@ -152,7 +153,7 @@ public class NewWorldDialog extends javax.swing.JDialog {
         try {
             callback.call();//GEN-LAST:event_btnOKActionPerformed
         } catch (Exception ex) {
-            ErrorHandler.reportError("Error while creating world", ex);
+            Game.getDebugManager().reportError("Error while creating world", ex);
         }
     }
     

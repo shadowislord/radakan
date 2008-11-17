@@ -3,13 +3,17 @@ package com.gibbon.tools.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.radakan.game.Game;
+import com.radakan.game.config.GameConfigManager;
+
 public class UndoManager {
 
     private static final List<UndoAction> list = new ArrayList<UndoAction>();
     private static final List<UndoAction> redoList = new ArrayList<UndoAction>();
     
     public static void doUndo(){
-        int maxRedo = EditorSettings.getPrefs().getInt("MaxRedo", 5);
+    	GameConfigManager configMan = Game.getConfigManager();
+        int maxRedo = configMan.getSettings().getInt("MaxRedo", 5);
         
         if (list.size() != 0){
             UndoAction action = list.remove(list.size()-1);
@@ -31,11 +35,16 @@ public class UndoManager {
     }
     
     public static void registerAction(UndoAction action){
-        if (list.size() > EditorSettings.getPrefs().getInt("MaxUndo", 40)){
+    	GameConfigManager configMan = Game.getConfigManager();
+        if (list.size() > configMan.getSettings().getInt("MaxUndo", 40)){
             // remove first element if not enough elements
             list.remove(0);
         }
         list.add(action);
         System.out.println("Added "+action.getName());
+    }
+
+    public static UndoAction getLastAction(){
+        return list.get(list.size()-1);
     }
 }

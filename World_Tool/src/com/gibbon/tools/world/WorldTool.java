@@ -17,13 +17,13 @@ import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.binary.BinaryImporter;
 import com.jme.util.resource.ResourceLocatorTool;
 import com.jme.util.resource.SimpleResourceLocator;
-import com.radakan.entity.EntityManager;
-import com.radakan.entity.EntityManager.EntityType;
-import com.radakan.entity.unit.ModelUnit;
+import com.radakan.game.Game;
+import com.radakan.game.entity.GameEntityManager;
+import com.radakan.game.entity.GameEntityManager.EntityType;
+import com.radakan.game.entity.unit.ModelUnit;
 import com.radakan.game.tile.TextureSet;
 import com.radakan.game.tile.TextureSet.Detailmap;
 import com.radakan.game.tile.TextureSetLoader;
-import com.radakan.util.ErrorHandler;
 import java.awt.Cursor;
 import java.awt.Image;
 import java.io.File;
@@ -156,6 +156,8 @@ public class WorldTool extends javax.swing.JFrame {
 	}
 
 	public void importEntityTypes() {
+        Game.createEntityManager();
+        
 		try {
 			Collection<EntityType> types = EntityBrush.loadEntityTypes();
 			// organize entites by categories
@@ -203,31 +205,32 @@ public class WorldTool extends javax.swing.JFrame {
 
 			invalidate();
 		} catch (Throwable t) {
-			ErrorHandler.reportError("Error occured while loading entities", t);
+			Game.getDebugManager().reportError("Error occured while loading entities", t);
 		}
 	}
 
 	public WorldTool() {
 		instance = this;
 
+		Game.initializeForEditor();
 		Logger.getLogger("").setLevel(Level.WARNING);
 
-                try{
-                    System.out.println(WorldTool.class.getResource("/icons/"));
-                    SimpleResourceLocator tex = new SimpleResourceLocator(WorldTool.class.getResource("/icons/"));
-                    ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
+        try{
+            System.out.println(WorldTool.class.getResource("/icons/"));
+            SimpleResourceLocator tex = new SimpleResourceLocator(WorldTool.class.getResource("/icons/"));
+            ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE, tex);
 
-                    List<Image> images = new ArrayList<Image>();
-                    
-                    images.add(ImageIO.read(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "WT_icon_16.png")));
-                    images.add(ImageIO.read(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "WT_icon_32.png")));
-                    images.add(ImageIO.read(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "WT_icon_64.png")));
-                    setIconImages(images); // Java6 only
-                } catch (IOException ex){
-                    ErrorHandler.reportError("IO Error while loading icons", ex);
-                } catch (URISyntaxException ex){
-                    ErrorHandler.reportError("URI Syntax error while loading icons", ex);
-                }
+            List<Image> images = new ArrayList<Image>();
+            
+            images.add(ImageIO.read(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "WT_icon_16.png")));
+            images.add(ImageIO.read(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "WT_icon_32.png")));
+            images.add(ImageIO.read(ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, "WT_icon_64.png")));
+            setIconImages(images); // Java6 only
+        } catch (IOException ex){
+        	Game.getDebugManager().reportError("IO Error while loading icons", ex);
+        } catch (URISyntaxException ex){
+        	Game.getDebugManager().reportError("URI Syntax error while loading icons", ex);
+        }
                 
         URI modelDir = new File(System.getProperty("user.dir") + "/models/").toURI();
 		SimpleResourceLocator modelLoc = new SimpleResourceLocator(modelDir);
@@ -320,7 +323,7 @@ public class WorldTool extends javax.swing.JFrame {
 					});
 
 				} catch (Throwable ex) {
-					ErrorHandler.reportError("Error while initializing model view", ex);
+					Game.getDebugManager().reportError("Error while initializing model view", ex);
 				}
 			}
 		}.start();
@@ -333,7 +336,7 @@ public class WorldTool extends javax.swing.JFrame {
 			glCanvas = (LWJGLCanvas) context.getCanvas();
 			return glCanvas;
 		} catch (Throwable ex) {
-			ErrorHandler.reportError("Error occured while initializing 3D canvas", ex);
+			Game.getDebugManager().reportError("Error occured while initializing 3D canvas", ex);
 		}
 
 		return null;
@@ -1214,7 +1217,7 @@ public class WorldTool extends javax.swing.JFrame {
 				BinaryExporter.getInstance().save(state, f);
 				lastSavedFile = f;
 			} catch (Throwable t) {
-				ErrorHandler.reportError("Error while opening world", t);
+				Game.getDebugManager().reportError("Error while opening world", t);
 			} finally {
 				setCursor(Cursor.getDefaultCursor());
 			}
@@ -1247,7 +1250,7 @@ public class WorldTool extends javax.swing.JFrame {
 
 				lastSavedFile = f;
 			} catch (Throwable t) {
-				ErrorHandler.reportError("Error while opening world", t);
+				Game.getDebugManager().reportError("Error while opening world", t);
 			} finally {
 				setCursor(Cursor.getDefaultCursor());
 			}
@@ -1265,7 +1268,7 @@ public class WorldTool extends javax.swing.JFrame {
 		try {
 			BinaryExporter.getInstance().save(state, lastSavedFile);
 		} catch (Throwable t) {
-			ErrorHandler.reportError("Error while opening world", t);
+			Game.getDebugManager().reportError("Error while opening world", t);
 		} finally {
 			setCursor(Cursor.getDefaultCursor());
 		}
@@ -1284,11 +1287,13 @@ public class WorldTool extends javax.swing.JFrame {
 
 		resetEntityView();
 
-		if (node.getUserObject() instanceof EntityManager.EntityType) {
+		if (node.getUserObject() instanceof GameEntityManager.EntityType) {
+			GameEntityManager entityMan = Game.getEntityManager();
+			
 			EditorState edState = EditorState.getState();
-			edState.entityType = (EntityManager.EntityType) node.getUserObject();
+			edState.entityType = (GameEntityManager.EntityType) node.getUserObject();
 
-			edState.entityTypePrototype = EntityManager.produce(edState.entityType.name, "PROTOTYPE");
+			edState.entityTypePrototype = entityMan.produce(edState.entityType.name, "PROTOTYPE");
 //            Spatial model = state.entityTypePrototype.getUnit(ModelUnit.class).getModel();
 //            World.getWorld().update();
 		} else {
@@ -1358,7 +1363,7 @@ public class WorldTool extends javax.swing.JFrame {
                 WorldTileExporter exporter = new WorldTileExporter();
                 exporter.export(World.getWorld(), f);
             } catch (Throwable t) {
-                ErrorHandler.reportError("Error while opening world", t);
+                Game.getDebugManager().reportError("Error while opening world", t);
             } finally {
                 setCursor(Cursor.getDefaultCursor());
             }

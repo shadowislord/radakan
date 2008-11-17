@@ -185,6 +185,7 @@ public class GameEntityManager {
             node.updateModelBound();
             node.updateWorldBound();
             node.updateGeometricState(0, true);
+            node.setUserData("Entity", ent);
             
             String shortModelName = new File(type.modelName).getName();
             ModelUnit model = new ModelUnit(node, shortModelName);

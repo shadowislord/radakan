@@ -115,7 +115,7 @@ public class TerrainUtil {
         mesh.updateGeometricState(0, true);
         
         for (Spatial model : tile.getChildren()){
-            if (model.getName().startsWith("ENTITY")){
+            if (model.getUserData("Entity") != null){
                 float h = PickUtils.getTerrainHeight(model.getWorldTranslation(), null, PickUtils.CRASH_IF_NAN);
                 model.getLocalTranslation().y = h;
             }

@@ -45,9 +45,19 @@ public final class Game {
     	return world;
     }
     
+    public static GameEntityManager createEntityManager(){
+    	if (entity != null)
+    		throw new IllegalStateException("Entity Manager has been created already!");
+    		
+    	entity = new GameEntityManager();
+    	return entity;
+    }
+    
     public static void initializeForEditor(){
-        debug = new GameDebugManager(false);
+        debug = new GameDebugManager(true);
         sysInfo = new GameSysInfoManager();
+        config = new GameConfigManager("WorldTool");
+        resource = new GameResourceManager();
     }
     
     /**
@@ -55,7 +65,7 @@ public final class Game {
      */
     public static void initialize(){
         sysInfo = new GameSysInfoManager();
-        config = new GameConfigManager();
+        config = new GameConfigManager("Radakan");
         debug = new GameDebugManager(config.getSettings().getBoolean("GameDebug", true));
         resource = new GameResourceManager();
         display = new GameDisplayManager();

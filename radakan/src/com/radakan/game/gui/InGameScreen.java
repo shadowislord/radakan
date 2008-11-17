@@ -37,35 +37,38 @@ public class InGameScreen extends UIContext {
      */
     @Override
     public void buildGUI() {
-    	URL pressStartURL = Game.getResourceManager().getResource("stupid.gif");
-    	
-    	try {
-	    	sideView = FengGUI.createLabel();
-	    	
-	    	ITexture tex = Binding.getInstance().getTexture(pressStartURL);
-	        //Pixmap logoImage = new Pixmap(tex);
-		
-	        //setBilinearFilter(logoImage.getTexture());
-	        //sideViewBg = new PixmapBackground(logoImage);
-	        //sideViewBg.setScaled(true);
-	        //sideView.getAppearance().add(sideViewBg);
-	        
-	        /*float width  = Game.getGUIManager().width,
-            	height = Game.getGUIManager().height;
-	        float aspect = width / height;
-		
-		    float logoWidth = (width / 4.2f) * 4f / aspect;
-		    float logoHeight = height / 4.2f;
-		
-		    float posX = width / 2f - logoWidth / 2f;
-		    float posY = height / 2f - logoHeight / 2f - height / 4f;
-	        
-		    sideView.setSize((int)logoWidth, (int)logoHeight);
-		    sideView.setXY((int)posX, (int)posY);
-	        //addWidget(sideView);*/
-		} catch (IOException ex) {
-			Game.getDebugManager().reportError("Error while creating In-Game GUI", ex);
-		}
+//    	URL pressStartURL = Game.getResourceManager().getResource("stupid.gif");
+//    	
+//    	try {
+//	    	sideView = FengGUI.createLabel();
+//	    	sideView.setText("Hello Thar!");
+//	    	
+//	    	ITexture tex = Binding.getInstance().getTexture(pressStartURL);
+//	        Pixmap logoImage = new Pixmap(tex);
+//		
+//	        setBilinearFilter(logoImage.getTexture());
+//	        sideViewBg = new PixmapBackground(logoImage);
+//	        sideViewBg.setScaled(true);
+//	        sideView.getAppearance().add(sideViewBg);
+//	        setVisible(false);
+//	        //getAppearance().add(sideViewBg);
+//	        
+//	        float width  = Game.getGUIManager().width,
+//            	height = Game.getGUIManager().height;
+//	        float aspect = width / height;
+//		
+//		    float logoWidth = (width / 4.2f) * 4f / aspect;
+//		    float logoHeight = height / 4.2f;
+//		
+//		    float posX = width / 2f - logoWidth / 2f;
+//		    float posY = height / 2f - logoHeight / 2f - height / 4f;
+//	        
+//		    sideView.setSize((int)logoWidth, (int)logoHeight);
+//		    sideView.setXY((int)posX, (int)posY);
+//	        addWidget(sideView);
+//		} catch (IOException ex) {
+//			Game.getDebugManager().reportError("Error while creating In-Game GUI", ex);
+//		}
     }
 
     @Override

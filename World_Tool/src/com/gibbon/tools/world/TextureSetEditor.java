@@ -3,9 +3,9 @@ package com.gibbon.tools.world;
 import com.radakan.util.preview.FileNameExtensionFilter;
 import com.jme.image.Texture2D;
 import com.jme.util.TextureManager;
+import com.radakan.game.Game;
 import com.radakan.game.tile.TextureSet;
 import com.radakan.game.tile.TextureSet.Detailmap;
-import com.radakan.util.ErrorHandler;
 import java.awt.Frame;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -276,7 +276,7 @@ public class TextureSetEditor extends javax.swing.JDialog {
             try{
                 map.colormap = (Texture2D) TextureManager.loadTexture(f.toURI().toURL(), true);
             } catch (MalformedURLException ex){
-                ErrorHandler.reportError("Incorrect file name specified", ex);
+                Game.getDebugManager().reportError("Incorrect file name specified", ex);
             }
             textureModel.addElement(map);
         }
@@ -335,7 +335,7 @@ public class TextureSetEditor extends javax.swing.JDialog {
             
             dispose();
         } catch (Exception ex) {
-            ErrorHandler.reportError("Error while saving textureset", ex);
+            Game.getDebugManager().reportError("Error while saving textureset", ex);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
     
