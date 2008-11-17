@@ -215,9 +215,9 @@ public final class Entity implements Savable
         units = in.readSavableArrayList("units", null);
     }
 
+    @Override
     public Class getClassTag() {
-            // TODO Auto-generated method stub
-            return null;
+        return Entity.class;
     }
 
    /**

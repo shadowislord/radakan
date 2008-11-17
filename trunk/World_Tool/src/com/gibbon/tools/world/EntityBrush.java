@@ -4,10 +4,12 @@ import com.jme.math.Vector3f;
 import com.jme.scene.Spatial;
 import com.jme.scene.Spatial.CullHint;
 import com.jme.scene.TriMesh;
-import com.radakan.entity.Entity;
-import com.radakan.entity.EntityManager;
-import com.radakan.entity.EntityManager.EntityType;
-import com.radakan.entity.unit.ModelUnit;
+import com.radakan.game.Game;
+import com.radakan.game.entity.Entity;
+import com.radakan.game.entity.GameEntityManager;
+import com.radakan.game.entity.GameEntityManager.EntityType;
+import com.radakan.game.entity.unit.ModelUnit;
+
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,21 +26,21 @@ public class EntityBrush {
     private static int id = 0;
     
     public static Collection<EntityType> loadEntityTypes() throws IOException{
-        File entitiesFile = new File(System.getProperty("user.dir")+"/entities/");
+        GameEntityManager entityMan = Game.getEntityManager();
+    	
+    	File entitiesFile = new File(System.getProperty("user.dir")+"/entities/");
 		if(!entitiesFile.exists()){
 			entitiesFile.mkdir();
 		}
         for (File f : entitiesFile.listFiles()){
             if (f.getName().endsWith(".xml")){
                 InputStream in = new FileInputStream(f);
-                EntityManager.loadEntityTypes(in);
+                entityMan.loadEntityTypes(in);
                 in.close();
             }
         }
         
-        
-        
-        return EntityManager.getLoadedTypes();
+        return entityMan.getLoadedTypes();
     }
     
     public static void doMouseAction(int x, int y, boolean drag, boolean finish){
@@ -117,12 +119,15 @@ public class EntityBrush {
         }else if (!drag){
             TriMesh collided = PickUtils.findClickedObject(x, y, true, point, null);
             
-            if (collided == null) return;
+            if (collided == null)
+                return;
             
             // If the entityType is null there is nothing to do.
-            if (state.entityType == null) return;
+            if (state.entityType == null)
+                return;
 
-            Entity entity = EntityManager.produce(state.entityType.name, state.entityType.name + (id++) );
+            GameEntityManager entityMan = Game.getEntityManager();
+            Entity entity = entityMan.produce(state.entityType.name, state.entityType.name + (id++) );
             ModelUnit model = entity.getUnit(ModelUnit.class);
 
             Tile t = (Tile) collided.getParent();

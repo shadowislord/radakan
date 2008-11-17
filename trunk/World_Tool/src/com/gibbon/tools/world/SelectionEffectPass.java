@@ -25,8 +25,9 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.state.ZBufferState.TestFunction;
-import com.radakan.entity.Entity;
-import com.radakan.entity.unit.ModelUnit;
+import com.radakan.game.entity.Entity;
+import com.radakan.game.entity.unit.ModelUnit;
+
 import java.awt.event.MouseEvent;
 import java.nio.FloatBuffer;
 import java.util.List;

@@ -38,17 +38,22 @@ public class GameConfigManager {
      * Initializes the configuration by loading it from registry,
      * initializes default settings for radakan if not available.
      */
-    public GameConfigManager() {
+    public GameConfigManager(String nodeName) {
         boolean isNew = true;
         
         // Checks to see if there are preferences stored for the game already.
         try {
-            isNew = !Preferences.userRoot().nodeExists("Radakan");
+            isNew = !Preferences.userRoot().nodeExists(nodeName);
         } catch (BackingStoreException e) {
             logger.warning("Error loading game settings from preferences.");
         }
         settings = new PreferencesGameSettings(Preferences.userRoot().node("Radakan"), isNew);
         logger.fine("Settings loaded from registry");
+        
+        settings.setFramerate(60);
+        settings.set("title", GameSysInfoManager.GAME_NAME + " " + 
+			                  GameSysInfoManager.GAME_SUFFIX + " " +
+			                  GameSysInfoManager.GAME_VERSION);
         
         if(isNew) {
             // Display params
@@ -59,7 +64,6 @@ public class GameConfigManager {
             settings.setFrequency(60);
             
             // Misc params
-            settings.setFramerate(60);
             settings.setMusic(true);
             settings.setSFX(true);
             settings.setRenderer("LWJGL");
@@ -70,11 +74,6 @@ public class GameConfigManager {
             settings.setDepthBits(8);
             settings.setAlphaBits(0);
             settings.setStencilBits(0);
-            
-            // Radakan params
-            settings.set("title", GameSysInfoManager.GAME_NAME + " " + 
-                                  GameSysInfoManager.GAME_SUFFIX + " " +
-                                  GameSysInfoManager.GAME_VERSION);
             
             logger.fine("Created new settings");
         }

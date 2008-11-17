@@ -78,6 +78,7 @@ public class GameDebugManager {
     }
     
     public class GameUncaughtExceptionHandler implements UncaughtExceptionHandler {
+        @Override
         public void uncaughtException(Thread t, Throwable e) {
             reportError("An unexpected error has occured", e);
         }
@@ -124,7 +125,6 @@ public class GameDebugManager {
         if (ex != null)
             ex.printStackTrace();
         
-        // XXX: Okay to drop error?
         if (errorReported){
         	logger.warning("Error dropped: "+ex.getMessage());
             return;

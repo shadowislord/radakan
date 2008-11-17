@@ -145,9 +145,15 @@ public class TerrainBrush {
         Collection<TriMesh> influenced = PickUtils.getCollisions(point, state.brushSize);
         
         if (!drag && !finish){
-            TerrainUndoAction undoAction = new TerrainUndoAction("Undo Terrain "+state.brushType.name(),
-                                                                 influenced.toArray(new TriMesh[0]));
+            TerrainUndoAction undoAction = new TerrainUndoAction("Undo Terrain "+state.brushType.name());
+            for (TriMesh mesh : influenced)
+                undoAction.addModifiedMesh(mesh);
+
             UndoManager.registerAction(undoAction);
+        }else{
+            TerrainUndoAction lastAction = (TerrainUndoAction) UndoManager.getLastAction();
+            for (TriMesh mesh : influenced)
+                lastAction.addModifiedMesh(mesh);
         }
         
         for (TriMesh mesh : influenced){
