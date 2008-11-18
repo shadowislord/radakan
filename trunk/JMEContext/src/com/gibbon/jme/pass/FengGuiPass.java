@@ -46,8 +46,8 @@ public class FengGuiPass extends Pass {
     private Display display;
     private boolean shaders;
     private IGuiManager manager;
-    private FengJMEListener listener;
-    private FengJMEInputHandler handler;
+    //private FengJMEListener listener;
+    //private FengJMEInputHandler handler;
     private String theme;
     
     public FengGuiPass(String theme, IGuiManager manager){
@@ -56,9 +56,9 @@ public class FengGuiPass extends Pass {
         this.theme = theme;
     }
     
-    public InputHandler getHandler(){
-        return handler;
-    }
+    //public InputHandler getHandler(){
+    //    return handler;
+    //}
     
     @Override
     public void runPass(JmeContext cx) {
@@ -93,7 +93,7 @@ public class FengGuiPass extends Pass {
         FengGUI.initPrototypes();
         FengGUIOptional.initOptional();
         
-        this.handler = new FengJMEInputHandler(display);
+        //this.handler = new FengJMEInputHandler(display);
 
         manager.create(display);
     }
@@ -101,6 +101,10 @@ public class FengGuiPass extends Pass {
     @Override
     public void cleanPass(JmeContext cx) {
         manager.destroy(display);
+    }
+    
+    public Display getDisplay() {
+    	return display;
     }
 
 }

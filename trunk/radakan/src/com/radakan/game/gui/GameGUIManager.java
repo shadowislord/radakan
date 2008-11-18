@@ -3,6 +3,10 @@ package com.radakan.game.gui;
 import com.gibbon.jme.context.JmeContext;
 import com.gibbon.jme.pass.FengGuiPass;
 import com.gibbon.jme.util.IGuiManager;
+import com.radakan.game.input.FengGUIInputListener;
+import com.radakan.game.input.GameInputManager;
+import com.radakan.game.input.InputType;
+
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
@@ -23,6 +27,7 @@ public class GameGUIManager extends Container implements IGuiManager {
 	private static final Logger logger = Logger.getLogger(GameGUIManager.class.getName());
 	
     private FengGuiPass guiPass;
+    private GameInputManager input;
     
     public  UIContext current = null;
     private UIContext switchTo = null;
@@ -41,10 +46,15 @@ public class GameGUIManager extends Container implements IGuiManager {
      * Depends on:
      * - GameDisplayManager
      */
-    public GameGUIManager() {
+    public GameGUIManager(GameInputManager input) {
+    	this.input = input;
+    	
         guiPass = new FengGuiPass("../common/data/themes/QtCurve/QtCurve.xml", this);
         JmeContext.get().getPassManager().add(guiPass);
         guiPass.waitFor(); 
+        
+        input.setInputListener(new FengGUIInputListener(guiPass.getDisplay()), InputType.GUI);
+        
         logger.fine("GUI initialized");
     }
     

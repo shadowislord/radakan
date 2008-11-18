@@ -7,12 +7,7 @@ package com.radakan.game.input;
  * 
  * @author Kirill Vainer
  */
-public interface IGameInputHandler {
+public interface IGameInputListener {
 
-    public void onButtonPress(String buttonName, boolean pressed);
-    public void onButtonHold(String buttonName);
-    
-    public void onAxisPress(String axisName, boolean pressed);
-    public void onAxisHold(String axisName, float value);
     
 }

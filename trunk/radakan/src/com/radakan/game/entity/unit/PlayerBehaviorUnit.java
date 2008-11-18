@@ -93,14 +93,14 @@ public class PlayerBehaviorUnit extends Unit {
 //        input.setEnabled(true);
 
         // XXX: Assumption that JmeContext is used
-        PassManager pManager = JmeContext.get().getPassManager();
-        InputPass iPass = (InputPass) pManager.getPass("Input");
-        if (iPass == null)
-            throw new IllegalStateException("Cannot locate InputPass in the PassManager");
+        //PassManager pManager = JmeContext.get().getPassManager();
+        //InputPass iPass = (InputPass) pManager.getPass("Input");
+        //if (iPass == null)
+        //    throw new IllegalStateException("Cannot locate InputPass in the PassManager");
         
         // Allows ThirdPersonHandler to recieve input from the InputPass
-        if (iPass.getInputHandler() == null)
-            iPass.setInputHandler(new InputHandler());
+        //if (iPass.getInputHandler() == null)
+        //    iPass.setInputHandler(new InputHandler());
         
         //iPass.getInputHandler().addToAttachedHandlers(input);
     }
