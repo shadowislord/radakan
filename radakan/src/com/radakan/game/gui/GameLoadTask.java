@@ -11,6 +11,8 @@ import com.jme.system.DisplaySystem;
 import com.jme.system.GameSettings;
 import com.radakan.game.Game;
 import com.radakan.game.camera.GameCameraManager;
+import com.radakan.game.input.FreeFlightHandler;
+import com.radakan.game.input.InputType;
 import com.radakan.game.world.GameWorldManager;
 import java.net.URL;
 
@@ -74,7 +76,8 @@ public class GameLoadTask extends LoadingTask {
      */
     @Override
     public void done() {
-        MouseInput.get().setCursorVisible(false);
+        //MouseInput.get().setCursorVisible(false);
+        Game.getInputManager().setInputListener(new FreeFlightHandler(renderer.getCamera()), InputType.CAMERA);
         //Camera cam = renderer.getCamera();
         //InputPass iPass = (InputPass) JmeContext.get().getPassManager().getPass("Input");
         //FirstPersonHandler handler = new FirstPersonHandler(cam, 10, 0.5f);

@@ -28,36 +28,20 @@ import com.jme.input.joystick.JoystickInput;
  */
 public class InputPass extends Pass {
     
-    protected InputHandler input;
     protected boolean cursor;
     
-    public InputPass(InputHandler handler, boolean cursorVisible){
+    public InputPass(boolean cursorVisible){
         super(PassType.INPUT,"Input");
-        input = handler;
         cursor = cursorVisible;
     }
     public void runPass(JmeContext context) {
         KeyInput.get().update();
         MouseInput.get().update();
         JoystickInput.get().update();
-        
-        if (input!=null){
-            input.update(context.getPassManager().getTPF());
-        }
-    }
-
-    public void setInputHandler(InputHandler handler){
-        input = handler;
-    }
-    
-    public InputHandler getInputHandler(){
-        return input;
     }
     
     public void initPass(JmeContext context) {
-        //KeyInput.setProvider("LWJGL");
-        //MouseInput.setProvider("LWJGL");
-        
+  
         if (cursor)
             MouseInput.get().setCursorVisible(true);
     }

@@ -69,8 +69,8 @@ public final class Game {
         debug = new GameDebugManager(config.getSettings().getBoolean("GameDebug", true));
         resource = new GameResourceManager();
         display = new GameDisplayManager();
-        gui = new GameGUIManager();       
         input = new GameInputManager();
+        gui = new GameGUIManager(input);       
         script = new GameScriptManager();
         
         // All systems go!

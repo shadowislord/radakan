@@ -139,7 +139,7 @@ public class PassManager {
     /**
      * Load several passes to provide SimpleGame like functionality.
      */
-    public void loadDefaultPasses() {
+    /*public void loadDefaultPasses() {
         execute(new Callable<Object>(){
             public Object call(){
                 add(new InputPass(new FirstPersonHandler(JmeContext.get().getRenderer().getCamera(), 10, 1), false));
@@ -155,6 +155,6 @@ public class PassManager {
                 return null;
             }
         });
-    }
+    }*/
 
 }
