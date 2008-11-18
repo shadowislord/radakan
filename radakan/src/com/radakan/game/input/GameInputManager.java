@@ -38,6 +38,7 @@ public class GameInputManager {
 		inputPass = new InputPass(true);
 		JmeContext.get().getPassManager().add(inputPass);
 		
+		KeyInput.setProvider(LWJGLKeyInput2.class);
 		KeyInput.get().addListener(listener);
 		MouseInput.get().addListener(listener);
 
@@ -221,10 +222,7 @@ public class GameInputManager {
 		}
 
 		@Override
-		public void onKey(char character, int keyCode, boolean pressed) {
-			logger.fine("Key Event: character = " + character + " keyCode = " + keyCode + " pressed = " + pressed);
-			logger.fine("Key Event Native: " + Keyboard.getEventKey());
-			
+		public void onKey(char character, int keyCode, boolean pressed) {			
 			boolean handled = false;
 
 			IGameInputListener listener = listeners.get(InputType.GUI);
