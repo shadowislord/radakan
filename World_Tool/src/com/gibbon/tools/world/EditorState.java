@@ -1,6 +1,7 @@
 package com.gibbon.tools.world;
 
 import com.jme.bounding.BoundingSphere;
+import com.jme.math.Vector3f;
 import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;
@@ -22,6 +23,8 @@ public class EditorState implements Savable {
     public static transient Map<String, TextureSet> texsetMap = new HashMap<String, TextureSet>();
     public static transient WorldCameraHandler handler;
     public static transient MouseEvent lastMouseEvent;
+    public static transient Entity lastPlacedEntity = null;
+    public static Vector3f lookAtTarget;
     
     EditType editType = EditType.TILE;
 
@@ -40,6 +43,10 @@ public class EditorState implements Savable {
     GameEntityManager.EntityType entityType;
     Entity entityTypePrototype;
     List<Entity> selection = new ArrayList<Entity>();
+    boolean randomScale = false;
+    boolean randomRotation = false;
+    float nextAngle = 0f;
+    float nextScale = 0f;
     
     public static EditorState getState(){
         return state;
