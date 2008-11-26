@@ -16,25 +16,27 @@ public class DefaultInputMapper implements IInputMapper {
 	public InputActionEvent mapKeyInput(char character, int keyCode, boolean pressed) {
 		switch(keyCode) {
 			case KeyInput.KEY_D:
+				if(pressed)
+					return new InputActionEvent(InputActions.PLAYER_TURN_RIGHT, -1, -1, 1);
 			case KeyInput.KEY_RIGHT:
 				if(pressed)
-					return new InputActionEvent(InputActions.CAMERA_ROTATE_LEFT, -1, -1, 1);
+					return new InputActionEvent(InputActions.CAMERA_ROTATE_RIGHT, -1, -1, 1);
 			case KeyInput.KEY_A:
+				if(pressed)
+					return new InputActionEvent(InputActions.PLAYER_TURN_LEFT, -1, -1, 1);
 			case KeyInput.KEY_LEFT:
 				if(pressed)
-					return new InputActionEvent(InputActions.CAMERA_ROTATE_RIGHT, -1, -1, 1);
+					return new InputActionEvent(InputActions.CAMERA_ROTATE_LEFT, -1, -1, 1);
 			case KeyInput.KEY_W:
-			case KeyInput.KEY_UP:
 				if(pressed)
 					return new InputActionEvent(InputActions.PLAYER_MOVE_FWD, -1, -1, 1);
 			case KeyInput.KEY_S:
-			case KeyInput.KEY_DOWN:
 				if(pressed)
 					return new InputActionEvent(InputActions.PLAYER_MOVE_BACK, -1, -1, 1);
-			case KeyInput.KEY_E:
+			case KeyInput.KEY_UP:
 				if(pressed)
 					return new InputActionEvent(InputActions.CAMERA_ROTATE_UP, -1, -1, 1);
-			case KeyInput.KEY_Q:
+			case KeyInput.KEY_DOWN:
 				if(pressed)
 					return new InputActionEvent(InputActions.CAMERA_ROTATE_DOWN, -1, -1, 1);
 		}
