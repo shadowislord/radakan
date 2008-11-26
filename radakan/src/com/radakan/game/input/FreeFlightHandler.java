@@ -26,7 +26,7 @@ public class FreeFlightHandler implements IGameActionListener {
 	public boolean onActionTriggered(InputActionEvent action) {
 		Matrix3f incr = new Matrix3f();
 		
-		if(action.name.equals(InputActions.CAMERA_ROTATE_LEFT)) {
+		if(action.name.equals(InputActions.CAMERA_ROTATE_RIGHT) || action.name.equals(InputActions.PLAYER_TURN_RIGHT)) {
 			incr.fromAngleNormalAxis(-action.velocity * .01f, cam.getUp());
 			incr.mult(cam.getUp(), cam.getUp());
 	        incr.mult(cam.getLeft(), cam.getLeft());
@@ -35,7 +35,7 @@ public class FreeFlightHandler implements IGameActionListener {
 	        cam.update();
 	        
 	        return true;
-		} else if (action.name.equals(InputActions.CAMERA_ROTATE_RIGHT)) {
+		} else if (action.name.equals(InputActions.CAMERA_ROTATE_LEFT) || action.name.equals(InputActions.PLAYER_TURN_LEFT)) {
 			incr.fromAngleNormalAxis(action.velocity * .01f, cam.getUp());
 			incr.mult(cam.getUp(), cam.getUp());
 	        incr.mult(cam.getLeft(), cam.getLeft());

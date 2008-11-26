@@ -51,21 +51,6 @@ public class GameInputManager {
 		inputPass.setEnabled(enable);
 	}
 
-	public boolean showConfigDialog() {
-		GameSettings settings = Game.getConfigManager().getSettings();
-
-		ControlSettingsDialog dialog = new ControlSettingsDialog(inputManager,
-				settings);
-		dialog.open();
-		try {
-			dialog.waitFor();
-		} catch (InterruptedException ex) {
-			Game.getDebugManager().reportError(
-					"Interrupted while waiting for dialog to close", ex);
-		}
-		return dialog.isAccepted();
-	}
-
 	public void setInputListener(IGameInputListener listener, InputType type) {
 		this.listeners.put(type, listener);
 	}
@@ -78,211 +63,122 @@ public class GameInputManager {
 
 		@Override
 		public void onButton(int button, boolean pressed, int x, int y) {
-			boolean handled = false;
-
-			IGameInputListener listener = listeners.get(InputType.GUI);
-			if (listener != null) {
-				if (listener instanceof IGameRawInputListener) {
-					handled = ((IGameRawInputListener) listener).onButtonPress(
-							button, pressed, x, y);
-				} else if (listener instanceof IGameActionListener) {
-					// TODO Fill in
-				}
-			}
-
-			if (!handled) {
-				listener = listeners.get(InputType.PLAYER);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener)
-								.onButtonPress(button, pressed, x, y);
-					} else if (listener instanceof IGameActionListener) {
-						// TODO Fill in
-					}
-				}
-			}
+			boolean handled = handleOnButton(button, pressed, x, y, listeners.get(InputType.GUI));
 			
-			if (!handled) {
-				listener = listeners.get(InputType.CAMERA);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener)
-								.onButtonPress(button, pressed, x, y);
-					} else if (listener instanceof IGameActionListener) {
-						// TODO Fill in
-					}
-				}
-			}
-
-			if (!handled) {
-				listener = listeners.get(InputType.OTHER);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener)
-								.onButtonPress(button, pressed, x, y);
-					} else if (listener instanceof IGameActionListener) {
-						// TODO Fill in
-					}
-				}
-			}
+			if(!handled)
+				handled = handleOnButton(button, pressed, x, y, listeners.get(InputType.PLAYER));
+			
+			if(!handled)
+				handled = handleOnButton(button, pressed, x, y, listeners.get(InputType.CAMERA));
+			
+			if(!handled)
+				handled = handleOnButton(button, pressed, x, y, listeners.get(InputType.OTHER));
 		}
 
 		@Override
 		public void onMove(int xDelta, int yDelta, int newX, int newY) {
-			boolean handled = false;
-
-			IGameInputListener listener = listeners.get(InputType.GUI);
-			if (listener != null) {
-				if (listener instanceof IGameRawInputListener) {
-					handled = ((IGameRawInputListener) listener).onMove(xDelta, yDelta, newX, newY);
-				} else if (listener instanceof IGameActionListener) {
-					// TODO Fill in
-				}
-			}
-
-			if (!handled) {
-				listener = listeners.get(InputType.PLAYER);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener).onMove(xDelta, yDelta, newX, newY);
-					} else if (listener instanceof IGameActionListener) {
-						// TODO Fill in
-					}
-				}
-			}
+			boolean handled = handleOnMove(xDelta, yDelta, newX, newY, listeners.get(InputType.GUI));
 			
-			if (!handled) {
-				listener = listeners.get(InputType.CAMERA);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener).onMove(xDelta, yDelta, newX, newY);
-					} else if (listener instanceof IGameActionListener) {
-						// TODO Fill in
-					}
-				}
-			}
-
-			if (!handled) {
-				listener = listeners.get(InputType.OTHER);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener).onMove(xDelta, yDelta, newX, newY);
-					} else if (listener instanceof IGameActionListener) {
-						// TODO Fill in
-					}
-				}
-			}
+			if(!handled)
+				handled = handleOnMove(xDelta, yDelta, newX, newY, listeners.get(InputType.PLAYER));
+			
+			if(!handled)
+				handled = handleOnMove(xDelta, yDelta, newX, newY, listeners.get(InputType.CAMERA));
+			
+			if(!handled)
+				handled = handleOnMove(xDelta, yDelta, newX, newY, listeners.get(InputType.OTHER));
 		}
 
 		@Override
 		public void onWheel(int wheelDelta, int x, int y) {
-			boolean handled = false;
-
-			IGameInputListener listener = listeners.get(InputType.GUI);
-			if (listener != null) {
-				if (listener instanceof IGameRawInputListener) {
-					handled = ((IGameRawInputListener) listener).onWheel(wheelDelta, x, y);
-				} else if (listener instanceof IGameActionListener) {
-					// TODO Fill in
-				}
-			}
-
-			if (!handled) {
-				listener = listeners.get(InputType.PLAYER);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener).onWheel(wheelDelta, x, y);
-					} else if (listener instanceof IGameActionListener) {
-						// TODO Fill in
-					}
-				}
-			}
+			boolean handled = handleOnWheel(wheelDelta, x, y, listeners.get(InputType.GUI));
 			
-			if (!handled) {
-				listener = listeners.get(InputType.CAMERA);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener).onWheel(wheelDelta, x, y);
-					} else if (listener instanceof IGameActionListener) {
-						// TODO Fill in
-					}
-				}
-			}
-
-			if (!handled) {
-				listener = listeners.get(InputType.OTHER);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener).onWheel(wheelDelta, x, y);
-					} else if (listener instanceof IGameActionListener) {
-						// TODO Fill in
-					}
-				}
-			}
+			if(!handled)
+				handled = handleOnWheel(wheelDelta, x, y, listeners.get(InputType.PLAYER));
+			
+			if(!handled)
+				handled = handleOnWheel(wheelDelta, x, y, listeners.get(InputType.CAMERA));
+				
+			if(!handled)
+				handled = handleOnWheel(wheelDelta, x, y, listeners.get(InputType.OTHER));
 		}
 
 		@Override
 		public void onKey(char character, int keyCode, boolean pressed) {			
-			boolean handled = false;
+			boolean handled = handleOnKey(character, keyCode, pressed, listeners.get(InputType.GUI));
 
-			IGameInputListener listener = listeners.get(InputType.GUI);
+			if (!handled) 
+				handled = handleOnKey(character, keyCode, pressed, listeners.get(InputType.PLAYER));
+			
+			if (!handled)
+				handled = handleOnKey(character, keyCode, pressed, listeners.get(InputType.CAMERA));
+
+			if (!handled)
+				handled = handleOnKey(character, keyCode, pressed, listeners.get(InputType.OTHER));
+		}
+		
+		private boolean handleOnKey(char character, int keyCode, boolean pressed, IGameInputListener listener) {			
 			if (listener != null) {
 				if (listener instanceof IGameRawInputListener) {
-					handled = ((IGameRawInputListener) listener).onKey(character, keyCode, pressed);
+					return ((IGameRawInputListener) listener).onKey(character, keyCode, pressed);
 				} else if (listener instanceof IGameActionListener) {
 					IGameActionListener list = (IGameActionListener)listener;
 					InputActionEvent evt = list.getMapper().mapKeyInput(character, keyCode, pressed);
 					if(evt != null) {
-						handled = list.onActionTriggered(evt);
-					}
-				}
-			}
-
-			if (!handled) {
-				listener = listeners.get(InputType.PLAYER);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener).onKey(character, keyCode, pressed);
-					} else if (listener instanceof IGameActionListener) {
-						IGameActionListener list = (IGameActionListener)listener;
-						InputActionEvent evt = list.getMapper().mapKeyInput(character, keyCode, pressed);
-						if(evt != null) {
-							handled = list.onActionTriggered(evt);
-						}
+						return list.onActionTriggered(evt);
 					}
 				}
 			}
 			
-			if (!handled) {
-				listener = listeners.get(InputType.CAMERA);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener).onKey(character, keyCode, pressed);
-					} else if (listener instanceof IGameActionListener) {
-						IGameActionListener list = (IGameActionListener)listener;
-						InputActionEvent evt = list.getMapper().mapKeyInput(character, keyCode, pressed);
-						if(evt != null) {
-							handled = list.onActionTriggered(evt);
-						}
-					}
-				}
-			}
-
-			if (!handled) {
-				listener = listeners.get(InputType.OTHER);
-				if (listener != null) {
-					if (listener instanceof IGameRawInputListener) {
-						handled = ((IGameRawInputListener) listener).onKey(character, keyCode, pressed);
-					} else if (listener instanceof IGameActionListener) {
-						IGameActionListener list = (IGameActionListener)listener;
-						InputActionEvent evt = list.getMapper().mapKeyInput(character, keyCode, pressed);
-						if(evt != null) {
-							handled = list.onActionTriggered(evt);
-						}
-					}
-				}
-			}
+			return false;
 		}
-
+		
+		private boolean handleOnButton(int button, boolean pressed, int x, int y, IGameInputListener listener) {			
+			if (listener != null) {
+				if (listener instanceof IGameRawInputListener) {
+					return ((IGameRawInputListener) listener).onButtonPress(button, pressed, x, y);
+				} else if (listener instanceof IGameActionListener) {
+					IGameActionListener list = (IGameActionListener)listener;
+					InputActionEvent evt = list.getMapper().mapMouseButtonInput(button, pressed, x, y);
+					if(evt != null) {
+						return list.onActionTriggered(evt);
+					}
+				}
+			}
+			
+			return false;
+		}
+		
+		private boolean handleOnMove(int xDelta, int yDelta, int newX, int newY, IGameInputListener listener) {			
+			if (listener != null) {
+				if (listener instanceof IGameRawInputListener) {
+					return ((IGameRawInputListener) listener).onMove(xDelta, yDelta, newX, newY);
+				} else if (listener instanceof IGameActionListener) {
+					IGameActionListener list = (IGameActionListener)listener;
+					InputActionEvent evt = list.getMapper().mapMouseMove(xDelta, yDelta, newX, newY);
+					if(evt != null) {
+						return list.onActionTriggered(evt);
+					}
+				}
+			}
+			
+			return false;
+		}
+		
+		private boolean handleOnWheel(int wheelDelta, int x, int y, IGameInputListener listener) {			
+			if (listener != null) {
+				if (listener instanceof IGameRawInputListener) {
+					return ((IGameRawInputListener) listener).onWheel(wheelDelta, x, y);
+				} else if (listener instanceof IGameActionListener) {
+					IGameActionListener list = (IGameActionListener)listener;
+					InputActionEvent evt = list.getMapper().mapMouseWheelInput(wheelDelta, x, y);
+					if(evt != null) {
+						return list.onActionTriggered(evt);
+					}
+				}
+			}
+			
+			return false;
+		}
 	}
 }
