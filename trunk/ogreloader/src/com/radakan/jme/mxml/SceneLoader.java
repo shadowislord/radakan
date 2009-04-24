@@ -57,10 +57,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import java.util.logging.Logger;
 
 import static com.radakan.util.XMLUtil.*;
 
+/**
+ * @see <link href="http://www.ogre3d.org/wiki/index.php/DotSceneFormat"/>
+ * about dotScene file format.
+ */
 public class SceneLoader {
+    private static final Logger logger =
+            Logger.getLogger(SceneLoader.class.getName());
 
     private Map<String, Material> materials = new HashMap<String, Material>();
     
@@ -139,7 +146,7 @@ public class SceneLoader {
                 pl.setQuadratic(getFloatAttribute(att, "quadratic"));
             }
         }else{
-            System.out.println("UNSUPPORTED LIGHT: "+type);
+            logger.warning("UNSUPPORTED LIGHT: "+type);
         }
         
         Node diffuseNode = getChildNode(light, "colourDiffuse");
@@ -178,51 +185,68 @@ public class SceneLoader {
         return c;
     }
     
-    public void loadNodes(Node nodes) throws IOException{
-        Node node = nodes.getFirstChild();
-        while (node != null){
-            if (node.getNodeName().equals("node")){
-                String name = getAttribute(node, "name");
-                //System.out.println("ENTITY("+name+")");
-                
-                com.jme.scene.Node n = new com.jme.scene.Node(name);
-                Vector3f pos   = loadVector3(getChildNode(node, "position"));
-                Quaternion rot = loadQuaternion(getChildNode(node, "quaternion"));
-                Vector3f scale = loadVector3(getChildNode(node, "scale"));
-                
-                n.setLocalTranslation(pos);
-                n.setLocalRotation(rot);
-                n.setLocalScale(scale);
-                
-                Node entity = getChildNode(node, "entity");
-                if (entity != null){
-                    URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_MODEL,
-                                                                 getAttribute(entity, "meshFile") + ".xml");
-                    
-                    if (url != null){
-                        OgreLoader loader = new OgreLoader();
-                        loader.setMaterials(materials);
-                        Spatial spatial = loader.loadModel(url);
+    /**
+     * Populates the specified jME Node with data from the specified XML Node.
+     *
+     * @param targetJmeNode An unpopulated com.jme.scene.Node.
+     *                      We will consitute the node and add its descendants.
+     * @param sourceXmlNode  XML node which children will be reaped from.
+     */
+    public void loadNode(com.jme.scene.Node targetJmeNode,
+            Node sourceXmlNode) throws IOException {
 
-                        n.attachChild(spatial);
-                    }
+        Node childNode, lightNode = null;
+        String tagName;
+        String string;
+
+        // First handle attributes, then element children.
+        string = getAttribute(sourceXmlNode, "name");
+        if (string != null) {
+            logger.finest("ENTITY(" + string + ")");
+            targetJmeNode.setName(string);
+        }
+
+        NodeList childList = sourceXmlNode.getChildNodes();
+        int childCount = childList.getLength();
+        for (int i = 0; i < childCount; i++) {
+            childNode = childList.item(i);
+            tagName = childNode.getNodeName();
+
+            if (tagName.equals("position")) {
+                targetJmeNode.setLocalTranslation(loadVector3(childNode));
+            } else if (tagName.equals("quaternion")) {
+                targetJmeNode.setLocalRotation(loadQuaternion(childNode));
+            } else if (tagName.equals("scale")) {
+                targetJmeNode.setLocalScale(loadVector3(childNode));
+            } else if (tagName.equals("entity")) {
+                URL url = ResourceLocatorTool.locateResource(
+                        ResourceLocatorTool.TYPE_MODEL,
+                        getAttribute(childNode, "meshFile") + ".xml");
+                if (url != null) {
+                    OgreLoader loader = new OgreLoader();
+                    loader.setMaterials(materials);
+                    Spatial spatial = loader.loadModel(url);
+                    targetJmeNode.attachChild(spatial);
                 }
-                
-                Node light = getChildNode(node, "light");
-                if (light != null){
-                    ls.attach(loadLight(light, pos, rot));
-                }
+            } else if (tagName.equals("light")) {
+                lightNode = childNode;
+            } else if (tagName.equals("node")) {
+                com.jme.scene.Node newNode = new com.jme.scene.Node();
+                loadNode(newNode, childNode);  // This is the recurse!
+                targetJmeNode.attachChild(newNode);
+            } else {
+                logger.warning("Ignoring unexpected element '" + tagName + "'");
+            }
+        }
+        if (lightNode != null) {
+            ls.attach(loadLight(lightNode, targetJmeNode.getLocalTranslation(),
+                    targetJmeNode.getLocalRotation()));
+        }
                 
 //                Node camera = getChildNode(node, "camera");
 //                if (camera != null){
 //                    lastLoadedCamera = loadCamera(camera, pos, rot);
 //                }
-                
-                scene.attachChild(n);
-            }
-            
-            node = node.getNextSibling();
-        }
     }
     
     public void loadExternals(Node externals) throws IOException{
@@ -258,16 +282,18 @@ public class SceneLoader {
         }
     }
     
-    public void load(Node scene) throws IOException{
-        String version = getAttribute(scene, "formatVersion");
+    public void load(Node sceneXmlNode) throws IOException{
+        String version = getAttribute(sceneXmlNode, "formatVersion");
         
-        Node externals   = getChildNode(scene, "externals");
-        Node nodes       = getChildNode(scene, "nodes");
-        Node environment = getChildNode(scene, "environment");
+        Node externals   = getChildNode(sceneXmlNode, "externals");
+        Node nodes       = getChildNode(sceneXmlNode, "nodes");
+        // TODO:  According to the DTD, the "nodes" element may have
+        // transformation attributes.  We should not ignore them.
+        Node environment = getChildNode(sceneXmlNode, "environment");
         
         loadExternals(externals);
         loadEnvironment(environment);
-        loadNodes(nodes);
+        loadNode(scene, nodes);
     }
             
     public Spatial getScene(){
