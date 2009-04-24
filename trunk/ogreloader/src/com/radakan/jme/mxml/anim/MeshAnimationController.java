@@ -32,6 +32,7 @@ import com.jme.math.Matrix4f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera.FrustumIntersect;
 import java.util.Map;
+import java.util.Set;
 
 import com.jme.scene.Controller;
 import com.jme.scene.state.GLSLShaderObjectsState;
@@ -423,4 +424,9 @@ public class MeshAnimationController extends Controller {
     }
     
     
+    public float getCurTime() { return time; }
+
+    public Set<String> getAnimationNames() {
+        return animationMap.keySet();
+    }
 }
