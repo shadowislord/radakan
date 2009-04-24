@@ -57,10 +57,13 @@ public class XMLUtil {
      */
     public static Node getChildNode(Node node, String name) {
         Node child = node.getFirstChild();
-        while (child != null && !child.getNodeName().equals(name) ){
+        while (child != null) {
+            if (child.getNodeName().equals(name)) {
+                return child;
+            }
             child = child.getNextSibling();
         }
-        return child;
+        return null;
     }
     
     public static Node loadDocument(InputStream in, String rootElementName) throws IOException{
