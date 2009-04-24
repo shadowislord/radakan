@@ -320,6 +320,7 @@ public class SceneLoader {
                     ResourceLocatorTool.TYPE_TEXTURE, locator);
             ResourceLocatorTool.removeResourceLocator(
                     ResourceLocatorTool.TYPE_MODEL, locator);
+            locator = null;  // Just to encourage GC
         }
     }
 
