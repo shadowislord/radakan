@@ -40,12 +40,16 @@ import com.jme.scene.Spatial;
 import com.jme.scene.state.LightState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.resource.ResourceLocatorTool;
+import com.jme.util.resource.ResourceLocator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -291,5 +295,72 @@ public class SceneLoader {
             throw new IOException("Error with xml parser");
         }
     }
-    
+
+    /**
+     * Loads scene from dotScene file at specified URI, automatically adding
+     * the containing directory to the resource locator paths for the duration
+     * of the load.
+     * <P>An example of invoking this method for a filesystem file:<CODE><PRE>
+     *  ogreSceneLoader.load(file.toURI());
+     *  </PRE></CODE>
+     * </P>
+     *
+     * @see SceneLoader.RelativeResourceLocator
+     */
+    public void load(URI uri) throws IOException{
+        ResourceLocator locator = new RelativeResourceLocator(uri);
+        ResourceLocatorTool.addResourceLocator(
+                ResourceLocatorTool.TYPE_TEXTURE, locator);
+        ResourceLocatorTool.addResourceLocator(
+                ResourceLocatorTool.TYPE_MODEL, locator);
+        try {
+            load(uri.toURL().openStream());
+        } finally {
+            ResourceLocatorTool.removeResourceLocator(
+                    ResourceLocatorTool.TYPE_TEXTURE, locator);
+            ResourceLocatorTool.removeResourceLocator(
+                    ResourceLocatorTool.TYPE_MODEL, locator);
+        }
+    }
+
+    /**
+     * A conservative ResourceLocator implementation that adds to the search
+     * path just the parent directory of the specified URI, and it is  only
+     * used for resources requested with relative paths.
+     *
+     * @see com.jme.util.resource.ResourceLocator
+     */
+    static public class RelativeResourceLocator implements ResourceLocator {
+        private URI baseUri;
+
+        public RelativeResourceLocator(URI baseUri) {
+            this.baseUri = baseUri;
+        }
+
+        public URL locateResource(String resourceName) {
+            if (baseUri == null || resourceName == null
+                    || resourceName.length() < 2 || resourceName.charAt(0) == '/'
+                    || resourceName.charAt(0) == '\\') return null;
+            // No-op unless baseUri set for instance, and resourceName is relative.
+
+            /* The remainder is the safe and conservative subset of code copied
+             * from SimpleResourceLocator.locateResource(String). */
+
+            try {
+                String spec = URLEncoder.encode(resourceName, "UTF-8");
+                //this fixes a bug in JRE1.5 (file handler does not decode "+" to
+                //spaces)
+                spec = spec.replaceAll("\\+", "%20");
+
+                URL rVal = new URL(baseUri.toURL(), spec);
+                // open a stream to see if this is a valid resource
+                // XXX: Perhaps this is wasteful?  Also, what info will determine validity?
+                rVal.openStream().close();
+                return rVal;
+            } catch (IOException e) {
+            } catch (IllegalArgumentException e) {
+            }
+            return null;
+        }
+    }
 }
