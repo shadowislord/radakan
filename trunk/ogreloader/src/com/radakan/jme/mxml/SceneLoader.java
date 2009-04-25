@@ -63,8 +63,9 @@ import java.util.logging.Logger;
 import static com.radakan.util.XMLUtil.*;
 
 /**
- * @see <link href="http://www.ogre3d.org/wiki/index.php/DotSceneFormat"/>
- * about dotScene file format.
+ * @see <A href="http://www.ogre3d.org/wiki/index.php/DotSceneFormat"
+ *       target="other">
+ * Ogre's dotScene format page</A>.
  */
 public class SceneLoader {
     private static final Logger logger =
