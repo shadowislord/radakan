@@ -122,8 +122,11 @@ public class OgreLoader {
      */
     private void applyMaterial(String name, Spatial target){
         // if the name contains an extension, make sure to remove it from the name
-        if (name.contains(".")){
+        // Why?  This clobbers the default material names the Blender makes.
+        if (name.contains(".")) {
             int index = name.lastIndexOf(".");
+            logger.warning("Renaming material '" + name + "' to '"
+                    + name.substring(0, index) + "'");
             name = name.substring(0, index);
         }
         
@@ -136,7 +139,8 @@ public class OgreLoader {
         if (mat != null){
             mat.apply(target);
         }else{
-            logger.warning("Cannot find material "+name);
+            logger.warning("Cannot find material " + name
+                    + " for submesh '" + target.getName() + "'");
         }
     }
     

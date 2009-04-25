@@ -55,6 +55,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import java.util.logging.Logger;
@@ -234,8 +235,9 @@ public class SceneLoader {
                 com.jme.scene.Node newNode = new com.jme.scene.Node();
                 loadNode(newNode, childNode);  // This is the recurse!
                 targetJmeNode.attachChild(newNode);
-            } else {
-                logger.warning("Ignoring unexpected element '" + tagName + "'");
+            } else if (!(childNode instanceof Text)) {
+                logger.warning("Ignoring unexpected element '" + tagName
+                        + "' of type " + childNode.getClass().getName());
             }
         }
         if (lightNode != null) {
@@ -256,7 +258,9 @@ public class SceneLoader {
                 if (getAttribute(item, "type").equals("material")){
                     String file = getAttribute(getChildNode(item, "file"), "name");
                     MaterialLoader matloader = new MaterialLoader();
-                    URL url = ResourceLocatorTool.locateResource(ResourceLocatorTool.TYPE_TEXTURE, file);
+                    URL url = ResourceLocatorTool.locateResource(
+                            ResourceLocatorTool.TYPE_TEXTURE, file);
+                    logger.fine("Loading materials from '" + url + "'...");
                     if (url != null){
                         InputStream in = url.openStream();
                         matloader.load(in);
@@ -268,6 +272,7 @@ public class SceneLoader {
             
             item = item.getNextSibling();
         }
+        logger.finest("LOADED MATERIALS: " + materials.keySet());
     }
     
     public void loadEnvironment(Node env){

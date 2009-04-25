@@ -258,10 +258,10 @@ public class MaterialLoader {
         }else if (stat_name.equals("scene_blend")){
             reader.nextToken();
             String mode = nextStatement();
+            BlendState as = (BlendState) material.getState(RenderState.RS_BLEND);
+            as.setBlendEnabled(true);
             if (mode.equals("alpha_blend")){
                 material.transparent = true;
-                BlendState as = (BlendState) material.getState(RenderState.RS_BLEND);
-                as.setBlendEnabled(true);
                 as.setSourceFunction(SourceFunction.SourceAlpha);
                 as.setDestinationFunction(DestinationFunction.OneMinusSourceAlpha);
                 //as.setBlendEquation(BlendEquation.Add);
@@ -272,10 +272,10 @@ public class MaterialLoader {
                 CullState cs = (CullState) material.getState(RenderState.RS_CULL);
                 cs.setCullFace(CullState.Face.None);
             }else if (mode.equals("modulate")){
-                BlendState as = (BlendState) material.getState(RenderState.RS_BLEND);
-                as.setBlendEnabled(true);
                 as.setSourceFunction(SourceFunction.DestinationColor);
                 as.setDestinationFunction(DestinationFunction.SourceColor);
+            }else if (mode.equals("add")){
+                as.setBlendEquation(BlendEquation.Add);
             }else{
                 throw new IOException("Unknown scene_blend mode: "+mode);
             }
