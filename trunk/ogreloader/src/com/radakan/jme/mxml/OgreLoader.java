@@ -121,15 +121,6 @@ public class OgreLoader {
      * @param target
      */
     private void applyMaterial(String name, Spatial target){
-        // if the name contains an extension, make sure to remove it from the name
-        // Why?  This clobbers the default material names that Blender assigns.
-        if (name.contains(".")) {
-            int index = name.lastIndexOf(".");
-            logger.warning("Renaming material '" + name + "' to '"
-                    + name.substring(0, index) + "'");
-            name = name.substring(0, index);
-        }
-        
         // no materials mapping defined, do not apply any materials
         if (materialMap == null)
             return;
