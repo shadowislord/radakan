@@ -55,6 +55,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -311,13 +312,18 @@ public class SceneLoader {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(in);
 
-            NodeList list = doc.getElementsByTagName("scene");
-            if (list.getLength() == 0) {
-                return;
+            Element rootEl = doc.getDocumentElement();
+            if (rootEl == null) {
+                throw new OgreXmlFormatException(
+                        "No root node in XML document, when trying to read '"
+                        + "scene'");
             }
-
-            Node sceneNode = list.item(0);
-            load(sceneNode);
+            if (!rootEl.getTagName().equals("scene")) {
+                throw new OgreXmlFormatException(
+                        "Input XML file does not have required root element '"
+                        + "scene'");
+            }
+            load(rootEl);
             
             scene.updateGeometricState(0, true);
             scene.updateRenderState();

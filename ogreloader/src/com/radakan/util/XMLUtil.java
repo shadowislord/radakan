@@ -40,8 +40,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import com.radakan.jme.mxml.OgreXmlFormatException;
 
 /**
  * XML parsing utility methods
@@ -66,17 +68,26 @@ public class XMLUtil {
         return null;
     }
     
+    /**
+     * @throws OgreXmlFormatException for high-level Ogre Format violations.
+     * @throws IOException for any other parsing or I/O problems.
+     */
     public static Node loadDocument(InputStream in, String rootElementName) throws IOException{
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(in);
-
-            NodeList list = doc.getElementsByTagName(rootElementName);
-            if (list.getLength() == 0) {
-                return null;
+            Element rootEl = doc.getDocumentElement();
+            if (rootEl == null) {
+                throw new OgreXmlFormatException(
+                        "No root node in XML document, when trying to read '"
+                        + rootElementName + "'");
             }
-
-            return list.item(0);
+            if (rootEl.getTagName().equals(rootElementName)) {
+                return rootEl;
+            }
+            throw new OgreXmlFormatException(
+                    "Input XML file does not have required root element '"
+                    + rootElementName + "'");
         } catch (ParserConfigurationException ex) {
             throw new IOException("Error occured while reading XML document: "+ex.getLocalizedMessage());
         } catch (SAXException ex) {
