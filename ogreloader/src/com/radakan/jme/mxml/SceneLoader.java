@@ -479,4 +479,18 @@ public class SceneLoader {
             return null;
         }
     }
+
+    /**
+     * This method is provided so that users can import multiple dotScene files
+     * and have unique top-level nodes for each load; or if you just want to
+     * specify your own top-level node name.
+     * <P>
+     * This method is not necessary for uniqueness purposes if you use the
+     * load(URL) method, unless your target URLs happen to have the same file
+     * base name (without the preceding path and following suffix).
+     * </P>
+     */
+    public void setName(String newName) {
+        scene.setName(newName);
+    }
 }
