@@ -64,6 +64,15 @@ import java.util.logging.Logger;
 import static com.radakan.util.XMLUtil.*;
 
 /**
+ * Loads dotScene files.
+ * <P>
+ * Note that multiple load invocations will add to the scene node managed by
+ * this instance.
+ * Therefore, if you want to obtain separate scene nodes for multiple dotScene
+ * files, you must use a separate SceneLoader instance for each
+ * load()+getScene().
+ * <P>
+ *
  * @see <A href="http://www.ogre3d.org/wiki/index.php/DotSceneFormat"
  *       target="other">
  * Ogre's dotScene format page</A>.
@@ -303,10 +312,20 @@ public class SceneLoader {
         loadNode(scene, nodes);
     }
             
-    public Spatial getScene(){
+    /**
+     * @return a com.jme.scene.Node populated with the aggregation of all
+     *         load() calls that have been applied to this instance.
+     */
+    public com.jme.scene.Node getScene(){
         return scene;
     }
     
+    /**
+     * Adds data from the specified dotScene file onto a scene node (which may
+     * then be retrieved with getScene().
+     *
+     * @see #getScene()
+     */
     public void load(InputStream in) throws IOException{
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -335,14 +354,17 @@ public class SceneLoader {
     }
 
     /**
-     * Loads scene from dotScene file at specified URI, automatically adding
-     * the containing directory to the resource locator paths for the duration
-     * of the load.
-     * <P>An example of invoking this method for a filesystem file:<CODE><PRE>
+     * Adds contents of dotScene file at specified URI onto a scene node,
+     * automatically adding the containing directory to the resource locator
+     * paths for the duration of the load.
+     * The scene node may then be retrieved with getScene().
+     * <P>
+     * An example of invoking this method for a filesystem file:<CODE><PRE>
      *  ogreSceneLoader.load(file.toURI());
      *  </PRE></CODE>
      * </P>
      *
+     * @see #getScene()
      * @see SceneLoader.RelativeResourceLocator
      */
     public void load(URI uri) throws IOException{
