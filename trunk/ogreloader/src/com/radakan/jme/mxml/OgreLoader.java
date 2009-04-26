@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +69,13 @@ import static com.radakan.util.XMLUtil.*;
 public class OgreLoader {
 
     private static final Logger logger = Logger.getLogger(OgreLoader.class.getName());
+
+    private static NumberFormat intFormatter =
+            NumberFormat.getIntegerInstance();
+    static {
+        intFormatter.setMinimumIntegerDigits(3);
+        intFormatter.setGroupingUsed(false);
+    }
     
     /**
      * sharedgeom contains all the sharedgeometry vertexbuffers defined in the mesh
@@ -419,14 +427,15 @@ public class OgreLoader {
      * @param submesh XML node
      * @return
      */
-    private OgreMesh loadSubmesh(Node submesh) throws IOException{
-        OgreMesh mesh = new OgreMesh("nil");
+    private OgreMesh loadSubmesh(Node submesh) throws IOException {
+        OgreMesh mesh = new OgreMesh();
         mesh.getTextureCoords().clear();
+
+        mesh.setName(rootnode.getName() + "Mesh"
+                + intFormatter.format(rootnode.getQuantity()));
 
         // ==material==
         // try to load a material if it is defined
-        mesh.setName(getAttribute(submesh, "material", "OgreSubmesh"));
-        
         String material = getAttribute(submesh, "material");
         if (material != null)
             applyMaterial(material, mesh);
@@ -588,6 +597,10 @@ public class OgreLoader {
         // ==submeshes==
         Node submeshesNode = getChildNode(meshNode, "submeshes");
         Node submesh = submeshesNode.getFirstChild();
+        if (submesh == null) {
+            throw new OgreXmlFormatException(
+                    "Mesh file has no submeshes, as required by the DTD");
+        }
         while (submesh != null){
             if (submesh.getNodeName().equals("submesh")){
                 // ==submesh==
@@ -617,7 +630,10 @@ public class OgreLoader {
             Node submeshname = submeshnamesNode.getFirstChild();
             while (submeshname != null){
                 if (submeshname.getNodeName().equals("submeshname")){
+                    // This overrides the derived name set int the
+                    // loadSubmesh() method.
                     rootnode.getChild(getIntAttribute(submeshname, "index"))
+
                             .setName(getAttribute(submeshname, "name"));
                 }
 
