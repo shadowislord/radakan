@@ -39,6 +39,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
@@ -66,17 +67,13 @@ import com.jme.util.resource.ResourceLocatorTool;
  * call Material.apply(Spatial) to apply material to a model.
  */
 public class MaterialLoader {
+    private static final Logger logger =
+            Logger.getLogger(MaterialLoader.class.getName());
     
     private StreamTokenizer reader;
     private Map<String, Material> materialMap;
-    private static final boolean DEBUG = false;
     
     public MaterialLoader() {
-    }
-    
-    public void println(String str){
-        if (DEBUG)
-            System.out.println(str);
     }
     
     public Map<String, Material> getMaterials(){
@@ -169,7 +166,7 @@ public class MaterialLoader {
                 tex.setTexture(t, unit);
             }
             
-            println("TEXTURE: "+texURL);
+            logger.fine("TEXTURE: "+texURL);
         }else if (stat_name.equals("tex_address_mode")){
             reader.nextToken();
             String mode = nextStatement();
@@ -184,7 +181,7 @@ public class MaterialLoader {
             }else{
                 t.setWrap(WrapMode.Clamp);
             }
-            println("ADDRESS MODE: "+mode);
+            logger.fine("ADDRESS MODE: "+mode);
         }else if (stat_name.equals("filtering")){
             reader.nextToken();
             String mode = nextStatement();
@@ -198,9 +195,9 @@ public class MaterialLoader {
             }else{
                 // ??
             }
-            println("FILTERING: "+mode);
+            logger.fine("FILTERING: "+mode);
         }else{
-            println("UNIT STAT: "+stat_name);
+            logger.fine("UNIT STAT: "+stat_name);
         }
         
         while (reader.ttype != StreamTokenizer.TT_EOL)
@@ -214,7 +211,7 @@ public class MaterialLoader {
         TextureState ts = (TextureState) material.getState(RenderState.RS_TEXTURE);
         int unit = ts.getNumberOfSetTextures();
         
-        println("TEXTURE UNIT START: "+unit);
+        logger.fine("TEXTURE UNIT START: "+unit);
         
         while (reader.ttype != '{')
             reader.nextToken();
@@ -225,7 +222,7 @@ public class MaterialLoader {
                 reader.nextToken();
         }
         
-        println("TEXTURE UNIT END");
+        logger.fine("TEXTURE UNIT END");
     }
     
     public void readPassStatement(Material material) throws IOException{
@@ -239,22 +236,22 @@ public class MaterialLoader {
         }else if (stat_name.equals("ambient")){
             MaterialState ms = (MaterialState) material.getState(RenderState.RS_MATERIAL);
             ms.setAmbient(readColor());
-            println("AMBIENT: "+ms.getAmbient());
+            logger.fine("AMBIENT: "+ms.getAmbient());
         }else if (stat_name.equals("diffuse")){
             MaterialState ms = (MaterialState) material.getState(RenderState.RS_MATERIAL);
             ms.setDiffuse(readColor());
-            println("DIFFUSE: "+ms.getDiffuse());
+            logger.fine("DIFFUSE: "+ms.getDiffuse());
         }else if (stat_name.equals("specular")){
             MaterialState ms = (MaterialState) material.getState(RenderState.RS_MATERIAL);
             ms.setSpecular(readColor());
             reader.nextToken();
             ms.setShininess((float)nextNumber());
-            println("SPECULAR: "+ms.getSpecular());
-            println("SHININESS: "+ms.getShininess());
+            logger.fine("SPECULAR: "+ms.getSpecular());
+            logger.fine("SHININESS: "+ms.getShininess());
         }else if (stat_name.equals("emissive")){
             MaterialState ms = (MaterialState) material.getState(RenderState.RS_MATERIAL);
             ms.setEmissive(readColor());
-            println("EMISSIVE: "+ms.getEmissive());
+            logger.fine("EMISSIVE: "+ms.getEmissive());
         }else if (stat_name.equals("scene_blend")){
             reader.nextToken();
             String mode = nextStatement();
@@ -331,7 +328,7 @@ public class MaterialLoader {
         }else if (stat_name.equals("texture_unit")){
             readTextureUnit(material);
         }else{
-            println("PASS STAT: "+stat_name);
+            logger.fine("PASS STAT: "+stat_name);
         }
         
         while (reader.ttype != StreamTokenizer.TT_EOL)
@@ -342,7 +339,7 @@ public class MaterialLoader {
         // skip "pass"
         reader.nextToken();
         
-        println("PASS START");
+        logger.fine("PASS START");
         
         while (reader.ttype != '{')
             reader.nextToken();
@@ -353,7 +350,7 @@ public class MaterialLoader {
                 reader.nextToken();
         }
         
-        println("PASS END");
+        logger.fine("PASS END");
     }
     
     public void readTechnique(Material material) throws IOException{
@@ -363,7 +360,7 @@ public class MaterialLoader {
         if (!stat_name.equals("technique"))
             throw new IOException();
         
-        println("TECHNIQUE START");
+        logger.fine("TECHNIQUE START");
         
         while (reader.ttype != '{')
             reader.nextToken();
@@ -380,7 +377,7 @@ public class MaterialLoader {
             }
         }
         
-        println("TECHNIQUE END");
+        logger.fine("TECHNIQUE END");
     }
     
     private boolean skip = false;
@@ -418,7 +415,7 @@ public class MaterialLoader {
         
         Material mat = new Material(matName);
         
-        println("MATERIAL START: "+matName);
+        logger.fine("MATERIAL START: "+matName);
         materialMap.put(matName, mat);
         
         reader.resetSyntax();
@@ -447,7 +444,7 @@ public class MaterialLoader {
             reader.nextToken();
         }
         
-        println("MATERIAL END");
+        logger.fine("MATERIAL END");
         
         return mat;
     }
