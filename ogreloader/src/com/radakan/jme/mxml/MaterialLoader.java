@@ -95,6 +95,19 @@ public class MaterialLoader {
         }
     }
     
+    public String nextStatementRightCurlyNull() throws IOException{
+        while (true) {
+            switch (reader.ttype) {
+                case StreamTokenizer.TT_WORD:
+                    return reader.sval;
+                case '}':
+                case StreamTokenizer.TT_EOF:
+                    return null;
+            }
+            reader.nextToken();
+        }
+    }
+    
     public String nextStatement() throws IOException{
         while (reader.ttype != StreamTokenizer.TT_WORD){
             if (reader.ttype == StreamTokenizer.TT_EOF){
@@ -226,14 +239,12 @@ public class MaterialLoader {
     }
     
     public void readPassStatement(Material material) throws IOException{
-        String stat_name = nextStatement();
-        
-        if (stat_name == null){
-            //while (reader.ttype != StreamTokenizer.TT_EOL)
-            //    reader.nextToken();
-            
+        String stat_name = nextStatementRightCurlyNull();
+        if (stat_name == null) {
             return;
-        }else if (stat_name.equals("ambient")){
+        }
+        
+        if (stat_name.equals("ambient")){
             MaterialState ms = (MaterialState) material.getState(RenderState.RS_MATERIAL);
             ms.setAmbient(readColor());
             logger.fine("AMBIENT: "+ms.getAmbient());
@@ -444,7 +455,7 @@ public class MaterialLoader {
             reader.nextToken();
         }
         
-        logger.fine("MATERIAL END");
+        logger.fine("MATERIAL END for material '" + matName + "'");
         
         return mat;
     }
