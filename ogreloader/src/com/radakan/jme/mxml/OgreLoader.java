@@ -60,6 +60,10 @@ import static com.radakan.util.XMLUtil.*;
  * find the materials.
  * 
  * @author Momoko_Fan
+ * @see <A href="http://ogre.svn.sourceforge.net/viewvc/ogre/trunk/Tools/XMLConverter/docs/ogremeshxml.dtd"
+ *       target="other1">Ogre's *.mesh.xml DTD</A>.
+ * @see <A href="http://ogre.svn.sourceforge.net/viewvc/ogre/trunk/Tools/XMLConverter/docs/ogreskeletonxml.dtd"
+ *       target="other2">Ogre's *.skeleton.xml DTD</A>.
  */
 public class OgreLoader {
 
