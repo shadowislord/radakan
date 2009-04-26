@@ -488,6 +488,16 @@ public class MaterialLoader {
         }
     }
     
-    
-    
+    /**
+     * Print a debugging message to standard output.
+     *
+     * @deprecated  If you want to see debugging messages, you should use the
+     *              logging infrastructure which is there for this purpose.
+     *              This allows you to specify when to see messages
+     *              declaratively, without changing any source code.
+     */
+    @Deprecated
+    public void println(String str){
+        logger.fine(str);
+    }
 }
