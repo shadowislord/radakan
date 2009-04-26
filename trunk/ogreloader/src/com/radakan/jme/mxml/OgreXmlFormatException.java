@@ -39,6 +39,8 @@ import java.io.IOException;
  * compatible.
  * This is in fact not an I/O exception, and if it were not for compatibility,
  * it would be better to subclass a more appropriate checked exception.
+ *
+ ** @author Blaine Simpson (blaine dot simpson at admc dot com)
  */
 public class OgreXmlFormatException extends IOException {
     static final long serialVersionUID = 5272379903243728638L;
