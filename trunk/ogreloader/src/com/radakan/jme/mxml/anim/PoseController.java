@@ -99,7 +99,8 @@ public class PoseController extends Controller {
         curPose = poseMap.get(name);
         
         if (curPose == null)
-            throw new NullPointerException();
+            throw new NullPointerException("Expected post name '" + name
+                    + "' is missing");
         
         blendTime = time;
         blendTimeMax = time;
@@ -109,7 +110,8 @@ public class PoseController extends Controller {
         curPose = poseMap.get(name);
         
         if (curPose == null)
-            throw new NullPointerException();
+            throw new NullPointerException("Expected post name '" + name
+                    + "' is missing");
         
         blendTime = 0f;
         blendTimeMax = 0f;

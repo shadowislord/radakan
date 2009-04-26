@@ -84,7 +84,10 @@ public class OgreMesh extends TriMesh {
             return;
         
         if (weightBuf.indexes.limit() / 4 != this.getVertexCount())
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    "Vertex weight element limit mismatch.  Expected "
+                    + (getVertexCount() * 4) + ", but got "
+                    + weightBuf.indexes.limit());
         
         weightBuffer = weightBuf;
     }
