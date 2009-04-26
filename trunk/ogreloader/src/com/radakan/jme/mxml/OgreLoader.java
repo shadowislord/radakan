@@ -112,10 +112,15 @@ public class OgreLoader {
     
     /**
      * Print a debugging message to standard output.
+     *
+     * @deprecated  If you want to see debugging messages, you should use the
+     *              logging infrastructure which is there for this purpose.
+     *              This allows you to specify when to see messages
+     *              declaratively, without changing any source code.
      */
+    @Deprecated
     public void println(String str){
-        if (DEBUG)
-            System.out.println(str);
+        logger.fine(str);
     }
 
     /**
@@ -166,7 +171,7 @@ public class OgreLoader {
      */
     public OgreEntityNode loadModel(
             URL url, String nodeName) throws IOException{
-        println("MESH("+url.getFile()+")");
+        logger.fine("MESH("+url.getFile()+")");
         String name = null;
         if (nodeName == null) {
             String urlPath = url.getPath();
