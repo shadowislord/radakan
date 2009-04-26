@@ -273,7 +273,7 @@ public class SceneLoader {
             
             item = item.getNextSibling();
         }
-        logger.finest("LOADED MATERIALS: " + materials.keySet());
+        logger.fine("Loaded materials: " + materials.keySet());
     }
     
     public void loadEnvironment(Node env){
