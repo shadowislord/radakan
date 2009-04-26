@@ -89,8 +89,10 @@ public class SceneLoader {
     private Camera lastLoadedCamera;
     
     public SceneLoader(){
+        scene = new com.jme.scene.Node();
+        // We create with no name here, but algorithms below ensure that
+        // getScene() will return a Node with a good name set.
         ls = DisplaySystem.getDisplaySystem().getRenderer().createLightState();
-        scene = new com.jme.scene.Node("OgreScene");
         scene.setRenderState(ls);
     }
     
@@ -199,6 +201,14 @@ public class SceneLoader {
     
     /**
      * Populates the specified jME Node with data from the specified XML Node.
+     * <P>
+     *     The Ogre exporter and Blender generally use node-type-specific
+     *     name spaces for node names.
+     *     Consequently, the Ogre dotScene exporter generates the same name for
+     *     nodes and for the first entity child thereof.
+     *     To maintain jME-preferred scene Spatial name uniqueness, we append
+     *     the suffix "DotNode" to the node names in the dotScene file.
+     * </P>
      *
      * @param targetJmeNode An unpopulated com.jme.scene.Node.
      *                      We will consitute the node and add its descendants.
@@ -209,14 +219,25 @@ public class SceneLoader {
 
         Node childNode, lightNode = null;
         String tagName;
-        String string;
+        String origNodeName; // Node name before we supply suffix, as explained
+                             // in the JavaDocs above.
 
         // First handle attributes, then element children.
-        string = getAttribute(sourceXmlNode, "name");
-        if (string != null) {
-            logger.finest("ENTITY(" + string + ")");
-            targetJmeNode.setName(string);
+        if (targetJmeNode.getName() == null) {
+            // If caller has set an explicit name before calling this method,
+            // we ignore name attr. in order to not clobber.
+            origNodeName = getAttribute(sourceXmlNode, "name");
+            if (origNodeName == null) {
+                logger.warning("dotScene node element has no name.  "
+                        + "Assigning name 'dotSceneNode'");
+                origNodeName = "dotScene";
+            }
+            targetJmeNode.setName(origNodeName.endsWith("DotNode")
+                    ? origNodeName : (origNodeName + "DotNode"));
+        } else {
+            origNodeName = targetJmeNode.getName();
         }
+        logger.finest("NODE(" + targetJmeNode.getName() + ")");
 
         NodeList childList = sourceXmlNode.getChildNodes();
         int childCount = childList.getLength();
@@ -234,11 +255,16 @@ public class SceneLoader {
                 URL url = ResourceLocatorTool.locateResource(
                         ResourceLocatorTool.TYPE_MODEL,
                         getAttribute(childNode, "meshFile") + ".xml");
-                if (url != null) {
+                if (url == null) {
+                    logger.warning("Invalid URL for entity child of node "
+                            +  targetJmeNode.getName() + ".  Skipping.");
+                } else {
                     OgreLoader loader = new OgreLoader();
                     loader.setMaterials(materials);
-                    Spatial spatial = loader.loadModel(url);
-                    targetJmeNode.attachChild(spatial);
+                    String entityName = getAttribute(childNode, "name");
+                    OgreEntityNode entityNode = loader.loadModel(url,
+                            (entityName == null) ? origNodeName : entityName);
+                    targetJmeNode.attachChild(entityNode);
                 }
             } else if (tagName.equals("light")) {
                 lightNode = childNode;
@@ -327,6 +353,11 @@ public class SceneLoader {
      * @see #getScene()
      */
     public void load(InputStream in) throws IOException{
+        if (scene.getName() == null) {
+            scene.setName("OgreScene");
+            // Apply default name if nothing more specific applied up to this
+            // point.
+        }
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(in);
@@ -368,13 +399,37 @@ public class SceneLoader {
      * @see SceneLoader.RelativeResourceLocator
      */
     public void load(URI uri) throws IOException{
+        URL url = uri.toURL();
+        if (scene.getName() == null) {
+            String urlPath = url.getPath();
+            if (urlPath == null) {
+                throw new IOException("URL contains no path: " + url);
+            }
+            String sceneName = urlPath.replaceFirst(".*[\\\\/]", "").
+                      replaceFirst("\\..*", "");
+            if (!sceneName.matches(".*(?i)scene.*")) {
+                sceneName += "Scene";
+                // It's very likely that a scene file name without "scene" in
+                // it duplicates an internal object name, so we add "Scene" to
+                // the name to make it unique.
+            }
+            if (sceneName.length() < 1) {
+                // Let load(InputStream in) apply default name
+                logger.warning("Falling back to default scene name, since "
+                        + "failed to generate a good name from URL '"
+                        + url + "'");
+            } else {
+                scene.setName(sceneName);
+            }
+        }
+
         ResourceLocator locator = new RelativeResourceLocator(uri);
         ResourceLocatorTool.addResourceLocator(
                 ResourceLocatorTool.TYPE_TEXTURE, locator);
         ResourceLocatorTool.addResourceLocator(
                 ResourceLocatorTool.TYPE_MODEL, locator);
         try {
-            load(uri.toURL().openStream());
+            load(url.openStream());
         } finally {
             ResourceLocatorTool.removeResourceLocator(
                     ResourceLocatorTool.TYPE_TEXTURE, locator);

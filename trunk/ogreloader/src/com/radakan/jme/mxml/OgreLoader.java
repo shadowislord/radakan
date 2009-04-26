@@ -82,7 +82,7 @@ public class OgreLoader {
      * Node containing all renderable meshes in the file. 
      * Returned by the call loadMesh()
      */
-    private com.jme.scene.Node rootnode;
+    private OgreEntityNode rootnode;
     
     /**
      * Skeleton of this mesh, if the mesh is bone-animated
@@ -142,16 +142,45 @@ public class OgreLoader {
     public void setMaterials(Map<String, Material> materials){
         materialMap = materials;
     }
+
+    /**
+     * Legacy wrapper.
+     *
+     * @see #loadModel(URL, String)
+     */
+    public OgreEntityNode loadModel(URL url) throws IOException{
+        return loadModel(url, null);
+    }
     
     /**
      * Load a MESH.XML model from the specified URL.
      * 
      * @param url The URL that specifies the mesh.xml file
+     * @param nodeName  The name of the generated OgreNode.
+     *                  If null, then will use the last segment of the URL.
      * @return The model loaded
      */
-    public Spatial loadModel(URL url) throws IOException{
+    public OgreEntityNode loadModel(
+            URL url, String nodeName) throws IOException{
         println("MESH("+url.getFile()+")");
-        return loadMesh(loadDocument(url.openStream(), "mesh"));
+        String name = null;
+        if (nodeName == null) {
+            String urlPath = url.getPath();
+            if (urlPath == null) {
+                throw new IOException("URL contains no path: " + url);
+            }
+            name = urlPath.replaceFirst(".*[\\\\/]", "").
+                      replaceFirst("\\..*", "");
+            if (name.length() < 1) {
+                name = "OgreNode";
+                logger.warning("Falling back to node name 'OgreNode', since "
+                        + "failed to generate a good name from URL '"
+                        + url + "'");
+            }
+        } else {
+            name = nodeName;
+        }
+        return loadMesh(loadDocument(url.openStream(), "mesh"), name);
     }
     
     private IntBuffer loadLODFaceList(Node lodfacelistNode){
@@ -494,8 +523,14 @@ public class OgreLoader {
         return mesh;
     }
     
-    private Spatial loadMesh(Node meshNode) throws IOException{
-        rootnode = new com.jme.scene.Node("OgreMesh");
+    /**
+     * @param nodeName  Name of the generated OgreNode.
+     *                  If null, then will use the literal "OgreNode".
+     */
+    private OgreEntityNode loadMesh(
+            Node meshNode, String nodeName) throws IOException{
+        rootnode = new OgreEntityNode(
+                (nodeName == null) ? "OgreNode" : nodeName);
         
         // ==skeletonlink==
         Node skeletonlinkNode = getChildNode(meshNode, "skeletonlink");
