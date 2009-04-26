@@ -120,7 +120,7 @@ public class SceneLoader {
      * .load() invocation.
      * </P>
      */
-    public void setModelsOnly(Boolean modelsOnly) {
+    public void setModelsOnly(boolean modelsOnly) {
         this.modelsOnly = modelsOnly;
     }
     
