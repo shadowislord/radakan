@@ -57,6 +57,13 @@ public class OgreMesh extends TriMesh {
     public OgreMesh(String name){
         super(name);
     }
+
+    /**
+     * Instantiate an OgreMesh without name. To be populated before use.
+     */
+    public OgreMesh(){
+        super();
+    }
     
     public void cloneFromMesh(OgreMesh source){
         vertexBufferOriginal = source.vertexBufferOriginal;
