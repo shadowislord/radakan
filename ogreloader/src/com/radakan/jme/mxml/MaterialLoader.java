@@ -377,7 +377,7 @@ public class MaterialLoader {
         String stat_name = nextStatement();
         
         if (!stat_name.equals("technique"))
-            throw new IOException();
+            throw new IOException("Expected token 'technique' missing");
         
         logger.fine("TECHNIQUE START");
         
