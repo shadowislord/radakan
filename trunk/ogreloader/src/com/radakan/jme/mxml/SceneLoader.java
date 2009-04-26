@@ -93,16 +93,41 @@ public class SceneLoader {
 
     private Map<String, Material> materials = new HashMap<String, Material>();
     
-    private LightState ls;
+    private LightState ls = null;
     private com.jme.scene.Node scene;
     private Vector3f[] temp = new Vector3f[3];
+    private boolean modelsOnly = false;
+
+    /**
+     * @see #setModelsOnly(boolean)
+     */
+    public boolean isModelsOnly() {
+        return modelsOnly;
+    }
+
+    /**
+     * Specify whether you want to load just models from the dotScene file.
+     * Default behavior is to load lights and environment form the dotScene
+     * file (i.e., modesOnly false).
+     * <P>
+     * If you set modelsOnly to true before running a load() method, then<UL>
+     *   <LI>No LightState will be created
+     *   <LI>Lights in the dotScene file will be ignored
+     *   <LI>The environment element of the dotScene file will be ignored
+     * </UL>
+     * </P> <P>
+     * This setter must be called between SceneLoader instantiation and
+     * .load() invocation.
+     * </P>
+     */
+    public void setModelsOnly(Boolean modelsOnly) {
+        this.modelsOnly = modelsOnly;
+    }
     
     public SceneLoader(){
         scene = new com.jme.scene.Node();
         // We create with no name here, but algorithms below ensure that
         // getScene() will return a Node with a good name set.
-        ls = DisplaySystem.getDisplaySystem().getRenderer().createLightState();
-        scene.setRenderState(ls);
     }
     
     private Light loadLight(Node light, Vector3f pos, Quaternion rot){
@@ -238,7 +263,9 @@ public class SceneLoader {
                     targetJmeNode.attachChild(entityNode);
                 }
             } else if (tagName.equals("light")) {
-                lightNode = childNode;
+                if (!modelsOnly) {
+                    lightNode = childNode;
+                }
             } else if (tagName.equals("node")) {
                 com.jme.scene.Node newNode = new com.jme.scene.Node();
                 loadNode(newNode, childNode);  // This is the recurse!
@@ -279,6 +306,9 @@ public class SceneLoader {
     }
     
     public void loadEnvironment(Node env){
+        if (ls == null) {
+            throw new IllegalStateException("Light state is not set up yet");
+        }
         Node ambient = getChildNode(env, "colourAmbient");
         if (ambient != null){
             ls.setGlobalAmbient(loadColor(ambient));
@@ -291,6 +321,11 @@ public class SceneLoader {
     }
     
     public void load(Node sceneXmlNode) throws IOException{
+        if (!modelsOnly) {
+            ls = DisplaySystem.getDisplaySystem()
+                    .getRenderer().createLightState();
+            scene.setRenderState(ls);
+        }
         String version = getAttribute(sceneXmlNode, "formatVersion");
         
         Node externals   = getChildNode(sceneXmlNode, "externals");
@@ -300,7 +335,9 @@ public class SceneLoader {
         Node environment = getChildNode(sceneXmlNode, "environment");
         
         loadExternals(externals);
-        loadEnvironment(environment);
+        if (!modelsOnly) {
+            loadEnvironment(environment);
+        }
         loadNode(scene, nodes);
     }
             
@@ -454,6 +491,9 @@ public class SceneLoader {
      * This method is not necessary for uniqueness purposes if you use the
      * load(URL) method, unless your target URLs happen to have the same file
      * base name (without the preceding path and following suffix).
+     * </P> <P>
+     * This setter must be called between SceneLoader instantiation and
+     * .load() invocation.
      * </P>
      */
     public void setName(String newName) {
