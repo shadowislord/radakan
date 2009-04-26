@@ -85,6 +85,7 @@ public class SceneLoader {
     /**
      * This method just returns null.
      * @deprecated  This class no longer manages cameras.
+     * @returns null
      */
     @Deprecated
     public com.jme.renderer.Camera getCamera() {
