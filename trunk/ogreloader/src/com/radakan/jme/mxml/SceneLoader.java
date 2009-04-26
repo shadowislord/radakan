@@ -34,7 +34,6 @@ import com.jme.light.PointLight;
 import com.jme.math.Matrix3f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
-import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.LightState;
@@ -78,15 +77,25 @@ import static com.radakan.util.XMLUtil.*;
  * Ogre's dotScene format page</A>.
  */
 public class SceneLoader {
+    /* The commented-out Camera loading code has been removed.  If you need
+     * that code, pull revision 645 of this file from Subversion. */
     private static final Logger logger =
             Logger.getLogger(SceneLoader.class.getName());
+
+    /**
+     * This method just returns null.
+     * @deprecated  This class no longer manages cameras.
+     */
+    @Deprecated
+    public com.jme.renderer.Camera getCamera() {
+        return null;
+    }
 
     private Map<String, Material> materials = new HashMap<String, Material>();
     
     private LightState ls;
     private com.jme.scene.Node scene;
     private Vector3f[] temp = new Vector3f[3];
-    private Camera lastLoadedCamera;
     
     public SceneLoader(){
         scene = new com.jme.scene.Node();
@@ -95,44 +104,6 @@ public class SceneLoader {
         ls = DisplaySystem.getDisplaySystem().getRenderer().createLightState();
         scene.setRenderState(ls);
     }
-    
-    public Camera getCamera(){
-        return lastLoadedCamera;
-    }
-    
-    /*
-      <camera name="Camera.001" fov="32.642063" projectionType="perspective">
-        <clipping nearPlaneDist="0.100000" farPlaneDist="100.000000"/>
-      </camera>
-    */
-    /*
-    private Camera loadCamera(Node camera, Vector3f pos, Quaternion rot){
-        
-        final DisplaySystem display = DisplaySystem.getDisplaySystem();
-        
-        Callable<Camera> exe = new Callable<Camera>(){
-            public Camera call(){
-                return display.getRenderer().createCamera(display.getWidth(), display.getHeight());
-            }
-        };
-        Camera cam = JmeContext.get().execute(exe);
-        cam.setFrame(pos, rot);
-        
-        String name = getAttribute(camera, "name");
-        if (getAttribute(camera, "projectionType").equalsIgnoreCase("perspective")){
-            float fov = getFloatAttribute(camera, "fov", 45f);
-            Node clipping = getChildNode(camera, "clipping");
-            float nearPlane = getFloatAttribute(clipping, "nearPlaneDist", 1f);
-            float farPlane = getFloatAttribute(clipping, "farPlaneDist", 1000f);
-            
-            cam.setFrustumPerspective(fov, 
-                                     (float) display.getWidth() / display.getHeight(), 
-                                     nearPlane, 
-                                     farPlane);
-        }
-        
-        return cam;
-    }*/
     
     private Light loadLight(Node light, Vector3f pos, Quaternion rot){
         String type = getAttribute(light, "type");
@@ -281,11 +252,6 @@ public class SceneLoader {
             ls.attach(loadLight(lightNode, targetJmeNode.getLocalTranslation(),
                     targetJmeNode.getLocalRotation()));
         }
-                
-//                Node camera = getChildNode(node, "camera");
-//                if (camera != null){
-//                    lastLoadedCamera = loadCamera(camera, pos, rot);
-//                }
     }
     
     public void loadExternals(Node externals) throws IOException{
