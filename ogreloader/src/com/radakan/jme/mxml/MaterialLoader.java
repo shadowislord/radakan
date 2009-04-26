@@ -142,6 +142,14 @@ public class MaterialLoader {
         return color;
     }
     
+    /**
+     * This method just returns null.
+     *
+     * @deprecated  Haven't checked the history, but this method is now a
+     * no-op.
+     * @returns null
+     */
+    @Deprecated
     public float[] readFloatArray(){
         return null;
     }
