@@ -137,7 +137,24 @@ public class MaterialLoader {
         color.b = (float) nextNumber();
         reader.nextToken();
         color.a = (float) nextNumber();
-        color.a = 1.0f;
+        /*
+         * color.a = 1.0f;
+         * I know of no reason to override the alpha value above, which appears
+         * to be written properly by the Ogre exporter.
+         * Leaving this here because the assignment is so explicit that I
+         * wonder if it is a workaround for a problem I don't know about.
+         * "foxat" reported this.  I am leaving this comment in place until
+         * Momoko_Fan confirms, or somebody tests this with an alpha renderer
+         * set up.  I have tested as far as possible without an alpha
+         * renderer.
+         * Throwing the following warning in, in case this is a workaround for
+         * an exporter or importer parsing problem that results in alpha
+         * values of 0.  Checking for extremely low color.a instead of 0 due to
+         * complications doing exact comparisons with floast.  -- blaine
+         */
+        if (color.a < 0.0000001f) {
+            logger.warning("Negligible alpha value read in: " + color.a);
+        }
         color.clamp();
         return color;
     }
