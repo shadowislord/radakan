@@ -302,7 +302,7 @@ public class SceneLoader {
             
             item = item.getNextSibling();
         }
-        logger.fine("Loaded materials: " + materials.keySet());
+        logger.fine("Loaded materials.  Now have: " + materials.keySet());
     }
     
     public void loadEnvironment(Node env){
@@ -466,5 +466,21 @@ public class SceneLoader {
      */
     public void setName(String newName) {
         scene.setName(newName);
+    }
+
+    /**
+     * Use this method to re-use the Materials loaded by this SceneLoader for
+     * other purposes, such as to load other dotScene or Mesh files.
+     */
+    public Map<String, Material> getMaterials() {
+        return materials;
+    }
+
+    /**
+     * Reuse an existing Materials collection.
+     * Materials files referred to by the dotScene will still be loaded.
+     */
+    public void addMaterials(Map<String, Material> newMaterials) {
+        materials.putAll(newMaterials);
     }
 }
