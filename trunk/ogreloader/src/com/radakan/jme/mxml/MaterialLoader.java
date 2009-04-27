@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StreamTokenizer;
 import java.net.URL;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -58,7 +59,10 @@ import com.jme.scene.state.BlendState.DestinationFunction;
 import com.jme.scene.state.BlendState.SourceFunction;
 import com.jme.scene.state.BlendState.TestFunction;
 import com.jme.util.TextureManager;
+import com.jme.util.resource.ResourceLocator;
 import com.jme.util.resource.ResourceLocatorTool;
+
+import com.radakan.jme.RelativeResourceLocator;
 
 /**
  * Reads OGRE3D material files<br/>
@@ -500,6 +504,9 @@ public class MaterialLoader {
         reader.eolIsSignificant(true);
     }
     
+    /**
+     * REPLACE the materialsMap of this MaterialLoader instance.
+     */
     public void load(InputStream in) throws IOException {
         reader = new StreamTokenizer(new InputStreamReader(in));
         setupReader(reader);
@@ -524,5 +531,41 @@ public class MaterialLoader {
     @Deprecated
     public void println(String str){
         logger.fine(str);
+    }
+
+    /**
+     * REPLACE the materialsMap of this MaterialLoader instance,
+     * automatically adding the containing directory to the resource locator
+     * paths for the duration of the load.
+     * The materials may then be retrieved with getMaterials().
+     * <P>
+     * An example of invoking this method for a filesystem file:<CODE><PRE>
+     *  materialLoader.load(file.toURI());
+     *  </PRE></CODE>
+     * </P>
+     *
+     * @see #getMaterials()
+     * @see RelativeResourceLocator
+     */
+    public void load(URI uri) throws IOException{
+        URL url = uri.toURL();
+        ResourceLocator locator = new RelativeResourceLocator(uri);
+        ResourceLocatorTool.addResourceLocator(
+                ResourceLocatorTool.TYPE_TEXTURE, locator);
+        InputStream stream = null;
+        try {
+            stream = url.openStream();
+            if (stream == null) {
+                throw new IOException("Failed to load materials file '"
+                        + url + "'");
+            }
+            logger.fine("Loading materials from '" + url + "'...");
+            load(stream);
+        } finally {
+            if (stream != null) stream.close();
+            ResourceLocatorTool.removeResourceLocator(
+                    ResourceLocatorTool.TYPE_TEXTURE, locator);
+            locator = null;  // Just to encourage GC
+        }
     }
 }
