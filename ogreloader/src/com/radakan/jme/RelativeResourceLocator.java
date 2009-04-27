@@ -1,6 +1,4 @@
 /*
- * @(#)$Id$
- *
  * Copyright (c) 2008-2009, OgreLoader
  *
  * All rights reserved.
@@ -28,24 +26,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package com.radakan.jme;
 
-package com.radakan.jme.mxml;
-
+import java.net.URLEncoder;
+import java.net.URL;
+import java.net.URI;
 import java.io.IOException;
 
+import com.jme.util.resource.ResourceLocator;
+
 /**
- * Exception signifying an Ogre XML File format violation.
- * This class extends java.io.IOException in order to be 100% downward
- * compatible.
- * This is in fact not an I/O exception, and if it were not for compatibility,
- * it would be better to subclass a more appropriate checked exception.
+ * A conservative ResourceLocator implementation that adds to the search
+ * path just the parent directory of the specified URI, and it is  only
+ * used for resources requested with relative paths.
  *
+ * @see com.jme.util.resource.ResourceLocator
  * @author Blaine Simpson (blaine dot simpson at admc dot com)
  */
-public class OgreXmlFormatException extends IOException {
-    static final long serialVersionUID = 5272379903243728638L;
+public class RelativeResourceLocator implements ResourceLocator {
+    private URI baseUri;
 
-    public OgreXmlFormatException(String arg0) {
-        super(arg0);
+    public RelativeResourceLocator(URI baseUri) {
+        this.baseUri = baseUri;
+    }
+
+    public URL locateResource(String resourceName) {
+        if (baseUri == null || resourceName == null
+                || resourceName.length() < 2 || resourceName.charAt(0) == '/'
+                || resourceName.charAt(0) == '\\') return null;
+        // No-op unless baseUri set for instance, and resourceName is relative.
+
+        /* The remainder is the safe and conservative subset of code copied
+         * from SimpleResourceLocator.locateResource(String). */
+
+        try {
+            String spec = URLEncoder.encode(resourceName, "UTF-8");
+            //this fixes a bug in JRE1.5 (file handler does not decode "+" to
+            //spaces)
+            spec = spec.replaceAll("\\+", "%20");
+
+            URL rVal = new URL(baseUri.toURL(), spec);
+            // open a stream to see if this is a valid resource
+            // XXX: Perhaps this is wasteful?  Also, what info will determine validity?
+            rVal.openStream().close();
+            return rVal;
+        } catch (IOException e) {
+        } catch (IllegalArgumentException e) {
+        }
+        return null;
     }
 }
