@@ -47,8 +47,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -60,6 +58,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import java.util.logging.Logger;
 
+import com.radakan.jme.RelativeResourceLocator;
 import static com.radakan.util.XMLUtil.*;
 
 /**
@@ -440,47 +439,6 @@ public class SceneLoader {
             ResourceLocatorTool.removeResourceLocator(
                     ResourceLocatorTool.TYPE_MODEL, locator);
             locator = null;  // Just to encourage GC
-        }
-    }
-
-    /**
-     * A conservative ResourceLocator implementation that adds to the search
-     * path just the parent directory of the specified URI, and it is  only
-     * used for resources requested with relative paths.
-     *
-     * @see com.jme.util.resource.ResourceLocator
-     */
-    static public class RelativeResourceLocator implements ResourceLocator {
-        private URI baseUri;
-
-        public RelativeResourceLocator(URI baseUri) {
-            this.baseUri = baseUri;
-        }
-
-        public URL locateResource(String resourceName) {
-            if (baseUri == null || resourceName == null
-                    || resourceName.length() < 2 || resourceName.charAt(0) == '/'
-                    || resourceName.charAt(0) == '\\') return null;
-            // No-op unless baseUri set for instance, and resourceName is relative.
-
-            /* The remainder is the safe and conservative subset of code copied
-             * from SimpleResourceLocator.locateResource(String). */
-
-            try {
-                String spec = URLEncoder.encode(resourceName, "UTF-8");
-                //this fixes a bug in JRE1.5 (file handler does not decode "+" to
-                //spaces)
-                spec = spec.replaceAll("\\+", "%20");
-
-                URL rVal = new URL(baseUri.toURL(), spec);
-                // open a stream to see if this is a valid resource
-                // XXX: Perhaps this is wasteful?  Also, what info will determine validity?
-                rVal.openStream().close();
-                return rVal;
-            } catch (IOException e) {
-            } catch (IllegalArgumentException e) {
-            }
-            return null;
         }
     }
 
