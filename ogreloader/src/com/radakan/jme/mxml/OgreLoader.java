@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 import org.w3c.dom.Node;
 
@@ -399,20 +400,18 @@ public class OgreLoader {
 
             Node color = getChildNode(vertex, "colour_diffuse");
             if (color != null){
-                String[] vals = getAttribute(color, "value").split(" ");
-                if (vals.length == 4){
-                    cb.put(Float.parseFloat(vals[0]))
-                      .put(Float.parseFloat(vals[1]))
-                      .put(Float.parseFloat(vals[2]))
-                      .put(Float.parseFloat(vals[3]));
-                }else if (vals.length == 3){
-                    cb.put(Float.parseFloat(vals[0]))
-                      .put(Float.parseFloat(vals[1]))
-                      .put(Float.parseFloat(vals[2]))
-                      .put(1.0f);
-                }else{
-                    logger.warning("Must have 3 or 4 floats for color!");
-                }
+                String colorString = getAttribute(color, "value");
+                Matcher floatMatcher = float3Pattern.matcher(colorString);
+                if (!floatMatcher.matches())
+                    floatMatcher = float4Pattern.matcher(colorString);
+                if (!floatMatcher.matches())
+                    throw new OgreXmlFormatException(
+                            "Malformatted Color value: " + colorString);
+                cb.put(Float.parseFloat(floatMatcher.group(1)))
+                        .put(Float.parseFloat(floatMatcher.group(2)))
+                        .put(Float.parseFloat(floatMatcher.group(3)))
+                        .put((floatMatcher.groupCount() == 4)
+                            ? Float.parseFloat(floatMatcher.group(4)) : 1.0f);
             }
             
             vertex = vertex.getNextSibling();

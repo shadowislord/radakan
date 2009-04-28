@@ -51,15 +51,24 @@ import com.radakan.jme.mxml.OgreXmlFormatException;
  * XML parsing utility methods
  */
 public class XMLUtil {
-    private static Pattern float3Pattern = Pattern.compile(
-            "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
+    public static Pattern float3CommaPattern = Pattern.compile(
+            "\\s*([-+]?[0-9.]+[fF]?)"
             + "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
             + "\\s*,\\s*([-+]?[0-9.]+[fF]?)\\s*");
-    private static Pattern float4Pattern = Pattern.compile(
-            "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
+    public static Pattern float4CommaPattern = Pattern.compile(
+            "\\s*([-+]?[0-9.]+[fF]?)"
             + "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
             + "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
             + "\\s*,\\s*([-+]?[0-9.]+[fF]?)\\s*");
+    public static Pattern float3Pattern = Pattern.compile(
+            "\\s*([-+]?[0-9.]+[fF]?)"
+            + "\\s+([-+]?[0-9.]+[fF]?)"
+            + "\\s+([-+]?[0-9.]+[fF]?)\\s*");
+    public static Pattern float4Pattern = Pattern.compile(
+            "\\s*([-+]?[0-9.]+[fF]?)"
+            + "\\s+([-+]?[0-9.]+[fF]?)"
+            + "\\s+([-+]?[0-9.]+[fF]?)"
+            + "\\s+([-+]?[0-9.]+[fF]?)\\s*");
     
     /**
      * Returns the first XML child tag with the specified name.
@@ -175,7 +184,7 @@ public class XMLUtil {
         if (att == null)
             return defVal;
         
-        Matcher floatMatcher = float3Pattern.matcher(att);
+        Matcher floatMatcher = float3CommaPattern.matcher(att);
         if (!floatMatcher.matches())
             throw new OgreXmlFormatException(
                     "Malformatted Vector value: " + att);
@@ -203,7 +212,7 @@ public class XMLUtil {
         if (att == null)
             return defVal;
         
-        Matcher floatMatcher = float4Pattern.matcher(att);
+        Matcher floatMatcher = float4CommaPattern.matcher(att);
         if (!floatMatcher.matches())
             throw new OgreXmlFormatException(
                     "Malformatted Quaternion value: " + att);
@@ -244,10 +253,9 @@ public class XMLUtil {
             color.fromIntRGBA(rgb);
             return color;
         }else{
-            Matcher floatMatcher = float3Pattern.matcher(att);
+            Matcher floatMatcher = float3CommaPattern.matcher(att);
             if (!floatMatcher.matches())
-                floatMatcher = float4Pattern.matcher(att);
-            if (!floatMatcher.matches())
+                floatMatcher = float4CommaPattern.matcher(att);
             if (!floatMatcher.matches())
                 throw new OgreXmlFormatException(
                         "Malformatted RGBA value: " + att);
