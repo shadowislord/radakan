@@ -33,6 +33,8 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -49,6 +51,15 @@ import com.radakan.jme.mxml.OgreXmlFormatException;
  * XML parsing utility methods
  */
 public class XMLUtil {
+    private static Pattern float3Pattern = Pattern.compile(
+            "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
+            + "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
+            + "\\s*,\\s*([-+]?[0-9.]+[fF]?)\\s*");
+    private static Pattern float4Pattern = Pattern.compile(
+            "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
+            + "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
+            + "\\s*,\\s*([-+]?[0-9.]+[fF]?)"
+            + "\\s*,\\s*([-+]?[0-9.]+[fF]?)\\s*");
     
     /**
      * Returns the first XML child tag with the specified name.
@@ -145,42 +156,78 @@ public class XMLUtil {
         return Float.parseFloat(str.trim());
     }
     
-    public static Vector3f getVec3Attribute(Node node, String name){
+    /**
+     * @throws OgreXmlFormatException if the value String is not a properly
+     *                                formatted float tuple of the right size.
+     */
+    public static Vector3f getVec3Attribute(Node node, String name)
+            throws OgreXmlFormatException {
         return getVec3Attribute(node, name, null);
     }
     
-    public static Vector3f getVec3Attribute(Node node, String name, Vector3f defVal){
+    /**
+     * @throws OgreXmlFormatException if the value String is not a properly
+     *                                formatted float tuple of the right size.
+     */
+    public static Vector3f getVec3Attribute(Node node, String name,
+            Vector3f defVal) throws OgreXmlFormatException {
         String att = getAttribute(node, name);
         if (att == null)
             return defVal;
         
-        String split[] = att.split(",");
-        return new Vector3f(str2float(split[0]),
-                            str2float(split[1]),
-                            str2float(split[2]));
+        Matcher floatMatcher = float3Pattern.matcher(att);
+        if (!floatMatcher.matches())
+            throw new OgreXmlFormatException(
+                    "Malformatted Vector value: " + att);
+        return new Vector3f(str2float(floatMatcher.group(1)),
+                            str2float(floatMatcher.group(2)),
+                            str2float(floatMatcher.group(3)));
     }
     
-    public static Quaternion getQuatAttribute(Node node, String name){
+    /**
+     * @throws OgreXmlFormatException if the value String is not a properly
+     *                                formatted float tuple of the right size.
+     */
+    public static Quaternion getQuatAttribute(Node node, String name)
+            throws OgreXmlFormatException {
         return getQuatAttribute(node, name, null);
     }
     
-    public static Quaternion getQuatAttribute(Node node, String name, Quaternion defVal){
+    /**
+     * @throws OgreXmlFormatException if the value String is not a properly
+     *                                formatted float tuple of the right size.
+     */
+    public static Quaternion getQuatAttribute(Node node, String name,
+            Quaternion defVal) throws OgreXmlFormatException {
         String att = getAttribute(node, name);
         if (att == null)
             return defVal;
         
-        String split[] = att.split(",");
-        return new Quaternion(str2float(split[0]),
-                              str2float(split[1]),
-                              str2float(split[2]),
-                              str2float(split[3]));
+        Matcher floatMatcher = float4Pattern.matcher(att);
+        if (!floatMatcher.matches())
+            throw new OgreXmlFormatException(
+                    "Malformatted Quaternion value: " + att);
+        return new Quaternion(str2float(floatMatcher.group(1)),
+                            str2float(floatMatcher.group(2)),
+                            str2float(floatMatcher.group(3)),
+                            str2float(floatMatcher.group(4)));
     }
     
-    public static ColorRGBA getRGBAAttribute(Node node, String name){
+    /**
+     * @throws OgreXmlFormatException if the value String is not a properly
+     *                                formatted float tuple of the right size.
+     */
+    public static ColorRGBA getRGBAAttribute(Node node, String name)
+            throws OgreXmlFormatException {
         return getRGBAAttribute(node, name, null);
     }
     
-    public static ColorRGBA getRGBAAttribute(Node node, String name, ColorRGBA defVal){
+    /**
+     * @throws OgreXmlFormatException if the value String is not a properly
+     *                                formatted float tuple of the right size.
+     */
+    public static ColorRGBA getRGBAAttribute(Node node, String name,
+            ColorRGBA defVal) throws OgreXmlFormatException {
         String att = getAttribute(node, name);
         if (att == null)
             return defVal;
@@ -197,18 +244,18 @@ public class XMLUtil {
             color.fromIntRGBA(rgb);
             return color;
         }else{
-            String split[] = att.split(",");
-            if (split.length == 3){
-                return new ColorRGBA(str2float(split[0]),
-                                     str2float(split[1]),
-                                     str2float(split[2]),
-                                     1.0f);
-            }else{
-                return new ColorRGBA(str2float(split[0]),
-                                     str2float(split[1]),
-                                     str2float(split[2]),
-                                     str2float(split[3]));
-            }
+            Matcher floatMatcher = float3Pattern.matcher(att);
+            if (!floatMatcher.matches())
+                floatMatcher = float4Pattern.matcher(att);
+            if (!floatMatcher.matches())
+            if (!floatMatcher.matches())
+                throw new OgreXmlFormatException(
+                        "Malformatted RGBA value: " + att);
+            return new ColorRGBA(str2float(floatMatcher.group(1)),
+                    str2float(floatMatcher.group(2)),
+                    str2float(floatMatcher.group(3)),
+                    (floatMatcher.groupCount() == 4)
+                        ?  str2float(floatMatcher.group(4)) : 1.0f);
         }
     }
     
