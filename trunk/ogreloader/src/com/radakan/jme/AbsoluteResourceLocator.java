@@ -52,6 +52,10 @@ import com.jme.util.resource.ResourceLocator;
  * </UL>
  * Either way, lookups succeed only for resources requested with absolute
  * paths, and there is no recursion.
+ * <P>
+ * This ResourceLocator is specifically NOT for loading resources from the
+ * Classpath.  Use *Classpath*ResourceLocator class(es) for that purpose.
+ * </P>
  *
  * @see com.jme.util.resource.ResourceLocator
  * @author Blaine Simpson (blaine dot simpson at admc dot com)
@@ -98,7 +102,7 @@ public class AbsoluteResourceLocator implements ResourceLocator {
      *        Therefore, to cover an entire web site, you must use
      *        <CODE>http://pub.admc.com/</CODE>, not
      *        <CODE>http://pub.admc.com</CODE>.
-     * @throws IllegalArgumentExceptin if the specified baseUri does not have
+     * @throws IllegalArgumentException if the specified baseUri does not have
      *         an absolue URI path, or is otherwise unacceptable.
      */
     public AbsoluteResourceLocator(URI baseUri) {
