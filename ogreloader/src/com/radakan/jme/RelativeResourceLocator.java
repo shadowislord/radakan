@@ -50,9 +50,15 @@ public class RelativeResourceLocator implements ResourceLocator {
         this.baseUri = baseUri;
     }
 
+    /*
+     * @returns null if resource not found, according to algorithm specified
+     *          in the class JavaDoc.
+     * @see RelativeResourceLocator
+     * @see com.jme.util.resource.ResourceLocator#locateResource(String)
+     */
     public URL locateResource(String resourceName) {
         if (baseUri == null || resourceName == null
-                || resourceName.length() < 2 || resourceName.charAt(0) == '/'
+                || resourceName.length() < 1 || resourceName.charAt(0) == '/'
                 || resourceName.charAt(0) == '\\') return null;
         // No-op unless baseUri set for instance, and resourceName is relative.
 
