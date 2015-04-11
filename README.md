@@ -16,6 +16,6 @@ I was the lead programmer on the project in 2008 from March until Decemeber.
 * Common - Contains game data files.
 
 ## License
-* For code - [GNU GPLv3](https://creativecommons.org/licenses/by-sa/3.0/)
-* For content - [CC BY-SA 3.0](https://www.gnu.org/licenses/gpl.html)
+* For code - [GNU GPLv3](https://www.gnu.org/licenses/gpl.html)
+* For content - [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
 * For JMEContext library - New BSD license
