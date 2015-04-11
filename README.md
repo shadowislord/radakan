@@ -14,3 +14,8 @@ I was the lead programmer on the project in 2008 from March until Decemeber.
 * OgreLoader - Allows loading of Ogre3D Mesh.XML files in jME2. A better version of this is already included in jME3.
 * MaxiPacker - Basically useless. Was created to workaround silly limitations in some web hosting provider.
 * Common - Contains game data files.
+
+## License
+For code - **[https://creativecommons.org/licenses/by-sa/3.0/ GNU GPLv3]**
+For content - **[https://www.gnu.org/licenses/gpl.html CC BY-SA 3.0]**
+For JMEContext library - **New BSD license**
